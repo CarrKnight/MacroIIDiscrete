@@ -19,6 +19,7 @@ import sim.portrayal.Inspector;
 import sim.portrayal.inspector.TabbedInspector;
 import sim.util.media.chart.HistogramGenerator;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.*;
 import java.awt.*;
@@ -51,7 +52,7 @@ public class MacroII extends SimState{
     /**
      * How many Mason time units are a week?
      */
-    private float weekLength = 100;
+    private float weekLength = 7;
 
     /**
      * How many weeks passed since we started the model?
@@ -204,12 +205,16 @@ public class MacroII extends SimState{
         agents = scenario.getAgents();
 
         //schedule weekends for everyone
-        schedule.scheduleRepeating(weekLength,0,new Steppable() {
+        scheduleAnotherDay(ActionOrder.DAWN, new Steppable() {
             @Override
-            public void step(SimState simState) {
+            public void step(SimState state) {
                 weekEnd(); //everybody is on weekend!
             }
-        },weekLength);
+        }, 7);
+
+        //get the phase scheduler to start
+        phaseScheduler.step(this);
+
 
     }
 
@@ -326,7 +331,7 @@ public class MacroII extends SimState{
     public void weekEnd(){
         weeksPassed++;
 
-        Collections.shuffle(agents); //todo make this shuffled by the MersenneTwisterFast
+        Collections.shuffle(agents,new Random(random.nextLong())); //todo make this shuffled by the MersenneTwisterFast
 
         //agents on weekend!
         for(EconomicAgent agent : agents)
@@ -334,7 +339,14 @@ public class MacroII extends SimState{
         for(Market market : markets.values())
             market.weekEnd(this);
 
+
         printOutWorkers();
+        scheduleAnotherDay(ActionOrder.DAWN, new Steppable() {
+            @Override
+            public void step(SimState state) {
+                weekEnd();
+            }
+        }, 7);
     }
 
     /**
@@ -391,9 +403,9 @@ public class MacroII extends SimState{
         return (float) (plantControlInitialCapacityRatioTargetedMean + random.nextGaussian()*plantControlInitialCapacityRatioTargetedDeviation);
     }
 
-    public float drawplantControlSpeed(){
+    public int drawplantControlSpeed(){
 
-        return (float) (plantControlSpeedMean + random.nextGaussian()*plantControlSpeedDeviation);
+        return 0;
     }
 
 
@@ -411,8 +423,8 @@ public class MacroII extends SimState{
         return (float) Math.abs((.0001f + random.nextGaussian()*.0005f));
     }
 
-    public float drawPIDSpeed(){
-        return (float) (10 + random.nextGaussian()*.5f);
+    public int drawPIDSpeed(){
+        return 0;
     }
 
     /**
@@ -650,6 +662,36 @@ public class MacroII extends SimState{
     }
 
     /**
+     * schedule an action to take place in the current phase, regardless of what it is
+     * @param action the action to be performed
+     */
+    public void scheduleASAP(Steppable action){
+        phaseScheduler.scheduleSoon(phaseScheduler.getCurrentPhase(), action);
+
+    }
+
+
+    /**
+     *
+     * @param phase The action order at which this action should be scheduled
+     * @param action the action to schedule
+     * @param daysAway how many days from now should it be scheduled
+     */
+    public void scheduleAnotherDay(@Nonnull ActionOrder phase, @Nonnull Steppable action, int daysAway) {
+        phaseScheduler.scheduleAnotherDay(phase, action, daysAway);
+    }
+
+    /**
+     * Checks if the given steppable is in today's schedule
+     * @param phase the phase the steppable is supposed to be  scheduled
+     * @param steppable the steppable we want to check
+     * @return true if the steppable is scheduled today at the specific phase
+     */
+    public boolean isScheduledToday(ActionOrder phase, Steppable steppable) {
+        return phaseScheduler.isScheduledToday(phase, steppable);
+    }
+
+    /**
      * force the schedule to record this action to happen tomorrow. This is allowed only if you are at a phase (say PRODUCTION) and you want the action to occur tomorrow at the same phase (PRODUCTION)
      * @param phase which phase the action should be performed?
      * @param action the action taken!
@@ -658,7 +700,31 @@ public class MacroII extends SimState{
         phaseScheduler.scheduleTomorrow(phase, action);
     }
 
+    /**
+     * Getter mostly useful for testing. Use delegate methods instead
+     * @return
+     */
+    public PhaseScheduler getPhaseScheduler() {
+        return phaseScheduler;
+    }
+
     public ActionOrder getCurrentPhase() {
         return phaseScheduler.getCurrentPhase();
+    }
+
+    public void setAgents(ArrayList<EconomicAgent> agents) {
+        this.agents = agents;
+    }
+
+    public void setMarkets(EnumMap<GoodType, Market> markets) {
+        this.markets = markets;
+    }
+
+    public ArrayList<EconomicAgent> getAgents() {
+        return agents;
+    }
+
+    public void setWeekLength(float weekLength) {
+        this.weekLength = weekLength;
     }
 }

@@ -1,8 +1,9 @@
 package model.utilities.pid;
 
 import ec.util.MersenneTwisterFast;
+import model.MacroII;
+import model.utilities.ActionOrder;
 import model.utilities.filters.ExponentialFilter;
-import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import javax.annotation.Nullable;
@@ -127,7 +128,7 @@ public class FlowAndStockController implements Controller{
      * @param samplingSpeed the sampling speed
      */
     @Override
-    public void setSpeed(float samplingSpeed) {
+    public void setSpeed(int samplingSpeed) {
         flowPID.setSpeed(samplingSpeed);
         stockPID.setSpeed(samplingSpeed);
 
@@ -139,7 +140,7 @@ public class FlowAndStockController implements Controller{
      * @return the sampling speed
      */
     @Override
-    public float getSpeed() {
+    public int getSpeed() {
         return flowPID.getSpeed();
     }
 
@@ -163,17 +164,17 @@ public class FlowAndStockController implements Controller{
      * @param user     the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)
      */
     @Override
-    public void adjust(ControllerInput input, boolean isActive, @Nullable SimState simState, @Nullable Steppable user) {
+    public void adjust(ControllerInput input,  boolean isActive, MacroII simState, Steppable user,ActionOrder phase) {
 
         adjust((int)input.getInput(1),(int)input.getTarget(1),input.getInput(0),input.getTarget(0),
-                input.getTarget(2)==0,isActive,simState,user);
+                input.getTarget(2)==0,isActive,simState,user,phase);
 
 
     }
 
     public void adjust(int inflow, int outflow, float currentStock,
                        float targetStock, boolean stockAcceptable,
-                       boolean isActive,@Nullable SimState state, @Nullable Steppable user)
+                       boolean isActive,@Nullable MacroII state, @Nullable Steppable user, ActionOrder phase)
     {
 
         //record inflow and outflow
@@ -186,7 +187,7 @@ public class FlowAndStockController implements Controller{
             filterObservations(inflow,outflow);
 
             flowPID.adjust(ControllerInput.simplePIDTarget(getOutflowAsFloat(inflow),getInflowAsFloat(outflow))
-                    ,isActive,state,user);
+                    ,isActive,state,user,phase);
         }
         else
         {

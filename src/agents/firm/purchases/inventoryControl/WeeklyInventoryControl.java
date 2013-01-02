@@ -5,9 +5,9 @@ import agents.firm.Firm;
 import agents.firm.NumberOfPlantsListener;
 import agents.firm.purchases.PurchasesDepartment;
 import goods.GoodType;
-import goods.production.Plant;
-import goods.production.PlantListener;
-import goods.production.technology.Machinery;
+import agents.firm.production.Plant;
+import agents.firm.production.PlantListener;
+import agents.firm.production.technology.Machinery;
 
 import javax.annotation.Nonnull;
 import java.util.LinkedList;

@@ -6,13 +6,13 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.cost.EmptyCostStrategy;
 import goods.Good;
 import goods.GoodType;
-import goods.production.Blueprint;
-import goods.production.Plant;
-import goods.production.PlantListener;
-import goods.production.PlantStatus;
-import goods.production.technology.CRSExponentialMachinery;
-import goods.production.technology.DRSExponentialMachinery;
-import goods.production.technology.IRSExponentialMachinery;
+import agents.firm.production.Blueprint;
+import agents.firm.production.Plant;
+import agents.firm.production.PlantListener;
+import agents.firm.production.PlantStatus;
+import agents.firm.production.technology.CRSExponentialMachinery;
+import agents.firm.production.technology.DRSExponentialMachinery;
+import agents.firm.production.technology.IRSExponentialMachinery;
 import junit.framework.Assert;
 import model.MacroII;
 import org.junit.Before;
@@ -54,17 +54,21 @@ public class PlantTest {
 
         Person w1 = new Person(macro); Person w2 = new Person(macro);
         crs.addWorker(w1);crs.addWorker(w2);    w1.hired(crs.getOwner(),9999999); w2.hired(crs.getOwner(), 9999999);
-         w1 = new Person(macro); w2 = new Person(macro);
+        w1 = new Person(macro); w2 = new Person(macro);
         irs.addWorker(w1);irs.addWorker(w2);    w1.hired(crs.getOwner(),9999999); w2.hired(crs.getOwner(), 9999999);
-         w1 = new Person(macro);  w2 = new Person(macro);
+        w1 = new Person(macro);  w2 = new Person(macro);
         drs.addWorker(w1);drs.addWorker(w2);   w1.hired(crs.getOwner(),9999999); w2.hired(crs.getOwner(), 9999999);
 
 
 
-        crs.getOwner().registerSaleDepartment(mock(SalesDepartment.class),GoodType.GENERIC); //fake sales department so that you don't sell the stuff you produce
-        irs.getOwner().registerSaleDepartment(mock(SalesDepartment.class),GoodType.GENERIC); //fake sales department so that you don't sell the stuff you produce
-        drs.getOwner().registerSaleDepartment(mock(SalesDepartment.class), GoodType.GENERIC); //fake sales department so that you don't sell the stuff you produce
+        crs.getOwner().registerSaleDepartment(mock(SalesDepartment.class),GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+        irs.getOwner().registerSaleDepartment(mock(SalesDepartment.class),GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+        drs.getOwner().registerSaleDepartment(mock(SalesDepartment.class), GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
 
+
+        crs.setCostStrategy(new EmptyCostStrategy());
+        irs.setCostStrategy(new EmptyCostStrategy());
+        drs.setCostStrategy(new EmptyCostStrategy());
 
     }
 
@@ -179,33 +183,32 @@ public class PlantTest {
 
         crs.getModel().schedule.reset();
         crs.getModel().schedule.scheduleOnce(Schedule.EPOCH, new Person(crs.getModel())); //this is to have the steppable not at time -1
-        crs.getModel().schedule.step(crs.getModel());
         crs.setCostStrategy(new EmptyCostStrategy());
-        crs.produce();
+        //    crs.completeProductionRunNow();
 
 
 
-       // System.out.println(crs.getModel().schedule.getTime());
-        Assert.assertEquals(crs.getStatus(),PlantStatus.PRODUCING);
+        crs.startProductionRun();
+        // System.out.println(crs.getModel().schedule.getTime());
+        Assert.assertEquals(crs.getStatus(),PlantStatus.READY);
 
-        Assert.assertTrue(!crs.getModel().schedule.scheduleComplete()); //the schedule shouldn't be empty!
         Assert.assertTrue(crs.getOwner().hasAny(GoodType.GENERIC));
         Assert.assertTrue(crs.getOwner().hasHowMany(GoodType.GENERIC) == 2);
 
 
-        crs.getModel().schedule.reset();
-        Assert.assertTrue(crs.getModel().schedule.scheduleComplete()); //the schedule should be empty!
-        Assert.assertTrue(crs.getOwner().hasAny(GoodType.GENERIC));       //should still have the stuff
-        Assert.assertTrue(crs.getOwner().hasHowMany(GoodType.GENERIC) == 2);
+
 
 
 
         crs.setBlueprint(Blueprint.simpleBlueprint(GoodType.GENERIC, 2, GoodType.GENERIC, 1)); //dumb technology to test inputs
-        crs.produce();
-        Assert.assertTrue(crs.getModel().schedule.scheduleComplete()); //the schedule should be empty!
-        Assert.assertEquals(crs.getStatus(),PlantStatus.WAITING_FOR_INPUT);
+        crs.startProductionRun();
+        Assert.assertEquals(crs.getStatus(),PlantStatus.READY);
         Assert.assertTrue(crs.getOwner().hasAny(GoodType.GENERIC));       //should still have the stuff
         Assert.assertTrue(crs.getOwner().hasHowMany(GoodType.GENERIC) == 1);  //burned two, made one
+        crs.startProductionRun();
+        Assert.assertEquals(crs.getStatus(),PlantStatus.WAITING_FOR_INPUT);
+        Assert.assertTrue(crs.getOwner().hasAny(GoodType.GENERIC));       //no change!
+        Assert.assertTrue(crs.getOwner().hasHowMany(GoodType.GENERIC) == 1);
 
 
 
@@ -218,33 +221,57 @@ public class PlantTest {
 
     }
 
-    @Test(expected=IllegalStateException.class)
+    @Test
     public void testStep() throws Exception {
 
+
+        Blueprint b = new Blueprint.Builder().output(GoodType.GENERIC,2).build(); //create a simple output
+        MacroII localMacroII = new MacroII(1l);
+        localMacroII.schedule = mock(Schedule.class); //put in a fake schedule so we avoid steppables firing at random
+
+
+        Firm f = new Firm(localMacroII);
+        Plant localCRS = new Plant(b,new Firm(localMacroII)); localCRS.setPlantMachinery(new CRSExponentialMachinery(GoodType.CAPITAL, f, 0l, localCRS, 1f, 1f));
+        f.addPlant(localCRS);
+
+
+        Person w1 = new Person(localMacroII); Person w2 = new Person(localMacroII);
+        localCRS.addWorker(w1);localCRS.addWorker(w2);    w1.hired(localCRS.getOwner(),9999999); w2.hired(localCRS.getOwner(), 9999999);
+
+
+
+        localCRS.getOwner().registerSaleDepartment(mock(SalesDepartment.class),GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+
+
+        localCRS.setCostStrategy(new EmptyCostStrategy());
         try{
-        crs.getModel().schedule.reset();
-        crs.getModel().schedule.scheduleOnce(Schedule.EPOCH,new Person(crs.getModel())); //this is to have the steppable not at time -1
-        crs.getModel().schedule.step(crs.getModel());
+            localCRS.getModel();
 
-        crs.removeLastWorker(); crs.removeLastWorker();
-        crs.setBlueprint(Blueprint.simpleBlueprint(GoodType.GENERIC, 1, GoodType.GENERIC, 1)); //dumb technology to test inputs
-        crs.step(crs.getModel());
+            localCRS.removeLastWorker(); localCRS.removeLastWorker();
+            localCRS.setBlueprint(Blueprint.simpleBlueprint(GoodType.GENERIC, 1, GoodType.GENERIC, 1)); //dumb technology to test inputs
 
+            localCRS.getModel().getPhaseScheduler().step(localCRS.getModel());
 
 
-        Assert.assertEquals(crs.getStatus(),PlantStatus.WAITING_FOR_INPUT);
-        crs.getOwner().receive(new Good(GoodType.GENERIC,drs.getOwner(),1l),drs.getOwner());
-        crs.step(crs.getModel());
-        Assert.assertEquals(crs.getStatus(), PlantStatus.WAITING_FOR_WORKERS);
-        crs.addWorker(new Person(crs.getModel()));
-        Assert.assertEquals(crs.getStatus(),PlantStatus.PRODUCING); //you should automatically start production!
+
+            Assert.assertEquals(localCRS.getStatus(), PlantStatus.WAITING_FOR_WORKERS);
+            localCRS.addWorker(new Person(localCRS.getModel()));
+            localCRS.addWorker(new Person(localCRS.getModel()));
+
+
+            localCRS.getModel().getPhaseScheduler().step(localCRS.getModel());
+
+            Assert.assertEquals(localCRS.getStatus(),PlantStatus.WAITING_FOR_INPUT);
+            localCRS.getOwner().receive(new Good(GoodType.GENERIC,drs.getOwner(),1l),drs.getOwner());
+
+            localCRS.getModel().getPhaseScheduler().step(localCRS.getModel());
+            Assert.assertEquals(localCRS.getStatus(),PlantStatus.READY); //you should automatically start production!
 
         }catch(Exception e){
             Assert.fail("Can't throw exceptions now");
         }
 
 
-        crs.step(crs.getModel()); //this will break it because you can't adjust on it if it's already producing
 
 
 
@@ -271,7 +298,7 @@ public class PlantTest {
 
     @Test
     public void testGetPlantTechnology() throws Exception {
-       //make sure all delegate methods work
+        //make sure all delegate methods work
         Assert.assertEquals(1.0f, crs.hypotheticalWaitingTime(1), .0001f);
         Assert.assertEquals(1.0f,irs.hypotheticalWaitingTime(1),.0001f);
         Assert.assertEquals(1.0f,drs.hypotheticalWaitingTime(1),.0001f);

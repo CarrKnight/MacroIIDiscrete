@@ -66,7 +66,7 @@ public class Empirical extends AbstractContinousDistribution {
         return cdf[k];
         }
 /*
- * Returns a deep copy of the receiver; the copy will produce identical sequences.
+ * Returns a deep copy of the receiver; the copy will completeProductionRunNow identical sequences.
  * After this call has returned, the copy and the receiver have equal but separate state.
  *
  * @return a copy of the receiver.

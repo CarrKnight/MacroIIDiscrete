@@ -1,8 +1,8 @@
 package agents.firm.personell;
 
 import ec.util.MersenneTwisterFast;
-import goods.production.control.PlantControl;
-import goods.production.control.decorators.PlantControlDecorator;
+import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.decorators.PlantControlDecorator;
 import model.utilities.NonDrawable;
 import org.reflections.Reflections;
 
@@ -39,7 +39,7 @@ public class PersonellRuleFactory {
 
     //static clause to fill the set names
     static {
-        Reflections strategyReader = new Reflections("goods");
+        Reflections strategyReader = new Reflections("agents.firm.production");
         plantControlRules = new ArrayList<>(strategyReader.getSubTypesOf(PlantControl.class)); //read all the inventoryControlRules
         assert plantControlRules.size() > 0; // there should be at least one!!
         //do not let the decorators in the rule

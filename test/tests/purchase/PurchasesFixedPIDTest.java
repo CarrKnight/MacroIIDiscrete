@@ -8,10 +8,11 @@ import financial.OrderBookBlindMarket;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
-import goods.production.Blueprint;
-import goods.production.Plant;
+import agents.firm.production.Blueprint;
+import agents.firm.production.Plant;
 import junit.framework.Assert;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import model.utilities.pid.CascadePIDController;
 import org.junit.Test;
 import sim.engine.Schedule;
@@ -73,7 +74,8 @@ public class PurchasesFixedPIDTest {
 
         for(int i=0; i < 100; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
-            control.step(model);
+            model.scheduleSoon(ActionOrder.THINK, control);
+            model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
             int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
@@ -115,7 +117,8 @@ public class PurchasesFixedPIDTest {
 
         for(int i=0; i < 100; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
-            control.step(model);
+            model.scheduleSoon(ActionOrder.THINK,control);
+            model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
             int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
@@ -154,13 +157,15 @@ public class PurchasesFixedPIDTest {
         Assert.assertEquals(control.getTarget(),6);
 
         //for the first 50 turns is like the first test
+        model.scheduleSoon(ActionOrder.THINK,control);
+
         for(int i=0; i < 50; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
-            control.step(model);
+            model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
             int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
-          //  System.out.println(currentInventory + " ---> " + pidPrice);
+            System.out.println(currentInventory + " ---> " + pidPrice);
             Assert.assertTrue( (currentInventory <= 6 && pidPrice > oldPrice) ||
                     (currentInventory >= 6 && pidPrice < oldPrice) ||
                     (currentInventory == 6 && pidPrice == oldPrice));
@@ -171,11 +176,11 @@ public class PurchasesFixedPIDTest {
         //and now you need half of the money!
         for(int i=0; i < 50; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/5f))); //tell the control how much you managed to buy
-            control.step(model);
+            model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
             int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
-          //  System.out.println(currentInventory + " ****> " + pidPrice);
+            System.out.println(currentInventory + " ****> " + pidPrice);
             Assert.assertTrue( (currentInventory <= 6 && pidPrice > oldPrice) ||
                     (currentInventory >= 6 && pidPrice < oldPrice) ||
                     (currentInventory == 6 && pidPrice == oldPrice));

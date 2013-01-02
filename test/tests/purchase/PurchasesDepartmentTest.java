@@ -223,6 +223,7 @@ public class PurchasesDepartmentTest {
 
         firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
         dept.buy(); //place a bid or whatever
+        model.getPhaseScheduler().step(model);
         Field field = PurchasesDepartment.class.getDeclaredField("quotePlaced");
         field.setAccessible(true);
         Quote q = (Quote) field.get(dept);
@@ -241,6 +242,7 @@ public class PurchasesDepartmentTest {
         Good good = new Good(GoodType.GENERIC,firm,10l);
         seller.receive(good,null );
         market.submitSellQuote(seller,0l,good);
+        model.getPhaseScheduler().step(model);
 
 
 
@@ -304,6 +306,8 @@ public class PurchasesDepartmentTest {
 
 
         dept.shop(); //shop should find and trade with the seller1
+        model.getPhaseScheduler().step(model);
+
         Assert.assertTrue(firm.has(good));
         Assert.assertTrue(!firm.has(good2));
         //should have paid 125!
@@ -366,6 +370,8 @@ public class PurchasesDepartmentTest {
 
         //now cascade!
         dept.buy();
+        model.getPhaseScheduler().step(model);
+
 
         Assert.assertEquals(firm.hasHowMany(GoodType.GENERIC),3);
         Assert.assertEquals(market.getBestSellPrice(),75*3);
@@ -616,10 +622,14 @@ public class PurchasesDepartmentTest {
         dept.setPricingStrategy(pricingStrategy);
 
         dept.start();
+        model.getPhaseScheduler().step(model);
+
         Assert.assertEquals(market.getBestBuyPrice(),150l);
         when(pricingStrategy.maxPrice(any(GoodType.class))).thenReturn(75l);
         Assert.assertEquals(market.getBestBuyPrice(),150l);
         dept.updateOfferPrices();
+        model.getPhaseScheduler().step(model);
+
         Assert.assertEquals(market.getBestBuyPrice(),75l);
 
 
@@ -667,6 +677,8 @@ public class PurchasesDepartmentTest {
 
 
         dept.shop(); //shop should find and trade with the seller1
+        model.getPhaseScheduler().step(model);
+
         Assert.assertTrue(firm.has(good));
         Assert.assertTrue(!firm.has(good2));
         //should have paid 125!
@@ -731,6 +743,8 @@ public class PurchasesDepartmentTest {
 
         //now cascade!
         dept.buy();
+        model.getPhaseScheduler().step(model);
+
 
         Assert.assertEquals(firm.hasHowMany(GoodType.GENERIC),3);
         Assert.assertEquals(market.getBestSellPrice(),75*3);

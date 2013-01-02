@@ -1,7 +1,8 @@
 package model.utilities.pid;
 
 import ec.util.MersenneTwisterFast;
-import sim.engine.SimState;
+import model.MacroII;
+import model.utilities.ActionOrder;
 import sim.engine.Steppable;
 
 import javax.annotation.Nullable;
@@ -43,7 +44,7 @@ public class PIDController implements Controller{
     /**
      * How much time passes between one PID check and the next?
      */
-    private float speed = 10;
+    private int speed = 0;
 
     /**
      * This will sum all the previous errors
@@ -81,20 +82,6 @@ public class PIDController implements Controller{
     //todo make random speed pluggable. It's weird to just have it random walk
     private boolean randomSpeed = false;
 
-    /**
-     * randomizer, needed for random speed
-     */
-    private MersenneTwisterFast random;
-
-    /**
-     * When the speed is set, this records its half. The PID with random speed is not allowed to go under it
-     */
-    private float halfInitialSpeed;
-
-    /**
-     * When the speed is set, this records its double. The PID with random speed is not allowed to go over it
-     */
-    private float twiceInitialSpeed;
 
     /**
      * MV can go below 0 if this is true
@@ -106,19 +93,16 @@ public class PIDController implements Controller{
 
 
     public PIDController(float proportionalGain, float integralGain, float derivativeGain, MersenneTwisterFast random) {
-        this(proportionalGain,integralGain,derivativeGain,(float) (10 + random.nextGaussian()),random);
+        this(proportionalGain,integralGain,derivativeGain,0,random);
 
     }
 
 
-    public PIDController(float proportionalGain, float integralGain, float derivativeGain, float speed, MersenneTwisterFast random) {
+    public PIDController(float proportionalGain, float integralGain, float derivativeGain, int speed, MersenneTwisterFast random) {
         this.proportionalGain = proportionalGain;
         this.integralGain = integralGain;
         this.derivativeGain = derivativeGain;
-        this.random =random;
-        this.speed = speed;
-        halfInitialSpeed = speed * .5f;
-        twiceInitialSpeed = speed * 2f;
+        this.speed = 0;
 
     }
 
@@ -147,10 +131,11 @@ public class PIDController implements Controller{
      * @param isActive are we active?
      * @param simState a link to the model (to adjust yourself)
      * @param user     the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)
+     * @param phase at which phase should this controller be rescheduled
      */
     @Override
-    public void adjust(ControllerInput input, boolean isActive, SimState simState, Steppable user) {
-        this.adjust(input.getTarget(0),input.getInput(0),isActive,simState,user);
+    public void adjust(ControllerInput input, boolean isActive, MacroII simState, Steppable user,ActionOrder phase) {
+        this.adjust(input.getTarget(0),input.getInput(0),isActive,simState,user,phase);
 
     }
 
@@ -162,10 +147,11 @@ public class PIDController implements Controller{
      * @param isActive are we active?
      * @param simState a link to the model (to adjust yourself) [can be null]
      * @param user the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself) [can be null]
+     * @param phase at which phase should this controller be rescheduled
      *
      */
     public void adjust(float target, float current, boolean isActive,
-                       @Nullable SimState simState, @Nullable Steppable user) {
+                       @Nullable MacroII simState, @Nullable Steppable user,ActionOrder phase) {
         if (adjustOnce(target, current, isActive))
             return;
 
@@ -173,13 +159,17 @@ public class PIDController implements Controller{
         /*************************
          * Reschedule
          *************************/
-        //if needed, nudge the speed a little
 
-        float nextCheck = speed;
-        if(randomSpeed)
-            nextCheck = random.nextFloat()*(twiceInitialSpeed - halfInitialSpeed) + halfInitialSpeed;
-        if(simState != null && user != null)
-            simState.schedule.scheduleOnceIn(nextCheck,user,Integer.MAX_VALUE); //reschedule yourself
+
+        if(simState != null && user != null){
+            if(speed == 0)
+                simState.scheduleTomorrow(phase, user);
+            else
+            {
+                assert speed > 0;
+                simState.scheduleAnotherDay(phase,user,speed+1);
+            }
+        }
 
     }
 
@@ -273,11 +263,12 @@ public class PIDController implements Controller{
         this.derivativeGain = derivativeGain;
     }
 
-    public float getSpeed() {
+
+    public int getSpeed() {
         return speed;
     }
 
-    public void setSpeed(float speed) {
+    public void setSpeed(int speed) {
         this.speed = speed;
     }
 

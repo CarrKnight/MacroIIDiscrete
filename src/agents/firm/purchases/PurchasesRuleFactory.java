@@ -45,7 +45,7 @@ public class PurchasesRuleFactory {
 
     //static clause to fill the set names
     static {
-        Reflections strategyReader = new Reflections("agents");
+        Reflections strategyReader = new Reflections("agents.firm.purchases");
         bidPricingRules = new ArrayList<>(strategyReader.getSubTypesOf(BidPricingStrategy.class)); //read all the bidPricingRules
         assert bidPricingRules.size() > 0; // there should be at least one!!
         inventoryControlRules = new ArrayList<>(strategyReader.getSubTypesOf(InventoryControl.class)); //read all the inventoryControlRules

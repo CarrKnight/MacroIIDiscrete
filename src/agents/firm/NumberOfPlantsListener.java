@@ -1,6 +1,6 @@
 package agents.firm;
 
-import goods.production.Plant;
+import agents.firm.production.Plant;
 
 /**
  * <h4>Description</h4>

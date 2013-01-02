@@ -2,17 +2,14 @@ package model.utilities.pid;
 
 import ec.util.MersenneTwisterFast;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import org.junit.Test;
-import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import javax.annotation.Nullable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * <h4>Description</h4>
@@ -141,7 +138,8 @@ public class ControllerFactoryTest {
              * @param user     the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)
              */
             @Override
-            public void adjust(ControllerInput input, boolean isActive, @Nullable SimState simState, @Nullable Steppable user) {
+            public void adjust(ControllerInput input, boolean isActive, @Nullable MacroII simState,
+                               @Nullable Steppable user, ActionOrder phase) {
                 throw new RuntimeException("not implemented yet!");
             }
 
@@ -174,7 +172,7 @@ public class ControllerFactoryTest {
              * @param samplingSpeed the sampling speed
              */
             @Override
-            public void setSpeed(float samplingSpeed) {
+            public void setSpeed(int samplingSpeed) {
                 throw new RuntimeException("not implemented yet!");
             }
 
@@ -184,7 +182,7 @@ public class ControllerFactoryTest {
              * @return the sampling speed
              */
             @Override
-            public float getSpeed() {
+            public int getSpeed() {
                 throw new RuntimeException("not implemented yet!");
             }
         }

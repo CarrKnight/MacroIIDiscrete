@@ -1,10 +1,11 @@
 package model.utilities.pid.decorator;
 
+import model.MacroII;
+import model.utilities.ActionOrder;
 import model.utilities.NonDrawable;
 import model.utilities.filters.ExponentialFilter;
 import model.utilities.pid.Controller;
 import model.utilities.pid.ControllerInput;
-import sim.engine.SimState;
 import sim.engine.Steppable;
 
 /**
@@ -67,11 +68,11 @@ public class ExponentialFilterInputDecorator extends ControllerDecorator {
      * @param user     the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)
      */
     @Override
-    public void adjust(ControllerInput input,  boolean isActive, SimState simState, Steppable user) {
+    public void adjust(ControllerInput input,  boolean isActive, MacroII simState, Steppable user,ActionOrder phase) {
 
         filter.addObservation(input.getInput(position));
         input.setInput(position,filter.getSmoothedObservation());
-        toDecorate.adjust(input,isActive,simState,user);
+        toDecorate.adjust(input,isActive,simState,user,phase);
 
     }
 

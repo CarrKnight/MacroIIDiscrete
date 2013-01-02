@@ -2,6 +2,8 @@ package agents.firm.sales.pricing.pid;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
+import model.MacroII;
+import model.utilities.ActionOrder;
 import model.utilities.pid.PIDController;
 import agents.firm.sales.SaleResult;
 import agents.firm.sales.SalesDepartment;
@@ -109,7 +111,8 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
     }
 
 
-    public SimpleFlowSellerPID(final SalesDepartment sales, float proportionalGain, float integralGain, float derivativeGain, float speed) {
+    public SimpleFlowSellerPID(final SalesDepartment sales, float proportionalGain, float integralGain, float derivativeGain,
+                               int speed) {
         this.sales = sales;
         market =sales.getMarket();
         //addSalesDepartmentListener yourself as a listener!
@@ -139,7 +142,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         //start with a random price!
         price = sales.getFirm().getRandom().nextInt(100);
         controller.setOffset(price);
-        this.step(sales.getFirm().getModel());
+        sales.getFirm().getModel().scheduleSoon(ActionOrder.THINK, this);
 
 
 
@@ -223,10 +226,10 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         //make the PID adjust, please
         if(flowTargeting)
             controller.adjust(0, (float) ((goodsToSell - initialInventory) - ((float) goodsSold + (float) stockOuts.getStockouts())),    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
-                    active, simState, this);
+                    active, (MacroII) simState, this, ActionOrder.THINK);
         else
             controller.adjust(0, (float) (goodsToSell - ((float) goodsSold + (float) stockOuts.getStockouts())),    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
-                    active, simState, this);
+                    active, (MacroII)simState, this,ActionOrder.THINK);
 
 
 
@@ -375,7 +378,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         controller.setGains(proportionalGain, integralGain, derivativeGain);
     }
 
-    public void setSpeed(float speed) {
+    public void setSpeed(int speed) {
         controller.setSpeed(speed);
     }
 }

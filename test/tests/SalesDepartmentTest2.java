@@ -48,10 +48,12 @@ public class SalesDepartmentTest2 {
     PriceFollower strategy1;
     SalesDepartment dept2;
     UndercuttingAskPricing strategy2;
+    MacroII model;
 
     @Before
     public void simpleScenarioSetup(){
-        MacroII model = new MacroII(0);
+
+        model = new MacroII(0);
         final Market market = new OrderBookMarket(GoodType.GENERIC);
         Firm firm1 = new Firm(model);
         dept1 = SalesDepartment.incompleteSalesDepartment(firm1,market,new SimpleBuyerSearch(market,firm1),new SimpleSellerSearch(market,firm1));
@@ -159,6 +161,8 @@ public class SalesDepartmentTest2 {
         Good good = new Good(GoodType.GENERIC,dept1.getFirm(),10);
         dept1.getFirm().receive(good,null);
         dept1.sellThis(good); //sell this, now!
+        model.getPhaseScheduler().step(model);
+
 
         Assert.assertEquals(dept1.getMarket().getLastPrice(),56l);
 
@@ -166,14 +170,18 @@ public class SalesDepartmentTest2 {
         good = new Good(GoodType.GENERIC,dept1.getFirm(),10);
         dept1.getFirm().receive(good,null);
         dept1.sellThis(good); //sell this, now!
+        model.getPhaseScheduler().step(model);
 
-        //TODO it copies its old price!!!
+
         Assert.assertEquals(dept1.getMarket().getLastPrice(),73l);
 
 
         good = new Good(GoodType.GENERIC,dept2.getFirm(),10);
         dept2.getFirm().receive(good,null);
         dept2.sellThis(good); //sell this, now!
+        model.getPhaseScheduler().step(model);
+
+
 
         Assert.assertEquals(dept1.getMarket().getLastPrice(),46l);
 
@@ -192,6 +200,8 @@ public class SalesDepartmentTest2 {
         good = new Good(GoodType.GENERIC,dept2.getFirm(),10);
         dept2.getFirm().receive(good,null);
         dept2.sellThis(good); //sell this, now!
+        model.getPhaseScheduler().step(model);
+
 
         Assert.assertEquals(dept1.getMarket().getLastPrice(),46l); //UNSOLD
         Assert.assertEquals(dept1.getMarket().getBestBuyPrice(),70l); //UNSOLD
@@ -204,6 +214,8 @@ public class SalesDepartmentTest2 {
         good = new Good(GoodType.GENERIC,dept2.getFirm(),10);
         dept2.getFirm().receive(good,null);
         dept2.sellThis(good); //sell this, now!
+        model.getPhaseScheduler().step(model);
+
 
         Assert.assertEquals(dept1.getMarket().getLastPrice(),36l); //should have sold both now!
         Assert.assertEquals(dept1.getMarket().getBestBuyPrice(),50l);
@@ -212,6 +224,8 @@ public class SalesDepartmentTest2 {
         good = new Good(GoodType.GENERIC,dept1.getFirm(),10);
         dept1.getFirm().receive(good,null);
         dept1.sellThis(good); //sell this, now!
+        model.getPhaseScheduler().step(model);
+
 
         Assert.assertEquals(dept1.getMarket().getLastPrice(),43l);
         Assert.assertEquals(dept1.getMarket().getBestBuyPrice(),40l);
@@ -220,6 +234,8 @@ public class SalesDepartmentTest2 {
         good = new Good(GoodType.GENERIC,dept1.getFirm(),30);
         dept1.getFirm().receive(good,null);
         dept1.sellThis(good); //sell this, now!
+        model.getPhaseScheduler().step(model);
+
 
         Assert.assertEquals(dept1.getMarket().getLastPrice(),43l);
         Assert.assertEquals(dept1.getMarket().getBestBuyPrice(),40l);
@@ -321,6 +337,8 @@ public class SalesDepartmentTest2 {
         //force it in the toSell list
         dept1.setAskPricingStrategy(new PriceFollower(dept1));
         dept1.sellThis(toQuote);
+        model.getPhaseScheduler().step(model);
+
 
 
         Field field = SalesDepartment.class.getDeclaredField("salesResults");

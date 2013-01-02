@@ -16,7 +16,7 @@ import java.awt.image.*;
     
    <p>At this point you can start feeding the MovieMaker frames with add(image).  When you are finished, call stop() and the MovieMaker will flush out the remaining movie frames to disk and create the file.  Throw your MovieMaker away at this point.
     
-   <p>MovieMaker, like MovieEncoder, relies on the Java Media Framework (JMF) to do its magic.  If JMF doesn't exist, MovieMaker doesn't produce an error; instead, it will produce a dialog box informing the user of his mistake.  MovieMaker is coded in an odd way: no actual direct references are made to MovieEncoder.  This is in case the JVM is too smart and tries to load MovieEncoder (and the JMF) immediately rather than lazily as it gets referenced by MovieMaker.
+   <p>MovieMaker, like MovieEncoder, relies on the Java Media Framework (JMF) to do its magic.  If JMF doesn't exist, MovieMaker doesn't completeProductionRunNow an error; instead, it will completeProductionRunNow a dialog box informing the user of his mistake.  MovieMaker is coded in an odd way: no actual direct references are made to MovieEncoder.  This is in case the JVM is too smart and tries to load MovieEncoder (and the JMF) immediately rather than lazily as it gets referenced by MovieMaker.
 
    <p><b>Note:</b> Sun's JMF spawns threads in the background which it never cleans up.
    Thus if you use this class, you'll need to call System.exit(0) to quit your program
@@ -93,7 +93,7 @@ public class MovieMaker
                         
             // add a warning
             String text1 = "A bug in Sun's JMF code embeds in the movie a bad format description string.  This breaks some non-Apple movie players.  Additionally, JMF's movies will be extremely large.  " +
-                "A suggested solution: produce the movie in 16 or 24 bit (32 bit breaks iMovie).  Then load the movie into Quicktime Pro or iMovie, and save out again as H.264.\n\n" + 
+                "A suggested solution: completeProductionRunNow the movie in 16 or 24 bit (32 bit breaks iMovie).  Then load the movie into Quicktime Pro or iMovie, and save out again as H.264.\n\n" +
                 "See http://cs.gmu.edu/~eclab/projects/mason/extensions/movies/ for more information.";
             int myNumberOfPixels = 600; // our word-wrap pixel length
             JLabel label = new JLabel();

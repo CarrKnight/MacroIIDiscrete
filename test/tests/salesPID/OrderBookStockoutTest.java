@@ -14,6 +14,7 @@ import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import org.junit.Test;
 import tests.DummyBuyer;
 import tests.DummySeller;
@@ -213,8 +214,8 @@ public class OrderBookStockoutTest {
         //we weren't outcompeted, this is a stockout
         assertEquals(stockouts.getStockouts(), 3);
 
-
-        strategy.step(model);
+        model.scheduleSoon(ActionOrder.THINK,strategy);
+        model.getPhaseScheduler().step(model);
         assertEquals(stockouts.getStockouts(), 1);
 
 

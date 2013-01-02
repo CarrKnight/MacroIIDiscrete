@@ -72,7 +72,7 @@ public class SimpleBuyerSellerScenario extends Scenario {
     /**
      * How often the purchase department checks its targets
      */
-    private float buyerPeriod = 10;
+    private int buyerPeriod = 0;
 
     /**
      * After how much do the buyers "consume" their goods
@@ -311,11 +311,11 @@ public class SimpleBuyerSellerScenario extends Scenario {
         this.minimumPrice = minimumPrice;
     }
 
-    public float getBuyerPeriod() {
+    public int getBuyerPeriod() {
         return buyerPeriod;
     }
 
-    public void setBuyerPeriod(float buyerPeriod) {
+    public void setBuyerPeriod(int buyerPeriod) {
         this.buyerPeriod = buyerPeriod;
     }
 

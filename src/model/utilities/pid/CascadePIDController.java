@@ -1,7 +1,8 @@
 package model.utilities.pid;
 
 import ec.util.MersenneTwisterFast;
-import sim.engine.SimState;
+import model.MacroII;
+import model.utilities.ActionOrder;
 import sim.engine.Steppable;
 
 import javax.annotation.Nullable;
@@ -63,9 +64,10 @@ public class CascadePIDController implements Controller{
      * @param user     the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)
      */
     @Override
-    public void adjust(ControllerInput input, boolean isActive, @Nullable SimState simState, @Nullable Steppable user) {
+    public void adjust(ControllerInput input, boolean isActive, @Nullable MacroII simState, @Nullable Steppable user,
+                       ActionOrder phase){
 
-        this.adjust(input.getTarget(0),input.getInput(0),input.getInput(1),isActive,simState,user);
+        this.adjust(input.getTarget(0),input.getInput(0),input.getInput(1),isActive,simState,user, phase);
 
     }
 
@@ -81,13 +83,13 @@ public class CascadePIDController implements Controller{
      * @param user     the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)     * @param firstTarget
      */
     public void adjust(float firstTarget,float firstInput, float secondInput, boolean isActive,
-                       @Nullable SimState state, @Nullable Steppable user)
+                       @Nullable MacroII state, @Nullable Steppable user,  ActionOrder phase)
     {
         //master
-        pid1.adjust(firstTarget,firstInput,isActive,state,user);
+        pid1.adjust(firstTarget,firstInput,isActive,state,user,phase);
         //slave
         secondTarget = pid1.getCurrentMV();
-        pid2.adjust(secondTarget, secondInput, isActive, null, null);
+        pid2.adjust(secondTarget, secondInput, isActive, null, null,null);
 
     }
 
@@ -129,7 +131,7 @@ public class CascadePIDController implements Controller{
      * change the speed of the cascade controller
      * @param speed the new speed
      */
-    public void setSpeed(float speed) {
+    public void setSpeed(int speed) {
         pid1.setSpeed(speed);
         pid2.setSpeed(speed); //this is actually useless, but I think it helps when I debug
     }
@@ -140,7 +142,7 @@ public class CascadePIDController implements Controller{
      * @return the sampling speed
      */
     @Override
-    public float getSpeed() {
+    public int getSpeed() {
         return pid1.getSpeed();
 
     }

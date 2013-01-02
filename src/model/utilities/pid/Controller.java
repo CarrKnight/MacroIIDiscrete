@@ -1,6 +1,7 @@
 package model.utilities.pid;
 
-import sim.engine.SimState;
+import model.MacroII;
+import model.utilities.ActionOrder;
 import sim.engine.Steppable;
 
 import javax.annotation.Nullable;
@@ -30,9 +31,11 @@ public interface Controller {
      * @param isActive are we active?
      * @param simState a link to the model (to adjust yourself)
      * @param user the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)
+     * @param phase at which phase should this controller be rescheduled
      *
      */
-    public void adjust(ControllerInput input, boolean isActive, @Nullable SimState simState, @Nullable Steppable user);
+    public void adjust(ControllerInput input, boolean isActive, @Nullable MacroII simState, @Nullable Steppable user,
+                       ActionOrder phase);
 
     /**
      * Get the current u_t
@@ -53,16 +56,16 @@ public interface Controller {
     public float getOffset();
 
     /**
-     * Set the sampling speed of the controller (how often it updates)
+     * Set the sampling speed of the controller (how often it updates, in days)
      * @param samplingSpeed the sampling speed
      */
-    public void setSpeed(float samplingSpeed);
+    public void setSpeed(int samplingSpeed);
 
     /**
-     * Get the sampling speed of the controller (how often it updates)
+     * Get the sampling speed of the controller (how often it updates, in days)
      * @return the sampling speed
      */
-    public float getSpeed();
+    public int getSpeed();
 
 
 

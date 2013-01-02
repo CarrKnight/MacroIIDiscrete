@@ -12,11 +12,11 @@ import ec.util.MersenneTwisterFast;
 import financial.Market;
 import goods.Good;
 import goods.GoodType;
-import goods.production.Plant;
-import goods.production.control.PlantControl;
-import goods.production.control.TargetAndMaximizePlantControl;
-import goods.production.control.maximizer.WorkforceMaximizer;
-import goods.production.control.targeter.WorkforceTargeter;
+import agents.firm.production.Plant;
+import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.TargetAndMaximizePlantControl;
+import agents.firm.production.control.maximizer.WorkforceMaximizer;
+import agents.firm.production.control.targeter.WorkforceTargeter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -203,6 +203,8 @@ public class HumanResources extends PurchasesDepartment {
      * It complements updateOfferPrices(), as in this method updates the wages of people we already have while the updateOfferPrices() update the wage offered to new employees.
      */
     public void updateEmployeeWages(){
+
+
 
         //new wage!
         long newWage = maxPrice(getGoodType(),getMarket()); //this is the new wage

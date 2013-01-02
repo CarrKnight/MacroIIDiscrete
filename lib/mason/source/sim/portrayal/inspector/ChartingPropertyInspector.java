@@ -16,7 +16,7 @@ import sim.util.media.chart.*;
 import org.jfree.data.xy.*;
 import org.jfree.data.general.*;
 
-/** An abstract superclass for property inspectors which use sim.util.ChartGenerator to produce charts.
+/** An abstract superclass for property inspectors which use sim.util.ChartGenerator to completeProductionRunNow charts.
     Contains a number of utility methods that these property inspector often have in commmon.  Each ChartingPropertyInspector
     works with a single data series on a single chart.  Additionally, each ChartingPropertyInspector has access to the
     global attributes common to the ChartGenerator.

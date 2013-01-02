@@ -8,6 +8,7 @@ import financial.MarketEvents;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import model.utilities.pid.Controller;
 import model.utilities.pid.ControllerFactory;
 import model.utilities.pid.PIDController;
@@ -82,7 +83,7 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
     public void step(SimState simState) {
 
         long oldprice = maxPrice(getGoodTypeToControl());
-        controller.adjust(getControllerInput(getWeeklyNeeds()), isActive(), simState, this);
+        controller.adjust(getControllerInput(getWeeklyNeeds()), isActive(),(MacroII) simState, this, ActionOrder.THINK);
         long newprice = maxPrice(getGoodTypeToControl());
 
         //log the change in policy
@@ -170,8 +171,16 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
      */
     @Override
     public void start() {
-        controller.adjust(getControllerInput(getWeeklyNeeds()), isActive(),
-                getPurchasesDepartment().getFirm().getModel(), this);
+        getPurchasesDepartment().getFirm().getModel().scheduleSoon(ActionOrder.THINK,
+                new Steppable() {
+                    @Override
+                    public void step(SimState state) {
+                        controller.adjust(getControllerInput(getWeeklyNeeds()),
+                                isActive(),
+                                getPurchasesDepartment().getFirm().getModel(), this, ActionOrder.THINK);
+                    }
+                });
+
         super.start();
     }
 }

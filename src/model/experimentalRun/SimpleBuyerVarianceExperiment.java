@@ -46,7 +46,7 @@ public class SimpleBuyerVarianceExperiment {
         scenario1.setProportionalGainAVG(proportional);
         scenario1.setIntegralGainAVG(integrative);
         scenario1.setDerivativeGainAVG(integrative);
-        scenario1.setPidPeriod(2.345f);
+        scenario1.setPidPeriod(0);
 
 
         macroII.setScenario(scenario1);

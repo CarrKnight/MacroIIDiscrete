@@ -7,6 +7,8 @@ import agents.firm.purchases.inventoryControl.Level;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import goods.Good;
 import goods.GoodType;
+import model.MacroII;
+import model.utilities.ActionOrder;
 import model.utilities.filters.ExponentialFilter;
 import model.utilities.pid.Controller;
 import model.utilities.pid.ControllerInput;
@@ -90,7 +92,7 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
         this(dept,(float) (.5f + dept.getRandom().nextGaussian()*.01f),
                 (float) (.5f + dept.getRandom().nextGaussian()*.05f),
                 (float) (0.01f + dept.getRandom().nextGaussian()*.005f),
-                (float) ( dept.getRandom().nextGaussian() + 10f)
+                0
         );
         //create the 2 PIDs
 
@@ -99,11 +101,12 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
     public FlowAndStockFixedPID(PurchasesDepartment dept, float proportionalGain, float integralGain, float derivativeGain)
     {
         this(dept,proportionalGain,integralGain,derivativeGain,
-                (float) ( dept.getRandom().nextGaussian() + 10f));
+                0);
 
     }
 
-    public FlowAndStockFixedPID(PurchasesDepartment dept, float proportionalGain, float integralGain, float derivativeGain, float speed)
+    public FlowAndStockFixedPID(PurchasesDepartment dept, float proportionalGain, float integralGain, float derivativeGain,
+                                int speed)
     {
         super(dept);
         //create the 2 PIDs
@@ -155,7 +158,7 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
             filterObservations();
 
             flowPID.adjust(ControllerInput.simplePIDTarget(getOutflowAsFloat(),getInflowAsFloat())
-                    ,isActive(),state,this);
+                    ,isActive(),(MacroII)state,this, ActionOrder.THINK);
         }
         else
         {
@@ -273,7 +276,7 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
      * set the speed for BOTH pid controllers
      * @param pidPeriod the pid sample speed
      */
-    public void setSpeed(float pidPeriod) {
+    public void setSpeed(int pidPeriod) {
         flowPIDRoot.setSpeed(pidPeriod);
         stockPID.setSpeed(pidPeriod);
 
@@ -302,6 +305,7 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
     @Override
     public void start() {
         //step once, in order to schedule yourself and all
+
         step(getPurchasesDepartment().getFirm().getModel());
         //     priceQuoted = 40;  flowPID.setOffset(40);
         super.start();

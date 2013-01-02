@@ -2,7 +2,7 @@ package agents.firm;
 
 import agents.firm.sales.SalesDepartment;
 import goods.GoodType;
-import goods.production.Plant;
+import agents.firm.production.Plant;
 
 import java.util.*;
 
@@ -86,7 +86,7 @@ public class ProfitReport {
                 //count it among the producers
                 //          producers.put(output,p);
                 assert  p.getBlueprint().getOutputs().get(output) > 0; //you are producing, right?
-                //how much did this plant produce this week
+                //how much did this plant completeProductionRunNow this week
                 //add it to total production
                 totalProduction[output.ordinal()] +=  p.getLastWeekThroughput()[output.ordinal()];
 

@@ -9,14 +9,14 @@ import ec.util.MersenneTwisterFast;
 import financial.Market;
 import financial.OrderBookBlindMarket;
 import goods.GoodType;
-import goods.production.Blueprint;
-import goods.production.Plant;
-import goods.production.control.FixWagesPlantControl;
-import goods.production.control.TargetAndMaximizePlantControl;
-import goods.production.control.decorators.FixedWageDecorator;
-import goods.production.control.decorators.PlantControlDecorator;
-import goods.production.control.targeter.PIDTargeter;
-import goods.production.technology.IRSExponentialMachinery;
+import agents.firm.production.Blueprint;
+import agents.firm.production.Plant;
+import agents.firm.production.control.FixWagesPlantControl;
+import agents.firm.production.control.TargetAndMaximizePlantControl;
+import agents.firm.production.control.decorators.FixedWageDecorator;
+import agents.firm.production.control.decorators.PlantControlDecorator;
+import agents.firm.production.control.targeter.PIDTargeter;
+import agents.firm.production.technology.IRSExponentialMachinery;
 import junit.framework.Assert;
 import model.MacroII;
 import org.mockito.invocation.InvocationOnMock;
@@ -156,7 +156,7 @@ public class FixWagesPlantControlTest {
 
         for(int i=0; i < 200; i++){
             Person worker = new Person(model,0,i,market);
-            worker.lookForWork();
+            worker.lookForWorkSoon();
         }
 
         //there should be 200 asks
@@ -306,7 +306,7 @@ public class FixWagesPlantControlTest {
 
         for(int i=0; i < 200; i++){
             Person worker = new Person(model,0,i,market);
-            worker.lookForWork();
+            worker.lookForWorkSoon();
         }
 
         //there should be 200 asks

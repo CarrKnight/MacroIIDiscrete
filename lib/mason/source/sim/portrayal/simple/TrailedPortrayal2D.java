@@ -51,7 +51,7 @@ import java.awt.event.*;
         
    <p>Alternatively you can provide a single TrailPortrayal2D via <b>FieldPortrayal.setPortrayalForAll</b> but 
    set <b>onlyGrowTrailWhenSelected</b> to FALSE.  This will cause the TrailPortrayal2D to *begin* growing the trail
-   each time a new object is selected.  It uses a lot less memory and is faster but may not produce the effect you desire.
+   each time a new object is selected.  It uses a lot less memory and is faster but may not completeProductionRunNow the effect you desire.
         
    <p>You can also cause all the TrailPortrayal2Ds to draw trails regardless of selection: just set <b>onlyShowTrailWhenSelected</b> to FALSE 
    (and make sure you have separate TrailPortrayal2Ds for each object in the field).  This is a rare need.

@@ -40,9 +40,16 @@ public enum ActionOrder
     TRADE,
 
     /**
-     * adapt and think
+     * After trading has occurred, think of the consequences
      */
-    THINK
+    THINK,
+
+
+    /**
+     * Final Phase, just maintenance
+     */
+    CLEANUP
+
 
 
 }

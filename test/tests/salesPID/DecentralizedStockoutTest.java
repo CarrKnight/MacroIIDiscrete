@@ -17,6 +17,7 @@ import goods.GoodType;
 import junit.framework.Assert;
 import model.MacroII;
 import model.scenario.SimpleDecentralizedSellerScenario;
+import model.utilities.ActionOrder;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -259,8 +260,8 @@ public class DecentralizedStockoutTest {
         //we weren't outcompeted, this is a stockout
         assertEquals(stockouts.getStockouts(), 0);
 
-
-        strategy.step(model);
+        model.scheduleSoon(ActionOrder.THINK,strategy);
+        model.getPhaseScheduler().step(model);
         assertEquals(stockouts.getStockouts(), 0);
 
 
@@ -324,19 +325,20 @@ public class DecentralizedStockoutTest {
         //make sure the PID has scheduled itself
         Field f = SalesDepartment.class.getDeclaredField("askPricingStrategy"); f.setAccessible(true);
         SimpleFlowSellerPID pid = (SimpleFlowSellerPID) f.get(dept);
-        verify(schedule).scheduleOnceIn(anyDouble(), eq(pid),anyInt());
 
         //okay, keep stepping it for 100 times
         for(int j=0; j<100; j++)
         {
-            pid.step(model);
+            model.scheduleSoon(ActionOrder.THINK,pid);
             //give the department 1 good to sell
             for(int i=0; i < 1; i++)
             {
                 Good g = new Good(GoodType.GENERIC,firm,0l);
-                firm.receive(g,null);
+                firm.receive(g, null);
                 dept.sellThis(g);
             }
+            model.getPhaseScheduler().step(model);
+
 
             //pretend they are looking for prices
             for(DummyBuyer buyer : dummyBuyers){

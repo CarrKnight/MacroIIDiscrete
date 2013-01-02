@@ -21,6 +21,8 @@ import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
+import model.MacroII;
+import model.utilities.ActionOrder;
 import model.utilities.Control;
 import model.utilities.Deactivatable;
 import sim.engine.SimState;
@@ -120,15 +122,14 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     private PurchasesPredictor predictor;
 
-
-
     /**
-     * The  purchases department's job is to keep ONE PLANT supplied so that
-     * @param budgetGiven  budget given to the department by the purchases department
-     * @param firm the firm owning the department
-     * @param market the market to buy from
+     * an explicit link to the model, to reschedule yourself
      */
-    protected PurchasesDepartment(long budgetGiven,@Nonnull Firm firm,@Nonnull Market market) {
+    private final MacroII model;
+
+
+    protected PurchasesDepartment(long budgetGiven,@Nonnull Firm firm,@Nonnull Market market,
+                                  MacroII model) {
         //initialize objects
         this.budgetGiven = budgetGiven;
         this.budgetSpent = 0l;
@@ -142,6 +143,37 @@ public class PurchasesDepartment implements Deactivatable, Department {
         else
             predictor = new MarketPurchasesPredictor();
 
+        this.model = model;
+
+
+    }
+
+    /**
+     * The  purchases department's job is to keep ONE PLANT supplied so that
+     * @param budgetGiven  budget given to the department by the purchases department
+     * @param firm the firm owning the department
+     * @param market the market to buy from
+     */
+    protected PurchasesDepartment(long budgetGiven,@Nonnull Firm firm,@Nonnull Market market) {
+        this(budgetGiven,firm,market,firm.getModel());
+
+
+    }
+
+    /**
+     * This factory method returns an INCOMPLETE and NOTFUNCTIONING purchase department objects as it lacks all the strategies it needs to act.
+     * This is useful if the caller wants to assign a specific rule from its side; otherwise stick with the other factories
+     * @param budgetGiven the amount of money given to the purchase department!
+     * @param firm the firm owning the department
+     * @param market the market the department belongs to
+     * @param  model the reference to the model object
+     *
+     */
+    public static PurchasesDepartment getEmptyPurchasesDepartment(long budgetGiven,@Nonnull Firm firm,@Nonnull Market market,
+                                                                  MacroII model){
+        //create the simple purchases department
+        //return it
+        return new PurchasesDepartment(budgetGiven,firm,market,model);
 
     }
 
@@ -155,7 +187,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
     public static PurchasesDepartment getEmptyPurchasesDepartment(long budgetGiven,@Nonnull Firm firm,@Nonnull Market market){
         //create the simple purchases department
         //return it
-        return new PurchasesDepartment(budgetGiven,firm,market);
+        return getEmptyPurchasesDepartment(budgetGiven, firm, market,firm.getModel());
 
     }
 
@@ -391,7 +423,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
             }
         }
         else{
-            assert status == PurchasesDepartmentStatus.PLACING_QUOTE;
+            assert status == PurchasesDepartmentStatus.PLACING_QUOTE : "current status: " + status + ", quote placed: " + quotePlaced;
             assert quotePlaced == null;
             assert getFirm().has(g)  || g.getType().isLabor(); //it should be ours now!
             //we will return to the buy method so we don't need to deal with anything inside here.
@@ -406,63 +438,65 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     public void shop(){
 
-        assert control.canBuy(); //make sure it's okay
-        status = PurchasesDepartmentStatus.SHOPPING; //put yourself in shopping mood
-        long maxPrice = maxPrice(goodType,market); //maximum we are willing to pay
 
-        EconomicAgent seller = supplierSearch.getBestInSampleSeller(); //get the best seller available
-        //if we couldn't find any
-        if(seller == null){
-            supplierSearch.reactToFailure(seller, PurchaseResult.NO_MATCH_AVAILABLE);
-            firm.getModel().schedule.scheduleOnceIn(tryAgainNextTime(), new Steppable() {
-                @Override
-                public void step(SimState simState) {
+        model.scheduleSoon(ActionOrder.TRADE, new Steppable() {
+            @Override
+            public void step(SimState state) {
+
+                assert control.canBuy(); //make sure it's okay
+                status = PurchasesDepartmentStatus.SHOPPING; //put yourself in shopping mood
+                long maxPrice = maxPrice(goodType,market); //maximum we are willing to pay
+
+                EconomicAgent seller = supplierSearch.getBestInSampleSeller(); //get the best seller available
+                //if we couldn't find any
+                if(seller == null){
+                    supplierSearch.reactToFailure(seller, PurchaseResult.NO_MATCH_AVAILABLE);
                     shop(); //call shop again soon!
+
                 }
-            });
-        }
-        else
-        {
-            Quote sellerQuote = seller.askedForASaleQuote(getFirm(), goodType); //ask again for a price offer
-            assert sellerQuote.getPriceQuoted() >= 0 ; //can't be negative!!!
-            if(maxPrice >= sellerQuote.getPriceQuoted()) //if the match is good:
-            {
-                long finalPrice = market.price(sellerQuote.getPriceQuoted(),maxPrice);
-
-                //build a fake buyer quote for stat collection
-                Quote buyerQuote = Quote.newBuyerQuote(getFirm(),maxPrice,goodType);
-                buyerQuote.setOriginator(this);
-
-
-                //TRADE
-                PurchaseResult result = seller.shopHere(buyerQuote,sellerQuote);
-                assert result.equals(PurchaseResult.SUCCESS) : "haven't coded what happens otherwise";
-
-                //record info
-                budgetSpent += result.getPriceTrade(); lastClosingPrice = result.getPriceTrade(); //spent!
-                getFirm().logEvent(this, MarketEvents.BOUGHT, getFirm().getModel().getCurrentSimulationTimeInMillis(), "price: " + finalPrice);
-                status = PurchasesDepartmentStatus.IDLE; //you are done!
-                supplierSearch.reactToSuccess(seller,PurchaseResult.SUCCESS);
-
-
-                if(queuedBuy) //if we need to buy another good, do it!
+                else
                 {
-                    queuedBuy = false; //reset the queue
+                    Quote sellerQuote = seller.askedForASaleQuote(getFirm(), goodType); //ask again for a price offer
+                    assert sellerQuote.getPriceQuoted() >= 0 ; //can't be negative!!!
+                    if(maxPrice >= sellerQuote.getPriceQuoted()) //if the match is good:
+                    {
+                        long finalPrice = market.price(sellerQuote.getPriceQuoted(),maxPrice);
 
-                    buy(goodType,market);
-                }
-            }
-            else{   //we didn't make it!
-                supplierSearch.reactToFailure(seller,PurchaseResult.PRICE_REJECTED);
-                firm.getModel().schedule.scheduleOnceIn(tryAgainNextTime(), new Steppable() {
-                    @Override
-                    public void step(SimState simState) {
-                        shop(); //call shop again soon!
+                        //build a fake buyer quote for stat collection
+                        Quote buyerQuote = Quote.newBuyerQuote(getFirm(),maxPrice,goodType);
+                        buyerQuote.setOriginator(PurchasesDepartment.this);
+
+
+                        //TRADE
+                        PurchaseResult result = seller.shopHere(buyerQuote,sellerQuote);
+                        assert result.equals(PurchaseResult.SUCCESS) : "haven't coded what happens otherwise";
+
+                        //record info
+                        budgetSpent += result.getPriceTrade(); lastClosingPrice = result.getPriceTrade(); //spent!
+                        getFirm().logEvent(this, MarketEvents.BOUGHT, getFirm().getModel().getCurrentSimulationTimeInMillis(), "price: " + finalPrice);
+                        status = PurchasesDepartmentStatus.IDLE; //you are done!
+                        supplierSearch.reactToSuccess(seller,PurchaseResult.SUCCESS);
+
+
+                        if(queuedBuy) //if we need to buy another good, do it!
+                        {
+                            queuedBuy = false; //reset the queue
+
+                            buy(goodType,market);
+                        }
                     }
-                });
-            }
+                    else{   //we didn't make it!
+                        supplierSearch.reactToFailure(seller,PurchaseResult.PRICE_REJECTED);
+                        shop(); //call shop again soon!
 
-        }
+                    }
+
+                }
+
+            }
+        });
+
+
 
     }
 
@@ -500,36 +534,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
         if(market.getBuyerRole() == ActionsAllowed.QUOTE)
         {
-            status = PurchasesDepartmentStatus.PLACING_QUOTE; //we are going to be placing a quote!
-
-
-            Quote q = market.submitBuyQuote(firm,maxPrice(type,market),this); //submit the quote!
-
-            if(q.getPriceQuoted() == -1) //if the quote is null
-            {
-                assert q.getAgent() == null; //make sure we got back the right quote
-                //if we are here, it means that trade has been called, which has called react to filled quote and notified the inventory which probably called the inventory control.
-                //by now all that is past, we have a new good in inventory and we might have been ordered to buy again. If so, do it now.
-                if(queuedBuy)
-                { //if inventory control asked us to buy another good in the mean-time
-                    queuedBuy = false;     //empty the queue
-                    status = PurchasesDepartmentStatus.IDLE; //temporarily set yourself as idle
-                    buy(goodType,market); //call another buy.
-                }
-                else{
-                    status = PurchasesDepartmentStatus.IDLE; //if there is nothing to buy, stay idle
-                }
-
-            }
-            else
-            {
-                assert q.getAgent() == firm; //make sure we got back the right quote
-                assert q.getPriceQuoted() >= 0; //make sure it's positive!
-                //we'll have to store it and wait
-                quotePlaced = q;
-                status = PurchasesDepartmentStatus.WAITING; //set your status to waiting
-
-            }
+            placeQuote(type, market);
 
 
 
@@ -540,6 +545,57 @@ public class PurchasesDepartment implements Deactivatable, Department {
             shop(); //shop around if you can't use the order book
         }
 
+
+    }
+
+    /**
+     * Place quote through the phase scheduler at the nearest/current TRADE phase
+     * @param type the type of good we are selling
+     * @param market the market to trade into
+     */
+    private void placeQuote(final GoodType type, final Market market) {
+        model.scheduleSoon(ActionOrder.TRADE, new Steppable() {
+            @Override
+            public void step(SimState state) {
+                if(status != PurchasesDepartmentStatus.IDLE) //if something came up while we were waiting, don't buy
+                {
+                    queuedBuy = true;
+                    return;
+                }
+
+                status = PurchasesDepartmentStatus.PLACING_QUOTE; //we are going to be placing a quote!
+
+
+                Quote q = market.submitBuyQuote(firm,maxPrice(type,market),PurchasesDepartment.this); //submit the quote!
+
+                if(q.getPriceQuoted() == -1) //if the quote is null
+                {
+                    assert q.getAgent() == null; //make sure we got back the right quote
+                    //if we are here, it means that trade has been called, which has called react to filled quote and notified the inventory which probably called the inventory control.
+                    //by now all that is past, we have a new good in inventory and we might have been ordered to buy again. If so, do it now.
+                    if(queuedBuy)
+                    { //if inventory control asked us to buy another good in the mean-time
+                        queuedBuy = false;     //empty the queue
+                        status = PurchasesDepartmentStatus.IDLE; //temporarily set yourself as idle
+                        buy(goodType,market); //call another buy.
+                    }
+                    else{
+                        status = PurchasesDepartmentStatus.IDLE; //if there is nothing to buy, stay idle
+                    }
+
+                }
+                else
+                {
+                    assert q.getAgent() == firm; //make sure we got back the right quote
+                    assert q.getPriceQuoted() >= 0; //make sure it's positive!
+                    //we'll have to store it and wait
+                    quotePlaced = q;
+                    status = PurchasesDepartmentStatus.WAITING; //set your status to waiting
+
+                }
+
+            }
+        });
 
     }
 
@@ -633,17 +689,26 @@ public class PurchasesDepartment implements Deactivatable, Department {
     public void updateOfferPrices(){
         if(quotePlaced != null) //if you already have a quote
         {
-
-
             //call straight the buy algorithm
-            boolean queued =  cancelQuote();
-            buy(); //try again!
-            if(!queuedBuy && queued){
-                //there was something in queue we should buy
-                if( status != PurchasesDepartmentStatus.IDLE)
-                    queuedBuy = true;     //empty the queue (unlesss you are waiting in which case you already have it full)
+            final boolean queued =  cancelQuote();
+            //TODO is ASAP a good thing?
+            //schedule ASAP
+            model.scheduleASAP(new Steppable() {
+                @Override
+                public void step(SimState state) {
 
-            }
+                    buy(); //try again!
+                    if(!queuedBuy && queued){
+                        //there was something in queue we should buy
+                        if( status != PurchasesDepartmentStatus.IDLE)
+                            queuedBuy = true;     //empty the queue (unlesss you are waiting in which case you already have it full)
+
+                    }
+                }
+            });
+
+
+
         }
 
 

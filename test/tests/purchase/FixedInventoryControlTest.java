@@ -193,6 +193,7 @@ public class FixedInventoryControlTest {
             Assert.assertEquals(f.hasHowMany(GoodType.GENERIC),0);
             //now force the first buy, hopefully it'll cascade up until the firm has inventory 6
             dept.buy(); //goooooooooo
+            dept.getFirm().getModel().getPhaseScheduler().step(dept.getFirm().getModel());
             Assert.assertEquals(dept.toString(),f.hasHowMany(GoodType.GENERIC),6);
 
             //when the dust settles...

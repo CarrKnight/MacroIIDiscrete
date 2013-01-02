@@ -5,23 +5,21 @@ import agents.firm.Firm;
 import agents.firm.ProfitReport;
 import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.HumanResources;
+import agents.firm.production.Blueprint;
+import agents.firm.production.Plant;
+import agents.firm.production.control.ProfitCheckPlantControl;
+import agents.firm.production.control.TargetAndMaximizePlantControl;
+import agents.firm.production.control.targeter.PIDTargeter;
+import agents.firm.production.technology.IRSExponentialMachinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.sales.SalesDepartment;
 import financial.Market;
 import financial.OrderBookBlindMarket;
 import goods.GoodType;
-import goods.production.Blueprint;
-import goods.production.Plant;
-import goods.production.control.ProfitCheckPlantControl;
-import goods.production.control.TargetAndMaximizePlantControl;
-import goods.production.control.targeter.PIDTargeter;
-import goods.production.technology.IRSExponentialMachinery;
 import junit.framework.Assert;
 import model.MacroII;
 import model.utilities.NonDrawable;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import sim.engine.Schedule;
 import sim.engine.Steppable;
 
@@ -30,7 +28,6 @@ import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 /**
@@ -92,43 +89,6 @@ public class ProfitCheckPlantControlTest {
 
 
 
-        //capture all "scheduleOnceIn"
-        when(model.schedule.scheduleOnceIn(any(Double.class), any(Steppable.class))).then(
-                new Answer<Object>() {
-                    @Override
-                    public Object answer(InvocationOnMock invocation) throws Throwable {
-                        steppableList.add((Steppable) invocation.getArguments()[1]);
-                        return true;
-                    }
-
-                }
-        );
-        //capture all "scheduleOnceIn"
-        when(model.schedule.scheduleOnceIn(any(Double.class), any(Steppable.class),anyInt())).then(
-                new Answer<Object>() {
-                    @Override
-                    public Object answer(InvocationOnMock invocation) throws Throwable {
-                        steppableList.add((Steppable) invocation.getArguments()[1]);
-                        return true;
-                    }
-
-                }
-        );
-        //capture all scheduleOnce
-        when(model.schedule.scheduleOnce(any(Double.class), any(Steppable.class))).then(
-                new Answer<Object>() {
-                    @Override
-                    public Object answer(InvocationOnMock invocation) throws Throwable {
-                        steppableList.add((Steppable) invocation.getArguments()[1]);
-                        return true;
-                    }
-
-                }
-        );
-
-
-
-
         Market market = new OrderBookBlindMarket(GoodType.LABOR);
         assertEquals(p.maximumWorkersPossible(),100);
         HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000,firm,market,p,ProfitCheckPlantControl.class,null,null); //create!!!
@@ -142,13 +102,8 @@ public class ProfitCheckPlantControlTest {
             worker.start();
         }
         //make them search for job
-        ArrayList<Steppable> todaySteppables = new ArrayList<>(steppableList);
-        steppableList.clear();
-        for(Steppable s : todaySteppables)
-        {
-            s.step(model);
 
-        }
+        model.getPhaseScheduler().step(model);
 
         //there should be 200 asks
         assertEquals(200, market.getSellers().size());
@@ -162,7 +117,6 @@ public class ProfitCheckPlantControlTest {
         //start the human resources
         humanResources.start();
         //some stuff might have happened, but surely the control should have called "schedule in"
-        assertEquals(steppableList.size(),202);     //should be 2: both the profit check and the pid adjust
         assertTrue(control.toString(),!steppableList.contains(control));
 //        assertTrue(p.workerSize() > 0);
 
@@ -172,7 +126,7 @@ public class ProfitCheckPlantControlTest {
 
 
         //now "adjust" 100 times
-        for(int i=0; i < 200; i++)
+        for(int i=0; i < 2000; i++)
         {
 
             when(profits.getPlantProfits(p)).thenReturn(p.workerSize() * 2f);
@@ -185,8 +139,8 @@ public class ProfitCheckPlantControlTest {
 
 
             //notice that this is un-natural as profitStep occurs only once every 3 pid steps in reality
-            for(Steppable s : toStep)
-                s.step(model);
+            model.getPhaseScheduler().step(model);
+
 
             long newWage = humanResources.maxPrice(GoodType.LABOR,market);
             System.out.println("old wage:" + oldWage +" , new wage: " + newWage + " , worker size: " + p.workerSize() + ", old target: " + oldTarget + ", new target: " + control.getTarget());
@@ -244,39 +198,6 @@ public class ProfitCheckPlantControlTest {
 
 
 
-        //capture all "scheduleOnceIn"
-        when(model.schedule.scheduleOnceIn(any(Double.class), any(Steppable.class))).then(
-                new Answer<Object>() {
-                    @Override
-                    public Object answer(InvocationOnMock invocation) throws Throwable {
-                        steppableList.add((Steppable) invocation.getArguments()[1]);
-                        return true;
-                    }
-
-                }
-        );
-        //capture all "scheduleOnceIn"
-        when(model.schedule.scheduleOnceIn(any(Double.class), any(Steppable.class),anyInt())).then(
-                new Answer<Object>() {
-                    @Override
-                    public Object answer(InvocationOnMock invocation) throws Throwable {
-                        steppableList.add((Steppable) invocation.getArguments()[1]);
-                        return true;
-                    }
-
-                }
-        );
-        //capture all scheduleOnce
-        when(model.schedule.scheduleOnce(any(Double.class), any(Steppable.class))).then(
-                new Answer<Object>() {
-                    @Override
-                    public Object answer(InvocationOnMock invocation) throws Throwable {
-                        steppableList.add((Steppable) invocation.getArguments()[1]);
-                        return true;
-                    }
-
-                }
-        );
 
 
 
@@ -306,11 +227,8 @@ public class ProfitCheckPlantControlTest {
         //make them search for job
         ArrayList<Steppable> todaySteppables = new ArrayList<>(steppableList);
         steppableList.clear();
-        for(Steppable s : todaySteppables)
-        {
-            s.step(model);
+        model.getPhaseScheduler().step(model);
 
-        }
         //there should be 200 asks
    //     System.out.println("what?");
 
@@ -326,16 +244,15 @@ public class ProfitCheckPlantControlTest {
         //start the human resources
         humanResources.start();
         //some stuff might have happened, but surely the control should have called "schedule in"
-        assertEquals(steppableList.size(),202);     //should be 2: both the profit check and the pid adjust
         assertTrue(control.toString(),!steppableList.contains(control));
-        assertTrue(p.workerSize() > 0);
+     //   assertTrue(p.workerSize() > 0);
 
         ProfitReport profits = mock(ProfitReport.class);
         firm.setProfitReport(profits);
 
 
         //now "adjust" 100 times
-        for(int i=0; i < 1000; i++)
+        for(int i=0; i < 2000; i++)
         {
             //always profitable
             when(profits.getPlantProfits(p)).thenReturn(p.workerSize() * 2f);
@@ -346,11 +263,10 @@ public class ProfitCheckPlantControlTest {
             int oldTarget = control.getTarget();
             long oldWage = humanResources.maxPrice(GoodType.LABOR,market);
 
-            firm.weekEnd(1);
 
             //notice that this is un-natural as profitStep occurs only once every 3 pid steps in reality
-            for(Steppable s : toStep)
-                s.step(model);
+            model.getPhaseScheduler().step(model);
+
 
             long newWage = humanResources.maxPrice(GoodType.LABOR,market);
             System.out.println("old wage:" + oldWage +" , new wage: " + newWage + " , worker size: " + p.workerSize() + ", old target: " + oldTarget + ", new target: " +

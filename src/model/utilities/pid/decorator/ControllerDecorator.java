@@ -49,7 +49,7 @@ public abstract class ControllerDecorator implements Controller
      * @return the sampling speed
      */
     @Override
-    public float getSpeed() {
+    public int getSpeed() {
         return toDecorate.getSpeed();
     }
 
@@ -58,7 +58,7 @@ public abstract class ControllerDecorator implements Controller
      * @param samplingSpeed the sampling speed
      */
     @Override
-    public void setSpeed(float samplingSpeed) {
+    public void setSpeed(int samplingSpeed) {
         toDecorate.setSpeed(samplingSpeed);
     }
 

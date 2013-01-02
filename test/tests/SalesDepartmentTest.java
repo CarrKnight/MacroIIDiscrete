@@ -44,10 +44,12 @@ import java.util.Set;
 public class SalesDepartmentTest {
 
     SalesDepartment dept;
+    MacroII model;
+
 
     @Before
     public void simpleScenarioSetup(){
-        MacroII model = new MacroII(0);
+        model = new MacroII(0);
         final Market market = new OrderBookMarket(GoodType.GENERIC);
         Firm firm = new Firm(model);
         dept = SalesDepartment.incompleteSalesDepartment(firm,market,new SimpleBuyerSearch(market,firm),new SimpleSellerSearch(market,firm));
@@ -144,6 +146,9 @@ public class SalesDepartmentTest {
             dept.getFirm().receive(good,null);
             dept.sellThis(good); //sell this, now!
         }
+        model.getPhaseScheduler().step(model);
+
+
         //when the dust settles...
         Assert.assertEquals(20l,dept.getMarket().getBestBuyPrice()); //all the others should have been taken
         Assert.assertEquals(30l,dept.getMarket().getBestSellPrice());
@@ -235,6 +240,8 @@ public class SalesDepartmentTest {
         //force it in the toSell list
         dept.setAskPricingStrategy(new PriceFollower(dept));
         dept.sellThis(toQuote);
+        model.getPhaseScheduler().step(model);
+
 
 
         Field field = SalesDepartment.class.getDeclaredField("salesResults");
@@ -268,7 +275,7 @@ public class SalesDepartmentTest {
             Good good = new Good(GoodType.GENERIC,dept.getFirm(),30);
             dept.getFirm().receive(good,null);
             toSell.add(good);
-            dept.peddle(good); //sell this, now!
+            dept.peddleNow(good); //sell this, now!
         }
 
 
@@ -354,10 +361,14 @@ public class SalesDepartmentTest {
         dept.getFirm().receive(g,null);
 
         dept.sellThis(g);
+        model.getPhaseScheduler().step(model);
+
         //should lay unsold
         Assert.assertEquals(dept.getMarket().getBestSellPrice(),200l);
         dept.setAskPricingStrategy(new UndercuttingAskPricing(dept));
         dept.updateQuotes();
+        model.getPhaseScheduler().step(model);
+
         Assert.assertEquals(dept.getMarket().getBestSellPrice(),240l);
 
 

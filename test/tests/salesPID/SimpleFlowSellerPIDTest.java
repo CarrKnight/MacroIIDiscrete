@@ -11,6 +11,7 @@ import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import org.junit.Test;
 import tests.DummyBuyer;
 
@@ -83,7 +84,8 @@ public class SimpleFlowSellerPIDTest {
                 dept.sellThis(good);
             }
 
-            strategy.step(model);
+            model.scheduleSoon(ActionOrder.THINK,strategy);
+            model.getPhaseScheduler().step(model);
             System.out.println("seller price :" + strategy.getTargetPrice());
             for(Quote q : quotes)
                 try{
@@ -147,7 +149,8 @@ public class SimpleFlowSellerPIDTest {
                 dept.sellThis(good);
             }
 
-            strategy.step(model);
+            model.scheduleSoon(ActionOrder.THINK,strategy);
+            model.getPhaseScheduler().step(model);
             System.out.println("seller price :" + strategy.getTargetPrice());
             for(Quote q : quotes)
                 try{
@@ -227,8 +230,10 @@ public class SimpleFlowSellerPIDTest {
                 dept2.sellThis(good);
             }
 
-            strategy1.step(model);
-            strategy2.step(model);
+            model.scheduleSoon(ActionOrder.THINK,strategy1);
+            model.scheduleSoon(ActionOrder.THINK,strategy2);
+
+            model.getPhaseScheduler().step(model);
 
             System.out.println("At time: " +j +" seller1 price :" + strategy1.getTargetPrice() + " ---  seller2 price :" + strategy2.getTargetPrice());
             if(j<99)
@@ -302,7 +307,8 @@ public class SimpleFlowSellerPIDTest {
                 dept.sellThis(good);
             }
 
-            strategy.step(model);
+            model.scheduleSoon(ActionOrder.THINK,strategy);
+            model.getPhaseScheduler().step(model);
 
             System.out.println("seller price :" + price);
             for(Quote q : quotes)

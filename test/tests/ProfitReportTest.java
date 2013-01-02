@@ -5,8 +5,8 @@ import agents.firm.ProfitReport;
 import agents.firm.personell.HumanResources;
 import agents.firm.sales.SalesDepartment;
 import goods.GoodType;
-import goods.production.Blueprint;
-import goods.production.Plant;
+import agents.firm.production.Blueprint;
+import agents.firm.production.Plant;
 import model.MacroII;
 import org.junit.Test;
 

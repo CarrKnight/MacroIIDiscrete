@@ -6,6 +6,7 @@ import agents.firm.cost.InputCostStrategy;
 import agents.firm.cost.PlantCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.purchases.PurchasesDepartment;
+import model.utilities.ActionOrder;
 import model.utilities.pid.PIDController;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
@@ -18,14 +19,14 @@ import financial.utilities.Quote;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
 import goods.GoodType;
-import goods.production.Blueprint;
-import goods.production.Plant;
-import goods.production.PlantListener;
-import goods.production.control.AbstractPlantControl;
-import goods.production.control.DiscreteSlowPlantControl;
-import goods.production.control.TargetAndMaximizePlantControl;
-import goods.production.control.maximizer.HillClimberMaximizer;
-import goods.production.technology.LinearConstantMachinery;
+import agents.firm.production.Blueprint;
+import agents.firm.production.Plant;
+import agents.firm.production.PlantListener;
+import agents.firm.production.control.AbstractPlantControl;
+import agents.firm.production.control.DiscreteSlowPlantControl;
+import agents.firm.production.control.TargetAndMaximizePlantControl;
+import agents.firm.production.control.maximizer.HillClimberMaximizer;
+import agents.firm.production.technology.LinearConstantMachinery;
 import junit.framework.Assert;
 import model.MacroII;
 import org.junit.Test;
@@ -254,34 +255,23 @@ public class DiscreteSlowPlantControlTest {
      //   firm.registerHumanResources(plant, hr);
         hr.start();
 
-
-        model.schedule.scheduleRepeating(new Steppable() {
+        model.scheduleSoon(ActionOrder.DAWN, new Steppable() {
             @Override
-            public void step(SimState simState) {
-
-                firm.weekEnd(model.schedule.getTime());         //manual weekend, might want to change this later
-            //    System.out.println("weekend!");
-
-
-
-            }
-        },1,model.getWeekLength());
-
-        model.schedule.scheduleRepeating(new Steppable() {
-            @Override
-            public void step(SimState simState) {
+            public void step(SimState state) {
                 final List<Quote> quotes =new LinkedList<>();
                 fillMarket(market, quotes, model);
-                simState.schedule.scheduleOnceIn(model.getWeekLength()/10f,
-                        new Steppable() {
-                            @Override
-                            public void step(SimState simState) {
-                                emptyMarket(market,quotes);
-                            }
-                        });
+                model.scheduleTomorrow(ActionOrder.DAWN,this);
+
+                model.scheduleSoon(ActionOrder.CLEANUP,new Steppable() {
+                    @Override
+                    public void step(SimState state) {
+                        emptyMarket(market,quotes);
+                    }
+                });
 
             }
-        },2,model.getWeekLength()/10f);
+        });
+
 
         //add the four workers
         for(int i=0; i<4; i++)
@@ -298,7 +288,8 @@ public class DiscreteSlowPlantControlTest {
         field.setAccessible(true);
         PIDController pid = (PIDController) field.get(strategy);
 
-
+        model.start();
+        model.getAgents().clear(); model.getAgents().add(firm);
         do{
             if (!model.schedule.step(model)) break;
    //             System.out.println("the time is " + model.schedule.getTime() +

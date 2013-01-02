@@ -18,6 +18,7 @@ import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -76,6 +77,8 @@ public class SalesDepartment implements Department {
      * The market the sales department deals in
      */
     private Market market;
+
+    private final MacroII model;
 
 
 
@@ -165,11 +168,24 @@ public class SalesDepartment implements Department {
      * @param market The market the sales department deals in
      */
     private SalesDepartment(@Nonnull Firm firm,@Nonnull Market market ) {
-        this(firm,market,null,null);
+        this(firm,market,null,null,firm.getModel());
 
 
 
     }
+
+    /**
+     * This is the constructor for the template sales department.  It also registers the firm as seller
+     * @param firm The firm where the sales department belongs
+     * @param market The market the sales department deals in
+     */
+    private SalesDepartment(@Nonnull Firm firm,@Nonnull Market market,@Nonnull MacroII model ) {
+        this(firm,market,null,null,model);
+
+
+
+    }
+
 
     /**
      * This is the constructor for the template sales department. It also registers the firm as seller
@@ -179,6 +195,21 @@ public class SalesDepartment implements Department {
      * @param sellerSearchAlgorithm the seller search department
      */
     private SalesDepartment(Firm firm, Market market, BuyerSearchAlgorithm buyerSearchAlgorithm, SellerSearchAlgorithm sellerSearchAlgorithm ) {
+        this(firm, market, buyerSearchAlgorithm, sellerSearchAlgorithm,firm.getModel());
+
+
+    }
+
+
+    /**
+     * This is the constructor for the template sales department. It also registers the firm as seller
+     * @param firm The firm where the sales department belongs
+     * @param market The market the sales department deals in
+     * @param buyerSearchAlgorithm the buyer search department
+     * @param sellerSearchAlgorithm the seller search department
+     */
+    private SalesDepartment(Firm firm, Market market, BuyerSearchAlgorithm buyerSearchAlgorithm, SellerSearchAlgorithm sellerSearchAlgorithm,
+                            @Nonnull MacroII model ) {
         this.firm = firm;
         this.market = market;
         market.registerSeller(firm); //register!
@@ -195,6 +226,8 @@ public class SalesDepartment implements Department {
         grossMargin = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
         this.buyerSearchAlgorithm = buyerSearchAlgorithm;
         this.sellerSearchAlgorithm = sellerSearchAlgorithm;
+
+        this.model = model;
 
 
     }
@@ -404,58 +437,93 @@ public class SalesDepartment implements Department {
 
         if(market.getSellerRole() == ActionsAllowed.QUOTE) //if we are supposed to quote
         {
-            long price = price(g);
-            getFirm().logEvent(this,MarketEvents.SUBMIT_SELL_QUOTE,getFirm().getModel().getCurrentSimulationTimeInMillis(),
-                    "price:" + price);
-            Quote q = market.submitSellQuote(firm,price,g,this); //put a quote into the market
-            if(q.getPriceQuoted() != -1) //if the quote is not null
-            {
-                //if the quote is not null, we quoted but not sold
-                assert q.getAgent() == firm; //make sure we got back the right quote
-                goodsQuotedOnTheMarket.put(g,q); //record the quote!
-                salesResults.put(g, SaleResult.quoted());
-
-                if(shouldIPeddle(q))    //do you want to try and peddle too?
-                    peddle(q.getGood()); //then peddle!
-
-            }
-            else{
-                //if we are here, the quote returned was null which means that we already sold the good!
-                assert !firm.has(g); //shouldn't be ours anymore!
-                assert q.getAgent() == null; //should be null
-
-                //now the accounting should have been already taken care of by reactToFilledAskedQuote() method! Make sure:
-                assert salesResults.get(g).getResult() == SaleResult.Result.SOLD;
-                assert lastClosingPrice == salesResults.get(g).getPriceSold(); //check that the price recorded is correct
-            }
+            placeQuote(g);
 
         }
         else  if(canPeddle)
         {
-            //if we are here it means that the market didn't allow us to quote; this means that we should peddle
-            boolean success =peddle(g);
-            if(success){               //did we manage to sell?
-                assert !firm.has(g);
-                assert salesResults.get(g).getResult() == SaleResult.Result.SOLD;
+            peddle(g);
 
-                //done!
-
-            }
-            else{
-                //we didn't manage to sell!
-                assert firm.has(g);
-                assert salesResults.get(g).getResult() == SaleResult.Result.UNSOLD;
-                //shall we try again?
-                double tryAgainIn = tryAgainNextTime(g);
-                if(tryAgainIn > 0)   //if we do want to try again
-                    firm.getModel().schedule.scheduleOnceIn(tryAgainIn,new Steppable() {
-                        @Override
-                        public void step(SimState simState) {     //schedule to peddle again!
-                            peddle(g);
-                        }
-                    });
-            }
         }
+
+    }
+
+    /**
+     * Schedule yourself to peddle when you can
+     * @param g the good to sell
+     */
+    private void peddle(final Good g) {
+        model.scheduleSoon(ActionOrder.TRADE,new Steppable() {
+            @Override
+            public void step(SimState state) {
+                //if we are here it means that the market didn't allow us to quote; this means that we should peddle
+                boolean success = peddleNow(g);
+                if(success){               //did we manage to sell?
+                    assert !firm.has(g);
+                    assert salesResults.get(g).getResult() == SaleResult.Result.SOLD;
+
+                    //done!
+
+                }
+                else{
+                    //we didn't manage to sell!
+                    assert firm.has(g);
+                    assert salesResults.get(g).getResult() == SaleResult.Result.UNSOLD;
+                    //shall we try again?
+                    double tryAgainIn = tryAgainNextTime(g);
+                    if(tryAgainIn > 0)   //if we do want to try again
+                        firm.getModel().schedule.scheduleOnceIn(tryAgainIn,new Steppable() {
+                            @Override
+                            public void step(SimState simState) {     //schedule to peddle again!
+                                peddleNow(g);
+                            }
+                        });
+                }
+            }
+        });
+
+    }
+
+    /**
+     * Place an ask in the order book
+     * @param g the good to quote
+     */
+    private void placeQuote(final Good g)
+    {
+
+
+        model.scheduleSoon(ActionOrder.TRADE,new Steppable() {
+            @Override
+            public void step(SimState state) {
+
+                long price = price(g);
+                getFirm().logEvent(this, MarketEvents.SUBMIT_SELL_QUOTE,getFirm().getModel().getCurrentSimulationTimeInMillis(),
+                        "price:" + price);
+                Quote q = market.submitSellQuote(firm,price,g,SalesDepartment.this); //put a quote into the market
+                if(q.getPriceQuoted() != -1) //if the quote is not null
+                {
+                    //if the quote is not null, we quoted but not sold
+                    assert q.getAgent() == firm; //make sure we got back the right quote
+                    goodsQuotedOnTheMarket.put(g,q); //record the quote!
+                    salesResults.put(g, SaleResult.quoted());
+
+                    if(shouldIPeddle(q))    //do you want to try and peddle too?
+                        peddleNow(q.getGood()); //then peddle!
+
+                }
+                else{
+                    //if we are here, the quote returned was null which means that we already sold the good!
+                    assert !firm.has(g); //shouldn't be ours anymore!
+                    assert q.getAgent() == null; //should be null
+
+                    //now the accounting should have been already taken care of by reactToFilledAskedQuote() method! Make sure:
+                    assert salesResults.get(g).getResult() == SaleResult.Result.SOLD;
+                    assert lastClosingPrice == salesResults.get(g).getPriceSold(); //check that the price recorded is correct
+                }
+            }
+        });
+
+
 
     }
 
@@ -604,7 +672,7 @@ public class SalesDepartment implements Department {
      * @param g the good to sell
      * @return true if the peddling was successful
      */
-    public boolean peddle(Good g)
+    public boolean peddleNow(Good g)
     {
         assert firm.has(g); //should be owned by us, now
         assert toSell.contains(g); //should be owned by us, now
@@ -722,7 +790,7 @@ public class SalesDepartment implements Department {
             else
             {
                 //it's unsold
-                assert saleRecord.getValue().getResult() != SaleResult.Result.BEING_UPDATED; //being updated should be a temporary state, shouldn't be still here by the end of the week
+//                assert saleRecord.getValue().getResult() != SaleResult.Result.BEING_UPDATED; //being updated should be a temporary state, shouldn't be still here by the end of the week
                 assert firm.has(saleRecord.getKey()); //we still own it!!!
                 assert toSell.contains(saleRecord.getKey()); //we still need to sell it
 
@@ -938,28 +1006,37 @@ public class SalesDepartment implements Department {
      */
     public void updateQuotes()
     {
-        //get all the quotes to remove
-        Iterable<Quote> goodsToRequote = new LinkedList<>(goodsQuotedOnTheMarket.values());
-        //forget the old quotes
-        goodsQuotedOnTheMarket.clear();
-        for(Quote q: goodsToRequote)
-        {
-            market.removeSellQuote(q); //remove the quote
+        //todo ASAP, is it a good idea?
 
-        }
+        model.scheduleASAP(new Steppable() {
+            @Override
+            public void step(SimState state) {
+                //get all the quotes to remove
+                Iterable<Quote> goodsToRequote = new LinkedList<>(goodsQuotedOnTheMarket.values());
+                //forget the old quotes
+                goodsQuotedOnTheMarket.clear();
+                for(Quote q: goodsToRequote)
+                {
+                    market.removeSellQuote(q); //remove the quote
 
-        //go through all the old quotes
-        for(Quote q : goodsToRequote){
+                }
+
+                //go through all the old quotes
+                for(Quote q : goodsToRequote){
 
 
-            SaleResult oldResult = salesResults.put(q.getGood(), SaleResult.updating()); //signal to the results map that the good is being updated
-            assert oldResult.getResult() == SaleResult.Result.QUOTED || oldResult.getResult() == SaleResult.Result.UNSOLD; //previously you should have been classified as unsold or quoted
-            sellThis(q.getGood());//sell it again
+                    SaleResult oldResult = salesResults.put(q.getGood(), SaleResult.updating()); //signal to the results map that the good is being updated
+                    assert oldResult.getResult() == SaleResult.Result.QUOTED || oldResult.getResult() == SaleResult.Result.UNSOLD; //previously you should have been classified as unsold or quoted
+                    sellThis(q.getGood());//sell it again
 
 
-        }
+                }
 
-        //done!
+                //done!
+            }
+        });
+
+
 
 
 

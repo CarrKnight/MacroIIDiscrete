@@ -49,7 +49,7 @@ public abstract class EconomicAgent implements Agent, HasInventory{
     /**
      * link to the old stuff
      */
-    final private MacroII model;
+    final protected MacroII model;
 
 
 

@@ -11,6 +11,7 @@ import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -169,7 +170,7 @@ public class Person extends EconomicAgent {
         if(newWage<minimumWageRequired) {
             aboutToQuit=true;
 
-            getModel().schedule.scheduleOnceIn(1 + getRandom().nextGaussian()*.03, new Steppable() {
+            getModel().scheduleASAP(new Steppable() {
                 @Override
                 public void step(SimState simState) {
                     if(employer == null){
@@ -177,7 +178,7 @@ public class Person extends EconomicAgent {
                         return;
                     }
 
-                  //  System.out.println(wage + " **** " + getMinimumWageRequired());
+                    //  System.out.println(wage + " **** " + getMinimumWageRequired());
                     //If the wage is still low I QUIT!
                     if(wage < minimumWageRequired )
                         quitWork();
@@ -201,7 +202,7 @@ public class Person extends EconomicAgent {
 
         employer.workerQuit(Person.this);
         employer = null;  wage = -1;
-        lookForWork();
+        lookForWorkSoon();
 
     }
 
@@ -230,43 +231,48 @@ public class Person extends EconomicAgent {
         wage = -1;
 
         //look for work soon.
-        getModel().schedule.scheduleOnceIn(1 + getRandom().nextGaussian()*.03, new Steppable() {
-            @Override
-            public void step(SimState simState) {
-                assert Person.this.employer == null;
-                assert wage == -1;
 
-                lookForWork();
+        assert Person.this.employer == null;
+        assert wage == -1;
 
-            }
-        });
+        lookForWorkSoon();
+
+
+
     }
 
 
     /**
      * If we do have a labor market and we do want to work this will submit a quote or look for a job
      */
-    public void lookForWork(){
+    public void lookForWorkSoon(){
 
-        if(!isActive())  //if you have been turned off, don't bother
-            return;
+        model.scheduleSoon(ActionOrder.TRADE,new Steppable() {
+            @Override
+            public void step(SimState state) {
+                if(!isActive())  //if you have been turned off, don't bother
+                    return;
 
-        //you can't have a job to look for a job, use lookForBetterOffers()
-        assert employer == null;
-        assert wage == -1;
+                //you can't have a job to look for a job, use lookForBetterOffersNow()
+                assert employer == null;
+                assert wage == -1;
 
 
-        if(laborMarket == null)
-            return; //no luck
-        if(laborMarket.getSellerRole() == ActionsAllowed.QUOTE)
-        {
-            //if we can quote: great!
-            laborMarket.submitSellQuote(this, minimumWageRequired, new Good(GoodType.LABOR,this,minimumWageRequired));
-        }
-        else{
-            //if we can't quote we have to peddle
-            throw new RuntimeException("Ernesto lazily didn't implement peddling.");
-        }
+                if(laborMarket == null)
+                    return; //no luck
+                if(laborMarket.getSellerRole() == ActionsAllowed.QUOTE)
+                {
+                    //if we can quote: great!
+                    laborMarket.submitSellQuote(Person.this,
+                            minimumWageRequired, new Good(GoodType.LABOR,Person.this,minimumWageRequired));
+                }
+                else{
+                    //if we can't quote we have to peddle
+                    throw new RuntimeException("Ernesto lazily didn't implement peddling.");
+                }            }
+        });
+
+
 
 
     }
@@ -274,7 +280,7 @@ public class Person extends EconomicAgent {
     /**
      * If there is a labor market and I am employed I can look for better jobs and leave my current one
      */
-    public void lookForBetterOffers()
+    public void lookForBetterOffersNow()
     {
         //if you have no employer, you got no point in being here
         try{
@@ -321,10 +327,10 @@ public class Person extends EconomicAgent {
         finally {
             if(isActive())
                 //no matter what, keep trying
-                getModel().schedule.scheduleOnceIn( Math.max(50f + getRandom().nextGaussian() * 10f,1), new Steppable() {
+                getModel().scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
                     @Override
                     public void step(SimState simState) {
-                        Person.this.lookForBetterOffers();
+                        Person.this.lookForBetterOffersNow();
 
                     }
                 });
@@ -366,10 +372,10 @@ public class Person extends EconomicAgent {
             {
 
                 //schedule yourself for a look
-                getModel().schedule.scheduleOnceIn( Math.max(50f + getRandom().nextGaussian() * 10f,1), new Steppable() {
+                getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
                     @Override
                     public void step(SimState simState) {
-                        Person.this.lookForBetterOffers();
+                        Person.this.lookForBetterOffersNow();
 
                     }
                 });
@@ -389,21 +395,18 @@ public class Person extends EconomicAgent {
     public void start(){
         //you have been activated!
         setActive(true);
-        //start looking for work soon.
-        getModel().schedule.scheduleOnceIn(Math.max(5f + getModel().random.nextGaussian(),0.1f),new Steppable() {
-            @Override
-            public void step(SimState simState) {
-                //look for work
-                lookForWork();
 
-            }
-        }  );
+        //look for work
+        lookForWorkSoon();
+
+
+
 
         //if needed, start your routine of looking for better job (greedy)
-        getModel().schedule.scheduleOnceIn( Math.max(50f + getRandom().nextGaussian() * 10f,1), new Steppable() {
+        getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
             @Override
             public void step(SimState simState) {
-                Person.this.lookForBetterOffers();
+                Person.this.lookForBetterOffersNow();
 
             }
         });

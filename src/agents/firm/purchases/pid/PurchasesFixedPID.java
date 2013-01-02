@@ -9,6 +9,7 @@ import financial.MarketEvents;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import model.utilities.pid.*;
 import model.utilities.pid.decorator.ExponentialFilterInputDecorator;
 import model.utilities.pid.decorator.ExponentialFilterOutputDecorator;
@@ -135,7 +136,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
         ControllerInput input = getControllerInput(getTarget());
 
 
-        controller.adjust(input, isActive(), simState, this);
+        controller.adjust(input, isActive(), (MacroII)simState, this, ActionOrder.THINK);
         long newprice = maxPrice(getGoodTypeToControl());
         //log the change in policy
         getPurchasesDepartment().getFirm().logEvent(getPurchasesDepartment(),
@@ -213,9 +214,9 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
     @Override
     public void start() {
 
-        controller.adjust(getControllerInput(getTarget()),
-                isActive(),
-                getPurchasesDepartment().getFirm().getModel(), this);
+        getPurchasesDepartment().getFirm().getModel().scheduleSoon(ActionOrder.THINK,
+                this);
+
         super.start();
     }
 
@@ -231,7 +232,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
     }
 
 
-    public void setSpeed(float speed) {
+    public void setSpeed(int speed) {
         rootController.setSpeed(speed);
     }
 

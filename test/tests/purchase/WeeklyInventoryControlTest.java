@@ -2,6 +2,10 @@ package tests.purchase;
 
 import agents.Person;
 import agents.firm.Firm;
+import agents.firm.production.Blueprint;
+import agents.firm.production.Plant;
+import agents.firm.production.technology.CRSExponentialMachinery;
+import agents.firm.production.technology.Machinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.inventoryControl.Level;
 import agents.firm.purchases.inventoryControl.WeeklyInventoryControl;
@@ -9,10 +13,6 @@ import financial.Market;
 import financial.OrderBookMarket;
 import goods.Good;
 import goods.GoodType;
-import goods.production.Blueprint;
-import goods.production.Plant;
-import goods.production.technology.CRSExponentialMachinery;
-import goods.production.technology.Machinery;
 import junit.framework.Assert;
 import model.MacroII;
 import org.junit.Before;
@@ -21,8 +21,7 @@ import org.junit.Test;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * <h4>Description</h4>
@@ -160,6 +159,7 @@ public class WeeklyInventoryControlTest {
     public void InventoryRating()
     {
         Market.TESTING_MODE = true;
+        model.setWeekLength(100);
 
 
         Firm f = new Firm(model);

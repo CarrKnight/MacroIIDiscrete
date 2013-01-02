@@ -11,7 +11,10 @@ import goods.Good;
 import goods.GoodType;
 import junit.framework.Assert;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import org.junit.Test;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 import tests.DummySeller;
 
 import java.lang.reflect.Field;
@@ -72,14 +75,14 @@ public class MemoryPurchasesPredictorTest {
      * This is just a copy of the purchases fixed pid test, I am going to repeat it in many predictor tests so it might just as well be as a static method in order not to paste it over and over again
      * @return
      */
-    public static PurchasesDepartment fixedPIDTest(Market market){
+    public static PurchasesDepartment fixedPIDTest(final Market market){
         /**********************************************
          * THIS IS A COPY OF PURCHASES FIXED PID TEST
          *********************************************/
         Market.TESTING_MODE = true;
 
-        MacroII model = new MacroII(1l);
-        Firm f = new Firm(model);
+        final MacroII model = new MacroII(1l);
+        final Firm f = new Firm(model);
         f.earn(10000000);
         model.start();
 
@@ -104,43 +107,51 @@ public class MemoryPurchasesPredictorTest {
         for(int  j =0; j<500; j++) //for 50 stinking turns
         {
 
-            //create 10 sellers
-            for(int i=0; i<10; i++)
-            {
-                DummySeller seller = new DummySeller(model,i*10 + 10);
-                market.registerSeller(seller);
-                Good good = new Good(GoodType.GENERIC,seller,i*10+10);
-                seller.receive(good,null);
-                Quote q = market.submitSellQuote(seller,seller.saleQuote,good);
-                quotes.add(q);
-            }
+            model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
+                @Override
+                public void step(SimState state) {
+//create 10 sellers
+                    for(int i=0; i<10; i++)
+                    {
+                        DummySeller seller = new DummySeller(model,i*10 + 10);
+                        market.registerSeller(seller);
+                        Good good = new Good(GoodType.GENERIC,seller,i*10+10);
+                        seller.receive(good,null);
+                        Quote q = market.submitSellQuote(seller,seller.saleQuote,good);
+                        quotes.add(q);
+                    }
 
-            System.out.println(f.hasHowMany(GoodType.GENERIC) + " ---> " + control.maxPrice(GoodType.GENERIC)  );
-            model.schedule.step(model);
+                }});
 
+            model.scheduleSoon(ActionOrder.CLEANUP,new Steppable() {
+                @Override
+                public void step(SimState state) {
 
+                    for(Quote q : quotes)
+                    {
+                        try{
+                            market.removeSellQuote(q);
+                        }
+                        catch (IllegalArgumentException e){} //some of them will have been bought. That's okay
+                    }
+                    quotes.clear();
 
-
-
-
-            //at the end of the day remove all quotes
-            for(Quote q : quotes)
-            {
-                try{
-                    market.removeSellQuote(q);
+                    //outflow
+                    if(f.hasAny(GoodType.GENERIC))
+                        f.consume(GoodType.GENERIC);
+                    if(f.hasAny(GoodType.GENERIC))
+                        f.consume(GoodType.GENERIC);
                 }
-                catch (IllegalArgumentException e){} //some of them will have been bought. That's okay
-            }
-            quotes.clear();
+            });
+            //at the end of the day remove all quotes
 
-            //outflow
-            if(f.hasAny(GoodType.GENERIC))
-                f.consume(GoodType.GENERIC);
-            if(f.hasAny(GoodType.GENERIC))
-                f.consume(GoodType.GENERIC);
 
 
             f.earn(10000l);
+            model.getPhaseScheduler().step(model);
+            System.out.println(f.hasHowMany(GoodType.GENERIC) + " ---> " + control.maxPrice(GoodType.GENERIC));
+
+
 
         }
 

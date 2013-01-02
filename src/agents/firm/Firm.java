@@ -17,12 +17,13 @@ import financial.utilities.Quote;
 import financial.utilities.TimelineManager;
 import goods.Good;
 import goods.GoodType;
-import goods.production.Plant;
-import goods.production.PlantStatus;
+import agents.firm.production.Plant;
+import agents.firm.production.PlantStatus;
 import lifelines.LifelinesPanel;
 import lifelines.data.DataManager;
 import lifelines.data.GlobalEventData;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import sim.display.GUIState;
 import sim.portrayal.Inspector;
 import sim.portrayal.inspector.TabbedInspector;
@@ -94,11 +95,6 @@ public class Firm extends EconomicAgent {
      */
     private HumanResources lastHiringDepartment = null;
 
-    /**
-     * A link to the simstate
-     */
-
-    private MacroII model;
 
     /**
      * The strategy with which the firm pays out weekly profits; by default it doesn't!
@@ -116,7 +112,6 @@ public class Firm extends EconomicAgent {
      */
     public Firm(MacroII model) {
         super(model);
-        this.model = model;
 
         salesDepartments = new EnumMap<>(GoodType.class);
         purchaseDepartments = new EnumMap<>(GoodType.class);
@@ -145,7 +140,6 @@ public class Firm extends EconomicAgent {
      */
     public Firm(MacroII model,boolean ignored) {
         super(model);
-        this.model = model;
 
         salesDepartments = new EnumMap<>(GoodType.class);
         purchaseDepartments = new EnumMap<>(GoodType.class);
@@ -215,7 +209,8 @@ public class Firm extends EconomicAgent {
 
         //if it's ready start it!
         if(p.getStatus() == PlantStatus.READY)
-            p.step(model);
+            //schedule yourself for production
+            model.scheduleSoon(ActionOrder.PRODUCTION, p);
 
     }
 

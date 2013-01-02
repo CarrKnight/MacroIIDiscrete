@@ -8,6 +8,7 @@ import financial.MarketEvents;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import model.utilities.pid.Controller;
 import model.utilities.pid.ControllerFactory;
 import model.utilities.pid.PIDController;
@@ -82,7 +83,7 @@ public class PurchasesSimplePID extends SimpleInventoryControl implements BidPri
 
         long oldprice = maxPrice(getGoodTypeToControl());
         int target = getSingleProductionRunNeed();
-        controller.adjust(getControllerInput(target), isActive(), simState, this);
+        controller.adjust(getControllerInput(target), isActive(),(MacroII) simState, this, ActionOrder.THINK);
         long newprice = maxPrice(getGoodTypeToControl());
 
         //log the change in policy
@@ -170,8 +171,14 @@ public class PurchasesSimplePID extends SimpleInventoryControl implements BidPri
      */
     @Override
     public void start() {
-        controller.adjust(getControllerInput(getSingleProductionRunNeed()), isActive(),
-                getPurchasesDepartment().getFirm().getModel(), this);
+        getPurchasesDepartment().getFirm().getModel().scheduleSoon(ActionOrder.THINK,
+                new Steppable() {
+                    @Override
+                    public void step(SimState state) {
+                        controller.adjust(getControllerInput(getSingleProductionRunNeed()), isActive(),
+                                getPurchasesDepartment().getFirm().getModel(), this,ActionOrder.THINK);
+                    }
+                });
         super.start();
     }
 

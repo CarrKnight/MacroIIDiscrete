@@ -11,12 +11,13 @@ import financial.OrderBookBlindMarket;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
-import goods.production.Blueprint;
-import goods.production.Plant;
-import goods.production.technology.LinearConstantMachinery;
-import goods.production.technology.Machinery;
+import agents.firm.production.Blueprint;
+import agents.firm.production.Plant;
+import agents.firm.production.technology.LinearConstantMachinery;
+import agents.firm.production.technology.Machinery;
 import junit.framework.Assert;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import org.junit.Test;
 import sim.engine.Schedule;
 import sim.engine.SimState;
@@ -91,7 +92,8 @@ public class PurchasesWeeklyPIDTest {
 
         for(int i=0; i < 100; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
-            control.step(model);
+            model.scheduleSoon(ActionOrder.THINK,control);
+            model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
             int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
@@ -148,7 +150,8 @@ public class PurchasesWeeklyPIDTest {
 
         for(int i=0; i < 100; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
-            control.step(model);
+            model.scheduleSoon(ActionOrder.THINK,control);
+            model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
             int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
@@ -201,9 +204,11 @@ public class PurchasesWeeklyPIDTest {
         p.addWorker(new Person(model));
         Assert.assertEquals(control.getWeeklyNeeds(), 6f, 0.0001f);
 
+        model.scheduleSoon(ActionOrder.THINK,control);
+
         for(int i=0; i < 100; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
-            control.step(model);
+            model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
             int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
@@ -219,7 +224,7 @@ public class PurchasesWeeklyPIDTest {
         //and now you need half of the money!
         for(int i=0; i < 50; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/5f))); //tell the control how much you managed to buy
-            control.step(model);
+            model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
             int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
@@ -255,7 +260,7 @@ public class PurchasesWeeklyPIDTest {
         p.setCostStrategy(new EmptyCostStrategy());
 
         f.addPlant(p);
-        //addSalesDepartmentListener 20 workers and your produce once every 25
+        //addSalesDepartmentListener 20 workers and your completeProductionRunNow once every 25
         for(int i=0; i < 4; i++)
             p.addWorker(new Person(model));
         f.earn(10000000);

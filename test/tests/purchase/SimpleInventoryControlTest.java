@@ -15,11 +15,11 @@ import financial.Market;
 import financial.OrderBookMarket;
 import goods.Good;
 import goods.GoodType;
-import goods.production.Blueprint;
-import goods.production.Plant;
-import goods.production.PlantListener;
-import goods.production.technology.CRSExponentialMachinery;
-import goods.production.technology.Machinery;
+import agents.firm.production.Blueprint;
+import agents.firm.production.Plant;
+import agents.firm.production.PlantListener;
+import agents.firm.production.technology.CRSExponentialMachinery;
+import agents.firm.production.technology.Machinery;
 import junit.framework.Assert;
 import model.MacroII;
 import org.junit.Before;
@@ -280,6 +280,7 @@ public class SimpleInventoryControlTest {
         Assert.assertEquals(f.hasHowMany(GoodType.GENERIC),0);
         //you could buy 10 but your max price is 80 so you end up buying only 8!
         dept.buy(); //goooooooooo
+        model.getPhaseScheduler().step(model);
         Assert.assertEquals(f.hasHowMany(GoodType.GENERIC),8);
 
         //when the dust settles...

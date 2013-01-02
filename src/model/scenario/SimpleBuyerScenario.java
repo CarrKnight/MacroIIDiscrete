@@ -43,7 +43,7 @@ public class SimpleBuyerScenario extends Scenario {
     /**
      * How often goods are consumed and supply replenished
      */
-    float period = 10f;
+    int period = 0;
 
     /**
      * Are there additional people coming to supply after 20 weeks?
@@ -67,7 +67,7 @@ public class SimpleBuyerScenario extends Scenario {
 
     float outputWeight = .35f;
 
-    float pidPeriod = period;
+    int pidPeriod = period;
 
     public int consumedThisWeek = 0;
 
@@ -381,11 +381,11 @@ public class SimpleBuyerScenario extends Scenario {
         this.targetInventory = targetInventory;
     }
 
-    public float getPidPeriod() {
+    public int getPidPeriod() {
         return pidPeriod;
     }
 
-    public void setPidPeriod(float pidPeriod) {
+    public void setPidPeriod(int pidPeriod) {
         this.pidPeriod = pidPeriod;
     }
 

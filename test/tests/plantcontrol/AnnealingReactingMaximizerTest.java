@@ -2,9 +2,9 @@ package tests.plantcontrol;
 
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
-import goods.production.Plant;
-import goods.production.control.TargetAndMaximizePlantControl;
-import goods.production.control.maximizer.AnnealingReactingMaximizer;
+import agents.firm.production.Plant;
+import agents.firm.production.control.TargetAndMaximizePlantControl;
+import agents.firm.production.control.maximizer.AnnealingReactingMaximizer;
 import junit.framework.Assert;
 import model.MacroII;
 import org.junit.Test;

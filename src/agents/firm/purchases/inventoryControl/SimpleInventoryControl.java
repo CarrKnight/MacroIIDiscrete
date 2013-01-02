@@ -5,7 +5,7 @@ import agents.firm.Firm;
 import agents.firm.NumberOfPlantsListener;
 import agents.firm.purchases.PurchasesDepartment;
 import goods.GoodType;
-import goods.production.Plant;
+import agents.firm.production.Plant;
 
 import javax.annotation.Nonnull;
 import java.util.List;

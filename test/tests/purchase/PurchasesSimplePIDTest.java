@@ -11,11 +11,12 @@ import financial.OrderBookBlindMarket;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
-import goods.production.Blueprint;
-import goods.production.Plant;
-import goods.production.technology.IRSExponentialMachinery;
+import agents.firm.production.Blueprint;
+import agents.firm.production.Plant;
+import agents.firm.production.technology.IRSExponentialMachinery;
 import junit.framework.Assert;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import org.junit.Test;
 import sim.engine.Schedule;
 import sim.engine.SimState;
@@ -77,7 +78,8 @@ public class PurchasesSimplePIDTest {
 
         for(int i=0; i < 100; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
-            control.step(model);
+            model.scheduleSoon(ActionOrder.THINK,control);
+            model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
             int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
@@ -124,7 +126,8 @@ public class PurchasesSimplePIDTest {
 
         for(int i=0; i < 100; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
-            control.step(model);
+            model.scheduleSoon(ActionOrder.THINK, control);
+            model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
             int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
@@ -167,10 +170,11 @@ public class PurchasesSimplePIDTest {
         Assert.assertEquals(pidPrice, 0l);
         Assert.assertEquals(control.getSingleProductionRunNeed(),6);
 
+        model.scheduleSoon(ActionOrder.THINK,control);
         //for the first 50 turns is like the first test
         for(int i=0; i < 50; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
-            control.step(model);
+            model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
             int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
@@ -185,7 +189,7 @@ public class PurchasesSimplePIDTest {
         //and now you need half of the money!
         for(int i=0; i < 50; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/5f))); //tell the control how much you managed to buy
-            control.step(model);
+            model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
             int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
@@ -222,7 +226,7 @@ public class PurchasesSimplePIDTest {
         f.addPlant(p);
 
         p.addWorker(new Person(model));
-        f.earn(10000000);            f.registerSaleDepartment(mock(SalesDepartment.class),GoodType.CAPITAL); //fake sales department so that you don't sell the stuff you produce
+        f.earn(10000000);            f.registerSaleDepartment(mock(SalesDepartment.class),GoodType.CAPITAL); //fake sales department so that you don't sell the stuff you completeProductionRunNow
 
         model.start();
 

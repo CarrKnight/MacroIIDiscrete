@@ -2,9 +2,9 @@ package agents.firm.cost;
 
 import com.google.common.base.Preconditions;
 import goods.GoodType;
-import goods.production.Plant;
-import goods.production.PlantListener;
-import goods.production.technology.Machinery;
+import agents.firm.production.Plant;
+import agents.firm.production.PlantListener;
+import agents.firm.production.technology.Machinery;
 
 import java.util.Map;
 import java.util.Set;
@@ -47,7 +47,7 @@ public class InputCostStrategy implements PlantCostStrategy, PlantListener{
     public long unitOutputCost(GoodType t, long totalCostOfInputs) {
         //throw an exception if the goodtype is not produced!
         if(!plant.getBlueprint().getOutputs().containsKey(t))
-            throw new IllegalArgumentException("Can't assign cost to something we don't produce!");
+            throw new IllegalArgumentException("Can't assign cost to something we don't completeProductionRunNow!");
         //also throw an exception if totalCostOfInputs is positive in spite of having no inputs
         if(totalCostOfInputs > 0 && plant.getBlueprint().getInputs().isEmpty())
             throw new IllegalArgumentException("Can't have positive input costs when the blueprint has no input!");
@@ -71,7 +71,7 @@ public class InputCostStrategy implements PlantCostStrategy, PlantListener{
     @Override
     public long hypotheticalUnitOutputCost(GoodType t, long totalCostOfInputs, int workers, long totalWages) {
         Preconditions.checkArgument(plant.getBlueprint().getOutputs().containsKey(t),
-                "Can't assign cost to something we don't produce!" );
+                "Can't assign cost to something we don't completeProductionRunNow!" );
         Preconditions.checkArgument(totalCostOfInputs >= 0 && plant.getBlueprint().getInputs().isEmpty(),
                 "Can't have positive input costs when the blueprint has no input!");
 

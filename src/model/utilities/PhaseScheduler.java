@@ -1,13 +1,16 @@
 package model.utilities;
 
 import com.google.common.base.Preconditions;
+import com.sun.javafx.beans.annotations.NonNull;
 import ec.util.MersenneTwisterFast;
 import model.MacroII;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.LinkedList;
 
 /**
  * <h4>Description</h4>
@@ -36,9 +39,11 @@ public class PhaseScheduler implements Steppable {
 
     private final int simulationDays;
 
-    private ActionOrder currentPhase;
+    private ActionOrder currentPhase = ActionOrder.DAWN;
 
     final private ArrayList<Steppable> tomorrowSamePhase;
+
+    final private ArrayList<FutureAction> futureActions;
 
 
     public PhaseScheduler(int simulationDays) {
@@ -46,8 +51,8 @@ public class PhaseScheduler implements Steppable {
 
 
         //initialize the enums
-        steppablesByPhase = new EnumMap<ActionOrder, ArrayList<Steppable>>(ActionOrder.class);
-        for(ActionOrder order : steppablesByPhase.keySet())
+        steppablesByPhase = new EnumMap<>(ActionOrder.class);
+        for(ActionOrder order :ActionOrder.values())
         {
             steppablesByPhase.put(order,new ArrayList<Steppable>());
         }
@@ -55,7 +60,10 @@ public class PhaseScheduler implements Steppable {
         //initialize tomorrow schedule
         tomorrowSamePhase = new ArrayList<>();
 
+        futureActions = new ArrayList<>();
+
     }
+
 
     /**
      * Go through a "day" in the model. It self schedules to do it again tomorrow
@@ -91,8 +99,8 @@ public class PhaseScheduler implements Steppable {
 
         }
 
-
-        assert tomorrowSamePhase.isEmpty() : "things shouldn't be scheduled here";
+        //prepare for tomorrow
+        prepareForTomorrow();
 
         //see you tomorrow
         if(simState.schedule.getTime() <= simulationDays)
@@ -102,12 +110,30 @@ public class PhaseScheduler implements Steppable {
 
     }
 
+    private void prepareForTomorrow() {
+        assert tomorrowSamePhase.isEmpty() : "things shouldn't be scheduled here";
+        //set phase to dawn
+        currentPhase = ActionOrder.DAWN;
+        //check for delayed actions
+        LinkedList<FutureAction> toRemove = new LinkedList<>();
+        for(FutureAction futureAction : futureActions)
+        {
+            boolean ready = futureAction.spendOneDay();
+            if(ready)
+            {
+                scheduleSoon(futureAction.getPhase(),futureAction.getAction());
+                toRemove.add(futureAction);
+            }
+        }
+        futureActions.removeAll(toRemove);
+    }
+
     /**
      * schedule the event to happen when the next specific phase comes up!
      * @param phase which phase the action should be performed?
      * @param action the action taken!
      */
-    public void scheduleSoon(ActionOrder phase, Steppable action){
+    public void scheduleSoon(@NonNull ActionOrder phase,@NonNull Steppable action){
 
         //put it among the steppables of that phase
         steppablesByPhase.get(phase).add(action);
@@ -128,10 +154,75 @@ public class PhaseScheduler implements Steppable {
 
     }
 
+    /**
+     *
+     * @param phase The action order at which this action should be scheduled
+     * @param action the action to schedule
+     * @param daysAway how many days from now should it be scheduled
+     */
+    public void scheduleAnotherDay(@Nonnull ActionOrder phase,@Nonnull Steppable action,
+                                   int daysAway)
+    {
+        Preconditions.checkArgument(daysAway > 0, "Days away must be positive");
+        futureActions.add(new FutureAction(phase,action,daysAway));
+
+    }
+
+
 
     public ActionOrder getCurrentPhase() {
         return currentPhase;
     }
 
+    /**
+     * A simple struct storing the phase, the kind of action and how many days from now it is supposed to be
+     */
+    class FutureAction{
+
+        final private ActionOrder phase;
+
+        final private Steppable action;
+
+        private int daysAway;
+
+        public FutureAction(ActionOrder phase, Steppable action, int daysAway) {
+            Preconditions.checkArgument(daysAway > 0); //delay has to be positive
+            this.phase = phase;
+            this.action = action;
+            this.daysAway = daysAway;
+        }
+
+
+        /**
+         * Decrease days away by 1
+         * @return true if days away are 0
+         */
+        public boolean spendOneDay()
+        {
+            daysAway--;
+            Preconditions.checkState(daysAway >=0);
+            return daysAway == 0;
+
+        }
+
+        public ActionOrder getPhase() {
+            return phase;
+        }
+
+        public Steppable getAction() {
+            return action;
+        }
+    }
+
+    /**
+     * Checks if the given steppable is in today's schedule
+     * @param phase the phase the steppable is supposed to be  scheduled
+     * @param steppable the steppable we want to check
+     * @return true if the steppable is scheduled today at the specific phase
+     */
+    public boolean isScheduledToday(ActionOrder phase, Steppable steppable)
+    {
+        return steppablesByPhase.get(phase).contains(steppable);
+    }
 
 }

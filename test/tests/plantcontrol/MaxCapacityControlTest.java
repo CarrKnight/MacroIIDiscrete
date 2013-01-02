@@ -3,19 +3,17 @@ package tests.plantcontrol;
 import agents.Person;
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
+import agents.firm.production.Blueprint;
+import agents.firm.production.Plant;
+import agents.firm.production.control.MaxCapacityControl;
+import agents.firm.production.technology.IRSExponentialMachinery;
 import agents.firm.purchases.PurchasesDepartment;
 import financial.Market;
 import financial.OrderBookBlindMarket;
 import goods.GoodType;
-import goods.production.Blueprint;
-import goods.production.Plant;
-import goods.production.control.MaxCapacityControl;
-import goods.production.technology.IRSExponentialMachinery;
 import junit.framework.Assert;
 import model.MacroII;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import sim.engine.Schedule;
 import sim.engine.Steppable;
 
@@ -27,7 +25,6 @@ import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 /**
@@ -71,39 +68,7 @@ public class MaxCapacityControlTest {
 
         model.schedule = mock(Schedule.class);  //give it a fake schedule; this way we control time!
         final List<Steppable> steppableList = new LinkedList<>();
-        //capture all "scheduleOnceIn"
-        when(model.schedule.scheduleOnceIn(any(Double.class),any(Steppable.class))).then(
-                new Answer<Object>() {
-                    @Override
-                    public Object answer(InvocationOnMock invocation) throws Throwable {
-                        steppableList.add((Steppable) invocation.getArguments()[1]);
-                        return true;
-                    }
 
-                }
-        );
-        //capture all scheduleOnce
-        when(model.schedule.scheduleOnce(any(Double.class), any(Steppable.class))).then(
-                new Answer<Object>() {
-                    @Override
-                    public Object answer(InvocationOnMock invocation) throws Throwable {
-                        steppableList.add((Steppable) invocation.getArguments()[1]);
-                        return true;
-                    }
-
-                }
-        );
-        //capture all "scheduleOnceIn"
-        when(model.schedule.scheduleOnceIn(any(Double.class), any(Steppable.class),anyInt())).then(
-                new Answer<Object>() {
-                    @Override
-                    public Object answer(InvocationOnMock invocation) throws Throwable {
-                        steppableList.add((Steppable) invocation.getArguments()[1]);
-                        return true;
-                    }
-
-                }
-        );
 
 
 
@@ -119,7 +84,7 @@ public class MaxCapacityControlTest {
 
         for(int i=0; i < 200; i++){
             Person worker = new Person(model,0,i,market);
-            worker.lookForWork();
+            worker.lookForWorkSoon();
         }
 
         //there should be 200 asks
@@ -148,8 +113,8 @@ public class MaxCapacityControlTest {
             steppableList.clear();
             long oldWage = humanResources.maxPrice(GoodType.LABOR,market);
 
-            for(Steppable s : toStep)
-                s.step(model);
+
+            model.getPhaseScheduler().step(model);
 
             long newWage = humanResources.maxPrice(GoodType.LABOR,market);
 
