@@ -416,9 +416,9 @@ public class Plant implements Agent, InventoryListener {
             }
             else
             {
-                timeRemainingTillNextProductionRun = 0;
                 howMany++;
                 dayTime -=timeRemainingTillNextProductionRun;
+                timeRemainingTillNextProductionRun = 0;
                 assert dayTime >=0;
             }
 

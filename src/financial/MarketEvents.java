@@ -99,7 +99,12 @@ public enum MarketEvents {
     /**
      * Any exogenous event
      */
-    EXOGENOUS(false,false);
+    EXOGENOUS(false,false),
+
+    /**
+     * A weekly event
+     */
+    WEEKEND(true,true);
 
 
     private final boolean marketVisible;

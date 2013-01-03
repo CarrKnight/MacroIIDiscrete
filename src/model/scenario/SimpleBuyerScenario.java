@@ -15,6 +15,7 @@ import financial.utilities.BuyerSetPricePolicy;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import model.utilities.pid.CascadePIDController;
 import model.utilities.pid.FlowAndStockController;
 import sim.engine.SimState;
@@ -152,7 +153,7 @@ public class SimpleBuyerScenario extends Scenario {
 
 
         //set up the department to start buying soon
-        getModel().schedule.scheduleOnceIn(Math.max(5.0f + getModel().random.nextGaussian(),1f), new Steppable() {
+        getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
             @Override
             public void step(SimState state) {
                 department.start();
@@ -197,7 +198,7 @@ public class SimpleBuyerScenario extends Scenario {
                 final DummySeller reference = this;
 
                 //in "period time"
-                getModel().schedule.scheduleOnceIn(period,new Steppable() {
+                getModel().scheduleTomorrow(ActionOrder.TRADE,new Steppable() {
                     @Override
                     public void step(SimState state) {
                         //receive a new good
@@ -217,8 +218,7 @@ public class SimpleBuyerScenario extends Scenario {
 
         market.registerSeller(seller);
         //at a random point in the near future we need to have the dummy seller receive its first good and quote it!
-        getModel().schedule.scheduleOnceIn(Math.max(initialDelay + getModel().random.nextGaussian() + 5f,1f
-        ), new Steppable() {
+        getModel().scheduleSoon(ActionOrder.TRADE, new Steppable() {
             @Override
             public void step(SimState state) {
                 //receive a new good
@@ -263,7 +263,7 @@ public class SimpleBuyerScenario extends Scenario {
                 if(consumedThisWeek<consumptionRate)
                 {
                     //schedule it to be eaten
-                    getModel().schedule.scheduleOnceIn(.01f,new Steppable() {
+                    getModel().scheduleASAP(new Steppable() {
                         @Override
                         public void step(SimState state) {
                             assert firm.hasAny(GoodType.GENERIC);
@@ -291,7 +291,7 @@ public class SimpleBuyerScenario extends Scenario {
 
 
         //reset the counter
-        getModel().schedule.scheduleRepeating(5.0f + getModel().random.nextGaussian(),new Steppable() {
+                getModel().scheduleSoon(ActionOrder.CLEANUP,new Steppable() {
             @Override
             public void step(SimState state) {
                 consumedThisWeek=0;
@@ -311,15 +311,19 @@ public class SimpleBuyerScenario extends Scenario {
 
                 }while (consumedThisWeek<consumptionRate && firm.hasAny(GoodType.GENERIC));
 
+                getModel().scheduleTomorrow(ActionOrder.CLEANUP,this);
+
             }
-        },period);
+
+
+        });
 
     }
 
     private void setUpBurstConsumption(final Firm firm, final PurchasesDepartment department){
 
         assert burstConsumption;
-        getModel().schedule.scheduleRepeating(5.0f + getModel().random.nextGaussian(), new Steppable() {
+        getModel().scheduleSoon(ActionOrder.CLEANUP, new Steppable() {
             @Override
             public void step(SimState state) {
                 int initialInventory = firm.hasHowMany(GoodType.GENERIC);
@@ -335,9 +339,10 @@ public class SimpleBuyerScenario extends Scenario {
                 firm.logEvent(department, MarketEvents.EXOGENOUS, getModel().getCurrentSimulationTimeInMillis(), "initialInventory: " + initialInventory
                         + ",final inventory: " + firm.hasHowMany(GoodType.GENERIC));
 
-
+                //do it again tomorrow
+                getModel().scheduleTomorrow(ActionOrder.CLEANUP,this);
             }
-        }, period);
+        });
     }
 
     public boolean isFiltersOn() {

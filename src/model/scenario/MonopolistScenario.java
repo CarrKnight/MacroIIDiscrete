@@ -5,6 +5,12 @@ import agents.Person;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.HumanResources;
+import agents.firm.production.Blueprint;
+import agents.firm.production.Plant;
+import agents.firm.production.control.DiscreteSlowPlantControl;
+import agents.firm.production.control.DumbClimberControl;
+import agents.firm.production.control.ParticleControl;
+import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
@@ -14,13 +20,8 @@ import financial.utilities.BuyerSetPricePolicy;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
 import goods.GoodType;
-import agents.firm.production.Blueprint;
-import agents.firm.production.Plant;
-import agents.firm.production.control.DiscreteMatcherPlantControl;
-import agents.firm.production.control.DumbClimberControl;
-import agents.firm.production.control.ParticleControl;
-import agents.firm.production.technology.LinearConstantMachinery;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import tests.DummyBuyer;
@@ -104,12 +105,12 @@ public class MonopolistScenario extends Scenario {
                     //trick to get the steppable to recognize the anonymous me!
                     final DummyBuyer reference = this;
                     //schedule a new quote in period!
-                    this.getModel().schedule.scheduleOnceIn(10,new Steppable() {
+                    this.getModel().scheduleTomorrow(ActionOrder.TRADE, new Steppable() {
                         @Override
                         public void step(SimState simState) {
                             earn(1000l);
                             //put another quote
-                            goodMarket.submitBuyQuote(reference,getFixedPrice());
+                            goodMarket.submitBuyQuote(reference, getFixedPrice());
 
                         }
                     });
@@ -120,15 +121,15 @@ public class MonopolistScenario extends Scenario {
 
             //make it adjust once to register and submit the first quote
 
-            getModel().schedule.scheduleOnceIn(Math.max(5f + getModel().random.nextGaussian(),.01f),new Steppable() {
+            getModel().scheduleSoon(ActionOrder.DAWN, new Steppable() {
                 @Override
                 public void step(SimState simState) {
                     goodMarket.registerBuyer(buyer);
                     buyer.earn(1000l);
                     //make the buyer submit a quote soon.
-                    goodMarket.submitBuyQuote(buyer,buyer.getFixedPrice());
+                    goodMarket.submitBuyQuote(buyer, buyer.getFixedPrice());
                 }
-            }  );
+            });
 
 
 
@@ -147,32 +148,31 @@ public class MonopolistScenario extends Scenario {
         final Firm seller = new Firm(getModel());
         seller.earn(1000000000l);
         //set up the firm at time 1
-        getModel().schedule.scheduleOnce(new Steppable() {
+        getModel().scheduleSoon(ActionOrder.DAWN, new Steppable() {
             @Override
             public void step(SimState simState) {
                 //sales department
-                SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(seller,goodMarket,
-                        new SimpleBuyerSearch(goodMarket,seller),new SimpleSellerSearch(goodMarket,seller));
-                seller.registerSaleDepartment(dept,GoodType.GENERIC);
+                SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(seller, goodMarket,
+                        new SimpleBuyerSearch(goodMarket, seller), new SimpleSellerSearch(goodMarket, seller));
+                seller.registerSaleDepartment(dept, GoodType.GENERIC);
                 dept.setAskPricingStrategy(new SimpleFlowSellerPID(dept)); //set strategy to PID
 
                 //add the plant
-                Blueprint blueprint = new Blueprint.Builder().output(GoodType.GENERIC,1).build();
-                Plant plant = new Plant(blueprint,seller);
-                plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL,mock(Firm.class),0,plant));
+                Blueprint blueprint = new Blueprint.Builder().output(GoodType.GENERIC, 1).build();
+                Plant plant = new Plant(blueprint, seller);
+                plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
                 plant.setCostStrategy(new InputCostStrategy(plant));
                 seller.addPlant(plant);
 
 
                 //human resources
                 HumanResources hr;
-                if(particle)
+                if (particle)
                     hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, seller,
                             laborMarket, plant, ParticleControl.class, null, null);
-                else
-                if(!alwaysMoving)
+                else if (!alwaysMoving)
                     hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, seller,
-                            laborMarket, plant, DiscreteMatcherPlantControl.class, null, null);
+                            laborMarket, plant, DiscreteSlowPlantControl.class, null, null);
                 else
                     hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, seller,
                             laborMarket, plant, DumbClimberControl.class, null, null);
@@ -198,7 +198,7 @@ public class MonopolistScenario extends Scenario {
         for(int i=0; i<120; i++)
         {
             //dummy worker, really
-            final Person p = new Person(getModel(),0l,(15+i)*10,laborMarket);
+            final Person p = new Person(getModel(),0l,(15+i)*7,laborMarket);
 
             p.setSearchForBetterOffers(lookForBetterOffers);
 

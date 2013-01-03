@@ -130,6 +130,9 @@ public class Firm extends EconomicAgent {
             records = new TimelineManager(recordPanel);
             //build the inspector
             buildInspector();
+
+            //register profit report
+            addAgentToLog(profitReport);
         }
 
     }
@@ -871,4 +874,11 @@ public class Firm extends EconomicAgent {
     public void setName(String name) {
         this.name = name;
     }
+
+    protected ProfitReport getProfitReport() {
+        return profitReport;
+    }
+
+
+
 }

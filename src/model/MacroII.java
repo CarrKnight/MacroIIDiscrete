@@ -213,7 +213,8 @@ public class MacroII extends SimState{
         }, 7);
 
         //get the phase scheduler to start
-        phaseScheduler.step(this);
+        schedule.scheduleOnce(0,phaseScheduler);
+
 
 
     }
@@ -313,8 +314,8 @@ public class MacroII extends SimState{
             time = 1;
 //        assert time >= 0: time;
 
-        long weeks = (long) (time / weekLength); //get how many weeks have passed
-        assert weeks == weeksPassed || Market.TESTING_MODE ;
+        long weeks = (long) (time / (float)weekLength); //get how many weeks have passed
+        assert weeks == weeksPassed || Market.TESTING_MODE : weeks + "," + time + " , " + weeksPassed;
 
         float remainder =  (time % weekLength);
 //        assert remainder>=0;
@@ -329,6 +330,7 @@ public class MacroII extends SimState{
 
 
     public void weekEnd(){
+        System.out.println("Weekend!");
         weeksPassed++;
 
         Collections.shuffle(agents,new Random(random.nextLong())); //todo make this shuffled by the MersenneTwisterFast
@@ -727,4 +729,6 @@ public class MacroII extends SimState{
     public void setWeekLength(float weekLength) {
         this.weekLength = weekLength;
     }
+
+
 }

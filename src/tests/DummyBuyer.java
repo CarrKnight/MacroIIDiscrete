@@ -2,11 +2,14 @@ package tests;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
+import agents.firm.ProfitReport;
 import agents.firm.sales.SalesDepartment;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+
+import static org.mockito.Mockito.mock;
 
 public class DummyBuyer extends Firm {
     /**
@@ -18,6 +21,8 @@ public class DummyBuyer extends Firm {
     public DummyBuyer(MacroII model, long price) {
         super(model,false);
         quotedPrice = price;
+        getProfitReport().turnOff();
+        setProfitReport(mock(ProfitReport.class));
     }
 
     /**

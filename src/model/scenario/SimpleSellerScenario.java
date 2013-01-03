@@ -11,6 +11,7 @@ import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import tests.DummyBuyer;
@@ -65,7 +66,7 @@ public class SimpleSellerScenario extends Scenario {
                     //trick to get the steppable to recognize the anynimous me!
                     final DummyBuyer reference = this;
                     //schedule a new quote in period!
-                    this.getModel().schedule.scheduleOnceIn(period,new Steppable() {
+                    this.getModel().scheduleTomorrow(ActionOrder.TRADE,new Steppable() {
                         @Override
                         public void step(SimState simState) {
                             earn(1000l);
@@ -84,7 +85,7 @@ public class SimpleSellerScenario extends Scenario {
 
             //make it adjust once to register and submit the first quote
 
-            getModel().schedule.scheduleOnceIn(5f + getModel().random.nextGaussian(),new Steppable() {
+            getModel().scheduleSoon(ActionOrder.TRADE,new Steppable() {
                 @Override
                 public void step(SimState simState) {
                     market.registerBuyer(buyer);
@@ -107,7 +108,7 @@ public class SimpleSellerScenario extends Scenario {
         //only one seller
         final Firm seller = new Firm(getModel());
         //give it a seller department at time 1
-        getModel().schedule.scheduleOnce(new Steppable() {
+        getModel().scheduleSoon(ActionOrder.DAWN,new Steppable() {
             @Override
             public void step(SimState simState) {
                 SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(seller,market,new SimpleBuyerSearch(market,seller),new SimpleSellerSearch(market,seller));
@@ -121,7 +122,7 @@ public class SimpleSellerScenario extends Scenario {
 
 
         //arrange for goods to drop periodically in the firm
-        getModel().schedule.scheduleRepeating(5f + getModel().random.nextGaussian(),new Steppable() {
+        getModel().scheduleSoon(ActionOrder.PRODUCTION,new Steppable() {
             @Override
             public void step(SimState simState) {
                 //sell 4 goods!
@@ -130,9 +131,10 @@ public class SimpleSellerScenario extends Scenario {
                     seller.receive(good,null);
                     seller.reactToPlantProduction(good);
                 }
-
+                //every day
+                getModel().scheduleTomorrow(ActionOrder.PRODUCTION,this);
             }
-        },period );
+        });
 
         //if demands shifts, add 10 more buyers after adjust 2000
         if(demandShifts)
@@ -170,7 +172,7 @@ public class SimpleSellerScenario extends Scenario {
 
                 //make it adjust once to register and submit the first quote
 
-                getModel().schedule.scheduleOnceIn(2005f + getModel().random.nextGaussian(),new Steppable() {
+                getModel().scheduleAnotherDay(ActionOrder.TRADE,new Steppable() {
                     @Override
                     public void step(SimState simState) {
                         market.registerBuyer(buyer);
@@ -179,7 +181,7 @@ public class SimpleSellerScenario extends Scenario {
                         market.submitBuyQuote(buyer,buyer.getFixedPrice());
 
                     }
-                }  );
+                },2000  );
 
 
 

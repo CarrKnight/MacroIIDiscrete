@@ -374,7 +374,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
             return Math.min(pricingStrategy.maxPrice(type), getAvailableBudget());
         else{
             long strategyPrice = pricingStrategy.maxPrice(type);
-            long bestReadyPrice =  market.getBestSellPrice();
+            long bestReadyPrice =  Long.MAX_VALUE; // market.getBestSellPrice();
             long budget = getAvailableBudget();
             return Math.min(Math.min(strategyPrice,bestReadyPrice),budget); //basically return the smallest of the 3: the best price visible, the budget and the strategic price
         }

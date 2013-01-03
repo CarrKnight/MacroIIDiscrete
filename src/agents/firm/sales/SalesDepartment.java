@@ -432,7 +432,7 @@ public class SalesDepartment implements Department {
             listener.sellThisEvent(firm,this,g);
 
         //log it
-        getFirm().logEvent(this, MarketEvents.TASKED_TO_SELL, getFirm().getModel().getCurrentSimulationTimeInMillis());
+        getFirm().logEvent(SalesDepartment.this, MarketEvents.TASKED_TO_SELL, getFirm().getModel().getCurrentSimulationTimeInMillis());
 
 
         if(market.getSellerRole() == ActionsAllowed.QUOTE) //if we are supposed to quote
@@ -497,7 +497,7 @@ public class SalesDepartment implements Department {
             public void step(SimState state) {
 
                 long price = price(g);
-                getFirm().logEvent(this, MarketEvents.SUBMIT_SELL_QUOTE,getFirm().getModel().getCurrentSimulationTimeInMillis(),
+                getFirm().logEvent(SalesDepartment.this, MarketEvents.SUBMIT_SELL_QUOTE,getFirm().getModel().getCurrentSimulationTimeInMillis(),
                         "price:" + price);
                 Quote q = market.submitSellQuote(firm,price,g,SalesDepartment.this); //put a quote into the market
                 if(q.getPriceQuoted() != -1) //if the quote is not null
@@ -588,7 +588,7 @@ public class SalesDepartment implements Department {
 
         //exchange hostages
         market.trade(buyerQuote.getAgent(),getFirm(),g,finalPrice,buyerQuote,sellerQuote);
-        getFirm().logEvent(this, MarketEvents.SOLD, getFirm().getModel().getCurrentSimulationTimeInMillis(), "price: " + finalPrice + ", through buyFromHere()"); //sold a good
+        getFirm().logEvent(SalesDepartment.this, MarketEvents.SOLD, getFirm().getModel().getCurrentSimulationTimeInMillis(), "price: " + finalPrice + ", through buyFromHere()"); //sold a good
 
         /********************************************************************
          * Record information
@@ -1136,7 +1136,7 @@ public class SalesDepartment implements Department {
             listener.goodSoldEvent(this,saleResult);
 
         //log it
-        getFirm().logEvent(this, MarketEvents.SOLD
+        getFirm().logEvent(SalesDepartment.this, MarketEvents.SOLD
                 , getFirm().getModel().getCurrentSimulationTimeInMillis(), "price " + saleResult.getPriceSold());
 
     }

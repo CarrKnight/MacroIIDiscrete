@@ -6,6 +6,7 @@ import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import tests.DummyBuyer;
@@ -62,7 +63,7 @@ public class TestScenario extends Scenario {
         });
 
         //schedule them to trade to check that it gets recorded
-        getModel().schedule.scheduleOnceIn(10,new Steppable() {
+        getModel().scheduleSoon(ActionOrder.TRADE,new Steppable() {
             @Override
             public void step(SimState simState) {
                 Good good = new Good(GoodType.GENERIC, seller, 10);
@@ -75,7 +76,7 @@ public class TestScenario extends Scenario {
         });
 
         //schedule them to trade one more time
-        getModel().schedule.scheduleOnceIn(20,new Steppable() {
+        getModel().scheduleAnotherDay(ActionOrder.TRADE,new Steppable() {
             @Override
             public void step(SimState simState) {
                 Good good = new Good(GoodType.GENERIC, seller, 10);
@@ -84,25 +85,25 @@ public class TestScenario extends Scenario {
                         30, Quote.emptyBidQuote(GoodType.GENERIC),Quote.emptySellQuote(good));
 
             }
-        });
+        },2);
 
         //force them to submit random quotes so that
-        getModel().schedule.scheduleOnceIn(30,new Steppable() {
+        getModel().scheduleAnotherDay(ActionOrder.TRADE,new Steppable() {
             @Override
             public void step(SimState simState) {
                 testMarket.submitBuyQuote(buyer,10);
                 testMarket.submitBuyQuote(buyer,30);
             }
-        });
+        },3);
 
         //force them to submit more random quotes
-        getModel().schedule.scheduleOnceIn(40,new Steppable() {
+        getModel().scheduleAnotherDay(ActionOrder.TRADE,new Steppable() {
             @Override
             public void step(SimState simState) {
                 testMarket.submitBuyQuote(buyer,40);
                 testMarket.submitSellQuote(seller, 100, new Good(GoodType.GENERIC,seller,0l));
             }
-        });
+        },4);
 
 
 

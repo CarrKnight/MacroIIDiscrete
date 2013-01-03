@@ -3,19 +3,19 @@ package model.scenario;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.HumanResources;
-import agents.firm.sales.SalesDepartment;
-import agents.firm.sales.exploration.SimpleBuyerSearch;
-import agents.firm.sales.exploration.SimpleSellerSearch;
-import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
-import goods.GoodType;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.DiscreteMatcherPlantControl;
 import agents.firm.production.control.DumbClimberControl;
 import agents.firm.production.control.ParticleControl;
 import agents.firm.production.technology.LinearConstantMachinery;
+import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.exploration.SimpleBuyerSearch;
+import agents.firm.sales.exploration.SimpleSellerSearch;
+import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
+import goods.GoodType;
 import model.MacroII;
-import sim.engine.Schedule;
+import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -66,7 +66,7 @@ public class TripolistScenario extends MonopolistScenario{
             final Firm seller = new Firm(getModel());
             seller.earn(1000000000l);
             //set up the firm at time 1
-            getModel().schedule.scheduleOnce(Schedule.EPOCH + getModel().random.nextFloat(),new Steppable() {
+            getModel().scheduleSoon(ActionOrder.DAWN,new Steppable() {
                 @Override
                 public void step(SimState simState) {
                     //sales department

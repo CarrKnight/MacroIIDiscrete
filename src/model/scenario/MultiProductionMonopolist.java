@@ -18,6 +18,7 @@ import agents.firm.production.Plant;
 import agents.firm.production.control.DiscreteSlowPlantControl;
 import agents.firm.production.technology.LinearConstantMachinery;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import tests.DummyBuyer;
@@ -91,7 +92,7 @@ public class MultiProductionMonopolist extends Scenario{
                     //trick to get the steppable to recognize the anonymous me!
                     final DummyBuyer reference = this;
                     //schedule a new quote in period!
-                    this.getModel().schedule.scheduleOnceIn(10,new Steppable() {
+                    this.getModel().scheduleTomorrow(ActionOrder.TRADE,new Steppable() {
                         @Override
                         public void step(SimState simState) {
                             earn(1000l);
@@ -107,7 +108,7 @@ public class MultiProductionMonopolist extends Scenario{
 
             //make it adjust once to register and submit the first quote
 
-            getModel().schedule.scheduleOnceIn(5f + getModel().random.nextGaussian(),new Steppable() {
+            getModel().scheduleSoon(ActionOrder.TRADE,new Steppable() {
                 @Override
                 public void step(SimState simState) {
                     leatherMarket.registerBuyer(buyer);
@@ -144,7 +145,7 @@ public class MultiProductionMonopolist extends Scenario{
                     //trick to get the steppable to recognize the anonymous me!
                     final DummyBuyer reference = this;
                     //schedule a new quote in period!
-                    this.getModel().schedule.scheduleOnceIn(10,new Steppable() {
+                    this.getModel().scheduleTomorrow(ActionOrder.TRADE,new Steppable() {
                         @Override
                         public void step(SimState simState) {
                             earn(1000l);
@@ -160,7 +161,7 @@ public class MultiProductionMonopolist extends Scenario{
 
             //make it adjust once to register and submit the first quote
 
-            getModel().schedule.scheduleOnceIn(Math.abs(5f + getModel().random.nextGaussian()),new Steppable() {
+            getModel().scheduleTomorrow(ActionOrder.TRADE,new Steppable() {
                 @Override
                 public void step(SimState simState) {
                     beefMarket.registerBuyer(buyer);
@@ -188,7 +189,7 @@ public class MultiProductionMonopolist extends Scenario{
             final Firm seller = new Firm(getModel());
             seller.earn(1000000000l);
             //set up the firm at time 1
-            getModel().schedule.scheduleOnce(new Steppable() {
+            getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE,new Steppable() {
                 @Override
                 public void step(SimState simState) {
                     //sales department
