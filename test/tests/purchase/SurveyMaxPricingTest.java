@@ -128,6 +128,7 @@ public class SurveyMaxPricingTest {
 
         //when there is nobody to search just go at random.
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100, f, market, null, SurveyMaxPricing.class, null, null);
+        dept.setLooksAhead(true);
 
 
         //I assume the search depth is 5

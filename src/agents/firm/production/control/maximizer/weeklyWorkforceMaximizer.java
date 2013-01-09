@@ -143,7 +143,7 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
         if(hr.getPlant().workerSize() == control.getTarget() && !checkWeek){
             checkWeek = true; //next observation is check week!
        //     System.out.println("next week is checkweek!");
-            hr.getFirm().getModel().scheduleAnotherDay(ActionOrder.PREPARE_TO_TRADE,this,nextCheck * weeksToMakeObservation);
+            hr.getFirm().getModel().scheduleAnotherDay(ActionOrder.PREPARE_TO_TRADE,this,nextCheck + weeksToMakeObservation*7);
             return;
         }
 
@@ -175,7 +175,7 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
 
         //if the future target is negative, do it again next week (the subclass wants more info)
         if(futureTarget < 0){
-            hr.getFirm().getModel().scheduleAnotherDay(ActionOrder.PREPARE_TO_TRADE,this,nextCheck*weeksToMakeObservation);
+            hr.getFirm().getModel().scheduleAnotherDay(ActionOrder.PREPARE_TO_TRADE,this,nextCheck + weeksToMakeObservation*7);
 
         }
         else {

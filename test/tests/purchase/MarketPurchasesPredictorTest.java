@@ -51,6 +51,7 @@ public class MarketPurchasesPredictorTest {
 
         Market market = new OrderBookBlindMarket(GoodType.GENERIC);
         PurchasesDepartment dept = MemoryPurchasesPredictorTest.fixedPIDTest(market);
+        dept.setLooksAhead(true);
 
         MarketPurchasesPredictor predictor = new MarketPurchasesPredictor();
         Assert.assertTrue(predictor.predictPurchasePrice(dept) >= 20 && predictor.predictPurchasePrice(dept) <= 30);

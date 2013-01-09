@@ -52,7 +52,7 @@ public class TestScenario extends Scenario {
         getAgents().add(buyer); getAgents().add(seller);
 
         //schedule them at t=1
-        getModel().schedule.scheduleOnceIn(1,new Steppable() {
+        getModel().scheduleSoon(ActionOrder.DAWN,new Steppable() {
             @Override
             public void step(SimState simState) {
                 testMarket.registerBuyer(buyer);

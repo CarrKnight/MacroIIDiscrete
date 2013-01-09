@@ -74,9 +74,13 @@ public abstract class EconomicAgent implements Agent, HasInventory{
 
     public void earn(long money)
     {
+        Preconditions.checkArgument(money >=0);
 
+        long oldcash = cash;
         cash += money;
      //   MacroII.logger.log(Level.FINEST, this + " just earned: " + money +", now it has " + getCash() );
+
+        assert oldcash <= cash;
 
 
     }

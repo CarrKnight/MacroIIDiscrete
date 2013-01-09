@@ -29,7 +29,29 @@ public enum GoodType {
     /**
      * swanky
      */
-    LEATHER(false,false);
+    LEATHER(false,false),
+
+    /**
+     * processed
+     */
+    FOOD(false,false),
+
+    /**
+     * where it all starts
+     */
+    CATTLE(false,false),
+
+    /**
+     * Toil and sweat.
+     */
+    LABOR_FOOD(false,true),
+
+
+    /**
+     * Toil and sweat.
+     */
+    LABOR_BEEF(false,true);
+
 
     /**
      * Is this type of good a machinery?

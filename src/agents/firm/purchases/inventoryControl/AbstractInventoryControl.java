@@ -127,7 +127,7 @@ public abstract class AbstractInventoryControl implements InventoryControl{
     @Override
     public void inventoryDecreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity) {
 
-        if(!isActive) //if you have been turned off, don't bother
+        if(!isActive || type != goodTypeToControl) //if you have been turned off, don't bother
             return;
 
         //count it
@@ -135,7 +135,6 @@ public abstract class AbstractInventoryControl implements InventoryControl{
 
 
         assert source == purchasesDepartment.getFirm(); //should be our own firm, otherwise it's weird
-        assert goodTypeToControl == type; //we should have been notified only of stuff that relates to us
         assert getPurchasesDepartment().getFirm().hasHowMany(getGoodTypeToControl()) == quantity; //make sure the quantity supplied is valid
 
 

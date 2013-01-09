@@ -102,6 +102,12 @@ public class PurchasesDepartment implements Deactivatable, Department {
     private boolean queuedBuy = false;
 
     /**
+     * flag that, when set to true the market has "best visible price" activated, forces the purchase department to never
+     * overpay
+     */
+    private boolean looksAhead = false;
+
+    /**
      * algorithm to search the registry for opponents
      */
     private BuyerSearchAlgorithm opponentSearch;
@@ -374,7 +380,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
             return Math.min(pricingStrategy.maxPrice(type), getAvailableBudget());
         else{
             long strategyPrice = pricingStrategy.maxPrice(type);
-            long bestReadyPrice =  Long.MAX_VALUE; // market.getBestSellPrice();
+            long bestReadyPrice = looksAhead? market.getBestSellPrice(): Long.MAX_VALUE;
             long budget = getAvailableBudget();
             return Math.min(Math.min(strategyPrice,bestReadyPrice),budget); //basically return the smallest of the 3: the best price visible, the budget and the strategic price
         }
@@ -930,5 +936,25 @@ public class PurchasesDepartment implements Deactivatable, Department {
     }
 
 
+    /**
+     * Gets flag that, when set to true and the market has "best visible price" activated, forces the purchase department to never
+     * overpay.
+     *
+     * @return Value of flag that, when set to true the market has "best visible price" activated, forces the purchase department to never
+     *         overpay.
+     */
+    public boolean isLooksAhead() {
+        return looksAhead;
+    }
 
+    /**
+     * Sets new flag that, when set to true and the market has "best visible price" activated, forces the purchase department to never
+     * overpay.
+     *
+     * @param looksAhead New value of flag that, when set to true the market has "best visible price" activated, forces the purchase department to never
+     *                   overpay.
+     */
+    public void setLooksAhead(boolean looksAhead) {
+        this.looksAhead = looksAhead;
+    }
 }

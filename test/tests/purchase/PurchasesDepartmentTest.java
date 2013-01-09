@@ -180,6 +180,7 @@ public class PurchasesDepartmentTest {
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(1,firm,mock(Market.class),
                 (Class<? extends InventoryControl>) null,null,null,null);
+        dept.setLooksAhead(true);
 
 
         //addSalesDepartmentListener a stub pricing
@@ -714,6 +715,7 @@ public class PurchasesDepartmentTest {
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(2000,firm,market,
                 FixedInventoryControl.class,null,null,null);
+        dept.setLooksAhead(true);
 
         firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
         BidPricingStrategy pricingStrategy = mock(BidPricingStrategy.class);//i am going to force the dept to offer maxPrice = 150

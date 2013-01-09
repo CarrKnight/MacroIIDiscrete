@@ -59,7 +59,10 @@ public class SimpleGoodTradePolicy implements TradePolicy {
 
         //System.out.println(price);
         if(!buyer.hasEnoughCash(price)) //check that the buyer has money!
+        {
+            System.err.println(buyer + " is bankrupt!");
             throw new Bankruptcy(buyer);
+        }
 
 
         buyer.pay(price,seller,market); //the buyer pays the seller

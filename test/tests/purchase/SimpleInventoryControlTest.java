@@ -251,6 +251,7 @@ public class SimpleInventoryControlTest {
         BidPricingStrategy stubStrategy = mock(BidPricingStrategy.class); //addSalesDepartmentListener this stub as a new strategy so we can fix prices as we prefer
         when(stubStrategy.maxPrice(GoodType.GENERIC)).thenReturn(80l); //price everything at 80; who cares
         dept.setPricingStrategy(stubStrategy);
+        dept.setLooksAhead(true);
 
 
         Assert.assertEquals(market.getBestBuyPrice(),-1);

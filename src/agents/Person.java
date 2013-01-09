@@ -80,7 +80,7 @@ public class Person extends EconomicAgent {
         if(laborMarket != null){
             laborMarket.registerSeller(this);
             employerSearch = new SimpleBuyerSearch(laborMarket,this);
-            assert laborMarket.getGoodType() == GoodType.LABOR;
+            assert laborMarket.getGoodType().isLabor() : "is it a real labor market?";
             //if there is a labor market, you are going to be turned on by start()
             setActive(false);
         }
@@ -264,7 +264,7 @@ public class Person extends EconomicAgent {
                 {
                     //if we can quote: great!
                     laborMarket.submitSellQuote(Person.this,
-                            minimumWageRequired, new Good(GoodType.LABOR,Person.this,minimumWageRequired));
+                            minimumWageRequired, new Good(laborMarket.getGoodType(),Person.this,minimumWageRequired));
                 }
                 else{
                     //if we can't quote we have to peddle

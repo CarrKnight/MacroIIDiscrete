@@ -158,6 +158,8 @@ public class FixedInventoryControlTest {
             Firm f = new Firm(model); f.earn(1000);
             PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(1000, f, market, FixedInventoryControl.class,
                     null, null, null);
+            dept.setLooksAhead(true);
+
             f.registerPurchasesDepartment(dept,GoodType.GENERIC);
 
             BidPricingStrategy stubStrategy = mock(BidPricingStrategy.class); //addSalesDepartmentListener this stub as a new strategy so we can fix prices as we prefer
