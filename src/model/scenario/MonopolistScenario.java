@@ -9,7 +9,7 @@ import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.DiscreteSlowPlantControl;
 import agents.firm.production.control.DumbClimberControl;
-import agents.firm.production.control.ParticleControl;
+import agents.firm.production.control.MarginalPlantControl;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
@@ -52,13 +52,17 @@ public class MonopolistScenario extends Scenario {
     protected Blueprint blueprint = new Blueprint.Builder().output(GoodType.GENERIC, 1).build();
     protected Firm monopolist;
 
+    /**
+     * flag that defines whether the hr maximizes by checking marginal costs and benefits
+     */
+    private boolean marginal = false;
+
     public MonopolistScenario(MacroII macroII) {
         super(macroII);
     }
 
     private boolean alwaysMoving = false;
 
-    private boolean particle = false;
 
     /**
      * Does hr charge a single wage across the plant?
@@ -172,9 +176,9 @@ public class MonopolistScenario extends Scenario {
 
                 //human resources
                 HumanResources hr;
-                if (particle)
+                if (marginal)
                     hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, monopolist,
-                            laborMarket, plant, ParticleControl.class, null, null);
+                            laborMarket, plant, MarginalPlantControl.class, null, null);
                 else if (!alwaysMoving)
                     hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, monopolist,
                             laborMarket, plant, DiscreteSlowPlantControl.class, null, null);
@@ -229,13 +233,8 @@ public class MonopolistScenario extends Scenario {
         this.alwaysMoving = alwaysMoving;
     }
 
-    public boolean isParticle() {
-        return particle;
-    }
 
-    public void setParticle(boolean particle) {
-        this.particle = particle;
-    }
+
 
     public boolean isFixedPayStructure() {
         return fixedPayStructure;
@@ -270,5 +269,24 @@ public class MonopolistScenario extends Scenario {
      */
     public void setBlueprint(Blueprint blueprint) {
         this.blueprint = blueprint;
+    }
+
+
+    /**
+     * Gets flag that defines whether the hr maximizes by checking marginal costs and benefits.
+     *
+     * @return Value of flag that defines whether the hr maximizes by checking marginal costs and benefits.
+     */
+    public boolean isMarginal() {
+        return marginal;
+    }
+
+    /**
+     * Sets new flag that defines whether the hr maximizes by checking marginal costs and benefits.
+     *
+     * @param marginal New value of flag that defines whether the hr maximizes by checking marginal costs and benefits.
+     */
+    public void setMarginal(boolean marginal) {
+        this.marginal = marginal;
     }
 }

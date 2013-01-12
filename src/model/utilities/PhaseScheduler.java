@@ -175,6 +175,21 @@ public class PhaseScheduler implements Steppable {
         return currentPhase;
     }
 
+
+    public void clear()
+    {
+        steppablesByPhase.clear();
+        steppablesByPhase = new EnumMap<>(ActionOrder.class);
+        for(ActionOrder order :ActionOrder.values())
+        {
+            steppablesByPhase.put(order,new ArrayList<Steppable>());
+        }
+
+        tomorrowSamePhase.clear();
+        futureActions.clear();
+        currentPhase = ActionOrder.DAWN;
+    }
+
     /**
      * A simple struct storing the phase, the kind of action and how many days from now it is supposed to be
      */

@@ -4,6 +4,7 @@ import agents.EconomicAgent;
 import agents.firm.production.Blueprint;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesWeeklyPID;
+import agents.firm.purchases.prediction.LookAheadPredictor;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import financial.Market;
@@ -82,6 +83,7 @@ public class MonopolistWithInputScenario extends MonopolistScenario {
 
         department.setControl(control);
         department.setPricingStrategy(control);
+        department.setPredictor(new LookAheadPredictor());
         monopolist.registerPurchasesDepartment(department, GoodType.LEATHER);
         department.start();
     }

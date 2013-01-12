@@ -7,7 +7,7 @@ import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.DiscreteMatcherPlantControl;
 import agents.firm.production.control.DumbClimberControl;
-import agents.firm.production.control.ParticleControl;
+import agents.firm.production.control.MarginalPlantControl;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
@@ -85,9 +85,9 @@ public class TripolistScenario extends MonopolistScenario{
 
                     //human resources
                     HumanResources hr;
-                    if(isParticle())
+                    if(isMarginal())
                         hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, seller,
-                                laborMarket, plant, ParticleControl.class, null, null);
+                                laborMarket, plant, MarginalPlantControl.class, null, null);
                     else
                     if(!isAlwaysMoving())
                         hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, seller,

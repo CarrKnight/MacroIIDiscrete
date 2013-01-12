@@ -243,6 +243,7 @@ public class DiscreteSlowPlantControlTest {
 
         SalesDepartment dept =SalesDepartment.incompleteSalesDepartment(firm,market,new SimpleBuyerSearch(market,firm), new SimpleSellerSearch(market,firm));
         SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept,.3f,.16f,.01f,10);
+        strategy.setProductionCostOverride(true);
         dept.setAskPricingStrategy(strategy);
       //  dept.setAskPricingStrategy(new EverythingMustGoAdaptive(dept));
         firm.registerSaleDepartment(dept, GoodType.GENERIC);

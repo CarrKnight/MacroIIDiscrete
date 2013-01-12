@@ -123,7 +123,8 @@ public class MarginalMaximizer extends weeklyWorkforceMaximizer
             costPerInput = costPerInput < 0 ? policy.replaceUnknownPrediction(owner.getPurchaseDepartment(input).getMarket(),p.getRandom()) : costPerInput;
 
             //count the costs!
-            marginalInputCosts+= costPerInput * marginalInputCosts;
+            marginalInputCosts+= (costPerInput * totalInputNeeded) - dept.getLastClosingPrice() *
+                    p.hypotheticalWeeklyInputNeeds(input,currentWorkers) ;
             //marginal costs are negative (marginal savings) if we are reducing production
             assert (marginalInputCosts >= 0 && targetWorkers > currentWorkers) ^   (marginalInputCosts <= 0 && targetWorkers < currentWorkers);
             totalInputCosts +=  costPerInput*totalInputNeeded;
@@ -154,6 +155,10 @@ public class MarginalMaximizer extends weeklyWorkforceMaximizer
             pricePerUnit = pricePerUnit < 0 ? policy.replaceUnknownPrediction(owner.getSalesDepartment(output).getMarket(),p.getRandom()) : pricePerUnit;
             //add it to the revenue
             marginalRevenue += pricePerUnit * marginalProduction;
+            //but now decrease it if you caused the price to change
+            marginalRevenue -= (owner.getSalesDepartment(output).getLastClosingPrice()-
+                    pricePerUnit) * p.hypotheticalThroughput(currentWorkers,output);
+
 
         }
         //if you are increasing production revenue should be positive or zero. If we are decreasing production then revenue will be negative
@@ -190,7 +195,7 @@ public class MarginalMaximizer extends weeklyWorkforceMaximizer
 
 
             //compute profits if we decrease
-            float profitsIfWeDecrease = currentWorkerTarget > p.minimumWorkersNeeded() ? //can we decrease production?
+             float profitsIfWeDecrease = currentWorkerTarget > p.minimumWorkersNeeded() ? //can we decrease production?
                     computeMarginalProfits(currentWorkerTarget, currentWorkerTarget-1) //if so check marginal profits
                     :
                     Float.NEGATIVE_INFINITY; //otherwise ignore this choice!

@@ -488,6 +488,8 @@ public class MacroII extends SimState{
         agents.clear();
         agents = null;
 
+        phaseScheduler.clear();
+
 
     }
 
@@ -729,6 +731,8 @@ public class MacroII extends SimState{
     public void setWeekLength(float weekLength) {
         this.weekLength = weekLength;
     }
+
+
 
 
 }
