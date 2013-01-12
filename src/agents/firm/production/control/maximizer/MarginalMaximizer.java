@@ -86,7 +86,7 @@ public class MarginalMaximizer extends weeklyWorkforceMaximizer
             //if there is no prediction react to it
             futureWage = futureWage < 0 ? policy.replaceUnknownPrediction(getHr().getMarket(),p.getRandom()) : futureWage;
             //remember that you'll have to raise everybody's wages if you hire somebody new at a higher cost
-            if(futureWage > getControl().getCurrentWage())  //if you have to raise your wages to hire somebody
+            if(futureWage > getControl().getCurrentWage() && getHr().isFixedPayStructure())  //if you have to raise your wages to hire somebody
             {
                 //your total costs then are the new wage + the adjustment you'll have to make to pay everybody that wage
                 marginalWageCosts = (futureWage * p.workerSize() - getHr().getWagesPaid()) + futureWage * (targetWorkers-currentWorkers);

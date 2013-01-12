@@ -131,7 +131,7 @@ public class MarketLookTargeter implements WorkforceTargeter {
 
         } catch (IllegalAccessException e) {
             assert false;
-            System.out.println("the best sell price wasn't visible! we were lied to!!!");
+            System.err.println("the best sell price wasn't visible! we were lied to!!!");
             System.exit(-1);
         }
 

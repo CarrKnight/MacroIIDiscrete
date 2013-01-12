@@ -7,13 +7,15 @@ import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
-import agents.firm.production.control.DiscreteSlowPlantControl;
+import agents.firm.production.control.MarginalPlantControl;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
-import agents.firm.purchases.pid.PurchasesFixedPID;
+import agents.firm.purchases.pid.PurchasesWeeklyPID;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
+import agents.firm.sales.prediction.MarketSalesPredictor;
+import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import com.google.common.base.Preconditions;
 import financial.Market;
@@ -66,17 +68,17 @@ public class SupplyChainScenario extends Scenario
     /**
      * total number of firms producing food
      */
-    private int numberOfFoodProducers = 1    ;
+    private int numberOfFoodProducers = 1;
 
     /**
      * how many cattles you need for one unit of beef
      */
-    private int beefMultiplier = 2;
+    private int beefMultiplier = 1;
 
     /**
      * how many units of beef you need for 1 unit of food
      */
-    private int foodMultiplier = 2;
+    private int foodMultiplier = 1;
 
 
     /**
@@ -171,7 +173,9 @@ public class SupplyChainScenario extends Scenario
                 SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(firm, goodmarket,
                         new SimpleBuyerSearch(goodmarket, firm), new SimpleSellerSearch(goodmarket, firm));
                 firm.registerSaleDepartment(dept, goodmarket.getGoodType());
-                dept.setAskPricingStrategy(new SimpleFlowSellerPID(dept)); //set strategy to PID
+                AskPricingStrategy strategy = new SimpleFlowSellerPID(dept);
+                dept.setAskPricingStrategy(strategy); //set strategy to PID
+                dept.setPredictorStrategy(new MarketSalesPredictor());
 
                 //CREATE THE PLANT + Human resources
                 Blueprint blueprint =  getBluePrint(goodmarket.getGoodType());
@@ -180,7 +184,7 @@ public class SupplyChainScenario extends Scenario
                 plant.setCostStrategy(new InputCostStrategy(plant));
                 firm.addPlant(plant);
                 HumanResources hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, firm,
-                        laborMarket, plant, DiscreteSlowPlantControl.class, null, null);
+                        laborMarket, plant, MarginalPlantControl.class, null, null);
                 hr.setFixedPayStructure(true);
                 hr.start();
 
@@ -196,7 +200,7 @@ public class SupplyChainScenario extends Scenario
                     department.setOpponentSearch(new SimpleBuyerSearch(market, firm));
                     department.setSupplierSearch(new SimpleSellerSearch(market, firm));
 
-                    PurchasesFixedPID control = new PurchasesFixedPID(department,3, CascadePIDController.class,model);
+                    PurchasesWeeklyPID control = new PurchasesWeeklyPID(department, CascadePIDController.class,model);
 
                     department.setControl(control);
                     department.setPricingStrategy(control);
@@ -288,9 +292,9 @@ public class SupplyChainScenario extends Scenario
             case CATTLE:
                 return new Blueprint.Builder().output(GoodType.CATTLE,1).build();
             case BEEF:
-                return Blueprint.simpleBlueprint(GoodType.CATTLE,beefMultiplier,GoodType.BEEF,1);
+                return Blueprint.simpleBlueprint(GoodType.CATTLE,1,GoodType.BEEF,beefMultiplier);
             case FOOD:
-                return Blueprint.simpleBlueprint(GoodType.BEEF,foodMultiplier,GoodType.FOOD,1);
+                return Blueprint.simpleBlueprint(GoodType.BEEF,1,GoodType.FOOD,foodMultiplier);
             default:
                 assert false;
                 return null;
@@ -319,23 +323,96 @@ public class SupplyChainScenario extends Scenario
         }
     }
 
-    public int getNumberOfCattleProducers() {
-        return numberOfCattleProducers;
+
+
+
+    /**
+     * Sets new total number of firms producing beef.
+     *
+     * @param numberOfBeefProducers New value of total number of firms producing beef.
+     */
+    public void setNumberOfBeefProducers(int numberOfBeefProducers) {
+        this.numberOfBeefProducers = numberOfBeefProducers;
     }
 
-    public int getNumberOfBeefProducers() {
-        return numberOfBeefProducers;
-    }
-
+    /**
+     * Gets total number of firms producing food.
+     *
+     * @return Value of total number of firms producing food.
+     */
     public int getNumberOfFoodProducers() {
         return numberOfFoodProducers;
     }
 
+    /**
+     * Sets new total number of firms producing cattle.
+     *
+     * @param numberOfCattleProducers New value of total number of firms producing cattle.
+     */
+    public void setNumberOfCattleProducers(int numberOfCattleProducers) {
+        this.numberOfCattleProducers = numberOfCattleProducers;
+    }
+
+    /**
+     * Sets new how many units of beef you need for 1 unit of food.
+     *
+     * @param foodMultiplier New value of how many units of beef you need for 1 unit of food.
+     */
+    public void setFoodMultiplier(int foodMultiplier) {
+        this.foodMultiplier = foodMultiplier;
+    }
+
+    /**
+     * Gets how many units of beef you need for 1 unit of food.
+     *
+     * @return Value of how many units of beef you need for 1 unit of food.
+     */
+    public int getFoodMultiplier() {
+        return foodMultiplier;
+    }
+
+    /**
+     * Sets new how many cattles you need for one unit of beef.
+     *
+     * @param beefMultiplier New value of how many cattles you need for one unit of beef.
+     */
+    public void setBeefMultiplier(int beefMultiplier) {
+        this.beefMultiplier = beefMultiplier;
+    }
+
+    /**
+     * Gets how many cattles you need for one unit of beef.
+     *
+     * @return Value of how many cattles you need for one unit of beef.
+     */
     public int getBeefMultiplier() {
         return beefMultiplier;
     }
 
-    public int getFoodMultiplier() {
-        return foodMultiplier;
+    /**
+     * Gets total number of firms producing beef.
+     *
+     * @return Value of total number of firms producing beef.
+     */
+    public int getNumberOfBeefProducers() {
+        return numberOfBeefProducers;
+    }
+
+    /**
+     * Sets new total number of firms producing food.
+     *
+     * @param numberOfFoodProducers New value of total number of firms producing food.
+     */
+    public void setNumberOfFoodProducers(int numberOfFoodProducers) {
+        this.numberOfFoodProducers = numberOfFoodProducers;
+    }
+
+    /**
+     * Gets total number of firms producing cattle.
+     *
+     * @return Value of total number of firms producing cattle.
+     */
+    public int getNumberOfCattleProducers() {
+        return numberOfCattleProducers;
     }
 }

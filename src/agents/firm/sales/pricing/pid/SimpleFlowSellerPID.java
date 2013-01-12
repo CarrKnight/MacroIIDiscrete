@@ -238,12 +238,9 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         price = Math.round(controller.getCurrentMV());
         //log the change in policy
         getSales().getFirm().logEvent(getSales(), MarketEvents.CHANGE_IN_POLICY, getSales().getFirm().getModel().getCurrentSimulationTimeInMillis(), "toSell: " + goodsToSell + ", customers:"
-                + (goodsSold + stockOuts.getStockouts()) + "; oldprice:" + oldPrice + ", newprice:" + price + " || MV: " + controller.getCurrentMV() );
+                + (goodsSold + stockOuts.getStockouts()) + "of which, stockouts: " + stockOuts.getStockouts() + "\n oldprice:" + oldPrice + ", newprice:" + price + " || MV: " + controller.getCurrentMV() );
 
-        //todo delete this
-        System.out.println("toSell: " + goodsToSell + ", customers:"
-                + (goodsSold + stockOuts.getStockouts()) + "; oldprice:" + oldPrice + ", newprice:" + price + " || MV: " + controller.getCurrentMV());
-        System.out.println("goods sold: " +goodsSold +" ,stockouts: " + stockOuts.getStockouts() );
+
 
         //we are being restepped by the controller so just wait.
         sales.updateQuotes();
@@ -283,7 +280,14 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
     @Override
     public long price(Good g) {
         if(productionCostOverride)
-            return Math.max(price,g.getCostOfProduction());
+        {
+            if(g.getCostOfProduction() > price) //force to increase MV
+            {
+                price = g.getCostOfProduction();
+                controller.setOffset(g.getCostOfProduction());
+            }
+            return price;
+        }
         else
             return Math.max(price,0l);
 
@@ -380,5 +384,24 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
 
     public void setSpeed(int speed) {
         controller.setSpeed(speed);
+    }
+
+
+    /**
+     * Gets If the price we are quoting is LOWER than the production cost, what should we do? if true we quote the production cost if lower than the PID proposed price..
+     *
+     * @return Value of If the price we are quoting is LOWER than the production cost, what should we do? if true we quote the production cost if lower than the PID proposed price..
+     */
+    public boolean isProductionCostOverride() {
+        return productionCostOverride;
+    }
+
+    /**
+     * Sets new If the price we are quoting is LOWER than the production cost, what should we do? if true we quote the production cost if lower than the PID proposed price..
+     *
+     * @param productionCostOverride New value of If the price we are quoting is LOWER than the production cost, what should we do? if true we quote the production cost if lower than the PID proposed price..
+     */
+    public void setProductionCostOverride(boolean productionCostOverride) {
+        this.productionCostOverride = productionCostOverride;
     }
 }

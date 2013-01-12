@@ -193,17 +193,24 @@ public class PIDController implements Controller{
         /*************************
          * PID FORMULA
          *************************/
-        if(!windupStop || currentMV >= 0)  //add to the integral if you are not at saturation (or there is no check)
-            integral+= newError; //integral!
         float derivative = 0;
         if(!Float.isNaN(oldError))    //if you can count the derivative too
             derivative = newError - oldError;
 
+
+        if(!windupStop || formula(derivative) >= 0)  //add to the integral if you are not at saturation (or there is no check)
+            integral+= newError; //integral!
+
+
         //initialPrice is the offset, the rest is your standard PID
-        currentMV = initialPrice + proportionalGain * newError + integralGain * integral + derivativeGain * derivative;
+        currentMV = formula(derivative);
         if(!canGoNegative && currentMV < 0)
             currentMV = 0; //bound to 0
         return false;
+    }
+
+    private float formula(float derivative) {
+        return initialPrice + proportionalGain * newError + integralGain * integral + derivativeGain * derivative;
     }
 
 

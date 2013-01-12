@@ -72,7 +72,7 @@ public class InputCostStrategy implements PlantCostStrategy, PlantListener{
     public long hypotheticalUnitOutputCost(GoodType t, long totalCostOfInputs, int workers, long totalWages) {
         Preconditions.checkArgument(plant.getBlueprint().getOutputs().containsKey(t),
                 "Can't assign cost to something we don't completeProductionRunNow!" );
-        Preconditions.checkArgument(totalCostOfInputs >= 0 && plant.getBlueprint().getInputs().isEmpty(),
+        Preconditions.checkArgument(totalCostOfInputs == 0 || !plant.getBlueprint().getInputs().isEmpty(),
                 "Can't have positive input costs when the blueprint has no input!");
 
 

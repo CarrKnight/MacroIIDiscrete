@@ -40,8 +40,10 @@ public class CascadePIDController implements Controller{
                                 float proportional2, float integrative2, float derivative2,
                                 MersenneTwisterFast random) {
         pid1 = new PIDController(proportional1,integrative1,derivative1,random);
-        pid1.setCanGoNegative(true); pid1.setWindupStop(false);
+    //    pid1.setCanGoNegative(true); pid1.setWindupStop(false);
+        pid1.setCanGoNegative(false); pid1.setWindupStop(true);
         pid2 = new PIDController(proportional2,integrative2,derivative2,pid1.getSpeed(),random);
+
 
     }
 

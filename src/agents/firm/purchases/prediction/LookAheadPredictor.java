@@ -33,7 +33,8 @@ public class LookAheadPredictor implements PurchasesPredictor {
         //can we see the best price?
         if(dept.getMarket().isBestSalePriceVisible())
             try {
-                return dept.getMarket().getBestSellPrice(); //if so return it
+                long bestPrice = dept.getMarket().getBestSellPrice(); //if so return it
+                return  bestPrice == -1 ? dept.getMarket().getLastPrice() : bestPrice; //if there is none, return last closing price
             } catch (IllegalAccessException e) {
                 assert false; //this should never happen!
                 throw  new IllegalStateException("the market told us the best price was visible but then threw an exception when we asked about it");

@@ -48,7 +48,12 @@ public class AlwaysMovingHillClimber extends weeklyWorkforceMaximizer
     protected int velocity(int currentWorkerTarget, float newProfits, int oldWorkerTarget, float oldProfits)
     {
         if(currentWorkerTarget == oldWorkerTarget)
-            return 0;
+            if(newProfits==oldProfits){
+                return 0;
+            }
+            else
+                return  newProfits > oldProfits ? 1 : -1;
+
 
         int  increasedProfits = (int) Math.signum(newProfits - oldProfits);
         //if the profits are exactly the same? default to 1

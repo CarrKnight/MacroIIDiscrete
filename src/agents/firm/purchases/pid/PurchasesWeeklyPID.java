@@ -172,15 +172,16 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
     @Override
     public void start() {
         getPurchasesDepartment().getFirm().getModel().scheduleSoon(ActionOrder.THINK,
-                new Steppable() {
+                this);
+          /*      new Steppable() {
                     @Override
                     public void step(SimState state) {
                         controller.adjust(getControllerInput(getWeeklyNeeds()),
                                 isActive(),
-                                getPurchasesDepartment().getFirm().getModel(), this, ActionOrder.THINK);
+                                getPurchasesDepartment().getFirm().getModel(), PurchasesWeeklyPID.this, ActionOrder.THINK);
                     }
                 });
-
+            */
         super.start();
     }
 }

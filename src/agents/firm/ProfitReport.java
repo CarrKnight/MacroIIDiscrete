@@ -152,7 +152,6 @@ public class ProfitReport {
         }
 
 
-          System.out.println("weekend!!" + firm);
         firm.logEvent(this, MarketEvents.WEEKEND,firm.getModel().getCurrentSimulationTimeInMillis(),
                 "production:" + Arrays.toString(totalProduction) + "\n"
                         +

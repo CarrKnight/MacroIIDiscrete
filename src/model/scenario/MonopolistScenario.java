@@ -46,6 +46,12 @@ import static org.mockito.Mockito.*;
 public class MonopolistScenario extends Scenario {
 
 
+    /**
+     * The blueprint that the monopolist will use
+     */
+    protected Blueprint blueprint = new Blueprint.Builder().output(GoodType.GENERIC, 1).build();
+    protected Firm monopolist;
+
     public MonopolistScenario(MacroII macroII) {
         super(macroII);
     }
@@ -145,36 +151,35 @@ public class MonopolistScenario extends Scenario {
 
 
         //only one seller
-        final Firm seller = new Firm(getModel());
-        seller.earn(1000000000l);
+        monopolist = new Firm(getModel());
+        monopolist.earn(1000000000l);
         //set up the firm at time 1
         getModel().scheduleSoon(ActionOrder.DAWN, new Steppable() {
             @Override
             public void step(SimState simState) {
                 //sales department
-                SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(seller, goodMarket,
-                        new SimpleBuyerSearch(goodMarket, seller), new SimpleSellerSearch(goodMarket, seller));
-                seller.registerSaleDepartment(dept, GoodType.GENERIC);
+                SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(monopolist, goodMarket,
+                        new SimpleBuyerSearch(goodMarket, monopolist), new SimpleSellerSearch(goodMarket, monopolist));
+                monopolist.registerSaleDepartment(dept, GoodType.GENERIC);
                 dept.setAskPricingStrategy(new SimpleFlowSellerPID(dept)); //set strategy to PID
 
                 //add the plant
-                Blueprint blueprint = new Blueprint.Builder().output(GoodType.GENERIC, 1).build();
-                Plant plant = new Plant(blueprint, seller);
+                Plant plant = new Plant(blueprint, monopolist);
                 plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
                 plant.setCostStrategy(new InputCostStrategy(plant));
-                seller.addPlant(plant);
+                monopolist.addPlant(plant);
 
 
                 //human resources
                 HumanResources hr;
                 if (particle)
-                    hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, seller,
+                    hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, monopolist,
                             laborMarket, plant, ParticleControl.class, null, null);
                 else if (!alwaysMoving)
-                    hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, seller,
+                    hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, monopolist,
                             laborMarket, plant, DiscreteSlowPlantControl.class, null, null);
                 else
-                    hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, seller,
+                    hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, monopolist,
                             laborMarket, plant, DumbClimberControl.class, null, null);
                 //       seller.registerHumanResources(plant, hr);
                 hr.setFixedPayStructure(fixedPayStructure);
@@ -184,7 +189,7 @@ public class MonopolistScenario extends Scenario {
             }
         });
 
-        getAgents().add(seller);
+        getAgents().add(monopolist);
 
 
 
@@ -247,5 +252,23 @@ public class MonopolistScenario extends Scenario {
 
     public void setLookForBetterOffers(boolean lookForBetterOffers) {
         this.lookForBetterOffers = lookForBetterOffers;
+    }
+
+    /**
+     * Gets The blueprint that the monopolist will use.
+     *
+     * @return Value of The blueprint that the monopolist will use.
+     */
+    public Blueprint getBlueprint() {
+        return blueprint;
+    }
+
+    /**
+     * Sets new The blueprint that the monopolist will use.
+     *
+     * @param blueprint New value of The blueprint that the monopolist will use.
+     */
+    public void setBlueprint(Blueprint blueprint) {
+        this.blueprint = blueprint;
     }
 }
