@@ -125,8 +125,8 @@ public class ProfitCheckPlantControlTest {
         firm.setProfitReport(profits);
 
 
-        //now "adjust" 100 times
-        for(int i=0; i < 2000; i++)
+        //now "adjust" 5000 times
+        for(int i=0; i < 5000; i++)
         {
 
             when(profits.getPlantProfits(p)).thenReturn(p.workerSize() * 2f);
@@ -251,8 +251,8 @@ public class ProfitCheckPlantControlTest {
         firm.setProfitReport(profits);
 
 
-        //now "adjust" 100 times
-        for(int i=0; i < 2000; i++)
+        //now "adjust" 5000 times
+        for(int i=0; i < 5000; i++)
         {
             //always profitable
             when(profits.getPlantProfits(p)).thenReturn(p.workerSize() * 2f);

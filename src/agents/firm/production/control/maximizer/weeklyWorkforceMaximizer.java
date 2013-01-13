@@ -62,7 +62,7 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
     /**
      * Number of weeks to pass before we can trust the profit report we get.
      */
-    private int weeksToMakeObservation = 3;
+    private int weeksToMakeObservation = 5;
 
     public weeklyWorkforceMaximizer(HumanResources hr, PlantControl control) {
         this.hr = hr;

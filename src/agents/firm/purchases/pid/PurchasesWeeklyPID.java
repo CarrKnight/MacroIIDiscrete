@@ -128,7 +128,7 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
      */
     @Override
     public boolean canBuy() {
-        return  true;
+        return super.canBuy();
 
     }
 
@@ -141,7 +141,7 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
      */
     @Override
     protected boolean shouldIBuy(HasInventory source, GoodType type, int quantity) {
-        return true;
+        return super.shouldIBuy(source,type,quantity);
     }
 
     /**

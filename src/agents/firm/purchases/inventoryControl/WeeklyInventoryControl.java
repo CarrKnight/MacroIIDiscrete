@@ -73,6 +73,9 @@ public class WeeklyInventoryControl extends AbstractInventoryControl implements 
      */
     private void updateWeeklyNeeds(){
 
+
+        int oldNeeds = 0;
+
         weeklyNeeds = 0;
         singleProductionRunNeed=0;
         //get the firm
@@ -92,6 +95,11 @@ public class WeeklyInventoryControl extends AbstractInventoryControl implements 
             weeklyNeeds += weeklyNeedsThisPlant;
 
         }
+
+
+        //if this is an update whereas we moved from targeting 0 to targeting something else, buy
+        if(oldNeeds ==0 && weeklyNeeds > 0)
+            getPurchasesDepartment().buy();
 
     }
 
