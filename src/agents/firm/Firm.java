@@ -880,5 +880,10 @@ public class Firm extends EconomicAgent {
     }
 
 
+    /*-----------------------------------------
+     * DELEGATES FROM PROFIT REPORTS
+     -------------------------------------------*/
+
+
 
 }

@@ -17,6 +17,7 @@ import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.MarketSalesPredictor;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ArrayListMultimap;
 import financial.Market;
 import financial.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
@@ -52,6 +53,7 @@ public class SupplyChainScenario extends Scenario
 
     public SupplyChainScenario(MacroII model) {
         super(model);
+        //instantiate the map
     }
 
     /**
@@ -79,6 +81,11 @@ public class SupplyChainScenario extends Scenario
      */
     private int foodMultiplier = 1;
 
+    /**
+     * This map stores all the firm by their output type
+     */
+    private ArrayListMultimap<GoodType,Firm> firmsByOutput;
+
 
     /**
      * Called by MacroII, it creates agents and then schedules them.
@@ -86,6 +93,9 @@ public class SupplyChainScenario extends Scenario
     @Override
     public void start()
     {
+        firmsByOutput =
+                ArrayListMultimap.create(3, Math.max(Math.max(numberOfBeefProducers, numberOfCattleProducers), numberOfFoodProducers));
+
 
         //build markets and put firms in them
         instantiateMarkets();
@@ -214,6 +224,7 @@ public class SupplyChainScenario extends Scenario
         });
 
         getAgents().add(firm);
+        firmsByOutput.put(goodmarket.getGoodType(),firm);
 
     }
 
@@ -416,4 +427,42 @@ public class SupplyChainScenario extends Scenario
     public int getNumberOfCattleProducers() {
         return numberOfCattleProducers;
     }
+
+
+    /**
+     * Runs the supply chain with no GUI and writes a big CSV file
+     * @param args
+     */
+    public static void main(String[] args)
+    {
+
+
+        //we know the profit maximizing equilibrium is q=220, price = 72
+        final MacroII macroII = new MacroII(System.currentTimeMillis());
+        SupplyChainScenario scenario1 = new SupplyChainScenario(macroII);
+
+
+
+
+
+        macroII.setScenario(scenario1);
+        macroII.start();
+
+
+        //add the csv writer!
+
+        macroII.scheduleSoon(ActionOrder.CLEANUP,new Steppable() {
+            @Override
+            public void step(SimState state) {
+                throw new RuntimeException("not implemented yet!");
+            }
+        });
+
+
+        while(macroII.schedule.getTime()<3500)
+            macroII.schedule.step(macroII);
+
+
+    }
+
 }
