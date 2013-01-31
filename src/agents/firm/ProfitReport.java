@@ -183,4 +183,13 @@ public class ProfitReport {
     public long getAggregateProfits() {
         return aggregateProfits;
     }
+
+
+    /**
+     * Get last recorded production for a specific good
+     */
+    public int getLastWeekProduction(GoodType type)
+    {
+        return totalProduction[type.ordinal()];
+    }
 }

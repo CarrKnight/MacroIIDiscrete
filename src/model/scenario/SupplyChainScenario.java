@@ -16,8 +16,8 @@ import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.MarketSalesPredictor;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
+import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ArrayListMultimap;
 import financial.Market;
 import financial.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
@@ -26,10 +26,14 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.DailyStatCollector;
 import model.utilities.pid.CascadePIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import tests.DummyBuyer;
+
+import java.io.FileWriter;
+import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 
@@ -81,11 +85,6 @@ public class SupplyChainScenario extends Scenario
      */
     private int foodMultiplier = 1;
 
-    /**
-     * This map stores all the firm by their output type
-     */
-    private ArrayListMultimap<GoodType,Firm> firmsByOutput;
-
 
     /**
      * Called by MacroII, it creates agents and then schedules them.
@@ -93,8 +92,7 @@ public class SupplyChainScenario extends Scenario
     @Override
     public void start()
     {
-        firmsByOutput =
-                ArrayListMultimap.create(3, Math.max(Math.max(numberOfBeefProducers, numberOfCattleProducers), numberOfFoodProducers));
+
 
 
         //build markets and put firms in them
@@ -224,7 +222,6 @@ public class SupplyChainScenario extends Scenario
         });
 
         getAgents().add(firm);
-        firmsByOutput.put(goodmarket.getGoodType(),firm);
 
     }
 
@@ -448,15 +445,18 @@ public class SupplyChainScenario extends Scenario
         macroII.setScenario(scenario1);
         macroII.start();
 
+        //create the CSVWriter
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter("supplychain.csv"));
+            DailyStatCollector collector = new DailyStatCollector(macroII,writer);
+            collector.start();
 
-        //add the csv writer!
+        } catch (IOException e) {
+            System.err.println("failed to create the file!");
+        }
 
-        macroII.scheduleSoon(ActionOrder.CLEANUP,new Steppable() {
-            @Override
-            public void step(SimState state) {
-                throw new RuntimeException("not implemented yet!");
-            }
-        });
+
+
 
 
         while(macroII.schedule.getTime()<3500)

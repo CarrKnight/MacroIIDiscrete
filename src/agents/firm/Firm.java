@@ -884,6 +884,61 @@ public class Firm extends EconomicAgent {
      * DELEGATES FROM PROFIT REPORTS
      -------------------------------------------*/
 
+    /**
+     * Get last recorded production for a specific good
+     */
+    public int getLastWeekProduction(GoodType type) {
+        return profitReport.getLastWeekProduction(type);
+    }
 
+    /**
+     * Count all workers at all plants
+     * @return the total number of workers
+     */
+    public int getTotalWorkers()
+    {
+        int totalWorkers = 0;
+        for(Plant p : plants)
+            totalWorkers += p.workerSize();
+        return totalWorkers;
+    }
+
+
+
+
+    /**
+     * Count all the workers at plants that produce a specific output
+     * @param goodType the type of output
+     * @return the total number of workers
+     */
+    public int getTotalWorkersWhoProduceThisGood(GoodType goodType)
+    {
+        int totalWorkers = 0;
+        for(Plant p : plants){
+            Integer outputProduced = p.getBlueprint().getOutputs().get(goodType);
+            if(outputProduced != null && outputProduced > 0)
+                totalWorkers += p.workerSize();
+        }
+        return totalWorkers;
+
+
+    }
+
+    /**
+     * Checks if at least one plant that was producing a specific good had its production halted today because of missing inputs
+     * @param goodType the type of good the plant should be producing
+     * @return true if AT LEAST one firm had its production halted
+     */
+    public boolean wereThereMissingInputsInAtLeastOnePlant(GoodType goodType)
+    {
+        for(Plant p : plants){
+            Integer outputProduced = p.getBlueprint().getOutputs().get(goodType);
+            if(outputProduced != null && outputProduced > 0)
+                if(p.getStatus().equals(PlantStatus.WAITING_FOR_INPUT))
+                    return true;
+
+        }
+        return false;
+    }
 
 }
