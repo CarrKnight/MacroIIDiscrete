@@ -998,6 +998,18 @@ public class SalesDepartment implements Department {
         return grossMargin.getLast();
     }
 
+
+    /**
+     * Return last week sales (that is, revenues)
+     */
+    public long getLastWeekSales()
+    {
+        return totalSales.getLast();
+    }
+
+
+
+
     /**
      *
      *

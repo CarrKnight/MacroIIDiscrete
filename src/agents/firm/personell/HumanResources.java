@@ -376,4 +376,15 @@ public class HumanResources extends PurchasesDepartment {
         assert getMarket().getGoodType().isLabor();
         return getMarket().getBuyers();
     }
+
+
+    /**
+     * How many workers are needed for this technology to even work?
+     * @return the number of workers above which the plant can't operate.
+     */
+    public int maximumWorkersPossible() {
+        return getPlant().maximumWorkersPossible();
+    }
 }
+
+

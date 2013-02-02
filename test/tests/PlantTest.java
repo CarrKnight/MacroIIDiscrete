@@ -2,6 +2,8 @@ package tests;
 
 import agents.Person;
 import agents.firm.Firm;
+import agents.firm.cost.InputCostStrategy;
+import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.cost.EmptyCostStrategy;
 import goods.Good;
@@ -15,6 +17,8 @@ import agents.firm.production.technology.DRSExponentialMachinery;
 import agents.firm.production.technology.IRSExponentialMachinery;
 import junit.framework.Assert;
 import model.MacroII;
+import model.utilities.ActionOrder;
+import model.utilities.PhaseScheduler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -225,7 +229,7 @@ public class PlantTest {
     public void testStep() throws Exception {
 
 
-        Blueprint b = new Blueprint.Builder().output(GoodType.GENERIC,2).build(); //create a simple output
+        Blueprint b = Blueprint.simpleBlueprint(GoodType.GENERIC, 1, GoodType.GENERIC, 1);
         MacroII localMacroII = new MacroII(1l);
         localMacroII.schedule = mock(Schedule.class); //put in a fake schedule so we avoid steppables firing at random
 
@@ -235,20 +239,15 @@ public class PlantTest {
         f.addPlant(localCRS);
 
 
-        Person w1 = new Person(localMacroII); Person w2 = new Person(localMacroII);
-        localCRS.addWorker(w1);localCRS.addWorker(w2);    w1.hired(localCRS.getOwner(),9999999); w2.hired(localCRS.getOwner(), 9999999);
 
 
-
-        localCRS.getOwner().registerSaleDepartment(mock(SalesDepartment.class),GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+        localCRS.getOwner().registerSaleDepartment(mock(SalesDepartment.class),GoodType.GENERIC); //fake sales
+        // department so that you don't try selling the stuff you build
 
 
         localCRS.setCostStrategy(new EmptyCostStrategy());
         try{
             localCRS.getModel();
-
-            localCRS.removeLastWorker(); localCRS.removeLastWorker();
-            localCRS.setBlueprint(Blueprint.simpleBlueprint(GoodType.GENERIC, 1, GoodType.GENERIC, 1)); //dumb technology to test inputs
 
             localCRS.getModel().getPhaseScheduler().step(localCRS.getModel());
 
@@ -262,7 +261,7 @@ public class PlantTest {
             localCRS.getModel().getPhaseScheduler().step(localCRS.getModel());
 
             Assert.assertEquals(localCRS.getStatus(),PlantStatus.WAITING_FOR_INPUT);
-            localCRS.getOwner().receive(new Good(GoodType.GENERIC,drs.getOwner(),1l),drs.getOwner());
+            localCRS.getOwner().receive(new Good(GoodType.GENERIC, drs.getOwner(), 1l), drs.getOwner());
 
             localCRS.getModel().getPhaseScheduler().step(localCRS.getModel());
             Assert.assertEquals(localCRS.getStatus(),PlantStatus.READY); //you should automatically start production!
@@ -329,6 +328,80 @@ public class PlantTest {
         Assert.assertEquals(2f* crs.getModel().getWeekLength(),crs.marginalProductOfWorker(GoodType.GENERIC),.0001f);
         Assert.assertEquals(2f*5.0f * irs.getModel().getWeekLength(),irs.marginalProductOfWorker(GoodType.GENERIC),.0001f);
         Assert.assertEquals(2f* 0.317837245 * drs.getModel().getWeekLength(),drs.marginalProductOfWorker(GoodType.GENERIC),.0001f);
+
+
+
+
+    }
+
+    @Test
+    public void testTotalInputs()
+    {
+
+        Blueprint b = Blueprint.simpleBlueprint(GoodType.GENERIC, 1, GoodType.BEEF, 1);
+        MacroII localMacroII =  mock(MacroII.class);
+        PhaseScheduler scheduler = mock(PhaseScheduler.class); when(localMacroII.getCurrentPhase()).thenReturn(ActionOrder.PRODUCTION);
+        when(localMacroII.getPhaseScheduler()).thenReturn(scheduler);  when(localMacroII.getWeekLength()).thenReturn(7f);
+        Firm f = new Firm(localMacroII);
+        Plant localCRS = new Plant(b,new Firm(localMacroII)); localCRS.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, f, 0l, localCRS));
+        f.addPlant(localCRS);
+        localCRS.addWorker(new Person(localCRS.getModel()));
+        localCRS.addWorker(new Person(localCRS.getModel()));
+        localCRS.getOwner().registerSaleDepartment(mock(SalesDepartment.class),GoodType.BEEF); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+        localCRS.setCostStrategy(new InputCostStrategy(localCRS));
+
+
+        //initially they should be set up to 0
+        Assert.assertEquals(localCRS.getThisWeekInputCosts(),0l);
+        Assert.assertEquals(localCRS.getLastWeekInputCosts(),0l);
+
+        //now when I step you, you should  say you are waiting for inputs
+        localCRS.getModel();
+        localCRS.step(localMacroII);
+        Assert.assertEquals(localCRS.getStatus(),PlantStatus.WAITING_FOR_INPUT);
+        Assert.assertEquals(localCRS.getThisWeekInputCosts(),0l); //input costs should still be 0
+        Assert.assertEquals(localCRS.getLastWeekInputCosts(),0l);
+
+
+
+        //now I give you one input that costs 10$
+        localCRS.getOwner().receive(new Good(GoodType.GENERIC, drs.getOwner(), 10l), drs.getOwner());
+        localCRS.step(localCRS.getModel());
+        Assert.assertEquals(localCRS.getThisWeekInputCosts(),10l); //input costs should still now be 10
+        Assert.assertEquals(localCRS.getLastWeekInputCosts(),0l);
+
+        //I'll give you another and force you to step again
+        localCRS.getOwner().receive(new Good(GoodType.GENERIC,drs.getOwner(),10l),drs.getOwner());
+        localCRS.step(localCRS.getModel());
+        Assert.assertEquals(localCRS.getThisWeekInputCosts(),20l); //input costs should still now be 20
+        Assert.assertEquals(localCRS.getLastWeekInputCosts(),0l);
+
+
+        //with weekend it should reset this week and make lastweekinput costs equal 20
+        localCRS.weekEnd(7);
+        Assert.assertEquals(localCRS.getThisWeekInputCosts(),0l); //reset to 0
+        Assert.assertEquals(localCRS.getLastWeekInputCosts(),20l); //now it's 20
+
+
+        //try one more time
+        localCRS.getOwner().receive(new Good(GoodType.GENERIC,drs.getOwner(),10l),drs.getOwner());
+        localCRS.step(localCRS.getModel());
+        Assert.assertEquals(localCRS.getThisWeekInputCosts(),10l); //input costs should now be 10
+        Assert.assertEquals(localCRS.getLastWeekInputCosts(),20l); //this should be stuck at 20
+
+
+        //new weekend, forget 20$ and reset this week
+        localCRS.weekEnd(14);
+        Assert.assertEquals(localCRS.getThisWeekInputCosts(),0l); //reset to 0
+        Assert.assertEquals(localCRS.getLastWeekInputCosts(),10l); //now it's 10
+
+        //another weekend, everything is at 0
+        localCRS.weekEnd(0);
+        Assert.assertEquals(localCRS.getThisWeekInputCosts(),0l); //reset to 0
+        Assert.assertEquals(localCRS.getLastWeekInputCosts(),0l); //now it's 10
+
+
+
 
 
 

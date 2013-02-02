@@ -129,7 +129,7 @@ public class PIDController implements Controller{
      * The adjust is the main part of the PID controller. It checks the new error and set the MV (which is the price, really)     *
      * @param input    the controller input object holding the state variables (set point, current value and so on)
      * @param isActive are we active?
-     * @param simState a link to the model (to adjust yourself)
+     * @param simState a link to the model (to reschedule the user)
      * @param user     the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)
      * @param phase at which phase should this controller be rescheduled
      */
@@ -140,19 +140,19 @@ public class PIDController implements Controller{
     }
 
     /**
-     * The adjust is the main part of the PID controller. It checks the new error and set the MV (which is the price, really)
-     *
-     * @param target the inventory we want to target this adjust
-     * @param current the inventory we have
-     * @param isActive are we active?
-     * @param simState a link to the model (to adjust yourself) [can be null]
-     * @param user the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself) [can be null]
+     * The adjust is the main part of the PID Controller. This method doesn't compute but rather receive the new error
+     * and just perform the PID magic on it
+     * @param residual the residual/error: the difference between current value of y and its target
+     * @param isActive is the agent calling this still alive and active?
+     * @param simState a link to the model (to reschedule the user)
+     * @param user     the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)
      * @param phase at which phase should this controller be rescheduled
-     *
      */
-    public void adjust(float target, float current, boolean isActive,
-                       @Nullable MacroII simState, @Nullable Steppable user,ActionOrder phase) {
-        if (adjustOnce(target, current, isActive))
+    public void adjust(float residual, boolean isActive,
+                       @Nullable MacroII simState, @Nullable Steppable user,ActionOrder phase )
+    {
+        //delegate the PID itself to adjustOnce, and worry about refactoring
+        if (!adjustOnce(residual, isActive))
             return;
 
 
@@ -174,21 +174,59 @@ public class PIDController implements Controller{
     }
 
     /**
+     * The adjust is the main part of the PID controller. It checks the new error and set the MV (which is the price, really)
+     *
+     * @param target the inventory we want to target this adjust
+     * @param current the inventory we have
+     * @param isActive are we active?
+     * @param simState a link to the model (to adjust yourself) [can be null]
+     * @param user the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself) [can be null]
+     * @param phase at which phase should this controller be rescheduled
+     *
+     */
+    public void adjust(float target, float current, boolean isActive,
+                       @Nullable MacroII simState, @Nullable Steppable user,ActionOrder phase) {
+        //get the residual and delegate to the residual method
+        float residual = target - current;
+        adjust(residual,isActive,simState,user,phase);
+
+    }
+
+    /**
      * This adjusts the PID but doesn't reschedule itself. Useful for multiple PIDs at the same time where we want just one scheduling
      * @param target the set point
      * @param current the current value of y
      * @param isActive the user is active
-     * @return true if the adjustment took place (basically true if isActive is true)
+     * @return just returns isActive
      */
     public boolean adjustOnce(float target, float current, boolean isActive) {
         if(!isActive)
-            return true;
+            return false;
+
+         //Compute residual and delegate to the other adjustOnce
+
+        float residual = target - current; //this is your new error
+        return adjustOnce(residual,isActive);
+
+
+
+    }
+
+    /**
+     * This adjusts the PID but doesn't reschedule itself. Useful for multiple PIDs at the same time where we want just one scheduling
+     * @param residual the difference between target and current value of y
+     * @param isActive the user is active
+     * @return just returns isActive
+     */
+    public boolean adjustOnce(float residual, boolean isActive) {
+        if(!isActive)
+            return false;
 
         /*************************
          *RECORDING
          ************************/
         oldError= newError; //shift errors down
-        newError = target - current; //this is your new error
+        newError = residual; //this is your new error
 
         /*************************
          * PID FORMULA
@@ -206,8 +244,11 @@ public class PIDController implements Controller{
         currentMV = formula(derivative);
         if(!canGoNegative && currentMV < 0)
             currentMV = 0; //bound to 0
-        return false;
+        return true;
     }
+
+
+
 
     private float formula(float derivative) {
         return initialPrice + proportionalGain * newError + integralGain * integral + derivativeGain * derivative;

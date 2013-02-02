@@ -120,6 +120,15 @@ public class Plant implements Agent, InventoryListener {
     protected long age = 0;
 
     /**
+     * How much money has been spent this week on inputs
+     */
+    private long thisWeekInputCosts = 0;
+    /**
+     * How much money was spent last week on inputs
+     */
+    private long lastWeekInputCosts = 0;
+
+    /**
      * The accounting way of accounting for costs
      */
     protected PlantCostStrategy costStrategy;
@@ -248,6 +257,7 @@ public class Plant implements Agent, InventoryListener {
             }
 
         }
+        thisWeekInputCosts += totalCostOfInputs; //add the total cost of inputs up
 
         /*************************************
          * PRODUCE OUTPUTS
@@ -564,6 +574,8 @@ public class Plant implements Agent, InventoryListener {
         //reset counters!
         lastWeekProductionRate = thisWeekProductionRate;
         thisWeekProductionRate = new int[GoodType.values().length];
+        lastWeekInputCosts = thisWeekInputCosts;
+        thisWeekInputCosts = 0;
 
         //make sure it stays obsolete
         assert age < usefulLife || status == PlantStatus.OBSOLETE;
@@ -855,7 +867,7 @@ public class Plant implements Agent, InventoryListener {
         return plantMachinery.getType();
     }
 
-    /*
+    /**
     * Total amount of weekly production expected by this technology
     */
     public float weeklyThroughput(GoodType outputType) {
@@ -923,5 +935,14 @@ public class Plant implements Agent, InventoryListener {
     public void failedToConsumeEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int numberNeeded) {
 
 
+    }
+
+
+    public long getLastWeekInputCosts() {
+        return lastWeekInputCosts;
+    }
+
+    public long getThisWeekInputCosts() {
+        return thisWeekInputCosts;
     }
 }

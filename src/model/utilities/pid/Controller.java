@@ -37,6 +37,8 @@ public interface Controller {
     public void adjust(ControllerInput input, boolean isActive, @Nullable MacroII simState, @Nullable Steppable user,
                        ActionOrder phase);
 
+
+
     /**
      * Get the current u_t
      */

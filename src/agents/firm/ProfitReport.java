@@ -105,35 +105,35 @@ public class ProfitReport {
             grossMargins.put(dept.getKey(), dept.getValue().getLastWeekMargin());
 
 
+
         //go through the plants one more time
         for(Plant p : firm.getPlants())
         {
 
-            float revenue=0;
+            float margin=0; //this is simple REVENUE - COSTS as recorded by the sales department
+            float revenue=0; //this is just REVENUE without costs
 
             //for each output
             Set<GoodType> outputs = p.getBlueprint().getOutputs().keySet();
             for (GoodType output: outputs) {
 
-                //your share of revenue is equal to the salesDepartment margins in proportion to your production
+                //your share of margin is equal to the salesDepartment margin in proportion to your production
                 if(totalProduction[output.ordinal()]>0)
                 {
-                    revenue += (float)grossMargins.get(output) *
+                    margin += (float)grossMargins.get(output) *
                             ((float)p.getLastWeekThroughput()[output.ordinal()]) /
                             ((float)totalProduction[output.ordinal()]);
                 }
                 else
                 {
                     assert  totalProduction[output.ordinal()]==0;
-                    revenue +=0;
+                    margin +=0;
                 }
 
 
-     //           System.out.println(" real revenue: " + (float)grossMargins.get(output) + ", last week: " + ((float)p.getLastWeekThroughput()[output.ordinal()])
-    //                    + ", total production: " + ((float)totalProduction[output.ordinal()]));
             }
 
-            float profits = revenue;
+            float profits = margin;
             //add wage costs
             float wageCosts = firm.getHR(p).getWagesPaid();
             assert wageCosts > 0 || p.workerSize() == 0 || p.getWorkers().get(0).getMinimumWageRequired() == 0: wageCosts + " --- " + p.workerSize();
@@ -142,9 +142,7 @@ public class ProfitReport {
             //subtract fixed costs
             profits -= p.weeklyFixedCosts();
 
-            //fixed costs
-    //        System.out.println("profits: " + profits + " revenue: " + revenue + " revenue: " + revenue +
-   //                 " , wages: " + wageCosts + " , fixed costs: " + p.weeklyFixedCosts());
+
             profitsMade.put(p,profits);
             ammortizedFixedCosts.put(p,p.weeklyFixedCosts());
             aggregateProfits +=profits;

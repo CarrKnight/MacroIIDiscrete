@@ -15,7 +15,7 @@ import java.util.Set;
 
 /**
  * <h4>Description</h4>
- * <p/>
+ * <p/> Creates a maximizer that acts as hill-climber but rather than "experimenting" it infers the slope by checking marginal costs
  * <p/>
  * <p/>
  * <h4>Notes</h4>
@@ -161,9 +161,7 @@ public class MarginalMaximizer extends weeklyWorkforceMaximizer
 
 
         }
-        //if you are increasing production revenue should be positive or zero. If we are decreasing production then revenue will be negative
-    //    assert (marginalRevenue >=0 && targetWorkers > currentWorkers) ^ (marginalRevenue <=0 && targetWorkers < currentWorkers)
-//                : "marginalRevenue:" + marginalRevenue ;
+
 
         //FINALLY return
         return marginalRevenue - totalMarginalCosts;
