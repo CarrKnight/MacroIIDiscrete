@@ -281,4 +281,21 @@ public class MarginalMaximizer extends weeklyWorkforceMaximizer
     }
 
 
+    /**
+     * Gets The plant to maximize.
+     *
+     * @return Value of The plant to maximize.
+     */
+    public Plant getP() {
+        return p;
+    }
+
+    /**
+     * Gets The firm owning the plant.
+     *
+     * @return Value of The firm owning the plant.
+     */
+    public Firm getOwner() {
+        return owner;
+    }
 }

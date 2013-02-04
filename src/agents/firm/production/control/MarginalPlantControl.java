@@ -1,9 +1,6 @@
 package agents.firm.production.control;
 
 import agents.firm.personell.HumanResources;
-import agents.firm.purchases.inventoryControl.Level;
-import goods.Good;
-import goods.GoodType;
 import agents.firm.production.Plant;
 import agents.firm.production.PlantListener;
 import agents.firm.production.control.decorators.PlantControlDecorator;
@@ -12,6 +9,9 @@ import agents.firm.production.control.maximizer.WorkforceMaximizer;
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.control.targeter.WorkforceTargeter;
 import agents.firm.production.technology.Machinery;
+import agents.firm.purchases.inventoryControl.Level;
+import goods.Good;
+import goods.GoodType;
 
 import javax.annotation.Nonnull;
 

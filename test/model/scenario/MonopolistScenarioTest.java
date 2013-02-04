@@ -54,6 +54,9 @@ public class MonopolistScenarioTest {
     }
 
 
+
+
+
     @Test
     public void rightPriceAndQuantityTestAsMarginal()
     {

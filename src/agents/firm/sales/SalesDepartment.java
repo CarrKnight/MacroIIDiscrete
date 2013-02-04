@@ -5,6 +5,7 @@ import agents.firm.Department;
 import agents.firm.Firm;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
+import agents.firm.sales.prediction.MemorySalesPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.decorators.AskReservationPriceDecorator;
@@ -226,6 +227,7 @@ public class SalesDepartment implements Department {
         grossMargin = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
         this.buyerSearchAlgorithm = buyerSearchAlgorithm;
         this.sellerSearchAlgorithm = sellerSearchAlgorithm;
+        predictorStrategy = new MemorySalesPredictor();
 
         this.model = model;
 

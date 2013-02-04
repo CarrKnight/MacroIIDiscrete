@@ -530,7 +530,7 @@ public class Plant implements Agent, InventoryListener {
     public void addWorkers(Person... newHires)
     {
         if(workerSize() + newHires.length > maxWorkers)
-            throw new IllegalStateException("Trying to too many workers to the firm");
+            throw new IllegalStateException("Trying to too many workers to the firm " + workerSize() + newHires.length);
 
 
         for(Person p : newHires){
