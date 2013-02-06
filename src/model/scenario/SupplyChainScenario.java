@@ -8,6 +8,8 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.MarginalPlantControl;
+import agents.firm.production.control.MarginalPlantControlWithPID;
+import agents.firm.production.control.PlantControl;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesWeeklyPID;
@@ -64,6 +66,12 @@ public class SupplyChainScenario extends Scenario
      * total number of firms producing cattle
      */
     private int numberOfCattleProducers = 1;
+
+
+    /**
+     * The type of integrated control that is used by human resources in firms to choose production
+     */
+    private Class<? extends PlantControl> controlType = MarginalPlantControl.class;
 
     /**
      * total number of firms producing beef
@@ -193,7 +201,7 @@ public class SupplyChainScenario extends Scenario
                 plant.setCostStrategy(new InputCostStrategy(plant));
                 firm.addPlant(plant);
                 HumanResources hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, firm,
-                        laborMarket, plant, MarginalPlantControl.class, null, null);
+                        laborMarket, plant, controlType, null, null);
                 hr.setFixedPayStructure(true);
                 hr.start();
 
@@ -425,6 +433,13 @@ public class SupplyChainScenario extends Scenario
         return numberOfCattleProducers;
     }
 
+    public Class<? extends PlantControl> getControlType() {
+        return controlType;
+    }
+
+    public void setControlType(Class<? extends PlantControl> controlType) {
+        this.controlType = controlType;
+    }
 
     /**
      * Runs the supply chain with no GUI and writes a big CSV file
@@ -436,6 +451,7 @@ public class SupplyChainScenario extends Scenario
 
         final MacroII macroII = new MacroII(System.currentTimeMillis());
         SupplyChainScenario scenario1 = new SupplyChainScenario(macroII);
+        scenario1.controlType = MarginalPlantControlWithPID.class;
 
 
 

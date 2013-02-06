@@ -136,6 +136,21 @@ public class SalesDepartment implements Department {
     private int goodsToSellLastWeek;
 
     /**
+     * goods sold today. Reset every day at PREPARE_TO_TRADE step
+     */
+    private int todayOutflow;
+
+    /**
+     * goods that were given to us to sell today
+     */
+    private int todayInflow;
+
+    /**
+     * this flag is set to true whenever the first sellThis is called. It is never set to false
+     */
+    private boolean started = false;
+
+    /**
      * This is the ratio goodsToSell/GoodsSold
      */
     private float soldPercentage = 1;
@@ -425,18 +440,17 @@ public class SalesDepartment implements Department {
      */
     public void sellThis(final Good g){
 
+        //preconditions
         assert firm.has(g); //we should be selling something we have!
         assert market.getGoodType().equals(g.getType());
         toSell.add(g); //addSalesDepartmentListener it to the list of stuff to sell
 
-        //tell the listeners about it
-        for(SalesDepartmentListener listener : salesDepartmentListeners)
-            listener.sellThisEvent(firm,this,g);
 
-        //log it
-        getFirm().logEvent(SalesDepartment.this, MarketEvents.TASKED_TO_SELL, getFirm().getModel().getCurrentSimulationTimeInMillis());
+        //log it (this also fires listeners)
+        logInflow(g);
 
 
+        //now act
         if(market.getSellerRole() == ActionsAllowed.QUOTE) //if we are supposed to quote
         {
             placeQuote(g);
@@ -447,6 +461,63 @@ public class SalesDepartment implements Department {
             peddle(g);
 
         }
+
+    }
+
+    /**
+     * Does three things: Logs the event that we were tasked to sell a good, tell the listeners about this event and if this was teh very
+     * first good we have to sell, schedule daily a resetDailyCounters() call
+     */
+    private void logInflow(Good g) {
+
+
+        //tell the listeners about it
+        for(SalesDepartmentListener listener : salesDepartmentListeners)
+            listener.sellThisEvent(firm,this,g);
+
+
+
+
+        todayInflow++;
+        getFirm().logEvent(SalesDepartment.this, MarketEvents.TASKED_TO_SELL, getFirm().getModel().getCurrentSimulationTimeInMillis());
+
+
+
+        //if this is the first time we get to sell, start also resetting data
+        if(!started)
+        {
+            model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE,new Steppable() {
+                @Override
+                public void step(SimState state) {
+                    resetDailyCounters();
+
+                }
+            });
+        }
+
+
+    }
+
+    /**
+     * this method resets the daily counters of inflow and outflow and if the firm is active, reschedule itself assuming
+     * this was called when the phase was PREPARE_TO_TRADE
+     */
+    private void resetDailyCounters() {
+        if(!firm.isActive())
+            return;
+
+
+        todayInflow = 0;
+        todayOutflow = 0;
+
+        model.scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE,new Steppable() {
+            @Override
+            public void step(SimState state) {
+
+                resetDailyCounters();
+            }
+        });
+
 
     }
 
@@ -596,7 +667,7 @@ public class SalesDepartment implements Department {
          * Record information
          *******************************************************************/
         toSell.remove(g);
-        registerSale(g, finalPrice);
+        logOutflow(g, finalPrice);
         PurchaseResult toReturn =  PurchaseResult.SUCCESS;
         toReturn.setPriceTrade(finalPrice);
         return toReturn;
@@ -633,14 +704,14 @@ public class SalesDepartment implements Department {
         }
 
         //register it!
-        registerSale(g,price);
+        logOutflow(g, price);
 
     }
 
     /**
-     * After having removed the good from the sales department toSell, this records it as a sale
+     * After having removed the good from the sales department toSell, this records it as a sale and tell the listeners
      */
-    private void registerSale(Good g, long price)
+    private void logOutflow(Good g, long price)
     {
         assert !firm.has(g); //you can't have it if you sold it!
         assert !toSell.contains(g); //you should have removed it!!!
@@ -651,8 +722,17 @@ public class SalesDepartment implements Department {
         salesResults.put(g, newResult); //put it in!
         lastClosingPrice = price;
         lastClosingCost = newResult.getPreviousCost();
+
         //tell the listeners!
-        goodSoldEvent(newResult);
+        fireGoodSoldEvent(newResult);
+
+        //log it
+        getFirm().logEvent(SalesDepartment.this, MarketEvents.SOLD
+                , getFirm().getModel().getCurrentSimulationTimeInMillis(), "price " + newResult.getPriceSold());
+        todayOutflow++;
+
+
+
 
     }
 
@@ -720,7 +800,7 @@ public class SalesDepartment implements Department {
                 lastClosingPrice = finalPrice;
                 buyerSearchAlgorithm.reactToSuccess(buyer,result); //tell the search algorithm
                 //tell the listeners!
-                goodSoldEvent(saleResult);
+                fireGoodSoldEvent(saleResult);
 
                 return true;
 
@@ -1142,16 +1222,16 @@ public class SalesDepartment implements Department {
 
 
     /**
-     * Notify the listeners and the logger/gui that a good was sold!
+     * Notify the listeners and the logger/gui that a good was sold! Also count it among the daily goods sold
      */
-    public void goodSoldEvent(SaleResult saleResult){
+    public void fireGoodSoldEvent(SaleResult saleResult){
+
+
 
         for(SalesDepartmentListener listener : salesDepartmentListeners)
             listener.goodSoldEvent(this,saleResult);
 
-        //log it
-        getFirm().logEvent(SalesDepartment.this, MarketEvents.SOLD
-                , getFirm().getModel().getCurrentSimulationTimeInMillis(), "price " + saleResult.getPriceSold());
+
 
     }
 
@@ -1169,5 +1249,24 @@ public class SalesDepartment implements Department {
      */
     public void setCanPeddle(boolean canPeddle) {
         this.canPeddle = canPeddle;
+    }
+
+
+    /**
+     * Gets goods sold today. Reset every day at PREPARE_TO_TRADE step.
+     *
+     * @return Value of goods sold today. Reset every day at PREPARE_TO_TRADE step.
+     */
+    public int getTodayOutflow() {
+        return todayOutflow;
+    }
+
+    /**
+     * Gets goods that were given to us to sell today.   Reset every day at PREPARE_TO_TRADE step.
+     *
+     * @return Value of goods that were given to us to sell today.
+     */
+    public int getTodayInflow() {
+        return todayInflow;
     }
 }
