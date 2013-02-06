@@ -7,9 +7,7 @@ import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
-import agents.firm.production.control.DiscreteSlowPlantControl;
-import agents.firm.production.control.DumbClimberControl;
-import agents.firm.production.control.MarginalPlantControl;
+import agents.firm.production.control.*;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
@@ -52,22 +50,22 @@ public class MonopolistScenario extends Scenario {
     protected Blueprint blueprint = new Blueprint.Builder().output(GoodType.GENERIC, 1).build();
     protected Firm monopolist;
 
-    /**
-     * flag that defines whether the hr maximizes by checking marginal costs and benefits
-     */
-    private boolean marginal = false;
 
     public MonopolistScenario(MacroII macroII) {
         super(macroII);
     }
-
-    private boolean alwaysMoving = false;
 
 
     /**
      * Does hr charge a single wage across the plant?
      */
     private boolean fixedPayStructure = true;
+
+    /**
+     * this is somewhat of an ugly trick to get the gui to be able to select the kind of class
+     * the human resource should use. Mason GUI knows how to deal with enums
+     */
+    private MonopolistScenarioIntegratedControlEnum controlType = MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_SIMPLE;
 
     /**
      * Do agents go around look for better offers all the time?
@@ -176,15 +174,10 @@ public class MonopolistScenario extends Scenario {
 
                 //human resources
                 HumanResources hr;
-                if (marginal)
-                    hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, monopolist,
-                            laborMarket, plant, MarginalPlantControl.class, null, null);
-                else if (!alwaysMoving)
-                    hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, monopolist,
-                            laborMarket, plant, DiscreteSlowPlantControl.class, null, null);
-                else
-                    hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, monopolist,
-                            laborMarket, plant, DumbClimberControl.class, null, null);
+
+                hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, monopolist,
+                        laborMarket, plant,controlType.getController(), null, null);
+
                 //       seller.registerHumanResources(plant, hr);
                 hr.setFixedPayStructure(fixedPayStructure);
                 hr.start();
@@ -225,14 +218,6 @@ public class MonopolistScenario extends Scenario {
     }
 
 
-    public boolean isAlwaysMoving() {
-        return alwaysMoving;
-    }
-
-    public void setAlwaysMoving(boolean alwaysMoving) {
-        this.alwaysMoving = alwaysMoving;
-    }
-
 
 
 
@@ -272,21 +257,53 @@ public class MonopolistScenario extends Scenario {
     }
 
 
+
     /**
-     * Gets flag that defines whether the hr maximizes by checking marginal costs and benefits.
-     *
-     * @return Value of flag that defines whether the hr maximizes by checking marginal costs and benefits.
+     * this is somewhat of an ugly trick to get the gui to be able to select the kind of class
+     * the human resource should use. Mason GUI knows how to deal with enums
      */
-    public boolean isMarginal() {
-        return marginal;
+    public enum MonopolistScenarioIntegratedControlEnum
+    {
+        MARGINAL_PLANT_CONTROL(MarginalPlantControl.class),
+
+        HILL_CLIMBER_SIMPLE(DiscreteSlowPlantControl.class),
+
+        HILL_CLIMBER_ALWAYS_MOVING(DumbClimberControl.class),
+
+        MARGINAL_WITH_PID(MarginalPlantControlWithPID.class)
+
+
+
+
+        ;
+
+        private MonopolistScenarioIntegratedControlEnum(Class<? extends PlantControl> controller) {
+            this.controller = controller;
+        }
+
+        private  Class<? extends PlantControl> controller;
+
+
+        public Class<? extends PlantControl> getController() {
+            return controller;
+        }
     }
 
     /**
-     * Sets new flag that defines whether the hr maximizes by checking marginal costs and benefits.
+     * Gets controlType.
      *
-     * @param marginal New value of flag that defines whether the hr maximizes by checking marginal costs and benefits.
+     * @return Value of controlType.
      */
-    public void setMarginal(boolean marginal) {
-        this.marginal = marginal;
+    public MonopolistScenarioIntegratedControlEnum getControlType() {
+        return controlType;
+    }
+
+    /**
+     * Sets new controlType.
+     *
+     * @param controlType New value of controlType.
+     */
+    public void setControlType(MonopolistScenarioIntegratedControlEnum controlType) {
+        this.controlType = controlType;
     }
 }

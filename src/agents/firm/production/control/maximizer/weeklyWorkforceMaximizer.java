@@ -164,15 +164,6 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
         int futureTarget = chooseWorkerTarget(control.getTarget(),newProfits,oldWorkerTarget,oldProfits);
 
 
-        //System.out.println(" old worker target: " + oldWorkerTarget + " , old profits: " + oldProfits + " current worker target: " + control.getTarget() + " current profits: " + newProfits);
- /*       System.out.println( getHr().getPlant().hashCode() + ", old Profits: " + oldProfits + ", new profits: " + newProfits +
-                "; old workerTarget:" + oldWorkerTarget + ", new target:" + futureTarget +", current workers: " + getHr().getPlant().workerSize()
-                + ", sale price: " + getHr().getFirm().getSalesDepartment(GoodType.GENERIC).getLastClosingPrice() +
-                ",totalwages: " + getHr().getWagesPaid() + ", single wage: " + getControl().getCurrentWage() +
-                ", marketVolume: " + getHr().getPlant().getModel().getMarket(GoodType.GENERIC).getLastWeekVolume());
-
-   */
-
         //if the future target is negative, do it again next week (the subclass wants more info)
         if(futureTarget < 0){
             hr.getFirm().getModel().scheduleAnotherDay(ActionOrder.PREPARE_TO_TRADE,this,nextCheck + weeksToMakeObservation*7);

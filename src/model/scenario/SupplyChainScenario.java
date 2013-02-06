@@ -434,7 +434,6 @@ public class SupplyChainScenario extends Scenario
     {
 
 
-        //we know the profit maximizing equilibrium is q=220, price = 72
         final MacroII macroII = new MacroII(System.currentTimeMillis());
         SupplyChainScenario scenario1 = new SupplyChainScenario(macroII);
 

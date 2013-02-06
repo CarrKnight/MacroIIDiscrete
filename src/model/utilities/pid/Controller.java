@@ -38,7 +38,6 @@ public interface Controller {
                        ActionOrder phase);
 
 
-
     /**
      * Get the current u_t
      */
