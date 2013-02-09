@@ -315,7 +315,8 @@ public class MacroII extends SimState{
 //        assert time >= 0: time;
 
         long weeks = (long) (time / (float)weekLength); //get how many weeks have passed
-        assert weeks == weeksPassed || Market.TESTING_MODE : weeks + "," + time + " , " + weeksPassed;
+        assert weeks == weeksPassed || Market.TESTING_MODE :
+                weeks + "," + time + " , " + weeksPassed;
 
         float remainder =  (time % weekLength);
 //        assert remainder>=0;

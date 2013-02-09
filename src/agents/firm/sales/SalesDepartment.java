@@ -486,7 +486,7 @@ public class SalesDepartment implements Department {
         //if this is the first time we get to sell, start also resetting data
         if(!started)
         {
-            model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE,new Steppable() {
+            model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
                 @Override
                 public void step(SimState state) {
                     resetDailyCounters();
@@ -500,7 +500,7 @@ public class SalesDepartment implements Department {
 
     /**
      * this method resets the daily counters of inflow and outflow and if the firm is active, reschedule itself assuming
-     * this was called when the phase was PREPARE_TO_TRADE
+     * this was called when the phase was DAWN
      */
     private void resetDailyCounters() {
         if(!firm.isActive())
@@ -510,7 +510,7 @@ public class SalesDepartment implements Department {
         todayInflow = 0;
         todayOutflow = 0;
 
-        model.scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE,new Steppable() {
+        model.scheduleTomorrow(ActionOrder.DAWN,new Steppable() {
             @Override
             public void step(SimState state) {
 

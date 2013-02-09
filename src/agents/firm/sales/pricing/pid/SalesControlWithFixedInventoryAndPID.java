@@ -6,9 +6,7 @@ import com.google.common.base.Preconditions;
 import goods.Good;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.pid.CascadePIDController;
-import model.utilities.pid.Controller;
-import model.utilities.pid.ControllerInput;
+import model.utilities.pid.*;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -55,14 +53,14 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
         this(department,5); //default to 5 units of inventory
     }
 
+    /**
+     * The sales department with an initial target inventory and a PID controller
+     * @param department the sales department that is controlled by this strategy
+     * @param targetInventory the inventory to target
+     */
     public SalesControlWithFixedInventoryAndPID(SalesDepartment department, int targetInventory)
     {
-        this(department,targetInventory,department.getFirm().getModel().drawProportionalGain(),
-                department.getFirm().getModel().drawProportionalGain(),
-                department.getFirm().getModel().drawIntegrativeGain(),
-                department.getFirm().getModel().drawIntegrativeGain(),
-                department.getFirm().getModel().drawDerivativeGain(),
-                department.getFirm().getModel().drawDerivativeGain());
+        this(department,targetInventory, PIDController.class);
 
     }
 
@@ -70,21 +68,17 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
      * The full constructor with Sales department
      * @param department the sales department to link to
      * @param targetInventory the target inventory of this control
-     * @param proportional1 the P of the master PID
-     * @param proportional2 the P of the slave PID
-     * @param integrative1 the I of the master PID
-     * @param integrative2 the I of the slave PID
-     * @param derivative1  the D of the master PID
-     * @param derivative2  the D of the slave PID
+     * @param controllerType the type of controller to use
      */
     public SalesControlWithFixedInventoryAndPID(SalesDepartment department,int targetInventory,
-                                                float proportional1,float proportional2,
-                                                float integrative1,float integrative2,
-                                                float derivative1, float derivative2 )
+                                                Class<? extends Controller> controllerType )
     {
         this.department = department;
-        this.controller = new CascadePIDController(proportional1,integrative1,derivative1,
-                proportional2,integrative2,derivative2,department.getRandom());
+        this.controller = ControllerFactory.buildController(controllerType,department.getFirm().getModel());
+        this.targetInventory = targetInventory;
+
+        //schedule yourself when possible
+        department.getFirm().getModel().scheduleSoon(ActionOrder.THINK,this);
 
 
     }
@@ -123,12 +117,16 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     public void step(SimState state)
     {
         MacroII macroII = (MacroII) state;
-        Preconditions.checkState(macroII.getCurrentPhase().equals(ActionOrder.THINK));
+        Preconditions.checkState(macroII.getCurrentPhase().equals(ActionOrder.THINK), "I wanted to act on THINK, " +
+                "but I acted on " + macroII.getCurrentPhase());
         //run the controller to adjust prices
         //notice that i use todayOutflow as a measure of outflow because it gets resed at PREPARE_TO_TRADE and
         // I am calling this at THINK (which is after TRADE, which is after PREPARE_TO_TRADE)
-        controller.adjust(ControllerInput.cascadeInputCreation(targetInventory,department.getHowManyToSell(),department.getTodayOutflow()),
-                department.getFirm().isActive(),macroII,this,ActionOrder.THINK);
+        ControllerInput input = new ControllerInput.ControllerInputBuilder().inputs((float) department.getHowManyToSell(),
+                (float)department.getTodayOutflow()).targets((float)targetInventory, (float)department.getTodayInflow()).build();
+
+        controller.adjust(input,
+                department.getFirm().isActive(), macroII, this, ActionOrder.THINK);
 
 
     }

@@ -5,7 +5,8 @@ import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
-import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
+import agents.firm.sales.pricing.AskPricingStrategy;
+import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import financial.OrderBookMarket;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
@@ -18,8 +19,11 @@ import tests.DummyBuyer;
 
 /**
  * <h4>Description</h4>
- * <p/> This is actually a copy of scenario1 for the test class SimpleFlowSellerPIDTest. Very simple matching of supply and demand
- * <p/> Basically we periodically create new buyers (after removing the old ones) to give the impression of a constant demand and let the flow seller get to the right price
+ * <p/> This is actually a copy of scenario1 for the test class SimpleFlowSellerPIDTest.
+ * Very simple matching of supply and demand
+ * <p/> Basically we periodically
+ * create new buyers (after removing the old ones) to give the impression of a constant demand and let the
+ * flow seller get to the right price
  * <p/>
  * <h4>Notes</h4>
  * Created with IntelliJ
@@ -35,9 +39,15 @@ public class SimpleSellerScenario extends Scenario {
 
 
 
-    int period = 10;
 
-    boolean demandShifts = false;
+    private boolean demandShifts = false;
+
+    /**
+     * the strategy used by the sales department to tinker with prices
+     */
+    private Class<? extends AskPricingStrategy> sellerStrategy =
+            SmoothedDailyInventoryPricingStrategy.class;//SalesControlWithFixedInventoryAndPID.class;
+
 
     /**
      * Called by MacroII, it creates agents and then schedules them.
@@ -113,7 +123,12 @@ public class SimpleSellerScenario extends Scenario {
             public void step(SimState simState) {
                 SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(seller,market,new SimpleBuyerSearch(market,seller),new SimpleSellerSearch(market,seller));
                 seller.registerSaleDepartment(dept,GoodType.GENERIC);
-                dept.setAskPricingStrategy(new SimpleFlowSellerPID(dept)); //set strategy to PID
+                try{
+                dept.setAskPricingStrategy(sellerStrategy.getConstructor(SalesDepartment.class).newInstance(dept)); //set strategy to PID
+                }
+                catch (Exception e){
+                    throw new UnsupportedOperationException("failed to build the ask pricing strategy. Exiting now!");
+                }
                 getAgents().add(seller);
             }
         });
@@ -153,14 +168,13 @@ public class SimpleSellerScenario extends Scenario {
                         //trick to get the steppable to recognize the anynimous me!
                         final DummyBuyer reference = this;
                         //schedule a new quote in period!
-                        this.getModel().schedule.scheduleOnceIn(period,new Steppable() {
+                        this.getModel().scheduleTomorrow(ActionOrder.TRADE, new Steppable() {
                             @Override
                             public void step(SimState simState) {
                                 earn(1000l);
                                 //put another quote
 
-                                market.submitBuyQuote(reference,getFixedPrice());
-
+                                market.submitBuyQuote(reference, getFixedPrice());
 
 
                             }
@@ -218,5 +232,24 @@ public class SimpleSellerScenario extends Scenario {
 
     public void setDemandShifts(boolean demandShifts) {
         this.demandShifts = demandShifts;
+    }
+
+
+    /**
+     * Gets the strategy used by the sales department to tinker with prices.
+     *
+     * @return Value of the strategy used by the sales department to tinker with prices.
+     */
+    public Class<? extends AskPricingStrategy> getSellerStrategy() {
+        return sellerStrategy;
+    }
+
+    /**
+     * Sets new the strategy used by the sales department to tinker with prices.
+     *
+     * @param sellerStrategy New value of the strategy used by the sales department to tinker with prices.
+     */
+    public void setSellerStrategy(Class<? extends AskPricingStrategy> sellerStrategy) {
+        this.sellerStrategy = sellerStrategy;
     }
 }

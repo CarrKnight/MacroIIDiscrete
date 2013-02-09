@@ -70,6 +70,15 @@ public class MovingAverage<T extends Number> implements Filter<T>{
 
     }
 
+
+    /**
+     * Gets The size of the queue.
+     *
+     * @return Value of The size of the queue.
+     */
+    public int getMovingAverageSize() {
+        return movingAverageSize;
+    }
 }
 
 
