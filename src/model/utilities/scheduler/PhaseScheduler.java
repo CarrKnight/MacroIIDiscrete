@@ -1,9 +1,10 @@
-package model.utilities;
+package model.utilities.scheduler;
 
 import com.google.common.base.Preconditions;
 import com.sun.javafx.beans.annotations.NonNull;
 import ec.util.MersenneTwisterFast;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -32,7 +33,9 @@ public class PhaseScheduler implements Steppable {
     /**
      * where we store every possible action!
      */
-    private EnumMap<ActionOrder,ArrayList<Steppable>> steppablesByPhase;
+    private EnumMap<ActionOrder,RandomQueue<Steppable>> steppablesByPhase;
+
+    private MersenneTwisterFast randomizer;
 
 
 
@@ -46,15 +49,16 @@ public class PhaseScheduler implements Steppable {
     final private ArrayList<FutureAction> futureActions;
 
 
-    public PhaseScheduler(int simulationDays) {
+    public PhaseScheduler(int simulationDays,MersenneTwisterFast randomizer) {
         this.simulationDays = simulationDays;
+        this.randomizer = randomizer;
 
 
         //initialize the enums
         steppablesByPhase = new EnumMap<>(ActionOrder.class);
         for(ActionOrder order :ActionOrder.values())
         {
-            steppablesByPhase.put(order,new ArrayList<Steppable>());
+            steppablesByPhase.put(order,new RandomQueue<Steppable>(randomizer));
         }
 
         //initialize tomorrow schedule
@@ -81,13 +85,14 @@ public class PhaseScheduler implements Steppable {
         {
             currentPhase = phase; //currentPhase!
 
-            ArrayList<Steppable> steppables = steppablesByPhase.get(phase);
+            RandomQueue<Steppable> steppables = steppablesByPhase.get(phase);
             assert steppables != null;
 
             //while there are actions to take this phase, take them
             while(!steppables.isEmpty())
             {
-                Steppable steppable = steppables.remove(random.nextInt(steppables.size()));
+                Steppable steppable = steppables.poll();
+                assert steppable != null;
                 //act nau!!!
                 steppable.step(simState);
             }
@@ -182,7 +187,7 @@ public class PhaseScheduler implements Steppable {
         steppablesByPhase = new EnumMap<>(ActionOrder.class);
         for(ActionOrder order :ActionOrder.values())
         {
-            steppablesByPhase.put(order,new ArrayList<Steppable>());
+            steppablesByPhase.put(order,new RandomQueue<Steppable>(randomizer));
         }
 
         tomorrowSamePhase.clear();
@@ -230,15 +235,6 @@ public class PhaseScheduler implements Steppable {
         }
     }
 
-    /**
-     * Checks if the given steppable is in today's schedule
-     * @param phase the phase the steppable is supposed to be  scheduled
-     * @param steppable the steppable we want to check
-     * @return true if the steppable is scheduled today at the specific phase
-     */
-    public boolean isScheduledToday(ActionOrder phase, Steppable steppable)
-    {
-        return steppablesByPhase.get(phase).contains(steppable);
-    }
+
 
 }

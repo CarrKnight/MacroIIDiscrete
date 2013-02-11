@@ -112,8 +112,8 @@ public abstract class AbstractInventoryControl implements InventoryControl{
 
         if(shouldIBuy(source,type,quantity)) //if I should buy, buy
             purchasesDepartment.buy();
-        else
-            System.err.println("No need to buy!~");
+     //   else
+     //       System.err.println("No need to buy!~");
 
     }
 
@@ -140,8 +140,8 @@ public abstract class AbstractInventoryControl implements InventoryControl{
 
         if(shouldIBuy(source,type,quantity)) //if I should buy, buy
             purchasesDepartment.buy();
-        else
-            System.err.println("No need to buy!~");
+    //    else
+      //      System.err.println("No need to buy!~");
 
 
     }

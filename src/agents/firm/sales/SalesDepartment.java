@@ -146,6 +146,11 @@ public class SalesDepartment implements Department {
     private int todayInflow;
 
     /**
+     * How many days will inventories last at the current flow? It is 0 if there is no inventory, MAX_VALUE if there are more inflows than outflows!
+     */
+    private float daysOfInventory = 0;
+
+    /**
      * this flag is set to true whenever the first sellThis is called. It is never set to false
      */
     private boolean started = false;
@@ -466,7 +471,7 @@ public class SalesDepartment implements Department {
 
     /**
      * Does three things: Logs the event that we were tasked to sell a good, tell the listeners about this event and if this was teh very
-     * first good we have to sell, schedule daily a resetDailyCounters() call
+     * first good we have to sell, schedule daily a beginningOfTheDayStatistics() call
      */
     private void logInflow(Good g) {
 
@@ -489,7 +494,7 @@ public class SalesDepartment implements Department {
             model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
                 @Override
                 public void step(SimState state) {
-                    resetDailyCounters();
+                    beginningOfTheDayStatistics();
 
                 }
             });
@@ -500,13 +505,25 @@ public class SalesDepartment implements Department {
 
     /**
      * this method resets the daily counters of inflow and outflow and if the firm is active, reschedule itself assuming
-     * this was called when the phase was DAWN
+     * this was called when the phase was DAWN .
+     * It also computes the "days of inventory"
      */
-    private void resetDailyCounters() {
+    private void beginningOfTheDayStatistics() {
         if(!firm.isActive())
             return;
 
 
+
+        float netflow = todayOutflow - todayInflow;
+        if(toSell.size() == 0)   //no inventory, days of inventory is 0
+            daysOfInventory = 0;
+        else if(netflow > 0) //positive netflow (we sell more than we produce, that's great)
+            daysOfInventory = ((float)toSell.size()) / netflow;
+        else //negative or 0 netflow, days of inventory is infinite
+            daysOfInventory = Float.MAX_VALUE;
+
+
+        //reset
         todayInflow = 0;
         todayOutflow = 0;
 
@@ -514,7 +531,7 @@ public class SalesDepartment implements Department {
             @Override
             public void step(SimState state) {
 
-                resetDailyCounters();
+                beginningOfTheDayStatistics();
             }
         });
 

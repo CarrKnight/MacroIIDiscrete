@@ -11,7 +11,7 @@ import model.scenario.Scenario;
 import model.scenario.TestScenario;
 import model.scenario.TripolistScenario;
 import model.utilities.ActionOrder;
-import model.utilities.PhaseScheduler;
+import model.utilities.scheduler.PhaseScheduler;
 import sim.display.GUIState;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -45,7 +45,7 @@ public class MacroII extends SimState{
     public MacroII(long seed) {
         super(seed);
         hasGUI = false;
-        phaseScheduler = new PhaseScheduler(20000);
+        phaseScheduler = new PhaseScheduler(20000,random);
         scenario = new TestScenario(this);
     }
 
@@ -686,15 +686,7 @@ public class MacroII extends SimState{
         phaseScheduler.scheduleAnotherDay(phase, action, daysAway);
     }
 
-    /**
-     * Checks if the given steppable is in today's schedule
-     * @param phase the phase the steppable is supposed to be  scheduled
-     * @param steppable the steppable we want to check
-     * @return true if the steppable is scheduled today at the specific phase
-     */
-    public boolean isScheduledToday(ActionOrder phase, Steppable steppable) {
-        return phaseScheduler.isScheduledToday(phase, steppable);
-    }
+
 
     /**
      * force the schedule to record this action to happen tomorrow. This is allowed only if you are at a phase (say PRODUCTION) and you want the action to occur tomorrow at the same phase (PRODUCTION)

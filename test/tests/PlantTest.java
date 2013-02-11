@@ -18,7 +18,7 @@ import agents.firm.production.technology.IRSExponentialMachinery;
 import junit.framework.Assert;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.PhaseScheduler;
+import model.utilities.scheduler.PhaseScheduler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;

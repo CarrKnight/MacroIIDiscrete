@@ -17,7 +17,7 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.MarketSalesPredictor;
-import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
+import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Preconditions;
 import financial.Market;
@@ -188,8 +188,8 @@ public class SupplyChainScenario extends Scenario
                 SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(firm, goodmarket,
                         new SimpleBuyerSearch(goodmarket, firm), new SimpleSellerSearch(goodmarket, firm));
                 firm.registerSaleDepartment(dept, goodmarket.getGoodType());
-                SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept);
-                strategy.setProductionCostOverride(false);
+                SmoothedDailyInventoryPricingStrategy strategy = new SmoothedDailyInventoryPricingStrategy(dept);
+               // strategy.setProductionCostOverride(false);
                 dept.setAskPricingStrategy(strategy); //set strategy to PID
                 dept.setPredictorStrategy(new MarketSalesPredictor());
 
