@@ -54,6 +54,11 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
      */
     private int oldWorkerTarget = 0;
 
+    /**
+     * when this is true rather than rescheduling itself every x days, it sets  probability of being reschedueled every day
+     */
+    private boolean randomspeed= false;
+
 
     /**
      * Profit check to change target is only activated at the start of the week when we have the right number of workers (or the observation makes no sense). When that week starts we set this flag to true
@@ -135,15 +140,15 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
 
         //if you haven't achieved your worker objective you can't really make a judgment so just try again in next week
         if(isActive() && hr.getPlant().workerSize() != control.getTarget()){
-            hr.getFirm().getModel().scheduleAnotherDay(ActionOrder.PREPARE_TO_TRADE,this,nextCheck);
+            reschedule(nextCheck);
             checkWeek = false; //if it was observation week and you missed on your target, start over :(
             return;
         }
         //if we are at the right target then we move to checkWeek status
         if(hr.getPlant().workerSize() == control.getTarget() && !checkWeek){
             checkWeek = true; //next observation is check week!
-       //     System.out.println("next week is checkweek!");
-            hr.getFirm().getModel().scheduleAnotherDay(ActionOrder.PREPARE_TO_TRADE,this,nextCheck + weeksToMakeObservation*7);
+            //     System.out.println("next week is checkweek!");
+            reschedule(nextCheck + weeksToMakeObservation*7);
             return;
         }
 
@@ -166,7 +171,7 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
 
         //if the future target is negative, do it again next week (the subclass wants more info)
         if(futureTarget < 0){
-            hr.getFirm().getModel().scheduleAnotherDay(ActionOrder.PREPARE_TO_TRADE,this,nextCheck + weeksToMakeObservation*7);
+            reschedule(nextCheck + weeksToMakeObservation*7);
 
         }
         else {
@@ -192,12 +197,28 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
 
 
             //try again!
-            hr.getFirm().getModel().scheduleAnotherDay(ActionOrder.PREPARE_TO_TRADE,this,nextCheck);
+            reschedule(nextCheck);
 
         }
 
 
 
+
+    }
+
+    /**
+     * Call this to reschedule the step function some days from now
+     * @param daysAway
+     */
+    private void reschedule(int daysAway) {
+        if(randomspeed)
+        {
+            float probability = 1f/(float)daysAway;
+            hr.getFirm().getModel().scheduleAnotherDayWithFixedProbability(ActionOrder.PREPARE_TO_TRADE,this, probability);
+        }
+
+        else
+            hr.getFirm().getModel().scheduleAnotherDay(ActionOrder.PREPARE_TO_TRADE,this, daysAway);
 
     }
 
@@ -264,12 +285,21 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
     }
 
 
+    /**
+     * Gets when this is true rather than rescheduling itself every x days, it sets  probability of being reschedueled every day.
+     *
+     * @return Value of when this is true rather than rescheduling itself every x days, it sets  probability of being reschedueled every day.
+     */
+    public boolean isRandomspeed() {
+        return randomspeed;
+    }
 
-
-
-
-
-
-
-
+    /**
+     * Sets new when this is true rather than rescheduling itself every x days, it sets  probability of being reschedueled every day.
+     *
+     * @param randomspeed New value of when this is true rather than rescheduling itself every x days, it sets  probability of being reschedueled every day.
+     */
+    public void setRandomspeed(boolean randomspeed) {
+        this.randomspeed = randomspeed;
+    }
 }

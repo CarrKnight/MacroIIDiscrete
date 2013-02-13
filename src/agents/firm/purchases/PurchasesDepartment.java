@@ -133,6 +133,11 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     private final MacroII model;
 
+    /**
+     * a counter to check daily inflows and outflows. Created at constructor, started and turned off. Steps itself independetly
+     */
+    private InflowOutflowCounter counter;
+
 
     protected PurchasesDepartment(long budgetGiven,@Nonnull Firm firm,@Nonnull Market market,
                                   MacroII model) {
@@ -150,6 +155,9 @@ public class PurchasesDepartment implements Deactivatable, Department {
             predictor = new MarketPurchasesPredictor();
 
         this.model = model;
+        counter = new InflowOutflowCounter(model,firm,goodType);
+
+
 
 
     }
@@ -803,6 +811,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
         supplierSearch.turnOff(); //turn off seller search
         opponentSearch.turnOff(); //turn off buyer search
         predictor.turnOff(); //turn off the predictor
+        counter.turnOff();
 
 
 
@@ -883,7 +892,9 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * Start the inventory control and make the purchaseDepartment, if needed, buy stuff
      */
     public void start(){
+        counter.start();
         control.start();
+
     }
 
     /**
@@ -956,5 +967,31 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     public void setLooksAhead(boolean looksAhead) {
         this.looksAhead = looksAhead;
+    }
+
+    /**
+     * Gets total outflow since dawn.
+     *
+     * @return Value of total outflow since dawn.
+     */
+    public int getTodayOutflow() {
+        return counter.getTodayOutflow();
+    }
+
+    /**
+     * Gets total inflow since dawn.
+     *
+     * @return Value of total inflow since dawn.
+     */
+    public int getTodayInflow() {
+        return counter.getTodayInflow();
+    }
+
+    /**
+     * Answers how many days, at the current rate, will it take for all the inventories to be gone
+     * @return If outflow > inflow it returns inventorySize/netOutflow, otherwise returns infinity
+     */
+    public float currentDaysOfInventory() {
+        return counter.currentDaysOfInventory();
     }
 }

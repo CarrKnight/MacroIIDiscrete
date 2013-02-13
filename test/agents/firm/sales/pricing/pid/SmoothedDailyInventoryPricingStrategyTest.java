@@ -37,7 +37,7 @@ public class SmoothedDailyInventoryPricingStrategyTest {
         SalesDepartment department = mock(SalesDepartment.class);
         Firm firm = mock(Firm.class); when(department.getFirm()).thenReturn(firm);
         MacroII model = mock(MacroII.class); when(firm.getModel()).thenReturn(model);
-        when(model.getCurrentPhase()).thenReturn(ActionOrder.DAWN);
+        when(model.getCurrentPhase()).thenReturn(ActionOrder.PREPARE_TO_TRADE);
 
 
 

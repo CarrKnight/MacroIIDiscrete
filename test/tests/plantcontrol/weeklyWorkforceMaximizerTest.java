@@ -5,8 +5,6 @@ import agents.firm.cost.PlantCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.AnnealingMaximizer;
-import agents.firm.production.control.maximizer.AnnealingReactingMaximizer;
 import agents.firm.production.control.maximizer.HillClimberMaximizer;
 import agents.firm.production.control.maximizer.weeklyWorkforceMaximizer;
 import junit.framework.Assert;
@@ -169,7 +167,7 @@ public class weeklyWorkforceMaximizerTest {
 
 
         //maximize!
-        weeklyWorkforceMaximizer maximizer = new AnnealingMaximizer(hr,control);
+        weeklyWorkforceMaximizer maximizer = new HillClimberMaximizer(hr,control);
 
         maximizer.start();
         when(plant.workerSize()).thenReturn(currentTarget);
@@ -250,7 +248,7 @@ public class weeklyWorkforceMaximizerTest {
 
 
         //maximize!
-        weeklyWorkforceMaximizer maximizer = new AnnealingReactingMaximizer(hr,control);
+        weeklyWorkforceMaximizer maximizer = new HillClimberMaximizer(hr,control);
 
         maximizer.start();
         when(plant.workerSize()).thenReturn(currentTarget);

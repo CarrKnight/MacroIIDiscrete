@@ -12,6 +12,7 @@ import model.scenario.TestScenario;
 import model.scenario.TripolistScenario;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.PhaseScheduler;
+import model.utilities.scheduler.RandomQueuePhaseScheduler;
 import sim.display.GUIState;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -45,7 +46,7 @@ public class MacroII extends SimState{
     public MacroII(long seed) {
         super(seed);
         hasGUI = false;
-        phaseScheduler = new PhaseScheduler(20000,random);
+        phaseScheduler = new RandomQueuePhaseScheduler(20000,random);
         scenario = new TestScenario(this);
     }
 
@@ -725,7 +726,14 @@ public class MacroII extends SimState{
         this.weekLength = weekLength;
     }
 
-
-
-
+    /**
+     * This is similar to scheduleAnotherDay except that rather than passing a fixed number of days we pass the probability
+     * of the event being scheduled each day after the first (days away is always at least one!)
+     * @param phase The action order at which this action should be scheduled
+     * @param action the action to schedule
+     * @param probability the daily probability of this action happening. So if you pass 15% then each day has a probability of 15% of triggering this action
+     */
+    public void scheduleAnotherDayWithFixedProbability(@Nonnull ActionOrder phase, @Nonnull Steppable action, float probability) {
+        phaseScheduler.scheduleAnotherDayWithFixedProbability(phase, action, probability);
+    }
 }

@@ -86,7 +86,7 @@ public class DiscreteSlowPlantControlTest {
         for(int i=0; i <100; i++)
         {
             hr = HumanResources.getHumanResourcesIntegrated(1000000l,
-                firm,market,plant,null,null,null);
+                    firm,market,plant,null,null,null);
             assert market.getBuyers().contains(firm);
             hr.turnOff();
             assert !market.getBuyers().contains(firm);
@@ -97,7 +97,7 @@ public class DiscreteSlowPlantControlTest {
         assert market.getBuyers().contains(firm);
 
         DiscreteSlowPlantControl control = new DiscreteSlowPlantControl(hr);
-      //  control.setQuickFiring(false);
+        //  control.setQuickFiring(false);
         hr.setControl(control);
         when(plant.workerSize()).thenReturn(0);
         control.start();
@@ -235,17 +235,17 @@ public class DiscreteSlowPlantControlTest {
         System.out.println("-------------------------------------------------------------------------------------");
         System.out.println("SimpleFlowSeller scenario1");
 
-        final MacroII model = new MacroII(1l);
+        final MacroII model = new MacroII(2l);
         final Firm firm = new Firm(model); firm.earn(100000000l);
         final OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
         market.setPricePolicy(new ShopSetPricePolicy());
         OrderBookMarket labor = new OrderBookMarket(GoodType.LABOR);
 
         SalesDepartment dept =SalesDepartment.incompleteSalesDepartment(firm,market,new SimpleBuyerSearch(market,firm), new SimpleSellerSearch(market,firm));
-        SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept,.3f,.16f,.01f,10);
+        SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept,.8f,.30f,.01f,10);
         strategy.setProductionCostOverride(true);
         dept.setAskPricingStrategy(strategy);
-      //  dept.setAskPricingStrategy(new EverythingMustGoAdaptive(dept));
+        //  dept.setAskPricingStrategy(new EverythingMustGoAdaptive(dept));
         firm.registerSaleDepartment(dept, GoodType.GENERIC);
         Blueprint blueprint = new Blueprint.Builder().output(GoodType.GENERIC,1).build();
         Plant plant = new Plant(blueprint,firm);
@@ -253,22 +253,26 @@ public class DiscreteSlowPlantControlTest {
         plant.setCostStrategy(new InputCostStrategy(plant));
         firm.addPlant(plant);
         HumanResources hr = HumanResources.getHumanResourcesIntegrated(100000000,firm,labor,plant,DiscreteSlowPlantControl.class,null,null);
-     //   firm.registerHumanResources(plant, hr);
+        //   firm.registerHumanResources(plant, hr);
         hr.start();
 
         model.scheduleSoon(ActionOrder.DAWN, new Steppable() {
             @Override
             public void step(SimState state) {
                 final List<Quote> quotes =new LinkedList<>();
-                fillMarket(market, quotes, model);
-                model.scheduleTomorrow(ActionOrder.DAWN,this);
 
-                model.scheduleSoon(ActionOrder.CLEANUP,new Steppable() {
+                model.scheduleTomorrow(ActionOrder.DAWN, new Steppable() {
                     @Override
                     public void step(SimState state) {
                         emptyMarket(market,quotes);
+                        fillMarket(market, quotes, model);
+                        model.scheduleTomorrow(ActionOrder.DAWN,this);
                     }
                 });
+
+
+
+
 
             }
         });
@@ -293,10 +297,11 @@ public class DiscreteSlowPlantControlTest {
         model.getAgents().clear(); model.getAgents().add(firm);
         do{
             if (!model.schedule.step(model)) break;
-   //             System.out.println("the time is " + model.schedule.getTime() +
-    //                    "the sales department is selling at: " + strategy.getTargetPrice() + "plant has this many workers: " + plant.workerSize() + " offering wage: " + hr.maxPrice(GoodType.GENERIC,labor));
-       //   System.out.println(model.schedule.getTime()+","+strategy.getTargetPrice() +","+ pid.getCurrentMV() +","+plant.workerSize()  + "," + hr.maxPrice(GoodType.LABOR,labor) + "," + market.getBestBuyPrice());
-          //  System.out.println("market best bid: " + market.getBestBuyPrice());
+            System.out.println("the time is " + model.schedule.getTime() +
+                    "the sales department is selling at: " + strategy.getTargetPrice() + "plant has this many workers: " + plant.workerSize() + " offering wage: " + hr.maxPrice(GoodType.GENERIC,labor));
+            System.out.println(model.schedule.getTime()+","+strategy.getTargetPrice() +","+ pid.getCurrentMV() +","+plant.workerSize()  + "," + hr.maxPrice(GoodType.LABOR,labor) + "," + market.getBestBuyPrice());
+            if(model.schedule.getSteps() > 50)
+                System.out.println("market best bid: " + market.getBestBuyPrice() + ", profits: " + firm.getPlantProfits(plant));
         }
         while(model.schedule.getSteps() < 6000);
 
@@ -310,7 +315,7 @@ public class DiscreteSlowPlantControlTest {
 
     //duopoly scenario: like monopoly but with 2 suppliers!
 
-  //  @Test
+    //  @Test
     public void duopolyScenario() throws IllegalAccessException, NoSuchFieldException {
 
         Market.TESTING_MODE = true;
@@ -417,7 +422,7 @@ public class DiscreteSlowPlantControlTest {
 
     }
 
-//    @Test
+    //    @Test
     public void tripolyScenario() throws IllegalAccessException, NoSuchFieldException {
 
         Market.TESTING_MODE = true;
@@ -446,7 +451,7 @@ public class DiscreteSlowPlantControlTest {
         Field field = PurchasesDepartment.class.getDeclaredField("control"); field.setAccessible(true);
         DiscreteSlowPlantControl control = (DiscreteSlowPlantControl) field.get(hr);
         firm.registerHumanResources(plant, hr);
-     //   control.setProbabilityForgetting(.15f);
+        //   control.setProbabilityForgetting(.15f);
 
         hr.start();
 
@@ -466,7 +471,7 @@ public class DiscreteSlowPlantControlTest {
         HumanResources hr2 = HumanResources.getHumanResourcesIntegrated(100000000,firm2,labor,plant2,DiscreteSlowPlantControl.class,null,null);
         field = PurchasesDepartment.class.getDeclaredField("control"); field.setAccessible(true);
         DiscreteSlowPlantControl control2 = (DiscreteSlowPlantControl) field.get(hr2);
-     //   control2.setProbabilityForgetting(.15f);
+        //   control2.setProbabilityForgetting(.15f);
 
         firm2.registerHumanResources(plant2, hr2);
         hr2.start();
@@ -487,7 +492,7 @@ public class DiscreteSlowPlantControlTest {
         HumanResources hr3 = HumanResources.getHumanResourcesIntegrated(100000000,firm3,labor,plant3,DiscreteSlowPlantControl.class,null,null);
         field = PurchasesDepartment.class.getDeclaredField("control"); field.setAccessible(true);
         DiscreteSlowPlantControl control3 = (DiscreteSlowPlantControl) field.get(hr3);
- //       control3.setProbabilityForgetting(.15f);
+        //       control3.setProbabilityForgetting(.15f);
         firm3.registerHumanResources(plant3, hr3);
         hr3.start();
 
@@ -536,10 +541,10 @@ public class DiscreteSlowPlantControlTest {
 
         do{
             if (!model.schedule.step(model)) break;
-         //   System.out.println("FIRST FIRM : the time is " + model.schedule.getTime() +
-         //           "the sales department is selling at: " + strategy.getTargetPrice() + "plant has this many workers: " + plant.workerSize() + " offering wage: " + hr.maxPrice(GoodType.GENERIC,labor));
-         //   System.out.println("SECOND FIRM: the time is " + model.schedule.getTime() +
-         //           "the sales department is selling at: " + strategy2.getTargetPrice() + "plant has this many workers: " + plant2.workerSize() + " offering wage: " + hr2.maxPrice(GoodType.GENERIC,labor));
+            //   System.out.println("FIRST FIRM : the time is " + model.schedule.getTime() +
+            //           "the sales department is selling at: " + strategy.getTargetPrice() + "plant has this many workers: " + plant.workerSize() + " offering wage: " + hr.maxPrice(GoodType.GENERIC,labor));
+            //   System.out.println("SECOND FIRM: the time is " + model.schedule.getTime() +
+            //           "the sales department is selling at: " + strategy2.getTargetPrice() + "plant has this many workers: " + plant2.workerSize() + " offering wage: " + hr2.maxPrice(GoodType.GENERIC,labor));
             System.out.println(plant.workerSize() + " <>" + dept.getLastClosingPrice() + "<>" + hr.maxPrice(GoodType.GENERIC,labor) + "<>" + firm.getPlantProfits(plant) +
                     " , "
                     + plant2.workerSize() + " <>" + dept2.getLastClosingPrice() + "<>" + hr2.maxPrice(GoodType.GENERIC, labor) + "<>" +firm2.getPlantProfits(plant2) +
@@ -565,11 +570,11 @@ public class DiscreteSlowPlantControlTest {
         for(int i=9; i>2;i --)
         {
 
-                DummyBuyer buyer = new DummyBuyer(model,i+1);
-                market.registerBuyer(buyer);
-                buyer.earn(1000l);
-                Quote q = market.submitBuyQuote(buyer,i+1);
-                quotes.add(q);
+            DummyBuyer buyer = new DummyBuyer(model,i+1);
+            market.registerBuyer(buyer);
+            buyer.earn(1000l);
+            Quote q = market.submitBuyQuote(buyer,i+1);
+            quotes.add(q);
 
 
 

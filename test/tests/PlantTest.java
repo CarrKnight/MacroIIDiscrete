@@ -19,6 +19,7 @@ import junit.framework.Assert;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.PhaseScheduler;
+import model.utilities.scheduler.RandomQueuePhaseScheduler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -340,7 +341,7 @@ public class PlantTest {
 
         Blueprint b = Blueprint.simpleBlueprint(GoodType.GENERIC, 1, GoodType.BEEF, 1);
         MacroII localMacroII =  mock(MacroII.class);
-        PhaseScheduler scheduler = mock(PhaseScheduler.class); when(localMacroII.getCurrentPhase()).thenReturn(ActionOrder.PRODUCTION);
+        PhaseScheduler scheduler = mock(RandomQueuePhaseScheduler.class); when(localMacroII.getCurrentPhase()).thenReturn(ActionOrder.PRODUCTION);
         when(localMacroII.getPhaseScheduler()).thenReturn(scheduler);  when(localMacroII.getWeekLength()).thenReturn(7f);
         Firm f = new Firm(localMacroII);
         Plant localCRS = new Plant(b,new Firm(localMacroII)); localCRS.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, f, 0l, localCRS));

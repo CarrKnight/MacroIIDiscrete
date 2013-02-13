@@ -2,13 +2,7 @@ package model.utilities.pid;
 
 import ec.util.MersenneTwisterFast;
 import junit.framework.Assert;
-import model.MacroII;
-import model.utilities.ActionOrder;
 import org.junit.Test;
-import sim.engine.Schedule;
-import sim.engine.Steppable;
-
-import static org.mockito.Mockito.*;
 
 /**
  * <h4>Description</h4>
@@ -75,9 +69,18 @@ public class CascadePIDControllerTest {
 
         CascadePIDController cascade = new CascadePIDController(.5f,.5f,.01f,.5f,.5f,.01f,new MersenneTwisterFast());
 
+        //raise the target away from 0
+        for(int i=0; i<50; i++)
+        {
+            int firstTarget = 100; //y*
+            int firstInput = i; //y
+            cascade.adjust(firstTarget,firstInput,0,true,null,null,null);
+        }
+
+
 
         //the input is below target
-        for(int i=200; i<250; i++)
+        for(int i=240; i<250; i++)
         {
             float secondTarget = cascade.getSecondTarget();
             int firstTarget = 100; //y*
@@ -89,9 +92,17 @@ public class CascadePIDControllerTest {
 
         }
 
+        //raise the target away from 0
+        for(int i=0; i<50; i++)
+        {
+            int firstTarget = 100; //y*
+            int firstInput = i; //y
+            cascade.adjust(firstTarget,firstInput,0,true,null,null,null);
+        }
+
         //same thing, but move target and keep input fixed
         //the input is below target
-        for(int i=50; i<100; i++)
+        for(int i=90; i<100; i++)
         {
             float secondTarget = cascade.getSecondTarget();
             int firstTarget = i; //y*
@@ -190,27 +201,6 @@ public class CascadePIDControllerTest {
 
     }
 
-    /**
-     * Make sure the user gets stepped
-     */
-    @Test
-    public void makeSureYouAreSteppedTest()
-    {
-
-        CascadePIDController cascade = new CascadePIDController(.5f,.5f,.01f,.5f,.5f,.01f,new MersenneTwisterFast());
-        MacroII model = new MacroII(1l);
-        //put in a fake schedule
-        Schedule schedule = mock(Schedule.class);
-        model.schedule = schedule;
-
-        cascade.adjust(0f,0f,0f,true,model,mock(Steppable.class), ActionOrder.DAWN);
-
-        //intercept the schedule in, this is somewhat of bad code but what can I do? Schedule has just too many methods
-        verify(schedule,times(1)).scheduleOnceIn(anyDouble(),any(Steppable.class),anyInt());
-
-
-
-    }
 
     /**
      * Make sure we get exactly the same results  using controller input and the standard adjust method
