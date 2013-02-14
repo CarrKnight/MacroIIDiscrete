@@ -126,6 +126,7 @@ public class MonopolistScenario extends Scenario {
                 }
             };
 
+            buyer.setName("Dummy Buyer");;
 
             //make it adjust once to register and submit the first quote
 
@@ -154,7 +155,7 @@ public class MonopolistScenario extends Scenario {
 
         //only one seller
         monopolist = new Firm(getModel());
-        monopolist.earn(1000000000l);
+        monopolist.earn(1000000000l); monopolist.setName("monopolist");
         //set up the firm at time 1
         getModel().scheduleSoon(ActionOrder.DAWN, new Steppable() {
             @Override

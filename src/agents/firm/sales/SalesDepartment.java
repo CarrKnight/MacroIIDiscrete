@@ -491,6 +491,7 @@ public class SalesDepartment implements Department {
         //if this is the first time we get to sell, start also resetting data
         if(!started)
         {
+            started = true;
             model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
                 @Override
                 public void step(SimState state) {
