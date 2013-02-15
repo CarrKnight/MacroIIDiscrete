@@ -75,6 +75,10 @@ public class AnnealingMaximizer extends HillClimberMaximizer {
         //are we going in the wrong direction?
         misStep = getHr().getFirm().getRandom().nextBoolean(temperature);
         int direction = super.direction(currentWorkerTarget,newProfits, oldWorkerTarget, oldProfits);
+        //don't let it stop if the temperature is still far from 0
+        if(direction <=0 && currentWorkerTarget == 0 && temperature > .1f)
+            direction = 1;
+
         //if not go on.
         if(!misStep)
             return direction;
@@ -82,7 +86,10 @@ public class AnnealingMaximizer extends HillClimberMaximizer {
         if(direction != 0)
             return -direction;
         else
+        {
+
             return  getHr().getFirm().getRandom().nextBoolean() ? + 1 : -1; //return a random direction of either 1 or -1
+            }
 
     }
 
