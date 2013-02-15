@@ -106,7 +106,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
      * @param sales
      */
     public SimpleFlowSellerPID(@Nonnull SalesDepartment sales) {
-        this(sales, sales.getFirm().getModel().drawProportionalGain(),  sales.getFirm().getModel().drawIntegrativeGain(),
+        this(sales, sales.getFirm().getModel().drawProportionalGain()/2,  sales.getFirm().getModel().drawIntegrativeGain()/2,
                 sales.getFirm().getModel().drawDerivativeGain(),sales.getFirm().getModel().drawPIDSpeed()  );
     }
 

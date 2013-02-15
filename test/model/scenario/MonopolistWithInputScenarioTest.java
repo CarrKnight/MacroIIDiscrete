@@ -38,7 +38,7 @@ public class MonopolistWithInputScenarioTest {
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_SIMPLE);
 
             macroII.start();
-            while(macroII.schedule.getTime()<3500)
+            while(macroII.schedule.getTime()<4500)
                 macroII.schedule.step(macroII);
 
 
