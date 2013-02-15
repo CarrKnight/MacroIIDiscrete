@@ -228,7 +228,7 @@ public class DiscreteSlowPlantControlTest {
     /**
      * BIG FULLY DRESSED MONOPOLY SCENARIO!
      */
-    @Test
+    //moved to running the test in the monopoly scenario
     public void monopolyScenario() throws IllegalAccessException, NoSuchFieldException {
 
         Market.TESTING_MODE = true;

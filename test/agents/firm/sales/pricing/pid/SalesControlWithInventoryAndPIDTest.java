@@ -33,7 +33,7 @@ public class SalesControlWithInventoryAndPIDTest {
     {
 
         SalesDepartment department = mock(SalesDepartment.class);
-        Firm firm = mock(Firm.class); when(department.getFirm()).thenReturn(firm);
+        Firm firm = mock(Firm.class); when(department.getFirm()).thenReturn(firm);  when(firm.isActive()).thenReturn(true);
         when(firm.getModel()).thenReturn(new MacroII(1l));
 
 
@@ -41,7 +41,7 @@ public class SalesControlWithInventoryAndPIDTest {
         pid.setInitialPrice(100); //set initial price at 100
 
         Assert.assertEquals(pid.getTargetInventory(),5); //assume target is 5
-        when(department.getHowManyToSell()).thenReturn(10); //you still have 10 to sell
+        when(department.getHowManyToSell()).thenReturn(20); //you still have 10 to sell
         //step it
         MacroII model = mock(MacroII.class); when(model.getCurrentPhase()).thenReturn(ActionOrder.THINK);
         pid.step(model);
@@ -62,7 +62,7 @@ public class SalesControlWithInventoryAndPIDTest {
 
 
         SalesDepartment department = mock(SalesDepartment.class);
-        Firm firm = mock(Firm.class); when(department.getFirm()).thenReturn(firm);
+        Firm firm = mock(Firm.class); when(department.getFirm()).thenReturn(firm); when(firm.isActive()).thenReturn(true);
         when(firm.getModel()).thenReturn(new MacroII(1l));
 
 
@@ -83,7 +83,8 @@ public class SalesControlWithInventoryAndPIDTest {
         long newPrice =   pid.price(mock(Good.class));
         Assert.assertEquals(pid.getTargetInventory(),5); //your target should still be 5
         when(department.getHowManyToSell()).thenReturn(10); //you have too many
-        Assert.assertTrue(pid.price(mock(Good.class)) > newPrice ); // price should have gone up
+        pid.step(model);
+        Assert.assertTrue(pid.price(mock(Good.class)) < newPrice ); // price should have gone down
 
 
 

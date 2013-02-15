@@ -12,7 +12,7 @@ import model.scenario.TestScenario;
 import model.scenario.TripolistScenario;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.PhaseScheduler;
-import model.utilities.scheduler.RandomQueuePhaseScheduler;
+import model.utilities.scheduler.TrueRandomScheduler;
 import sim.display.GUIState;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -46,7 +46,7 @@ public class MacroII extends SimState{
     public MacroII(long seed) {
         super(seed);
         hasGUI = false;
-        phaseScheduler = new RandomQueuePhaseScheduler(20000,random);
+        phaseScheduler = new TrueRandomScheduler(20000,random);
         scenario = new TestScenario(this);
     }
 

@@ -15,7 +15,9 @@ import java.util.LinkedList;
 
 /**
  * <h4>Description</h4>
- * <p/> I try to maintain an iron grip over the schedule calls. I prefer my objects registering actions here and then just stepping this class instead
+ * <p/> This is the re-implementation of the random scheduler using arraylists. It is more random than the random queue
+ * because each steppable is chosen uniformly at random every time (while the random queue gives each steppable a random "ordering"
+ * which might let one chain of events happen very late.
  * <p/>
  * <p/>
  * <h4>Notes</h4>
@@ -25,17 +27,21 @@ import java.util.LinkedList;
  * <h4>References</h4>
  *
  * @author carrknight
- * @version 2012-11-20
+ * @version 2013-02-15
  * @see
  */
-public class RandomQueuePhaseScheduler implements Steppable, PhaseScheduler {
+public class TrueRandomScheduler implements Steppable, PhaseScheduler
+{
+
 
     /**
      * where we store every possible action!
      */
-    private EnumMap<ActionOrder,RandomQueue<Steppable>> steppablesByPhase;
+    private EnumMap<ActionOrder,ArrayList<Steppable>> steppablesByPhase;
 
-    private MersenneTwisterFast randomizer;
+    private final MersenneTwisterFast randomizer;
+
+
 
 
 
@@ -49,16 +55,16 @@ public class RandomQueuePhaseScheduler implements Steppable, PhaseScheduler {
     final private ArrayList<FutureAction> futureActions;
 
 
-    public RandomQueuePhaseScheduler(int simulationDays, MersenneTwisterFast randomizer) {
+    public TrueRandomScheduler(int simulationDays, MersenneTwisterFast randomizer) {
+        this.randomizer =  randomizer;
         this.simulationDays = simulationDays;
-        this.randomizer = randomizer;
 
 
         //initialize the enums
         steppablesByPhase = new EnumMap<>(ActionOrder.class);
         for(ActionOrder order :ActionOrder.values())
         {
-            steppablesByPhase.put(order,new RandomQueue<Steppable>(randomizer));
+            steppablesByPhase.put(order,new ArrayList<Steppable>());
         }
 
         //initialize tomorrow schedule
@@ -85,13 +91,13 @@ public class RandomQueuePhaseScheduler implements Steppable, PhaseScheduler {
         {
             currentPhase = phase; //currentPhase!
 
-            RandomQueue<Steppable> steppables = steppablesByPhase.get(phase);
+            ArrayList<Steppable> steppables = steppablesByPhase.get(phase);
             assert steppables != null;
 
             //while there are actions to take this phase, take them
             while(!steppables.isEmpty())
             {
-                Steppable steppable = steppables.poll();
+                Steppable steppable = steppables.remove(simState.random.nextInt(steppables.size()));
                 assert steppable != null;
                 //act nau!!!
                 steppable.step(simState);
@@ -215,15 +221,13 @@ public class RandomQueuePhaseScheduler implements Steppable, PhaseScheduler {
         steppablesByPhase = new EnumMap<>(ActionOrder.class);
         for(ActionOrder order :ActionOrder.values())
         {
-            steppablesByPhase.put(order,new RandomQueue<Steppable>(randomizer));
+            steppablesByPhase.put(order,new ArrayList<Steppable>());
         }
 
         tomorrowSamePhase.clear();
         futureActions.clear();
         currentPhase = ActionOrder.DAWN;
     }
-
-
 
 
 }

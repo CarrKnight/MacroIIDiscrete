@@ -5,7 +5,6 @@ import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.technology.Machinery;
 import financial.MarketEvents;
-import goods.GoodType;
 import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -68,7 +67,7 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
     /**
      * Number of weeks to pass before we can trust the profit report we get.
      */
-    private int weeksToMakeObservation = 5;
+    private int weeksToMakeObservation = 3;
 
     public weeklyWorkforceMaximizer(HumanResources hr, PlantControl control) {
         this.hr = hr;
@@ -197,11 +196,7 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
             checkWeek = false; //set it to false
 
 
-            System.out.println( getHr().getPlant().hashCode() + ", old Profits: " + oldProfits + ", new profits: " + newProfits +
-                    "; old workerTarget:" + oldWorkerTarget + ", new target:" + futureTarget +", current workers: " + getHr().getPlant().workerSize()
-                    + ", sale price: " + getHr().getFirm().getSalesDepartment(GoodType.GENERIC).getLastClosingPrice() +
-                    ",totalwages: " + getHr().getWagesPaid() + ", single wage: " + getControl().getCurrentWage() +
-                    ", marketVolume: " + getHr().getPlant().getModel().getMarket(GoodType.GENERIC).getLastWeekVolume());
+
 
             //try again!
             reschedule(nextCheck);
