@@ -166,7 +166,7 @@ public class PIDHIllClimberTest {
         for(int i=0; i < 100; i++)
         {
             int futureTarget = maximizer.chooseWorkerTarget(target,currentProfits,oldTarget,oldProfits);
-            float futureProfits = -futureTarget*futureTarget + 5 * futureTarget +2;
+            float futureProfits = -futureTarget*futureTarget + 20 * futureTarget +2;
 
             oldTarget=target; oldProfits = currentProfits;
             target = futureTarget; currentProfits = futureProfits;
@@ -176,7 +176,7 @@ public class PIDHIllClimberTest {
 
         }
 
-        Assert.assertEquals(target,9);
+        Assert.assertEquals(target,11);
 
 
 

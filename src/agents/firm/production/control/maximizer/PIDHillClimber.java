@@ -45,14 +45,26 @@ public class PIDHillClimber extends HillClimberMaximizer
      */
     public PIDHillClimber(HumanResources hr, PlantControl control) {
 
+        this(hr,control, 0.001f,  0.025f, 0.004f);
+
+    }
+
+    /**
+     * Creates the hill-climber and instantiates the PID controller needed by asking the model for the parameters
+     * @param hr the human resources in charge of the hiring for the plan
+     * @param control the control using this maximizer.
+     */
+    public PIDHillClimber(HumanResources hr, PlantControl control,float proportional, float integrative, float derivative) {
+
         super(hr, control);
         MacroII model = hr.getFirm().getModel();
         //the pid controller
-        pid = new PIDController(model.drawProportionalGain(),model.drawIntegrativeGain(),
-                model.drawDerivativeGain(),model.getRandom());
-        pid.setOffset(hr.getPlant().workerSize());
+        pid = new PIDController(proportional,integrative,derivative,model.getRandom());
+        pid.setOffset(hr.getPlant().workerSize()+ 1);
 
     }
+
+
 
 
     /**
@@ -74,7 +86,7 @@ public class PIDHillClimber extends HillClimberMaximizer
             //turn it upside down if we were going backwards (decreasing workers)
             differenceInProfits = currentWorkerTarget < oldWorkerTarget ? -differenceInProfits : differenceInProfits;
             //record them
-            lastDifferentProfits = oldProfits; lastDifferentTarget = oldWorkerTarget;
+            lastDifferentProfits = differenceInProfits; lastDifferentTarget = oldWorkerTarget;
 
         }
         else
