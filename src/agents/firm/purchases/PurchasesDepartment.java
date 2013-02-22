@@ -994,4 +994,6 @@ public class PurchasesDepartment implements Deactivatable, Department {
     public float currentDaysOfInventory() {
         return counter.currentDaysOfInventory();
     }
+
+
 }

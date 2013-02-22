@@ -81,7 +81,7 @@ public class PIDHillClimberTuning {
 
                             for(int i=0; i < 100; i++)
                             {
-                                futureTarget = maximizer.chooseWorkerTarget(target,currentProfits,oldTarget,oldProfits);
+                                futureTarget = maximizer.chooseWorkerTarget(target,currentProfits,-1,-1,-1,-1,oldTarget,oldProfits); //todo fix this!
                                 float futureProfits = -futureTarget*futureTarget + 20 * futureTarget +2;
                                 deviation += Math.pow(futureTarget-11,2);
                                 variance +=Math.pow(futureTarget-oldTarget,2);

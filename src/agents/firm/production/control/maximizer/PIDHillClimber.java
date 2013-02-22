@@ -8,7 +8,8 @@ import model.utilities.pid.PIDController;
 /**
  * <h4>Description</h4>
  * <p/> This is the same as the old hill-climber except that it uses a PID to set the size of the step
- * <p/>
+ * <p/> Initially I coded it so as to target DELTA_profits = 0 but that's a terrible idea since absolute values means tuning it each
+ * time separetely. Rather I am going to target no change in efficiency ratio: MR/MC = 1
  * <p/>
  * <h4>Notes</h4>
  * Created with IntelliJ
@@ -38,6 +39,9 @@ public class PIDHillClimber extends HillClimberMaximizer
      */
     int lastDifferentTarget = 0;
 
+    //last marginal efficency found
+    private float marginalEfficency;
+
     /**
      * Creates the hill-climber and instantiates the PID controller needed by asking the model for the parameters
      * @param hr the human resources in charge of the hiring for the plan
@@ -45,7 +49,8 @@ public class PIDHillClimber extends HillClimberMaximizer
      */
     public PIDHillClimber(HumanResources hr, PlantControl control) {
 
-        this(hr,control, 0.001f,  0.025f, 0.004f);
+        this(hr,control,hr.getFirm().getModel().drawProportionalGain(),  hr.getFirm().getModel().drawIntegrativeGain(),
+                hr.getFirm().getModel().drawDerivativeGain());
 
     }
 
@@ -69,33 +74,35 @@ public class PIDHillClimber extends HillClimberMaximizer
 
     /**
      * Asks the subclass what the next worker target will be!
+     *
      * @param currentWorkerTarget what is the current worker target
      * @param newProfits          what are the new profits
+     * @param newRevenues
+     *@param newCosts
+     * @param oldRevenues
+     * @param oldCosts
      * @param oldWorkerTarget     what was the target last time we changed them
-     * @param oldProfits          what were the profits back then
-     * @return the new worker targets. Any negative number means to check again!
+     * @param oldProfits          what were the profits back then   @return the new worker targets. Any negative number means to check again!
      */
     @Override
-    public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, int oldWorkerTarget, float oldProfits) {
+    public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts,
+                                  float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
 
 
-        float differenceInProfits;
         if(currentWorkerTarget != oldWorkerTarget)
         {
-            differenceInProfits = newProfits - oldProfits;
-            //turn it upside down if we were going backwards (decreasing workers)
-            differenceInProfits = currentWorkerTarget < oldWorkerTarget ? -differenceInProfits : differenceInProfits;
-            //record them
-            lastDifferentProfits = differenceInProfits; lastDifferentTarget = oldWorkerTarget;
+            float differenceInRevenues = newRevenues - oldRevenues;
+            float differenceInCosts = newCosts - oldCosts;
+
+            //marginal efficency (bound to 10)
+            marginalEfficency = Math.min(10,differenceInRevenues/differenceInCosts);
 
         }
         else
         {
-            differenceInProfits = newProfits - lastDifferentProfits;
-            differenceInProfits = currentWorkerTarget < lastDifferentTarget ? -differenceInProfits : differenceInProfits;
 
         }
-        pid.adjustOnce(differenceInProfits,true);
+        pid.adjustOnce(marginalEfficency-1,true);
 
 
         return Math.min(Math.round(pid.getCurrentMV()),getHr().maximumWorkersPossible());

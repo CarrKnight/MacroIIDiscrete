@@ -8,6 +8,7 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.MarginalPlantControl;
+import agents.firm.production.control.MarginalPlantControlWithPID;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
@@ -72,7 +73,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
     /**
      * total number of firms producing beef
      */
-    private int numberOfBeefProducers = 10;
+    private int numberOfBeefProducers = 1;
 
     /**
      * total number of firms producing food
@@ -402,7 +403,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
         final MacroII macroII = new MacroII(System.currentTimeMillis());
         OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
-        scenario1.setControlType(MarginalPlantControl.class);
+        scenario1.setControlType(MarginalPlantControlWithPID.class);
 
 
 

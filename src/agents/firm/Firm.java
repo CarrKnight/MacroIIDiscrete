@@ -617,6 +617,46 @@ public class Firm extends EconomicAgent {
     }
 
     /**
+     * Efficiency ratio is just costs/revenues, the lower the better
+     * @return the efficiency ratio
+     */
+    public float getEfficiencyRatio(Plant p) {
+        return profitReport.getEfficiencyRatio(p);
+    }
+
+    /**
+     * returns the total costs attributable to this plant
+     * @param p the plant
+     * @return the variable AND amortized fixed costs.
+     */
+    public float getPlantCosts(Plant p) {
+        return profitReport.getPlantCosts(p);
+    }
+
+    /**
+     * returns the total sales attributable to this plant
+     * @param p the plant
+     * @return the revenues of the plant
+     */
+    public float getPlantRevenues(Plant p) {
+        return profitReport.getPlantRevenues(p);
+    }
+
+    /**
+     * @return  the total profits of the week
+     * */
+    public long getAggregateProfits() {
+        return profitReport.getAggregateProfits();
+    }
+
+    /**
+     * This is just the ratio of profits to revenues
+     */
+    public float getNetProfitRatio(Plant p) {
+        return profitReport.getNetProfitRatio(p);
+    }
+
+    /**
      * Turns on/off the firm
      * @param active true if it's to be on. It can't be turned on once it's off
      */

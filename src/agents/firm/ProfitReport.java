@@ -9,7 +9,7 @@ import java.util.*;
 
 /**
  * <h4>Description</h4>
- * <p/> An object that computes the revenues/profits for accounting sakes
+ * <p/> An object that computes the revenuesPerPlant/profits for accounting sakes
  * <p/>
  * <p/>
  * <h4>Notes</h4>
@@ -41,7 +41,17 @@ public class ProfitReport {
     /**
      *  maps to each plant the profits it made
      */
-    private Map<Plant,Float> profitsMade;
+    private Map<Plant,Float> profitsPerPlant;
+    /**
+     * maps to each plant the revenue associated with it
+     */
+    private Map<Plant,Float> revenuesPerPlant;
+
+    /**
+     * maps to each plant the costs associated with it as they appear in the profitsPerPlant
+     */
+    private Map<Plant,Float> costsPerPlant;
+
 
 
     /**
@@ -64,7 +74,9 @@ public class ProfitReport {
         //instantiate stuff
         //    producers = HashMultimap.create();
         totalProduction = new int[GoodType.values().length];
-        profitsMade = new HashMap<>();
+        profitsPerPlant = new HashMap<>();
+        revenuesPerPlant = new HashMap<>();
+        costsPerPlant = new HashMap<>();
         ammortizedFixedCosts = new HashMap<>();
 
     }
@@ -73,7 +85,8 @@ public class ProfitReport {
     {
         //reset the counters!
         aggregateProfits = 0;
-        profitsMade.clear();
+        profitsPerPlant.clear(); revenuesPerPlant.clear(); costsPerPlant.clear();
+
         ammortizedFixedCosts.clear();
         totalProduction = new int[GoodType.values().length];
 
@@ -103,6 +116,15 @@ public class ProfitReport {
         Map<GoodType, Long> grossMargins = new EnumMap<>(GoodType.class);
         for(Map.Entry<GoodType, SalesDepartment> dept : sales)
             grossMargins.put(dept.getKey(), dept.getValue().getLastWeekMargin());
+        //same for revenue
+        Map<GoodType, Long> totalSales = new EnumMap<>(GoodType.class);
+        for(Map.Entry<GoodType, SalesDepartment> dept : sales)
+            totalSales.put(dept.getKey(), dept.getValue().getLastWeekSales());
+        //same for costs
+        Map<GoodType, Long> cogs = new EnumMap<>(GoodType.class);
+        for(Map.Entry<GoodType, SalesDepartment> dept : sales)
+            cogs.put(dept.getKey(), dept.getValue().getLastWeekCostOfGoodSold());
+
 
 
 
@@ -112,6 +134,7 @@ public class ProfitReport {
 
             float margin=0; //this is simple REVENUE - COSTS as recorded by the sales department
             float revenue=0; //this is just REVENUE without costs
+            float cost = 0;
 
             //for each output
             Set<GoodType> outputs = p.getBlueprint().getOutputs().keySet();
@@ -121,6 +144,12 @@ public class ProfitReport {
                 if(totalProduction[output.ordinal()]>0)
                 {
                     margin += (float)grossMargins.get(output) *
+                            ((float)p.getLastWeekThroughput()[output.ordinal()]) /
+                            ((float)totalProduction[output.ordinal()]);
+                    revenue += (float)totalSales.get(output) *
+                            ((float)p.getLastWeekThroughput()[output.ordinal()]) /
+                            ((float)totalProduction[output.ordinal()]);
+                    cost += (float)cogs.get(output) *
                             ((float)p.getLastWeekThroughput()[output.ordinal()]) /
                             ((float)totalProduction[output.ordinal()]);
                 }
@@ -142,8 +171,9 @@ public class ProfitReport {
             //subtract fixed costs
             profits -= p.weeklyFixedCosts();
 
-
-            profitsMade.put(p,profits);
+            revenuesPerPlant.put(p, revenue);
+            costsPerPlant.put(p, cost +p.weeklyFixedCosts());
+            profitsPerPlant.put(p, profits);
             ammortizedFixedCosts.put(p,p.weeklyFixedCosts());
             aggregateProfits +=profits;
 
@@ -164,14 +194,14 @@ public class ProfitReport {
     public void turnOff(){
         totalProduction = null;
         firm = null;
-        profitsMade.clear();
-        profitsMade = null;
+        profitsPerPlant.clear();
+        profitsPerPlant = null;
     }
 
 
     public float getPlantProfits(Plant p){
         assert firm.getPlants().contains(p);
-        return profitsMade.get(p);
+        return profitsPerPlant.get(p);
     }
 
 
@@ -180,6 +210,43 @@ public class ProfitReport {
      * */
     public long getAggregateProfits() {
         return aggregateProfits;
+    }
+
+    /**
+     * Efficiency ratio is just costs/revenues, the lower the better
+     * @return the efficiency ratio
+     */
+    public float getEfficiencyRatio(Plant p)
+    {
+        return costsPerPlant.get(p)/revenuesPerPlant.get(p);
+    }
+
+    /**
+     * This is just the ratio of profits to revenues
+     */
+    public float getNetProfitRatio(Plant p)
+    {
+        return revenuesPerPlant.get(p)/revenuesPerPlant.get(p);
+
+    }
+
+    /**
+     * returns the total sales attributable to this plant
+     * @param p the plant
+     * @return the revenues of the plant
+     */
+    public float getPlantRevenues(Plant p)
+    {
+       return revenuesPerPlant.get(p);
+    }
+
+    /**
+     * returns the total costs attributable to this plant
+     * @param p the plant
+     * @return the variable AND amortized fixed costs.
+     */
+    public float getPlantCosts(Plant p){
+        return costsPerPlant.get(p);
     }
 
 

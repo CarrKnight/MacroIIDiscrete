@@ -126,6 +126,11 @@ public class SalesDepartment implements Department {
     final private Deque<Long> grossMargin;
 
     /**
+     * Here we keep memorized the cost of goods sold
+     */
+    final private Deque<Long> cogs;
+
+    /**
      * This counts how many goods the department managed to sell last week
      */
     private int goodsSoldLastWeek;
@@ -245,6 +250,7 @@ public class SalesDepartment implements Department {
         totalSales = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
         totalUnsold = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
         grossMargin = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
+        cogs = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
         this.buyerSearchAlgorithm = buyerSearchAlgorithm;
         this.sellerSearchAlgorithm = sellerSearchAlgorithm;
         predictorStrategy = new MemorySalesPredictor();
@@ -868,6 +874,7 @@ public class SalesDepartment implements Department {
         //zero all the counters
         Collection<Good> recordsToRemove = new LinkedList<>();
         long thisWeekSales = 0;
+        long thisWeekCOGS = 0;
         long thisWeekInventory = 0;
         long thisWeekMargin = 0;
         goodsSoldLastWeek= 0;  goodsToSellLastWeek =0;
@@ -883,6 +890,7 @@ public class SalesDepartment implements Department {
                 assert !toSell.contains(saleRecord.getKey());
                 assert saleRecord.getValue().getPriceSold() >= 0 : saleRecord.getValue().getPriceSold(); //we should have recorded the price!!
                 thisWeekSales = thisWeekSales + saleRecord.getValue().getPriceSold(); //sum up the sale
+                thisWeekCOGS = thisWeekCOGS + saleRecord.getValue().getPreviousCost(); //sum up the costs
                 thisWeekMargin = thisWeekMargin + saleRecord.getValue().getPriceSold() - saleRecord.getValue().getPreviousCost(); //addSalesDepartmentListener the margin
                 recordsToRemove.add(saleRecord.getKey()); //remove it, so we don't count it twice
                 goodsSoldLastWeek++; //count it
@@ -929,7 +937,9 @@ public class SalesDepartment implements Department {
 
         totalSales.addLast(thisWeekSales); //record total sales
         totalUnsold.addLast(thisWeekInventory);
+        cogs.addLast(thisWeekCOGS);
         grossMargin.addLast(thisWeekMargin);
+        assert thisWeekMargin == thisWeekSales - thisWeekCOGS;
         assert totalSales.size() == totalUnsold.size(); //they should be of the same size
         assert totalSales.size() == grossMargin.size(); //they should be of the same size
 
@@ -1096,6 +1106,15 @@ public class SalesDepartment implements Department {
      */
     public long getLastWeekMargin(){
         return grossMargin.getLast();
+    }
+
+    /**
+     * Return the last week cost of good solds
+     */
+    public long getLastWeekCostOfGoodSold()
+    {
+        return cogs.getLast();
+
     }
 
 

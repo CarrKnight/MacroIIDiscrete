@@ -50,6 +50,18 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
     private float oldProfits = 0;
 
     /**
+     * here we memorize the last time we checked for revenues
+     */
+    private float oldRevenue = 0;
+
+
+    /**
+     * here we memorize the last time we checked for costs
+     */
+    private float oldCosts = 0;
+
+
+    /**
      * here we memorize the last worker target of ours
      */
     private int oldWorkerTarget = 0;
@@ -162,11 +174,14 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
 
         //get profits
         float newProfits = hr.getFirm().getPlantProfits(hr.getPlant());
+        float newRevenues = hr.getFirm().getPlantRevenues(hr.getPlant());
+        float newCosts = hr.getFirm().getPlantCosts(hr.getPlant());
 
 
 
         //what's the future target?
-        int futureTarget = chooseWorkerTarget(control.getTarget(),newProfits,oldWorkerTarget,oldProfits);
+        int futureTarget = chooseWorkerTarget(control.getTarget(),newProfits,newRevenues , newCosts,
+                oldRevenue,oldCosts, oldWorkerTarget, oldProfits);
 
 
         //if the future target is negative, do it again next week (the subclass wants more info)
@@ -186,6 +201,8 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
 
             //remember
             oldProfits = newProfits;
+            oldRevenue = newRevenues;
+            oldCosts = newCosts;
             oldWorkerTarget = control.getTarget();
 
 
@@ -248,13 +265,18 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
 
     /**
      * Asks the subclass what the next worker target will be!
+     *
      * @param currentWorkerTarget what is the current worker target
      * @param newProfits what are the new profits
+     * @param newRevenues what are the new revenues
+      *@param newCosts what are the new costs
+     * @param oldRevenues what were the old revenues
+     * @param oldCosts what were the old costs
      * @param oldWorkerTarget what was the target last time we changed them
-     * @param oldProfits what were the profits back then
-     * @return the new worker targets. Any negative number means to check again!
+     * @param oldProfits what were the profits back then   @return the new worker targets. Any negative number means to check again!
      */
-    protected abstract int chooseWorkerTarget(int currentWorkerTarget, float newProfits, int oldWorkerTarget, float oldProfits);
+    protected abstract int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts,
+                                              float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits);
 
 
 

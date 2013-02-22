@@ -28,13 +28,19 @@ import static org.mockito.Mockito.*;
  */
 public class PIDHIllClimberTest {
 
-    /**
-     * Profits are workerSize^2
-     */
-    @Test
-    public void scenario1Test()
-    {
 
+    //marginal efficency is above 1: increase production
+    @Test
+    public void marginalEfficencyIsAbove1()
+    {
+        float oldRevenue = 100;
+        float newRevenue = 120;
+        float oldCosts = 10;
+        float newCosts = 15;
+
+        //marginal efficency is 4!!!!!!!!!!!!!!
+
+        //build the various items and the maximizer
         HumanResources hr = mock(HumanResources.class);
         TargetAndMaximizePlantControl control = mock(TargetAndMaximizePlantControl.class);
         Plant plant = mock(Plant.class);
@@ -47,43 +53,34 @@ public class PIDHIllClimberTest {
         when(firm.getModel()).thenReturn(new MacroII(1l));
         when(control.getHr()).thenReturn(hr); when(hr.maximumWorkersPossible()).thenReturn(30);
         when(hr.getPlant()).thenReturn(plant);
-
-
-        //maximize!
-        PIDHillClimber maximizer = new PIDHillClimber(hr,control);
-
-        //start the parameters
-        int target = 1;
-        float currentProfits = 1;
-        int oldTarget = 0;
-        float oldProfits = -1;
-
-        for(int i=0; i < 100; i++)
-        {
-            int futureTarget = maximizer.chooseWorkerTarget(target,currentProfits,oldTarget,oldProfits);
-            float futureProfits = futureTarget*futureTarget;
-
-            oldTarget=target; oldProfits = currentProfits;
-            target = futureTarget; currentProfits = futureProfits;
-
-
-        }
-
-        Assert.assertEquals(target, 30);
-
-
+        PIDHillClimber maximizer = new PIDHillClimber(hr,control,2,1,0); //big numbers so that there is an effect!
+        //assume you had moved from 1 to 2
+        int newWorkerTarget = maximizer.chooseWorkerTarget(2,newRevenue-newCosts,newRevenue,newCosts,oldRevenue,oldCosts,
+                1,oldRevenue-oldCosts);
+        Assert.assertTrue(newWorkerTarget > 2);
+        //check that it doesn't break with division by 0
+        oldCosts = newCosts;
+        newWorkerTarget = maximizer.chooseWorkerTarget(2,newRevenue-newCosts,newRevenue,newCosts,oldRevenue,oldCosts,
+                1,oldRevenue-oldCosts);
+        Assert.assertTrue(newWorkerTarget > 2);
 
 
 
     }
 
-    /**
-     * Profits are workerSize^2 for x<10 and 0 otherwise!
-     */
-    @Test
-    public void scenario2Test()
-    {
 
+    //marginal efficency is below 1: decrease production
+    @Test
+    public void marginalEfficencyIsBelow1()
+    {
+        float oldRevenue = 100;
+        float newRevenue = 105;
+        float oldCosts = 10;
+        float newCosts = 20;
+
+        //marginal efficency is 0.25!!!!!!!!!!!!!!
+
+        //build the various items and the maximizer
         HumanResources hr = mock(HumanResources.class);
         TargetAndMaximizePlantControl control = mock(TargetAndMaximizePlantControl.class);
         Plant plant = mock(Plant.class);
@@ -96,158 +93,95 @@ public class PIDHIllClimberTest {
         when(firm.getModel()).thenReturn(new MacroII(1l));
         when(control.getHr()).thenReturn(hr); when(hr.maximumWorkersPossible()).thenReturn(30);
         when(hr.getPlant()).thenReturn(plant);
-
-
-
-
-        //maximize!
         PIDHillClimber maximizer = new PIDHillClimber(hr,control);
+        //assume you had moved from 10 to 11
+        int newWorkerTarget = maximizer.chooseWorkerTarget(11,newRevenue-newCosts,newRevenue,newCosts,oldRevenue,oldCosts,
+                10,oldRevenue-oldCosts);
+        Assert.assertTrue(newWorkerTarget < 11);
 
-        //start the parameters
-        int target = 1;
-        float currentProfits = 1;
+
+
+    }
+
+    @Test
+    public void monopolistScenario()
+    {
+
+
+        //build the various items and the maximizer
+        HumanResources hr = mock(HumanResources.class);
+        TargetAndMaximizePlantControl control = mock(TargetAndMaximizePlantControl.class);
+        Plant plant = mock(Plant.class);
+        Firm firm = mock(Firm.class);  when(hr.getFirm()).thenReturn(firm);
+        when(firm.getModel()).thenReturn(new MacroII(1l));
+        when(control.getPlant()).thenReturn(plant);
+        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(1l);
+        when(plant.minimumWorkersNeeded()).thenReturn(1);
+        when(hr.getFirm()).thenReturn(firm);
+        when(firm.getModel()).thenReturn(new MacroII(1l));
+        when(control.getHr()).thenReturn(hr); when(hr.maximumWorkersPossible()).thenReturn(30);
+        when(hr.getPlant()).thenReturn(plant);
+        PIDHillClimber maximizer = new PIDHillClimber(hr,control);
+        //assume you had moved from 10 to 11
+
+
+        long oldRevenue=0;
+        long oldCosts = 0;
+        long oldProfits = 0;
         int oldTarget = 0;
-        float oldProfits = -1;
+        int currentWorkerTarget = 1;
+        //start the parameters
+        float currentProfits = 1;
 
-        for(int i=0; i < 100; i++)
+        for(int i=0; i < 1000; i++)
         {
-            int futureTarget = maximizer.chooseWorkerTarget(target,currentProfits,oldTarget,oldProfits);
-            float futureProfits = futureTarget < 10 ? futureTarget*futureTarget : 0;
 
-            oldTarget=target; oldProfits = currentProfits;
-            target = futureTarget; currentProfits = futureProfits;
+            int futureTarget =  maximizer.chooseWorkerTarget(currentWorkerTarget,
+                    revenuePerWorker(currentWorkerTarget) - costPerWorker(currentWorkerTarget),
+                    revenuePerWorker(currentWorkerTarget),costPerWorker(currentWorkerTarget),
+                    oldRevenue,oldCosts, oldTarget,oldProfits);
+
+            oldTarget=currentWorkerTarget;
+            oldProfits = revenuePerWorker(oldTarget) - costPerWorker(oldTarget);
+            oldRevenue = revenuePerWorker(oldTarget);
+            oldCosts = costPerWorker(oldTarget);
+            currentWorkerTarget=futureTarget;
             System.out.println(futureTarget);
 
 
 
+
         }
-
-        Assert.assertEquals(target,9);
-
-
-
 
 
     }
 
 
-    /**
-     * Profits are -L^2+5L+2
-     */
-    @Test
-    public void scenarioContinuousFunction()
+    //use the functions from the monopolist
+
+    private long costPerWorker(int workers)
     {
+        long wages;
+        if(workers > 0)
+            wages = 105 + (workers -1)*7;
+        else
+            wages = 0;
 
-        HumanResources hr = mock(HumanResources.class);
-        TargetAndMaximizePlantControl control = mock(TargetAndMaximizePlantControl.class);
-        Plant plant = mock(Plant.class);
-        Firm firm = mock(Firm.class);  when(hr.getFirm()).thenReturn(firm);
-        when(firm.getModel()).thenReturn(new MacroII(1l));
-        when(control.getPlant()).thenReturn(plant);
-        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(1l);
-        when(plant.minimumWorkersNeeded()).thenReturn(1);
-        when(hr.getFirm()).thenReturn(firm);
-        when(firm.getModel()).thenReturn(new MacroII(1l));
-        when(control.getHr()).thenReturn(hr); when(hr.maximumWorkersPossible()).thenReturn(30);
-        when(hr.getPlant()).thenReturn(plant);
-
-
-
-
-        //maximize!
-        PIDHillClimber maximizer = new PIDHillClimber(hr,control);
-
-        //start the parameters
-        int target = 1;
-        float currentProfits = 1;
-        int oldTarget = 0;
-        float oldProfits = -1;
-
-        for(int i=0; i < 100; i++)
-        {
-            int futureTarget = maximizer.chooseWorkerTarget(target,currentProfits,oldTarget,oldProfits);
-            float futureProfits = -futureTarget*futureTarget + 20 * futureTarget +2;
-
-            oldTarget=target; oldProfits = currentProfits;
-            target = futureTarget; currentProfits = futureProfits;
-            System.out.println(futureTarget);
-
-
-
-        }
-
-        Assert.assertEquals(target,11);
-
-
-
-
+        return wages*workers;
 
     }
 
-    /**
-     * Profits are workerSize^2 for x<10 and 0 otherwise for the first 100 steps and just x^2 afterwards
-     */
-    @Test
-    public void scenario3Test()
+    private long revenuePerWorker(int workers)
     {
+        int quantity = workers * 7;
+        int price = 101 - workers;
 
-        HumanResources hr = mock(HumanResources.class);
-        TargetAndMaximizePlantControl control = mock(TargetAndMaximizePlantControl.class);
-        Plant plant = mock(Plant.class);
-        Firm firm = mock(Firm.class);  when(hr.getFirm()).thenReturn(firm);
-        when(firm.getModel()).thenReturn(new MacroII(1l));
-        when(control.getPlant()).thenReturn(plant);
-        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(1l);
-        when(plant.minimumWorkersNeeded()).thenReturn(1);
-        when(hr.getFirm()).thenReturn(firm);
-        when(firm.getModel()).thenReturn(new MacroII(1l));
-        when(control.getHr()).thenReturn(hr); when(hr.maximumWorkersPossible()).thenReturn(30);
-        when(hr.getPlant()).thenReturn(plant);
-        when(hr.getPlant()).thenReturn(plant);
-
-
-
-
-
-        //maximize!
-        PIDHillClimber maximizer = new PIDHillClimber(hr,control);
-
-        //start the parameters
-        int target = 1;
-        float currentProfits = 1;
-        int oldTarget = 0;
-        float oldProfits = -1;
-
-        for(int i=0; i < 100; i++)
-        {
-            int futureTarget = maximizer.chooseWorkerTarget(target,currentProfits,oldTarget,oldProfits);
-            float futureProfits = futureTarget < 10 ? futureTarget*futureTarget : 0;
-
-            oldTarget=target; oldProfits = currentProfits;
-            target = futureTarget; currentProfits = futureProfits;
-
-
-        }
-
-        Assert.assertEquals(target,9);
-
-        for(int i=0; i < 100; i++)
-        {
-            int futureTarget = maximizer.chooseWorkerTarget(target,currentProfits,oldTarget,oldProfits);
-            float futureProfits = futureTarget < 10 ? 1f/((float)futureTarget) : futureTarget * futureTarget;
-
-            oldTarget=target; oldProfits = currentProfits;
-            target = futureTarget; currentProfits = futureProfits;
-
-
-        }
-        Assert.assertEquals(target,1);
-
-
-
-
-
+        return quantity * price;
     }
+
+
+
+
 
 
 

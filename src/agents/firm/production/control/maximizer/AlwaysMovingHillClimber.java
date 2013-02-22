@@ -28,14 +28,18 @@ public class AlwaysMovingHillClimber extends weeklyWorkforceMaximizer
     /**
      * Asks the subclass what the next worker target will be!
      *
+     *
      * @param currentWorkerTarget what is the current worker target
      * @param newProfits          what are the new profits
+     * @param newRevenues
+     *@param newCosts
+     * @param oldRevenues
+     * @param oldCosts
      * @param oldWorkerTarget     what was the target last time we changed them
-     * @param oldProfits          what were the profits back then
-     * @return the new worker targets. Any negative number means to check again!
+     * @param oldProfits          what were the profits back then   @return the new worker targets. Any negative number means to check again!
      */
     @Override
-    protected int chooseWorkerTarget(int currentWorkerTarget, float newProfits, int oldWorkerTarget, float oldProfits) {
+    protected int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
 
         int newVelocity = velocity(currentWorkerTarget,newProfits,oldWorkerTarget,oldProfits);
 

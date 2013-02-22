@@ -86,70 +86,70 @@ public class ParticleMaximizerTest {
 
         when(random.nextFloat()).thenReturn(1f);
 
-        int nextStep = maximizer.chooseWorkerTarget(1,profitFunction(1),0,profitFunction(0));
+        int nextStep = maximizer.chooseWorkerTarget(1,profitFunction(1),-1,-1,-1,-1,0,profitFunction(0));
         when(firm.getPlantProfits(plant)).thenReturn((float) profitFunction(nextStep));        when(plant.workerSize()).thenReturn(nextStep);
 
         assertEquals(nextStep,2);
         assertEquals(maximizer.getCurrentVelocity(),.75f,.001f);
 
         //once again, this time should move to three
-        nextStep = maximizer.chooseWorkerTarget(2,profitFunction(2),1,profitFunction(1));
+        nextStep = maximizer.chooseWorkerTarget(2,profitFunction(2),-1,-1,-1,-1,1,profitFunction(1));
         when(firm.getPlantProfits(plant)).thenReturn((float)profitFunction(nextStep));        when(plant.workerSize()).thenReturn(nextStep);
 
         assertEquals(nextStep,3);
         assertEquals(maximizer.getCurrentVelocity(),0.5625f,.001f);
 
         //it's going to stay at 3 for a while now
-        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),3,profitFunction(3));
+        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),-1,-1,-1,-1,3,profitFunction(3));
         when(firm.getPlantProfits(plant)).thenReturn((float)profitFunction(nextStep));
         when(plant.workerSize()).thenReturn(nextStep);
         assertEquals(nextStep, 3);
         assertEquals(maximizer.getCurrentVelocity(), 0.271875f, .001f);
 
-        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),3,profitFunction(3));
+        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),-1,-1,-1,-1,3,profitFunction(3));
         when(firm.getPlantProfits(plant)).thenReturn((float)profitFunction(nextStep));
         when(plant.workerSize()).thenReturn(nextStep);
         assertEquals(nextStep,3);
         assertEquals(maximizer.getCurrentVelocity(),0.05390625f,.001f);
 
 
-        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),3,profitFunction(3));
+        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),-1,-1,-1,-1,3,profitFunction(3));
         when(firm.getPlantProfits(plant)).thenReturn((float)profitFunction(nextStep));
         when(plant.workerSize()).thenReturn(nextStep);
         assertEquals(nextStep,3);
         assertEquals(maximizer.getCurrentVelocity(),-0.1095703125,.001f);
 
-        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),3,profitFunction(3));
+        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),-1,-1,-1,-1,3,profitFunction(3));
         when(firm.getPlantProfits(plant)).thenReturn((float)profitFunction(nextStep));
         when(plant.workerSize()).thenReturn(nextStep);
         assertEquals(nextStep,3);
         assertEquals(maximizer.getCurrentVelocity(),-0.2321777344,.001f);
 
 
-        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),3,profitFunction(3));
+        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),-1,-1,-1,-1,3,profitFunction(3));
         assertEquals(nextStep,3);
         assertEquals(maximizer.getCurrentVelocity(),-0.3241333008f,.001f);
 
-        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),3,profitFunction(3));
+        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),-1,-1,-1,-1,3,profitFunction(3));
         assertEquals(nextStep,3);
         assertEquals(maximizer.getCurrentVelocity(),-0.3930999756f,.001f);
 
-        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),3,profitFunction(3));
+        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),-1,-1,-1,-1,3,profitFunction(3));
         assertEquals(nextStep,3);
         assertEquals(maximizer.getCurrentVelocity(),-0.4448249817,.001f);
 
-        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),3,profitFunction(3));
+        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),-1,-1,-1,-1,3,profitFunction(3));
         assertEquals(nextStep,3);
         assertEquals(maximizer.getCurrentVelocity(),-0.4836187363,.001f);
 
-        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),3,profitFunction(3));
+        nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),-1,-1,-1,-1,3,profitFunction(3));
         assertEquals(nextStep,2);
         assertEquals(maximizer.getCurrentVelocity(),-0.5127140522,.001f);
         when(firm.getPlantProfits(plant)).thenReturn((float)profitFunction(nextStep));
         when(plant.workerSize()).thenReturn(nextStep);
 
 
-        nextStep = maximizer.chooseWorkerTarget(2,profitFunction(2),3,profitFunction(3));
+        nextStep = maximizer.chooseWorkerTarget(2,profitFunction(2),3,-1,-1,-1,-1,profitFunction(3));
         assertEquals(nextStep,2);
         assertEquals(maximizer.getCurrentVelocity(),-0.3845355392,.001f);
 

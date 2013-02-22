@@ -62,7 +62,7 @@ public class GradientMaximizerTest {
 
         for(int i=0; i < 100; i++)
         {
-            int futureTarget = maximizer.chooseWorkerTarget(target,currentProfits,oldTarget,oldProfits);
+            int futureTarget =  maximizer.chooseWorkerTarget(target,currentProfits,-1,-1,-1,-1,oldTarget,oldProfits);
             float futureProfits = futureTarget*futureTarget;
 
 
@@ -114,7 +114,7 @@ public class GradientMaximizerTest {
 
         for(int i=0; i < 100; i++)
         {
-            int futureTarget = maximizer.chooseWorkerTarget(target,currentProfits,oldTarget,oldProfits);
+            int futureTarget =  maximizer.chooseWorkerTarget(target,currentProfits,-1,-1,-1,-1,oldTarget,oldProfits);
             float futureProfits = futureTarget < 10 ? futureTarget*futureTarget : 0;
 
             System.out.println(target);
@@ -167,7 +167,7 @@ public class GradientMaximizerTest {
 
         for(int i=0; i < 100; i++)
         {
-            int futureTarget = maximizer.chooseWorkerTarget(target,currentProfits,oldTarget,oldProfits);
+            int futureTarget =  maximizer.chooseWorkerTarget(target,currentProfits,-1,-1,-1,-1,oldTarget,oldProfits);
             float futureProfits = futureTarget < 10 ? futureTarget*futureTarget : 0;
 
             oldTarget=target; oldProfits = currentProfits;
@@ -181,7 +181,7 @@ public class GradientMaximizerTest {
 
         for(int i=0; i < 100; i++)
         {
-            int futureTarget = maximizer.chooseWorkerTarget(target,currentProfits,oldTarget,oldProfits);
+            int futureTarget =  maximizer.chooseWorkerTarget(target,currentProfits,-1,-1,-1,-1,oldTarget,oldProfits);
             float futureProfits = futureTarget < 10 ? 1f/((float)futureTarget) : futureTarget * futureTarget;
 
             oldTarget=target; oldProfits = currentProfits;
