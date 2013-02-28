@@ -7,9 +7,9 @@ import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
-import agents.firm.production.control.MarginalPlantControl;
-import agents.firm.production.control.MarginalPlantControlWithPID;
 import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.facades.MarginalPlantControl;
+import agents.firm.production.control.facades.MarginalPlantControlWithPIDUnit;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesWeeklyPID;
@@ -37,7 +37,7 @@ import tests.DummyBuyer;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 /**
  * <h4>Description</h4>
@@ -403,7 +403,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
         final MacroII macroII = new MacroII(System.currentTimeMillis());
         OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
-        scenario1.setControlType(MarginalPlantControlWithPID.class);
+        scenario1.setControlType(MarginalPlantControlWithPIDUnit.class);
 
 
 

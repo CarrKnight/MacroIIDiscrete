@@ -7,8 +7,9 @@ import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
-import agents.firm.production.control.MarginalPlantControl;
+import agents.firm.production.control.facades.MarginalPlantControl;
 import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.facades.MarginalPlantControlWithPIDUnit;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesWeeklyPID;
@@ -450,7 +451,7 @@ public class SupplyChainScenario extends Scenario
 
         final MacroII macroII = new MacroII(System.currentTimeMillis());
         SupplyChainScenario scenario1 = new SupplyChainScenario(macroII);
-        scenario1.controlType = MarginalPlantControl.class;
+        scenario1.controlType = MarginalPlantControlWithPIDUnit.class;
 
 
 

@@ -1,21 +1,21 @@
-package agents.firm.production.control;
+package agents.firm.production.control.facades;
 
 import agents.firm.personell.HumanResources;
+import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
 import goods.GoodType;
 import agents.firm.production.Plant;
-import agents.firm.production.control.decorators.MatchBestControlDecorator;
 import agents.firm.production.control.maximizer.AlwaysMovingHillClimber;
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.Machinery;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
- * <p/> This is like DiscreteMatcherPlantControl but added is the MatchBestControl decorator!
+ * <p/> This is just a facade for a plant control with an AlwaysMovingHillClimber and PID targeter
  * <p/>
  * <p/>
  * <h4>Notes</h4>
@@ -25,25 +25,21 @@ import javax.annotation.Nullable;
  * <h4>References</h4>
  *
  * @author Ernesto
- * @version 2012-10-09
+ * @version 2012-10-06
  * @see
  */
-public class DiscreteMatcherPlantControl  implements  PlantControl
+public class DumbClimberControl implements PlantControl
 {
 
 
-    private  final PlantControl control;
+    final private PlantControl control;
 
-    /**
-     * Creates a TargetAndMaximizePlantControl with PIDTargeter and HillClimber
-     * @param hr
-     */
-    public DiscreteMatcherPlantControl(@Nonnull HumanResources hr) {
-        //instantiate the real control
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr,
-                PIDTargeter.class, AlwaysMovingHillClimber.class, MatchBestControlDecorator.class);
+
+    public DumbClimberControl(HumanResources hr){
+        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class, AlwaysMovingHillClimber.class);
 
     }
+
 
     /**
      * Answer the question: how much am I willing to pay for this kind of labor?
@@ -82,6 +78,30 @@ public class DiscreteMatcherPlantControl  implements  PlantControl
     @Override
     public int getTarget() {
         return control.getTarget();
+    }
+
+    /**
+     * set the workforce size target
+     */
+    @Override
+    public void setTarget(int workSize) {
+        control.setTarget(workSize);
+    }
+
+    /**
+     * Set whether or not the control can buy
+     */
+    @Override
+    public void setCanBuy(boolean canBuy) {
+        control.setCanBuy(canBuy);
+    }
+
+    /**
+     * Get the current wages paid by the control
+     */
+    @Override
+    public long getCurrentWage() {
+        return control.getCurrentWage();
     }
 
     /**
@@ -130,19 +150,9 @@ public class DiscreteMatcherPlantControl  implements  PlantControl
         return control.maxPrice(good);
     }
 
-
-    /**
-     * set the workforce size target
-     */
-    @Override
-    public void setTarget(int workSize) {
-        control.setTarget(workSize);
-    }
-
     /**
      * This is called whenever a plant has changed the number of workers
-     *
-     * @param p          the plant that made the change
+     * @param p the plant that made the change
      * @param workerSize the new number of workers
      */
     @Override
@@ -152,9 +162,8 @@ public class DiscreteMatcherPlantControl  implements  PlantControl
 
     /**
      * This is called whenever a plant has changed the wage it pays to workers
-     *
-     * @param wage       the new wage
-     * @param p          the plant that made the change
+     * @param wage the new wage
+     * @param p the plant that made the change
      * @param workerSize the new number of workers
      */
     @Override
@@ -164,7 +173,6 @@ public class DiscreteMatcherPlantControl  implements  PlantControl
 
     /**
      * This is called whenever a plant has been shut down or just went obsolete
-     *
      * @param p the plant that made the change
      */
     @Override
@@ -174,29 +182,11 @@ public class DiscreteMatcherPlantControl  implements  PlantControl
 
     /**
      * This is called by the plant whenever the machinery used has been changed
-     *
-     * @param p         The plant p
+     * @param p The plant p
      * @param machinery the machinery used.
      */
     @Override
     public void changeInMachineryEvent(Plant p, Machinery machinery) {
         control.changeInMachineryEvent(p, machinery);
-    }
-
-
-    /**
-     * Set whether or not the control can buy
-     */
-    @Override
-    public void setCanBuy(boolean canBuy) {
-        control.setCanBuy(canBuy);
-    }
-
-    /**
-     * Get the current wages paid by the control
-     */
-    @Override
-    public long getCurrentWage() {
-        return control.getCurrentWage();
     }
 }

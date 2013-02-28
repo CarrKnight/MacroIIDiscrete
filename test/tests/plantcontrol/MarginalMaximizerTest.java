@@ -5,7 +5,7 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
-import agents.firm.production.control.maximizer.MarginalMaximizer;
+import agents.firm.production.control.maximizer.marginalMaximizers.MarginalMaximizer;
 import agents.firm.sales.SalesDepartment;
 import goods.GoodType;
 import junit.framework.Assert;
@@ -113,15 +113,16 @@ public class MarginalMaximizerTest {
 
         //now make sure it's used properly in the maximizer method.
         //the method is protected so we need to open it from afar
-        //chooseWorkerTarget(int currentWorkerTarget, float newProfits, int oldWorkerTarget, float oldProfits)
+        // chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits)
         try {
-            Method chooseTarget = MarginalMaximizer.class.getDeclaredMethod("chooseWorkerTarget", int.class, float.class, int.class, float.class);
+            Method chooseTarget = MarginalMaximizer.class.getDeclaredMethod("chooseWorkerTarget", int.class, float.class,
+                    float.class,float.class,float.class, float.class,int.class, float.class);
             chooseTarget.setAccessible(true);
-            Integer newtarget = (Integer) chooseTarget.invoke(maximizer,10,10000,11,1000000);
+            Integer newtarget = (Integer) chooseTarget.invoke(maximizer,10,10000,-1,-1,-1,-1,11,1000000);
             Assert.assertEquals(11,newtarget.intValue());
             //same should happen at target 100
             when(p.workerSize()).thenReturn(100);  when(hr.getWagesPaid()).thenReturn(50*100l);
-            newtarget = (Integer) chooseTarget.invoke(maximizer,100,10000,11,1000000);
+            newtarget = (Integer) chooseTarget.invoke(maximizer,100,10000,-1,-1,-1,-1,11,1000000);
             Assert.assertEquals(101,newtarget.intValue());
 
 

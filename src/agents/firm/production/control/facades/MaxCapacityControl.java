@@ -1,23 +1,28 @@
-package agents.firm.production.control;
+package agents.firm.production.control.facades;
 
 import agents.firm.personell.HumanResources;
+import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
 import goods.GoodType;
 import agents.firm.production.Plant;
 import agents.firm.production.PlantListener;
-import agents.firm.production.control.maximizer.HillClimberMaximizer;
+import agents.firm.production.control.maximizer.FullCapacityMaximizer;
+import agents.firm.production.control.maximizer.WorkforceMaximizer;
 import agents.firm.production.control.targeter.PIDTargeter;
+import agents.firm.production.control.targeter.WorkforceTargeter;
 import agents.firm.production.technology.Machinery;
 
 import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
- * <p/> This now is just a facade. After I updated the plant control interface. Basically it creates a specific Target And Maximize PlantContol instance
+ * <h4>Description</h4>
+ * <p/> This now is just a facade, after I updated the plant control interface. Basically it creates a specific Target And Maximize PlantContol instance
  * and just delegates to it
- * <p/>  The TargetAndMaximizePlantControl it delegates has PIDTargeter and HillClimber
-
+ * <p/>  The TargetAndMaximizePlantControl it delegates has PIDTargeter and FullCapacityMaximizer
+ * <p/>
  * <h4>Notes</h4>
  * Created with IntelliJ
  * <p/>
@@ -25,23 +30,28 @@ import javax.annotation.Nonnull;
  * <h4>References</h4>
  *
  * @author Ernesto
- * @version 2012-09-01
+ * @version 2012-08-22
  * @see
  */
-public class DiscreteSlowPlantControl  implements  PlantControl, PlantListener {
-
-
-    private  final TargetAndMaximizePlantControl control;
+public class MaxCapacityControl implements PlantControl, PlantListener {
 
     /**
-     * Creates a TargetAndMaximizePlantControl with PIDTargeter and HillClimber
-     * @param hr
+     * The actual control we delegate everything to
      */
-    public DiscreteSlowPlantControl(@Nonnull HumanResources hr) {
+    private final TargetAndMaximizePlantControl control;
+
+
+
+    /**
+     * Creates a TargetAndMaximizePlantControl with PIDTargeter and GradientMaximizer
+     * @param hr human resources
+     */
+    public MaxCapacityControl(@Nonnull HumanResources hr) {
         //instantiate the real control
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class,HillClimberMaximizer.class);
+        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class, FullCapacityMaximizer.class);
 
     }
+
 
     public boolean isActive() {
         return control.isActive();
@@ -91,6 +101,14 @@ public class DiscreteSlowPlantControl  implements  PlantControl, PlantListener {
      */
     public void setCanBuy(boolean canBuy) {
         control.setCanBuy(canBuy);
+    }
+
+    /**
+     * Plant Control factory, instantiates a class of the kind of targeter and maximizer specified
+     * @param hr the human resources object
+     */
+    public static TargetAndMaximizePlantControl PlantControlFactory(@Nonnull HumanResources hr, Class<? extends WorkforceTargeter> targeterClass, Class<? extends WorkforceMaximizer> maximizerClass) {
+        return TargetAndMaximizePlantControl.PlantControlFactory(hr, targeterClass, maximizerClass);
     }
 
     /**
@@ -206,3 +224,4 @@ public class DiscreteSlowPlantControl  implements  PlantControl, PlantListener {
         return control.canBuy();
     }
 }
+

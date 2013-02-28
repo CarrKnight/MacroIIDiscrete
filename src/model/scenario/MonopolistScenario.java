@@ -8,6 +8,7 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.*;
+import agents.firm.production.control.facades.*;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
@@ -65,7 +66,7 @@ public class MonopolistScenario extends Scenario {
      * this is somewhat of an ugly trick to get the gui to be able to select the kind of class
      * the human resource should use. Mason GUI knows how to deal with enums
      */
-    private MonopolistScenarioIntegratedControlEnum controlType = MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_SIMPLE;
+    private MonopolistScenarioIntegratedControlEnum controlType = MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID;
 
     /**
      * Do agents go around look for better offers all the time?
@@ -152,10 +153,39 @@ public class MonopolistScenario extends Scenario {
          * Add  Monopolist
          ************************************************/
 
+        buildMonopolist();
 
+
+        /************************************************
+         * Add workers
+         ************************************************/
+
+        //with minimum wage from 15 to 65
+        for(int i=0; i<120; i++)
+        {
+            //dummy worker, really
+            final Person p = new Person(getModel(),0l,(15+i)*7,laborMarket);
+
+            p.setSearchForBetterOffers(lookForBetterOffers);
+
+            p.start();
+
+            getAgents().add(p);
+
+        }
+
+
+
+
+
+
+    }
+
+    public void buildMonopolist() {
         //only one seller
         monopolist = new Firm(getModel());
-        monopolist.earn(1000000000l); monopolist.setName("monopolist");
+        monopolist.earn(1000000000l);
+        monopolist.setName("monopolist");
         //set up the firm at time 1
         getModel().scheduleSoon(ActionOrder.DAWN, new Steppable() {
             @Override
@@ -188,38 +218,7 @@ public class MonopolistScenario extends Scenario {
         });
 
         getAgents().add(monopolist);
-
-
-
-
-
-        /************************************************
-         * Add workers
-         ************************************************/
-
-        //with minimum wage from 15 to 65
-        for(int i=0; i<120; i++)
-        {
-            //dummy worker, really
-            final Person p = new Person(getModel(),0l,(15+i)*7,laborMarket);
-
-            p.setSearchForBetterOffers(lookForBetterOffers);
-
-            p.start();
-
-            getAgents().add(p);
-
-        }
-
-
-
-
-
-
     }
-
-
-
 
 
     public boolean isFixedPayStructure() {
@@ -271,12 +270,11 @@ public class MonopolistScenario extends Scenario {
 
         HILL_CLIMBER_ALWAYS_MOVING(DumbClimberControl.class),
 
-        MARGINAL_WITH_PID(MarginalPlantControlWithPID.class)
+        MARGINAL_WITH_PID(MarginalPlantControlWithPID.class),
+
+        MARGINAL_WITH_UNIT_PID(MarginalPlantControlWithPIDUnit.class);
 
 
-
-
-        ;
 
         private MonopolistScenarioIntegratedControlEnum(Class<? extends PlantControl> controller) {
             this.controller = controller;
@@ -306,5 +304,9 @@ public class MonopolistScenario extends Scenario {
      */
     public void setControlType(MonopolistScenarioIntegratedControlEnum controlType) {
         this.controlType = controlType;
+    }
+
+    public Firm getMonopolist() {
+        return monopolist;
     }
 }

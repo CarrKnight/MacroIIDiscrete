@@ -1,4 +1,4 @@
-package agents.firm.production.control.maximizer;
+package agents.firm.production.control.maximizer.marginalMaximizers;
 
 import agents.firm.personell.HumanResources;
 import agents.firm.production.control.PlantControl;

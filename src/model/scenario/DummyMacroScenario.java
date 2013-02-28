@@ -15,7 +15,7 @@ import financial.utilities.ShopSetPricePolicy;
 import goods.GoodType;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
-import agents.firm.production.control.DiscreteSlowPlantControl;
+import agents.firm.production.control.facades.DiscreteSlowPlantControl;
 import agents.firm.production.technology.LinearConstantMachinery;
 import model.MacroII;
 import sim.engine.SimState;

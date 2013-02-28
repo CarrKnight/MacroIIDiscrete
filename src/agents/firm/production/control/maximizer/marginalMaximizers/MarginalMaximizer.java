@@ -1,7 +1,8 @@
-package agents.firm.production.control.maximizer;
+package agents.firm.production.control.maximizer.marginalMaximizers;
 
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
+import agents.firm.production.control.maximizer.weeklyWorkforceMaximizer;
 import agents.firm.purchases.PurchasesDepartment;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
@@ -77,6 +78,81 @@ public class MarginalMaximizer extends weeklyWorkforceMaximizer
         /**********************************************
          * WAGES
          *********************************************/
+        CostEstimate wageCosts = computeWageCosts(currentWorkers,targetWorkers);
+
+        /**********************************************
+         * INPUTS
+         *********************************************/
+        CostEstimate inputCosts = computeInputCosts(currentWorkers,targetWorkers);
+
+        /**********************************************
+         * TOTAL COSTS
+         *********************************************/
+        //sum up everything
+        long totalMarginalCosts = wageCosts.getMarginalCost()+ inputCosts.getMarginalCost();
+        assert(totalMarginalCosts >= 0 && targetWorkers > currentWorkers) ^   (totalMarginalCosts <= 0 && targetWorkers < currentWorkers);
+        //we are going to need the total costs to predict our future sales price
+        assert  inputCosts.getTotalCost() >=0;
+
+        /*********************************************************
+         * Marginal Revenues
+         ********************************************************/
+        float marginalRevenue = computeMarginalRevenue(currentWorkers, targetWorkers, inputCosts.getTotalCost(), wageCosts.getTotalCost());
+
+
+        //FINALLY return
+        return marginalRevenue - totalMarginalCosts;
+
+
+
+    }
+
+    /**
+     * This is simply marginal profits divided by the marginal production. Basically it is average marginal profits
+     * @param currentWorkers the workers the plan currently has
+     * @param targetWorkers the number of workers we want to have
+     * @return the marginal profits of this change in workforce divided by marginal production (in absolute value)
+     * @throws DelayException
+     */
+    public float computeUnitMarginalProfits(int currentWorkers, int targetWorkers) throws DelayException
+    {
+
+        float marginalProduction = marginalProduction(currentWorkers, targetWorkers);
+        marginalProduction = Math.abs(marginalProduction);     //take the absolute value
+
+        return computeMarginalProfits(currentWorkers, targetWorkers) / marginalProduction;
+
+
+    }
+
+    /**
+     * computes the change in production expected by the change in workers
+     * @param currentWorkers the new number of workers
+     * @param targetWorkers the target workers
+     * @return marginal production
+     */
+    public int marginalProduction(int currentWorkers, int targetWorkers) {
+        int marginalProduction = 0;
+        Set<GoodType> outputs = p.getBlueprint().getOutputs().keySet();
+
+        //for all the outputs
+        for(GoodType output : outputs)
+        {
+            marginalProduction += p.hypotheticalThroughput(targetWorkers,output) - p.hypotheticalThroughput(currentWorkers,output);
+            assert (marginalProduction >= 0 && targetWorkers >= currentWorkers) ^  (marginalProduction <= 0 && targetWorkers < currentWorkers);
+        }
+        return marginalProduction;
+    }
+
+
+    /**
+     * Computes the labor expenses associated with the proposed number of workers
+     * @param currentWorkers the current number of workers
+     * @param targetWorkers the proposed number of workers
+     * @return the estimate of both the marginal costs and the total costs
+     * @throws DelayException
+     */
+    public CostEstimate computeWageCosts(int currentWorkers, int targetWorkers) throws DelayException {
         long marginalWageCosts; long futureWage;
 
         if(targetWorkers > currentWorkers)  //if we are going to hire somebody
@@ -104,44 +180,22 @@ public class MarginalMaximizer extends weeklyWorkforceMaximizer
             marginalWageCosts = futureWage * (targetWorkers-currentWorkers); //get marginal cost!
             assert marginalWageCosts <=0;    //cost should be negative! we are saving!
         }
-
-        /**********************************************
-         * INPUTS
-         *********************************************/
-        Set<GoodType> inputs = p.getBlueprint().getInputs().keySet();
-        long marginalInputCosts = 0; //here we will store the costs of increasing production
-        long totalInputCosts = 0; //here we will store the TOTAL input costs of increased production
-        for(GoodType input : inputs)
-        {
-            int totalInputNeeded =  p.hypotheticalWeeklyInputNeeds(input,targetWorkers);  //total input needed
-            int marginalInputNeeded = totalInputNeeded-  p.hypotheticalWeeklyInputNeeds(input,currentWorkers) ;  //marginal input needs
-            assert (marginalInputNeeded>=0 && targetWorkers > currentWorkers) ^ (marginalInputNeeded<=0 && targetWorkers < currentWorkers) ; //
-
-            PurchasesDepartment dept = owner.getPurchaseDepartment(input); //get the purchase department that buys this input
-            long costPerInput = targetWorkers > currentWorkers ? dept.predictPurchasePrice() : dept.getLastClosingPrice(); //if we are increasing production, predict. if we are decreasing production use old prices
-            //if there is no prediction, react to it
-            costPerInput = costPerInput < 0 ? policy.replaceUnknownPrediction(owner.getPurchaseDepartment(input).getMarket(),p.getRandom()) : costPerInput;
-
-            //count the costs!
-            marginalInputCosts+= (costPerInput * totalInputNeeded) - dept.getLastClosingPrice() *
-                    p.hypotheticalWeeklyInputNeeds(input,currentWorkers) ;
-            //marginal costs are negative (marginal savings) if we are reducing production
-            assert (marginalInputCosts >= 0 && targetWorkers > currentWorkers) ^   (marginalInputCosts <= 0 && targetWorkers < currentWorkers);
-            totalInputCosts +=  costPerInput*totalInputNeeded;
-            assert totalInputCosts >= 0;
-        }
-
-        //sum up everything
-        long totalMarginalCosts = marginalWageCosts + marginalInputCosts;
-        assert(totalMarginalCosts >= 0 && targetWorkers > currentWorkers) ^   (totalMarginalCosts <= 0 && targetWorkers < currentWorkers);
-        //we are going to need the total costs to predict our future sales price
-        long totalFutureCosts = totalInputCosts;
         long totalFutureWageCosts = futureWage * targetWorkers;
-        assert totalFutureCosts>=0;
 
-        /*********************************************************
-         * Marginal Revenues
-         ********************************************************/
+        return new CostEstimate(marginalWageCosts,totalFutureWageCosts);
+
+    }
+
+    /**
+     * Computes the marginal revenue of the change in production
+     * @param currentWorkers the number of current workers
+     * @param targetWorkers the number of workers targeted
+     * @param totalFutureCosts the total future costs expected AFTER changing production
+     * @param totalFutureWageCosts the total future wages expected after changing production
+     * @return All the marginal revenues expected from the change in production
+     * @throws DelayException
+     */
+    public float computeMarginalRevenue(int currentWorkers, int targetWorkers, long totalFutureCosts, long totalFutureWageCosts) throws DelayException {
         float marginalRevenue = 0;
         Set<GoodType> outputs = p.getBlueprint().getOutputs().keySet();
         for(GoodType output : outputs)
@@ -161,13 +215,7 @@ public class MarginalMaximizer extends weeklyWorkforceMaximizer
 
 
         }
-
-
-        //FINALLY return
-        return marginalRevenue - totalMarginalCosts;
-
-
-
+        return marginalRevenue;
     }
 
 
@@ -301,5 +349,65 @@ public class MarginalMaximizer extends weeklyWorkforceMaximizer
      */
     public Firm getOwner() {
         return owner;
+    }
+
+    /**
+     * computes the input costs associated with change in production
+     * @param currentWorkers the current number of workers
+     * @param targetWorkers the target number of workers
+     * @return an object containing the marginal costs and the total costs of the new production schedule
+     * @throws DelayException
+     */
+    public CostEstimate computeInputCosts(int currentWorkers, int targetWorkers) throws DelayException {
+        Set<GoodType> inputs = p.getBlueprint().getInputs().keySet();
+        long marginalInputCosts = 0; //here we will store the costs of increasing production
+        long totalInputCosts = 0; //here we will store the TOTAL input costs of increased production
+        for(GoodType input : inputs)
+        {
+            int totalInputNeeded =  p.hypotheticalWeeklyInputNeeds(input,targetWorkers);  //total input needed
+            int marginalInputNeeded = totalInputNeeded-  p.hypotheticalWeeklyInputNeeds(input,currentWorkers) ;  //marginal input needs
+            assert (marginalInputNeeded>=0 && targetWorkers > currentWorkers) ^ (marginalInputNeeded<=0 && targetWorkers < currentWorkers) ; //
+
+            PurchasesDepartment dept = owner.getPurchaseDepartment(input); //get the purchase department that buys this input
+            long costPerInput = targetWorkers > currentWorkers ? dept.predictPurchasePrice() : dept.getLastClosingPrice(); //if we are increasing production, predict. if we are decreasing production use old prices
+            //if there is no prediction, react to it
+            costPerInput = costPerInput < 0 ? policy.replaceUnknownPrediction(owner.getPurchaseDepartment(input).getMarket(),p.getRandom()) : costPerInput;
+
+            //count the costs!
+            marginalInputCosts+= (costPerInput * totalInputNeeded) - dept.getLastClosingPrice() *
+                    p.hypotheticalWeeklyInputNeeds(input,currentWorkers) ;
+            //marginal costs are negative (marginal savings) if we are reducing production
+            assert (marginalInputCosts >= 0 && targetWorkers > currentWorkers) ^   (marginalInputCosts <= 0 && targetWorkers < currentWorkers);
+            totalInputCosts +=  costPerInput*totalInputNeeded;
+            assert totalInputCosts >= 0;
+        }
+
+        return new CostEstimate(marginalInputCosts,totalInputCosts);
+
+    }
+
+    /**
+     * This is a simple struct class that holds the result of a marginalCost estimation. It holds both the marginal cost expected
+     * and the total cost expected
+     */
+    protected final class CostEstimate
+    {
+
+        final private long marginalCost;
+
+        final private long totalCost;
+
+        private CostEstimate(long marginalCost, long totalCost) {
+            this.marginalCost = marginalCost;
+            this.totalCost = totalCost;
+        }
+
+        final public long getMarginalCost() {
+            return marginalCost;
+        }
+
+        final public long getTotalCost() {
+            return totalCost;
+        }
     }
 }

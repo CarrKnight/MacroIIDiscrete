@@ -131,7 +131,6 @@ public class PIDHIllClimberTest {
         int oldTarget = 0;
         int currentWorkerTarget = 1;
         //start the parameters
-        float currentProfits = 1;
 
         for(int i=0; i < 1000; i++)
         {

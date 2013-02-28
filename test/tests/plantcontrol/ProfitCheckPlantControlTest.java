@@ -7,7 +7,7 @@ import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
-import agents.firm.production.control.ProfitCheckPlantControl;
+import agents.firm.production.control.facades.ProfitCheckPlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.IRSExponentialMachinery;

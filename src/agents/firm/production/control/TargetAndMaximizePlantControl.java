@@ -7,6 +7,7 @@ import agents.firm.production.control.decorators.PlantControlDecorator;
 import agents.firm.production.control.maximizer.WorkforceMaximizer;
 import agents.firm.production.control.targeter.WorkforceTargeter;
 import agents.firm.production.technology.Machinery;
+import com.google.common.base.Preconditions;
 import model.utilities.NonDrawable;
 
 import javax.annotation.Nonnull;
@@ -113,6 +114,16 @@ public class TargetAndMaximizePlantControl extends AbstractPlantControl {
     }
 
     /**
+     * Create a plant control with premade targeter and Maximizer
+     * @param hr the human resource
+     * @return the target and maximize control
+     */
+    public static TargetAndMaximizePlantControl emptyTargetAndMaximizePlantControl(@Nonnull final HumanResources hr)
+    {
+        return new  TargetAndMaximizePlantControl(hr);
+    }
+
+    /**
      * Plant Control factory, instantiates a class of the kind of targeter and maximizer specified
      * @param hr the human resources object
      */
@@ -198,6 +209,25 @@ public class TargetAndMaximizePlantControl extends AbstractPlantControl {
         return targeter.getTarget();
     }
 
+    /**
+     * This is used to set the targeter if you created an empty target and maximize plant control. It throws an exception
+     * if it had already been set
+     * @param targeter the new targeter to use
+     */
+    public void setTargeter(WorkforceTargeter targeter) {
+        Preconditions.checkState(this.targeter==null);
+        Preconditions.checkNotNull(targeter);
+        this.targeter = targeter;
+    }
 
-
+    /**
+     * This is used to set the maximizer if you created an empty target and maximize plant control. It throws an exception
+     * if it had already been set
+     * @param maximizer the new maximizer to use
+     */
+    public void setMaximizer(WorkforceMaximizer maximizer) {
+        Preconditions.checkState(this.maximizer==null);
+        Preconditions.checkNotNull(maximizer);
+        this.maximizer = maximizer;
+    }
 }

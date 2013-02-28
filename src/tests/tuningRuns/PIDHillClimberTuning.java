@@ -42,7 +42,7 @@ public class PIDHillClimberTuning {
 
 
             for(float proportional = 0.001f; proportional <=0.3f; proportional += 0.010f ){
-                float integral = 0f;
+                for(float integral = 0.001f; integral <=0.3f; integral += 0.010f ){
                     for(float derivative = 0f; derivative <=0.1f; derivative += 0.001f ){
                         //do each run 5 times and take averages
                         float futureTargetAverage =0f;
@@ -71,29 +71,35 @@ public class PIDHillClimberTuning {
                             //maximize!
                             PIDHillClimber maximizer = new PIDHillClimber(hr,control,proportional,integral,derivative);
 
-                            //start the parameters
-                            int target = 1;
-                            float currentProfits = 1;
+                            long oldRevenue=0;
+                            long oldCosts = 0;
+                            long oldProfits = 0;
                             int oldTarget = 0;
-                            float oldProfits = -1;
-                            int futureTarget=0;
+                            int currentWorkerTarget = 1;
+                            //start the parameters
 
-
-                            for(int i=0; i < 100; i++)
+                            for(int i=0; i < 1000; i++)
                             {
-                                futureTarget = maximizer.chooseWorkerTarget(target,currentProfits,-1,-1,-1,-1,oldTarget,oldProfits); //todo fix this!
-                                float futureProfits = -futureTarget*futureTarget + 20 * futureTarget +2;
-                                deviation += Math.pow(futureTarget-11,2);
-                                variance +=Math.pow(futureTarget-oldTarget,2);
 
-                                oldTarget=target; oldProfits = currentProfits;
-                                target = futureTarget; currentProfits = futureProfits;
+                                int futureTarget =  maximizer.chooseWorkerTarget(currentWorkerTarget,
+                                        revenuePerWorker(currentWorkerTarget) - costPerWorker(currentWorkerTarget),
+                                        revenuePerWorker(currentWorkerTarget),costPerWorker(currentWorkerTarget),
+                                        oldRevenue,oldCosts, oldTarget,oldProfits);
 
+                                oldTarget=currentWorkerTarget;
+                                oldProfits = revenuePerWorker(oldTarget) - costPerWorker(oldTarget);
+                                oldRevenue = revenuePerWorker(oldTarget);
+                                oldCosts = costPerWorker(oldTarget);
+                                currentWorkerTarget=futureTarget;
+
+                                variance += Math.pow(currentWorkerTarget-oldTarget,2);
+                                deviation += Math.pow(currentWorkerTarget-22,2);
 
 
                             }
 
-                            futureTargetAverage +=futureTarget;
+
+                            futureTargetAverage +=currentWorkerTarget;
                         }
 
                         futureTargetAverage= futureTargetAverage/5f;
@@ -106,6 +112,7 @@ public class PIDHillClimberTuning {
                                 ,Double.toString(variance)});
                     }
 
+                }
             }
 
             writer.close();
@@ -117,6 +124,36 @@ public class PIDHillClimberTuning {
 
 
     }
+
+
+    //use the functions from the monopolist
+
+    public static long costPerWorker(int workers)
+    {
+        long wages;
+        if(workers > 0)
+            wages = 105 + (workers -1)*7;
+        else
+            wages = 0;
+
+        return wages*workers;
+
+    }
+
+    public static long revenuePerWorker(int workers)
+    {
+        int quantity = workers * 7;
+        int price = 101 - workers;
+
+        return quantity * price;
+    }
+
+
+
+
+
+
+
 
 
 }

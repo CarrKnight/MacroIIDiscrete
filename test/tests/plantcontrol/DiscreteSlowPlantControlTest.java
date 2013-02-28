@@ -23,7 +23,7 @@ import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.PlantListener;
 import agents.firm.production.control.AbstractPlantControl;
-import agents.firm.production.control.DiscreteSlowPlantControl;
+import agents.firm.production.control.facades.DiscreteSlowPlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.maximizer.HillClimberMaximizer;
 import agents.firm.production.technology.LinearConstantMachinery;

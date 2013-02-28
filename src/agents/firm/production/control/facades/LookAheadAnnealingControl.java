@@ -1,24 +1,24 @@
-package agents.firm.production.control;
+package agents.firm.production.control.facades;
 
 import agents.firm.personell.HumanResources;
-import agents.firm.production.Plant;
-import agents.firm.production.PlantListener;
-import agents.firm.production.control.decorators.PlantControlDecorator;
-import agents.firm.production.control.maximizer.MarginalAndPIDMaximizer;
-import agents.firm.production.control.maximizer.WorkforceMaximizer;
-import agents.firm.production.control.targeter.PIDTargeter;
-import agents.firm.production.control.targeter.WorkforceTargeter;
-import agents.firm.production.technology.Machinery;
+import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
 import goods.GoodType;
+import agents.firm.production.Plant;
+import agents.firm.production.control.decorators.PlantControlDecorator;
+import agents.firm.production.control.maximizer.AnnealingReactingMaximizer;
+import agents.firm.production.control.maximizer.WorkforceMaximizer;
+import agents.firm.production.control.targeter.MarketLookTargeter;
+import agents.firm.production.control.targeter.WorkforceTargeter;
+import agents.firm.production.technology.Machinery;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
- * <p/> Similar to marginalPlantControl but using pid to find the step size
+ * <p/> Like DiscreteSlowPlantControl but this one has an adaptive simulated annealing maximization
  * <p/>
  * <p/>
  * <h4>Notes</h4>
@@ -27,68 +27,76 @@ import javax.annotation.Nullable;
  * <p/>
  * <h4>References</h4>
  *
- * @author carrknight
- * @version 2013-02-03
+ * @author Ernesto
+ * @version 2012-09-30
  * @see
  */
-public class MarginalPlantControlWithPID implements  PlantControl, PlantListener {
+public class LookAheadAnnealingControl implements PlantControl
+{
 
-
-    /**
-     * the control we delegate to
-    */
-    TargetAndMaximizePlantControl control;
+    private  final TargetAndMaximizePlantControl control;
 
     /**
-     * A facade for a marginal plant control with PID used as a way to select the step size
+     * Creates a TargetAndMaximizePlantControl with PIDTargeter and HillClimber
      * @param hr
      */
-    public MarginalPlantControlWithPID(@Nonnull HumanResources hr)
-    {
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class,MarginalAndPIDMaximizer.class);
+    public LookAheadAnnealingControl(@Nonnull HumanResources hr) {
+        //instantiate the real control
+        control = TargetAndMaximizePlantControl.PlantControlFactory(hr,MarketLookTargeter.class, AnnealingReactingMaximizer.class);
 
     }
 
+
     /**
-     * This is used by the the user to ask the control whether or not to act.<br>
+     * the method just calls the start of the Targeter and the Maximizer
+     */
+    @Override
+    public void start() {
+        control.start();
+    }
+
+    /**
+     * pass the message down
      *
-     * @return
+     * @param p          the plant that made the change
+     * @param workerSize the new number of workers
      */
     @Override
-    public boolean canBuy() {
-        return control.canBuy();
+    public void changeInWorkforceEvent(Plant p, int workerSize) {
+        control.changeInWorkforceEvent(p, workerSize);
     }
 
     /**
-     * Set the flag to allow or ban the hr from hiring people
-     * @param canBuy true if the hr can hire more people at this wage.
-     */
-    @Override
-    public void setCanBuy(boolean canBuy) {
-        control.setCanBuy(canBuy);
-    }
-
-    public boolean isActive() {
-        return control.isActive();
-    }
-
-    /**
-     * This is called whenever a plant has been shut down or just went obsolete
+     * This is called by the plant whenever the machinery used has been changed
      *
-     * @param p the plant that made the change
+     * @param p         The plant p
+     * @param machinery the machinery used.
      */
     @Override
-    public void plantShutdownEvent(Plant p) {
-        control.plantShutdownEvent(p);
+    public void changeInMachineryEvent(Plant p, Machinery machinery) {
+        control.changeInMachineryEvent(p, machinery);
     }
 
     /**
-     * Get the wage offered (for subclasses only)
-     * @return the wage offered.
+     * This method returns the control rating on current stock held <br>
+     *
+     * @return the rating on the current stock conditions or null if the department is not active.
      */
     @Override
-    public long getCurrentWage() {
-        return control.getCurrentWage();
+    public Level rateCurrentLevel() {
+        return control.rateCurrentLevel();
+    }
+
+    /**
+     * This is called whenever a plant has changed the wage it pays to workers
+     *
+     * @param wage       the new wage
+     * @param p          the plant that made the change
+     * @param workerSize the new number of workers
+     */
+    @Override
+    public void changeInWageEvent(Plant p, int workerSize, long wage) {
+        control.changeInWageEvent(p, workerSize, wage);
     }
 
     /**
@@ -97,13 +105,6 @@ public class MarginalPlantControlWithPID implements  PlantControl, PlantListener
      */
     public static TargetAndMaximizePlantControl PlantControlFactory(@Nonnull HumanResources hr, Class<? extends WorkforceTargeter> targeterClass, Class<? extends WorkforceMaximizer> maximizerClass) {
         return TargetAndMaximizePlantControl.PlantControlFactory(hr, targeterClass, maximizerClass);
-    }
-
-    /**
-     * Returns the plant monitored by the HR
-     */
-    public Plant getPlant() {
-        return control.getPlant();
     }
 
     /**
@@ -184,55 +185,51 @@ public class MarginalPlantControlWithPID implements  PlantControl, PlantListener
     }
 
     /**
-     * the method just calls the start of the Targeter and the Maximizer
+     * Returns the plant monitored by the HR
      */
-    @Override
-    public void start() {
-        control.start();
+    public Plant getPlant() {
+        return control.getPlant();
+    }
+
+    public boolean isActive() {
+        return control.isActive();
     }
 
     /**
-     * pass the message down
+     * This is called whenever a plant has been shut down or just went obsolete
      *
-     * @param p          the plant that made the change
-     * @param workerSize the new number of workers
+     * @param p the plant that made the change
      */
     @Override
-    public void changeInWorkforceEvent(Plant p, int workerSize) {
-        control.changeInWorkforceEvent(p, workerSize);
+    public void plantShutdownEvent(Plant p) {
+        control.plantShutdownEvent(p);
     }
 
     /**
-     * This is called by the plant whenever the machinery used has been changed
-     *
-     * @param p         The plant p
-     * @param machinery the machinery used.
+     * Get the wage offered (for subclasses only)
+     * @return the wage offered.
      */
     @Override
-    public void changeInMachineryEvent(Plant p, Machinery machinery) {
-        control.changeInMachineryEvent(p, machinery);
+    public long getCurrentWage() {
+        return control.getCurrentWage();
     }
 
     /**
-     * This method returns the control rating on current stock held <br>
+     * This is used by the the user to ask the control whether or not to act.<br>
      *
-     * @return the rating on the current stock conditions or null if the department is not active.
+     * @return
      */
-    @Nullable
     @Override
-    public Level rateCurrentLevel() {
-        return control.rateCurrentLevel();
+    public boolean canBuy() {
+        return control.canBuy();
     }
 
     /**
-     * This is called whenever a plant has changed the wage it pays to workers
-     *
-     * @param wage       the new wage
-     * @param p          the plant that made the change
-     * @param workerSize the new number of workers
+     * Set the flag to allow or ban the hr from hiring people
+     * @param canBuy true if the hr can hire more people at this wage.
      */
     @Override
-    public void changeInWageEvent(Plant p, int workerSize, long wage) {
-        control.changeInWageEvent(p, workerSize, wage);
+    public void setCanBuy(boolean canBuy) {
+        control.setCanBuy(canBuy);
     }
 }

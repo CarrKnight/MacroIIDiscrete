@@ -68,6 +68,20 @@ public class HumanResources extends PurchasesDepartment {
         this.plant = plant; //record the plant to supply.
     }
 
+    /**
+     * This is the empty constructor for purchase department. It will not work if you don't set the control and price
+     * @param budgetGiven the amount of money give to the department
+     * @param firm the firm owning the department
+     * @param market the labor market
+     */
+    public static HumanResources getEmptyHumanResources(long budgetGiven, @Nonnull Firm firm, @Nonnull Market market,
+                                                        @Nonnull Plant plant)
+    {
+        HumanResources hr =  new HumanResources(budgetGiven, firm, market, plant);
+        firm.registerHumanResources(plant, hr);
+        return hr;
+    }
+
 
     /**
      * This factory for human resources is used when we want the department to follow an integrated rule: plant control and pricing rule are the same object. <br>

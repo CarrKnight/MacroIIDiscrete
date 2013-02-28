@@ -11,7 +11,7 @@ import financial.OrderBookBlindMarket;
 import goods.GoodType;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
-import agents.firm.production.control.FixWagesPlantControl;
+import agents.firm.production.control.facades.FixWagesPlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.decorators.FixedWageDecorator;
 import agents.firm.production.control.decorators.PlantControlDecorator;

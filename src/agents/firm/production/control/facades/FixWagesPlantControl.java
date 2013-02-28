@@ -1,6 +1,8 @@
-package agents.firm.production.control;
+package agents.firm.production.control.facades;
 
 import agents.firm.personell.HumanResources;
+import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
 import goods.GoodType;
@@ -28,7 +30,7 @@ import javax.annotation.Nullable;
  * @version 2012-08-23
  * @see
  */
-public class FixWagesPlantControl implements  PlantControl {
+public class FixWagesPlantControl implements PlantControl {
 
 
     private  final PlantControl control;

@@ -1,7 +1,8 @@
-package agents.firm.production.control;
+package agents.firm.production.control.facades;
 
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
+import agents.firm.production.control.PlantControl;
 import financial.Market;
 import goods.GoodType;
 import agents.firm.production.Plant;

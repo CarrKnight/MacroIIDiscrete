@@ -1,24 +1,26 @@
-package agents.firm.production.control;
+package agents.firm.production.control.facades;
 
 import agents.firm.personell.HumanResources;
+import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.TargetAndMaximizePlantControl;
+import agents.firm.purchases.inventoryControl.Level;
+import goods.Good;
+import goods.GoodType;
 import agents.firm.production.Plant;
 import agents.firm.production.PlantListener;
-import agents.firm.production.control.decorators.PlantControlDecorator;
-import agents.firm.production.control.maximizer.MarginalMaximizer;
+import agents.firm.production.control.maximizer.GradientMaximizer;
 import agents.firm.production.control.maximizer.WorkforceMaximizer;
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.control.targeter.WorkforceTargeter;
 import agents.firm.production.technology.Machinery;
-import agents.firm.purchases.inventoryControl.Level;
-import goods.Good;
-import goods.GoodType;
 
 import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
- * <p/> This controller uses marginal maximizer
- * <p/>
+ * <p/> This now is just a facade. After I updated the plant control interface. Basically it creates a specific Target And Maximize PlantContol instance
+ * and just delegates to it
+ * <p/>  The TargetAndMaximizePlantControl it delegates has PIDTargeter and GradientMaximizer
  * <p/>
  * <h4>Notes</h4>
  * Created with IntelliJ
@@ -27,24 +29,50 @@ import javax.annotation.Nonnull;
  * <h4>References</h4>
  *
  * @author Ernesto
- * @version 2012-08-22
+ * @version 2012-08-23
  * @see
  */
-public class MarginalPlantControl implements  PlantControl, PlantListener {
+public class ProfitCheckPlantControl  implements PlantControl, PlantListener
+{
+
+    private  final TargetAndMaximizePlantControl control;
 
     /**
-     * the control we delegate to
+     * Creates a TargetAndMaximizePlantControl with PIDTargeter and GradientMaximizer
+     * @param hr human resources
      */
-    TargetAndMaximizePlantControl control;
-
-    public MarginalPlantControl(@Nonnull HumanResources hr)
-    {
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class,MarginalMaximizer.class);
+    public ProfitCheckPlantControl(@Nonnull HumanResources hr) {
+        //instantiate the real control
+        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class, GradientMaximizer.class);
 
     }
 
+
     public boolean isActive() {
         return control.isActive();
+    }
+
+    /**
+     * Returns the human resources object
+     */
+    public HumanResources getHr() {
+        return control.getHr();
+    }
+
+    /**
+     * Sets the wage, update offers and then updates wages of current workers
+     * @param newWage the new wage
+     */
+    public void setCurrentWage(long newWage) {
+        control.setCurrentWage(newWage);
+    }
+
+    /**
+     * Get the wage offered (for subclasses only)
+     * @return the wage offered.
+     */
+    public long getCurrentWage() {
+        return control.getCurrentWage();
     }
 
     /**
@@ -55,12 +83,19 @@ public class MarginalPlantControl implements  PlantControl, PlantListener {
     }
 
     /**
-     * This plant control factory adds decorators to the control. for a good measure. It assumes all decorators need only the control object to instantiate
-     * @param hr the human resources object
+     * Ask the targeter what is the current worker target
+     * @return the number of workers the strategy is targeted to find!
      */
-    @SafeVarargs
-    public static PlantControl PlantControlFactory(@Nonnull HumanResources hr, Class<? extends WorkforceTargeter> targeterClass, Class<? extends WorkforceMaximizer> maximizerClass, Class<? extends PlantControlDecorator>... decorators) {
-        return TargetAndMaximizePlantControl.PlantControlFactory(hr, targeterClass, maximizerClass, decorators);
+    public int getTarget() {
+        return control.getTarget();
+    }
+
+    /**
+     * Set the flag to allow or ban the hr from hiring people
+     * @param canBuy true if the hr can hire more people at this wage.
+     */
+    public void setCanBuy(boolean canBuy) {
+        control.setCanBuy(canBuy);
     }
 
     /**
@@ -69,6 +104,14 @@ public class MarginalPlantControl implements  PlantControl, PlantListener {
      */
     public static TargetAndMaximizePlantControl PlantControlFactory(@Nonnull HumanResources hr, Class<? extends WorkforceTargeter> targeterClass, Class<? extends WorkforceMaximizer> maximizerClass) {
         return TargetAndMaximizePlantControl.PlantControlFactory(hr, targeterClass, maximizerClass);
+    }
+
+    /**
+     * The targeter is told that now we need to hire this many workers
+     * @param workerSizeTargeted the new number of workers we should target
+     */
+    public void setTarget(int workerSizeTargeted) {
+        control.setTarget(workerSizeTargeted);
     }
 
     /**
@@ -124,24 +167,6 @@ public class MarginalPlantControl implements  PlantControl, PlantListener {
     }
 
     /**
-     * The targeter is told that now we need to hire this many workers
-     * @param workerSizeTargeted the new number of workers we should target
-     */
-    @Override
-    public void setTarget(int workerSizeTargeted) {
-        control.setTarget(workerSizeTargeted);
-    }
-
-    /**
-     * Ask the targeter what is the current worker target
-     * @return the number of workers the strategy is targeted to find!
-     */
-    @Override
-    public int getTarget() {
-        return control.getTarget();
-    }
-
-    /**
      * Answer the question: how much am I willing to pay for this kind of labor?
      * Notice that NO UPDATING SHOULD TAKE PLACE in calling this method. Human Resources expects maxPrice() to be consistent from one call to the next.
      * To notify hr of inconsistencies call updateEmployeeWages(). <br>
@@ -175,23 +200,6 @@ public class MarginalPlantControl implements  PlantControl, PlantListener {
     }
 
     /**
-     * Sets the wage, update offers and then updates wages of current workers
-     * @param newWage the new wage
-     */
-    @Override
-    public void setCurrentWage(long newWage) {
-        control.setCurrentWage(newWage);
-    }
-
-    /**
-     * Returns the human resources object
-     */
-    @Override
-    public HumanResources getHr() {
-        return control.getHr();
-    }
-
-    /**
      * This is called whenever a plant has been shut down or just went obsolete
      *
      * @param p the plant that made the change
@@ -202,15 +210,6 @@ public class MarginalPlantControl implements  PlantControl, PlantListener {
     }
 
     /**
-     * Get the wage offered (for subclasses only)
-     * @return the wage offered.
-     */
-    @Override
-    public long getCurrentWage() {
-        return control.getCurrentWage();
-    }
-
-    /**
      * This is used by the the user to ask the control whether or not to act.<br>
      *
      * @return
@@ -218,14 +217,5 @@ public class MarginalPlantControl implements  PlantControl, PlantListener {
     @Override
     public boolean canBuy() {
         return control.canBuy();
-    }
-
-    /**
-     * Set the flag to allow or ban the hr from hiring people
-     * @param canBuy true if the hr can hire more people at this wage.
-     */
-    @Override
-    public void setCanBuy(boolean canBuy) {
-        control.setCanBuy(canBuy);
     }
 }
