@@ -6,6 +6,7 @@ import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.maximizer.marginalMaximizers.MarginalMaximizer;
+import agents.firm.production.control.maximizer.marginalMaximizers.MarginalMaximizerStatics;
 import agents.firm.sales.SalesDepartment;
 import goods.GoodType;
 import junit.framework.Assert;
@@ -51,7 +52,7 @@ public class MarginalMaximizerTest {
         MarginalMaximizer maximizer = new MarginalMaximizer(hr,control);
         boolean exceptionThrown = false;
         try {
-            float marginalProfits = maximizer.computeMarginalProfits(10,11);
+            float marginalProfits = MarginalMaximizerStatics.computeMarginalProfits(owner, p, hr, control, maximizer.getPolicy(), 10, 11);
             Assert.fail();
         } catch (DelayException e) {
             exceptionThrown = true;
@@ -95,13 +96,13 @@ public class MarginalMaximizerTest {
         boolean exceptionThrown = false;
         float marginalProfits = -1;
         try {
-            marginalProfits = maximizer.computeMarginalProfits(10,11);
+            marginalProfits = MarginalMaximizerStatics.computeMarginalProfits(maximizer.getOwner(), maximizer.getP(), maximizer.getHr(), maximizer.getControl(), maximizer.getPolicy(), 10, 11);
             Assert.assertEquals(marginalProfits,50f,.0001f);
-            marginalProfits = maximizer.computeMarginalProfits(10,9);
+            marginalProfits = MarginalMaximizerStatics.computeMarginalProfits(maximizer.getOwner(), maximizer.getP(), maximizer.getHr(), maximizer.getControl(), maximizer.getPolicy(), 10, 9);
             Assert.assertEquals(marginalProfits,-50f,.0001f);
-            marginalProfits = maximizer.computeMarginalProfits(10,8);
+            marginalProfits = MarginalMaximizerStatics.computeMarginalProfits(maximizer.getOwner(), maximizer.getP(), maximizer.getHr(), maximizer.getControl(), maximizer.getPolicy(), 10, 8);
             Assert.assertEquals(marginalProfits,-100f,.0001f);
-            marginalProfits = maximizer.computeMarginalProfits(10,12);
+            marginalProfits = MarginalMaximizerStatics.computeMarginalProfits(maximizer.getOwner(), maximizer.getP(), maximizer.getHr(), maximizer.getControl(), maximizer.getPolicy(), 10, 12);
             Assert.assertEquals(marginalProfits,100f,.0001f);
         } catch (DelayException e) {
             Assert.fail();

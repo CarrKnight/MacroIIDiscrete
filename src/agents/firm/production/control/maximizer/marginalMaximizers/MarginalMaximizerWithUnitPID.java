@@ -37,7 +37,7 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
     /**
      * this is the efficency targeted
      */
-    private int targetEfficency = 1;
+    private float targetEfficiency = 1;
 
     /**
      * Very simple marginal maximizer that chooses worker by targeting MB/MC = 1
@@ -81,16 +81,16 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
         try{
 
 
-            float marginalProduction = marginalProduction(currentWorkerTarget,currentWorkerTarget+1);
+            float marginalProduction = MarginalMaximizerStatics.marginalProduction(getP(), currentWorkerTarget, currentWorkerTarget + 1);
             //cost
-            CostEstimate wageCosts = computeWageCosts(currentWorkerTarget,currentWorkerTarget+1);
-            CostEstimate inputCosts = computeInputCosts(currentWorkerTarget, currentWorkerTarget + 1);
+            MarginalMaximizerStatics.CostEstimate wageCosts = MarginalMaximizerStatics.computeWageCosts(getPolicy(), getP(), getHr(), getControl(), currentWorkerTarget, currentWorkerTarget + 1);
+            MarginalMaximizerStatics.CostEstimate inputCosts = MarginalMaximizerStatics.computeInputCosts(getOwner(), getP(), getPolicy(), currentWorkerTarget, currentWorkerTarget + 1);
             float marginalCosts = wageCosts.getMarginalCost() + inputCosts.getMarginalCost();
             marginalCosts = marginalCosts / marginalProduction;
 
             //benefits
-            float marginalBenefits = computeMarginalRevenue(currentWorkerTarget,currentWorkerTarget+1,
-                    inputCosts.getTotalCost(),wageCosts.getTotalCost());
+            float marginalBenefits = MarginalMaximizerStatics.computeMarginalRevenue(getOwner(), getP(), getPolicy(), currentWorkerTarget, currentWorkerTarget + 1,
+                    inputCosts.getTotalCost(), wageCosts.getTotalCost());
             marginalBenefits = marginalBenefits / marginalProduction;
 
             //now that they are properly "averaged" we divide them and target efficency of 1
@@ -101,8 +101,7 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
             if(penalize0 && marginalEfficency ==0)
                 marginalEfficency = -2;
 
-            targetEfficency = 1;
-            pid.adjustOnce(marginalEfficency- targetEfficency,true);
+            pid.adjustOnce(marginalEfficency- getTargetEfficiency(),true);
             return Math.min(Math.round(pid.getCurrentMV()), getHr().maximumWorkersPossible());
 
 
@@ -129,11 +128,11 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
         this.penalize0 = penalize0;
     }
 
-    public int getTargetEfficency() {
-        return targetEfficency;
+    public float getTargetEfficiency() {
+        return targetEfficiency;
     }
 
-    public void setTargetEfficency(int targetEfficency) {
-        this.targetEfficency = targetEfficency;
+    public void setTargetEfficiency(float targetEfficiency) {
+        this.targetEfficiency = targetEfficiency;
     }
 }

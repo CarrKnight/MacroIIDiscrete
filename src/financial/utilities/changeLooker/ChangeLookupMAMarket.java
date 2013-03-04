@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 /**
  * <h4>Description</h4>
  * <p/> looks at the closing price after trading computes the rate of change and adds it to the moving average
- * <p/>
+ * <p/>  It schedules itself
  * <p/>
  * <h4>Notes</h4>
  * Created with IntelliJ

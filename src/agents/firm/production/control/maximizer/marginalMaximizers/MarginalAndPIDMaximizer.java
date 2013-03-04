@@ -56,14 +56,16 @@ public class MarginalAndPIDMaximizer extends MarginalMaximizer {
 
         try{
             float profitsIfWeIncrease = currentWorkerTarget < getP().maximumWorkersPossible() ? //if we can increase production
-                    computeMarginalProfits(currentWorkerTarget,currentWorkerTarget+1) //check marginal profits
+                    MarginalMaximizerStatics.computeMarginalProfits(getOwner(), getP(), getHr(), getControl(), getPolicy(),
+                            currentWorkerTarget, currentWorkerTarget + 1) //check marginal profits
                     :
                     Float.NEGATIVE_INFINITY; //otherwise don't go there!
 
 
             //compute profits if we decrease
             float profitsIfWeDecrease = currentWorkerTarget > getP().minimumWorkersNeeded() ? //can we decrease production?
-                    computeMarginalProfits(currentWorkerTarget, currentWorkerTarget-1) //if so check marginal profits
+                    MarginalMaximizerStatics.computeMarginalProfits(getOwner(), getP(), getHr(), getControl(), getPolicy(),
+                            currentWorkerTarget, currentWorkerTarget - 1) //if so check marginal profits
                     :
                     Float.NEGATIVE_INFINITY; //otherwise ignore this choice!
 
