@@ -67,11 +67,13 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficency extends MarginalMaximi
      * @return
      */
     @Override
-    protected int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
+    protected int chooseWorkerTarget(int currentWorkerTarget, float newProfits,
+                                     float newRevenues, float newCosts, float oldRevenues,
+                                     float oldCosts, int oldWorkerTarget, float oldProfits) {
 
         if(lookAhead!=null){  //if you have been setup, change efficency target
-            lookAhead.adjustOnce(0f,changeLookup.getChange(),true);
-            super.setTargetEfficiency(1 + lookAhead.getCurrentMV());
+            lookAhead.adjustOnce(changeLookup.getChange(),0f,true);
+            super.setTargetEfficiency(Math.max(1 + lookAhead.getCurrentMV(),0)); //never let it go below 0
         }
         else {
             //otherwise, ignore it!

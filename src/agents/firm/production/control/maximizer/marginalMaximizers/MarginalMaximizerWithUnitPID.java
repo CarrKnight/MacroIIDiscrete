@@ -83,8 +83,8 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
 
             float marginalProduction = MarginalMaximizerStatics.marginalProduction(getP(), currentWorkerTarget, currentWorkerTarget + 1);
             //cost
-            MarginalMaximizerStatics.CostEstimate wageCosts = MarginalMaximizerStatics.computeWageCosts(getPolicy(), getP(), getHr(), getControl(), currentWorkerTarget, currentWorkerTarget + 1);
-            MarginalMaximizerStatics.CostEstimate inputCosts = MarginalMaximizerStatics.computeInputCosts(getOwner(), getP(), getPolicy(), currentWorkerTarget, currentWorkerTarget + 1);
+            CostEstimate wageCosts = MarginalMaximizerStatics.computeWageCosts(getPolicy(), getP(), getHr(), getControl(), currentWorkerTarget, currentWorkerTarget + 1);
+            CostEstimate inputCosts = MarginalMaximizerStatics.computeInputCosts(getOwner(), getP(), getPolicy(), currentWorkerTarget, currentWorkerTarget + 1);
             float marginalCosts = wageCosts.getMarginalCost() + inputCosts.getMarginalCost();
             marginalCosts = marginalCosts / marginalProduction;
 
