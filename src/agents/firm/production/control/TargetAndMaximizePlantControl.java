@@ -1,12 +1,13 @@
 package agents.firm.production.control;
 
 import agents.firm.personell.HumanResources;
-import agents.firm.purchases.inventoryControl.Level;
 import agents.firm.production.Plant;
 import agents.firm.production.control.decorators.PlantControlDecorator;
 import agents.firm.production.control.maximizer.WorkforceMaximizer;
+import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
 import agents.firm.production.control.targeter.WorkforceTargeter;
 import agents.firm.production.technology.Machinery;
+import agents.firm.purchases.inventoryControl.Level;
 import com.google.common.base.Preconditions;
 import model.utilities.NonDrawable;
 
@@ -36,12 +37,12 @@ public class TargetAndMaximizePlantControl extends AbstractPlantControl {
     /**
      * the strategy running the wage-setting people hiring.
      */
-    WorkforceTargeter targeter;
+    private WorkforceTargeter targeter;
 
     /**
      * The strategy running the change in targets.
      */
-    WorkforceMaximizer maximizer;
+    private WorkforceMaximizer maximizer;
 
     /**
      * the method just calls the start of the Targeter and the Maximizer
@@ -127,25 +128,38 @@ public class TargetAndMaximizePlantControl extends AbstractPlantControl {
      * Plant Control factory, instantiates a class of the kind of targeter and maximizer specified
      * @param hr the human resources object
      */
-    public static TargetAndMaximizePlantControl PlantControlFactory(@Nonnull final HumanResources hr, Class<? extends WorkforceTargeter> targeterClass,
-                                                                    Class<? extends WorkforceMaximizer> maximizerClass) {
+    public static <WT extends WorkforceTargeter, ALG extends WorkerMaximizationAlgorithm, WM extends WorkforceMaximizer<ALG>>
+    FactoryProducedTargetAndMaximizePlantControl<WT,WM> PlantControlFactory(
+            @Nonnull final HumanResources hr, Class<WT> targeterClass,Class<WM> maximizerClass,
+            Class<ALG> algorithmType) {
 
         //todo switch to generator so I can do it by string too.
         TargetAndMaximizePlantControl instance = new TargetAndMaximizePlantControl(hr);
 
         try {
             //create substrategies
-            WorkforceTargeter targeter = targeterClass.getConstructor(HumanResources.class,PlantControl.class).newInstance(hr,instance);
-            WorkforceMaximizer maximizer = maximizerClass.getConstructor(HumanResources.class,PlantControl.class).newInstance(hr,instance);
+            WT targeter = targeterClass.getConstructor(HumanResources.class,PlantControl.class).newInstance(hr,instance);
+           WM maximizer =maximizerClass.getConstructor(HumanResources.class,PlantControl.class,Class.class).
+                   newInstance(hr,instance,algorithmType);
             //assign them!
             instance.targeter = targeter;
             instance.maximizer = maximizer;
+
+            FactoryProducedTargetAndMaximizePlantControl<WT,WM> container =
+                    new FactoryProducedTargetAndMaximizePlantControl<WT, WM>(
+                    targeter,maximizer,instance
+            );
+            assert instance.targeter == container.getWorkforceTargeter();
+            assert instance.maximizer == container.getWorkforceMaximizer();
+            assert instance == container.getControl();
+
+            return container;
+
         } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             throw new IllegalArgumentException("targeter and maximizer classes failed to instantiate either due to conditions being wrong or me being an idiot  " +'\n'
-                    + targeterClass + ", " + maximizerClass + "---" + ((InvocationTargetException) e).getCause().toString());
+                    + targeterClass + ", " + algorithmType + "---" + ((InvocationTargetException) e).getCause().toString());
         }
 
-       return instance;
     }
 
 
@@ -154,10 +168,14 @@ public class TargetAndMaximizePlantControl extends AbstractPlantControl {
      * @param hr the human resources object
      */
     @SafeVarargs
-    public static PlantControl PlantControlFactory(@Nonnull final HumanResources hr, Class<? extends WorkforceTargeter> targeterClass,
-                                                                    Class<? extends WorkforceMaximizer> maximizerClass, Class<? extends PlantControlDecorator>... decorators) {
+    public static <WT extends WorkforceTargeter, ALG extends WorkerMaximizationAlgorithm, WM extends WorkforceMaximizer<ALG> >
+    PlantControl
+    PlantControlFactory(@Nonnull final HumanResources hr,
+                        Class<WT> targeterClass,
+                        Class<WM> maximizerClass,
+                        Class<ALG> algorithmType,
+                        Class<? extends PlantControlDecorator>... decorators) {
 
-        //todo switch to generator so I can do it by string too.
         //create the original instance
         TargetAndMaximizePlantControl originalInstance = new TargetAndMaximizePlantControl(hr);
         //make it more generic so I can add decorators
@@ -176,14 +194,20 @@ public class TargetAndMaximizePlantControl extends AbstractPlantControl {
 
 
             //create substrategies
-            WorkforceTargeter targeter = targeterClass.getConstructor(HumanResources.class,PlantControl.class).newInstance(hr,instance);
-            WorkforceMaximizer maximizer = maximizerClass.getConstructor(HumanResources.class,PlantControl.class).newInstance(hr,instance);
-            //assign strategies to the original instance (it's the only one that knows about its fields)
+            WT targeter = targeterClass.getConstructor(HumanResources.class,PlantControl.class).newInstance(hr,instance);
+            WM maximizer = maximizerClass.getConstructor(HumanResources.class,PlantControl.class,Class.class).
+                    newInstance(hr,instance,algorithmType);
+
+            //assign them!
             originalInstance.targeter = targeter;
             originalInstance.maximizer = maximizer;
+
+
+
         } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            throw new IllegalArgumentException("targeter and maximizer classes failed to instantiate either due to conditions being wrong or me being an idiot." + '\n' + maximizerClass.getCanonicalName() + " --- " +
-            targeterClass.getCanonicalName() + " ---- " + Arrays.toString(decorators));
+            throw new IllegalArgumentException("targeter and maximizer classes failed to instantiate either due to conditions being wrong or me being an idiot." + '\n'
+                    + algorithmType.getCanonicalName() + " --- " +
+                    targeterClass.getCanonicalName() + " ---- " + Arrays.toString(decorators));
         }
 
         return instance;

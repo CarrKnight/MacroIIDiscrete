@@ -4,11 +4,13 @@ import agents.EconomicAgent;
 import agents.Person;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
+import agents.firm.personell.FactoryProducedHumanResources;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.facades.MarginalPlantControl;
+import agents.firm.production.control.facades.MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment;
 import agents.firm.production.control.facades.MarginalPlantControlWithPIDUnit;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
@@ -145,7 +147,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         getMarkets().put(foodLabor.getGoodType(),foodLabor);
     }
 
-    private void createFirm(final Market goodmarket, final Market laborMarket)
+    protected Firm createFirm(final Market goodmarket, final Market laborMarket)
     {
         final Firm firm = new Firm(getModel());
         firm.earn(Integer.MAX_VALUE);
@@ -172,10 +174,17 @@ public class OneLinkSupplyChainScenario extends Scenario {
                 plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
                 plant.setCostStrategy(new InputCostStrategy(plant));
                 firm.addPlant(plant);
-                HumanResources hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, firm,
+                FactoryProducedHumanResources produced =  HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, firm,
                         laborMarket, plant, controlType, null, null);
+                HumanResources hr = produced.getDepartment();
                 hr.setFixedPayStructure(true);
                 hr.start();
+                //todo remove this horrible hack
+                if(controlType.equals(MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment.class) && goodmarket.getGoodType().equals(GoodType.BEEF))
+                {
+                    ((MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment)produced.getPlantControl()).setupLookup(7,4.31f,2.71f,
+                            0.155f,getMarkets().get(GoodType.FOOD));
+                }
 
                 //CREATE THE PURCHASES DEPARTMENTS NEEDED
                 for(GoodType input : blueprint.getInputs().keySet()){
@@ -202,7 +211,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         });
 
         getAgents().add(firm);
-
+        return firm;
     }
 
     /**
@@ -404,6 +413,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         final MacroII macroII = new MacroII(System.currentTimeMillis());
         OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
         scenario1.setControlType(MarginalPlantControlWithPIDUnit.class);
+       // scenario1.setControlType(MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment.class);
 
 
 

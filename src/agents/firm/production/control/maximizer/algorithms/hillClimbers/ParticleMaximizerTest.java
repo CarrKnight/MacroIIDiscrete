@@ -1,4 +1,4 @@
-package agents.firm.production.control.maximizer;
+package agents.firm.production.control.maximizer.algorithms.hillClimbers;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
@@ -69,7 +69,7 @@ public class ParticleMaximizerTest {
 
 
         when(random.nextGaussian()).thenReturn(0d);
-        ParticleMaximizer maximizer = new ParticleMaximizer(hr,pc);
+        ParticleMaximizer maximizer = new ParticleMaximizer(0,0,100,random,hr);
         assertEquals(maximizer.getTimeToSpendHillClimbing(),50000,.001f);
         maximizer.setTimeToSpendHillClimbing(0);
         assertTrue(maximizer.getTimeToSpendHillClimbing() < hr.getTime());
@@ -188,7 +188,8 @@ public class ParticleMaximizerTest {
         when(pc.getHr()).thenReturn(hr); when(plant.maximumWorkersPossible()).thenReturn(100); when(plant.minimumWorkersNeeded()).thenReturn(0);
         when(plant.workerSize()).thenReturn(1);
         when(random.nextGaussian()).thenReturn(0d);
-        ParticleMaximizer maximizer = new ParticleMaximizer(hr,pc);
+        ParticleMaximizer maximizer = new ParticleMaximizer(plant.weeklyFixedCosts(),plant.minimumWorkersNeeded(),plant.maximumWorkersPossible()
+        , random,hr);
         assertEquals(maximizer.getTimeToSpendHillClimbing(),50000,.001f);
         maximizer.setTimeToSpendHillClimbing(0);
 
@@ -252,7 +253,8 @@ public class ParticleMaximizerTest {
         when(pc.getHr()).thenReturn(hr); when(plant.maximumWorkersPossible()).thenReturn(100); when(plant.minimumWorkersNeeded()).thenReturn(0);
         when(plant.workerSize()).thenReturn(1);
         when(random.nextGaussian()).thenReturn(0d);
-        ParticleMaximizer maximizer = new ParticleMaximizer(hr,pc);
+        ParticleMaximizer maximizer = new ParticleMaximizer(plant.weeklyFixedCosts(),plant.minimumWorkersNeeded(),plant.maximumWorkersPossible()
+                , random,hr);
         assertEquals(maximizer.getTimeToSpendHillClimbing(),50000,.001f);
         maximizer.setTimeToSpendHillClimbing(0);
 

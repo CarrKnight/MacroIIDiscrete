@@ -68,7 +68,7 @@ public class PurchasesDepartmentTest {
         for(int i=0; i < 10; i++)
         {
             PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(1000,firm,mock(Market.class),
-                    (Class<? extends InventoryControl>) null,null,null,null);
+                    (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
 
 
             Field field = PurchasesDepartment.class.getDeclaredField("control");
@@ -102,7 +102,8 @@ public class PurchasesDepartmentTest {
         //make sure stuff gets generated at random with integrated stuff!
         for(int i=0; i < 10; i++)
         {
-            PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartmentIntegrated(1000,firm,mock(Market.class),null,null,null) ;
+            PurchasesDepartment dept = PurchasesDepartment.
+                    getPurchasesDepartmentIntegrated(1000,firm,mock(Market.class),null,null,null).getDepartment() ;
 
 
             Field field = PurchasesDepartment.class.getDeclaredField("control");
@@ -136,7 +137,7 @@ public class PurchasesDepartmentTest {
         for(int i=0; i < 10; i++)
         {
             PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(1000, firm, mock(Market.class), "FixedInventoryControl",
-                    "SurveyMaxPricing", "SimpleBuyerSearch", "SimpleSellerSearch") ;
+                    "SurveyMaxPricing", "SimpleBuyerSearch", "SimpleSellerSearch").getDepartment() ;
 
 
             Field field = PurchasesDepartment.class.getDeclaredField("control");
@@ -179,7 +180,7 @@ public class PurchasesDepartmentTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(1,firm,mock(Market.class),
-                (Class<? extends InventoryControl>) null,null,null,null);
+                (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
         dept.setLooksAhead(true);
 
 
@@ -220,7 +221,7 @@ public class PurchasesDepartmentTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100,firm,market,
-                FixedInventoryControl.class,null,null,null);
+                FixedInventoryControl.class,null,null,null).getDepartment();
 
         firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
         dept.buy(); //place a bid or whatever
@@ -282,7 +283,7 @@ public class PurchasesDepartmentTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
-                FixedInventoryControl.class,null,null,null);
+                FixedInventoryControl.class,null,null,null).getDepartment();
 
         firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
         BidPricingStrategy pricingStrategy = mock(BidPricingStrategy.class);//i am going to force the dept to offer maxPrice = 150
@@ -341,7 +342,7 @@ public class PurchasesDepartmentTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(2000,firm,market,
-                FixedInventoryControl.class,null,null,null);
+                FixedInventoryControl.class,null,null,null).getDepartment();
 
         firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
         BidPricingStrategy pricingStrategy = mock(BidPricingStrategy.class);//i am going to force the dept to offer maxPrice = 150
@@ -392,15 +393,15 @@ public class PurchasesDepartmentTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
-                (Class<? extends InventoryControl>) null,null,null,null);
+                (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
         Assert.assertEquals(dept.getGoodType(),market.getGoodType());
         market.deregisterBuyer(firm);
         dept = PurchasesDepartment.getPurchasesDepartmentIntegrated(200,firm,market,
-                null,null,null);
+                null,null,null).getDepartment();
         Assert.assertEquals(dept.getGoodType(),market.getGoodType());
         market.deregisterBuyer(firm);
         dept = PurchasesDepartment.getPurchasesDepartment(1000, firm,market, "FixedInventoryControl",
-                "SurveyMaxPricing", "SimpleBuyerSearch", "SimpleSellerSearch");
+                "SurveyMaxPricing", "SimpleBuyerSearch", "SimpleSellerSearch").getDepartment();
         Assert.assertEquals(dept.getGoodType(),market.getGoodType());
 
     }
@@ -414,15 +415,15 @@ public class PurchasesDepartmentTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
-                (Class<? extends InventoryControl>) null,null,null,null);
+                (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
         Assert.assertEquals(dept.getFirm(),firm);
         market.deregisterBuyer(firm);
         dept = PurchasesDepartment.getPurchasesDepartmentIntegrated(200,firm,market,
-                null,null,null);
+                null,null,null).getDepartment();
         Assert.assertEquals(dept.getFirm(),firm);
         market.deregisterBuyer(firm);
         dept = PurchasesDepartment.getPurchasesDepartment(1000, firm,market, "FixedInventoryControl",
-                "SurveyMaxPricing", "SimpleBuyerSearch", "SimpleSellerSearch");
+                "SurveyMaxPricing", "SimpleBuyerSearch", "SimpleSellerSearch").getDepartment();
         Assert.assertEquals(dept.getFirm(),firm);
     }
 
@@ -436,7 +437,7 @@ public class PurchasesDepartmentTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
-                (Class<? extends InventoryControl>) null,null,null,null);
+                (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
         for(int i=0; i <100; i++)
         {
             InventoryControl control = new WeeklyInventoryControl(dept);
@@ -482,7 +483,7 @@ public class PurchasesDepartmentTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
-                (Class<? extends InventoryControl>) null,null,null,null);
+                (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
         BidPricingStrategy stub = null;
         for(int i=0; i <100; i++)
         {
@@ -517,7 +518,7 @@ public class PurchasesDepartmentTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
-                (Class<? extends InventoryControl>) null,null,null,null);
+                (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
         BuyerSearchAlgorithm stub = null;
         for(int i=0; i <100; i++)
         {
@@ -552,7 +553,7 @@ public class PurchasesDepartmentTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
-                (Class<? extends InventoryControl>) null,null,null,null);
+                (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
         SellerSearchAlgorithm stub = null;
         for(int i=0; i <100; i++)
         {
@@ -586,7 +587,7 @@ public class PurchasesDepartmentTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
-                (Class<? extends InventoryControl>) null,null,null,null);
+                (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
 
         //make sure it's assigned correctly
         Field field = PurchasesDepartment.class.getDeclaredField("budgetSpent");
@@ -615,7 +616,7 @@ public class PurchasesDepartmentTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
-                FixedInventoryControl.class,null,null,null);
+                FixedInventoryControl.class,null,null,null).getDepartment();
 
         firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
         BidPricingStrategy pricingStrategy = mock(BidPricingStrategy.class);//i am going to force the dept to offer maxPrice = 150
@@ -653,7 +654,7 @@ public class PurchasesDepartmentTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
-                FixedInventoryControl.class,null,null,null);
+                FixedInventoryControl.class,null,null,null).getDepartment();
 
         firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
         BidPricingStrategy pricingStrategy = mock(BidPricingStrategy.class);//i am going to force the dept to offer maxPrice = 150
@@ -714,7 +715,7 @@ public class PurchasesDepartmentTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(2000,firm,market,
-                FixedInventoryControl.class,null,null,null);
+                FixedInventoryControl.class,null,null,null).getDepartment();
         dept.setLooksAhead(true);
 
         firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
@@ -772,7 +773,7 @@ public class PurchasesDepartmentTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(2000,firm,market,
-                (Class<? extends InventoryControl>) null,null,null,null);
+                (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
 
         firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
         InventoryControl control = mock(InventoryControl.class);//i am going to force the dept to offer maxPrice = 150
@@ -801,7 +802,7 @@ public class PurchasesDepartmentTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(2000,firm,market,
-                (Class<? extends InventoryControl>) null,null,null,null);
+                (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
 
         Assert.assertEquals(dept.getMarket(),market);
 
@@ -823,7 +824,7 @@ public class PurchasesDepartmentTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(2000,firm,market,
-                (Class<? extends InventoryControl>) null,null,null,null);
+                (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
 
         firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
         InventoryControl control = mock(InventoryControl.class);
@@ -899,11 +900,12 @@ public class PurchasesDepartmentTest {
         //we are going to count how many times listeners get registered and hopefully it matches the number of times they get deregistered
         for(int i=0; i < 100; i++){
             PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(2000,firm,market,
-                    (Class<? extends InventoryControl>) null,null,null,null);
+                    (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
             dept.turnOff();
         }
         for(int i=0; i < 100; i++){
-            PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartmentIntegrated(2000,firm,market,null,null,null);
+            PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartmentIntegrated(2000,firm,market,
+                    null,null,null).getDepartment();
             dept.turnOff();
         }
 

@@ -75,7 +75,7 @@ public class MaxCapacityControlTest {
 
         Market market = new OrderBookBlindMarket(GoodType.LABOR);
         assertEquals(p.maximumWorkersPossible(),100);
-        HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000,firm,market,p,MaxCapacityControl.class,null,null); //create!!!
+        HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000,firm,market,p,MaxCapacityControl.class,null,null).getDepartment(); //create!!!
 
         Field field = PurchasesDepartment.class.getDeclaredField("control");
         field.setAccessible(true);

@@ -63,7 +63,7 @@ public class SimpleInventoryControlTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, SimpleInventoryControl.class,
-                null, null, null);
+                null, null, null).getDepartment();
 
         //assuming target inventory is 6~~
 
@@ -83,7 +83,7 @@ public class SimpleInventoryControlTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, SimpleInventoryControl.class,
-                null, null, null);
+                null, null, null).getDepartment();
 
 
         //assuming target inventory is 6~~
@@ -123,7 +123,7 @@ public class SimpleInventoryControlTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, SimpleInventoryControl.class,
-                null, null, null);
+                null, null, null).getDepartment();
 
         //assuming target inventory is 6~~
 
@@ -146,7 +146,7 @@ public class SimpleInventoryControlTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, SimpleInventoryControl.class,
-                null, null, null);
+                null, null, null).getDepartment();
 
 
         //assuming target inventory is 6~~
@@ -244,7 +244,7 @@ public class SimpleInventoryControlTest {
         f.addPlant(p);
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(1000, f, market, SimpleInventoryControl.class,
-                null, null, null);
+                null, null, null).getDepartment();
 
         f.registerPurchasesDepartment(dept,GoodType.GENERIC);
 
@@ -313,12 +313,12 @@ public class SimpleInventoryControlTest {
         //and also to check that inventory listeners are properly disposed of
         {
             dept = PurchasesDepartment.getPurchasesDepartment(1000, f, market, (Class<? extends InventoryControl>) null,
-                    null, null, null);
+                    null, null, null).getDepartment();
             dept.turnOff();
 
         }
         dept = PurchasesDepartment.getPurchasesDepartment(1000, f, market, (Class<? extends InventoryControl>) null,
-                null, null, null);
+                null, null, null).getDepartment();
 
         SimpleInventoryControl control = new SimpleInventoryControl(dept);
         dept.setControl(control);

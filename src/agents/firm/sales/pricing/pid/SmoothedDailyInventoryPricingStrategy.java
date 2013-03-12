@@ -84,9 +84,9 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
     {
         assert ((MacroII)state).getCurrentPhase().equals(ActionOrder.PREPARE_TO_TRADE);
         Preconditions.checkState(salesDepartment.getTodayInflow() >=0, "Negative inflow is weird");
-        System.out.println(salesDepartment.getTodayInflow());
 
         movingAverage.addObservation(salesDepartment.getTodayInflow());
+
         delegate.setTargetInventory((int) movingAverage.getSmoothedObservation());
 
         ((MacroII)state).scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE,this);

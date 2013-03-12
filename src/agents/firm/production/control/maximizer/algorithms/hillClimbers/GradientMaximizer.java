@@ -1,7 +1,4 @@
-package agents.firm.production.control.maximizer;
-
-import agents.firm.personell.HumanResources;
-import agents.firm.production.control.PlantControl;
+package agents.firm.production.control.maximizer.algorithms.hillClimbers;
 
 /**
  * <h4>Description</h4>
@@ -19,16 +16,11 @@ import agents.firm.production.control.PlantControl;
  * @see
  */
 public class GradientMaximizer extends HillClimberMaximizer {
-    /**
-     * Create the hillclimber maximizer
-     *
-     * @param hr      the human resources object
-     * @param control the controller it is attached to
-     */
-    public GradientMaximizer(HumanResources hr, PlantControl control) {
-        super(hr, control);
-    }
 
+
+    public GradientMaximizer(long weeklyFixedCosts, int minimumWorkers, int maximumWorkers) {
+        super(weeklyFixedCosts, minimumWorkers, maximumWorkers);
+    }
 
     /**
      * This should return the absolute value of the difference between futureTarget - currentTarget.

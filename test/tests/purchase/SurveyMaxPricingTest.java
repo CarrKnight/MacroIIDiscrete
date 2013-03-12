@@ -91,7 +91,8 @@ public class SurveyMaxPricingTest {
 
 
         //when there is nobody to search just go at random.
-        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100, f, market, null, SurveyMaxPricing.class, null, null);
+        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100, f, market, null,
+                SurveyMaxPricing.class, null, null).getDepartment();
         Field field = PurchasesDepartment.class.getDeclaredField("pricingStrategy");
         field.setAccessible(true);
         BidPricingStrategy pricingStrategy = (BidPricingStrategy) field.get(dept);
@@ -127,7 +128,8 @@ public class SurveyMaxPricingTest {
 
 
         //when there is nobody to search just go at random.
-        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100, f, market, null, SurveyMaxPricing.class, null, null);
+        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100, f,
+                market, null, SurveyMaxPricing.class, null, null).getDepartment();
         dept.setLooksAhead(true);
 
 

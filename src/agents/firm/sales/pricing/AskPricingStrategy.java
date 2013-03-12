@@ -130,7 +130,7 @@ public interface AskPricingStrategy extends Deactivatable {
          * @param sales the sales department that will use this pricing strategy
          * @return the new rule to follow
          */
-        public static AskPricingStrategy newAskPricingStrategy( @Nonnull Class<? extends AskPricingStrategy> rule,@Nonnull SalesDepartment sales )
+        public static <AP extends AskPricingStrategy> AP newAskPricingStrategy( @Nonnull Class<AP> rule,@Nonnull SalesDepartment sales )
         {
 
             if(!rules.contains(rule) || Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )

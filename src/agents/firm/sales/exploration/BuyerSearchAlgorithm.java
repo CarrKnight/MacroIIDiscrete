@@ -115,7 +115,7 @@ public interface BuyerSearchAlgorithm extends Deactivatable {
          * @param firm the firm that is doing the search (so we avoid sampling ourselves)
          * @return the new rule to follow
          */
-        public static BuyerSearchAlgorithm randomBuyerSearchAlgorithm(@Nonnull Market market, @Nonnull EconomicAgent firm)
+        public static @Nonnull BuyerSearchAlgorithm randomBuyerSearchAlgorithm(@Nonnull Market market, @Nonnull EconomicAgent firm)
         {
             Class<? extends BuyerSearchAlgorithm > buyerSearchAlgorithm = null;
             MersenneTwisterFast randomizer = firm.getRandom(); //get the randomizer
@@ -140,7 +140,8 @@ public interface BuyerSearchAlgorithm extends Deactivatable {
          * @param firm the firm that is doing the search (so we avoid sampling ourselves)
          * @return the new rule to follow
          */
-        public static BuyerSearchAlgorithm newBuyerSearchAlgorithm( @Nonnull Class<? extends BuyerSearchAlgorithm> rule,@Nonnull Market market, @Nonnull EconomicAgent firm )
+        public static <BS extends  BuyerSearchAlgorithm> BS newBuyerSearchAlgorithm(
+                @Nonnull Class<BS> rule,@Nonnull Market market, @Nonnull EconomicAgent firm )
         {
 
             if(!rules.contains(rule) || Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )

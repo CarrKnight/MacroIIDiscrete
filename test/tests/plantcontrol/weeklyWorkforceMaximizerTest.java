@@ -5,9 +5,10 @@ import agents.firm.cost.PlantCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.AnnealingReactingMaximizer;
-import agents.firm.production.control.maximizer.HillClimberMaximizer;
-import agents.firm.production.control.maximizer.weeklyWorkforceMaximizer;
+import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
+import agents.firm.production.control.maximizer.algorithms.hillClimbers.AnnealingReactingMaximizer;
+import agents.firm.production.control.maximizer.algorithms.hillClimbers.HillClimberMaximizer;
+import ec.util.MersenneTwisterFast;
 import junit.framework.Assert;
 import model.MacroII;
 import org.junit.Test;
@@ -89,7 +90,7 @@ public class weeklyWorkforceMaximizerTest {
 
 
         //maximize!
-        HillClimberMaximizer maximizer = new HillClimberMaximizer(hr,control);
+        WeeklyWorkforceMaximizer<HillClimberMaximizer> maximizer = new WeeklyWorkforceMaximizer<>(hr,control,HillClimberMaximizer.class);
 
         maximizer.start();
         when(plant.workerSize()).thenReturn(currentTarget);
@@ -168,7 +169,8 @@ public class weeklyWorkforceMaximizerTest {
 
 
         //maximize!
-        weeklyWorkforceMaximizer maximizer = new HillClimberMaximizer(hr,control);
+        WeeklyWorkforceMaximizer<HillClimberMaximizer> maximizer = new WeeklyWorkforceMaximizer<>(hr,control,
+                HillClimberMaximizer.class);
 
         maximizer.start();
         when(plant.workerSize()).thenReturn(currentTarget);
@@ -221,8 +223,8 @@ public class weeklyWorkforceMaximizerTest {
         Plant plant = mock(Plant.class);  when(plant.getModel()).thenReturn(model);
         Firm firm = mock(Firm.class);
         when(control.getPlant()).thenReturn(plant);
-        when(hr.getPlant()).thenReturn(plant);
-        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(100l);
+        when(hr.getPlant()).thenReturn(plant); when(hr.getRandom()).thenReturn(new MersenneTwisterFast(1));
+        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.weeklyFixedCosts()).thenReturn(100l);
         when(plant.minimumWorkersNeeded()).thenReturn(1);
         when(hr.getFirm()).thenReturn(firm);
         when(firm.getModel()).thenReturn(model);
@@ -249,7 +251,8 @@ public class weeklyWorkforceMaximizerTest {
 
 
         //maximize!
-        weeklyWorkforceMaximizer maximizer = new AnnealingReactingMaximizer(hr,control);
+        WeeklyWorkforceMaximizer<AnnealingReactingMaximizer> maximizer =
+                new WeeklyWorkforceMaximizer<>(hr,control,AnnealingReactingMaximizer.class);
 
         maximizer.start();
         when(plant.workerSize()).thenReturn(currentTarget);

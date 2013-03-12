@@ -63,7 +63,7 @@ public class WeeklyInventoryControlTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, WeeklyInventoryControl.class,
-                null, null, null);
+                null, null, null).getDepartment();
 
         //target inventory is going to be 0 because there is no plant
 
@@ -85,7 +85,7 @@ public class WeeklyInventoryControlTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, WeeklyInventoryControl.class,
-                null, null, null);
+                null, null, null).getDepartment();
 
 
         //target inventory is going to be 0 because there is no plant
@@ -123,7 +123,7 @@ public class WeeklyInventoryControlTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, WeeklyInventoryControl.class,
-                null, null, null);
+                null, null, null).getDepartment();
 
         //unfortunately weekly production is still 0!
 
@@ -170,7 +170,7 @@ public class WeeklyInventoryControlTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, WeeklyInventoryControl.class,
-                null, null, null);
+                null, null, null).getDepartment();
 
 
         //without workers and machinery the need is always 0

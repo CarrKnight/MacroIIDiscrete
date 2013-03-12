@@ -4,7 +4,8 @@ import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.GradientMaximizer;
+import agents.firm.production.control.maximizer.algorithms.hillClimbers.GradientMaximizer;
+import ec.util.MersenneTwisterFast;
 import junit.framework.Assert;
 import model.MacroII;
 import org.junit.Test;
@@ -41,7 +42,7 @@ public class GradientMaximizerTest {
         Plant plant = mock(Plant.class);
         Firm firm = mock(Firm.class);
         when(control.getPlant()).thenReturn(plant);
-        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(-1l);
+        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(-1l);   when(hr.getRandom()).thenReturn(new MersenneTwisterFast());
         when(plant.minimumWorkersNeeded()).thenReturn(1);
         when(hr.getFirm()).thenReturn(firm);
         when(firm.getModel()).thenReturn(new MacroII(1l));
@@ -52,7 +53,7 @@ public class GradientMaximizerTest {
 
 
         //maximize!
-        GradientMaximizer maximizer = new GradientMaximizer(hr,control);
+        GradientMaximizer maximizer = new GradientMaximizer(1,1,30);
 
         //start the parameters
         int target = 1;
@@ -104,7 +105,7 @@ public class GradientMaximizerTest {
 
 
         //maximize!
-        GradientMaximizer maximizer = new GradientMaximizer(hr,control);
+        GradientMaximizer maximizer = new GradientMaximizer(0,1,30);
 
         //start the parameters
         int target = 1;
@@ -157,7 +158,7 @@ public class GradientMaximizerTest {
 
 
         //maximize!
-        GradientMaximizer maximizer = new GradientMaximizer(hr,control);
+        GradientMaximizer maximizer = new GradientMaximizer(0,1,30);
 
         //start the parameters
         int target = 1;

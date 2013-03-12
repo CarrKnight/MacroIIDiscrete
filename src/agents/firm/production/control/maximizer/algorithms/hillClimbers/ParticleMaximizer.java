@@ -1,13 +1,13 @@
-package agents.firm.production.control.maximizer;
+package agents.firm.production.control.maximizer.algorithms.hillClimbers;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
+import agents.firm.production.Plant;
 import ec.util.MersenneTwisterFast;
 import goods.GoodType;
-import agents.firm.production.Plant;
-import agents.firm.production.control.PlantControl;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -65,20 +65,17 @@ public class ParticleMaximizer extends  HillClimberMaximizer {
      * //todo make this random!
      */
     private float timeToSpendHillClimbing;
-
-
     /**
-     * Particle maximizer just calls the superclass constructor and then starts velocity between 1 to 8
-     * @param hr human resources
-     * @param control the control
+     * the human resources object! Needed to check the time
      */
-    public ParticleMaximizer(HumanResources hr, PlantControl control) {
-        super(hr, control);
-        //generate a velocity between 1 and 5
-        random =hr.getRandom();
+    private final HumanResources hr;
 
-        currentVelocity = 1; //start velocity at 1
-        timeToSpendHillClimbing = Math.max((float) (50000 + 7500 * random.nextGaussian()),10000f);
+
+    public ParticleMaximizer(long weeklyFixedCosts, int minimumWorkers, int maximumWorkers,
+                             @Nonnull MersenneTwisterFast random,@Nonnull HumanResources hr) {
+        super(weeklyFixedCosts, minimumWorkers, maximumWorkers);
+        this.random = random;
+        this.hr = hr;
     }
 
     /**
@@ -88,7 +85,7 @@ public class ParticleMaximizer extends  HillClimberMaximizer {
      */
     @Override
     protected int direction(int currentWorkerTarget, float newProfits, int oldWorkerTarget, float oldProfits) {
-        if(getHr().getTime() > timeToSpendHillClimbing)
+        if(hr.getTime() > timeToSpendHillClimbing)
             return 1;
         else
             return super.direction(currentWorkerTarget,newProfits,oldWorkerTarget,oldProfits);
@@ -107,7 +104,7 @@ public class ParticleMaximizer extends  HillClimberMaximizer {
     @Override
     protected int stepSize(int currentWorkerTarget, float newProfits, int oldWorkerTarget, float oldProfits) {
 
-        if(getHr().getTime() > timeToSpendHillClimbing)
+        if(hr.getTime() > timeToSpendHillClimbing)
         {
             //velocity should have moved us here!
 //        assert currentWorkerTarget - (int)Math.round(currentVelocity) == oldWorkerTarget;
@@ -142,7 +139,7 @@ public class ParticleMaximizer extends  HillClimberMaximizer {
      */
     private int currentOrNeighborTarget(int currentWorkerTarget, float newProfits){
         //get random neighbor
-        ArrayList<EconomicAgent> agents =  new ArrayList<>(getHr().getAllEmployers());
+        ArrayList<EconomicAgent> agents =  new ArrayList<>(hr.getAllEmployers());
         assert !agents.isEmpty(); //it can't be empty, at the very least there us in it!
         //uuuuh, ugly explicit cast! but what can I do? It is surely an employer!
         Firm randomCompetitor = (Firm) agents.get(random.nextInt(agents.size()));
@@ -152,10 +149,10 @@ public class ParticleMaximizer extends  HillClimberMaximizer {
         //TODO the big problem here is that we might pick up plants that completeProductionRunNow a different SET of goods, then we are imitating them wrongly. Maybe I need a list of all plants with the same kind of machinery?
 
         //if we randomly picked ourselves, just return ourselves
-        if(randomCompetitor == getHr().getFirm())
+        if(randomCompetitor == hr.getFirm())
             return currentWorkerTarget;
         //Demeter is turning in his grave
-        GoodType output = getHr().getPlant().getBlueprint().getOutputs().keySet().iterator().next();
+        GoodType output = hr.getPlant().getBlueprint().getOutputs().keySet().iterator().next();
         Plant competitorPlant = randomCompetitor.getRandomPlantProducingThis(output);
         //are our profits higher?
         if(newProfits > randomCompetitor.getPlantProfits(competitorPlant) )
@@ -173,10 +170,10 @@ public class ParticleMaximizer extends  HillClimberMaximizer {
      */
     private int bestNeighborTarget(int currentWorkerTarget, float newProfits){
         //get random neighbor
-        Collection<EconomicAgent> agents =  new ArrayList<>(getHr().getAllEmployers());
+        Collection<EconomicAgent> agents =  new ArrayList<>(hr.getAllEmployers());
         assert !agents.isEmpty(); //it can't be empty, at the very least there us in it!
         //this is very stupid: just copy from a plant that produces our first output. Really silly but until I smarten up this is the only thing I can do
-        GoodType output = getHr().getPlant().getBlueprint().getOutputs().keySet().iterator().next();
+        GoodType output = hr.getPlant().getBlueprint().getOutputs().keySet().iterator().next();
 
         EconomicAgent bestCompetitor = null; float maxProfits = Float.NEGATIVE_INFINITY; Plant bestPlant =null;
         //go through all agents
@@ -216,7 +213,7 @@ public class ParticleMaximizer extends  HillClimberMaximizer {
      */
     @Override
     public boolean checkMemory(int futureTarget, float currentProfits) {
-        if(getHr().getTime() > timeToSpendHillClimbing)
+        if(hr.getTime() > timeToSpendHillClimbing)
             return true;
         else
             return super.checkMemory(futureTarget,currentProfits);

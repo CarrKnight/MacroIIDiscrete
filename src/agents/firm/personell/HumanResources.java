@@ -3,6 +3,13 @@ package agents.firm.personell;
 import agents.EconomicAgent;
 import agents.Person;
 import agents.firm.Firm;
+import agents.firm.production.Plant;
+import agents.firm.production.control.FactoryProducedTargetAndMaximizePlantControl;
+import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.TargetAndMaximizePlantControl;
+import agents.firm.production.control.maximizer.WorkforceMaximizer;
+import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
+import agents.firm.production.control.targeter.WorkforceTargeter;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
@@ -12,11 +19,6 @@ import ec.util.MersenneTwisterFast;
 import financial.Market;
 import goods.Good;
 import goods.GoodType;
-import agents.firm.production.Plant;
-import agents.firm.production.control.PlantControl;
-import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.WorkforceMaximizer;
-import agents.firm.production.control.targeter.WorkforceTargeter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -94,9 +96,12 @@ public class HumanResources extends PurchasesDepartment {
      * @param sellerSearchAlgorithmType the algorithm the buyer follows to search for suppliers
      * @return a new instance of PurchasesDepartment
      */
-    public static HumanResources getHumanResourcesIntegrated(long budgetGiven, @Nonnull Firm firm, @Nonnull Market market, @Nonnull Plant plant,
-                                                             @Nullable Class<? extends PlantControl> integratedControl,@Nullable Class<? extends BuyerSearchAlgorithm> buyerSearchAlgorithmType,
-                                                             @Nullable Class<? extends SellerSearchAlgorithm> sellerSearchAlgorithmType )
+    public static <PC extends PlantControl, BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm>
+    FactoryProducedHumanResources<PC,BS,SS> getHumanResourcesIntegrated(long budgetGiven, @Nonnull Firm firm,
+                                                                        @Nonnull Market market, @Nonnull Plant plant,
+                                                             @Nullable Class<PC> integratedControl,
+                                                             @Nullable Class<BS> buyerSearchAlgorithmType,
+                                                             @Nullable Class<SS> sellerSearchAlgorithmType )
     {
 
         //create the new human resources
@@ -105,36 +110,44 @@ public class HumanResources extends PurchasesDepartment {
         firm.registerHumanResources(plant, hr);
 
         //create inventory control and assign it
-        BidPricingStrategy bidPricingStrategy;
+        PC bidPricingStrategy;
         if(integratedControl == null) //if null randomize
-            bidPricingStrategy = PersonellRuleFactory.randomPlantControl(hr);
+            bidPricingStrategy = (PC) PersonellRuleFactory.randomPlantControl(hr);
         else //otherwise instantiate the specified one
             bidPricingStrategy= PersonellRuleFactory.newPlantControl(integratedControl, hr);
         hr.setPricingStrategy(bidPricingStrategy);
         assert bidPricingStrategy instanceof PlantControl; //if you are really integrated that's true
-        hr.setControl((PlantControl) bidPricingStrategy);
+        hr.setControl(bidPricingStrategy);
 
 
 
         //create a buyer search algorithm and assign it
-        BuyerSearchAlgorithm buyerSearchAlgorithm;
+        BS buyerSearchAlgorithm;
         if(buyerSearchAlgorithmType == null)
-            buyerSearchAlgorithm = BuyerSearchAlgorithm.Factory.randomBuyerSearchAlgorithm(market,firm);
+            buyerSearchAlgorithm = (BS) BuyerSearchAlgorithm.Factory.randomBuyerSearchAlgorithm(market,firm);
         else
             buyerSearchAlgorithm = BuyerSearchAlgorithm.Factory.newBuyerSearchAlgorithm(buyerSearchAlgorithmType,market,firm);
         hr.setOpponentSearch(buyerSearchAlgorithm);
 
 
         //create a random seller search algorithm and assign it
-        SellerSearchAlgorithm sellerSearchAlgorithm;
+        SS sellerSearchAlgorithm;
         if(sellerSearchAlgorithmType == null)
-            sellerSearchAlgorithm = SellerSearchAlgorithm.Factory.randomSellerSearchAlgorithm(market,firm);
+            sellerSearchAlgorithm = (SS)SellerSearchAlgorithm.Factory.randomSellerSearchAlgorithm(market,firm);
         else
             sellerSearchAlgorithm = SellerSearchAlgorithm.Factory.newSellerSearchAlgorithm(sellerSearchAlgorithmType,market,firm);
         hr.setSupplierSearch(sellerSearchAlgorithm);
 
         //finally: return it!
-        return hr;
+        FactoryProducedHumanResources<PC,BS,SS> container =
+                new FactoryProducedHumanResources<PC, BS, SS>(hr,bidPricingStrategy,buyerSearchAlgorithm,sellerSearchAlgorithm);
+        //check it's correct
+        assert container.getDepartment() == hr;
+        assert container.getPlantControl() == hr.getPricingStrategy();        //unfortunately, this being a subclass, I can't be sure.
+
+
+        //finally: return it!
+        return container;
 
     }
 
@@ -151,10 +164,17 @@ public class HumanResources extends PurchasesDepartment {
      * @param sellerSearchAlgorithmType the algorithm the buyer follows to search for suppliers
      * @return a new instance of PurchasesDepartment
      */
-    public static HumanResources getHumanResourcesIntegrated(long budgetGiven, @Nonnull Firm firm, @Nonnull Market market, @Nonnull Plant plant,
-                                                             @Nullable Class<? extends WorkforceTargeter> targeter,  @Nullable Class<? extends WorkforceMaximizer> maximizer,
-                                                             @Nullable Class<? extends BuyerSearchAlgorithm> buyerSearchAlgorithmType,
-                                                             @Nullable Class<? extends SellerSearchAlgorithm> sellerSearchAlgorithmType )
+    public static
+    <PC extends PlantControl,
+            BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm, WT extends WorkforceTargeter,
+            WM extends WorkforceMaximizer<ALG>, ALG extends WorkerMaximizationAlgorithm>
+    FactoryProducedHumanResourcesWithMaximizerAndTargeter getHumanResourcesIntegrated(long budgetGiven, @Nonnull Firm firm,
+                                                                                      @Nonnull Market market, @Nonnull Plant plant,
+                                                             @Nullable Class<WT> targeter,
+                                                             @Nullable Class<WM> maximizer,
+                                                             @Nullable Class<ALG> maximizationAlgorithm,
+                                                             @Nullable Class<BS> buyerSearchAlgorithmType,
+                                                             @Nullable Class<SS> sellerSearchAlgorithmType )
     {
 
         //create the new human resources
@@ -165,7 +185,9 @@ public class HumanResources extends PurchasesDepartment {
 
 
         //create inventory control and assign it
-        BidPricingStrategy bidPricingStrategy = TargetAndMaximizePlantControl.PlantControlFactory(hr,targeter,maximizer) ;
+        FactoryProducedTargetAndMaximizePlantControl<WT,WM> control =
+                TargetAndMaximizePlantControl.PlantControlFactory(hr, targeter, maximizer,maximizationAlgorithm) ;
+        BidPricingStrategy bidPricingStrategy =  control.getControl();
         hr.setPricingStrategy(bidPricingStrategy);
         assert bidPricingStrategy instanceof PlantControl; //if you are really integrated that's true
         hr.setControl((PlantControl) bidPricingStrategy);
@@ -173,24 +195,35 @@ public class HumanResources extends PurchasesDepartment {
 
 
         //create a buyer search algorithm and assign it
-        BuyerSearchAlgorithm buyerSearchAlgorithm;
+        BS buyerSearchAlgorithm;
         if(buyerSearchAlgorithmType == null)
-            buyerSearchAlgorithm = BuyerSearchAlgorithm.Factory.randomBuyerSearchAlgorithm(market,firm);
+            buyerSearchAlgorithm =  (BS)BuyerSearchAlgorithm.Factory.randomBuyerSearchAlgorithm(market,firm);
         else
             buyerSearchAlgorithm = BuyerSearchAlgorithm.Factory.newBuyerSearchAlgorithm(buyerSearchAlgorithmType,market,firm);
         hr.setOpponentSearch(buyerSearchAlgorithm);
 
 
         //create a random seller search algorithm and assign it
-        SellerSearchAlgorithm sellerSearchAlgorithm;
+        SS sellerSearchAlgorithm;
         if(sellerSearchAlgorithmType == null)
-            sellerSearchAlgorithm = SellerSearchAlgorithm.Factory.randomSellerSearchAlgorithm(market,firm);
+            sellerSearchAlgorithm = (SS)SellerSearchAlgorithm.Factory.randomSellerSearchAlgorithm(market,firm);
         else
             sellerSearchAlgorithm = SellerSearchAlgorithm.Factory.newSellerSearchAlgorithm(sellerSearchAlgorithmType,market,firm);
         hr.setSupplierSearch(sellerSearchAlgorithm);
 
+
+        FactoryProducedHumanResourcesWithMaximizerAndTargeter<TargetAndMaximizePlantControl,BS,SS,WT,WM,ALG>
+                container = new FactoryProducedHumanResourcesWithMaximizerAndTargeter<>(hr,control.getControl(),buyerSearchAlgorithm,
+                sellerSearchAlgorithm,control.getWorkforceTargeter(),control.getWorkforceMaximizer());
+
+        assert hr == container.getDepartment();
+        assert hr.getPricingStrategy() == container.getPlantControl();
+        assert container.getWorkforceMaximizer() == container.getWorkforceMaximizer();
+        assert container.getWorkforceTargeter() == container.getWorkforceTargeter();
+
+
         //finally: return it!
-        return hr;
+        return container;
 
     }
 

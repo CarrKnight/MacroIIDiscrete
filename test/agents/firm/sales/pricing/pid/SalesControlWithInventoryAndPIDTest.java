@@ -2,6 +2,7 @@ package agents.firm.sales.pricing.pid;
 
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
+import financial.Market;
 import goods.Good;
 import junit.framework.Assert;
 import model.MacroII;
@@ -35,6 +36,7 @@ public class SalesControlWithInventoryAndPIDTest {
         SalesDepartment department = mock(SalesDepartment.class);
         Firm firm = mock(Firm.class); when(department.getFirm()).thenReturn(firm);  when(firm.isActive()).thenReturn(true);
         when(firm.getModel()).thenReturn(new MacroII(1l));
+        Market market= mock(Market.class); when(department.getMarket()).thenReturn(market);
 
 
         SalesControlWithFixedInventoryAndPID pid = new SalesControlWithFixedInventoryAndPID(department);
@@ -64,6 +66,8 @@ public class SalesControlWithInventoryAndPIDTest {
         SalesDepartment department = mock(SalesDepartment.class);
         Firm firm = mock(Firm.class); when(department.getFirm()).thenReturn(firm); when(firm.isActive()).thenReturn(true);
         when(firm.getModel()).thenReturn(new MacroII(1l));
+        Market market= mock(Market.class); when(department.getMarket()).thenReturn(market);
+
 
 
         SalesControlWithFixedInventoryAndPID pid = new SalesControlWithFixedInventoryAndPID(department);

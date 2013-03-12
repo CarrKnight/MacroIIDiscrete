@@ -1,7 +1,8 @@
-package agents.firm.production.control.maximizer;
+package agents.firm.production.control.maximizer.algorithms.hillClimbers;
 
-import agents.firm.personell.HumanResources;
-import agents.firm.production.control.PlantControl;
+import ec.util.MersenneTwisterFast;
+
+import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -22,16 +23,11 @@ public class AnnealingReactingMaximizer extends AnnealingMaximizer {
 
     private float noiseTreshold = .25f;
 
-    /**
-     * Create the hillclimber maximizer
-     *
-     * @param hr      the human resources object
-     * @param control the controller it is attached to
-     */
-    public AnnealingReactingMaximizer(HumanResources hr, PlantControl control) {
-        super(hr, control);
-    }
 
+    public AnnealingReactingMaximizer(long weeklyFixedCosts, int minimumWorkers, int maximumWorkers,
+                                      @Nonnull MersenneTwisterFast random) {
+        super(weeklyFixedCosts, minimumWorkers, maximumWorkers, random);
+    }
 
     /**
      * This is called by the "chooseWorkerTarget()" function whenever the old memory is wrong.

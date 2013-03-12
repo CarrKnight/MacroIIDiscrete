@@ -3,12 +3,13 @@ package agents.firm.production.control.facades;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
+import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
 import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
 import goods.GoodType;
 import agents.firm.production.Plant;
 import agents.firm.production.control.decorators.FixedWageDecorator;
-import agents.firm.production.control.maximizer.HillClimberMaximizer;
+import agents.firm.production.control.maximizer.algorithms.hillClimbers.HillClimberMaximizer;
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.Machinery;
 
@@ -41,7 +42,9 @@ public class FixWagesPlantControl implements PlantControl {
      */
     public FixWagesPlantControl(@Nonnull HumanResources hr) {
         //instantiate the real control
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class, HillClimberMaximizer.class, FixedWageDecorator.class);
+        control = TargetAndMaximizePlantControl.
+                PlantControlFactory(hr, PIDTargeter.class,WeeklyWorkforceMaximizer.class,
+                        HillClimberMaximizer.class, FixedWageDecorator.class);
 
     }
 

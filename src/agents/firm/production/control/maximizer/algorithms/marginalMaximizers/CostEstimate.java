@@ -1,4 +1,4 @@
-package agents.firm.production.control.maximizer.marginalMaximizers;
+package agents.firm.production.control.maximizer.algorithms.marginalMaximizers;
 
 /**
  * This is a simple struct class that holds the result of a marginalCost estimation. It holds both the marginal cost expected

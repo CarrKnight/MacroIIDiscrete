@@ -230,7 +230,8 @@ public class PurchasesSimplePIDTest {
 
         model.start();
 
-        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartmentIntegrated(10000000,f,market,PurchasesSimplePID.class,null,null);
+        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartmentIntegrated(
+                10000000,f,market,PurchasesSimplePID.class,null,null).getDepartment();
         f.registerPurchasesDepartment(dept,GoodType.GENERIC);
 
         Field field = PurchasesDepartment.class.getDeclaredField("control");

@@ -1,5 +1,7 @@
 package agents.firm.personell;
 
+import agents.firm.purchases.pricing.BidPricingStrategy;
+import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.decorators.PlantControlDecorator;
@@ -99,9 +101,10 @@ public class PersonellRuleFactory {
 
     }
 
-    public static PlantControl newPlantControl(@Nonnull Class<? extends PlantControl> rule, @Nonnull HumanResources hr)
+    public static <PC extends  PlantControl & BidPricingStrategy>
+    PC newPlantControl(@Nonnull Class<PC> rule, @Nonnull HumanResources hr)
     {
-        assert rule != null;
+        Preconditions.checkNotNull(rule);
 
         if(!plantControlRules.contains(rule) || Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )
             throw new IllegalArgumentException("The rule given is either abstract or just not recognized");

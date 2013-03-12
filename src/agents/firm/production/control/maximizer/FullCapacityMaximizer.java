@@ -3,6 +3,7 @@ package agents.firm.production.control.maximizer;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
 import agents.firm.production.technology.Machinery;
 
 /**
@@ -20,7 +21,7 @@ import agents.firm.production.technology.Machinery;
  * @version 2012-09-24
  * @see
  */
-public class FullCapacityMaximizer implements WorkforceMaximizer {
+public class FullCapacityMaximizer<ALG extends WorkerMaximizationAlgorithm> implements WorkforceMaximizer<ALG> {
 
     /**
      * The human resources the control controls
@@ -36,8 +37,10 @@ public class FullCapacityMaximizer implements WorkforceMaximizer {
      * Create a new full capacity
      * @param hr
      * @param control
+     * @param ignored not used.
      */
-    public FullCapacityMaximizer(HumanResources hr, PlantControl control) {
+    public  FullCapacityMaximizer(HumanResources hr, PlantControl control,
+                                                                           Class<ALG> ignored) {
         this.hr = hr;
         this.control = control;
     }

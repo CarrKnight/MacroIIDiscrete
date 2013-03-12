@@ -1,10 +1,9 @@
-package agents.firm.production.control.maximizer;
+package agents.firm.production.control.maximizer.algorithms.hillClimbers;
 
-import agents.firm.personell.HumanResources;
-import com.google.common.base.Preconditions;
 import agents.firm.production.Plant;
-import agents.firm.production.control.PlantControl;
-import agents.firm.production.technology.Machinery;
+import agents.firm.production.control.maximizer.WorkforceMaximizer;
+import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
+import com.google.common.base.Preconditions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +23,7 @@ import java.util.Map;
  * @version 2012-09-24
  * @see
  */
-public class HillClimberMaximizer extends weeklyWorkforceMaximizer {
+public class HillClimberMaximizer implements WorkerMaximizationAlgorithm {
 
     /**
      * Here we keep the memory of the MOST RECENT profit observation at a specific worker target
@@ -36,22 +35,37 @@ public class HillClimberMaximizer extends weeklyWorkforceMaximizer {
      */
     private  int oldDirection;
 
+    /**
+     * the lower bound to the optimization
+     */
+    private int minimumWorkersPossible;
+
+    /**
+     * the highest bound to the optimization
+     */
+    private int maximumWorkersPossible;
+
+
+
+
+
 
     /**
      * Asks the subclass what the next worker target will be!
      *
      *
      * @param currentWorkerTarget what is the current worker target
-     * @param newProfits          what are the new profits
-     * @param newRevenues
-     *@param newCosts
-     * @param oldRevenues
-     * @param oldCosts
-     * @param oldWorkerTarget     what was the target last time we changed them
-     * @param oldProfits          what were the profits back then   @return the new worker targets. Any negative number means to check again!
-     */
+     * @param newProfits what are the new profits
+     * @param newRevenues what are the new revenues
+     *@param newCosts what are the new costs
+     * @param oldRevenues what were the old revenues
+     * @param oldCosts what were the old costs
+     * @param oldWorkerTarget what was the target last time we changed them
+     * @param oldProfits what were the profits back then   @return the new worker targets. Any negative number means to check again!
+     * */
     @Override
-    public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
+    public int chooseWorkerTarget(int currentWorkerTarget, float newProfits,
+                                  float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
         //put the new result in memory
         Float oldMemory = profitMemory.put(currentWorkerTarget,newProfits);
         boolean memoryHasChanged = oldMemory != null && oldMemory != newProfits;   //memory changed flag activates a memory search if futuretarget == currentTargetr
@@ -97,9 +111,9 @@ public class HillClimberMaximizer extends weeklyWorkforceMaximizer {
             futureTarget=Math.max(futureTarget,0);
 
             //bound it to technological constraints
-            futureTarget = Math.min(futureTarget,getControl().getHr().getPlant().maximumWorkersPossible());
+            futureTarget = Math.min(futureTarget,maximumWorkersPossible);
             if(futureTarget > 0)
-                futureTarget = Math.max(futureTarget,getControl().getHr().getPlant().minimumWorkersNeeded());
+                futureTarget = Math.max(futureTarget,minimumWorkersPossible);
 
             //check if memory says yes
             if(checkMemory(futureTarget,newProfits))
@@ -150,36 +164,34 @@ public class HillClimberMaximizer extends weeklyWorkforceMaximizer {
 
     /**
      * Create the hillclimber maximizer
-     * @param hr the human resources object
-     * @param control the controller it is attached to
+     * @param minimumWorkers minimum workers needed
+     * @param maximumWorkers maximum workers needed
+     * @param weeklyFixedCosts weekly fixed costs (they are supposed to be positive or 0)
      */
-    public HillClimberMaximizer(HumanResources hr, PlantControl control) {
-        super(hr, control);
+
+    public HillClimberMaximizer(long weeklyFixedCosts, int minimumWorkers,int maximumWorkers){
+        Preconditions.checkArgument(weeklyFixedCosts>=0, "weekly fixed costs are supposed to be positive!!");
+        this.maximumWorkersPossible = maximumWorkers;
+        this.minimumWorkersPossible = minimumWorkers;
         //instantiate memory
         profitMemory = new HashMap<>();
-        profitMemory.put(0, (float) -getHr().getPlant().weeklyFixedCosts());
+        profitMemory.put(0, (float) -weeklyFixedCosts);
         //you "increase" from 0 to 1
         oldDirection = 1;
 
     }
 
+
     /**
-     * If we change machinery all our memory is useless
-     * @param p the plant that did the change
-     * @param machinery the new machinery
+     * The maximizer tells you to start over, probably because of change in machinery
+     *
+     * @param maximizer the maximizer resetting you
+     * @param p         the plant it is controlling
      */
     @Override
-    public void changeInMachineryEvent(Plant p, Machinery machinery) {
-
-        assert p == getControl().getHr().getPlant();
-
+    public void reset(WorkforceMaximizer maximizer, Plant p) {
         profitMemory.clear();
-        profitMemory.put(0,-(float) getControl().getHr().getPlant().weeklyFixedCosts()); //add the fixed cost as loss if you target workers to go to 0
-        //start over
-        this.start();
-
-        super.changeInMachineryEvent(p, machinery);
-
+        profitMemory.put(0,-(float) p.weeklyFixedCosts()); //add the fixed cost as loss if you target workers to go to 0
     }
 
     /**
@@ -252,9 +264,29 @@ public class HillClimberMaximizer extends weeklyWorkforceMaximizer {
      */
     public void cleanMemory()
     {
+        Float weeklyFixedCosts = profitMemory.get(0);
         profitMemory.clear();
-        profitMemory.put(0,(float)-getHr().getPlant().weeklyFixedCosts());
+        profitMemory.put(0,weeklyFixedCosts);
 
+    }
+
+
+    /**
+     * Gets the lower bound to the optimization.
+     *
+     * @return Value of the lower bound to the optimization.
+     */
+    public int getMinimumWorkersPossible() {
+        return minimumWorkersPossible;
+    }
+
+    /**
+     * Gets the highest bound to the optimization.
+     *
+     * @return Value of the highest bound to the optimization.
+     */
+    public int getMaximumWorkersPossible() {
+        return maximumWorkersPossible;
     }
 }
 

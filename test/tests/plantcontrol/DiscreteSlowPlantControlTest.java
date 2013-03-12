@@ -5,9 +5,15 @@ import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
 import agents.firm.cost.PlantCostStrategy;
 import agents.firm.personell.HumanResources;
+import agents.firm.production.Blueprint;
+import agents.firm.production.Plant;
+import agents.firm.production.PlantListener;
+import agents.firm.production.control.AbstractPlantControl;
+import agents.firm.production.control.TargetAndMaximizePlantControl;
+import agents.firm.production.control.facades.DiscreteSlowPlantControl;
+import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
+import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
-import model.utilities.ActionOrder;
-import model.utilities.pid.PIDController;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
@@ -19,16 +25,10 @@ import financial.utilities.Quote;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
 import goods.GoodType;
-import agents.firm.production.Blueprint;
-import agents.firm.production.Plant;
-import agents.firm.production.PlantListener;
-import agents.firm.production.control.AbstractPlantControl;
-import agents.firm.production.control.facades.DiscreteSlowPlantControl;
-import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.HillClimberMaximizer;
-import agents.firm.production.technology.LinearConstantMachinery;
 import junit.framework.Assert;
 import model.MacroII;
+import model.utilities.ActionOrder;
+import model.utilities.pid.PIDController;
 import org.junit.Test;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -86,14 +86,14 @@ public class DiscreteSlowPlantControlTest {
         for(int i=0; i <100; i++)
         {
             hr = HumanResources.getHumanResourcesIntegrated(1000000l,
-                    firm,market,plant,null,null,null);
+                    firm,market,plant,null,null,null).getDepartment();
             assert market.getBuyers().contains(firm);
             hr.turnOff();
             assert !market.getBuyers().contains(firm);
 
         }
         hr = HumanResources.getHumanResourcesIntegrated(1000000l,
-                firm,market,plant,null,null,null);
+                firm,market,plant,null,null,null).getDepartment();
         assert market.getBuyers().contains(firm);
 
         DiscreteSlowPlantControl control = new DiscreteSlowPlantControl(hr);
@@ -118,7 +118,7 @@ public class DiscreteSlowPlantControlTest {
         //get the maximizer
         field = TargetAndMaximizePlantControl.class.getDeclaredField("maximizer");
         field.setAccessible(true);
-        HillClimberMaximizer maximizer = (HillClimberMaximizer) field.get(realControl);
+        WeeklyWorkforceMaximizer maximizer = (WeeklyWorkforceMaximizer) field.get(realControl);
 
 
 
@@ -252,7 +252,7 @@ public class DiscreteSlowPlantControlTest {
         plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL,mock(Firm.class),100000,plant));
         plant.setCostStrategy(new InputCostStrategy(plant));
         firm.addPlant(plant);
-        HumanResources hr = HumanResources.getHumanResourcesIntegrated(100000000,firm,labor,plant,DiscreteSlowPlantControl.class,null,null);
+        HumanResources hr = HumanResources.getHumanResourcesIntegrated(100000000,firm,labor,plant,DiscreteSlowPlantControl.class,null,null).getDepartment();
         //   firm.registerHumanResources(plant, hr);
         hr.start();
 
@@ -340,7 +340,7 @@ public class DiscreteSlowPlantControlTest {
         plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL,mock(Firm.class),100000,plant));
         plant.setCostStrategy(new InputCostStrategy(plant));
         firm.addPlant(plant);
-        HumanResources hr = HumanResources.getHumanResourcesIntegrated(100000000,firm,labor,plant,DiscreteSlowPlantControl.class,null,null);
+        HumanResources hr = HumanResources.getHumanResourcesIntegrated(100000000,firm,labor,plant,DiscreteSlowPlantControl.class,null,null).getDepartment();
         firm.registerHumanResources(plant, hr);
         hr.start();
 
@@ -357,7 +357,7 @@ public class DiscreteSlowPlantControlTest {
         plant2.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL,mock(Firm.class),100000,plant2));
         plant2.setCostStrategy(new InputCostStrategy(plant2));
         firm2.addPlant(plant2);
-        HumanResources hr2 = HumanResources.getHumanResourcesIntegrated(100000000,firm2,labor,plant2,DiscreteSlowPlantControl.class,null,null);
+        HumanResources hr2 = HumanResources.getHumanResourcesIntegrated(100000000,firm2,labor,plant2,DiscreteSlowPlantControl.class,null,null).getDepartment();
         firm2.registerHumanResources(plant2, hr2);
         hr2.start();
 
@@ -447,7 +447,7 @@ public class DiscreteSlowPlantControlTest {
         plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL,mock(Firm.class),100000,plant));
         plant.setCostStrategy(new InputCostStrategy(plant));
         firm.addPlant(plant);
-        HumanResources hr = HumanResources.getHumanResourcesIntegrated(100000000,firm,labor,plant,DiscreteSlowPlantControl.class,null,null);
+        HumanResources hr = HumanResources.getHumanResourcesIntegrated(100000000,firm,labor,plant,DiscreteSlowPlantControl.class,null,null).getDepartment();
         Field field = PurchasesDepartment.class.getDeclaredField("control"); field.setAccessible(true);
         DiscreteSlowPlantControl control = (DiscreteSlowPlantControl) field.get(hr);
         firm.registerHumanResources(plant, hr);
@@ -468,7 +468,7 @@ public class DiscreteSlowPlantControlTest {
         plant2.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL,mock(Firm.class),100000,plant2));
         plant2.setCostStrategy(new InputCostStrategy(plant2));
         firm2.addPlant(plant2);
-        HumanResources hr2 = HumanResources.getHumanResourcesIntegrated(100000000,firm2,labor,plant2,DiscreteSlowPlantControl.class,null,null);
+        HumanResources hr2 = HumanResources.getHumanResourcesIntegrated(100000000,firm2,labor,plant2,DiscreteSlowPlantControl.class,null,null).getDepartment();
         field = PurchasesDepartment.class.getDeclaredField("control"); field.setAccessible(true);
         DiscreteSlowPlantControl control2 = (DiscreteSlowPlantControl) field.get(hr2);
         //   control2.setProbabilityForgetting(.15f);
@@ -489,7 +489,7 @@ public class DiscreteSlowPlantControlTest {
         plant3.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL,mock(Firm.class),100000,plant3));
         plant3.setCostStrategy(new InputCostStrategy(plant3));
         firm3.addPlant(plant3);
-        HumanResources hr3 = HumanResources.getHumanResourcesIntegrated(100000000,firm3,labor,plant3,DiscreteSlowPlantControl.class,null,null);
+        HumanResources hr3 = HumanResources.getHumanResourcesIntegrated(100000000,firm3,labor,plant3,DiscreteSlowPlantControl.class,null,null).getDepartment();
         field = PurchasesDepartment.class.getDeclaredField("control"); field.setAccessible(true);
         DiscreteSlowPlantControl control3 = (DiscreteSlowPlantControl) field.get(hr3);
         //       control3.setProbabilityForgetting(.15f);

@@ -78,7 +78,7 @@ public class ZeroIntelligenceBidPricingTest {
         Firm firm = new Firm(model);
         Market market = new OrderBookMarket(GoodType.GENERIC);
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100, firm, market,
-                null, ZeroIntelligenceBidPricing.class, null, null);
+                null, ZeroIntelligenceBidPricing.class, null, null).getDepartment();
 
         for(int i=0; i < 10000; i++)
         {

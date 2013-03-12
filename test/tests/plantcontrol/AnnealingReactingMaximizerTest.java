@@ -4,7 +4,7 @@ import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.AnnealingReactingMaximizer;
+import agents.firm.production.control.maximizer.algorithms.hillClimbers.AnnealingReactingMaximizer;
 import cern.jet.random.engine.MersenneTwister;
 import junit.framework.Assert;
 import model.MacroII;
@@ -58,7 +58,7 @@ public class AnnealingReactingMaximizerTest {
 
 
         //maximize!
-        AnnealingReactingMaximizer maximizer = new AnnealingReactingMaximizer(hr,control);
+        AnnealingReactingMaximizer maximizer = new AnnealingReactingMaximizer(0,1,30,model.getRandom());
 
         //start the parameters
         int target = 1;
@@ -110,7 +110,7 @@ public class AnnealingReactingMaximizerTest {
 
 
         //maximize!
-        AnnealingReactingMaximizer maximizer = new AnnealingReactingMaximizer(hr,control);
+        AnnealingReactingMaximizer maximizer = new AnnealingReactingMaximizer(0,1,30,model.getRandom());
 
         //start the parameters
         int target = 1;
@@ -167,7 +167,7 @@ public class AnnealingReactingMaximizerTest {
 
 
             //maximize!
-            AnnealingReactingMaximizer maximizer = new AnnealingReactingMaximizer(hr,control);
+            AnnealingReactingMaximizer maximizer = new AnnealingReactingMaximizer(0,1,30,model.getRandom());
 
             //start the parameters
             int target = 1;

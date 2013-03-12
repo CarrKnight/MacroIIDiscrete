@@ -3,6 +3,7 @@ package agents.firm.sales.pricing.pid;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import com.google.common.base.Preconditions;
+import financial.MarketEvents;
 import goods.Good;
 import model.MacroII;
 import model.utilities.ActionOrder;
@@ -120,14 +121,29 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
         Preconditions.checkState(macroII.getCurrentPhase().equals(ActionOrder.THINK), "I wanted to act on THINK, " +
                 "but I acted on " + macroII.getCurrentPhase());
         //run the controller to adjust prices
-        //notice that i use todayOutflow as a measure of outflow because it gets resed at PREPARE_TO_TRADE and
+        //notice that i use todayOutflow as a measure of outflow because it gets reset at PREPARE_TO_TRADE and
         // I am calling this at THINK (which is after TRADE, which is after PREPARE_TO_TRADE)
         ControllerInput input = new ControllerInput.ControllerInputBuilder().inputs((float) department.getHowManyToSell(),
                 (float)department.getTodayOutflow()).targets((float)targetInventory, (float)department.getTodayInflow()).build();
+        //memorize old price before adjustment (this is so that if there is a change, we update old quotes)
+        long oldPrice =  (long)Math.round(controller.getCurrentMV());
 
         controller.adjust(input,
                 department.getFirm().isActive(), macroII, this, ActionOrder.THINK);
 
+        getDepartment().getFirm().logEvent(getDepartment(),
+                MarketEvents.CHANGE_IN_POLICY,getDepartment().getFirm().getModel().getCurrentSimulationTimeInMillis(),
+                "old-new price: " + oldPrice + " - " + (long)Math.round(controller.getCurrentMV()) + "\n"+
+                "howManyToSell-Target Inventory- Total Inventory: " + department.getHowManyToSell() + " - " +
+                        targetInventory + " - " +
+                        getDepartment().getFirm().hasHowMany(department.getMarket().getGoodType()) + "\n" +
+                        "inflow-outflow: " + department.getTodayInflow() + " - " + department.getTodayOutflow() + "\n"
+
+        );
+
+
+        if(oldPrice != (long)Math.round(controller.getCurrentMV()))
+            department.updateQuotes();
 
     }
 
@@ -148,6 +164,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
      */
     public void setTargetInventory(int targetInventory) {
         this.targetInventory = targetInventory;
+        getDepartment().getFirm().logEvent(getDepartment(), MarketEvents.CHANGE_IN_TARGET,getDepartment().getFirm().getModel().getCurrentSimulationTimeInMillis(),"new target inventory: " + targetInventory);
     }
 
     /**

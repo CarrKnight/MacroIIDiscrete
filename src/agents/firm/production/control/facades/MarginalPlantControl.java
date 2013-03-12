@@ -5,11 +5,9 @@ import agents.firm.production.Plant;
 import agents.firm.production.PlantListener;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.decorators.PlantControlDecorator;
-import agents.firm.production.control.maximizer.marginalMaximizers.MarginalMaximizer;
-import agents.firm.production.control.maximizer.WorkforceMaximizer;
+import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.production.control.targeter.PIDTargeter;
-import agents.firm.production.control.targeter.WorkforceTargeter;
 import agents.firm.production.technology.Machinery;
 import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
@@ -41,7 +39,8 @@ public class MarginalPlantControl implements PlantControl, PlantListener {
 
     public MarginalPlantControl(@Nonnull HumanResources hr)
     {
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class,MarginalMaximizer.class);
+        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class,WeeklyWorkforceMaximizer.class,
+                MarginalMaximizer.class).getControl();
 
     }
 
@@ -56,22 +55,7 @@ public class MarginalPlantControl implements PlantControl, PlantListener {
         return control.getPlant();
     }
 
-    /**
-     * This plant control factory adds decorators to the control. for a good measure. It assumes all decorators need only the control object to instantiate
-     * @param hr the human resources object
-     */
-    @SafeVarargs
-    public static PlantControl PlantControlFactory(@Nonnull HumanResources hr, Class<? extends WorkforceTargeter> targeterClass, Class<? extends WorkforceMaximizer> maximizerClass, Class<? extends PlantControlDecorator>... decorators) {
-        return TargetAndMaximizePlantControl.PlantControlFactory(hr, targeterClass, maximizerClass, decorators);
-    }
 
-    /**
-     * Plant Control factory, instantiates a class of the kind of targeter and maximizer specified
-     * @param hr the human resources object
-     */
-    public static TargetAndMaximizePlantControl PlantControlFactory(@Nonnull HumanResources hr, Class<? extends WorkforceTargeter> targeterClass, Class<? extends WorkforceMaximizer> maximizerClass) {
-        return TargetAndMaximizePlantControl.PlantControlFactory(hr, targeterClass, maximizerClass);
-    }
 
     /**
      * the method just calls the start of the Targeter and the Maximizer

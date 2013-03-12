@@ -146,7 +146,7 @@ public interface SellerSearchAlgorithm extends Deactivatable {
          * @param agent the agent that is doing the search (so we avoid sampling ourselves)
          * @return the new rule to follow
          */
-        public static SellerSearchAlgorithm newSellerSearchAlgorithm( @Nonnull Class<? extends SellerSearchAlgorithm> rule,@Nonnull Market market, @Nonnull EconomicAgent agent )
+        public static <SS extends SellerSearchAlgorithm> SS newSellerSearchAlgorithm( @Nonnull Class<SS> rule,@Nonnull Market market, @Nonnull EconomicAgent agent )
         {
 
             if(!rules.contains(rule) || Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )

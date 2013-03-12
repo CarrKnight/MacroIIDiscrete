@@ -201,7 +201,7 @@ public class SupplyChainScenario extends Scenario
                 plant.setCostStrategy(new InputCostStrategy(plant));
                 firm.addPlant(plant);
                 HumanResources hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, firm,
-                        laborMarket, plant, controlType, null, null);
+                        laborMarket, plant, controlType, null, null).getDepartment();
                 hr.setFixedPayStructure(true);
                 hr.start();
 

@@ -4,7 +4,7 @@ import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.AnnealingMaximizer;
+import agents.firm.production.control.maximizer.algorithms.hillClimbers.AnnealingMaximizer;
 import junit.framework.Assert;
 import model.MacroII;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class AnnealingMaximizerTest {
 
 
         //maximize!
-        AnnealingMaximizer maximizer = new AnnealingMaximizer(hr,control);
+        AnnealingMaximizer maximizer = new AnnealingMaximizer(0,1,30,model.getRandom());
 
         //start the parameters
         int target = 1;
@@ -108,7 +108,7 @@ public class AnnealingMaximizerTest {
 
 
         //maximize!
-        AnnealingMaximizer maximizer = new AnnealingMaximizer(hr,control);
+        AnnealingMaximizer maximizer = new AnnealingMaximizer(0,1,30,model.getRandom());
 
         //start the parameters
         int target = 1;
@@ -158,7 +158,7 @@ public class AnnealingMaximizerTest {
 
 
         //maximize!
-        AnnealingMaximizer maximizer = new AnnealingMaximizer(hr,control);
+        AnnealingMaximizer maximizer = new AnnealingMaximizer(0,1,30,model.getRandom());
 
         //start the parameters
         int target = 1;

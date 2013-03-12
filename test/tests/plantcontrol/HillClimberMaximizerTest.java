@@ -4,7 +4,7 @@ import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.HillClimberMaximizer;
+import agents.firm.production.control.maximizer.algorithms.hillClimbers.HillClimberMaximizer;
 import junit.framework.Assert;
 import model.MacroII;
 import org.junit.Test;
@@ -43,13 +43,14 @@ public class HillClimberMaximizerTest {
         when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(1l);
         when(plant.minimumWorkersNeeded()).thenReturn(1);
         when(hr.getFirm()).thenReturn(firm);
-        when(firm.getModel()).thenReturn(new MacroII(1l));
+        MacroII model =  new MacroII(1l);
+        when(firm.getModel()).thenReturn(model);
         when(control.getHr()).thenReturn(hr);
         when(hr.getPlant()).thenReturn(plant);
 
 
         //maximize!
-        HillClimberMaximizer maximizer = new HillClimberMaximizer(hr,control);
+        HillClimberMaximizer maximizer = new HillClimberMaximizer(0,1,30);
 
         //start the parameters
         int target = 1;
@@ -99,7 +100,7 @@ public class HillClimberMaximizerTest {
 
 
         //maximize!
-        HillClimberMaximizer maximizer = new HillClimberMaximizer(hr,control);
+        HillClimberMaximizer maximizer = new HillClimberMaximizer(1,1,30);
 
         //start the parameters
         int target = 1;
@@ -149,7 +150,7 @@ public class HillClimberMaximizerTest {
 
 
         //maximize!
-        HillClimberMaximizer maximizer = new HillClimberMaximizer(hr,control);
+        HillClimberMaximizer maximizer = new HillClimberMaximizer(1,1,30);
 
         //start the parameters
         int target = 1;

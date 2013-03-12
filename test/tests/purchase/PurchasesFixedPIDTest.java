@@ -203,7 +203,8 @@ public class PurchasesFixedPIDTest {
         f.earn(10000000);
         model.start();
 
-        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartmentIntegrated(10000000,f,market,PurchasesFixedPID.class,null,null);    //i'm assuming fixed target is 6
+        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartmentIntegrated(
+                10000000,f,market,PurchasesFixedPID.class,null,null).getDepartment();    //i'm assuming fixed target is 6
         f.registerPurchasesDepartment(dept,GoodType.GENERIC);
 
         Field field = PurchasesDepartment.class.getDeclaredField("control");

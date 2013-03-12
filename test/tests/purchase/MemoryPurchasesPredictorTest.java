@@ -86,7 +86,8 @@ public class MemoryPurchasesPredictorTest {
         f.earn(10000000);
         model.start();
 
-        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartmentIntegrated(10000000,f,market,PurchasesFixedPID.class,null,null);
+        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartmentIntegrated(
+                10000000,f,market,PurchasesFixedPID.class,null,null).getDepartment();
         f.registerPurchasesDepartment(dept,GoodType.GENERIC);
 
         Field field = null;

@@ -1,4 +1,4 @@
-package agents.firm.production.control.maximizer.marginalMaximizers;
+package agents.firm.production.control.maximizer.algorithms.marginalMaximizers;
 
 /**
  * <h4>Description</h4>

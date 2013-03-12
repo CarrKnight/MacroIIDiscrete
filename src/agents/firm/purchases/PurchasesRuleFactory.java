@@ -116,7 +116,8 @@ public class PurchasesRuleFactory {
 
     }
 
-    public static BidPricingStrategy newBidPricingStrategy( @Nonnull Class<? extends BidPricingStrategy> rule,@Nonnull PurchasesDepartment department )
+    public static <BP extends  BidPricingStrategy>
+    BP newBidPricingStrategy( @Nonnull Class<BP> rule,@Nonnull PurchasesDepartment department )
     {
 
         if(!bidPricingRules.contains(rule) || Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )
@@ -185,7 +186,8 @@ public class PurchasesRuleFactory {
 
     }
 
-    public static InventoryControl newInventoryControl( @Nonnull Class<? extends InventoryControl> rule,@Nonnull PurchasesDepartment department )
+    public static <IC extends InventoryControl>
+    IC newInventoryControl( @Nonnull Class<IC> rule,@Nonnull PurchasesDepartment department )
     {
         assert rule != null;
 
@@ -238,15 +240,17 @@ public class PurchasesRuleFactory {
 
     }
 
-    public static BidPricingStrategy randomIntegratedRule(@Nonnull PurchasesDepartment department)
+    public static <IC extends BidPricingStrategy & InventoryControl>
+    BidPricingStrategy randomIntegratedRule(@Nonnull PurchasesDepartment department)
     {
-        Class<? extends BidPricingStrategy> bidPricingStrategy= null;
+        Class<? extends IC> bidPricingStrategy= null;
         MersenneTwisterFast randomizer = department.getFirm().getRandom(); //get the randomizer
         //now you are going to pick at random, but keep doing it as long as you draw abstract classes or interfaces
         while(bidPricingStrategy== null || Modifier.isAbstract(bidPricingStrategy.getModifiers()) || bidPricingStrategy.isInterface())
         {
             //get a new rule
-            bidPricingStrategy= integratedRules.get(randomizer.nextInt(integratedRules.size()));
+            //this cast looks a bit iffy, but tested aplenty and it works fine.
+            bidPricingStrategy= (Class<? extends IC>) integratedRules.get(randomizer.nextInt(integratedRules.size()));
         }
 
         //now just instantiate it!
@@ -255,7 +259,8 @@ public class PurchasesRuleFactory {
 
     }
 
-    public static BidPricingStrategy newIntegratedRule( @Nonnull Class<? extends BidPricingStrategy> rule,@Nonnull PurchasesDepartment department )
+    public static <IC extends InventoryControl & BidPricingStrategy>
+    IC newIntegratedRule( @Nonnull Class<IC> rule,@Nonnull PurchasesDepartment department )
     {
 
         if(!integratedRules.contains(rule) || Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )
@@ -263,8 +268,8 @@ public class PurchasesRuleFactory {
 
 
         try {
-            BidPricingStrategy toReturn =  rule.getConstructor(PurchasesDepartment.class).newInstance(department);
-            assert toReturn instanceof InventoryControl;
+            IC toReturn =  rule.getConstructor(PurchasesDepartment.class).newInstance(department);
+            assert toReturn!= null && toReturn instanceof InventoryControl && toReturn instanceof BidPricingStrategy;
             return toReturn; //return it!
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException |
                 IllegalArgumentException | InvocationTargetException ex) {

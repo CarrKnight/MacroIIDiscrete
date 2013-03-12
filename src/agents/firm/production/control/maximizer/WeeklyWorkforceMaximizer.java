@@ -3,11 +3,15 @@ package agents.firm.production.control.maximizer;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
+import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithmFactory;
 import agents.firm.production.technology.Machinery;
 import financial.MarketEvents;
 import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
+
+import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -25,7 +29,7 @@ import sim.engine.Steppable;
  * @version 2012-09-23
  * @see
  */
-public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, Steppable {
+public class WeeklyWorkforceMaximizer<ALG extends WorkerMaximizationAlgorithm> implements WorkforceMaximizer<ALG>, Steppable {
 
 
 
@@ -38,6 +42,11 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
      * the control object
      */
     private final PlantControl control;
+
+    /**
+     * The maximization algorithm that chooses the new workers given the results.
+     */
+    private ALG maximizationAlgorithm;
 
     /**
      * keeps stepping as long as this is active!
@@ -81,12 +90,31 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
      */
     private int weeksToMakeObservation = 3;
 
-    public weeklyWorkforceMaximizer(HumanResources hr, PlantControl control) {
+    /**
+     * Creates a weekly workforce maximizer with a pre-made algorithm
+     * @param hr the human resources
+     * @param control the plant control
+     * @param algorithm the pre-made algorithm
+     */
+    public WeeklyWorkforceMaximizer(HumanResources hr, PlantControl control, ALG algorithm) {
         this.hr = hr;
         this.control = control;
+        this.maximizationAlgorithm = algorithm;
 
     }
 
+    /**
+     * Creates a weekly workforce maximizer with the type of algorithm to build
+     * @param hr the human resources
+     * @param control the plant control
+     * @param algorithmClass the type of algorithm to make!
+     */
+    public WeeklyWorkforceMaximizer(HumanResources hr, PlantControl control, Class<ALG> algorithmClass) {
+        this.hr = hr;
+        this.control = control;
+        this.maximizationAlgorithm = WorkerMaximizationAlgorithmFactory.buildMaximizationAlgorithm(hr,control,algorithmClass);
+
+    }
 
     /**
      * Method to switch the strategy off. Irreversible
@@ -95,6 +123,7 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
     public void turnOff()
     {
         isActive = false;
+        maximizationAlgorithm.turnOff();
     }
 
     /**
@@ -123,6 +152,10 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
      */
     @Override
     public void changeInMachineryEvent(Plant p, Machinery machinery) {
+        //reset the algorithm
+        maximizationAlgorithm.reset(this,p);
+        //start over
+        this.start();
     }
 
     /**
@@ -180,7 +213,7 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
 
 
         //what's the future target?
-        int futureTarget = chooseWorkerTarget(control.getTarget(),newProfits,newRevenues , newCosts,
+        int futureTarget = maximizationAlgorithm.chooseWorkerTarget(control.getTarget(),newProfits,newRevenues , newCosts,
                 oldRevenue,oldCosts, oldWorkerTarget, oldProfits);
 
 
@@ -263,20 +296,7 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
     }
 
 
-    /**
-     * Asks the subclass what the next worker target will be!
-     *
-     * @param currentWorkerTarget what is the current worker target
-     * @param newProfits what are the new profits
-     * @param newRevenues what are the new revenues
-      *@param newCosts what are the new costs
-     * @param oldRevenues what were the old revenues
-     * @param oldCosts what were the old costs
-     * @param oldWorkerTarget what was the target last time we changed them
-     * @param oldProfits what were the profits back then   @return the new worker targets. Any negative number means to check again!
-     */
-    protected abstract int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts,
-                                              float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits);
+
 
 
 
@@ -327,5 +347,29 @@ public abstract class weeklyWorkforceMaximizer implements WorkforceMaximizer, St
      */
     public void setRandomspeed(boolean randomspeed) {
         this.randomspeed = randomspeed;
+    }
+
+
+    /**
+     * Gets The maximization algorithm that chooses the new workers given the results..
+     *
+     * @return Value of The maximization algorithm that chooses the new workers given the results.
+     */
+    public ALG getMaximizationAlgorithm() {
+        return maximizationAlgorithm;
+    }
+
+
+    /**
+     * Sets new The maximization algorithm that chooses the new workers given the results.
+     * It turns off the previous one
+     *
+     * @param maximizationAlgorithm New value of The maximization algorithm that chooses the new workers given the results.
+     */
+    protected void setMaximizationAlgorithm(@Nonnull ALG maximizationAlgorithm) {
+        if(this.maximizationAlgorithm != null)
+            this.maximizationAlgorithm.turnOff();
+
+        this.maximizationAlgorithm = maximizationAlgorithm;
     }
 }

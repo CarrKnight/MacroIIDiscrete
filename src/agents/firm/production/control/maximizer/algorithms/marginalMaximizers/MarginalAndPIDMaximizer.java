@@ -1,10 +1,15 @@
-package agents.firm.production.control.maximizer.marginalMaximizers;
+package agents.firm.production.control.maximizer.algorithms.marginalMaximizers;
 
+import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
+import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
+import ec.util.MersenneTwisterFast;
 import model.MacroII;
 import model.utilities.DelayException;
 import model.utilities.pid.PIDController;
+
+import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -27,12 +32,24 @@ public class MarginalAndPIDMaximizer extends MarginalMaximizer {
 
     PIDController pid;
 
-    public MarginalAndPIDMaximizer(HumanResources hr, PlantControl control) {
-        super(hr, control);
-        MacroII model = hr.getFirm().getModel();
-        //the pid controller
-        pid = new PIDController(model.drawProportionalGain()/100f,model.drawIntegrativeGain()/100f,
-                model.drawDerivativeGain()/100f,model.getRandom());
+    /**
+     * constructor that generates PID parameters from the model
+     */
+    public MarginalAndPIDMaximizer(@Nonnull HumanResources hr, PlantControl control, Plant p, Firm owner, MacroII model) {
+        this(hr, control, p, owner,
+                model.drawProportionalGain()/100f,model.drawIntegrativeGain()/100f,
+                model.drawDerivativeGain()/100f,
+                model.getRandom());
+    }
+
+    /**
+     * constructor that generates PID parameters from the model
+     */
+    public MarginalAndPIDMaximizer(@Nonnull HumanResources hr, @Nonnull PlantControl control, @Nonnull Plant p,
+                                   @Nonnull Firm owner, float proportional, float integral, float derivative,
+                                   MersenneTwisterFast random) {
+        super(hr, control, p, owner);
+        pid = new PIDController(proportional,integral,derivative,random);
         pid.setOffset(hr.getPlant().workerSize());
     }
 
@@ -50,7 +67,7 @@ public class MarginalAndPIDMaximizer extends MarginalMaximizer {
      * @param oldProfits          what were the profits back then   @return the new worker targets. Any negative number means to check again!
      */
     @Override
-    protected int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
+    public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
 
         //check increasing by one:
 

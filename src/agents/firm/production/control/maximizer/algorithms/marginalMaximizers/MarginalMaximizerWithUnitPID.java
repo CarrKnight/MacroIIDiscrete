@@ -1,10 +1,14 @@
-package agents.firm.production.control.maximizer.marginalMaximizers;
+package agents.firm.production.control.maximizer.algorithms.marginalMaximizers;
 
+import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
+import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
-import model.MacroII;
+import ec.util.MersenneTwisterFast;
 import model.utilities.DelayException;
 import model.utilities.pid.PIDController;
+
+import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -41,19 +45,16 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
 
     /**
      * Very simple marginal maximizer that chooses worker by targeting MB/MC = 1
-     * where MB is unit marginal revenue and MC is unit marginal costs of increasing production by 1
+     * where MB is unit marginal revenue and MC is unit marginal costs of increasing production by 1 .
+     * This constructor used tuned marginal maximizer
      * @param hr the human resources
      * @param control the plant control.
      */
-    public MarginalMaximizerWithUnitPID(HumanResources hr, PlantControl control) {
-        super(hr, control);
-        MacroII model = hr.getFirm().getModel();
-        //the pid controller
-        pid = new PIDController( 1.31f,0.71f,     //these numbers were tuned in the monopolist scenario
-                0.055f,model.getRandom());
-        pid.setOffset(hr.getPlant().workerSize());
+    public MarginalMaximizerWithUnitPID(@Nonnull HumanResources hr, @Nonnull PlantControl control,
+                                        @Nonnull Plant p, @Nonnull Firm owner, @Nonnull MersenneTwisterFast random,
+                                        int currentWorkerSize) {
+        this(hr, control, p, owner, random, currentWorkerSize, 1.31f,0.71f, 0.055f);  //these numbers were tuned in the monopolist scenario
     }
-
 
     /**
      * Very simple marginal maximizer that chooses worker by targeting MB/MC = 1
@@ -61,18 +62,19 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
      * @param hr the human resources
      * @param control the plant control.
      */
-    public MarginalMaximizerWithUnitPID(HumanResources hr, PlantControl control, float proportional,
+    public MarginalMaximizerWithUnitPID(@Nonnull HumanResources hr, @Nonnull PlantControl control,
+                                        @Nonnull Plant p, @Nonnull Firm owner, @Nonnull MersenneTwisterFast random,
+                                        int currentWorkerSize,float proportional,
                                         float integral, float derivative) {
-        super(hr, control);
-        MacroII model = hr.getFirm().getModel();
+        super(hr, control, p, owner);
         //the pid controller
-        pid = new PIDController(proportional,integral,derivative,model.getRandom());
-        pid.setOffset(hr.getPlant().workerSize());
+        pid = new PIDController(proportional,integral,derivative,random);
+        pid.setOffset(currentWorkerSize);
     }
 
 
     @Override
-    protected int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts,
+    public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts,
                                      float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
 
         //check the marginals always one step forward (not because you are moving one step only,
@@ -83,13 +85,16 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
 
             float marginalProduction = MarginalMaximizerStatics.marginalProduction(getP(), currentWorkerTarget, currentWorkerTarget + 1);
             //cost
-            CostEstimate wageCosts = MarginalMaximizerStatics.computeWageCosts(getPolicy(), getP(), getHr(), getControl(), currentWorkerTarget, currentWorkerTarget + 1);
-            CostEstimate inputCosts = MarginalMaximizerStatics.computeInputCosts(getOwner(), getP(), getPolicy(), currentWorkerTarget, currentWorkerTarget + 1);
+            CostEstimate wageCosts = MarginalMaximizerStatics.computeWageCosts(getPolicy(), getP(), getHr(),
+                    getControl(), currentWorkerTarget, currentWorkerTarget + 1);
+            CostEstimate inputCosts = MarginalMaximizerStatics.computeInputCosts(getOwner(), getP(), getPolicy(),
+                    currentWorkerTarget, currentWorkerTarget + 1);
             float marginalCosts = wageCosts.getMarginalCost() + inputCosts.getMarginalCost();
             marginalCosts = marginalCosts / marginalProduction;
 
             //benefits
-            float marginalBenefits = MarginalMaximizerStatics.computeMarginalRevenue(getOwner(), getP(), getPolicy(), currentWorkerTarget, currentWorkerTarget + 1,
+            float marginalBenefits = MarginalMaximizerStatics.computeMarginalRevenue(getOwner(), getP(), getPolicy(),
+                    currentWorkerTarget, currentWorkerTarget + 1,
                     inputCosts.getTotalCost(), wageCosts.getTotalCost());
             marginalBenefits = marginalBenefits / marginalProduction;
 
@@ -133,6 +138,7 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
     }
 
     public void setTargetEfficiency(float targetEfficiency) {
+        System.out.println("efficency:" + targetEfficiency );
         this.targetEfficiency = targetEfficiency;
     }
 }

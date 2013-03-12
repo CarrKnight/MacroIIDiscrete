@@ -1,18 +1,17 @@
 package agents.firm.production.control.facades;
 
 import agents.firm.personell.HumanResources;
+import agents.firm.production.Plant;
+import agents.firm.production.PlantListener;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
+import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
+import agents.firm.production.control.maximizer.algorithms.hillClimbers.GradientMaximizer;
+import agents.firm.production.control.targeter.PIDTargeter;
+import agents.firm.production.technology.Machinery;
 import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
 import goods.GoodType;
-import agents.firm.production.Plant;
-import agents.firm.production.PlantListener;
-import agents.firm.production.control.maximizer.GradientMaximizer;
-import agents.firm.production.control.maximizer.WorkforceMaximizer;
-import agents.firm.production.control.targeter.PIDTargeter;
-import agents.firm.production.control.targeter.WorkforceTargeter;
-import agents.firm.production.technology.Machinery;
 
 import javax.annotation.Nonnull;
 
@@ -43,7 +42,8 @@ public class ProfitCheckPlantControl  implements PlantControl, PlantListener
      */
     public ProfitCheckPlantControl(@Nonnull HumanResources hr) {
         //instantiate the real control
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class, GradientMaximizer.class);
+        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class,WeeklyWorkforceMaximizer.class,
+                GradientMaximizer.class).getControl();
 
     }
 
@@ -98,13 +98,6 @@ public class ProfitCheckPlantControl  implements PlantControl, PlantListener
         control.setCanBuy(canBuy);
     }
 
-    /**
-     * Plant Control factory, instantiates a class of the kind of targeter and maximizer specified
-     * @param hr the human resources object
-     */
-    public static TargetAndMaximizePlantControl PlantControlFactory(@Nonnull HumanResources hr, Class<? extends WorkforceTargeter> targeterClass, Class<? extends WorkforceMaximizer> maximizerClass) {
-        return TargetAndMaximizePlantControl.PlantControlFactory(hr, targeterClass, maximizerClass);
-    }
 
     /**
      * The targeter is told that now we need to hire this many workers

@@ -1,10 +1,15 @@
-package agents.firm.production.control.maximizer.marginalMaximizers;
+package agents.firm.production.control.maximizer.algorithms.marginalMaximizers;
 
+import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
+import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
+import ec.util.MersenneTwisterFast;
 import financial.Market;
 import financial.utilities.changeLooker.ChangeLookupMAMarket;
 import model.utilities.pid.PIDController;
+
+import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -41,8 +46,19 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficency extends MarginalMaximi
      * @param hr      the human resources
      * @param control the plant control.
      */
-    public MarginalMaximizerWithUnitPIDCascadeEfficency(HumanResources hr, PlantControl control) {
-        super(hr, control);
+    public MarginalMaximizerWithUnitPIDCascadeEfficency(@Nonnull HumanResources hr, @Nonnull PlantControl control, @Nonnull Plant p, @Nonnull Firm owner, @Nonnull MersenneTwisterFast random, int currentWorkerSize) {
+        super(hr, control, p, owner, random, currentWorkerSize);
+    }
+
+    /**
+     * Very simple marginal maximizer that chooses worker by targeting MB/MC = 1
+     * where MB is unit marginal revenue and MC is unit marginal costs of increasing production by 1.
+     *
+     * @param hr      the human resources
+     * @param control the plant control.
+     */
+    public MarginalMaximizerWithUnitPIDCascadeEfficency(@Nonnull HumanResources hr, @Nonnull PlantControl control, @Nonnull Plant p, @Nonnull Firm owner, @Nonnull MersenneTwisterFast random, int currentWorkerSize, float proportional, float integral, float derivative) {
+        super(hr, control, p, owner, random, currentWorkerSize, proportional, integral, derivative);
     }
 
     /**
@@ -67,7 +83,7 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficency extends MarginalMaximi
      * @return
      */
     @Override
-    protected int chooseWorkerTarget(int currentWorkerTarget, float newProfits,
+    public int chooseWorkerTarget(int currentWorkerTarget, float newProfits,
                                      float newRevenues, float newCosts, float oldRevenues,
                                      float oldCosts, int oldWorkerTarget, float oldProfits) {
 
@@ -77,10 +93,11 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficency extends MarginalMaximi
         }
         else {
             //otherwise, ignore it!
-            super.setTargetEfficiency(1);
+            assert getTargetEfficiency() == 1;
         }
         //let the superclass deal with it.
-        return super.chooseWorkerTarget(currentWorkerTarget, newProfits, newRevenues, newCosts, oldRevenues, oldCosts, oldWorkerTarget, oldProfits);
+        return super.chooseWorkerTarget(currentWorkerTarget, newProfits, newRevenues, newCosts,
+                oldRevenues, oldCosts, oldWorkerTarget, oldProfits);
 
 
 

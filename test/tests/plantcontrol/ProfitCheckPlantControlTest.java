@@ -91,7 +91,8 @@ public class ProfitCheckPlantControlTest {
 
         Market market = new OrderBookBlindMarket(GoodType.LABOR);
         assertEquals(p.maximumWorkersPossible(),100);
-        HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000,firm,market,p,ProfitCheckPlantControl.class,null,null); //create!!!
+        HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000,firm,market,
+                p,ProfitCheckPlantControl.class,null,null).getDepartment(); //create!!!
 
         Field field = PurchasesDepartment.class.getDeclaredField("control");
         field.setAccessible(true);
@@ -204,7 +205,8 @@ public class ProfitCheckPlantControlTest {
 
         Market market = new OrderBookBlindMarket(GoodType.LABOR);
         assertEquals(p.maximumWorkersPossible(),100);
-        HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000,firm,market,p,ProfitCheckPlantControl.class,null,null); //create!!!
+        HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000,
+                firm,market,p,ProfitCheckPlantControl.class,null,null).getDepartment(); //create!!!
 //        firm.registerHumanResources(p,humanResources);
 
         Field field = PurchasesDepartment.class.getDeclaredField("control");

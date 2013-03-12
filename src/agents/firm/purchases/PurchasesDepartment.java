@@ -207,13 +207,15 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
     /**
      *  This is the simplest factory method for the purchases department. It randomly chooses its
-     *  search algorithms, inventory control and pricing strategy.
+     *  search algorithms, inventory control and pricing strategy (these last two will not be integrated).
      *  The reason I am going through all this is to avoid having a reference to purchases department leak out from constructor
      * @param budgetGiven  budget given to the department by the purchases department
      * @param firm the firm owning the department
      * @param market the market to buy from
      */
-    public static PurchasesDepartment getPurchasesDepartment(long budgetGiven,@Nonnull Firm firm,@Nonnull Market market){
+    public static
+    FactoryProducedPurchaseDepartment<InventoryControl,BidPricingStrategy,BuyerSearchAlgorithm,SellerSearchAlgorithm>
+    getRandomPurchaseDepartment(long budgetGiven, @Nonnull Firm firm, @Nonnull Market market){
         //create the simple purchases department
         PurchasesDepartment instance = new PurchasesDepartment(budgetGiven,firm,market); //call the constructor
         //create random inventory control and assign it
@@ -229,12 +231,25 @@ public class PurchasesDepartment implements Deactivatable, Department {
         SellerSearchAlgorithm sellerSearchAlgorithm = SellerSearchAlgorithm.Factory.randomSellerSearchAlgorithm(market,firm);
         instance.setSupplierSearch(sellerSearchAlgorithm);
 
+        //create the container
+        FactoryProducedPurchaseDepartment<InventoryControl,BidPricingStrategy,BuyerSearchAlgorithm,SellerSearchAlgorithm>
+                container =
+                new FactoryProducedPurchaseDepartment<>(instance,inventoryControl,pricingStrategy,
+                        buyerSearchAlgorithm,sellerSearchAlgorithm);
+        //check it's correct
+        assert container.getDepartment() == instance;
+        assert container.getInventoryControl() == instance.control;
+        assert container.getBidPricing() == instance.pricingStrategy;
+        assert container.getBuyerSearch() == instance.opponentSearch;
+        assert container.getSellerSearch() == instance.supplierSearch;
+
         //finally: return it!
-        return instance;
+        return container;
     }
 
     /**
-     * This factor for purchases department is used when we want the department to follow an integrated rule: inventory control and pricing rule are the same object. <br>
+     * This factor for purchases department is used when we want the department to follow an integrated rule:
+     * inventory control and pricing rule are the same object. <br>
      * Leaving any of the type arguments null will make the constructor generate a rule at random
      * @param budgetGiven the budget given to the department by the firm
      * @param firm the firm owning the department
@@ -244,51 +259,64 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * @param sellerSearchAlgorithmType the algorithm the buyer follows to search for suppliers
      * @return a new instance of PurchasesDepartment
      */
-    public static PurchasesDepartment getPurchasesDepartmentIntegrated(long budgetGiven, @Nonnull Firm firm, @Nonnull Market market, @Nullable Class<? extends  BidPricingStrategy> integratedControl,
-                                                                       @Nullable Class<? extends BuyerSearchAlgorithm> buyerSearchAlgorithmType, @Nullable Class<? extends SellerSearchAlgorithm> sellerSearchAlgorithmType )
+    public static <IC extends InventoryControl & BidPricingStrategy,BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm>
+    FactoryProducedPurchaseDepartment<IC,IC,BS,SS> getPurchasesDepartmentIntegrated
+    (long budgetGiven, @Nonnull Firm firm, @Nonnull Market market,
+     @Nullable Class<IC> integratedControl, @Nullable Class<BS> buyerSearchAlgorithmType, @Nullable Class<SS> sellerSearchAlgorithmType )
     {
 
         //create the simple purchases department
         PurchasesDepartment instance = new PurchasesDepartment(budgetGiven,firm,market); //call the constructor
 
         //create inventory control and assign it
-        BidPricingStrategy bidPricingStrategy;
+        IC bidPricingStrategy;
         if(integratedControl == null) //if null randomize
-            bidPricingStrategy = PurchasesRuleFactory.randomIntegratedRule(instance);
+            bidPricingStrategy =(IC) PurchasesRuleFactory.randomIntegratedRule(instance);
         else //otherwise instantiate the specified one
             bidPricingStrategy= PurchasesRuleFactory.newIntegratedRule(integratedControl,instance);
         instance.setPricingStrategy(bidPricingStrategy);
-        assert bidPricingStrategy instanceof InventoryControl; //if you are really integrated that's true
-        instance.setControl((InventoryControl) bidPricingStrategy);
+        instance.setControl(bidPricingStrategy);
 
 
 
         //create a buyer search algorithm and assign it
-        BuyerSearchAlgorithm buyerSearchAlgorithm;
+        BS buyerSearchAlgorithm;
         if(buyerSearchAlgorithmType == null)
-            buyerSearchAlgorithm = BuyerSearchAlgorithm.Factory.randomBuyerSearchAlgorithm(market,firm);
+            buyerSearchAlgorithm = (BS) BuyerSearchAlgorithm.Factory.randomBuyerSearchAlgorithm(market,firm);
         else
             buyerSearchAlgorithm = BuyerSearchAlgorithm.Factory.newBuyerSearchAlgorithm(buyerSearchAlgorithmType,market,firm);
         instance.setOpponentSearch(buyerSearchAlgorithm);
 
 
         //create a random seller search algorithm and assign it
-        SellerSearchAlgorithm sellerSearchAlgorithm;
+        SS sellerSearchAlgorithm;
         if(sellerSearchAlgorithmType == null)
-            sellerSearchAlgorithm = SellerSearchAlgorithm.Factory.randomSellerSearchAlgorithm(market,firm);
+            sellerSearchAlgorithm = (SS) SellerSearchAlgorithm.Factory.randomSellerSearchAlgorithm(market,firm);
         else
             sellerSearchAlgorithm = SellerSearchAlgorithm.Factory.newSellerSearchAlgorithm(sellerSearchAlgorithmType,market,firm);
         instance.setSupplierSearch(sellerSearchAlgorithm);
 
         //finally: return it!
-        return instance;
+        FactoryProducedPurchaseDepartment<IC,IC,BS,SS> container =
+                new FactoryProducedPurchaseDepartment<>(instance,bidPricingStrategy,bidPricingStrategy,
+                        buyerSearchAlgorithm,sellerSearchAlgorithm);
+        //check it's correct
+        assert container.getDepartment() == instance;
+        assert container.getInventoryControl() == instance.control;
+        assert container.getBidPricing() == instance.pricingStrategy;
+        assert container.getBuyerSearch() == instance.opponentSearch;
+        assert container.getSellerSearch() == instance.supplierSearch;
+
+
+        //finally: return it!
+        return container;
 
     }
 
 
     /**
-     *  This is the simplest factory method for the purchases department. It randomly chooses its
-     *  search algorithms, inventory control and pricing strategy.
+     *  This is the simplest factory method for the purchases department. It creates  controls and strategies as passed. Whenever
+     *  a type is not passed (is null) then a random one is instantiated.
      *  The reason I am going through all this is to avoid having a reference to purchases department leak out from constructor
      * @param budgetGiven  budget given to the department by the purchases department
      * @param firm the firm owning the department
@@ -298,53 +326,68 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * @param buyerSearchAlgorithmType the buyer search algorithm. If null it is randomized
      * @param  sellerSearchAlgorithmType the seller search algorithm desired. If null it is randomized
      */
-    public static PurchasesDepartment getPurchasesDepartment(long budgetGiven, @Nonnull Firm firm, @Nonnull Market market,
-                                                             @Nullable Class<? extends InventoryControl> inventoryControlType, @Nullable Class<? extends BidPricingStrategy> bidPricingStrategyType,
-                                                             @Nullable Class<? extends BuyerSearchAlgorithm> buyerSearchAlgorithmType, @Nullable Class<? extends SellerSearchAlgorithm> sellerSearchAlgorithmType){
+    public static
+    <IC extends InventoryControl, BP extends BidPricingStrategy,BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm>
+    FactoryProducedPurchaseDepartment<IC,BP,BS,SS> getPurchasesDepartment(long budgetGiven, @Nonnull Firm firm, @Nonnull Market market,
+                                                                          @Nullable Class<IC> inventoryControlType,
+                                                                          @Nullable Class<BP> bidPricingStrategyType,
+                                                                          @Nullable Class<BS> buyerSearchAlgorithmType,
+                                                                          @Nullable Class<SS> sellerSearchAlgorithmType){
         //create the simple purchases department
         PurchasesDepartment instance = new PurchasesDepartment(budgetGiven,firm,market); //call the constructor
 
         //create inventory control and assign it
-        InventoryControl inventoryControl;
+        IC inventoryControl;
         if(inventoryControlType == null) //if null randomize
-            inventoryControl = PurchasesRuleFactory.randomInventoryControl(instance);
+            inventoryControl = (IC)PurchasesRuleFactory.randomInventoryControl(instance);
         else //otherwise instantiate the specified one
             inventoryControl= PurchasesRuleFactory.newInventoryControl(inventoryControlType,instance);
         instance.setControl(inventoryControl);
 
         //create BidPricingStrategy and assign it
-        BidPricingStrategy bidPricingStrategy;
+        BP bidPricingStrategy;
         if(bidPricingStrategyType == null) //if null randomize
-            bidPricingStrategy = PurchasesRuleFactory.randomBidPricingStrategy(instance);
+            bidPricingStrategy = (BP)PurchasesRuleFactory.randomBidPricingStrategy(instance);
         else //otherwise instantiate the specified one
             bidPricingStrategy= PurchasesRuleFactory.newBidPricingStrategy(bidPricingStrategyType,instance);
         instance.setPricingStrategy(bidPricingStrategy);
 
         //create a buyer search algorithm and assign it
-        BuyerSearchAlgorithm buyerSearchAlgorithm;
+        BS buyerSearchAlgorithm;
         if(buyerSearchAlgorithmType == null)
-            buyerSearchAlgorithm = BuyerSearchAlgorithm.Factory.randomBuyerSearchAlgorithm(market,firm);
+            buyerSearchAlgorithm = (BS)BuyerSearchAlgorithm.Factory.randomBuyerSearchAlgorithm(market,firm);
         else
             buyerSearchAlgorithm = BuyerSearchAlgorithm.Factory.newBuyerSearchAlgorithm(buyerSearchAlgorithmType,market,firm);
         instance.setOpponentSearch(buyerSearchAlgorithm);
 
 
         //create a random seller search algorithm and assign it
-        SellerSearchAlgorithm sellerSearchAlgorithm;
+        SS sellerSearchAlgorithm;
         if(sellerSearchAlgorithmType == null)
-            sellerSearchAlgorithm = SellerSearchAlgorithm.Factory.randomSellerSearchAlgorithm(market,firm);
+            sellerSearchAlgorithm = (SS) SellerSearchAlgorithm.Factory.randomSellerSearchAlgorithm(market,firm);
         else
             sellerSearchAlgorithm = SellerSearchAlgorithm.Factory.newSellerSearchAlgorithm(sellerSearchAlgorithmType,market,firm);
         instance.setSupplierSearch(sellerSearchAlgorithm);
 
+        //create the container
+        FactoryProducedPurchaseDepartment<IC,BP,BS,SS> container =
+                new FactoryProducedPurchaseDepartment<>(instance,inventoryControl,bidPricingStrategy,
+                        buyerSearchAlgorithm,sellerSearchAlgorithm);
+        //check it's correct
+        assert container.getDepartment() == instance;
+        assert container.getInventoryControl() == instance.control;
+        assert container.getBidPricing() == instance.pricingStrategy;
+        assert container.getBuyerSearch() == instance.opponentSearch;
+        assert container.getSellerSearch() == instance.supplierSearch;
+
+
         //finally: return it!
-        return instance;
+        return container;
     }
 
     /**
-     *  This is the simplest factory method for the purchases department. It randomly chooses its
-     *  search algorithms, inventory control and pricing strategy.
-     *  The reason I am going through all this is to avoid having a reference to purchases department leak out from constructor
+     *  This factory reads in the String names of the types of class it has to instantiate. They can't be null.
+     *  Because I don't know the type, the factory object returned assumes the most generic possibilities
      * @param budgetGiven  budget given to the department by the purchases department
      * @param firm the firm owning the department
      * @param market the market to buy from
@@ -352,10 +395,13 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * @param bidPricingStrategyType the name of pricing strategy desired.
      * @param buyerSearchAlgorithmType the name of buyer search algorithm.
      * @param  sellerSearchAlgorithmType the name seller search algorithm desired.
+     *<IC extends InventoryControl, BP extends BidPricingStrategy,BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm>
      */
-    public static PurchasesDepartment getPurchasesDepartment(long budgetGiven,@Nonnull Firm firm,@Nonnull Market market,
-                                                             @Nonnull String inventoryControlType, @Nonnull String bidPricingStrategyType,
-                                                             @Nonnull String buyerSearchAlgorithmType,@Nonnull String sellerSearchAlgorithmType){
+    public static
+    FactoryProducedPurchaseDepartment<InventoryControl,BidPricingStrategy,BuyerSearchAlgorithm,SellerSearchAlgorithm>
+    getPurchasesDepartment(long budgetGiven,@Nonnull Firm firm,@Nonnull Market market,
+                           @Nonnull String inventoryControlType, @Nonnull String bidPricingStrategyType,
+                           @Nonnull String buyerSearchAlgorithmType,@Nonnull String sellerSearchAlgorithmType){
         //create the simple purchases department
         PurchasesDepartment instance = new PurchasesDepartment(budgetGiven,firm,market); //call the constructor
         //create random inventory control and assign it
@@ -371,8 +417,20 @@ public class PurchasesDepartment implements Deactivatable, Department {
         SellerSearchAlgorithm sellerSearchAlgorithm = SellerSearchAlgorithm.Factory.newSellerSearchAlgorithm(sellerSearchAlgorithmType,market,firm);
         instance.setSupplierSearch(sellerSearchAlgorithm);
 
+        //create the container
+        FactoryProducedPurchaseDepartment<InventoryControl,BidPricingStrategy,BuyerSearchAlgorithm,SellerSearchAlgorithm>
+                container =
+                new FactoryProducedPurchaseDepartment<>(instance,inventoryControl,pricingStrategy,
+                        buyerSearchAlgorithm,sellerSearchAlgorithm);
+        //check it's correct
+        assert container.getDepartment() == instance;
+        assert container.getInventoryControl() == instance.control;
+        assert container.getBidPricing() == instance.pricingStrategy;
+        assert container.getBuyerSearch() == instance.opponentSearch;
+        assert container.getSellerSearch() == instance.supplierSearch;
+
         //finally: return it!
-        return instance;
+        return container;
     }
 
     /**
@@ -627,6 +685,9 @@ public class PurchasesDepartment implements Deactivatable, Department {
             this.control.turnOff();
         this.control = control;
     }
+
+
+
 
     public void setPricingStrategy(@Nonnull BidPricingStrategy pricingStrategy) {
         if(this.pricingStrategy != null)   //if you had one before, turn it off
@@ -914,13 +975,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
     }
 
 
-    /**
-     * let the subclass see and interact with control
-     * @return
-     */
-    protected Control getControl() {
-        return control;
-    }
+
 
     /**
      * The last price the purchases department got for its goods

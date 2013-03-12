@@ -215,7 +215,7 @@ public class MultiProductionMonopolist extends Scenario{
 
                     //human resources
                     HumanResources hr = HumanResources.getHumanResourcesIntegrated(100000000,seller,
-                            laborMarket,plant,DiscreteSlowPlantControl.class,null,null);
+                            laborMarket,plant,DiscreteSlowPlantControl.class,null,null).getDepartment();
              //       seller.registerHumanResources(plant, hr);
              //       hr.setProbabilityForgetting(0f);
                     hr.start();

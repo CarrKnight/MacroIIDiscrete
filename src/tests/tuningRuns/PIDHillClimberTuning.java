@@ -4,7 +4,7 @@ import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.PIDHillClimber;
+import agents.firm.production.control.maximizer.algorithms.hillClimbers.PIDHillClimber;
 import au.com.bytecode.opencsv.CSVWriter;
 import model.MacroII;
 
@@ -69,7 +69,7 @@ public class PIDHillClimberTuning {
 
 
                             //maximize!
-                            PIDHillClimber maximizer = new PIDHillClimber(hr,control,proportional,integral,derivative);
+                            PIDHillClimber maximizer = new PIDHillClimber(hr,proportional,integral,derivative);
 
                             long oldRevenue=0;
                             long oldCosts = 0;

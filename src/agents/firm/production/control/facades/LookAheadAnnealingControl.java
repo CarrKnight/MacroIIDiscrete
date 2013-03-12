@@ -1,18 +1,16 @@
 package agents.firm.production.control.facades;
 
 import agents.firm.personell.HumanResources;
+import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
+import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
+import agents.firm.production.control.maximizer.algorithms.hillClimbers.AnnealingReactingMaximizer;
+import agents.firm.production.control.targeter.MarketLookTargeter;
+import agents.firm.production.technology.Machinery;
 import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
 import goods.GoodType;
-import agents.firm.production.Plant;
-import agents.firm.production.control.decorators.PlantControlDecorator;
-import agents.firm.production.control.maximizer.AnnealingReactingMaximizer;
-import agents.firm.production.control.maximizer.WorkforceMaximizer;
-import agents.firm.production.control.targeter.MarketLookTargeter;
-import agents.firm.production.control.targeter.WorkforceTargeter;
-import agents.firm.production.technology.Machinery;
 
 import javax.annotation.Nonnull;
 
@@ -42,7 +40,9 @@ public class LookAheadAnnealingControl implements PlantControl
      */
     public LookAheadAnnealingControl(@Nonnull HumanResources hr) {
         //instantiate the real control
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr,MarketLookTargeter.class, AnnealingReactingMaximizer.class);
+        control = TargetAndMaximizePlantControl.
+                PlantControlFactory(hr, MarketLookTargeter.class,WeeklyWorkforceMaximizer.class,
+                        AnnealingReactingMaximizer.class).getControl();
 
     }
 
@@ -99,22 +99,9 @@ public class LookAheadAnnealingControl implements PlantControl
         control.changeInWageEvent(p, workerSize, wage);
     }
 
-    /**
-     * Plant Control factory, instantiates a class of the kind of targeter and maximizer specified
-     * @param hr the human resources object
-     */
-    public static TargetAndMaximizePlantControl PlantControlFactory(@Nonnull HumanResources hr, Class<? extends WorkforceTargeter> targeterClass, Class<? extends WorkforceMaximizer> maximizerClass) {
-        return TargetAndMaximizePlantControl.PlantControlFactory(hr, targeterClass, maximizerClass);
-    }
 
-    /**
-     * This plant control factory adds decorators to the control. for a good measure. It assumes all decorators need only the control object to instantiate
-     * @param hr the human resources object
-     */
-    @SafeVarargs
-    public static PlantControl PlantControlFactory(@Nonnull HumanResources hr, Class<? extends WorkforceTargeter> targeterClass, Class<? extends WorkforceMaximizer> maximizerClass, Class<? extends PlantControlDecorator>... decorators) {
-        return TargetAndMaximizePlantControl.PlantControlFactory(hr, targeterClass, maximizerClass, decorators);
-    }
+
+
 
     /**
      * The targeter is told that now we need to hire this many workers

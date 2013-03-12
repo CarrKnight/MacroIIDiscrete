@@ -1,4 +1,4 @@
-package agents.firm.production.control.maximizer.marginalMaximizers;
+package agents.firm.production.control.maximizer.algorithms.marginalMaximizers;
 
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
@@ -225,8 +225,12 @@ public final class MarginalMaximizerStatics {
             costPerInput = costPerInput < 0 ? policy.replaceUnknownPrediction(owner.getPurchaseDepartment(input).getMarket(), p.getRandom()) : costPerInput;
 
             //count the costs!
-            marginalInputCosts+= (costPerInput * totalInputNeeded) - dept.getLastClosingPrice() *
-                    p.hypotheticalWeeklyInputNeeds(input, currentWorkers) ;
+            if(costPerInput == 0)
+                marginalInputCosts+= 0 ;
+            else
+                marginalInputCosts+= (costPerInput * totalInputNeeded) - dept.getLastClosingPrice() *
+                        p.hypotheticalWeeklyInputNeeds(input, currentWorkers) ;
+
             //marginal costs are negative (marginal savings) if we are reducing production
             assert (marginalInputCosts >= 0 && targetWorkers > currentWorkers) ^   (marginalInputCosts <= 0 && targetWorkers < currentWorkers);
             totalInputCosts +=  costPerInput*totalInputNeeded;

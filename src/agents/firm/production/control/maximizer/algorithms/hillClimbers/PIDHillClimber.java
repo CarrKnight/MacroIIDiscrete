@@ -1,8 +1,8 @@
-package agents.firm.production.control.maximizer;
+package agents.firm.production.control.maximizer.algorithms.hillClimbers;
 
 import agents.firm.personell.HumanResources;
 import agents.firm.production.control.PlantControl;
-import model.MacroII;
+import ec.util.MersenneTwisterFast;
 import model.utilities.pid.PIDController;
 
 /**
@@ -49,7 +49,7 @@ public class PIDHillClimber extends HillClimberMaximizer
      */
     public PIDHillClimber(HumanResources hr, PlantControl control) {
 
-        this(hr,control,hr.getFirm().getModel().drawProportionalGain(),  hr.getFirm().getModel().drawIntegrativeGain(),
+        this(hr,hr.getFirm().getModel().drawProportionalGain(),  hr.getFirm().getModel().drawIntegrativeGain(),
                 hr.getFirm().getModel().drawDerivativeGain());
 
     }
@@ -57,22 +57,24 @@ public class PIDHillClimber extends HillClimberMaximizer
     /**
      * Creates the hill-climber and instantiates the PID controller needed by asking the model for the parameters
      * @param hr the human resources in charge of the hiring for the plan
-     * @param control the control using this maximizer.
      */
-    public PIDHillClimber(HumanResources hr, PlantControl control,float proportional, float integrative, float derivative) {
+    public PIDHillClimber(HumanResources hr,float proportional, float integrative, float derivative) {
 
-        super(hr, control);
-        MacroII model = hr.getFirm().getModel();
-        //the pid controller
-        pid = new PIDController(proportional,integrative,derivative,model.getRandom());
-        pid.setOffset(hr.getPlant().workerSize()+ 1);
+        this(hr.getPlant().weeklyFixedCosts(),hr.getPlant().minimumWorkersNeeded(),hr.getPlant().maximumWorkersPossible(),
+                hr.getPlant().workerSize(),hr.getRandom(),proportional,integrative,derivative);
+
+
 
     }
 
+    public PIDHillClimber(long weeklyFixedCosts, int minimumWorkers, int maximumWorkers,
+                          int currentWorkers, MersenneTwisterFast random,
+                          float proportional, float integrative, float derivative) {
+        super(weeklyFixedCosts, minimumWorkers, maximumWorkers);
+        pid = new PIDController(proportional,integrative,derivative,random);
+        pid.setOffset(currentWorkers+ 1);
 
-
-
-
+    }
 
     /**
      * Asks the subclass what the next worker target will be!
@@ -107,7 +109,7 @@ public class PIDHillClimber extends HillClimberMaximizer
         pid.adjustOnce(marginalEfficency-1,true);
 
 
-        return Math.min(Math.round(pid.getCurrentMV()),getHr().maximumWorkersPossible());
+        return Math.min(Math.round(pid.getCurrentMV()),getMaximumWorkersPossible());
 
 
 

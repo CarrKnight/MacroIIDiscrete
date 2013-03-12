@@ -3,11 +3,12 @@ package agents.firm.production.control.facades;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
+import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
 import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
 import goods.GoodType;
 import agents.firm.production.Plant;
-import agents.firm.production.control.maximizer.AlwaysMovingHillClimber;
+import agents.firm.production.control.maximizer.algorithms.hillClimbers.AlwaysMovingHillClimber;
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.Machinery;
 
@@ -36,7 +37,8 @@ public class DumbClimberControl implements PlantControl
 
 
     public DumbClimberControl(HumanResources hr){
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class, AlwaysMovingHillClimber.class);
+        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class, WeeklyWorkforceMaximizer.class,
+                AlwaysMovingHillClimber.class).getControl();
 
     }
 

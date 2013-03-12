@@ -178,7 +178,7 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
                     public void step(SimState state) {
                         controller.adjust(getControllerInput(getWeeklyNeeds()),
                                 isActive(),
-                                getPurchasesDepartment().getFirm().getModel(), PurchasesWeeklyPID.this, ActionOrder.THINK);
+                                getRandomPurchaseDepartment().getFirm().getModel(), PurchasesWeeklyPID.this, ActionOrder.THINK);
                     }
                 });
             */

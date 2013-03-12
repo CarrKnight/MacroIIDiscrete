@@ -4,7 +4,7 @@ import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.PIDHillClimber;
+import agents.firm.production.control.maximizer.algorithms.hillClimbers.PIDHillClimber;
 import junit.framework.Assert;
 import model.MacroII;
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class PIDHIllClimberTest {
         when(firm.getModel()).thenReturn(new MacroII(1l));
         when(control.getHr()).thenReturn(hr); when(hr.maximumWorkersPossible()).thenReturn(30);
         when(hr.getPlant()).thenReturn(plant);
-        PIDHillClimber maximizer = new PIDHillClimber(hr,control,2,1,0); //big numbers so that there is an effect!
+        PIDHillClimber maximizer = new PIDHillClimber(hr,2,1,0); //big numbers so that there is an effect!
         //assume you had moved from 1 to 2
         int newWorkerTarget = maximizer.chooseWorkerTarget(2,newRevenue-newCosts,newRevenue,newCosts,oldRevenue,oldCosts,
                 1,oldRevenue-oldCosts);

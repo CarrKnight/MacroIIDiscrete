@@ -82,7 +82,7 @@ public class TripolistScenario extends MonopolistScenario{
 
                     //human resources
                     HumanResources hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, seller,
-                                laborMarket, plant, getControlType().getController(), null, null);
+                                laborMarket, plant, getControlType().getController(), null, null).getDepartment();
                 //    seller.registerHumanResources(plant, hr);
                   //  hr.setProbabilityForgetting(.10f);
                     hr.setFixedPayStructure(isFixedPayStructure());

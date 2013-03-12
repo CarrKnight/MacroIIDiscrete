@@ -1,7 +1,8 @@
-package agents.firm.production.control.maximizer;
+package agents.firm.production.control.maximizer.algorithms.hillClimbers;
 
-import agents.firm.personell.HumanResources;
-import agents.firm.production.control.PlantControl;
+import agents.firm.production.Plant;
+import agents.firm.production.control.maximizer.WorkforceMaximizer;
+import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
 
 /**
  * <h4>Description</h4>
@@ -18,11 +19,23 @@ import agents.firm.production.control.PlantControl;
  * @version 2012-10-06
  * @see
  */
-public class AlwaysMovingHillClimber extends weeklyWorkforceMaximizer
+public class AlwaysMovingHillClimber implements WorkerMaximizationAlgorithm
 {
 
-    public AlwaysMovingHillClimber(HumanResources hr, PlantControl control) {
-        super(hr, control);
+    /**
+     * the minimum number of workers needed
+     */
+    private int minimumWorkersNeeded;
+
+    /**
+     * the maximum number of workers
+     */
+    private int maximumWorkersPossible;
+
+
+    public AlwaysMovingHillClimber(int minimumWorkersNeeded, int maximumWorkersPossible) {
+        this.minimumWorkersNeeded = minimumWorkersNeeded;
+        this.maximumWorkersPossible = maximumWorkersPossible;
     }
 
     /**
@@ -39,11 +52,14 @@ public class AlwaysMovingHillClimber extends weeklyWorkforceMaximizer
      * @param oldProfits          what were the profits back then   @return the new worker targets. Any negative number means to check again!
      */
     @Override
-    protected int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
+    public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
 
         int newVelocity = velocity(currentWorkerTarget,newProfits,oldWorkerTarget,oldProfits);
 
-        return  Math.min(Math.max(currentWorkerTarget + newVelocity,getHr().getPlant().minimumWorkersNeeded()),getHr().getPlant().maximumWorkersPossible());
+        return  Math.min(Math.max(
+                currentWorkerTarget + newVelocity,
+                minimumWorkersNeeded),
+                maximumWorkersPossible);
 
 
     }
@@ -69,5 +85,22 @@ public class AlwaysMovingHillClimber extends weeklyWorkforceMaximizer
 
         return increasedProfits * increasedWorkers;
 
+    }
+
+    /**
+     * The maximizer tells you to start over, probably because of change in machinery
+     *
+     * @param maximizer the maximizer resetting you
+     * @param p         the plant it is controlling
+     */
+    @Override
+    public void reset(WorkforceMaximizer maximizer, Plant p) {
+        //nothing in particular happens here
+
+    }
+
+    @Override
+    public void turnOff() {
+        //nothing in particular happens here!
     }
 }

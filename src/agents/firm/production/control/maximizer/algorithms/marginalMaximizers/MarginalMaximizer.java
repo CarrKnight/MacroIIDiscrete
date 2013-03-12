@@ -1,13 +1,16 @@
-package agents.firm.production.control.maximizer.marginalMaximizers;
+package agents.firm.production.control.maximizer.algorithms.marginalMaximizers;
 
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
-import agents.firm.production.control.maximizer.weeklyWorkforceMaximizer;
-import ec.util.MersenneTwisterFast;
-import financial.Market;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.maximizer.WorkforceMaximizer;
+import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
+import ec.util.MersenneTwisterFast;
+import financial.Market;
 import model.utilities.DelayException;
+
+import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -24,7 +27,7 @@ import model.utilities.DelayException;
  * @version 2012-10-04
  * @see
  */
-public class MarginalMaximizer extends weeklyWorkforceMaximizer
+public class MarginalMaximizer implements WorkerMaximizationAlgorithm
 {
     /**
      * The plant to maximize
@@ -35,6 +38,16 @@ public class MarginalMaximizer extends weeklyWorkforceMaximizer
      * The firm owning the plant
      */
     final private Firm owner;
+
+    /**
+     * The human resources object
+     */
+    final private HumanResources hr;
+
+    /**
+     * The plant control object
+     */
+    final private PlantControl plantControl;
 
     /**
      * What to do if some predictions don't exist?
@@ -49,11 +62,14 @@ public class MarginalMaximizer extends weeklyWorkforceMaximizer
      * Creates a maximizer that acts as hill-climber but rather than "experimenting" it infers the slope by checking marginal costs
      * @param hr Human resources
      * @param control The plant control
+     * @
      */
-    public MarginalMaximizer(HumanResources hr, PlantControl control) {
-        super(hr,control);
-        p = getHr().getPlant();
-        owner = p.getOwner();
+    public MarginalMaximizer(@Nonnull HumanResources hr, @Nonnull PlantControl control,
+                             @Nonnull Plant p, @Nonnull Firm owner) {
+        this.hr = hr;
+        this.plantControl = control;
+        this.p = p;
+        this.owner = owner;
     }
 
 
@@ -71,21 +87,21 @@ public class MarginalMaximizer extends weeklyWorkforceMaximizer
      * @param oldProfits          what were the profits back then   @return the new worker targets. Any negative number means to check again!
      */
     @Override
-    protected int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits)
+    public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits)
     {
 
         //compute profits if we increase
 
         try{
             float profitsIfWeIncrease = currentWorkerTarget < p.maximumWorkersPossible() ? //if we can increase production
-                    MarginalMaximizerStatics.computeMarginalProfits(owner, p, getHr(), getControl(), policy, currentWorkerTarget, currentWorkerTarget + 1) //check marginal profits
+                    MarginalMaximizerStatics.computeMarginalProfits(owner, p, hr, plantControl, policy, currentWorkerTarget, currentWorkerTarget + 1) //check marginal profits
                     :
                     Float.NEGATIVE_INFINITY; //otherwise don't go there!
 
 
             //compute profits if we decrease
              float profitsIfWeDecrease = currentWorkerTarget > p.minimumWorkersNeeded() ? //can we decrease production?
-                    MarginalMaximizerStatics.computeMarginalProfits(owner, p, getHr(), getControl(), policy, currentWorkerTarget, currentWorkerTarget - 1) //if so check marginal profits
+                    MarginalMaximizerStatics.computeMarginalProfits(owner, p, hr, plantControl, policy, currentWorkerTarget, currentWorkerTarget - 1) //if so check marginal profits
                     :
                     Float.NEGATIVE_INFINITY; //otherwise ignore this choice!
 
@@ -189,4 +205,39 @@ public class MarginalMaximizer extends weeklyWorkforceMaximizer
         return owner;
     }
 
+    /**
+     * The maximizer tells you to start over, probably because of change in machinery
+     *
+     * @param maximizer the maximizer resetting you
+     * @param p         the plant it is controlling
+     */
+    @Override
+    public void reset(WorkforceMaximizer maximizer, Plant p) {
+
+        //nothing really changes
+    }
+
+    @Override
+    public void turnOff() {
+        //not our problem
+    }
+
+
+    /**
+     * Gets The plant control object.
+     *
+     * @return Value of The plant control object.
+     */
+    public PlantControl getControl() {
+        return plantControl;
+    }
+
+    /**
+     * Gets The human resources object.
+     *
+     * @return Value of The human resources object.
+     */
+    public HumanResources getHr() {
+        return hr;
+    }
 }

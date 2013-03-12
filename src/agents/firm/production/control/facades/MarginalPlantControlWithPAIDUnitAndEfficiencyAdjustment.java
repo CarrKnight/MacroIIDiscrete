@@ -6,10 +6,11 @@ import agents.firm.production.PlantListener;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
-import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalAndPIDMaximizer;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPIDCascadeEfficency;
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.Machinery;
 import agents.firm.purchases.inventoryControl.Level;
+import financial.Market;
 import goods.Good;
 import goods.GoodType;
 
@@ -18,8 +19,8 @@ import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
- * <p/> Similar to marginalPlantControl but using pid to find the step size
- * <p/>
+ * <p/> facade of PIDTargeter + MarginalMaximizerWithUnitPIDCascadeEfficency
+ * <p/> It delegates all the methods of the control plus the setup comand for the MarginalMaximizerWithUnitPIDCascadeEfficency
  * <p/>
  * <h4>Notes</h4>
  * Created with IntelliJ
@@ -28,27 +29,50 @@ import javax.annotation.Nullable;
  * <h4>References</h4>
  *
  * @author carrknight
- * @version 2013-02-03
+ * @version 2013-03-04
  * @see
  */
-public class MarginalPlantControlWithPID implements PlantControl, PlantListener {
+public class MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment implements PlantControl, PlantListener {
 
 
     /**
      * the control we delegate to
-    */
-    TargetAndMaximizePlantControl control;
+     */
+    private TargetAndMaximizePlantControl control;
+
+    private final PIDTargeter targeter;
+
+    private final MarginalMaximizerWithUnitPIDCascadeEfficency maximizer;
+
 
     /**
      * A facade for a marginal plant control with PID used as a way to select the step size
-     * @param hr
+     * @param hr the human resources we are collaborating with
      */
-    public MarginalPlantControlWithPID(@Nonnull HumanResources hr)
+    public MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment(@Nonnull HumanResources hr)
     {
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr,
-                PIDTargeter.class,WeeklyWorkforceMaximizer.class,
-                MarginalAndPIDMaximizer.class).getControl();
+        control = TargetAndMaximizePlantControl.emptyTargetAndMaximizePlantControl(hr);
+        targeter = new PIDTargeter(hr,control);
+        control.setTargeter(targeter);
+        maximizer = new MarginalMaximizerWithUnitPIDCascadeEfficency(hr,control,hr.getPlant(),hr.getFirm(),
+                hr.getRandom(),hr.getPlant().workerSize());
+        control.setMaximizer(new WeeklyWorkforceMaximizer<>(
+                hr,control,maximizer));
 
+
+
+    }
+
+    /**
+     * With this method we set up the MASTER pid (that sets efficency away from 0 given
+     * @param daysToAverage we are going to use the moving average
+     * @param proportional the proportional parameter of the PID
+     * @param integrative  the integrative parameter of the PID
+     * @param derivative   the derivative parameter of the PID
+     * @param market  the market
+     */
+    public void setupLookup(int daysToAverage, float proportional, float integrative, float derivative, Market market) {
+        maximizer.setupLookup(daysToAverage, proportional, integrative, derivative, market);
     }
 
     /**
@@ -93,12 +117,15 @@ public class MarginalPlantControlWithPID implements PlantControl, PlantListener 
         return control.getCurrentWage();
     }
 
+
+
     /**
      * Returns the plant monitored by the HR
      */
     public Plant getPlant() {
         return control.getPlant();
     }
+
 
     /**
      * The targeter is told that now we need to hire this many workers
@@ -221,3 +248,4 @@ public class MarginalPlantControlWithPID implements PlantControl, PlantListener 
         control.changeInWageEvent(p, workerSize, wage);
     }
 }
+

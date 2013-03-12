@@ -1,4 +1,4 @@
-package agents.firm.production.control.maximizer.marginalMaximizers;
+package agents.firm.production.control.maximizer.algorithms.marginalMaximizers;
 
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
@@ -56,7 +56,8 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficencyTest
         Plant p = mock(Plant.class); when(hr.getPlant()).thenReturn(p);
 
         //create the maximizer
-        MarginalMaximizerWithUnitPIDCascadeEfficency maximizer = new MarginalMaximizerWithUnitPIDCascadeEfficency(hr,control);
+        MarginalMaximizerWithUnitPIDCascadeEfficency maximizer = new MarginalMaximizerWithUnitPIDCascadeEfficency(
+                hr,control,hr.getPlant(),hr.getFirm(),hr.getRandom(),hr.getPlant().workerSize());
         //make sure before the setup they are not instantiated
         ChangeLookupMAMarket changeLookup = (ChangeLookupMAMarket) PowerMockito.field(MarginalMaximizerWithUnitPIDCascadeEfficency.class,
                 "changeLookup").get(maximizer);
@@ -134,7 +135,8 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficencyTest
         Plant p = mock(Plant.class); when(hr.getPlant()).thenReturn(p);
 
         //create the maximizer
-        MarginalMaximizerWithUnitPIDCascadeEfficency maximizer = new MarginalMaximizerWithUnitPIDCascadeEfficency(hr,control);
+        MarginalMaximizerWithUnitPIDCascadeEfficency maximizer = new MarginalMaximizerWithUnitPIDCascadeEfficency(
+                hr,control,hr.getPlant(),hr.getFirm(),hr.getRandom(),hr.getPlant().workerSize());
         //make sure before the setup they are not instantiated
         ChangeLookupMAMarket changeLookup = (ChangeLookupMAMarket) PowerMockito.field(MarginalMaximizerWithUnitPIDCascadeEfficency.class,
                 "changeLookup").get(maximizer);
@@ -209,7 +211,8 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficencyTest
         Plant p = mock(Plant.class); when(hr.getPlant()).thenReturn(p);
 
         //create the maximizer
-        MarginalMaximizerWithUnitPIDCascadeEfficency maximizer = new MarginalMaximizerWithUnitPIDCascadeEfficency(hr,control);
+        MarginalMaximizerWithUnitPIDCascadeEfficency maximizer = new MarginalMaximizerWithUnitPIDCascadeEfficency(
+                hr,control,hr.getPlant(),hr.getFirm(),hr.getRandom(),hr.getPlant().workerSize());
         //make sure before the setup they are not instantiated
         ChangeLookupMAMarket changeLookup = (ChangeLookupMAMarket) PowerMockito.field(MarginalMaximizerWithUnitPIDCascadeEfficency.class,
                 "changeLookup").get(maximizer);

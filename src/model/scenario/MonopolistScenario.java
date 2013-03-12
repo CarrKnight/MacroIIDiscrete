@@ -207,7 +207,7 @@ public class MonopolistScenario extends Scenario {
                 HumanResources hr;
 
                 hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, monopolist,
-                        laborMarket, plant,controlType.getController(), null, null);
+                        laborMarket, plant,controlType.getController(), null, null).getDepartment();
 
                 //       seller.registerHumanResources(plant, hr);
                 hr.setFixedPayStructure(fixedPayStructure);

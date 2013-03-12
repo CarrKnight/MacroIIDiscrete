@@ -5,8 +5,8 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
-import agents.firm.production.control.maximizer.marginalMaximizers.MarginalMaximizer;
-import agents.firm.production.control.maximizer.marginalMaximizers.MarginalMaximizerStatics;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerStatics;
 import agents.firm.sales.SalesDepartment;
 import goods.GoodType;
 import junit.framework.Assert;
@@ -49,7 +49,7 @@ public class MarginalMaximizerTest {
         when(hr.predictPurchasePrice()).thenReturn(-1l); //tell the hr to fail at predicting
         PlantControl control = mock(PlantControl.class);
         //it should immediately fail
-        MarginalMaximizer maximizer = new MarginalMaximizer(hr,control);
+        MarginalMaximizer maximizer = new MarginalMaximizer(hr,control,p,owner);
         boolean exceptionThrown = false;
         try {
             float marginalProfits = MarginalMaximizerStatics.computeMarginalProfits(owner, p, hr, control, maximizer.getPolicy(), 10, 11);
@@ -92,7 +92,7 @@ public class MarginalMaximizerTest {
 
         PlantControl control = mock(PlantControl.class);
         //it should immediately fail
-        MarginalMaximizer maximizer = new MarginalMaximizer(hr,control);
+        MarginalMaximizer maximizer = new MarginalMaximizer(hr,control,p,owner);
         boolean exceptionThrown = false;
         float marginalProfits = -1;
         try {

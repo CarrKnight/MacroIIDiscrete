@@ -116,8 +116,8 @@ public interface SalesPredictor {
          * @param rule the simpleName of the class!
          * @return the new rule to follow
          */
-        public static SalesPredictor newSalesPredictor(
-                @Nonnull Class<? extends SalesPredictor> rule)
+        public static <SP extends SalesPredictor> SP newSalesPredictor(
+                @Nonnull Class<SP> rule)
         {
 
             if(!rules.contains(rule) || Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )

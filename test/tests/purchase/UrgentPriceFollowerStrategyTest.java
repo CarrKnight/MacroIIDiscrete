@@ -96,7 +96,8 @@ public class UrgentPriceFollowerStrategyTest {
 
 
         //when there is nobody to search just go at random.
-        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100, f, market, null, UrgentPriceFollowerStrategy.class, null, null);
+        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100, f, market, null,
+                UrgentPriceFollowerStrategy.class, null, null).getDepartment();
         Field field = PurchasesDepartment.class.getDeclaredField("pricingStrategy");
         field.setAccessible(true);
 
@@ -177,7 +178,8 @@ public class UrgentPriceFollowerStrategyTest {
         Firm f = new Firm(model);
 
 
-        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100, f, market, FixedInventoryControl.class, UrgentPriceFollowerStrategy.class, null, null);
+        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100, f, market,
+                FixedInventoryControl.class, UrgentPriceFollowerStrategy.class, null, null).getDepartment();
 
         //when there is nobody to search just go at random.
         Field field = PurchasesDepartment.class.getDeclaredField("pricingStrategy");

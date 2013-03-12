@@ -62,7 +62,7 @@ public class FixedInventoryControlTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, FixedInventoryControl.class,
-                null, null, null);
+                null, null, null).getDepartment();
 
         //assuming target inventory is 6~~
 
@@ -87,7 +87,7 @@ public class FixedInventoryControlTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, FixedInventoryControl.class,
-                null, null, null);
+                null, null, null).getDepartment();
 
 
         //assuming target inventory is 6~~
@@ -157,7 +157,7 @@ public class FixedInventoryControlTest {
 
             Firm f = new Firm(model); f.earn(1000);
             PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(1000, f, market, FixedInventoryControl.class,
-                    null, null, null);
+                    null, null, null).getDepartment();
             dept.setLooksAhead(true);
 
             f.registerPurchasesDepartment(dept,GoodType.GENERIC);

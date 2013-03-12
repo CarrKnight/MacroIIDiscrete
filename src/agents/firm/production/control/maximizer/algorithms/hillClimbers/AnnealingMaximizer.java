@@ -1,7 +1,8 @@
-package agents.firm.production.control.maximizer;
+package agents.firm.production.control.maximizer.algorithms.hillClimbers;
 
-import agents.firm.personell.HumanResources;
-import agents.firm.production.control.PlantControl;
+import ec.util.MersenneTwisterFast;
+
+import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -35,31 +36,26 @@ public class AnnealingMaximizer extends HillClimberMaximizer {
      */
     private boolean misStep = false;
 
+    final private MersenneTwisterFast random;
 
-    /**
-     * Create the hillclimber maximizer
-     *
-     * @param hr      the human resources object
-     * @param control the controller it is attached to
-     */
-    public AnnealingMaximizer(HumanResources hr, PlantControl control) {
-        super(hr, control);
+    public AnnealingMaximizer(long weeklyFixedCosts, int minimumWorkers, int maximumWorkers, @Nonnull MersenneTwisterFast random) {
+        super(weeklyFixedCosts, minimumWorkers, maximumWorkers);
+        this.random = random;
     }
-
 
     /**
      * Asks the subclass what the next worker target will be!
      *
      *
      * @param currentWorkerTarget what is the current worker target
-     * @param newProfits          what are the new profits
-     * @param newRevenues
-     *@param newCosts
-     * @param oldRevenues
-     * @param oldCosts
-     * @param oldWorkerTarget     what was the target last time we changed them
-     * @param oldProfits          what were the profits back then   @return the new worker targets. Any negative number means to check again!
-     */
+     * @param newProfits what are the new profits
+     * @param newRevenues what are the new revenues
+     *@param newCosts what are the new costs
+     * @param oldRevenues what were the old revenues
+     * @param oldCosts what were the old costs
+     * @param oldWorkerTarget what was the target last time we changed them
+     * @param oldProfits what were the profits back then   @return the new worker targets. Any negative number means to check again!
+     * */
     @Override
     public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
 
@@ -77,7 +73,7 @@ public class AnnealingMaximizer extends HillClimberMaximizer {
     @Override
     protected int direction(int currentWorkerTarget, float newProfits, int oldWorkerTarget, float oldProfits) {
         //are we going in the wrong direction?
-        misStep = getHr().getFirm().getRandom().nextBoolean(temperature);
+        misStep = random.nextBoolean(temperature);
         int direction = super.direction(currentWorkerTarget,newProfits, oldWorkerTarget, oldProfits);
         //don't let it stop if the temperature is still far from 0
         if(direction <=0 && currentWorkerTarget == 0 && temperature > .1f)
@@ -92,7 +88,7 @@ public class AnnealingMaximizer extends HillClimberMaximizer {
         else
         {
 
-            return  getHr().getFirm().getRandom().nextBoolean() ? + 1 : -1; //return a random direction of either 1 or -1
+            return  random.nextBoolean() ? + 1 : -1; //return a random direction of either 1 or -1
             }
 
     }

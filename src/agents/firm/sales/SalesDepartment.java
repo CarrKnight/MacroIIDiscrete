@@ -293,21 +293,29 @@ public class SalesDepartment implements Department {
      * @param market the market the sales department markets
      * @return a new sales department
      */
-    static public SalesDepartment newSalesDepartment(@Nonnull Firm firm,@Nonnull  Market market,
-                                                     @Nullable Class<? extends BuyerSearchAlgorithm> buyerSearch, @Nullable Class<? extends SellerSearchAlgorithm > sellerSearch,
-                                                     @Nullable Class<? extends AskPricingStrategy> priceStrategy, @Nullable Class<? extends SalesPredictor > predictionStrategy
+    /*
+    <T extends Number> ArrayList<T> createAList(Class<T> type)
+{
+    ArrayList<T> toReturn = new ArrayList<>();
+    return toReturn;
+}
+     */
+    static public <BS extends  BuyerSearchAlgorithm, SS extends  SellerSearchAlgorithm, AP extends AskPricingStrategy, SP extends SalesPredictor>
+     FactoryProducedSalesDepartment<BS,SS,AP,SP> newSalesDepartment(@Nonnull Firm firm,@Nonnull  Market market,
+                                                     @Nullable Class<BS> buyerSearch, @Nullable Class<SS> sellerSearch,
+                                                     @Nullable Class<AP> priceStrategy, @Nullable Class<SP> predictionStrategy
     )
     {
         //create the search algorithms
-        BuyerSearchAlgorithm buyerSearchAlgorithm;
+        BS buyerSearchAlgorithm;
         if(buyerSearch== null)
-            buyerSearchAlgorithm = BuyerSearchAlgorithm.Factory.randomBuyerSearchAlgorithm(market,firm);
+            buyerSearchAlgorithm = (BS) BuyerSearchAlgorithm.Factory.randomBuyerSearchAlgorithm(market,firm);
         else
             buyerSearchAlgorithm = BuyerSearchAlgorithm.Factory.newBuyerSearchAlgorithm(buyerSearch,market,firm);
 
-        SellerSearchAlgorithm sellerSearchAlgorithm;
+        SS sellerSearchAlgorithm;
         if(sellerSearch== null)
-            sellerSearchAlgorithm = SellerSearchAlgorithm.Factory.randomSellerSearchAlgorithm(market,firm);
+            sellerSearchAlgorithm = (SS) SellerSearchAlgorithm.Factory.randomSellerSearchAlgorithm(market,firm);
         else
             sellerSearchAlgorithm = SellerSearchAlgorithm.Factory.newSellerSearchAlgorithm(sellerSearch,market,firm);
 
@@ -318,24 +326,34 @@ public class SalesDepartment implements Department {
         firm.registerSaleDepartment(dept, GoodType.GENERIC);
 
         //now create the two pricing strategies
-        AskPricingStrategy askPricingStrategy;
+        AP askPricingStrategy;
         if(priceStrategy== null)
-            askPricingStrategy = AskPricingStrategy.Factory.randomAskPricingStrategy(dept);
+            askPricingStrategy = (AP) AskPricingStrategy.Factory.randomAskPricingStrategy(dept);
         else
             askPricingStrategy = AskPricingStrategy.Factory.newAskPricingStrategy(priceStrategy,dept);
 
         dept.setAskPricingStrategy(askPricingStrategy);
 
-        SalesPredictor salesPredictor;
+        SP salesPredictor;
         if(predictionStrategy== null)
-            salesPredictor = SalesPredictor.Factory.randomSalesPredictor(firm.getRandom());
+            salesPredictor = (SP)SalesPredictor.Factory.randomSalesPredictor(firm.getRandom());
         else
             salesPredictor = SalesPredictor.Factory.newSalesPredictor(predictionStrategy);
+
+
 
         dept.setPredictorStrategy(salesPredictor);
         //register and retun
         //finally return!
-        return dept;
+        FactoryProducedSalesDepartment<BS,SS,AP,SP> toReturn = new FactoryProducedSalesDepartment<>(dept,buyerSearchAlgorithm,sellerSearchAlgorithm,askPricingStrategy,salesPredictor);
+
+        //make sure we passed objects
+        assert dept.buyerSearchAlgorithm == toReturn.getBuyerSearchAlgorithm();
+        assert dept.sellerSearchAlgorithm == toReturn.getSellerSearchAlgorithm();
+        assert dept.askPricingStrategy == toReturn.getAskPricingStrategy();
+        assert dept.predictorStrategy == toReturn.getSalesPredictor();
+
+        return toReturn;
     }
 
 
@@ -1306,4 +1324,9 @@ public class SalesDepartment implements Department {
     public int getTodayInflow() {
         return todayInflow;
     }
+
+              //  @Nullable Class<? extends BuyerSearchAlgorithm> buyerSearch, @Nullable Class<? extends SellerSearchAlgorithm > sellerSearch,
+              //@Nullable Class<? extends AskPricingStrategy> priceStrategy, @Nullable Class<? extends SalesPredictor > predictionStrategy
+
+
 }

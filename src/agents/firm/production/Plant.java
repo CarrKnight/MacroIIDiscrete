@@ -298,16 +298,16 @@ public class Plant implements Agent, InventoryListener {
      *      <li>If everything checks out call copleteProductionRunNow</li>
      *      <li>Schedules itself for tomorrow's production phase</li>
      *  </ul>
-     *  It returns if one of the two checks fails, at which point it has to be restarted manually
+     *  It returns false if one of the two checks fails, at which point it has to be restarted manually
      */
-    public void startProductionRun() {
+    public boolean startProductionRun() {
 
 
 
 
         //check age
         if(status == PlantStatus.OBSOLETE) //if you are too old to completeProductionRunNow
-            return; //don't
+            return false; //don't
 
         //check for inputs
         boolean check = checkForInputs();
@@ -316,7 +316,7 @@ public class Plant implements Agent, InventoryListener {
             status = PlantStatus.WAITING_FOR_INPUT;
             getOwner().logEvent(this, MarketEvents.PRODUCTION_HALTED, getOwner().getModel().getCurrentSimulationTimeInMillis(),
                     "missing inputs");
-            return;
+            return false;
         }
 
         //check for workers
@@ -326,7 +326,7 @@ public class Plant implements Agent, InventoryListener {
             status = PlantStatus.WAITING_FOR_WORKERS;
             getOwner().logEvent(this, MarketEvents.PRODUCTION_HALTED, getOwner().getModel().getCurrentSimulationTimeInMillis(),
                     "lack of labor");
-            return;
+            return false;
         }
 
         //draw a new wait time
@@ -336,12 +336,7 @@ public class Plant implements Agent, InventoryListener {
         //register production has started!
         getOwner().logEvent(this, MarketEvents.PRODUCTION_STARTED, getOwner().getModel().getCurrentSimulationTimeInMillis());
         completeProductionRunNow();     //BUILD the thing
-        getOwner().logEvent(Plant.this, MarketEvents.PRODUCTION_COMPLETE, getOwner().getModel().getCurrentSimulationTimeInMillis());
-
-
-
-
-        //completeProductionRunNow will call this again
+        return true;
 
 
 
@@ -374,7 +369,7 @@ public class Plant implements Agent, InventoryListener {
         if(plantMachinery == null)
             throw new IllegalStateException("Plant can't work until you set their technology");
 
-       //check how much you produce
+        //check how much you produce
         int howManyProductionRunsToday;
         if(checkForWorkers())
         {
@@ -389,20 +384,33 @@ public class Plant implements Agent, InventoryListener {
         }
 
 
+        //statistics
+        int  howManyProductionRunsWereSuccessful = 0;
+        int inventoryPreProductionOfOutput1=  getOwner().hasHowMany(blueprint.getOutputs().keySet().iterator().next());
 
 
 
         for(int i=0; i < howManyProductionRunsToday; i++)
         {
-            startProductionRun();
+            boolean productionSuccessful = startProductionRun();
+            if(productionSuccessful)
+                howManyProductionRunsWereSuccessful++;
             //something came up, we are broken
             if(!status.equals(PlantStatus.READY))
             {
                 assert checkForWorkers() : "this can't have failed";
+                assert !productionSuccessful;
                 break;
             }
 
         }
+        if(howManyProductionRunsWereSuccessful>0)
+            getOwner().logEvent(this, MarketEvents.PRODUCTION_COMPLETE, getOwner().getModel().getCurrentSimulationTimeInMillis(),
+                    " Planned productions: " + howManyProductionRunsToday + " , actual production "
+                            + howManyProductionRunsWereSuccessful + '\n' + "new inventory Output1: " +
+                            getOwner().hasHowMany(blueprint.getOutputs().keySet().iterator().next()) + " , old inventory: "+
+                            inventoryPreProductionOfOutput1);
+
 
         model.scheduleTomorrow(ActionOrder.PRODUCTION,this);
     }
@@ -550,8 +558,8 @@ public class Plant implements Agent, InventoryListener {
 
 
         //if you were waiting for a worker, try again
-     //   if(status == PlantStatus.WAITING_FOR_WORKERS && checkForWorkers())
-     //       this.step(owner.getModel());
+        //   if(status == PlantStatus.WAITING_FOR_WORKERS && checkForWorkers())
+        //       this.step(owner.getModel());
 
     }
 
@@ -868,8 +876,8 @@ public class Plant implements Agent, InventoryListener {
     }
 
     /**
-    * Total amount of weekly production expected by this technology
-    */
+     * Total amount of weekly production expected by this technology
+     */
     public float weeklyThroughput(GoodType outputType) {
         return plantMachinery.weeklyThroughput(outputType);
     }
