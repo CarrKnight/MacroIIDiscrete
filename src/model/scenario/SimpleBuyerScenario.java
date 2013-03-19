@@ -121,26 +121,9 @@ public class SimpleBuyerScenario extends Scenario {
             department.setPricingStrategy(control);
         }
         else {
-       /*     final FlowAndStockFixedPID control = new FlowAndStockFixedPID(department,proportionalGain,integralGain,derivativeGain,targetInventory);
-            control.setSpeed(pidPeriod);
 
-            // control.setInvertInputs(flowTargeting);
-
-            if(filtersOn){
-
-                control.smoothFlowPID(inputWeight);
-                //       control.filterInputExponentially(inputWeight);
-
-            } */
             final PurchasesFixedPID control = new PurchasesFixedPID(department,targetInventory, FlowAndStockController.class,model);
             control.setSpeed(pidPeriod);
-          /*  if(filtersOn){
-                //filtering flows
-                assert !control.isInvertInputs();
-                control.filterInputExponentially(inputWeight,1);
-                control.filterTargetExponentially(inputWeight,1);
-
-            } */
 
 
             //set up as the control!!

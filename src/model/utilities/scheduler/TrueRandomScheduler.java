@@ -89,9 +89,14 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
         //for each phase
         for(ActionOrder phase : ActionOrder.values())
         {
+
+
+
             currentPhase = phase; //currentPhase!
 
             ArrayList<Steppable> steppables = steppablesByPhase.get(phase);
+
+
             assert steppables != null;
 
             //while there are actions to take this phase, take them

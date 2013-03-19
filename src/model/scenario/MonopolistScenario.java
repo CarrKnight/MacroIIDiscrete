@@ -7,12 +7,13 @@ import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
-import agents.firm.production.control.*;
+import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.facades.*;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
+import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import financial.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
@@ -76,6 +77,11 @@ public class MonopolistScenario extends Scenario {
     protected  OrderBookMarket goodMarket;
 
     protected OrderBookMarket laborMarket;
+
+    /**
+     * the strategy used by the sales department of the monopolist
+     */
+    protected Class<? extends AskPricingStrategy> askPricingStrategy = SimpleFlowSellerPID.class;
 
     /**
      * Called by MacroII, it creates agents and then schedules them.
@@ -194,8 +200,7 @@ public class MonopolistScenario extends Scenario {
                 SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(monopolist, goodMarket,
                         new SimpleBuyerSearch(goodMarket, monopolist), new SimpleSellerSearch(goodMarket, monopolist));
                 monopolist.registerSaleDepartment(dept, GoodType.GENERIC);
-                dept.setAskPricingStrategy(new SimpleFlowSellerPID(dept)); //set strategy to PID
-
+                dept.setAskPricingStrategy(AskPricingStrategy.Factory.newAskPricingStrategy(askPricingStrategy,dept)); //set strategy to PID
                 //add the plant
                 Plant plant = new Plant(blueprint, monopolist);
                 plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
@@ -308,5 +313,24 @@ public class MonopolistScenario extends Scenario {
 
     public Firm getMonopolist() {
         return monopolist;
+    }
+
+
+    /**
+     * Gets the strategy used by the sales department of the monopolist.
+     *
+     * @return Value of the strategy used by the sales department of the monopolist.
+     */
+    public Class<? extends AskPricingStrategy> getAskPricingStrategy() {
+        return askPricingStrategy;
+    }
+
+    /**
+     * Sets new the strategy used by the sales department of the monopolist.
+     *
+     * @param askPricingStrategy New value of the strategy used by the sales department of the monopolist.
+     */
+    public void setAskPricingStrategy(Class<? extends AskPricingStrategy> askPricingStrategy) {
+        this.askPricingStrategy = askPricingStrategy;
     }
 }

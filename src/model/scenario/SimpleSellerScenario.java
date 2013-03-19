@@ -6,7 +6,7 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.AskPricingStrategy;
-import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
+import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
 import financial.OrderBookMarket;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
@@ -45,8 +45,10 @@ public class SimpleSellerScenario extends Scenario {
     /**
      * the strategy used by the sales department to tinker with prices
      */
-    private Class<? extends AskPricingStrategy> sellerStrategy =
-            SmoothedDailyInventoryPricingStrategy.class;//SalesControlWithFixedInventoryAndPID.class;
+    private Class<? extends AskPricingStrategy> sellerStrategy = SalesControlFlowPIDWithFixedInventory.class;
+
+           // SmoothedDailyInventoryPricingStrategy.class;
+           //SalesControlWithFixedInventoryAndPID.class;
 
 
     /**

@@ -30,7 +30,6 @@ import sim.engine.Steppable;
  */
 public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy, Steppable
 {
-    //todo add this as a simpleSeller test scenario
 
 
     /**
@@ -62,6 +61,8 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     public SalesControlWithFixedInventoryAndPID(SalesDepartment department, int targetInventory)
     {
         this(department,targetInventory, PIDController.class);
+        //by default, set it proportional
+
 
     }
 
@@ -76,6 +77,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     {
         this.department = department;
         this.controller = ControllerFactory.buildController(controllerType,department.getFirm().getModel());
+
         this.targetInventory = targetInventory;
 
         //schedule yourself when possible
@@ -184,5 +186,13 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
      */
     public SalesDepartment getDepartment() {
         return department;
+    }
+
+    /**
+     * Set the sampling speed of the controller (how often it updates, in days)
+     * @param samplingSpeed the sampling speed
+     */
+    public void setSpeed(int samplingSpeed) {
+        controller.setSpeed(samplingSpeed);
     }
 }

@@ -19,7 +19,9 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.MarketSalesPredictor;
-import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
+import agents.firm.sales.pricing.AskPricingStrategy;
+import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
+import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Preconditions;
 import financial.Market;
@@ -162,7 +164,17 @@ public class OneLinkSupplyChainScenario extends Scenario {
                 SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(firm, goodmarket,
                         new SimpleBuyerSearch(goodmarket, firm), new SimpleSellerSearch(goodmarket, firm));
                 firm.registerSaleDepartment(dept, goodmarket.getGoodType());
-                SmoothedDailyInventoryPricingStrategy strategy = new SmoothedDailyInventoryPricingStrategy(dept);
+                AskPricingStrategy strategy;
+                if(goodmarket.getGoodType().equals(GoodType.FOOD))
+                     strategy = new SimpleFlowSellerPID(dept);
+                else
+                {
+                    SalesControlWithFixedInventoryAndPID properStrategy = new SalesControlWithFixedInventoryAndPID(dept,100);
+                   // properStrategy.setSpeed(30); properStrategy.setInitialPrice(10);
+                    strategy = properStrategy;
+                }
+
+
                 // strategy.setProductionCostOverride(false);
                 dept.setAskPricingStrategy(strategy); //set strategy to PID
                 dept.setPredictorStrategy(new MarketSalesPredictor());
@@ -413,7 +425,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         final MacroII macroII = new MacroII(System.currentTimeMillis());
         OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
         scenario1.setControlType(MarginalPlantControlWithPIDUnit.class);
-       // scenario1.setControlType(MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment.class);
+        // scenario1.setControlType(MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment.class);
 
 
 

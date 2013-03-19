@@ -293,13 +293,6 @@ public class SalesDepartment implements Department {
      * @param market the market the sales department markets
      * @return a new sales department
      */
-    /*
-    <T extends Number> ArrayList<T> createAList(Class<T> type)
-{
-    ArrayList<T> toReturn = new ArrayList<>();
-    return toReturn;
-}
-     */
     static public <BS extends  BuyerSearchAlgorithm, SS extends  SellerSearchAlgorithm, AP extends AskPricingStrategy, SP extends SalesPredictor>
      FactoryProducedSalesDepartment<BS,SS,AP,SP> newSalesDepartment(@Nonnull Firm firm,@Nonnull  Market market,
                                                      @Nullable Class<BS> buyerSearch, @Nullable Class<SS> sellerSearch,
