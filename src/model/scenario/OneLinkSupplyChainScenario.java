@@ -20,7 +20,7 @@ import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.MarketSalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
-import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
+import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Preconditions;
@@ -169,9 +169,11 @@ public class OneLinkSupplyChainScenario extends Scenario {
                      strategy = new SimpleFlowSellerPID(dept);
                 else
                 {
-                    SalesControlWithFixedInventoryAndPID properStrategy = new SalesControlWithFixedInventoryAndPID(dept,100);
+                 //   SalesControlWithFixedInventoryAndPID properStrategy = new SalesControlWithFixedInventoryAndPID(dept,100);
                    // properStrategy.setSpeed(30); properStrategy.setInitialPrice(10);
-                    strategy = properStrategy;
+                  //  strategy = properStrategy;
+
+                    strategy = new SalesControlFlowPIDWithFixedInventory(dept);
                 }
 
 
