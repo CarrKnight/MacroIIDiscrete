@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2013 by Ernesto Carrella
+ * Licensed under the Academic Free License version 3.0
+ * See the file "LICENSE" for more information
+ */
+
 package agents.firm.sales.pricing.pid;
 
 import agents.firm.sales.SalesDepartment;
@@ -60,6 +66,8 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
      * is the strategy active?
      */
     private boolean isActive;
+
+
 
 
 
@@ -147,6 +155,7 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
     {
         Preconditions.checkArgument(state instanceof MacroII);
         Preconditions.checkState(((MacroII) state).getCurrentPhase().equals(ActionOrder.THINK) );
+        long oldprice =getPrice();
         if(!isActive)
             return;
 
@@ -168,8 +177,18 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
         //change price
         controller.adjustOnce(department.getTodayOutflow()-getTarget(),isActive);
 
+        if(getSpeed()==0)
+            ((MacroII) state).scheduleTomorrow(ActionOrder.THINK,this);
+        else
+        {
+            assert getSpeed() > 1;
+            ((MacroII) state).scheduleAnotherDay(ActionOrder.THINK,this,getSpeed());
+        }
 
-        ((MacroII) state).scheduleTomorrow(ActionOrder.THINK,this);
+
+        //update if needed
+        if(getPrice() != oldprice)
+            department.updateQuotes();
 
     }
 

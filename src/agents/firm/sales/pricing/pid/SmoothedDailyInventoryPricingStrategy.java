@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2013 by Ernesto Carrella
+ * Licensed under the Academic Free License version 3.0
+ * See the file "LICENSE" for more information
+ */
+
 package agents.firm.sales.pricing.pid;
 
 import agents.firm.sales.SalesDepartment;
@@ -82,6 +88,8 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
     @Override
     public void step(SimState state)
     {
+
+
         assert ((MacroII)state).getCurrentPhase().equals(ActionOrder.PREPARE_TO_TRADE);
         Preconditions.checkState(salesDepartment.getTodayInflow() >=0, "Negative inflow is weird");
 
@@ -90,6 +98,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         delegate.setTargetInventory((int) movingAverage.getSmoothedObservation());
 
         ((MacroII)state).scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE,this);
+
 
 
 

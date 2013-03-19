@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2013 by Ernesto Carrella
+ * Licensed under the Academic Free License version 3.0
+ * See the file "LICENSE" for more information
+ */
+
 package agents.firm.purchases.inventoryControl;
 
 import agents.HasInventory;

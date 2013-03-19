@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2013 by Ernesto Carrella
+ * Licensed under the Academic Free License version 3.0
+ * See the file "LICENSE" for more information
+ */
+
 package agents.firm.sales.pricing.pid;
 
 import agents.firm.sales.SalesDepartment;
@@ -95,7 +101,17 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
      */
     @Override
     public long price(Good g) {
+         return price();
+    }
+
+
+    /**
+     * the PID MV rounded to the nearest integer
+     *
+     */
+    public long price(){
         return (long)Math.round(controller.getCurrentMV());
+
     }
 
     /**

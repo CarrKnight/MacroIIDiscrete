@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2013 by Ernesto Carrella
+ * Licensed under the Academic Free License version 3.0
+ * See the file "LICENSE" for more information
+ */
+
 package model.scenario;
 
 import agents.EconomicAgent;
@@ -94,6 +100,12 @@ public class OneLinkSupplyChainScenario extends Scenario {
      */
     private int foodMultiplier = 1;
 
+    /**
+     * flag that when activated and inventories are above 1500, it reduces them by a 1000
+     * I am using a strategy that ignores inventory, then I can set this to true.
+     *
+     */
+    private boolean reduceInventoriesHack = false;
 
     /**
      * Called by MacroII, it creates agents and then schedules them.
@@ -113,6 +125,30 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
         //create workers
         buildLaborSupplies();
+
+        if(reduceInventoriesHack)
+        {
+            model.scheduleSoon(ActionOrder.CLEANUP, new Steppable() {
+                @Override
+                public void step(SimState state) {
+
+                    for(EconomicAgent e : model.getAgents() )
+                    {
+                        for(GoodType g : GoodType.values())
+                        {
+                            while(e.hasHowMany(g) > 800)
+                            {
+                                System.out.println("cleanup!");
+                                for(int i=0; i <500; i++)
+                                    e.consume(g);
+                            }
+                        }
+                    }
+                    model.scheduleTomorrow(ActionOrder.CLEANUP,this);
+                }
+
+            });
+        }
 
     }
 
@@ -169,11 +205,13 @@ public class OneLinkSupplyChainScenario extends Scenario {
                      strategy = new SimpleFlowSellerPID(dept);
                 else
                 {
-                 //   SalesControlWithFixedInventoryAndPID properStrategy = new SalesControlWithFixedInventoryAndPID(dept,100);
-                   // properStrategy.setSpeed(30); properStrategy.setInitialPrice(10);
-                  //  strategy = properStrategy;
+                    SalesControlFlowPIDWithFixedInventory properStrategy = new SalesControlFlowPIDWithFixedInventory(dept);
+                    properStrategy.setGains(properStrategy.getProportionalGain()/10f,properStrategy.getIntegralGain()/10f,
+                            properStrategy.getDerivativeGain()/10f);
+                    properStrategy.setSpeed(30);
+                    strategy = properStrategy;
 
-                    strategy = new SalesControlFlowPIDWithFixedInventory(dept);
+
                 }
 
 
@@ -416,6 +454,8 @@ public class OneLinkSupplyChainScenario extends Scenario {
         this.controlType = controlType;
     }
 
+
+
     /**
      * Runs the supply chain with no GUI and writes a big CSV file
      * @param args
@@ -427,6 +467,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         final MacroII macroII = new MacroII(System.currentTimeMillis());
         OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
         scenario1.setControlType(MarginalPlantControlWithPIDUnit.class);
+        scenario1.setReduceInventoriesHack(false);
         // scenario1.setControlType(MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment.class);
 
 
@@ -457,5 +498,25 @@ public class OneLinkSupplyChainScenario extends Scenario {
     }
 
 
+    /**
+     * Sets new flag that when activated and inventories are above 1500, it reduces them by a 1000
+     * I am using a strategy that ignores inventory, then I can set this to true..
+     *
+     * @param reduceInventoriesHack New value of flag that when activated and inventories are above 1500, it reduces them by a 1000
+     *                              I am using a strategy that ignores inventory, then I can set this to true..
+     */
+    public void setReduceInventoriesHack(boolean reduceInventoriesHack) {
+        this.reduceInventoriesHack = reduceInventoriesHack;
+    }
 
+    /**
+     * Gets flag that when activated and inventories are above 1500, it reduces them by a 1000
+     * I am using a strategy that ignores inventory, then I can set this to true..
+     *
+     * @return Value of flag that when activated and inventories are above 1500, it reduces them by a 1000
+     *         I am using a strategy that ignores inventory, then I can set this to true..
+     */
+    public boolean isReduceInventoriesHack() {
+        return reduceInventoriesHack;
+    }
 }
