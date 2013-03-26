@@ -74,7 +74,7 @@ public class PurchasesFixedPIDTest {
 
         for(int i=0; i < 100; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
-            model.scheduleSoon(ActionOrder.THINK, control);
+            model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE, control);
             model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
@@ -117,7 +117,7 @@ public class PurchasesFixedPIDTest {
 
         for(int i=0; i < 100; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
-            model.scheduleSoon(ActionOrder.THINK,control);
+            model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE,control);
             model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
@@ -157,7 +157,7 @@ public class PurchasesFixedPIDTest {
         Assert.assertEquals(control.getTarget(),6);
 
         //for the first 50 turns is like the first test
-        model.scheduleSoon(ActionOrder.THINK,control);
+        model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE,control);
 
         for(int i=0; i < 50; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
@@ -261,7 +261,6 @@ public class PurchasesFixedPIDTest {
         Market.TESTING_MODE = false;
         //I expect the price to go high so that the firm builds up its reserves and then drop so that it only needs to buy 2 a adjust to keep things constant
         Assert.assertTrue(dept.maxPrice(GoodType.GENERIC,market) >= 20 && dept.maxPrice(GoodType.GENERIC,market) <= 30);
-        Assert.assertEquals(f.hasHowMany(GoodType.GENERIC),4); //has 6 but I just consumed 2
 
 
     }

@@ -16,7 +16,6 @@ import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.facades.MarginalPlantControl;
-import agents.firm.production.control.facades.MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment;
 import agents.firm.production.control.facades.MarginalPlantControlWithPIDUnit;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
@@ -206,9 +205,9 @@ public class OneLinkSupplyChainScenario extends Scenario {
                 else
                 {
                     SalesControlFlowPIDWithFixedInventory properStrategy = new SalesControlFlowPIDWithFixedInventory(dept);
-                    properStrategy.setGains(properStrategy.getProportionalGain()/10f,properStrategy.getIntegralGain()/10f,
-                            properStrategy.getDerivativeGain()/10f);
-                    properStrategy.setSpeed(30);
+                    properStrategy.setGains(properStrategy.getProportionalGain()/300f,properStrategy.getIntegralGain()/300f,
+                            properStrategy.getDerivativeGain()/300f);
+                 //   properStrategy.setSpeed(30);
                     strategy = properStrategy;
 
 
@@ -232,12 +231,12 @@ public class OneLinkSupplyChainScenario extends Scenario {
                 hr.setFixedPayStructure(true);
                 hr.start();
                 //todo remove this horrible hack
-                if(controlType.equals(MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment.class) && goodmarket.getGoodType().equals(GoodType.BEEF))
+    /*            if(controlType.equals(MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment.class) && goodmarket.getGoodType().equals(GoodType.BEEF))
                 {
                     ((MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment)produced.getPlantControl()).setupLookup(7,4.31f,2.71f,
                             0.155f,getMarkets().get(GoodType.FOOD));
                 }
-
+      */
                 //CREATE THE PURCHASES DEPARTMENTS NEEDED
                 for(GoodType input : blueprint.getInputs().keySet()){
                     PurchasesDepartment department = PurchasesDepartment.getEmptyPurchasesDepartment(Long.MAX_VALUE, firm,

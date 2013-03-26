@@ -274,11 +274,11 @@ public class WeeklyWorkforceMaximizer<ALG extends WorkerMaximizationAlgorithm> i
         if(randomspeed)
         {
             float probability = 1f/(float)daysAway;
-            hr.getFirm().getModel().scheduleAnotherDayWithFixedProbability(ActionOrder.PREPARE_TO_TRADE,this, probability);
+            hr.getFirm().getModel().scheduleAnotherDayWithFixedProbability(ActionOrder.THINK,this, probability);
         }
 
         else
-            hr.getFirm().getModel().scheduleAnotherDay(ActionOrder.PREPARE_TO_TRADE,this, daysAway);
+            hr.getFirm().getModel().scheduleAnotherDay(ActionOrder.THINK,this, daysAway);
 
     }
 
@@ -293,7 +293,7 @@ public class WeeklyWorkforceMaximizer<ALG extends WorkerMaximizationAlgorithm> i
         oldProfits = -getHr().getPlant().getCostStrategy().weeklyFixedCosts();
         oldWorkerTarget = 0;
         //adjust on it
-        hr.getPlant().getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE, this);
+        hr.getPlant().getModel().scheduleSoon(ActionOrder.THINK, this);
 
     }
 

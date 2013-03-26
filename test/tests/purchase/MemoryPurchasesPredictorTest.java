@@ -104,9 +104,12 @@ public class MemoryPurchasesPredictorTest {
 
         final ArrayList<Quote> quotes = new ArrayList<>(); //here we'll store all the seller quotes
 
+        final int  inventoryAtProduction[] = new int[]{0};
 
-        for(int  j =0; j<500; j++) //for 50 stinking turns
+        for(int  j =0; j<500; j++) //for 500 stinking turns
         {
+
+
 
             model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
                 @Override
@@ -122,6 +125,7 @@ public class MemoryPurchasesPredictorTest {
                         quotes.add(q);
                     }
 
+                    System.out.println("DAWN INV:" + f.hasHowMany(GoodType.GENERIC));
                 }});
 
             model.scheduleSoon(ActionOrder.CLEANUP,new Steppable() {
@@ -137,20 +141,30 @@ public class MemoryPurchasesPredictorTest {
                     }
                     quotes.clear();
 
-                    //outflow
-                    if(f.hasAny(GoodType.GENERIC))
-                        f.consume(GoodType.GENERIC);
-                    if(f.hasAny(GoodType.GENERIC))
-                        f.consume(GoodType.GENERIC);
+
                 }
             });
             //at the end of the day remove all quotes
 
 
+            model.scheduleSoon(ActionOrder.PRODUCTION,new Steppable() {
+                @Override
+                public void step(SimState state) {
+                    //outflow
+                    if(f.hasAny(GoodType.GENERIC))
+                        f.consume(GoodType.GENERIC);
+                    if(f.hasAny(GoodType.GENERIC))
+                        f.consume(GoodType.GENERIC);
+
+
+                    inventoryAtProduction[0] = f.hasHowMany(GoodType.GENERIC);
+                }
+            });
+
 
             f.earn(10000l);
             model.getPhaseScheduler().step(model);
-            System.out.println(f.hasHowMany(GoodType.GENERIC) + " ---> " + control.maxPrice(GoodType.GENERIC));
+            System.out.println(inventoryAtProduction[0] + " ---> " + control.maxPrice(GoodType.GENERIC));
 
 
 
@@ -159,7 +173,7 @@ public class MemoryPurchasesPredictorTest {
         Market.TESTING_MODE = false;
         //I expect the price to go high so that the firm builds up its reserves and then drop so that it only needs to buy 2 a adjust to keep things constant
         Assert.assertTrue(dept.maxPrice(GoodType.GENERIC,market) >= 20 && dept.maxPrice(GoodType.GENERIC,market) <= 30);
-        Assert.assertEquals(f.hasHowMany(GoodType.GENERIC),4); //has 6 but I just consumed 2
+        Assert.assertEquals(inventoryAtProduction[0],6); //has 6 but I just consumed 2
         return dept;
 
     }

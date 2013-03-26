@@ -164,7 +164,7 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
             filterObservations();
 
             flowPID.adjust(ControllerInput.simplePIDTarget(getOutflowAsFloat(),getInflowAsFloat())
-                    ,isActive(),(MacroII)state,this, ActionOrder.THINK);
+                    ,isActive(),(MacroII)state,this, ActionOrder.PREPARE_TO_TRADE);
         }
         else
         {

@@ -142,7 +142,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
         ControllerInput input = getControllerInput(getTarget());
 
 
-        controller.adjust(input, isActive(), (MacroII)simState, this, ActionOrder.THINK);
+        controller.adjust(input, isActive(), (MacroII)simState, this, ActionOrder.PREPARE_TO_TRADE);
         long newprice = maxPrice(getGoodTypeToControl());
         //log the change in policy
         getPurchasesDepartment().getFirm().logEvent(getPurchasesDepartment(),
@@ -220,7 +220,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
     @Override
     public void start() {
 
-        getPurchasesDepartment().getFirm().getModel().scheduleSoon(ActionOrder.THINK,
+        getPurchasesDepartment().getFirm().getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE,
                 this);
 
         super.start();

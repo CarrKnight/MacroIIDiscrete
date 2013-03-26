@@ -78,7 +78,7 @@ public class PurchasesSimplePIDTest {
 
         for(int i=0; i < 100; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
-            model.scheduleSoon(ActionOrder.THINK,control);
+            model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE,control);
             model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
@@ -126,7 +126,7 @@ public class PurchasesSimplePIDTest {
 
         for(int i=0; i < 100; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
-            model.scheduleSoon(ActionOrder.THINK, control);
+            model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE, control);
             model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
@@ -170,7 +170,7 @@ public class PurchasesSimplePIDTest {
         Assert.assertEquals(pidPrice, 0l);
         Assert.assertEquals(control.getSingleProductionRunNeed(),6);
 
-        model.scheduleSoon(ActionOrder.THINK,control);
+        model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE,control);
         //for the first 50 turns is like the first test
         for(int i=0; i < 50; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy

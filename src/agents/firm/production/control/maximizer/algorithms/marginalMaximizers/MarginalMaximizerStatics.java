@@ -184,6 +184,7 @@ public final class MarginalMaximizerStatics {
      */
     public static float computeMarginalRevenue(Firm owner, Plant p, MarginalMaximizer.RandomizationPolicy policy, int currentWorkers, int
             targetWorkers, long totalFutureCosts, long totalFutureWageCosts) throws DelayException {
+
         float marginalRevenue = 0;
         Set<GoodType> outputs = p.getBlueprint().getOutputs().keySet();
         for(GoodType output : outputs)
@@ -198,8 +199,10 @@ public final class MarginalMaximizerStatics {
             //add it to the revenue
             marginalRevenue += pricePerUnit * marginalProduction;
             //but now decrease it if you caused the price to change
-            marginalRevenue -= (owner.getSalesDepartment(output).getLastClosingPrice()-
-                    pricePerUnit) * p.hypotheticalThroughput(currentWorkers, output);
+            //if you sold anything today (if you haven't and you use very old "closing price" then your estimates are very wrong
+            if(owner.getSalesDepartment(output).getTodayOutflow() > 0)
+                marginalRevenue -= (owner.getSalesDepartment(output).getLastClosingPrice()-
+                        pricePerUnit) * p.hypotheticalThroughput(currentWorkers, output);
 
 
         }

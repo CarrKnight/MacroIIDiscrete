@@ -89,7 +89,7 @@ public class PurchasesSimplePID extends SimpleInventoryControl implements BidPri
 
         long oldprice = maxPrice(getGoodTypeToControl());
         int target = getSingleProductionRunNeed();
-        controller.adjust(getControllerInput(target), isActive(),(MacroII) simState, this, ActionOrder.THINK);
+        controller.adjust(getControllerInput(target), isActive(),(MacroII) simState, this, ActionOrder.PREPARE_TO_TRADE);
         long newprice = maxPrice(getGoodTypeToControl());
 
         //log the change in policy
@@ -177,12 +177,12 @@ public class PurchasesSimplePID extends SimpleInventoryControl implements BidPri
      */
     @Override
     public void start() {
-        getPurchasesDepartment().getFirm().getModel().scheduleSoon(ActionOrder.THINK,
+        getPurchasesDepartment().getFirm().getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE,
                 new Steppable() {
                     @Override
                     public void step(SimState state) {
                         controller.adjust(getControllerInput(getSingleProductionRunNeed()), isActive(),
-                                getPurchasesDepartment().getFirm().getModel(), this,ActionOrder.THINK);
+                                getPurchasesDepartment().getFirm().getModel(), this,ActionOrder.PREPARE_TO_TRADE);
                     }
                 });
         super.start();

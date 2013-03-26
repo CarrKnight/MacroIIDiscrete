@@ -89,7 +89,7 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
     public void step(SimState simState) {
 
         long oldprice = maxPrice(getGoodTypeToControl());
-        controller.adjust(getControllerInput(getWeeklyNeeds()), isActive(),(MacroII) simState, this, ActionOrder.THINK);
+        controller.adjust(getControllerInput(getWeeklyNeeds()), isActive(),(MacroII) simState, this, ActionOrder.PREPARE_TO_TRADE);
         long newprice = maxPrice(getGoodTypeToControl());
 
         //log the change in policy
@@ -177,7 +177,7 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
      */
     @Override
     public void start() {
-        getPurchasesDepartment().getFirm().getModel().scheduleSoon(ActionOrder.THINK,
+        getPurchasesDepartment().getFirm().getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE,
                 this);
           /*      new Steppable() {
                     @Override

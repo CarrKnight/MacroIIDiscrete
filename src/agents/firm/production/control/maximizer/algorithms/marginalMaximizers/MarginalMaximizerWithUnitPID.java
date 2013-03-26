@@ -81,7 +81,7 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
 
     @Override
     public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts,
-                                     float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
+                                  float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
 
         //check the marginals always one step forward (not because you are moving one step only,
         // but because it's less biased by mistaken prediction of price changes
@@ -113,6 +113,23 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
                 marginalEfficency = -2;
 
             pid.adjustOnce(marginalEfficency- getTargetEfficiency(),true);
+
+            //todo remove this:
+/*            if(getHr().getPlant().getBlueprint().getOutputs().containsKey(GoodType.BEEF))
+                System.out.println("time:" + getOwner().getModel().schedule.getTime() +
+                        "benefits:" + marginalBenefits +
+                        ", costs: " + marginalCosts +
+                        "wagecosts: " + wageCosts.getTotalCost() +
+                        ", currentWorkers:" + currentWorkerTarget +
+                        ", futureWorkers: " + Math.round(pid.getCurrentMV()) +
+                        ", beef price: " + Math.round(getOwner().getModel().getMarket(GoodType.BEEF).getLastPrice())
+
+                );
+            if(marginalBenefits < 0)
+                MarginalMaximizerStatics.computeMarginalRevenue(getOwner(), getP(), getPolicy(),
+                        currentWorkerTarget, currentWorkerTarget + 1,
+                        inputCosts.getTotalCost(), wageCosts.getTotalCost());
+             */
             return Math.min(Math.round(pid.getCurrentMV()), getHr().maximumWorkersPossible());
 
 

@@ -428,7 +428,7 @@ public class SalesDepartment implements Department {
         if(market.isBestBuyPriceVisible())
             try {
                 long bestVisiblePrice =  market.getBestBuyPrice();  //ask the market for best price
-                if(bestVisiblePrice == -1) //no price visible
+                if(bestVisiblePrice <= 0) //no price visible
                     return predictorStrategy.predictSalePrice(this,expectedProductionCost);
                 else
                     return bestVisiblePrice;
@@ -1154,8 +1154,6 @@ public class SalesDepartment implements Department {
      */
     public void updateQuotes()
     {
-        //todo ASAP, is it a good idea?
-
         model.scheduleASAP(new Steppable() {
             @Override
             public void step(SimState state) {
