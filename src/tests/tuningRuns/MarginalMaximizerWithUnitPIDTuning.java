@@ -12,7 +12,7 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
-import agents.firm.production.control.maximizer.algorithms.hillClimbers.PIDHillClimber;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPID;
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartment;
@@ -110,8 +110,10 @@ public class MarginalMaximizerWithUnitPIDTuning {
                                         hr = HumanResources.getEmptyHumanResources(10000000000l, monopolist, laborMarket, plant);
                                         TargetAndMaximizePlantControl control = TargetAndMaximizePlantControl.emptyTargetAndMaximizePlantControl(hr);
                                         control.setTargeter(new PIDTargeter(hr,control));
-                                        PIDHillClimber algorithm = new PIDHillClimber(hr,pidParameters[0],pidParameters[1],pidParameters[2]);
-                                        WeeklyWorkforceMaximizer<PIDHillClimber> maximizer = new WeeklyWorkforceMaximizer<PIDHillClimber>
+                                        MarginalMaximizerWithUnitPID algorithm = new MarginalMaximizerWithUnitPID(hr,control,plant,plant.getOwner(),
+                                                model.random, hr.getPlant().workerSize());
+                                        WeeklyWorkforceMaximizer<MarginalMaximizerWithUnitPID> maximizer =
+                                                new WeeklyWorkforceMaximizer<MarginalMaximizerWithUnitPID>
                                                 (hr,control,algorithm);
                                         control.setMaximizer(maximizer);
                                         hr.setPricingStrategy(control);

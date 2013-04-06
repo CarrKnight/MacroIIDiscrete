@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2013 by Ernesto Carrella
+  ~ Licensed under the Academic Free License version 3.0
+  ~ See the file "LICENSE" for more information
+  -->
+
 <project name="module_macroiidiscrete" default="compile.module.macroiidiscrete">
   <dirname property="module.macroiidiscrete.basedir" file="${ant.file.module_macroiidiscrete}"/>
   

@@ -108,10 +108,13 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
 
             //if the flag is set to true, transform!
             if(sigmoid)
+            {
+                System.out.println("sigmoid");
                 pid.adjustOnce(
                         MarginalMaximizerStatics.sigmoid(marginalEfficency)
                         -
                         MarginalMaximizerStatics.sigmoid(getTargetEfficiency()),true);
+            }
             else
                 pid.adjustOnce(marginalEfficency- getTargetEfficiency(),true);
 
