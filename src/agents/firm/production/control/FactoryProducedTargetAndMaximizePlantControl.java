@@ -23,10 +23,12 @@ package agents.firm.production.control;
  */
 
 import agents.firm.production.control.maximizer.WorkforceMaximizer;
+import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
 import agents.firm.production.control.targeter.WorkforceTargeter;
 
 public class
-FactoryProducedTargetAndMaximizePlantControl<WT extends WorkforceTargeter, WM extends WorkforceMaximizer>
+FactoryProducedTargetAndMaximizePlantControl<WT extends WorkforceTargeter,
+        WM extends WorkforceMaximizer<? extends WorkerMaximizationAlgorithm>>
 {
 
     private final WT workforceTargeter;

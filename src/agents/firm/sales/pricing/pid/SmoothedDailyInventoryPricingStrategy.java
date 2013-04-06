@@ -13,12 +13,14 @@ import goods.Good;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.filters.MovingAverage;
+import model.utilities.pid.ControllerFactory;
+import model.utilities.pid.PIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
 /**
  * <h4>Description</h4>
- * <p/> This ask pricing strategy is similar to{@link SalesControlWithFixedInventoryAndPID} in that
+ * <p/> This ask pricing strategy is similar to {@link SalesControlWithFixedInventoryAndPID} in that
  * it tinkers with prices to target an inventory. This one tries to keep inventory level at the daily production rate.
  * It smooths inventory targets by looking at the Moving Average of daily production  (by default 10 days MA)
  * <p/> Code-wise, this delegates almost everything to a SalesControlWithFixedInventoryAndPID object.
@@ -55,6 +57,10 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
      */
     private final SalesDepartment salesDepartment;
 
+    /**
+     * the PID controller used by the delegate fixedInventory sales control. Useful to set gains and speed.
+     */
+    private final PIDController controllerUsedByDelegate;
 
     /**
      * Creates the default SmoothedDailyInventoryPricingStrategy by creating the default SalesControlWithFixedInventoryAndPID
@@ -65,7 +71,11 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
     public SmoothedDailyInventoryPricingStrategy(SalesDepartment salesDepartment) {
         this.salesDepartment = salesDepartment;
 
-        delegate = new SalesControlWithFixedInventoryAndPID(salesDepartment,0);
+        //I am creating the PID controller here so that I can set the gains; I am sure it's a PID controller so I am sure the setGains() method exists
+        controllerUsedByDelegate = ControllerFactory.buildController(PIDController.class,
+                salesDepartment.getFirm().getModel());
+        delegate = new SalesControlWithFixedInventoryAndPID(salesDepartment,0,controllerUsedByDelegate);
+
 
         movingAverage = new MovingAverage<>(10);
         for(int i=0; i< movingAverage.getMovingAverageSize(); i++)
@@ -157,4 +167,37 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
     public int getTargetInventory() {
         return delegate.getTargetInventory();
     }
+
+
+    /**
+     * Set the sampling speed of the controller (how often it updates, in days)
+     * @param samplingSpeed the sampling speed
+     */
+    public void setSpeed(int samplingSpeed) {
+        delegate.setSpeed(samplingSpeed);
+    }
+
+    /**
+     * Change the gains of the PID
+     */
+    public void setGains(float proportionalGain, float integralGain, float derivativeGain) {
+        controllerUsedByDelegate.setGains(proportionalGain, integralGain, derivativeGain);
+    }
+
+    public float getProportionalGain() {
+        return controllerUsedByDelegate.getProportionalGain();
+    }
+
+    public float getIntegralGain() {
+        return controllerUsedByDelegate.getIntegralGain();
+    }
+
+    public float getDerivativeGain() {
+        return controllerUsedByDelegate.getDerivativeGain();
+    }
+
+    public int getSpeed() {
+        return controllerUsedByDelegate.getSpeed();
+    }
+
 }

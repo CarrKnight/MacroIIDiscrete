@@ -81,12 +81,20 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     public SalesControlWithFixedInventoryAndPID(SalesDepartment department,int targetInventory,
                                                 Class<? extends Controller> controllerType )
     {
+        //use default constructor
+        this(department,targetInventory,ControllerFactory.buildController(controllerType,department.getFirm().getModel()));
+
+    }
+    /**
+     * The full constructor with Sales department  and an instantiated controller
+     * @param department the sales department to link to
+     * @param targetInventory the target inventory of this control
+     * @param controller the type of controller to use
+     */
+    public SalesControlWithFixedInventoryAndPID(SalesDepartment department, int targetInventory,Controller controller) {
+        this.controller = controller;
         this.department = department;
-        this.controller = ControllerFactory.buildController(controllerType,department.getFirm().getModel());
-
         this.targetInventory = targetInventory;
-
-        //schedule yourself when possible
         department.getFirm().getModel().scheduleSoon(ActionOrder.THINK,this);
 
 
@@ -211,4 +219,6 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     public void setSpeed(int samplingSpeed) {
         controller.setSpeed(samplingSpeed);
     }
+
+
 }

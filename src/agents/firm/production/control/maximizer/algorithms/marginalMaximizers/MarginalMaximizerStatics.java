@@ -250,5 +250,14 @@ public final class MarginalMaximizerStatics {
 
     }
 
+    /**
+     * simply returns x/(1+x)
+     * @param x the x
+     * @return  x/(1+x)
+     */
+    public static float sigmoid(float x)
+    {
+        return x/(1+x);
+    }
 
 }

@@ -38,6 +38,7 @@ import static org.mockito.Mockito.*;
  */
 public class MarginalMaximizerTest {
 
+    //test that the delay exception cascades properly
     @Test
     public void testDelay(){
         //get the constructor stuff
@@ -62,6 +63,7 @@ public class MarginalMaximizerTest {
 
     }
 
+    //make it maximizes in a vacuum
     @Test
     public void testMarginalProfits(){
         //get the constructor stuff
@@ -91,10 +93,11 @@ public class MarginalMaximizerTest {
 
 
         PlantControl control = mock(PlantControl.class);
-        //it should immediately fail
+        //no delay exception thrown this time!!!
         MarginalMaximizer maximizer = new MarginalMaximizer(hr,control,p,owner);
         boolean exceptionThrown = false;
         float marginalProfits = -1;
+        //check the the statics are correct
         try {
             marginalProfits = MarginalMaximizerStatics.computeMarginalProfits(maximizer.getOwner(), maximizer.getP(), maximizer.getHr(), maximizer.getControl(), maximizer.getPolicy(), 10, 11);
             Assert.assertEquals(marginalProfits,50f,.0001f);
@@ -141,6 +144,17 @@ public class MarginalMaximizerTest {
 
     }
 
+
+    //just tests whether the sigmoid function spits the number out correctly
+    @Test
+    public void testSigmoid(){
+
+       Assert.assertEquals(MarginalMaximizerStatics.sigmoid(0),0f,.0001f);
+        Assert.assertEquals(MarginalMaximizerStatics.sigmoid(1f),0.5f,.0001f);
+        Assert.assertEquals(MarginalMaximizerStatics.sigmoid(4f),0.8f,.0001f);
+
+
+    }
 
 
 

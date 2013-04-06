@@ -139,7 +139,7 @@ public class MonopolistScenario extends Scenario {
                 }
             };
 
-            buyer.setName("Dummy Buyer");;
+            buyer.setName("Dummy Buyer");
 
             //make it adjust once to register and submit the first quote
 

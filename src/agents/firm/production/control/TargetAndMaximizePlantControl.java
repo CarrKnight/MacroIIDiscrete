@@ -152,7 +152,7 @@ public class TargetAndMaximizePlantControl extends AbstractPlantControl {
             instance.maximizer = maximizer;
 
             FactoryProducedTargetAndMaximizePlantControl<WT,WM> container =
-                    new FactoryProducedTargetAndMaximizePlantControl<WT, WM>(
+                    new FactoryProducedTargetAndMaximizePlantControl<>(
                     targeter,maximizer,instance
             );
             assert instance.targeter == container.getWorkforceTargeter();

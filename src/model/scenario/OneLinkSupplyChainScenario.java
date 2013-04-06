@@ -24,9 +24,7 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.MarketSalesPredictor;
-import agents.firm.sales.pricing.AskPricingStrategy;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
-import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
+import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Preconditions;
 import financial.Market;
@@ -199,20 +197,28 @@ public class OneLinkSupplyChainScenario extends Scenario {
                 SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(firm, goodmarket,
                         new SimpleBuyerSearch(goodmarket, firm), new SimpleSellerSearch(goodmarket, firm));
                 firm.registerSaleDepartment(dept, goodmarket.getGoodType());
-                AskPricingStrategy strategy;
-                if(goodmarket.getGoodType().equals(GoodType.FOOD))
+                SmoothedDailyInventoryPricingStrategy strategy;
+            /*    if(goodmarket.getGoodType().equals(GoodType.FOOD))
                      strategy = new SimpleFlowSellerPID(dept);
                 else
                 {
                     SalesControlFlowPIDWithFixedInventory properStrategy = new SalesControlFlowPIDWithFixedInventory(dept);
-                    properStrategy.setGains(properStrategy.getProportionalGain()/300f,properStrategy.getIntegralGain()/300f,
-                            properStrategy.getDerivativeGain()/300f);
+               //     properStrategy.setGains(properStrategy.getProportionalGain()/300f,properStrategy.getIntegralGain()/300f,
+                //            properStrategy.getDerivativeGain()/300f);
                  //   properStrategy.setSpeed(30);
                     strategy = properStrategy;
 
 
                 }
-
+                */
+                strategy = new SmoothedDailyInventoryPricingStrategy(dept);
+                if(!goodmarket.getGoodType().equals(GoodType.FOOD))
+                {
+                    strategy.setGains(strategy.getProportionalGain()/100f,strategy.getIntegralGain()/100f,
+                        strategy.getDerivativeGain()/100f);
+                    strategy.setInitialPrice(50);
+                    strategy.setSpeed(30);
+                }
 
                 // strategy.setProductionCostOverride(false);
                 dept.setAskPricingStrategy(strategy); //set strategy to PID
@@ -478,7 +484,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
         //create the CSVWriter
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("supplychain.csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter("supplychain_smoothedDailyInventory_slowedby100_speed30.csv"));
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
 

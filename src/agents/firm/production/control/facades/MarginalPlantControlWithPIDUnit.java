@@ -9,6 +9,7 @@ package agents.firm.production.control.facades;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.PlantListener;
+import agents.firm.production.control.FactoryProducedTargetAndMaximizePlantControl;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
@@ -24,7 +25,7 @@ import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
- * <p/> Similar to marginalPlantControl but using pid to find the step size
+ * <p/> Similar to marginalPlantControl but using pid to find the step size  and targeting sigmoid( x= MB/MC and targeting x/(1-x)-->0.5)
  * <p/>
  * <p/>
  * <h4>Notes</h4>
@@ -43,7 +44,11 @@ public class MarginalPlantControlWithPIDUnit implements PlantControl, PlantListe
     /**
      * the control we delegate to
      */
-    TargetAndMaximizePlantControl control;
+    private final TargetAndMaximizePlantControl control;
+
+    private final  FactoryProducedTargetAndMaximizePlantControl<PIDTargeter,
+            WeeklyWorkforceMaximizer<MarginalMaximizerWithUnitPID>>
+            generatedControl;
 
     /**
      * A facade for a marginal plant control with PID used as a way to select the step size
@@ -51,10 +56,31 @@ public class MarginalPlantControlWithPIDUnit implements PlantControl, PlantListe
      */
     public MarginalPlantControlWithPIDUnit(@Nonnull HumanResources hr)
     {
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr,
-                PIDTargeter.class,WeeklyWorkforceMaximizer.class,
-                MarginalMaximizerWithUnitPID.class).getControl();
 
+        generatedControl = TargetAndMaximizePlantControl.PlantControlFactory(hr,
+                PIDTargeter.class,
+                //the next argument is why the java generics guys really needed drug screening when they were thinking this
+                //of course I couldn't figure this out, it's from here: http://stackoverflow.com/questions/1079279/class-object-of-generic-class-java
+                (Class<WeeklyWorkforceMaximizer<MarginalMaximizerWithUnitPID>>)(Class<?>) WeeklyWorkforceMaximizer.class,
+                MarginalMaximizerWithUnitPID.class);
+
+
+        generatedControl.getWorkforceMaximizer().getMaximizationAlgorithm().setSigmoid(true);
+
+
+        control = generatedControl.getControl();
+
+
+
+    }
+
+    /**
+     * A link to the object build, so we can change its parameters
+     * @return
+     */
+    public FactoryProducedTargetAndMaximizePlantControl<PIDTargeter,
+            WeeklyWorkforceMaximizer<MarginalMaximizerWithUnitPID>> getGeneratedControl() {
+        return generatedControl;
     }
 
     /**

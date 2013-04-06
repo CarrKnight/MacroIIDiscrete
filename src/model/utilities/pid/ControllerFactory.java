@@ -38,25 +38,25 @@ public class ControllerFactory
      * @param controllerType the type of controller you want
      * @return the controller object you get
      */
-    public static Controller buildController(@Nonnull Class<? extends Controller> controllerType, @Nonnull MacroII model)
+    public static <C extends Controller> C buildController(@Nonnull Class<C> controllerType, @Nonnull MacroII model)
     {
         Preconditions.checkArgument(controllerType != null && model != null,"Don't pass nulls!");
 
         //if it's a PID controller
         if(controllerType.equals(PIDController.class))
         {
-            return new PIDController(
+            return (C) new PIDController(
                     model.drawProportionalGain(), model.drawIntegrativeGain(), model.drawDerivativeGain(),
             model.drawPIDSpeed(), model.random);
         }
         else if(controllerType.equals(CascadePIDController.class))
         {
-            return new CascadePIDController( model.drawProportionalGain(), model.drawIntegrativeGain(), model.drawDerivativeGain(),
+            return (C) new CascadePIDController( model.drawProportionalGain(), model.drawIntegrativeGain(), model.drawDerivativeGain(),
                     model.drawProportionalGain(), 0, 0,model.getRandom());
         }
         else if(controllerType.equals(FlowAndStockController.class))
         {
-            return new FlowAndStockController( model.drawProportionalGain(), model.drawIntegrativeGain(), model.drawDerivativeGain(),
+            return (C) new FlowAndStockController( model.drawProportionalGain(), model.drawIntegrativeGain(), model.drawDerivativeGain(),
                     model.drawProportionalGain(), model.drawIntegrativeGain(), model.drawDerivativeGain()
                     ,model.getRandom());
         }

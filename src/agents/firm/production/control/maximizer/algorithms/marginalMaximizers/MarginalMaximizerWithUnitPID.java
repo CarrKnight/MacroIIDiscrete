@@ -18,9 +18,10 @@ import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
- * <p/>  very simple marginal maximizer that chooses worker by targeting MB/MC = 1
+ * <p/>  very simple marginal maximizer that chooses # of workers by targeting MB/MC = 1
  * where MB is unit marginal revenue and MC is unit marginal costs of increasing production by 1
- * <p/>
+ * <p/> Now, the problem is that the range of efficency possible really goes from 0 to infinity, so as a maximizer it tends to act more aggressively with
+ * high ratios than with low ones. So we can,by setting sigmoidal to true, target sigmoid(MB/MC)=0.5, to make it more centered.
  * <p/>
  * <h4>Notes</h4>
  * Created with IntelliJ
@@ -38,16 +39,14 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
     private PIDController pid;
 
     /**
-     * One weakness of this PID is that efficency is bound downward at 0 but can go to infinity. Since the target is 1 this means
-     * that it's possible for it to move very quickly upward, but not very quickly downward (except for proportional effects).
-     * When this is set to true, every efficiency of 0 is fed in the PID controller as an efficiency of -2.  Terrible hack but, will it work?
-     */
-    private boolean penalize0 = false;
-
-    /**
      * this is the efficency targeted
      */
     private float targetEfficiency = 1;
+
+    /**
+     * flag that switches from targeting MB/MC -->1 to 1/(1+MB/MC)---> 0.5 (or anyway to the sigmoid of the target efficency)
+     */
+    private boolean sigmoid = true;
 
     /**
      * Very simple marginal maximizer that chooses worker by targeting MB/MC = 1
@@ -107,29 +106,15 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
             //now that they are properly "averaged" we divide them and target efficency of 1
             float marginalEfficency = Math.min(10,marginalBenefits/marginalCosts);  //bound to 10
 
+            //if the flag is set to true, transform!
+            if(sigmoid)
+                pid.adjustOnce(
+                        MarginalMaximizerStatics.sigmoid(marginalEfficency)
+                        -
+                        MarginalMaximizerStatics.sigmoid(getTargetEfficiency()),true);
+            else
+                pid.adjustOnce(marginalEfficency- getTargetEfficiency(),true);
 
-            //penalize if needed
-            if(penalize0 && marginalEfficency ==0)
-                marginalEfficency = -2;
-
-            pid.adjustOnce(marginalEfficency- getTargetEfficiency(),true);
-
-            //todo remove this:
-/*            if(getHr().getPlant().getBlueprint().getOutputs().containsKey(GoodType.BEEF))
-                System.out.println("time:" + getOwner().getModel().schedule.getTime() +
-                        "benefits:" + marginalBenefits +
-                        ", costs: " + marginalCosts +
-                        "wagecosts: " + wageCosts.getTotalCost() +
-                        ", currentWorkers:" + currentWorkerTarget +
-                        ", futureWorkers: " + Math.round(pid.getCurrentMV()) +
-                        ", beef price: " + Math.round(getOwner().getModel().getMarket(GoodType.BEEF).getLastPrice())
-
-                );
-            if(marginalBenefits < 0)
-                MarginalMaximizerStatics.computeMarginalRevenue(getOwner(), getP(), getPolicy(),
-                        currentWorkerTarget, currentWorkerTarget + 1,
-                        inputCosts.getTotalCost(), wageCosts.getTotalCost());
-             */
             return Math.min(Math.round(pid.getCurrentMV()), getHr().maximumWorkersPossible());
 
 
@@ -148,14 +133,6 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
     }
 
 
-    public boolean isPenalize0() {
-        return penalize0;
-    }
-
-    public void setPenalize0(boolean penalize0) {
-        this.penalize0 = penalize0;
-    }
-
     public float getTargetEfficiency() {
         return targetEfficiency;
     }
@@ -164,4 +141,26 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
         System.out.println("efficency:" + targetEfficiency );
         this.targetEfficiency = targetEfficiency;
     }
+
+
+
+    /**
+     * Sets flag that switches from targeting MB/MC -->1 to 1/(1+MB/MC)---> 0.5 (or anyway to the sigmoid of the target efficency)
+     *
+     * @param sigmoid New value of flag that switches from targeting MB/MC -->1 to 1/(1+MB/MC)---> 0.5 (or anyway to the sigmoid of the target efficency)
+     */
+    public void setSigmoid(boolean sigmoid) {
+        this.sigmoid = sigmoid;
+    }
+
+    /**
+     * Gets flag that switches from targeting MB/MC -->1 to 1/(1+MB/MC)---> 0.5 (or anyway to the sigmoid of the target efficency)
+     *
+     * @return Value of flag that switches from targeting MB/MC -->1 to 1/(1+MB/MC)---> 0.5 (or anyway to the sigmoid of the target efficency)
+     */
+    public boolean isSigmoid() {
+        return sigmoid;
+    }
+
+
 }
