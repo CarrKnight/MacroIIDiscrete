@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_macroiidiscrete" default="compile.module.macroiidiscrete">
+  <dirname property="module.macroiidiscrete.basedir" file="${ant.file.module_macroiidiscrete}"/>
+  
+  <property name="module.jdk.home.macroiidiscrete" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.macroiidiscrete" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.macroiidiscrete" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.macroiidiscrete" value="${compiler.args}"/>
+  
+  <property name="macroiidiscrete.output.dir" value="${module.macroiidiscrete.basedir}/out/production/MacroIIDiscrete"/>
+  <property name="macroiidiscrete.testoutput.dir" value="${module.macroiidiscrete.basedir}/out/test/MacroIIDiscrete"/>
+  
+  <path id="macroiidiscrete.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="macroiidiscrete.module.production.classpath">
+    <path refid="${module.jdk.classpath.macroiidiscrete}"/>
+    <pathelement location="${basedir}/lib/mason/jar/mason.16.jar"/>
+    <path refid="library.lib.classpath"/>
+    <path refid="library.net.sf.opencsv:opencsv:2.3.classpath"/>
+    <path refid="library.org.powermock:powermock-api-mockito:1.5.classpath"/>
+    <path refid="library.fr.inria.powerapi.listener:listener-cpu-jfreechart:1.5-snapshot.classpath"/>
+    <path refid="library.powermock-module-junit4.classpath"/>
+  </path>
+  
+  <path id="macroiidiscrete.runtime.production.module.classpath">
+    <pathelement location="${macroiidiscrete.output.dir}"/>
+    <pathelement location="${basedir}/lib/mason/jar/mason.16.jar"/>
+    <path refid="library.lib.classpath"/>
+    <path refid="library.net.sf.opencsv:opencsv:2.3.classpath"/>
+    <path refid="library.org.powermock:powermock-api-mockito:1.5.classpath"/>
+    <path refid="library.fr.inria.powerapi.listener:listener-cpu-jfreechart:1.5-snapshot.classpath"/>
+    <path refid="library.powermock-module-junit4.classpath"/>
+  </path>
+  
+  <path id="macroiidiscrete.module.classpath">
+    <path refid="${module.jdk.classpath.macroiidiscrete}"/>
+    <pathelement location="${macroiidiscrete.output.dir}"/>
+    <pathelement location="${basedir}/lib/mason/jar/mason.16.jar"/>
+    <path refid="library.lib.classpath"/>
+    <path refid="library.net.sf.opencsv:opencsv:2.3.classpath"/>
+    <path refid="library.org.powermock:powermock-api-mockito:1.5.classpath"/>
+    <path refid="library.fr.inria.powerapi.listener:listener-cpu-jfreechart:1.5-snapshot.classpath"/>
+    <path refid="library.powermock-module-junit4.classpath"/>
+  </path>
+  
+  <path id="macroiidiscrete.runtime.module.classpath">
+    <pathelement location="${macroiidiscrete.testoutput.dir}"/>
+    <pathelement location="${macroiidiscrete.output.dir}"/>
+    <pathelement location="${basedir}/lib/mason/jar/mason.16.jar"/>
+    <path refid="library.lib.classpath"/>
+    <path refid="library.net.sf.opencsv:opencsv:2.3.classpath"/>
+    <path refid="library.org.powermock:powermock-api-mockito:1.5.classpath"/>
+    <path refid="library.fr.inria.powerapi.listener:listener-cpu-jfreechart:1.5-snapshot.classpath"/>
+    <path refid="library.powermock-module-junit4.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.macroiidiscrete">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.macroiidiscrete">
+    <patternset refid="excluded.from.module.macroiidiscrete"/>
+  </patternset>
+  
+  <path id="macroiidiscrete.module.sourcepath">
+    <dirset dir="${module.macroiidiscrete.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="macroiidiscrete.module.test.sourcepath">
+    <dirset dir="${module.macroiidiscrete.basedir}">
+      <include name="test"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.macroiidiscrete" depends="compile.module.macroiidiscrete.production,compile.module.macroiidiscrete.tests" description="Compile module MacroIIDiscrete"/>
+  
+  <target name="compile.module.macroiidiscrete.production" depends="register.custom.compilers" description="Compile module MacroIIDiscrete; production classes">
+    <mkdir dir="${macroiidiscrete.output.dir}"/>
+    <javac2 destdir="${macroiidiscrete.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.macroiidiscrete}/javac">
+      <compilerarg line="${compiler.args.macroiidiscrete}"/>
+      <bootclasspath refid="macroiidiscrete.module.bootclasspath"/>
+      <classpath refid="macroiidiscrete.module.production.classpath"/>
+      <src refid="macroiidiscrete.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.macroiidiscrete"/>
+    </javac2>
+    
+    <copy todir="${macroiidiscrete.output.dir}">
+      <fileset dir="${module.macroiidiscrete.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.macroiidiscrete.tests" depends="register.custom.compilers,compile.module.macroiidiscrete.production" description="compile module MacroIIDiscrete; test classes" unless="skip.tests">
+    <mkdir dir="${macroiidiscrete.testoutput.dir}"/>
+    <javac2 destdir="${macroiidiscrete.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.macroiidiscrete}/javac">
+      <compilerarg line="${compiler.args.macroiidiscrete}"/>
+      <bootclasspath refid="macroiidiscrete.module.bootclasspath"/>
+      <classpath refid="macroiidiscrete.module.classpath"/>
+      <src refid="macroiidiscrete.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.macroiidiscrete"/>
+    </javac2>
+    
+    <copy todir="${macroiidiscrete.testoutput.dir}">
+      <fileset dir="${module.macroiidiscrete.basedir}/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.macroiidiscrete" description="cleanup module">
+    <delete dir="${macroiidiscrete.output.dir}"/>
+    <delete dir="${macroiidiscrete.testoutput.dir}"/>
+  </target>
+</project>
