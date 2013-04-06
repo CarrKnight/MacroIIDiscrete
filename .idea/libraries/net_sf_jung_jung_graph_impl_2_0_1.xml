@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="net.sf.jung:jung-graph-impl:2.0.1" type="repository">
+    <properties maven-id="net.sf.jung:jung-graph-impl:2.0.1" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jung/jung-graph-impl-2.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jung/jung-api-2.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jung/collections-generic-4.01.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/jung/collections-generic-4.01-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/jung/jung-graph-impl-2.0.1-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jung/jung-api-2.0.1-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jung/collections-generic-4.01-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

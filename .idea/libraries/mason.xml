@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="mason">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/lib/mason" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="file://$PROJECT_DIR$/lib/mason/docs/classdocs" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/lib/mason/source" />
+    </SOURCES>
+  </library>
+</component>
