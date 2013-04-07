@@ -29,11 +29,8 @@ import sim.engine.Steppable;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -68,44 +65,44 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
 
 
 
-            ExecutorService executorService = Executors.newFixedThreadPool(5);
-            ArrayList<Future> futures = new ArrayList<>();
+            ExecutorCompletionService executor = new ExecutorCompletionService(Executors.newFixedThreadPool(5));
 
-
+            int combinations = 0;
             for(float proportional=0.01f; proportional< 4f; proportional = proportional +.02f)
                 for(float integral=0.01f; integral< 4f; integral=  integral + .02f)
                     for(float derivative = 0.01f; derivative <=.03; derivative = derivative + .01f)
                     {
+                        combinations++;
+
                         SingleRun run = new SingleRun(writer,proportional,integral,derivative);
-                        Future future = executorService.submit(run);
-                        //add it to the list of futures
-                        futures.add(future);
+                        executor.submit(run, null);
                     }
 
-            int combinations = futures.size();
+
             System.out.println("total combinations to try: " + combinations );
 
 
             printProgressBar(combinations, 0, 20);
 
             //now start them all
-            for(Future f : futures)
+            int i =0;
+            while(i < combinations)
             {
-                f.get();
-                printProgressBar(combinations,combinations-futures.size(),20);
+                executor.take();
+                i++;
+                printProgressBar(combinations,i,20);
             }
 
 
-
             System.out.println("done!");
+            writer.close();
+            System.exit(0);
 
         } catch (IOException e) {
             System.err.println("couldn't write!!");
             System.exit(0);
 
         } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (ExecutionException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
