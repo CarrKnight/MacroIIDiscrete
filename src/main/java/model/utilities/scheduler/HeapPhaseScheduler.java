@@ -64,7 +64,6 @@ public class HeapPhaseScheduler implements PhaseScheduler {
      */
     @Override
     public void step(SimState simState) {
-        System.out.println("Day" + simState.schedule.getTime() );
 
         //unfortunately HEAP has no peek()
         while(true){

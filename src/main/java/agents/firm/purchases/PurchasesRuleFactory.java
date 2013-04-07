@@ -134,7 +134,6 @@ public class PurchasesRuleFactory {
             return rule.getConstructor(PurchasesDepartment.class).newInstance(department);
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException |
                 IllegalArgumentException | InvocationTargetException ex) {
-            System.out.println(rule.getSimpleName());
             ex.printStackTrace();
             throw new RuntimeException("failed to instantiate BidPricingStrategy" + ex.getMessage());
         }
@@ -279,7 +278,6 @@ public class PurchasesRuleFactory {
             return toReturn; //return it!
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException |
                 IllegalArgumentException | InvocationTargetException ex) {
-            System.out.println(rule.getSimpleName());
             ex.printStackTrace();
             throw new RuntimeException("failed to instantiate BidPricingStrategy" + ex.getMessage());
         }

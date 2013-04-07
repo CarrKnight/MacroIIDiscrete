@@ -154,7 +154,6 @@ public class MarginalMaximizerWithUnitPIDTuning {
                     futureTargetAverage= futureTargetAverage/5f;
                     deviation = deviation/5f;
                     variance = variance/5f;
-                    System.out.println(pidParameters[0] + "," + pidParameters[1] + "," + pidParameters[2] + "," + futureTargetAverage);
                     writer.writeNext(new String[]{Float.toString((pidParameters[0])),Float.toString((pidParameters[1]))
                             ,Float.toString((pidParameters[2])),Float.toString(futureTargetAverage),Double.toString(deviation)
                             ,Double.toString(variance)});

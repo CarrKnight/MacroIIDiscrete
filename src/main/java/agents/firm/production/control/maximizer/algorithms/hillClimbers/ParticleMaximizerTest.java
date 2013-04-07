@@ -218,7 +218,6 @@ public class ParticleMaximizerTest {
             verify(random, times(3)).nextInt(3);
         }
         catch (Exception e){
-            System.out.println(e);
             Assert.fail();
 
 
@@ -282,7 +281,6 @@ public class ParticleMaximizerTest {
 
         }
         catch (Exception e){
-            System.out.println(e);
             Assert.fail();
 
 

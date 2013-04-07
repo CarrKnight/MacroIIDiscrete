@@ -338,7 +338,7 @@ public class MacroII extends SimState{
 
 
     public void weekEnd(){
-        System.out.println("Weekend!");
+        //System.out.println("Weekend!");
         weeksPassed++;
 
         Collections.shuffle(agents,new Random(random.nextLong())); //todo make this shuffled by the MersenneTwisterFast
@@ -647,7 +647,7 @@ public class MacroII extends SimState{
         }
 
         builder.append(sum);
-        System.out.println(builder.toString());
+        //System.out.println(builder.toString());
 
     }
 

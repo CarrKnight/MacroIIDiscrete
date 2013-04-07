@@ -57,7 +57,6 @@ public class DummyBuyer extends Firm {
     {
         Quote askedPrice = dept.askedForASaleQuote(buyer,type);
         long priceQuoted =askedPrice.getPriceQuoted();
-  //      System.out.println("buyer: " + buyer.getFixedPrice() + ",seller: " + priceQuoted );
 
         if(priceQuoted >=0 && buyer.getFixedPrice() >= priceQuoted)
         {

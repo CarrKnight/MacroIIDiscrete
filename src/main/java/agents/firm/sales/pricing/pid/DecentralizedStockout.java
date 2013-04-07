@@ -118,7 +118,6 @@ public class DecentralizedStockout implements StockoutEstimator {
      */
     @Override
     public void stockOutEvent(@Nonnull Firm owner, @Nonnull SalesDepartment dept, @Nonnull EconomicAgent buyer) {
-    //    System.out.println("displeased!");
         displeasedCustomers.add(buyer); //the buyer won't be happy!
     }
 
@@ -134,7 +133,6 @@ public class DecentralizedStockout implements StockoutEstimator {
     public void tradeEvent(EconomicAgent buyer, EconomicAgent seller, Good goodExchanged, long price, Quote sellerQuote, Quote buyerQuote) {
         if((seller != strategy.getSales().getFirm()) && displeasedCustomers.remove(buyer))
         { //if we weren't the ones selling AND the buying person was displeased with us
-  //          System.out.println("certified!");
             certifiedDispleasedCustomers++; //now it can be displeased with us again if he wants but it's a certified lost opportunity.
 
         }

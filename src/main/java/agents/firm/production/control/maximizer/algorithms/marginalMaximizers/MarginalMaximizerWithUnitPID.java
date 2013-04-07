@@ -109,7 +109,6 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
             //if the flag is set to true, transform!
             if(sigmoid)
             {
-                System.out.println("sigmoid");
                 pid.adjustOnce(
                         MarginalMaximizerStatics.sigmoid(marginalEfficency)
                         -
@@ -141,7 +140,6 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
     }
 
     public void setTargetEfficiency(float targetEfficiency) {
-        System.out.println("efficency:" + targetEfficiency );
         this.targetEfficiency = targetEfficiency;
     }
 
@@ -165,5 +163,10 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
         return sigmoid;
     }
 
-
+    /**
+     * Change the gains of the PID
+     */
+    public void setGains(float proportionalGain, float integralGain, float derivativeGain) {
+        pid.setGains(proportionalGain, integralGain, derivativeGain);
+    }
 }

@@ -198,7 +198,6 @@ public class WeeklyWorkforceMaximizer<ALG extends WorkerMaximizationAlgorithm> i
         //if we are at the right target then we move to checkWeek status
         if(hr.getPlant().workerSize() == control.getTarget() && !checkWeek){
             checkWeek = true; //next observation is check week!
-            //     System.out.println("next week is checkweek!");
             reschedule(nextCheck + weeksToMakeObservation*7);
             return;
         }

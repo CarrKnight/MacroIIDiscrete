@@ -159,7 +159,6 @@ public class PIDTargeter implements WorkforceTargeter, Steppable {
         if(oldWage != newWage && newWage >=0) //if pid says to change prices, change prices
         {
             plantControl.setCurrentWage(newWage); //set the new wage! that'll do it!
-            //System.out.println("PID set wages to:" + newWage);
             //log it!
             hr.getFirm().logEvent(hr,
                     MarketEvents.CHANGE_IN_POLICY,
@@ -176,7 +175,6 @@ public class PIDTargeter implements WorkforceTargeter, Steppable {
         if(pid.getNewError() == 0 && (pid.getOldError() ==0 || roundingAdjustment) && newWage == oldWage) //we are at the right place!
         {
             setInitialWage(plantControl.getCurrentWage());
-            //        System.out.println("set the PID to: " + plantControl.getCurrentWage());
 
         }
 

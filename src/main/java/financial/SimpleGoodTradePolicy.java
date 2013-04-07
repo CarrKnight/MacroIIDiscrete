@@ -63,7 +63,6 @@ public class SimpleGoodTradePolicy implements TradePolicy {
 
         assert seller.has(good); //the seller should have the good!!
 
-        //System.out.println(price);
         if(!buyer.hasEnoughCash(price)) //check that the buyer has money!
         {
             System.err.println(buyer + " is bankrupt!");

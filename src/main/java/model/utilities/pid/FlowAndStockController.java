@@ -235,8 +235,7 @@ public class FlowAndStockController implements Controller{
         }
 
         //reset inflows and outflows
-        System.out.println("in:" + getInflowAsFloat(inflow) + " , out: " + getOutflowAsFloat(outflow) + "stockAdj: " + stockAdjustmentUsed);
-        System.out.println(flowPID.getCurrentMV() + " , " + stockPID.getCurrentMV());
+
 
     }
 

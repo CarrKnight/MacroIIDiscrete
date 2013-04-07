@@ -324,7 +324,6 @@ public class SimpleBuyerScenario extends Scenario {
                         break;
                     }
                 }
-                System.out.println("finished consuming:  " + firm.hasHowMany(GoodType.GENERIC));
                 firm.logEvent(department, MarketEvents.EXOGENOUS, getModel().getCurrentSimulationTimeInMillis(), "initialInventory: " + initialInventory
                         + ",final inventory: " + firm.hasHowMany(GoodType.GENERIC));
 

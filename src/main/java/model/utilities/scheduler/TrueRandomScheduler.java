@@ -86,7 +86,6 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
      */
     @Override
     public void step(SimState simState) {
-        System.out.println("Day" + simState.schedule.getTime() );
         assert simState instanceof MacroII;
         MersenneTwisterFast random = simState.random; //grab the random from the simstate
         assert tomorrowSamePhase.isEmpty() : "things shouldn't be scheduled here";

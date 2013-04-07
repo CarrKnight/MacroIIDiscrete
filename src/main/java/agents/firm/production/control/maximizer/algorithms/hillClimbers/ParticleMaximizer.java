@@ -124,7 +124,6 @@ public class ParticleMaximizer extends  HillClimberMaximizer {
             float best = random.nextFloat() * bestAttraction * (bestNeighborTarget(currentWorkerTarget, newProfits) -currentWorkerTarget );
 
 
-            //      System.out.println("iV: " + inertialVelocity + ", pB: " + personalBest + ", nB: " + neighborBest);
             //update velocity!
             currentVelocity = inertialVelocity + personalBest + neighborBest + best;
 

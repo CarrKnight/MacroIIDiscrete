@@ -398,7 +398,6 @@ public abstract class Market {
         lastWeekVolume = weeklyVolume;
         volume.add(new Week(model.getCurrentSimulationTime()),weeklyVolume,"volume");
  //       if(!getGoodType().isLabor())
- //           System.out.println(model.getCurrentSimulationTime() +"," + lastWeekVolume);
         //  volume.add(new Week(model.getWeeksPassed(), (int) (model.getWeeksPassed() / model.getWeekLength())),weeklyVolume); //addSalesDepartmentListener it to the weeks
         weeklyVolume = 0;
         //if there is GUI, clear the network

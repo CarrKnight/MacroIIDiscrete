@@ -204,8 +204,7 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
         }
 
         //reset inflows and outflows
-        //System.out.println("in:" + getInflowAsFloat() + " , out: " + getOutflowAsFloat() + "stockAdj: " + stockAdjustmentUsed);
-        //System.out.println(flowPID.getCurrentMV() + " , " + stockPID.getCurrentMV());
+
 
         super.resetInflow();
         super.resetOutflow();

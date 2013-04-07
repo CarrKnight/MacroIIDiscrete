@@ -42,7 +42,6 @@ public class SimpleHiringTradePolicy implements TradePolicy {
 
         assert seller.getEmployer() == null;
 
-        //System.out.println(price);
         if(!buyer.hasEnoughCash(price)) //check that the buyer has money!
             return PurchaseResult.BUYER_HAS_NO_MONEY;
 

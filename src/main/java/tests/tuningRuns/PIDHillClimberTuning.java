@@ -111,7 +111,6 @@ public class PIDHillClimberTuning {
                         futureTargetAverage= futureTargetAverage/5f;
                         deviation = deviation/5f;
                         variance = variance/5f;
-                        System.out.println(proportional + "," + integral + "," + derivative + "," + futureTargetAverage);
 
                         writer.writeNext(new String[]{Float.toString(proportional),Float.toString(integral)
                                 ,Float.toString(derivative),Float.toString(futureTargetAverage),Double.toString(deviation)

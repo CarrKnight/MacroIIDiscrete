@@ -184,7 +184,6 @@ public class Person extends EconomicAgent {
                         return;
                     }
 
-                    //  System.out.println(wage + " **** " + getMinimumWageRequired());
                     //If the wage is still low I QUIT!
                     if(wage < minimumWageRequired )
                         quitWork();

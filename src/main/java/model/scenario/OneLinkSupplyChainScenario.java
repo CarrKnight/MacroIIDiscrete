@@ -135,7 +135,6 @@ public class OneLinkSupplyChainScenario extends Scenario {
                         {
                             while(e.hasHowMany(g) > 800)
                             {
-                                System.out.println("cleanup!");
                                 for(int i=0; i <500; i++)
                                     e.consume(g);
                             }
