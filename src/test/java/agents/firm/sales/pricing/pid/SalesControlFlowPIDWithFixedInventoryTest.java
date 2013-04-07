@@ -1,11 +1,14 @@
 package agents.firm.sales.pricing.pid;
 
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
 import ec.util.MersenneTwisterFast;
-import static org.junit.Assert.*;import model.MacroII;
+import model.MacroII;
 import model.utilities.ActionOrder;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 /**
@@ -29,7 +32,7 @@ public class SalesControlFlowPIDWithFixedInventoryTest {
     @Test
     public void activatesCorrectly()
     {
-        SalesDepartment department = mock(SalesDepartment.class);
+        SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
         MacroII state = mock(MacroII.class); when(state.getCurrentPhase()).thenReturn(ActionOrder.THINK);
         SalesControlFlowPIDWithFixedInventory pricing = new SalesControlFlowPIDWithFixedInventory(department,10,50,state,0,0,0,new MersenneTwisterFast());
 
@@ -74,7 +77,7 @@ public class SalesControlFlowPIDWithFixedInventoryTest {
     public void rescheduleItselfTest()
     {
         MacroII state = mock(MacroII.class); when(state.getCurrentPhase()).thenReturn(ActionOrder.THINK);
-        SalesDepartment department = mock(SalesDepartment.class);
+        SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
         SalesControlFlowPIDWithFixedInventory pricing = new SalesControlFlowPIDWithFixedInventory(department,10,50,state,0,0,0,new MersenneTwisterFast());
 
         verify(state).scheduleSoon(ActionOrder.THINK,pricing);
@@ -88,7 +91,7 @@ public class SalesControlFlowPIDWithFixedInventoryTest {
     public void priceChanges()
     {
 
-        SalesDepartment department = mock(SalesDepartment.class);
+        SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
         MacroII state = mock(MacroII.class); when(state.getCurrentPhase()).thenReturn(ActionOrder.THINK);
         SalesControlFlowPIDWithFixedInventory pricing = new SalesControlFlowPIDWithFixedInventory(department,10,50,state,2,1,.01f,new MersenneTwisterFast());
         pricing.setInitialPrice(100); //so it's not 0

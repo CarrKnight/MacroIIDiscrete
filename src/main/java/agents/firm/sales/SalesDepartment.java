@@ -11,7 +11,7 @@ import agents.firm.Department;
 import agents.firm.Firm;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
-import agents.firm.sales.prediction.MemorySalesPredictor;
+import agents.firm.sales.prediction.LookupSalesPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.decorators.AskReservationPriceDecorator;
@@ -23,14 +23,12 @@ import financial.utilities.ActionsAllowed;
 import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;
-import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -50,312 +48,124 @@ import java.util.*;
  * <p/>
  * <h4>References</h4>
  *
- * @author Ernesto
- * @version %I%, %G%
+ * @author carrknight
+ * @version 2013-04-07
  * @see
  */
-public class SalesDepartment implements Department {
-
+public abstract class  SalesDepartment  implements Department {
     /**
      * the list of goods that the firm has decided to let the sales department sell
      */
-    private final Set<Good> toSell;
-
+    protected final Set<Good> toSell;
     /**
      * a map associating to each good to sell the quote submitted for it at a centralized market
      */
-    private final Map<Good,Quote> goodsQuotedOnTheMarket;
-
-
-    private LinkedList<SalesDepartmentListener> salesDepartmentListeners;
-
+    protected final Map<Good,Quote> goodsQuotedOnTheMarket;
     /**
      * This is the memory associated with the weekly results of selling. It records whether any good was sold, quoted or failed to sell.
      * A good that remained quoted at the end of the week without being sold is unsold
      */
-    private final Map<Good,SaleResult> salesResults;
-
+    protected final Map<Good,SaleResult> salesResults;
     /**
      * The firm where the sales department belongs
      */
-    private final Firm firm;
-
+    protected final Firm firm;
+    protected final MacroII model;
+    /**
+     * Here we keep memorized the last n totalSales of this firm.
+     */
+    protected final Deque<Long> totalSales;
+    /**
+     * Here we keep memorized the value of unsold merchandise of this department
+     */
+    protected final Deque<Long> totalUnsold;
+    /**
+     * Here we keep memorized the sum of revenue-costs for the goods sold
+     */
+    protected final Deque<Long> grossMargin;
+    /**
+     * Here we keep memorized the cost of goods sold
+     */
+    protected final Deque<Long> cogs;
+    protected LinkedList<SalesDepartmentListener> salesDepartmentListeners;
     /**
      * The market the sales department deals in
      */
-    private Market market;
-
-    private final MacroII model;
-
-
-
-
+    protected Market market;
     /**
      * The procedure used by the sales department to search the market.
      * It is
      */
-    private BuyerSearchAlgorithm buyerSearchAlgorithm;
-
-
-    private SellerSearchAlgorithm sellerSearchAlgorithm;
-
-    /**
-     * This is the strategy used by the sales department to choose its price
-     */
-    private AskPricingStrategy askPricingStrategy;
-
+    protected BuyerSearchAlgorithm buyerSearchAlgorithm;
+    protected SellerSearchAlgorithm sellerSearchAlgorithm;
     /**
      * This is the strategy to predict future sale prices when the order book is not visible.
      */
-    private SalesPredictor predictorStrategy;
-
-
-
-    /*
-    * ***************************
-     * Statistics
-     ****************************
-     */
+    protected SalesPredictor predictorStrategy;
     /**
-     * Here we keep memorized the last n totalSales of this firm.
+     * This is the strategy used by the sales department to choose its price
      */
-    final private Deque<Long> totalSales;
-
-    /**
-     * Here we keep memorized the value of unsold merchandise of this department
-     */
-    final private Deque<Long> totalUnsold;
-
-    /**
-     * Here we keep memorized the sum of revenue-costs for the goods sold
-     */
-    final private Deque<Long> grossMargin;
-
-    /**
-     * Here we keep memorized the cost of goods sold
-     */
-    final private Deque<Long> cogs;
-
+    protected AskPricingStrategy askPricingStrategy;
     /**
      * This counts how many goods the department managed to sell last week
      */
     private int goodsSoldLastWeek;
-
     /**
      * This counts how many goods the department was tasked to sell last week
      */
     private int goodsToSellLastWeek;
-
     /**
      * goods sold today. Reset every day at PREPARE_TO_TRADE step
      */
     private int todayOutflow;
-
     /**
      * goods that were given to us to sell today
      */
     private int todayInflow;
-
     /**
      * How many days will inventories last at the current flow? It is 0 if there is no inventory, MAX_VALUE if there are more inflows than outflows!
      */
     private float daysOfInventory = 0;
-
     /**
      * this flag is set to true whenever the first sellThis is called. It is never set to false
      */
     private boolean started = false;
-
     /**
      * This is the ratio goodsToSell/GoodsSold
      */
     private float soldPercentage = 1;
-
     /**
      * This is the price of the last good the sales department managed to sell
      */
     private long lastClosingPrice = -1;
-
     /**
      * This is the cost of the last good the sales department managed to sell
      */
     private long lastClosingCost = -1;
-
     /**
      * When this is true, the sales department peddles its goods around when it can't make a quote.
      * If this is false and the sales department can't quote, it just passively wait for buyers
      */
-    private boolean canPeddle = true;
+    protected boolean canPeddle = true;
 
-
-    /*
-    ******************************
-    * METHODS
-    ******************************
-     */
-
-    /**
-     * This is the constructor for the template sales department.  It also registers the firm as seller
-     * @param firm The firm where the sales department belongs
-     * @param market The market the sales department deals in
-     */
-    private SalesDepartment(@Nonnull Firm firm,@Nonnull Market market ) {
-        this(firm,market,null,null,firm.getModel());
-
-
-
-    }
-
-    /**
-     * This is the constructor for the template sales department.  It also registers the firm as seller
-     * @param firm The firm where the sales department belongs
-     * @param market The market the sales department deals in
-     */
-    private SalesDepartment(@Nonnull Firm firm,@Nonnull Market market,@Nonnull MacroII model ) {
-        this(firm,market,null,null,model);
-
-
-
-    }
-
-
-    /**
-     * This is the constructor for the template sales department. It also registers the firm as seller
-     * @param firm The firm where the sales department belongs
-     * @param market The market the sales department deals in
-     * @param buyerSearchAlgorithm the buyer search department
-     * @param sellerSearchAlgorithm the seller search department
-     */
-    private SalesDepartment(Firm firm, Market market, BuyerSearchAlgorithm buyerSearchAlgorithm, SellerSearchAlgorithm sellerSearchAlgorithm ) {
-        this(firm, market, buyerSearchAlgorithm, sellerSearchAlgorithm,firm.getModel());
-
-
-    }
-
-
-    /**
-     * This is the constructor for the template sales department. It also registers the firm as seller
-     * @param firm The firm where the sales department belongs
-     * @param market The market the sales department deals in
-     * @param buyerSearchAlgorithm the buyer search department
-     * @param sellerSearchAlgorithm the seller search department
-     */
-    private SalesDepartment(Firm firm, Market market, BuyerSearchAlgorithm buyerSearchAlgorithm, SellerSearchAlgorithm sellerSearchAlgorithm,
-                            @Nonnull MacroII model ) {
-        this.firm = firm;
+    public SalesDepartment(SellerSearchAlgorithm sellerSearchAlgorithm, Market market, @Nonnull MacroII model, Firm firm, BuyerSearchAlgorithm buyerSearchAlgorithm) {
+        cogs = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
+        salesResults = new HashMap<>();
+        this.sellerSearchAlgorithm = sellerSearchAlgorithm;
+        totalSales = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
         this.market = market;
-        market.registerSeller(firm); //register!
-
-
-        //instantiate the lists
         toSell = new LinkedHashSet<>();
         goodsQuotedOnTheMarket = new HashMap<>();
-        salesResults = new HashMap<>();
-        salesDepartmentListeners = new LinkedList<>();
-        //statistics
-        totalSales = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
-        totalUnsold = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
         grossMargin = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
-        cogs = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
-        this.buyerSearchAlgorithm = buyerSearchAlgorithm;
-        this.sellerSearchAlgorithm = sellerSearchAlgorithm;
-        predictorStrategy = new MemorySalesPredictor();
-
         this.model = model;
-
+        totalUnsold = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
+        this.firm = firm;
+        predictorStrategy = new LookupSalesPredictor();
+        this.buyerSearchAlgorithm = buyerSearchAlgorithm;
+        salesDepartmentListeners = new LinkedList<>();
+        market.registerSeller(firm); //register!
 
     }
-
-    //TODO make it register itself with the firm too
-
-    /**
-     * This is a factory method for sales department that retuns a NON-READY sales department. That is, one that is missing ask-pricing strategy and predictor pricing and the search algorithms.
-     * Use only if you know what you are doing
-     * @param firm the firm the sales department belongs to
-     * @param market the market the sales department markets
-     * @return a new sales department
-     */
-    static public SalesDepartment incompleteSalesDepartment(@Nonnull Firm firm, @Nonnull Market market)
-    {
-        return new SalesDepartment(firm,market);
-    }
-
-    /**
-     * This is a factory method for sales department that retuns a NON-READY sales department. That is, one that is missing ask-pricing strategy and predictor pricing.
-     * Use only if you know what you are doing
-     * @param firm the firm the sales department belongs to
-     * @param market the market the sales department markets
-     * @return a new sales department
-     */
-    static public SalesDepartment incompleteSalesDepartment(@Nonnull Firm firm,@Nonnull  Market market,@Nonnull BuyerSearchAlgorithm buyerSearchAlgorithm,@Nonnull  SellerSearchAlgorithm sellerSearchAlgorithm )
-    {
-        return new SalesDepartment(firm,market,buyerSearchAlgorithm,sellerSearchAlgorithm);
-    }
-
-    /**
-     * This is a standard factory method to create a new sales department.
-     * Any "null" type argument is randomized
-     * @param firm the firm the sales department belongs to
-     * @param market the market the sales department markets
-     * @return a new sales department
-     */
-    static public <BS extends  BuyerSearchAlgorithm, SS extends  SellerSearchAlgorithm, AP extends AskPricingStrategy, SP extends SalesPredictor>
-     FactoryProducedSalesDepartment<BS,SS,AP,SP> newSalesDepartment(@Nonnull Firm firm,@Nonnull  Market market,
-                                                     @Nullable Class<BS> buyerSearch, @Nullable Class<SS> sellerSearch,
-                                                     @Nullable Class<AP> priceStrategy, @Nullable Class<SP> predictionStrategy
-    )
-    {
-        //create the search algorithms
-        BS buyerSearchAlgorithm;
-        if(buyerSearch== null)
-            buyerSearchAlgorithm = (BS) BuyerSearchAlgorithm.Factory.randomBuyerSearchAlgorithm(market,firm);
-        else
-            buyerSearchAlgorithm = BuyerSearchAlgorithm.Factory.newBuyerSearchAlgorithm(buyerSearch,market,firm);
-
-        SS sellerSearchAlgorithm;
-        if(sellerSearch== null)
-            sellerSearchAlgorithm = (SS) SellerSearchAlgorithm.Factory.randomSellerSearchAlgorithm(market,firm);
-        else
-            sellerSearchAlgorithm = SellerSearchAlgorithm.Factory.newSellerSearchAlgorithm(sellerSearch,market,firm);
-
-
-
-
-        SalesDepartment dept = new SalesDepartment(firm,market,buyerSearchAlgorithm,sellerSearchAlgorithm);
-        firm.registerSaleDepartment(dept, GoodType.GENERIC);
-
-        //now create the two pricing strategies
-        AP askPricingStrategy;
-        if(priceStrategy== null)
-            askPricingStrategy = (AP) AskPricingStrategy.Factory.randomAskPricingStrategy(dept);
-        else
-            askPricingStrategy = AskPricingStrategy.Factory.newAskPricingStrategy(priceStrategy,dept);
-
-        dept.setAskPricingStrategy(askPricingStrategy);
-
-        SP salesPredictor;
-        if(predictionStrategy== null)
-            salesPredictor = (SP)SalesPredictor.Factory.randomSalesPredictor(firm.getRandom());
-        else
-            salesPredictor = SalesPredictor.Factory.newSalesPredictor(predictionStrategy);
-
-
-
-        dept.setPredictorStrategy(salesPredictor);
-        //register and retun
-        //finally return!
-        FactoryProducedSalesDepartment<BS,SS,AP,SP> toReturn = new FactoryProducedSalesDepartment<>(dept,buyerSearchAlgorithm,sellerSearchAlgorithm,askPricingStrategy,salesPredictor);
-
-        //make sure we passed objects
-        assert dept.buyerSearchAlgorithm == toReturn.getBuyerSearchAlgorithm();
-        assert dept.sellerSearchAlgorithm == toReturn.getSellerSearchAlgorithm();
-        assert dept.askPricingStrategy == toReturn.getAskPricingStrategy();
-        assert dept.predictorStrategy == toReturn.getSalesPredictor();
-
-        return toReturn;
-    }
-
-
 
     /**
      * A buyer asks the sales department for the price they are willing to sell one of their good.
@@ -380,10 +190,10 @@ public class SalesDepartment implements Department {
         {
             //find your own lowest quote
 
-            return Collections.min(goodsQuotedOnTheMarket.values(),new Comparator<Quote>() {
+            return Collections.min(goodsQuotedOnTheMarket.values(), new Comparator<Quote>() {
                 @Override
                 public int compare(Quote o1, Quote o2) {
-                    return Long.compare(o1.getPriceQuoted(),o2.getPriceQuoted());
+                    return Long.compare(o1.getPriceQuoted(), o2.getPriceQuoted());
                 }
             }); //return lowest quoted price
         }
@@ -411,7 +221,6 @@ public class SalesDepartment implements Department {
         }
     }
 
-
     /**
      * This method may be called by the firm to ask the sales department to predict what the sell price for a new good may be (usually to guide production). <br>
      * It works in 2 steps: <ul>
@@ -425,23 +234,9 @@ public class SalesDepartment implements Department {
     public long predictSalePrice(long expectedProductionCost)
     {
 
-        if(market.isBestBuyPriceVisible())
-            try {
-                long bestVisiblePrice =  market.getBestBuyPrice();  //ask the market for best price
-                if(bestVisiblePrice <= 0) //no price visible
-                    return predictorStrategy.predictSalePrice(this,expectedProductionCost);
-                else
-                    return bestVisiblePrice;
 
-            } catch (IllegalAccessException e) {
-                //this should really never happen;
-                assert false;
-                return predictorStrategy.predictSalePrice(this,expectedProductionCost);
-            }
-        else
-            return predictorStrategy.predictSalePrice(this,expectedProductionCost);
+        return predictorStrategy.predictSalePrice(this,expectedProductionCost);
     }
-
 
     /**
      * The sales department is asked at what should be the sale price for a specific good; this, I guess, is the fundamental
@@ -457,16 +252,14 @@ public class SalesDepartment implements Department {
         return askPricingStrategy.price(g);
     }
 
-
-
-
     /**
      * This is the method called by the firm when it tasks the department to sell a specific good!  <p>
      * The way I see it, most likely you just want to implement shouldIPeddle, peddle and price. Those are the really big ones. <br>
      * This method calls them, especially price(); placing a quote is straightforward and so implemented here.
      * @param g the good the department needs to sell!
      */
-    public void sellThis(final Good g){
+    public void sellThis(final Good g)
+    {
 
         //preconditions
         assert firm.has(g); //we should be selling something we have!
@@ -476,21 +269,16 @@ public class SalesDepartment implements Department {
 
         //log it (this also fires listeners)
         logInflow(g);
+        newGoodToSell(g);
 
-
-        //now act
-        if(market.getSellerRole() == ActionsAllowed.QUOTE) //if we are supposed to quote
-        {
-            placeQuote(g);
-
-        }
-        else  if(canPeddle)
-        {
-            peddle(g);
-
-        }
 
     }
+
+    /**
+     * The real difference in sales departments is just how they handle new goods to sell!
+     * @param g
+     */
+    protected abstract void newGoodToSell(Good g);
 
     /**
      * Does three things: Logs the event that we were tasked to sell a good, tell the listeners about this event and if this was teh very
@@ -566,7 +354,7 @@ public class SalesDepartment implements Department {
      * Schedule yourself to peddle when you can
      * @param g the good to sell
      */
-    private void peddle(final Good g) {
+    protected void peddle(final Good g) {
         model.scheduleSoon(ActionOrder.TRADE,new Steppable() {
             @Override
             public void step(SimState state) {
@@ -602,43 +390,50 @@ public class SalesDepartment implements Department {
      * Place an ask in the order book
      * @param g the good to quote
      */
-    private void placeQuote(final Good g)
+    protected void prepareToPlaceAQuote(final Good g)
     {
+        Preconditions.checkState(getFirm().has(g));
 
 
         model.scheduleSoon(ActionOrder.TRADE,new Steppable() {
             @Override
             public void step(SimState state) {
 
-                long price = price(g);
-                getFirm().logEvent(SalesDepartment.this, MarketEvents.SUBMIT_SELL_QUOTE,getFirm().getModel().getCurrentSimulationTimeInMillis(),
-                        "price:" + price);
-                Quote q = market.submitSellQuote(firm,price,g,SalesDepartment.this); //put a quote into the market
-                if(q.getPriceQuoted() != -1) //if the quote is not null
-                {
-                    //if the quote is not null, we quoted but not sold
-                    assert q.getAgent() == firm; //make sure we got back the right quote
-                    goodsQuotedOnTheMarket.put(g,q); //record the quote!
-                    salesResults.put(g, SaleResult.quoted());
-
-                    if(shouldIPeddle(q))    //do you want to try and peddle too?
-                        peddleNow(q.getGood()); //then peddle!
-
-                }
-                else{
-                    //if we are here, the quote returned was null which means that we already sold the good!
-                    assert !firm.has(g); //shouldn't be ours anymore!
-                    assert q.getAgent() == null; //should be null
-
-                    //now the accounting should have been already taken care of by reactToFilledAskedQuote() method! Make sure:
-                    assert salesResults.get(g).getResult() == SaleResult.Result.SOLD;
-                    assert lastClosingPrice == salesResults.get(g).getPriceSold(); //check that the price recorded is correct
-                }
+                placeAQuoteNow(g);
             }
         });
 
 
 
+    }
+
+    protected void placeAQuoteNow(Good g) {
+        Preconditions.checkState(getFirm().has(g));
+
+        long price = price(g);
+        getFirm().logEvent(this, MarketEvents.SUBMIT_SELL_QUOTE,getFirm().getModel().getCurrentSimulationTimeInMillis(),
+                "price:" + price);
+        Quote q = market.submitSellQuote(firm,price,g, this); //put a quote into the market
+        if(q.getPriceQuoted() != -1) //if the quote is not null
+        {
+            //if the quote is not null, we quoted but not sold
+            assert q.getAgent() == firm; //make sure we got back the right quote
+            goodsQuotedOnTheMarket.put(g,q); //record the quote!
+            salesResults.put(g, SaleResult.quoted());
+
+            if(shouldIPeddle(q))    //do you want to try and peddle too?
+                peddleNow(q.getGood()); //then peddle!
+
+        }
+        else{
+            //if we are here, the quote returned was null which means that we already sold the good!
+            assert !firm.has(g); //shouldn't be ours anymore!
+            assert q.getAgent() == null; //should be null
+
+            //now the accounting should have been already taken care of by reactToFilledAskedQuote() method! Make sure:
+            assert salesResults.get(g).getResult() == SaleResult.Result.SOLD;
+            assert lastClosingPrice == salesResults.get(g).getPriceSold(); //check that the price recorded is correct
+        }
     }
 
     /**
@@ -777,7 +572,6 @@ public class SalesDepartment implements Department {
 
     }
 
-
     /**
      * The market asks you to quote, and you did. Do you want to try and peddle as well?
      * @param q the quote made in the market
@@ -786,7 +580,6 @@ public class SalesDepartment implements Department {
     public boolean shouldIPeddle(Quote q){
         return false; //TODO fix this
     }
-
 
     /**
      * This is called by sellThis if the market doesn't allow the seller to quote or the seller wants to peddle anyway. <br>
@@ -872,7 +665,6 @@ public class SalesDepartment implements Department {
 
     }
 
-
     /**
      * Whenever we can ONLY peddle and we fail to do so, we call this method to know how much to wait before trying again
      * @param g the good to sell
@@ -882,7 +674,6 @@ public class SalesDepartment implements Department {
         return getFirm().getModel().getPeddlingSpeed();
 
     }
-
 
     /**
      * Weekend is a magical time when we record all quoted but unsold goods as unsold and then compute statistics and move on.
@@ -975,7 +766,6 @@ public class SalesDepartment implements Department {
 
     }
 
-
     /**
      * If this is called, we add a reservation price decorators to the ask pricing object.
      * This is a ugly hack utility method until I finally give up and do injection dependency properly <br>
@@ -985,7 +775,6 @@ public class SalesDepartment implements Department {
         Preconditions.checkState(askPricingStrategy != null, "Can't add reservation prices until ");
         askPricingStrategy = new AskReservationPriceDecorator(askPricingStrategy,reservationPrice);
     }
-
 
     /**
      * @return the value for the field firm.
@@ -1014,8 +803,6 @@ public class SalesDepartment implements Department {
     public SellerSearchAlgorithm getSellerSearchAlgorithm() {
         return sellerSearchAlgorithm;
     }
-
-
 
     /**
      * Setter for field askPricingStrategy.
@@ -1066,7 +853,6 @@ public class SalesDepartment implements Department {
         }catch (IllegalAccessException e){assert false; System.exit(-1); return -1;}            //this won't happen4
     }
 
-
     /**
      * @return the value for the field goodsSoldLastWeek.
      */
@@ -1096,7 +882,6 @@ public class SalesDepartment implements Department {
         return lastClosingPrice;
     }
 
-
     public SalesPredictor getPredictorStrategy() {
         return predictorStrategy;
     }
@@ -1117,7 +902,6 @@ public class SalesDepartment implements Department {
         return totalUnsold;
     }
 
-
     /**
      * Return last week gross margin (revenue - costs)
      */
@@ -1134,7 +918,6 @@ public class SalesDepartment implements Department {
 
     }
 
-
     /**
      * Return last week sales (that is, revenues)
      */
@@ -1142,9 +925,6 @@ public class SalesDepartment implements Department {
     {
         return totalSales.getLast();
     }
-
-
-
 
     /**
      *
@@ -1188,7 +968,6 @@ public class SalesDepartment implements Department {
 
     }
 
-
     public long getLastClosingCost() {
         return lastClosingCost;
     }
@@ -1218,7 +997,6 @@ public class SalesDepartment implements Department {
     public MersenneTwisterFast getRandom() {
         return firm.getRandom();
     }
-
 
     /**
      * Appends the specified element to the end of this list.
@@ -1272,7 +1050,6 @@ public class SalesDepartment implements Department {
         return toSell.size();
     }
 
-
     /**
      * Notify the listeners and the logger/gui that a good was sold! Also count it among the daily goods sold
      */
@@ -1303,7 +1080,6 @@ public class SalesDepartment implements Department {
         this.canPeddle = canPeddle;
     }
 
-
     /**
      * Gets goods sold today. Reset every day at PREPARE_TO_TRADE step.
      *
@@ -1322,8 +1098,11 @@ public class SalesDepartment implements Department {
         return todayInflow;
     }
 
-              //  @Nullable Class<? extends BuyerSearchAlgorithm> buyerSearch, @Nullable Class<? extends SellerSearchAlgorithm > sellerSearch,
-              //@Nullable Class<? extends AskPricingStrategy> priceStrategy, @Nullable Class<? extends SalesPredictor > predictionStrategy
-
-
+    /**
+     *
+     * @return true if the sales department thinks it has at least one order placed
+     */
+    public boolean hasItPlacedAtLeastOneOrder(){
+        return !goodsQuotedOnTheMarket.isEmpty();
+    }
 }

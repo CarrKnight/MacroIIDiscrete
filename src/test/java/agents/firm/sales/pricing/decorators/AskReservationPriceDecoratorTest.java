@@ -2,6 +2,7 @@ package agents.firm.sales.pricing.decorators;
 
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import financial.Market;
 import goods.Good;
@@ -82,7 +83,7 @@ public class AskReservationPriceDecoratorTest {
         MacroII macroII = new MacroII(1l);
         Firm firm = mock(Firm.class); when(firm.getModel()).thenReturn(macroII);
 
-        SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(firm,mock(Market.class));
+        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, mock(Market.class));
         AskPricingStrategy strategy = mock(AskPricingStrategy.class);
         when(strategy.price(any(Good.class))).thenReturn(decoratedPrice);
 

@@ -2,6 +2,7 @@ package agents.firm.sales.pricing.pid;
 
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
 import financial.Market;
 import goods.Good;
 import model.MacroII;
@@ -34,7 +35,7 @@ public class SalesControlWithInventoryAndPIDTest {
     public void priceShouldGoDownWhenInventoryIsTooMuch()
     {
 
-        SalesDepartment department = mock(SalesDepartment.class);
+        SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
         Firm firm = mock(Firm.class); when(department.getFirm()).thenReturn(firm);  when(firm.isActive()).thenReturn(true);
         when(firm.getModel()).thenReturn(new MacroII(1l));
         Market market= mock(Market.class); when(department.getMarket()).thenReturn(market);
@@ -64,7 +65,7 @@ public class SalesControlWithInventoryAndPIDTest {
     {
 
 
-        SalesDepartment department = mock(SalesDepartment.class);
+        SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
         Firm firm = mock(Firm.class); when(department.getFirm()).thenReturn(firm); when(firm.isActive()).thenReturn(true);
         when(firm.getModel()).thenReturn(new MacroII(1l));
         Market market= mock(Market.class); when(department.getMarket()).thenReturn(market);

@@ -85,8 +85,7 @@ public class SaleResult {
      * @return
      */
     public static SaleResult sold(long priceSold, long initialCost){
-        SaleResult saleResult = new SaleResult(Result.SOLD,priceSold,initialCost);
-        return saleResult;
+        return new SaleResult(Result.SOLD,priceSold,initialCost);
     }
 
     //just have one and return it, don't instantiate millions of these

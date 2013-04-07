@@ -2,7 +2,10 @@ package agents.firm.sales.pricing.pid;
 
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
-import static org.junit.Assert.*;import model.MacroII;
+import static org.junit.Assert.*;
+
+import agents.firm.sales.SalesDepartmentAllAtOnce;
+import model.MacroII;
 import model.utilities.ActionOrder;
 import org.junit.Test;
 
@@ -33,7 +36,7 @@ public class SmoothedDailyInventoryPricingStrategyTest {
     {
 
         //I assume initially target is 0
-        SalesDepartment department = mock(SalesDepartment.class);
+        SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
         Firm firm = mock(Firm.class); when(department.getFirm()).thenReturn(firm);
         MacroII model = mock(MacroII.class); when(firm.getModel()).thenReturn(model);
         when(model.getCurrentPhase()).thenReturn(ActionOrder.PREPARE_TO_TRADE);

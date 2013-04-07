@@ -82,7 +82,7 @@ public class InputCostStrategy implements PlantCostStrategy, PlantListener{
                 "Can't have positive input costs when the blueprint has no input!");
 
 
-        return Math.round((float) totalCostOfInputs / ((float) plant.totalProductionPerRun()));
+        return Math.round((float) totalCostOfInputs / plant.hypotheticalTotalThroughput(workers));
 
     }
 

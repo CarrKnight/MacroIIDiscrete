@@ -78,6 +78,13 @@ public final class MarginalMaximizerStatics {
         float marginalRevenue = computeMarginalRevenue(owner, p, policy, currentWorkers, targetWorkers, inputCosts.getTotalCost(), wageCosts.getTotalCost());
 
 
+        if(targetWorkers > currentWorkers)
+        {
+            System.out.println("total input: " + inputCosts.getTotalCost() + ", total wage costs: " + wageCosts.getTotalCost());
+            System.out.println("marginal input: " + inputCosts.getMarginalCost() + ", marginal wages:" + wageCosts + ", revenue: " +
+                    marginalRevenue + " ----- workers: " + currentWorkers);
+        }
+
         //FINALLY return
         return marginalRevenue - totalMarginalCosts;
 
@@ -192,7 +199,8 @@ public final class MarginalMaximizerStatics {
             float marginalProduction = p.hypotheticalThroughput(targetWorkers, output) - p.hypotheticalThroughput(currentWorkers, output);
             assert (marginalProduction >= 0 && targetWorkers >= currentWorkers) ^  (marginalProduction <= 0 && targetWorkers < currentWorkers);
             //if you are increasing production, predict future price. Otherwise get last price
-            long pricePerUnit = targetWorkers > currentWorkers ? owner.getSalesDepartment(output).predictSalePrice(p.hypotheticalUnitOutputCost(output, totalFutureCosts, targetWorkers, totalFutureWageCosts)) :
+            long pricePerUnit = targetWorkers > currentWorkers ?
+                    owner.getSalesDepartment(output).predictSalePrice(p.hypotheticalUnitOutputCost(output, totalFutureCosts, targetWorkers, totalFutureWageCosts)) :
                     owner.getSalesDepartment(output).getLastClosingPrice();
             //if prediction is not available, react to it!
             pricePerUnit = pricePerUnit < 0 ? policy.replaceUnknownPrediction(owner.getSalesDepartment(output).getMarket(), p.getRandom()) : pricePerUnit;
@@ -200,10 +208,14 @@ public final class MarginalMaximizerStatics {
             marginalRevenue += pricePerUnit * marginalProduction;
             //but now decrease it if you caused the price to change
             //if you sold anything today (if you haven't and you use very old "closing price" then your estimates are very wrong
-            if(owner.getSalesDepartment(output).getTodayOutflow() > 0)
+            if(owner.getSalesDepartment(output).getTodayOutflow() > 0
+                    &&
+                    owner.getSalesDepartment(output).getLastClosingPrice() > pricePerUnit )
+            {
+
                 marginalRevenue -= (owner.getSalesDepartment(output).getLastClosingPrice()-
                         pricePerUnit) * p.hypotheticalThroughput(currentWorkers, output);
-
+            }
 
         }
         return marginalRevenue;

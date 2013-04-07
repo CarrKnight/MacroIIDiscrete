@@ -94,7 +94,7 @@ public class DirectCosts implements PlantCostStrategy, PlantListener {
     public long hypotheticalUnitOutputCost(GoodType t, long totalCostOfInputs, int workers, long totalWages) {
 
         long hypotheticalWageCost = Math.round( ((float)totalWages) / ( plant.hypotheticalTotalThroughput(workers)));
-        long hypotheticalInputCosts =  Math.round((float) totalCostOfInputs  / (float) plant.totalProductionPerRun() );
+        long hypotheticalInputCosts =  Math.round((float) totalCostOfInputs  / plant.hypotheticalTotalThroughput(workers) );
         return hypotheticalInputCosts + hypotheticalWageCost;
     }
 
