@@ -21,6 +21,9 @@ import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesWeeklyPID;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
+import agents.firm.sales.SalesDepartmentFactory;
+import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.MarketSalesPredictor;
@@ -45,6 +48,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import static org.mockito.Mockito.*;
+import static tests.tuningRuns.MarginalMaximizerWithUnitPIDTuningMultiThreaded.printProgressBar;
 
 /**
  * <h4>Description</h4>
@@ -76,6 +80,11 @@ public class OneLinkSupplyChainScenario extends Scenario {
      * The type of integrated control that is used by human resources in firms to choose production
      */
     private Class<? extends PlantControl> controlType = MarginalPlantControl.class;
+
+    /**
+     * the type of sales department firms use
+     */
+    private Class<? extends  SalesDepartment> salesDepartmentType = SalesDepartmentAllAtOnce.class;
 
     /**
      * total number of firms producing beef
@@ -193,8 +202,9 @@ public class OneLinkSupplyChainScenario extends Scenario {
             @Override
             public void step(SimState simState) {
                 //CREATE THE SALES DEPARTMENT
-                SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(firm, goodmarket,
-                        new SimpleBuyerSearch(goodmarket, firm), new SimpleSellerSearch(goodmarket, firm));
+                SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, goodmarket,
+                        new SimpleBuyerSearch(goodmarket, firm), new SimpleSellerSearch(goodmarket, firm),
+                        salesDepartmentType);
                 firm.registerSaleDepartment(dept, goodmarket.getGoodType());
                 SmoothedDailyInventoryPricingStrategy strategy;
             /*    if(goodmarket.getGoodType().equals(GoodType.FOOD))
@@ -471,6 +481,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         final MacroII macroII = new MacroII(System.currentTimeMillis());
         OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
         scenario1.setControlType(MarginalPlantControlWithPIDUnit.class);
+        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setReduceInventoriesHack(false);
         // scenario1.setControlType(MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment.class);
 
@@ -483,7 +494,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
         //create the CSVWriter
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("supplychain_smoothedDailyInventory_slowedby100_speed30.csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter("supplychainSigmoid.csv"));
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
 
@@ -496,7 +507,10 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
 
         while(macroII.schedule.getTime()<15000)
+        {
             macroII.schedule.step(macroII);
+            printProgressBar(15000,(int)macroII.schedule.getSteps(),100);
+        }
 
 
     }
@@ -522,5 +536,24 @@ public class OneLinkSupplyChainScenario extends Scenario {
      */
     public boolean isReduceInventoriesHack() {
         return reduceInventoriesHack;
+    }
+
+
+    /**
+     * Gets the type of sales department firms use.
+     *
+     * @return Value of the type of sales department firms use.
+     */
+    public Class<? extends SalesDepartment> getSalesDepartmentType() {
+        return salesDepartmentType;
+    }
+
+    /**
+     * Sets new the type of sales department firms use.
+     *
+     * @param salesDepartmentType New value of the type of sales department firms use.
+     */
+    public void setSalesDepartmentType(Class<? extends SalesDepartment> salesDepartmentType) {
+        this.salesDepartmentType = salesDepartmentType;
     }
 }

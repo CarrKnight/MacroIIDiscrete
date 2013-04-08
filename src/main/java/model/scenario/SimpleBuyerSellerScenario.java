@@ -11,6 +11,8 @@ import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.FlowAndStockFixedPID;
 import agents.firm.purchases.pricing.decorators.MaximumBidPriceDecorator;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
@@ -180,7 +182,9 @@ public class SimpleBuyerSellerScenario extends Scenario {
         getModel().schedule.scheduleOnce(new Steppable() {
             @Override
             public void step(SimState simState) {
-                SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(seller,market,new SimpleBuyerSearch(market,seller),new SimpleSellerSearch(market,seller));
+                SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(seller, market,
+                        new SimpleBuyerSearch(market, seller), new SimpleSellerSearch(market, seller),
+                        SalesDepartmentAllAtOnce.class);
                 seller.registerSaleDepartment(dept, GoodType.GENERIC);
                 dept.setAskPricingStrategy(new SimpleFlowSellerPID(dept)); //set strategy to PID
                 getAgents().add(seller);

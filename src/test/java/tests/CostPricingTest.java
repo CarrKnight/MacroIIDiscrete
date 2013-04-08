@@ -2,6 +2,7 @@ package tests;
 
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.CostAskPricing;
 import financial.Market;
@@ -43,7 +44,7 @@ public class CostPricingTest {
         other = new Firm(model);
 
         Market market = new OrderBookMarket(GoodType.GENERIC);
-        SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(producer,market); //useless null is useless
+        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(producer, market); //useless null is useless
         strategyAsk = new CostAskPricing(dept);
 
 

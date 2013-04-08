@@ -8,6 +8,7 @@ import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerStatics;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.DelayException;
@@ -76,7 +77,7 @@ public class MarginalMaximizerTest {
         Firm owner = mock(Firm.class); when(p.getOwner()).thenReturn(owner); when(hr.getPlant()).thenReturn(p); when(hr.getFirm()).thenReturn(owner);
         when(owner.getModel()).thenReturn(new MacroII(1l));  when(p.workerSize()).thenReturn(10);
         when(hr.predictPurchasePrice()).thenReturn(-1l); //tell the hr to fail at predicting
-        SalesDepartment sales = mock(SalesDepartment.class);
+        SalesDepartment sales = mock(SalesDepartmentAllAtOnce.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(sales);
         when(p.hypotheticalThroughput(anyInt(),any(GoodType.class))).thenAnswer(new Answer<Object>() {     //production is just number of workers
             @Override

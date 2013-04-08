@@ -13,6 +13,7 @@ import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.IRSExponentialMachinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
 import financial.Market;
 import financial.OrderBookBlindMarket;
 import goods.GoodType;
@@ -78,7 +79,7 @@ public class ProfitCheckPlantControlTest {
         final List<Steppable> steppableList = new LinkedList<>();
 
         //make this always profitable
-        SalesDepartment dept = mock(SalesDepartment.class);
+        SalesDepartment dept = mock(SalesDepartmentAllAtOnce.class);
         when(dept.getLastClosingCost()).thenReturn(1l);
         when(dept.getLastClosingPrice()).thenReturn(2l);
         when(dept.getSoldPercentage()).thenReturn(.7f);
@@ -189,7 +190,7 @@ public class ProfitCheckPlantControlTest {
         final List<Steppable> steppableList = new LinkedList<>();
 
         //make this always profitable
-        SalesDepartment dept = mock(SalesDepartment.class);
+        SalesDepartment dept = mock(SalesDepartmentAllAtOnce.class);
         //should be profitable
         firm.registerSaleDepartment(dept, GoodType.GENERIC);
 

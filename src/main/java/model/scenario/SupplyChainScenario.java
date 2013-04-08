@@ -13,13 +13,15 @@ import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
-import agents.firm.production.control.facades.MarginalPlantControl;
 import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.facades.MarginalPlantControl;
 import agents.firm.production.control.facades.MarginalPlantControlWithPIDUnit;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesWeeklyPID;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.MarketSalesPredictor;
@@ -191,8 +193,9 @@ public class SupplyChainScenario extends Scenario
             @Override
             public void step(SimState simState) {
                 //CREATE THE SALES DEPARTMENT
-                SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(firm, goodmarket,
-                        new SimpleBuyerSearch(goodmarket, firm), new SimpleSellerSearch(goodmarket, firm));
+                SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, goodmarket,
+                        new SimpleBuyerSearch(goodmarket, firm), new SimpleSellerSearch(goodmarket, firm),
+                        SalesDepartmentAllAtOnce.class);
                 firm.registerSaleDepartment(dept, goodmarket.getGoodType());
                 SmoothedDailyInventoryPricingStrategy strategy = new SmoothedDailyInventoryPricingStrategy(dept);
                // strategy.setProductionCostOverride(false);

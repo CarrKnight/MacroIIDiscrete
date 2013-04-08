@@ -12,7 +12,7 @@ import agents.firm.production.technology.CRSExponentialMachinery;
 import agents.firm.production.technology.DRSExponentialMachinery;
 import agents.firm.production.technology.IRSExponentialMachinery;
 import agents.firm.production.technology.LinearConstantMachinery;
-import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
@@ -66,9 +66,9 @@ public class PlantTest {
 
 
 
-        crs.getOwner().registerSaleDepartment(mock(SalesDepartment.class),GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
-        irs.getOwner().registerSaleDepartment(mock(SalesDepartment.class),GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
-        drs.getOwner().registerSaleDepartment(mock(SalesDepartment.class), GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+        crs.getOwner().registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class),GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+        irs.getOwner().registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class),GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+        drs.getOwner().registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class), GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
 
 
         crs.setCostStrategy(new EmptyCostStrategy());
@@ -242,7 +242,7 @@ public class PlantTest {
 
 
 
-        localCRS.getOwner().registerSaleDepartment(mock(SalesDepartment.class),GoodType.GENERIC); //fake sales
+        localCRS.getOwner().registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class),GoodType.GENERIC); //fake sales
         // department so that you don't try selling the stuff you build
 
 
@@ -348,7 +348,7 @@ public class PlantTest {
         f.addPlant(localCRS);
         localCRS.addWorker(new Person(localCRS.getModel()));
         localCRS.addWorker(new Person(localCRS.getModel()));
-        localCRS.getOwner().registerSaleDepartment(mock(SalesDepartment.class),GoodType.BEEF); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+        localCRS.getOwner().registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class),GoodType.BEEF); //fake sales department so that you don't sell the stuff you completeProductionRunNow
         localCRS.setCostStrategy(new InputCostStrategy(localCRS));
 
 

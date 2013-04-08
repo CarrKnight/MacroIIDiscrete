@@ -4,6 +4,7 @@ import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.sales.SaleResult;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.SurveySalesPredictor;
@@ -13,6 +14,8 @@ import agents.firm.sales.pricing.UndercuttingAskPricing;
 import financial.Bankruptcy;
 import financial.Market;
 import financial.OrderBookMarket;
+import financial.utilities.AveragePricePolicy;
+import financial.utilities.BuyerSetPricePolicy;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
@@ -47,14 +50,15 @@ public class SalesDepartmentTest {
 
     SalesDepartment dept;
     MacroII model;
+    Market market;
 
 
     @Before
     public void simpleScenarioSetup(){
         model = new MacroII(0);
-        final Market market = new OrderBookMarket(GoodType.GENERIC);
+        market = new OrderBookMarket(GoodType.GENERIC);
         Firm firm = new Firm(model);
-        dept = SalesDepartment.incompleteSalesDepartment(firm,market,new SimpleBuyerSearch(market,firm),new SimpleSellerSearch(market,firm));
+        dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, market, new SimpleBuyerSearch(market, firm), new SimpleSellerSearch(market, firm), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         firm.registerSaleDepartment(dept,market.getGoodType());
 
         for(int i=0; i<10; i++) //create 10 buyers!!!!!!!!
@@ -118,8 +122,10 @@ public class SalesDepartmentTest {
 
     @Test
     public void testPredictSalePrice() throws Exception {
-
+        market.setPricePolicy(new BuyerSetPricePolicy());
         assertEquals(100l, dept.predictSalePrice(10)); //just queries the order book.
+        market.setPricePolicy(new AveragePricePolicy());
+
     }
 
     @Test

@@ -2,6 +2,7 @@ package tests.predictor;
 
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.PricingSalesPredictor;
@@ -56,7 +57,7 @@ public class PricingPredictorStrategyTest {
         model = new MacroII(100l);
         market = new OrderBookMarket(GoodType.GENERIC);
         f = new Firm(model);
-        department = SalesDepartment.incompleteSalesDepartment(f,market,new SimpleBuyerSearch(market,f),new SimpleSellerSearch(market,f));
+        department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new PricingSalesPredictor();
         department.setPredictorStrategy(strategy);
         UndercuttingAskPricing pricing = new UndercuttingAskPricing(department);
@@ -73,7 +74,6 @@ public class PricingPredictorStrategyTest {
         assertEquals(240, strategy.predictSalePrice(department, 200)); //markup 20% (since you haven't stepped and seen the competition)
         pricing.step(model);
         assertEquals(297, strategy.predictSalePrice(department, 200)); //undercut by 1%
-        assertEquals(200, department.predictSalePrice(200)); //overridden by looking at the order book.
 
 
     }
@@ -90,7 +90,7 @@ public class PricingPredictorStrategyTest {
         model = new MacroII(100l);
         market = new OrderBookMarket(GoodType.GENERIC);
         f = new Firm(model);
-        department = SalesDepartment.incompleteSalesDepartment(f,market,new SimpleBuyerSearch(market,f),new SimpleSellerSearch(market,f));
+        department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new PricingSalesPredictor();
         department.setPredictorStrategy(strategy);
         UndercuttingAskPricing pricing = new UndercuttingAskPricing(department);
@@ -122,7 +122,6 @@ public class PricingPredictorStrategyTest {
         assertEquals(240, strategy.predictSalePrice(department, 200)); //markup 20% (since you haven't stepped and seen the competition)
         pricing.step(model);
         assertEquals(297, strategy.predictSalePrice(department, 200)); //undercute by 1%
-        assertEquals(200, department.predictSalePrice(200)); //overridden by looking at the order book.
 
 
     }
@@ -145,7 +144,7 @@ public class PricingPredictorStrategyTest {
             }
         };
         f = new Firm(model);
-        department = SalesDepartment.incompleteSalesDepartment(f,market,new SimpleBuyerSearch(market,f),new SimpleSellerSearch(market,f));
+        department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
 
         strategy = new PricingSalesPredictor();
         department.setPredictorStrategy(strategy);
@@ -192,7 +191,7 @@ public class PricingPredictorStrategyTest {
         market = new OrderBookMarket(GoodType.GENERIC);
         f = new Firm(model);
         strategy = new PricingSalesPredictor();
-        department = SalesDepartment.incompleteSalesDepartment(f,market,new SimpleBuyerSearch(market,f),new SimpleSellerSearch(market,f));
+        department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         department.setPredictorStrategy(strategy);
         UndercuttingAskPricing pricing = new UndercuttingAskPricing(department);
 
@@ -214,7 +213,7 @@ public class PricingPredictorStrategyTest {
         model = new MacroII(100l);
         market = new OrderBookMarket(GoodType.GENERIC);
         f = new Firm(model);
-        department = SalesDepartment.incompleteSalesDepartment(f,market,new SimpleBuyerSearch(market,f),new SimpleSellerSearch(market,f));
+        department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         f.registerSaleDepartment(department, GoodType.GENERIC);
 
 
@@ -256,7 +255,6 @@ public class PricingPredictorStrategyTest {
         assertEquals(240, strategy.predictSalePrice(department, 200)); //markup 20% (since you haven't stepped and seen the competition)
         pricing.step(model);
         assertEquals(297, strategy.predictSalePrice(department, 200)); //copy the last closing price (which is our closing price anyway)
-        assertEquals(200, department.predictSalePrice(200)); //overridden by looking at the order book.
 
     }
 

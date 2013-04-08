@@ -2,6 +2,7 @@ package tests.predictor;
 
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.MarketSalesPredictor;
@@ -56,7 +57,7 @@ public class MarketPredictorStrategyTest {
         model = new MacroII(100l);
         market = new OrderBookMarket(GoodType.GENERIC);
         f = new Firm(model);
-        department = SalesDepartment.incompleteSalesDepartment(f,market,new SimpleBuyerSearch(market,f),new SimpleSellerSearch(market,f));
+        department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new MarketSalesPredictor();
         department.setPredictorStrategy(strategy);
 
@@ -70,7 +71,6 @@ public class MarketPredictorStrategyTest {
 
 
         assertEquals(-1, strategy.predictSalePrice(department, 200)); //fails because there is no closing price in memory
-        assertEquals(200, department.predictSalePrice(200)); //overridden by looking at the order book.
 
 
     }
@@ -87,7 +87,7 @@ public class MarketPredictorStrategyTest {
         model = new MacroII(100l);
         market = new OrderBookMarket(GoodType.GENERIC);
         f = new Firm(model);
-        department = SalesDepartment.incompleteSalesDepartment(f,market,new SimpleBuyerSearch(market,f),new SimpleSellerSearch(market,f));
+        department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new MarketSalesPredictor();
         department.setPredictorStrategy(strategy);
 
@@ -115,7 +115,6 @@ public class MarketPredictorStrategyTest {
         assertEquals(250, seller2.getCash());
 
         assertEquals(250, strategy.predictSalePrice(department, 200)); //copy last closing price
-        assertEquals(200, department.predictSalePrice(200)); //overridden by looking at the order book.
 
 
     }
@@ -138,7 +137,7 @@ public class MarketPredictorStrategyTest {
             }
         };
         f = new Firm(model);
-        department = SalesDepartment.incompleteSalesDepartment(f,market,new SimpleBuyerSearch(market,f),new SimpleSellerSearch(market,f));
+        department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new MarketSalesPredictor();
         department.setPredictorStrategy(strategy);
 
@@ -179,7 +178,7 @@ public class MarketPredictorStrategyTest {
         model = new MacroII(100l);
         market = new OrderBookMarket(GoodType.GENERIC);
         f = new Firm(model);
-        department = SalesDepartment.incompleteSalesDepartment(f,market,new SimpleBuyerSearch(market,f),new SimpleSellerSearch(market,f));
+        department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new MarketSalesPredictor();
         department.setPredictorStrategy(strategy);
 
@@ -200,7 +199,7 @@ public class MarketPredictorStrategyTest {
         model = new MacroII(100l);
         market = new OrderBookMarket(GoodType.GENERIC);
         f = new Firm(model);
-        department = SalesDepartment.incompleteSalesDepartment(f,market,new SimpleBuyerSearch(market,f),new SimpleSellerSearch(market,f));
+        department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         f.registerSaleDepartment(department,GoodType.GENERIC);
 
 
@@ -239,7 +238,6 @@ public class MarketPredictorStrategyTest {
         assertEquals(250, f.getCash());
 
         assertEquals(250, strategy.predictSalePrice(department, 200)); //copy the last closing price (which is our closing price anyway)
-        assertEquals(200, department.predictSalePrice(200)); //overridden by looking at the order book.
 
     }
 

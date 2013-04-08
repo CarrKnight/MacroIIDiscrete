@@ -2,6 +2,7 @@ package tests.salesPID;
 
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
@@ -50,7 +51,7 @@ public class SimpleFlowSellerPIDTest {
         MacroII model = new MacroII(1l);
         Firm firm = new Firm(model);
         OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
-        SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(firm,market,new SimpleBuyerSearch(market,firm), new SimpleSellerSearch(market,firm));
+        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, market, new SimpleBuyerSearch(market, firm), new SimpleSellerSearch(market, firm), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept);
         dept.setAskPricingStrategy(strategy);
 
@@ -117,7 +118,7 @@ public class SimpleFlowSellerPIDTest {
         MacroII model = new MacroII(1l);
         Firm firm = new Firm(model);
         OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
-        SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(firm,market,new SimpleBuyerSearch(market,firm), new SimpleSellerSearch(market,firm));
+        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, market, new SimpleBuyerSearch(market, firm), new SimpleSellerSearch(market, firm), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept);
         dept.setAskPricingStrategy(strategy);
         strategy.setInitialPrice(150l);
@@ -184,14 +185,14 @@ public class SimpleFlowSellerPIDTest {
         OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
 
         Firm firm1 = new Firm(model);
-        SalesDepartment dept1 = SalesDepartment.incompleteSalesDepartment(firm1,market,new SimpleBuyerSearch(market,firm1), new SimpleSellerSearch(market,firm1));
+        SalesDepartment dept1 = SalesDepartmentFactory.incompleteSalesDepartment(firm1, market, new SimpleBuyerSearch(market, firm1), new SimpleSellerSearch(market, firm1), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         SimpleFlowSellerPID strategy1 = new SimpleFlowSellerPID(dept1);
         dept1.setAskPricingStrategy(strategy1);
         firm1.registerSaleDepartment(dept1,GoodType.GENERIC);
 
 
         Firm firm2 = new Firm(model);
-        SalesDepartment dept2 = SalesDepartment.incompleteSalesDepartment(firm2,market,new SimpleBuyerSearch(market,firm2), new SimpleSellerSearch(market,firm2));
+        SalesDepartment dept2 = SalesDepartmentFactory.incompleteSalesDepartment(firm2, market, new SimpleBuyerSearch(market, firm2), new SimpleSellerSearch(market, firm2), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         SimpleFlowSellerPID strategy2 = new SimpleFlowSellerPID(dept2);
         dept2.setAskPricingStrategy(strategy2);
         firm2.registerSaleDepartment(dept2,GoodType.GENERIC);
@@ -272,7 +273,7 @@ public class SimpleFlowSellerPIDTest {
         MacroII model = new MacroII(1l);
         Firm firm = new Firm(model);
         OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
-        SalesDepartment dept =SalesDepartment.incompleteSalesDepartment(firm,market,new SimpleBuyerSearch(market,firm), new SimpleSellerSearch(market,firm));
+        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, market, new SimpleBuyerSearch(market, firm), new SimpleSellerSearch(market, firm), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept);
         dept.setAskPricingStrategy(strategy);
 

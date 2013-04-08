@@ -12,17 +12,19 @@ import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
 import agents.firm.owner.TotalDividendStrategy;
 import agents.firm.personell.HumanResources;
+import agents.firm.production.Blueprint;
+import agents.firm.production.Plant;
+import agents.firm.production.control.facades.DiscreteSlowPlantControl;
+import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import financial.OrderBookMarket;
 import financial.utilities.ShopSetPricePolicy;
 import goods.GoodType;
-import agents.firm.production.Blueprint;
-import agents.firm.production.Plant;
-import agents.firm.production.control.facades.DiscreteSlowPlantControl;
-import agents.firm.production.technology.LinearConstantMachinery;
 import model.MacroII;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -145,8 +147,9 @@ public class DummyMacroScenario extends Scenario {
                 @Override
                 public void step(SimState simState) {
                     //sales department
-                    SalesDepartment dept =SalesDepartment.incompleteSalesDepartment(seller, beefMarket,
-                            new SimpleBuyerSearch(beefMarket, seller), new SimpleSellerSearch(beefMarket, seller));
+                    SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(seller, beefMarket,
+                            new SimpleBuyerSearch(beefMarket, seller), new SimpleSellerSearch(beefMarket, seller),
+                            SalesDepartmentAllAtOnce.class);
                     seller.registerSaleDepartment(dept, GoodType.BEEF);
                     dept.setAskPricingStrategy(new SimpleFlowSellerPID(dept)); //set strategy to PID
 

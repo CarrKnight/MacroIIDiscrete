@@ -8,7 +8,7 @@ import agents.firm.production.Plant;
 import agents.firm.production.technology.IRSExponentialMachinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesSimplePID;
-import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
 import financial.Market;
 import financial.OrderBookBlindMarket;
 import financial.utilities.Quote;
@@ -226,7 +226,7 @@ public class PurchasesSimplePIDTest {
         f.addPlant(p);
 
         p.addWorker(new Person(model));
-        f.earn(10000000);            f.registerSaleDepartment(mock(SalesDepartment.class),GoodType.CAPITAL); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+        f.earn(10000000);            f.registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class),GoodType.CAPITAL); //fake sales department so that you don't sell the stuff you completeProductionRunNow
 
         model.start();
 

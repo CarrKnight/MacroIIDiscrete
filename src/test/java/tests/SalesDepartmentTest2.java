@@ -4,15 +4,18 @@ import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.sales.SaleResult;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
-import agents.firm.sales.prediction.MemorySalesPredictor;
+import agents.firm.sales.prediction.LookupSalesPredictor;
 import agents.firm.sales.prediction.SurveySalesPredictor;
 import agents.firm.sales.pricing.PriceFollower;
 import agents.firm.sales.pricing.UndercuttingAskPricing;
 import financial.Bankruptcy;
 import financial.Market;
 import financial.OrderBookMarket;
+import financial.utilities.AveragePricePolicy;
+import financial.utilities.BuyerSetPricePolicy;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
@@ -51,17 +54,19 @@ public class SalesDepartmentTest2 {
     SalesDepartment dept2;
     UndercuttingAskPricing strategy2;
     MacroII model;
+    Market market;
+
 
     @Before
     public void simpleScenarioSetup(){
 
         model = new MacroII(0);
-        final Market market = new OrderBookMarket(GoodType.GENERIC);
+        market = new OrderBookMarket(GoodType.GENERIC);
         Firm firm1 = new Firm(model);
-        dept1 = SalesDepartment.incompleteSalesDepartment(firm1,market,new SimpleBuyerSearch(market,firm1),new SimpleSellerSearch(market,firm1));
+        dept1 = SalesDepartmentFactory.incompleteSalesDepartment(firm1, market, new SimpleBuyerSearch(market, firm1), new SimpleSellerSearch(market, firm1), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         firm1.registerSaleDepartment(dept1,market.getGoodType());
         Firm firm2 = new Firm(model);
-        dept2 = SalesDepartment.incompleteSalesDepartment(firm2,market,new SimpleBuyerSearch(market,firm2),new SimpleSellerSearch(market,firm2));
+        dept2 = SalesDepartmentFactory.incompleteSalesDepartment(firm2, market, new SimpleBuyerSearch(market, firm2), new SimpleSellerSearch(market, firm2), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         firm2.registerSaleDepartment(dept2,market.getGoodType());
 
         for(int i=0; i<10; i++) //create 10 buyers!!!!!!!!
@@ -78,13 +83,15 @@ public class SalesDepartmentTest2 {
             market.registerBuyer(buyer);
             market.submitBuyQuote(buyer,buyer.quotedPrice);
         }
+        market.setPricePolicy(new BuyerSetPricePolicy());
+
 
         //set strategies for the department
         dept1.setPredictorStrategy(new SurveySalesPredictor());
         strategy1 = new PriceFollower(dept1);
         dept1.setAskPricingStrategy(strategy1);
 
-        dept2.setPredictorStrategy(new MemorySalesPredictor());
+        dept2.setPredictorStrategy(new LookupSalesPredictor());
         strategy2 = new UndercuttingAskPricing(dept2);
         dept2.setAskPricingStrategy(strategy2);
 
@@ -155,6 +162,7 @@ public class SalesDepartmentTest2 {
     public void testSellThis() throws Exception {
 
         Market.TESTING_MODE = true;
+        market.setPricePolicy(new AveragePricePolicy());
 
         assertEquals(dept1.getMarket().getBestBuyPrice(), 100l); //the best offer is visible
         assertEquals(dept2.getMarket().getBestBuyPrice(), 100l); //the best offer is visible
@@ -323,6 +331,9 @@ public class SalesDepartmentTest2 {
         assertEquals(dept1.getMarket().getLastPrice(), 72l);
 
 
+        market.setPricePolicy(new BuyerSetPricePolicy());
+
+
 
     }
 
@@ -331,7 +342,7 @@ public class SalesDepartmentTest2 {
 
 
         Market.TESTING_MODE = true;
-
+        market.setPricePolicy(new AveragePricePolicy());
 
         //make sure it throws errors when it's not set up correctly
         Good toQuote = new Good(GoodType.GENERIC,dept1.getFirm(),10);
@@ -351,6 +362,7 @@ public class SalesDepartmentTest2 {
         assertEquals(results.get(toQuote).getPreviousCost(), 10);
 
 
+        market.setPricePolicy(new BuyerSetPricePolicy());
 
 
 

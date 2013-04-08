@@ -6,6 +6,7 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
 import goods.GoodType;
 import model.MacroII;
 import org.junit.Test;
@@ -38,11 +39,11 @@ public class ProfitReportTest {
         Firm firm = new Firm(model);
 
         //3 salesDepartment goods
-        SalesDepartment sales1 = mock(SalesDepartment.class);
+        SalesDepartment sales1 = mock(SalesDepartmentAllAtOnce.class);
         firm.registerSaleDepartment(sales1,GoodType.GENERIC);
-        SalesDepartment sales2 = mock(SalesDepartment.class);
+        SalesDepartment sales2 = mock(SalesDepartmentAllAtOnce.class);
         firm.registerSaleDepartment(sales2,GoodType.CAPITAL);
-        SalesDepartment sales3 = mock(SalesDepartment.class);
+        SalesDepartment sales3 = mock(SalesDepartmentAllAtOnce.class);
         firm.registerSaleDepartment(sales3,GoodType.LABOR);
 
 

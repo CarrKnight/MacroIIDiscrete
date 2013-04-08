@@ -3,6 +3,8 @@ package tests.salesPID;
 import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.OrderBookStockout;
@@ -47,7 +49,7 @@ public class OrderBookStockoutTest {
     public void stockouts() throws IllegalAccessException {
 
         Firm owner = new Firm(new MacroII(1l));
-        SalesDepartment dept = mock(SalesDepartment.class);
+        SalesDepartment dept = mock(SalesDepartmentAllAtOnce.class);
         when(dept.hasAnythingToSell()).thenReturn(false); //you are always empty for this example
         SimpleFlowSellerPID strategy = mock(SimpleFlowSellerPID.class);
         when(strategy.getTargetPrice()).thenReturn(10l);
@@ -146,7 +148,7 @@ public class OrderBookStockoutTest {
         MacroII model = new MacroII(1l);
         Firm owner = new Firm(model);
         OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
-        SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(owner,market,new SimpleBuyerSearch(market,owner),new SimpleSellerSearch(market,owner));
+        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(owner, market, new SimpleBuyerSearch(market, owner), new SimpleSellerSearch(market, owner), SalesDepartmentAllAtOnce.class);
         SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept);
         strategy.setInitialPrice(10l);
         dept.setAskPricingStrategy(strategy);

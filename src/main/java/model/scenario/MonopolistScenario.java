@@ -17,6 +17,8 @@ import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.facades.*;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.AskPricingStrategy;
@@ -88,6 +90,9 @@ public class MonopolistScenario extends Scenario {
      * the strategy used by the sales department of the monopolist
      */
     protected Class<? extends AskPricingStrategy> askPricingStrategy = SimpleFlowSellerPID.class;
+
+
+    protected Class<? extends SalesDepartment> salesDepartmentType = SalesDepartmentAllAtOnce.class;
 
     /**
      * Called by MacroII, it creates agents and then schedules them.
@@ -203,8 +208,9 @@ public class MonopolistScenario extends Scenario {
             @Override
             public void step(SimState simState) {
                 //sales department
-                SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(monopolist, goodMarket,
-                        new SimpleBuyerSearch(goodMarket, monopolist), new SimpleSellerSearch(goodMarket, monopolist));
+                SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(monopolist, goodMarket,
+                        new SimpleBuyerSearch(goodMarket, monopolist), new SimpleSellerSearch(goodMarket, monopolist),
+                        salesDepartmentType);
                 monopolist.registerSaleDepartment(dept, GoodType.GENERIC);
                 dept.setAskPricingStrategy(AskPricingStrategy.Factory.newAskPricingStrategy(askPricingStrategy,dept)); //set strategy to PID
                 //add the plant
@@ -338,5 +344,24 @@ public class MonopolistScenario extends Scenario {
      */
     public void setAskPricingStrategy(Class<? extends AskPricingStrategy> askPricingStrategy) {
         this.askPricingStrategy = askPricingStrategy;
+    }
+
+
+    /**
+     * Sets new salesDepartmentType.
+     *
+     * @param salesDepartmentType New value of salesDepartmentType.
+     */
+    public void setSalesDepartmentType(Class<? extends SalesDepartment> salesDepartmentType) {
+        this.salesDepartmentType = salesDepartmentType;
+    }
+
+    /**
+     * Gets salesDepartmentType.
+     *
+     * @return Value of salesDepartmentType.
+     */
+    public Class<? extends SalesDepartment> getSalesDepartmentType() {
+        return salesDepartmentType;
     }
 }

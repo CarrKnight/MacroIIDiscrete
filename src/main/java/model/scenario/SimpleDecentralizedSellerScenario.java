@@ -9,6 +9,8 @@ package model.scenario;
 import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
@@ -69,7 +71,8 @@ public class SimpleDecentralizedSellerScenario extends Scenario
         getModel().schedule.scheduleOnce(Schedule.EPOCH_PLUS_EPSILON+.01f,new Steppable() {
             @Override
             public void step(SimState simState) {
-                SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(seller, market, new SimpleBuyerSearch(market, seller), new SimpleSellerSearch(market, seller));
+                SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(seller, market, new SimpleBuyerSearch(market, seller), new SimpleSellerSearch(market, seller),
+                        SalesDepartmentAllAtOnce.class);
                 seller.registerSaleDepartment(dept,GoodType.GENERIC);
 
                 //create a seller PID with the right speed

@@ -16,6 +16,8 @@ import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.Ma
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
@@ -92,8 +94,9 @@ public class MarginalMaximizerWithUnitPIDTuning {
                                     @Override
                                     public void step(SimState simState) {
                                         //sales department
-                                        SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(monopolist, goodMarket,
-                                                new SimpleBuyerSearch(goodMarket, monopolist), new SimpleSellerSearch(goodMarket, monopolist));
+                                        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(monopolist, goodMarket,
+                                                new SimpleBuyerSearch(goodMarket, monopolist), new SimpleSellerSearch(goodMarket, monopolist),
+                                                SalesDepartmentAllAtOnce.class);
                                         monopolist.registerSaleDepartment(dept, GoodType.GENERIC);
                                         dept.setAskPricingStrategy(new SimpleFlowSellerPID(dept)); //set strategy to PID
 

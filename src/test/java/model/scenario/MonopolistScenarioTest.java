@@ -1,5 +1,7 @@
 package model.scenario;
 
+import agents.firm.sales.SalesDepartmentAllAtOnce;
+import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import goods.GoodType;
@@ -43,6 +45,11 @@ public class MonopolistScenarioTest {
             macroII.setScenario(scenario1);
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_SIMPLE);
             scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
+            if(macroII.random.nextBoolean())
+                scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            else
+                scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+
 
             macroII.start();
             while(macroII.schedule.getTime()<3500)
@@ -76,6 +83,10 @@ public class MonopolistScenarioTest {
             macroII.setScenario(scenario1);
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
             scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
+            if(macroII.random.nextBoolean())
+                scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            else
+                scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
 
             macroII.start();
@@ -110,7 +121,10 @@ public class MonopolistScenarioTest {
             macroII.setScenario(scenario1);
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_PID);
             scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
-
+            if(macroII.random.nextBoolean())
+                scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            else
+                scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
             macroII.start();
             while(macroII.schedule.getTime()<3500)
@@ -143,7 +157,10 @@ public class MonopolistScenarioTest {
             macroII.setScenario(scenario1);
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID);
             scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
-
+            if(macroII.random.nextBoolean())
+                scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            else
+                scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
             macroII.start();
             while(macroII.schedule.getTime()<3500)
@@ -183,7 +200,10 @@ public class MonopolistScenarioTest {
             macroII.setScenario(scenario1);
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
             scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventory.class);
-
+            if(macroII.random.nextBoolean())
+                scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            else
+                scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
             macroII.start();
             while(macroII.schedule.getTime()<3500)
@@ -217,7 +237,10 @@ public class MonopolistScenarioTest {
             macroII.setScenario(scenario1);
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_PID);
             scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventory.class);
-
+            if(macroII.random.nextBoolean())
+                scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            else
+                scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
             macroII.start();
             while(macroII.schedule.getTime()<3500)
@@ -249,7 +272,10 @@ public class MonopolistScenarioTest {
             macroII.setScenario(scenario1);
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID);
             scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventory.class);
-
+            if(macroII.random.nextBoolean())
+                scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            else
+                scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
             macroII.start();
             while(macroII.schedule.getTime()<3500)

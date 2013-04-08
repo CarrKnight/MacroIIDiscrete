@@ -9,6 +9,8 @@ package model.scenario;
 import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.AskPricingStrategy;
@@ -56,6 +58,10 @@ public class SimpleSellerScenario extends Scenario {
            // SmoothedDailyInventoryPricingStrategy.class;
            //SalesControlWithFixedInventoryAndPID.class;
 
+    /**
+     * The kind of sales department to use
+     */
+    private Class<? extends SalesDepartment> salesDepartmentType = SalesDepartmentAllAtOnce.class;
 
     /**
      * Called by MacroII, it creates agents and then schedules them.
@@ -129,7 +135,8 @@ public class SimpleSellerScenario extends Scenario {
         getModel().scheduleSoon(ActionOrder.DAWN,new Steppable() {
             @Override
             public void step(SimState simState) {
-                SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(seller,market,new SimpleBuyerSearch(market,seller),new SimpleSellerSearch(market,seller));
+                SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(seller, market, new SimpleBuyerSearch(market, seller),
+                        new SimpleSellerSearch(market, seller), salesDepartmentType);
                 seller.registerSaleDepartment(dept,GoodType.GENERIC);
                 try{
                 dept.setAskPricingStrategy(sellerStrategy.getConstructor(SalesDepartment.class).newInstance(dept)); //set strategy to PID
@@ -259,5 +266,24 @@ public class SimpleSellerScenario extends Scenario {
      */
     public void setSellerStrategy(Class<? extends AskPricingStrategy> sellerStrategy) {
         this.sellerStrategy = sellerStrategy;
+    }
+
+
+    /**
+     * Gets The kind of sales department to use.
+     *
+     * @return Value of The kind of sales department to use.
+     */
+    public Class<? extends SalesDepartment> getSalesDepartmentType() {
+        return salesDepartmentType;
+    }
+
+    /**
+     * Sets new The kind of sales department to use.
+     *
+     * @param salesDepartmentType New value of The kind of sales department to use.
+     */
+    public void setSalesDepartmentType(Class<? extends SalesDepartment> salesDepartmentType) {
+        this.salesDepartmentType = salesDepartmentType;
     }
 }

@@ -2,6 +2,7 @@ package tests.predictor;
 
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.SalesPredictor;
@@ -54,7 +55,7 @@ public class SurveyPredictorStrategyTest {
         model = new MacroII(100l);
         market = new OrderBookMarket(GoodType.GENERIC);
         f = new Firm(model);
-        department = SalesDepartment.incompleteSalesDepartment(f,market,new SimpleBuyerSearch(market,f),new SimpleSellerSearch(market,f));
+        department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new SurveySalesPredictor();
         department.setPredictorStrategy(strategy);
 
@@ -68,7 +69,6 @@ public class SurveyPredictorStrategyTest {
 
 
         assertEquals(199, strategy.predictSalePrice(department, 200)); //dummy buyer 2 always answers "199"
-        assertEquals(200, department.predictSalePrice(200)); //overridden by looking at the order book.
 
 
     }
@@ -85,7 +85,7 @@ public class SurveyPredictorStrategyTest {
         model = new MacroII(100l);
         market = new OrderBookMarket(GoodType.GENERIC);
         f = new Firm(model);
-        department = SalesDepartment.incompleteSalesDepartment(f,market,new SimpleBuyerSearch(market,f),new SimpleSellerSearch(market,f));
+        department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new SurveySalesPredictor();
         department.setPredictorStrategy(strategy);
 
@@ -116,7 +116,6 @@ public class SurveyPredictorStrategyTest {
         assertEquals(250l, strategy.predictSalePrice(department, 200)); //find buyer 3
         market.deregisterBuyer(buyer3);
         assertEquals(199l, strategy.predictSalePrice(department, 200)); //find buyer 2
-        assertEquals(200, department.predictSalePrice(200)); //overridden by looking at the order book.
 
 
     }
@@ -139,7 +138,7 @@ public class SurveyPredictorStrategyTest {
             }
         };
         f = new Firm(model);
-        department = SalesDepartment.incompleteSalesDepartment(f,market,new SimpleBuyerSearch(market,f),new SimpleSellerSearch(market,f));
+        department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new SurveySalesPredictor();
         department.setPredictorStrategy(strategy);
 
@@ -182,7 +181,7 @@ public class SurveyPredictorStrategyTest {
         model = new MacroII(100l);
         market = new OrderBookMarket(GoodType.GENERIC);
         f = new Firm(model);
-        department =SalesDepartment.incompleteSalesDepartment(f,market,new SimpleBuyerSearch(market,f),new SimpleSellerSearch(market,f));
+        department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new SurveySalesPredictor();
         department.setPredictorStrategy(strategy);
 
@@ -202,7 +201,7 @@ public class SurveyPredictorStrategyTest {
         model = new MacroII(100l);
         market = new OrderBookMarket(GoodType.GENERIC);
         f = new Firm(model);
-        department = SalesDepartment.incompleteSalesDepartment(f,market,new SimpleBuyerSearch(market,f),new SimpleSellerSearch(market,f));
+        department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         f.registerSaleDepartment(department,GoodType.GENERIC);
 
 

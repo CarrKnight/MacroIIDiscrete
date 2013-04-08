@@ -2,6 +2,7 @@ package tests;
 
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.EverythingMustGoAdaptive;
 import financial.Market;
@@ -50,7 +51,7 @@ public class EverythingMustGoAdaptiveTest {
         other = new Firm(model);
 
         Market market = new OrderBookMarket(GoodType.GENERIC);
-        dept = SalesDepartment.incompleteSalesDepartment(producer,market,null,null); //useless null is useless
+        dept = SalesDepartmentFactory.incompleteSalesDepartment(producer, market, null, null, agents.firm.sales.SalesDepartmentAllAtOnce.class); //useless null is useless
         strategyAsk = new EverythingMustGoAdaptive(dept);
 
 

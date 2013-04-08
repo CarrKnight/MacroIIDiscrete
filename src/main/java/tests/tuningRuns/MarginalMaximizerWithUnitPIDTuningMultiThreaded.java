@@ -16,6 +16,8 @@ import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.Ma
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
@@ -68,9 +70,9 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
             ExecutorCompletionService executor = new ExecutorCompletionService(Executors.newFixedThreadPool(5));
 
             int combinations = 0;
-            for(float proportional=0.01f; proportional< 4f; proportional = proportional +.02f)
-                for(float integral=0.01f; integral< 4f; integral=  integral + .02f)
-                    for(float derivative = 0.01f; derivative <=.03; derivative = derivative + .01f)
+            for(float proportional=3.5f; proportional< 8f; proportional = proportional +.05f)
+                for(float integral=3.9f; integral< 8f; integral=  integral + .05f)
+                    for(float derivative = 0.01f; derivative <=.04; derivative = derivative + .01f)
                     {
                         combinations++;
 
@@ -184,8 +186,9 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
                             @Override
                             public void step(SimState simState) {
                                 //sales department
-                                SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(monopolist, goodMarket,
-                                        new SimpleBuyerSearch(goodMarket, monopolist), new SimpleSellerSearch(goodMarket, monopolist));
+                                SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(monopolist, goodMarket,
+                                        new SimpleBuyerSearch(goodMarket, monopolist), new SimpleSellerSearch(goodMarket, monopolist),
+                                        SalesDepartmentAllAtOnce.class);
                                 monopolist.registerSaleDepartment(dept, GoodType.GENERIC);
                                 dept.setAskPricingStrategy(new SimpleFlowSellerPID(dept)); //set strategy to PID
 

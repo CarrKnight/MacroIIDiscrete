@@ -3,6 +3,8 @@ package tests.salesPID;
 import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.DecentralizedStockout;
@@ -57,7 +59,7 @@ public class DecentralizedStockoutTest {
     public void stockouts() throws IllegalAccessException {
 
         Firm owner = new Firm(new MacroII(1l));
-        SalesDepartment dept = mock(SalesDepartment.class);
+        SalesDepartment dept = mock(SalesDepartmentAllAtOnce.class);
         when(dept.hasAnythingToSell()).thenReturn(false); //you are always empty for this example
         SimpleFlowSellerPID strategy = mock(SimpleFlowSellerPID.class);
         when(strategy.getTargetPrice()).thenReturn(10l);
@@ -152,7 +154,7 @@ public class DecentralizedStockoutTest {
 
 
         Firm owner = new Firm(new MacroII(1l));
-        SalesDepartment dept = mock(SalesDepartment.class);
+        SalesDepartment dept = mock(SalesDepartmentAllAtOnce.class);
         when(dept.hasAnythingToSell()).thenReturn(false); //you are always empty for this example
         SimpleFlowSellerPID strategy = mock(SimpleFlowSellerPID.class);
         when(strategy.getTargetPrice()).thenReturn(10l);
@@ -192,7 +194,7 @@ public class DecentralizedStockoutTest {
         MacroII model = new MacroII(1l);
         Firm owner = new Firm(model);
         OrderBookBlindMarket market = new OrderBookBlindMarket(GoodType.GENERIC);
-        SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(owner,market,new SimpleBuyerSearch(market,owner),new SimpleSellerSearch(market,owner));
+        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(owner, market, new SimpleBuyerSearch(market, owner), new SimpleSellerSearch(market, owner), SalesDepartmentAllAtOnce.class);
         SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept);
         strategy.setInitialPrice(10l);
         dept.setAskPricingStrategy(strategy);
@@ -296,7 +298,7 @@ public class DecentralizedStockoutTest {
 
         Market market = new DecentralizedMarket(GoodType.GENERIC);
         Firm firm = new Firm(model);
-        SalesDepartment dept = SalesDepartment.newSalesDepartment(firm,market,null,SimpleSellerSearch.class,SimpleFlowSellerPID.class,null).getSalesDepartment();
+        SalesDepartment dept = SalesDepartmentFactory.newSalesDepartment(firm, market, null, SimpleSellerSearch.class, SimpleFlowSellerPID.class, null, SalesDepartmentAllAtOnce.class).getSalesDepartment();
         dept.setCanPeddle(false);
         //give the department 1 good to sell
         for(int i=0; i < 1; i++)

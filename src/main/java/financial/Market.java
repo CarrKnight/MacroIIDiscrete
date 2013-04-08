@@ -761,4 +761,14 @@ public abstract class Market {
     public int getLastWeekVolume() {
         return lastWeekVolume;
     }
+
+
+    /**
+     * Gets The price policy of the market.
+     *
+     * @return Value of The price policy of the market.
+     */
+    public PricePolicy getPricePolicy() {
+        return pricePolicy;
+    }
 }

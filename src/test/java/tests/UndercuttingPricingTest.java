@@ -4,6 +4,7 @@ import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.pricing.UndercuttingAskPricing;
 import financial.Market;
 import financial.OrderBookMarket;
@@ -61,7 +62,7 @@ public class UndercuttingPricingTest {
         other = new Firm(model);
 
         market = new OrderBookMarket(GoodType.GENERIC);
-        dept = SalesDepartment.incompleteSalesDepartment(producer,market,null,null); //useless null is useless
+        dept = SalesDepartmentFactory.incompleteSalesDepartment(producer, market, null, null, agents.firm.sales.SalesDepartmentAllAtOnce.class); //useless null is useless
         strategy = new UndercuttingAskPricing(dept);
 
 

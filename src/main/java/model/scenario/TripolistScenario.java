@@ -13,6 +13,8 @@ import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
+import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
@@ -73,8 +75,9 @@ public class TripolistScenario extends MonopolistScenario{
                 @Override
                 public void step(SimState simState) {
                     //sales department
-                    SalesDepartment dept = SalesDepartment.incompleteSalesDepartment(seller,goodMarket,
-                            new SimpleBuyerSearch(goodMarket,seller),new SimpleSellerSearch(goodMarket,seller));
+                    SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(seller, goodMarket,
+                            new SimpleBuyerSearch(goodMarket, seller), new SimpleSellerSearch(goodMarket, seller),
+                            SalesDepartmentAllAtOnce.class);
                     seller.registerSaleDepartment(dept, GoodType.GENERIC);
                     dept.setAskPricingStrategy(new SimpleFlowSellerPID(dept)); //set strategy to PID
 

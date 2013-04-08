@@ -9,7 +9,7 @@ import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.production.technology.Machinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesWeeklyPID;
-import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
 import financial.Market;
 import financial.OrderBookBlindMarket;
 import financial.utilities.Quote;
@@ -265,8 +265,8 @@ public class PurchasesWeeklyPIDTest {
             p.addWorker(new Person(model));
         f.earn(10000000);
         model.start();
-        f.registerSaleDepartment(mock(SalesDepartment.class),GoodType.GENERIC);
-        f.registerSaleDepartment(mock(SalesDepartment.class),GoodType.CAPITAL);
+        f.registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class),GoodType.GENERIC);
+        f.registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class),GoodType.CAPITAL);
 
 
 
