@@ -226,6 +226,7 @@ public class SimpleSellerScenarioTest {
 
 
             //price should be any between 60 and 51
+            System.out.println("price:" + macroII.getMarket(GoodType.GENERIC).getLastPrice() );
             assertTrue(macroII.getMarket(GoodType.GENERIC).getLastPrice() <= 60);
             assertTrue(macroII.getMarket(GoodType.GENERIC).getLastPrice() >= 51);
             assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(), 4 * 7); //every day 4 goods should have been traded
@@ -473,6 +474,7 @@ public class SimpleSellerScenarioTest {
 
 
             //price should be any between 60 and 51
+            System.out.println("price:" + macroII.getMarket(GoodType.GENERIC).getLastPrice() );
             assertTrue(macroII.getMarket(GoodType.GENERIC).getLastPrice() <= 60);
             assertTrue(macroII.getMarket(GoodType.GENERIC).getLastPrice() >= 51);
             assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(), 4 * 7); //every day 4 goods should have been traded

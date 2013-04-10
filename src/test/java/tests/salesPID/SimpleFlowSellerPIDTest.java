@@ -85,7 +85,7 @@ public class SimpleFlowSellerPIDTest {
                 dept.sellThis(good);
             }
 
-            model.scheduleSoon(ActionOrder.THINK,strategy);
+            model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy);
             model.getPhaseScheduler().step(model);
             System.out.println("seller price :" + strategy.getTargetPrice());
             for(Quote q : quotes)
@@ -150,7 +150,7 @@ public class SimpleFlowSellerPIDTest {
                 dept.sellThis(good);
             }
 
-            model.scheduleSoon(ActionOrder.THINK,strategy);
+            model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy);
             model.getPhaseScheduler().step(model);
             System.out.println("seller price :" + strategy.getTargetPrice());
             for(Quote q : quotes)
@@ -231,8 +231,8 @@ public class SimpleFlowSellerPIDTest {
                 dept2.sellThis(good);
             }
 
-            model.scheduleSoon(ActionOrder.THINK,strategy1);
-            model.scheduleSoon(ActionOrder.THINK,strategy2);
+            model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy1);
+            model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy2);
 
             model.getPhaseScheduler().step(model);
 
@@ -308,7 +308,7 @@ public class SimpleFlowSellerPIDTest {
                 dept.sellThis(good);
             }
 
-            model.scheduleSoon(ActionOrder.THINK,strategy);
+            model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy);
             model.getPhaseScheduler().step(model);
 
             System.out.println("seller price :" + price);

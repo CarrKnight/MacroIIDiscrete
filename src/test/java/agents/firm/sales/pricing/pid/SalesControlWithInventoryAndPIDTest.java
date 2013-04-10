@@ -47,7 +47,7 @@ public class SalesControlWithInventoryAndPIDTest {
         assertEquals(pid.getTargetInventory(),5); //assume target is 5
         when(department.getHowManyToSell()).thenReturn(20); //you still have 10 to sell
         //step it
-        MacroII model = mock(MacroII.class); when(model.getCurrentPhase()).thenReturn(ActionOrder.THINK);
+        MacroII model = mock(MacroII.class); when(model.getCurrentPhase()).thenReturn(ActionOrder.ADJUST_PRICES);
         pid.step(model);
         //now price should be BELOW 100
         assertTrue(pid.price(mock(Good.class)) < 100l);
@@ -78,7 +78,7 @@ public class SalesControlWithInventoryAndPIDTest {
         assertEquals(pid.getTargetInventory(),5); //assume target is 5
         when(department.getHowManyToSell()).thenReturn(0); //you have none to sell
         //step it
-        MacroII model = mock(MacroII.class); when(model.getCurrentPhase()).thenReturn(ActionOrder.THINK);
+        MacroII model = mock(MacroII.class); when(model.getCurrentPhase()).thenReturn(ActionOrder.ADJUST_PRICES);
         pid.step(model);
         //now price should be BELOW 100
         assertTrue(pid.price(mock(Good.class)) > 100l);

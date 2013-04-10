@@ -27,7 +27,7 @@
     <orderEntry type="library" name="com.google.guava:guava:14.0.1" level="project" />
     <orderEntry type="library" name="mason" level="project" />
     <orderEntry type="library" name="org.reflections:reflections:0.9.8" level="project" />
-    <orderEntry type="library" name="apidocs" level="project" />
+    <orderEntry type="library" name="lifelines" level="project" />
     <orderEntry type="library" name="net.sf.jung:jung-algorithms:2.0.1" level="project" />
     <orderEntry type="library" name="net.sf.jung:jung-graph-impl:2.0.1" level="project" />
     <orderEntry type="library" name="net.sf.jung:jung-visualization:2.0.1" level="project" />

@@ -59,7 +59,9 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
     public MarginalMaximizerWithUnitPID(@Nonnull HumanResources hr, @Nonnull PlantControl control,
                                         @Nonnull Plant p, @Nonnull Firm owner, @Nonnull MersenneTwisterFast random,
                                         int currentWorkerSize) {
-        this(hr, control, p, owner, random, currentWorkerSize, 1.49f,3.99f,0.02f);  //these numbers were tuned in the monopolist scenario
+        this(hr, control, p, owner, random, currentWorkerSize,
+                5.25f, 7.35f, 0.01f );  //these numbers were tuned in the monopolist scenario
+        //these are tuned for nonsigmoid: 1.49f,3.99f,0.02f
     }
 
     /**
@@ -76,6 +78,7 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
         //the pid controller
         pid = new PIDController(proportional,integral,derivative,random);
         pid.setOffset(currentWorkerSize);
+        pid.setWindupStop(false);
     }
 
 
@@ -105,7 +108,10 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
             marginalBenefits = marginalBenefits / marginalProduction;
 
             //now that they are properly "averaged" we divide them and target efficency of 1
-            float marginalEfficency = marginalBenefits/marginalCosts;  //bound to 10
+            float marginalEfficency = marginalBenefits/marginalCosts;
+            //bound below at -0.5 to avoid infinity issues
+            marginalEfficency = (float) Math.max(marginalEfficency,-0.5);
+
 
 
             float mvYesterday = pid.getCurrentMV();
@@ -124,15 +130,16 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
 
 
 
-      /*      if(getP().getBlueprint().getOutputs().containsKey(GoodType.BEEF))
+         /*   if(getP().getBlueprint().getOutputs().keySet().iterator().next() == GoodType.BEEF)
             {
                 System.out.println("marginal efficency:" + marginalEfficency + ", marginal benefits: " + marginalBenefits + ", marginal costs: " + marginalCosts );
-                System.out.println("target yestrday:" + mvYesterday + ", target today:" + pid.getCurrentMV());
+                System.out.println("target yestrday:" + mvYesterday + ", target today:" + pid.getCurrentMV() + ", integral: " + pid.getIntegral() );
                 System.out.println("wages:" + wageCosts.getMarginalCost() + ", price: " + getOwner().getModel().getMarket(GoodType.BEEF).getLastPrice() +
                         ", predicted price: " + getOwner().getSalesDepartment(GoodType.BEEF).predictSalePrice(inputCosts.getTotalCost() + wageCosts.getTotalCost()) + "\n");
             }
-        */
-            return Math.min(Math.round(pid.getCurrentMV()), getHr().maximumWorkersPossible());
+         */
+            //don't return more than the max or less than 0
+            return Math.max(Math.min(Math.round(pid.getCurrentMV()), getHr().maximumWorkersPossible()), 0);
 
 
 
@@ -141,6 +148,7 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
 
         }catch (DelayException e)
         {
+            e.printStackTrace();
             //if an exception was thrown, it must be because we need more time!
             return -1;
         }

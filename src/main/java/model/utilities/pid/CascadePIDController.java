@@ -49,6 +49,7 @@ public class CascadePIDController implements Controller{
     //    pid1.setCanGoNegative(true); pid1.setWindupStop(false);
         pid1.setCanGoNegative(false); pid1.setWindupStop(true);
         pid2 = new PIDController(proportional2,integrative2,derivative2,pid1.getSpeed(),random);
+        pid2.setCanGoNegative(true); pid2.setWindupStop(false);
 
 
     }
@@ -129,12 +130,6 @@ public class CascadePIDController implements Controller{
        return pid2.getOffset();
     }
 
-    /**
-     * Change the gains of the first PID
-     */
-    public void setGainsMasterPID(float proportionalGain, float integralGain, float derivativeGain) {
-        pid1.setGains(proportionalGain, integralGain, derivativeGain);
-    }
 
     /**
      * change the speed of the cascade controller

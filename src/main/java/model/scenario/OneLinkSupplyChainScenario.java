@@ -26,7 +26,6 @@ import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
-import agents.firm.sales.prediction.MarketSalesPredictor;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Preconditions;
@@ -158,8 +157,8 @@ public class OneLinkSupplyChainScenario extends Scenario {
     }
 
     private void buildLaborSupplies() {
-        addWorkers(getMarkets().get(GoodType.LABOR_BEEF),5,600,5);
-        addWorkers(getMarkets().get(GoodType.LABOR_FOOD),5,600,5);
+        addWorkers(getMarkets().get(GoodType.LABOR_BEEF),5,1200,5);
+        addWorkers(getMarkets().get(GoodType.LABOR_FOOD),5,1200,5);
     }
 
     private void populateMarkets() {
@@ -206,32 +205,23 @@ public class OneLinkSupplyChainScenario extends Scenario {
                         new SimpleBuyerSearch(goodmarket, firm), new SimpleSellerSearch(goodmarket, firm),
                         salesDepartmentType);
                 firm.registerSaleDepartment(dept, goodmarket.getGoodType());
-                SmoothedDailyInventoryPricingStrategy strategy;
-            /*    if(goodmarket.getGoodType().equals(GoodType.FOOD))
-                     strategy = new SimpleFlowSellerPID(dept);
-                else
-                {
-                    SalesControlFlowPIDWithFixedInventory properStrategy = new SalesControlFlowPIDWithFixedInventory(dept);
-               //     properStrategy.setGains(properStrategy.getProportionalGain()/300f,properStrategy.getIntegralGain()/300f,
-                //            properStrategy.getDerivativeGain()/300f);
-                 //   properStrategy.setSpeed(30);
-                    strategy = properStrategy;
-
-
-                }
+               /* SalesControlFlowPIDWithFixedInventory strategy;
+                strategy = new SalesControlFlowPIDWithFixedInventory(dept);
                 */
+                SmoothedDailyInventoryPricingStrategy strategy;
                 strategy = new SmoothedDailyInventoryPricingStrategy(dept);
+                strategy.setInitialPrice(model.random.nextInt(30)+70);
+
                 if(!goodmarket.getGoodType().equals(GoodType.FOOD))
                 {
-                    strategy.setGains(strategy.getProportionalGain()/100f,strategy.getIntegralGain()/100f,
-                        strategy.getDerivativeGain()/100f);
+
+
+                    strategy.setGains(strategy.getProportionalGain()/100f,0,0);
                     strategy.setInitialPrice(50);
-                    strategy.setSpeed(30);
                 }
 
                 // strategy.setProductionCostOverride(false);
                 dept.setAskPricingStrategy(strategy); //set strategy to PID
-                dept.setPredictorStrategy(new MarketSalesPredictor());
 
 
                 //CREATE THE PLANT + Human resources
@@ -245,13 +235,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
                 HumanResources hr = produced.getDepartment();
                 hr.setFixedPayStructure(true);
                 hr.start();
-                //todo remove this horrible hack
-    /*            if(controlType.equals(MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment.class) && goodmarket.getGoodType().equals(GoodType.BEEF))
-                {
-                    ((MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment)produced.getPlantControl()).setupLookup(7,4.31f,2.71f,
-                            0.155f,getMarkets().get(GoodType.FOOD));
-                }
-      */
+
                 //CREATE THE PURCHASES DEPARTMENTS NEEDED
                 for(GoodType input : blueprint.getInputs().keySet()){
                     PurchasesDepartment department = PurchasesDepartment.getEmptyPurchasesDepartment(Long.MAX_VALUE, firm,
@@ -494,7 +478,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
         //create the CSVWriter
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("supplychainSigmoid.csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter("supplychainSigmoidNewPredictor.csv"));
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
 
@@ -509,7 +493,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         while(macroII.schedule.getTime()<15000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(15000,(int)macroII.schedule.getSteps(),100);
+            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
         }
 
 

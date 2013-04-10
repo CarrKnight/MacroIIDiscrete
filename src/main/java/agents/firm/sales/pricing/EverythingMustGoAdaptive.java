@@ -82,4 +82,16 @@ public class EverythingMustGoAdaptive implements AskPricingStrategy {
             });
 
     }
+
+    /**
+     * tries to sell 95% or more
+     *
+     * @param inventorySize
+     * @return
+     */
+    @Override
+    public boolean isInventoryAcceptable(int inventorySize) {
+        return department.getSoldPercentage() >= .95f;
+
+    }
 }

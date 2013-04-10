@@ -275,6 +275,33 @@ public class Firm extends EconomicAgent {
     }
 
     /**
+     * Returns a list of all plants producing a specific output
+     * @param type the type of good the plants use as inputs. (if none found it returns an empty list)
+     */
+    public List<Plant> getListOfPlantsProducingSpecificOutput(@Nonnull GoodType type)
+    {
+
+        if(plants.isEmpty())
+            return Collections.emptyList();
+        else
+        {
+            List<Plant> toReturn = new LinkedList<>();
+            for(Plant p : plants)
+            {
+                Integer i = p.getBlueprint().getOutputs().get(type);
+                if(i != null && i > 0)
+                    toReturn.add(p);
+            }
+
+
+            return toReturn;
+        }
+
+    }
+
+
+
+    /**
      * Whenever the plant produces a good, it asks the firm what to do about it!
      * @param g  the good that was produced!
      */

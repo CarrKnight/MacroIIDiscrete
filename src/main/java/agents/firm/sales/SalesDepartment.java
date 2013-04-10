@@ -9,9 +9,10 @@ package agents.firm.sales;
 import agents.EconomicAgent;
 import agents.firm.Department;
 import agents.firm.Firm;
+import agents.firm.production.Plant;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
-import agents.firm.sales.prediction.LookupSalesPredictor;
+import agents.firm.sales.prediction.LinearExtrapolationPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.decorators.AskReservationPriceDecorator;
@@ -23,6 +24,7 @@ import financial.utilities.ActionsAllowed;
 import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;
+import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import sim.engine.SimState;
@@ -148,6 +150,8 @@ public abstract class  SalesDepartment  implements Department {
      */
     protected boolean canPeddle = true;
 
+    private boolean aboutToUpdateQuotes = false;
+
     public SalesDepartment(SellerSearchAlgorithm sellerSearchAlgorithm, Market market, @Nonnull MacroII model, Firm firm, BuyerSearchAlgorithm buyerSearchAlgorithm) {
         cogs = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
         salesResults = new HashMap<>();
@@ -160,7 +164,7 @@ public abstract class  SalesDepartment  implements Department {
         this.model = model;
         totalUnsold = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
         this.firm = firm;
-        predictorStrategy = new LookupSalesPredictor();
+        predictorStrategy = new LinearExtrapolationPredictor(this);
         this.buyerSearchAlgorithm = buyerSearchAlgorithm;
         salesDepartmentListeners = new LinkedList<>();
         market.registerSeller(firm); //register!
@@ -263,6 +267,7 @@ public abstract class  SalesDepartment  implements Department {
 
         //preconditions
         assert firm.has(g); //we should be selling something we have!
+        assert !toSell.contains(g);
         assert market.getGoodType().equals(g.getType());
         toSell.add(g); //addSalesDepartmentListener it to the list of stuff to sell
 
@@ -934,33 +939,39 @@ public abstract class  SalesDepartment  implements Department {
      */
     public void updateQuotes()
     {
-        model.scheduleASAP(new Steppable() {
+        aboutToUpdateQuotes=true;
+
+        //get all the quotes to remove
+        final Iterable<Quote> goodsToRequote = new LinkedList<>(goodsQuotedOnTheMarket.values());
+        //forget the old quotes
+        goodsQuotedOnTheMarket.clear();
+        for(Quote q: goodsToRequote)
+        {
+            market.removeSellQuote(q); //remove the quote
+            SaleResult oldResult = salesResults.put(q.getGood(), SaleResult.updating()); //signal to the results map that the good is being updated
+            assert oldResult.getResult() == SaleResult.Result.QUOTED || oldResult.getResult() == SaleResult.Result.UNSOLD; //previously you should have been classified as unsold or quoted
+        }
+
+        //when you can, requote
+        model.scheduleSoon(ActionOrder.TRADE,new Steppable() {
             @Override
             public void step(SimState state) {
-                //get all the quotes to remove
-                Iterable<Quote> goodsToRequote = new LinkedList<>(goodsQuotedOnTheMarket.values());
-                //forget the old quotes
-                goodsQuotedOnTheMarket.clear();
-                for(Quote q: goodsToRequote)
-                {
-                    market.removeSellQuote(q); //remove the quote
-
-                }
-
+                aboutToUpdateQuotes=false;
                 //go through all the old quotes
                 for(Quote q : goodsToRequote){
-
-
-                    SaleResult oldResult = salesResults.put(q.getGood(), SaleResult.updating()); //signal to the results map that the good is being updated
-                    assert oldResult.getResult() == SaleResult.Result.QUOTED || oldResult.getResult() == SaleResult.Result.UNSOLD; //previously you should have been classified as unsold or quoted
-                    sellThis(q.getGood());//sell it again
+                    //resell it tomorrow
+                    newGoodToSell(q.getGood());//sell it again
 
 
                 }
 
-                //done!
+
+
             }
         });
+
+
+
 
 
 
@@ -1104,5 +1115,35 @@ public abstract class  SalesDepartment  implements Department {
      */
     public boolean hasItPlacedAtLeastOneOrder(){
         return !goodsQuotedOnTheMarket.isEmpty();
+    }
+
+    /**
+     * Asks the sale department if its current inventory is where it should be according to the ask pricing strategy
+     * @return
+     */
+    public boolean isInventoryAcceptable() {
+        return askPricingStrategy.isInventoryAcceptable(toSell.size());
+    }
+
+    /**
+     * little flag that is true whenever quotes are about to be updated  (we scheduled updateQuotes())
+     * @return
+     */
+    public boolean isAboutToUpdateQuotes() {
+        return aboutToUpdateQuotes;
+    }
+
+
+    public GoodType getGoodType() {
+        return market.getGoodType();
+    }
+
+    /**
+     * Get the owner's plants you are supposed to sell the products of
+     * @return
+     */
+    public List<Plant> getServicedPlants()
+    {
+        return firm.getListOfPlantsProducingSpecificOutput(market.getGoodType());
     }
 }

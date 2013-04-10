@@ -14,8 +14,6 @@ import agents.firm.sales.pricing.UndercuttingAskPricing;
 import financial.Bankruptcy;
 import financial.Market;
 import financial.OrderBookMarket;
-import financial.utilities.AveragePricePolicy;
-import financial.utilities.BuyerSetPricePolicy;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
@@ -120,13 +118,7 @@ public class SalesDepartmentTest {
 
     }
 
-    @Test
-    public void testPredictSalePrice() throws Exception {
-        market.setPricePolicy(new BuyerSetPricePolicy());
-        assertEquals(100l, dept.predictSalePrice(10)); //just queries the order book.
-        market.setPricePolicy(new AveragePricePolicy());
 
-    }
 
     @Test
     public void testPrice() throws Exception {

@@ -45,6 +45,12 @@ public enum ActionOrder
      */
     TRADE,
 
+
+    /**
+     * deal with prices (pid and similar)
+     */
+    ADJUST_PRICES,
+
     /**
      * After trading has occurred, think of the consequences
      */

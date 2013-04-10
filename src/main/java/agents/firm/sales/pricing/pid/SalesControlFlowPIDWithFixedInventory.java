@@ -103,7 +103,7 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
         controller = new PIDController(proportionalGain,integrativeGain,derivativeGain,random);
         controller.setOffset(50+ random.nextInt(51));
         isActive=true;
-        state.scheduleSoon(ActionOrder.THINK,this);
+        state.scheduleSoon(ActionOrder.ADJUST_PRICES,this);
 
     }
 
@@ -146,7 +146,7 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
      *     </li>
      * </ul>
      * @throws IllegalStateException if the step is called in any other phase other thank think (we need to make it
-     * choose price at THINK because at that point we know clearly the inflow and outflow)
+     * choose price at ADJUST_PRICES because at that point we know clearly the inflow and outflow)
      * @throws IllegalArgumentException if the state passed is not an instance of MacroII
      * @param state
      */
@@ -154,7 +154,7 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
     public void step(SimState state)
     {
         Preconditions.checkArgument(state instanceof MacroII);
-        Preconditions.checkState(((MacroII) state).getCurrentPhase().equals(ActionOrder.THINK) );
+        Preconditions.checkState(((MacroII) state).getCurrentPhase().equals(ActionOrder.ADJUST_PRICES) );
         long oldprice =getPrice();
         if(!isActive)
             return;
@@ -178,11 +178,11 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
         controller.adjustOnce(department.getTodayOutflow()-getTarget(),isActive);
 
         if(getSpeed()==0)
-            ((MacroII) state).scheduleTomorrow(ActionOrder.THINK,this);
+            ((MacroII) state).scheduleTomorrow(ActionOrder.ADJUST_PRICES,this);
         else
         {
             assert getSpeed() > 1;
-            ((MacroII) state).scheduleAnotherDay(ActionOrder.THINK,this,getSpeed());
+            ((MacroII) state).scheduleAnotherDay(ActionOrder.ADJUST_PRICES,this,getSpeed());
         }
 
 
@@ -240,6 +240,18 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
 
     public SimpleInventoryAndFlowPIDPhase getPhase() {
         return phase;
+    }
+
+
+    /**
+     * acceptable as long as we have minimum inventory
+     *
+     * @param inventorySize
+     * @return
+     */
+    @Override
+    public boolean isInventoryAcceptable(int inventorySize) {
+        return inventorySize >= minimumInventory;
     }
 
     /**

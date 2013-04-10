@@ -67,6 +67,16 @@ public abstract class AskPricingDecorator implements AskPricingStrategy{
     }
 
     /**
+     * asks the pricing strategy if the inventory is acceptable
+     * @param inventorySize
+     * @return
+     */
+    @Override
+    public boolean isInventoryAcceptable(int inventorySize) {
+        return toDecorate.isInventoryAcceptable(inventorySize);
+    }
+
+    /**
      * Returns the strategy being decorated
      */
     public AskPricingStrategy getDecorated() {

@@ -1,12 +1,12 @@
 package financial.utilities.changeLooker;
 
 import financial.Market;
-import static org.junit.Assert.*;import model.MacroII;
+import model.MacroII;
 import model.utilities.ActionOrder;
 import org.junit.Test;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 /**
  * <h4>Description</h4>

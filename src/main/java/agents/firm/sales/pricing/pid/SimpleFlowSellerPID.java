@@ -148,7 +148,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         //start with a random price!
         price = sales.getFirm().getRandom().nextInt(100);
         controller.setOffset(price);
-        sales.getFirm().getModel().scheduleSoon(ActionOrder.THINK, this);
+        sales.getFirm().getModel().scheduleSoon(ActionOrder.ADJUST_PRICES, this);
 
 
 
@@ -232,10 +232,10 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         //make the PID adjust, please
         if(flowTargeting)
             controller.adjust(0, (float) ((goodsToSell - initialInventory) - ((float) goodsSold + (float) stockOuts.getStockouts())),    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
-                    active, (MacroII) simState, this, ActionOrder.THINK);
+                    active, (MacroII) simState, this, ActionOrder.ADJUST_PRICES);
         else
             controller.adjust(0, (float) (goodsToSell - ((float) goodsSold + (float) stockOuts.getStockouts())),    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
-                    active, (MacroII)simState, this,ActionOrder.THINK);
+                    active, (MacroII)simState, this,ActionOrder.ADJUST_PRICES);
 
 
 
@@ -332,6 +332,18 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
     public void weekEnd() {
 
         //the weekend does nothing but it might be subclassed.
+
+    }
+
+    /**
+     * tries to sell everything
+     *
+     * @param inventorySize
+     * @return
+     */
+    @Override
+    public boolean isInventoryAcceptable(int inventorySize) {
+        return inventorySize == 0; //tries to sell everything
 
     }
 

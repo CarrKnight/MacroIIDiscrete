@@ -81,7 +81,7 @@ public final class MarginalMaximizerStatics {
         if(targetWorkers > currentWorkers)
         {
             System.out.println("total input: " + inputCosts.getTotalCost() + ", total wage costs: " + wageCosts.getTotalCost());
-            System.out.println("marginal input: " + inputCosts.getMarginalCost() + ", marginal wages:" + wageCosts + ", revenue: " +
+            System.out.println("marginal input: " + inputCosts.getMarginalCost() + ", marginal wages:" + wageCosts.getMarginalCost() + ", revenue: " +
                     marginalRevenue + " ----- workers: " + currentWorkers);
         }
 

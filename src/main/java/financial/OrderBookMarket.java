@@ -8,7 +8,11 @@ package financial;
 
 import agents.EconomicAgent;
 import agents.firm.Department;
-import financial.utilities.*;
+import com.google.common.base.Preconditions;
+import financial.utilities.ActionsAllowed;
+import financial.utilities.HistogramDecoratedPriorityBook;
+import financial.utilities.PurchaseResult;
+import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
@@ -130,6 +134,7 @@ public class OrderBookMarket extends Market {
     public Quote submitSellQuote(@Nonnull EconomicAgent seller, long price, @Nonnull Good good, @Nullable Department department) {
 
         assert getSellers().contains(seller);  //you should be registered if you are here
+        Preconditions.checkArgument(price>=0);
 
         if(MacroII.SAFE_MODE) //double check the good isn't already on sale
             for(Quote x : asks){

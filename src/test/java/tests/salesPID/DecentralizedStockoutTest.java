@@ -262,7 +262,7 @@ public class DecentralizedStockoutTest {
         //we weren't outcompeted, this is a stockout
         assertEquals(stockouts.getStockouts(), 0);
 
-        model.scheduleSoon(ActionOrder.THINK,strategy);
+        model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy);
         model.getPhaseScheduler().step(model);
         assertEquals(stockouts.getStockouts(), 0);
 
@@ -331,7 +331,7 @@ public class DecentralizedStockoutTest {
         //okay, keep stepping it for 100 times
         for(int j=0; j<100; j++)
         {
-            model.scheduleSoon(ActionOrder.THINK,pid);
+            model.scheduleSoon(ActionOrder.ADJUST_PRICES,pid);
             //give the department 1 good to sell
             for(int i=0; i < 1; i++)
             {

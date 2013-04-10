@@ -58,6 +58,13 @@ public interface AskPricingStrategy extends Deactivatable {
      */
     public void weekEnd();
 
+    /**
+     * asks the pricing strategy if the inventory is acceptable
+     * @param inventorySize
+     * @return
+     */
+    boolean isInventoryAcceptable(int inventorySize);
+
 
     /**
      * This is the static generator to create random or non-random buyerSearchAlgorithm.

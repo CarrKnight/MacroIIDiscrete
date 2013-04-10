@@ -74,4 +74,10 @@ public class ExponentialFilter<T extends Number> implements Filter<T>
     public void setWeight(float weight) {
         this.weight = weight;
     }
+
+
+    public boolean isReady(){
+        return !Float.isNaN(smoothedValue);
+
+    }
 }

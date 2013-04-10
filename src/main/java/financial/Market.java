@@ -60,6 +60,16 @@ public abstract class Market {
     protected long lastPrice = -1;
 
     /**
+     * last filled bid
+     */
+    protected long lastFilledBid = -1;
+
+    /**
+     * last filled ask
+     */
+    protected long lastFilledAsk = -1;
+
+    /**
      * A time series holding on all the sales records
      */
     protected TimeSeries prices = new TimeSeries("prices","time","prices");
@@ -347,7 +357,7 @@ public abstract class Market {
 
 
         PurchaseResult result = policy.trade(buyer,seller,good,price,buyerQuote,sellerQuote,this);
-      //  prices.setMaximumItemCount(100);
+        //  prices.setMaximumItemCount(100);
         markups.setMaximumItemCount(3);
 
         if(result == PurchaseResult.SUCCESS)
@@ -355,6 +365,8 @@ public abstract class Market {
 
             //record
             lastPrice = price;
+            lastFilledAsk = sellerQuote.getPriceQuoted();
+            lastFilledBid = buyerQuote.getPriceQuoted();
             weeklyVolume++;
 
 
@@ -397,7 +409,7 @@ public abstract class Market {
     public void weekEnd(MacroII model){
         lastWeekVolume = weeklyVolume;
         volume.add(new Week(model.getCurrentSimulationTime()),weeklyVolume,"volume");
- //       if(!getGoodType().isLabor())
+        //       if(!getGoodType().isLabor())
         //  volume.add(new Week(model.getWeeksPassed(), (int) (model.getWeeksPassed() / model.getWeekLength())),weeklyVolume); //addSalesDepartmentListener it to the weeks
         weeklyVolume = 0;
         //if there is GUI, clear the network
@@ -770,5 +782,31 @@ public abstract class Market {
      */
     public PricePolicy getPricePolicy() {
         return pricePolicy;
+    }
+
+
+    /**
+     * Gets last filled ask.
+     *
+     * @return Value of last filled ask.
+     */
+    public long getLastFilledAsk() {
+
+        if(isBestSalePriceVisible())
+            return lastFilledAsk;
+        else
+            throw new IllegalStateException("You can't see the LastFilledAsk in this kind of market!");
+    }
+
+    /**
+     * Gets last filled bid.
+     *
+     * @return Value of last filled bid.
+     */
+    public long getLastFilledBid() {
+        if(isBestSalePriceVisible())
+            return lastFilledBid;
+        else
+            throw new IllegalStateException("You can't see the lastFilledBid in this kind of market!");
     }
 }

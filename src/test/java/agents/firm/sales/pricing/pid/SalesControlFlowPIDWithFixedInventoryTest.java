@@ -33,7 +33,7 @@ public class SalesControlFlowPIDWithFixedInventoryTest {
     public void activatesCorrectly()
     {
         SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
-        MacroII state = mock(MacroII.class); when(state.getCurrentPhase()).thenReturn(ActionOrder.THINK);
+        MacroII state = mock(MacroII.class); when(state.getCurrentPhase()).thenReturn(ActionOrder.ADJUST_PRICES);
         SalesControlFlowPIDWithFixedInventory pricing = new SalesControlFlowPIDWithFixedInventory(department,10,50,state,0,0,0,new MersenneTwisterFast());
 
 
@@ -76,13 +76,13 @@ public class SalesControlFlowPIDWithFixedInventoryTest {
     @Test
     public void rescheduleItselfTest()
     {
-        MacroII state = mock(MacroII.class); when(state.getCurrentPhase()).thenReturn(ActionOrder.THINK);
+        MacroII state = mock(MacroII.class); when(state.getCurrentPhase()).thenReturn(ActionOrder.ADJUST_PRICES);
         SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
         SalesControlFlowPIDWithFixedInventory pricing = new SalesControlFlowPIDWithFixedInventory(department,10,50,state,0,0,0,new MersenneTwisterFast());
 
-        verify(state).scheduleSoon(ActionOrder.THINK,pricing);
+        verify(state).scheduleSoon(ActionOrder.ADJUST_PRICES,pricing);
         pricing.step(state);
-        verify(state).scheduleTomorrow(ActionOrder.THINK,pricing);
+        verify(state).scheduleTomorrow(ActionOrder.ADJUST_PRICES,pricing);
 
 
     }
@@ -92,7 +92,7 @@ public class SalesControlFlowPIDWithFixedInventoryTest {
     {
 
         SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
-        MacroII state = mock(MacroII.class); when(state.getCurrentPhase()).thenReturn(ActionOrder.THINK);
+        MacroII state = mock(MacroII.class); when(state.getCurrentPhase()).thenReturn(ActionOrder.ADJUST_PRICES);
         SalesControlFlowPIDWithFixedInventory pricing = new SalesControlFlowPIDWithFixedInventory(department,10,50,state,2,1,.01f,new MersenneTwisterFast());
         pricing.setInitialPrice(100); //so it's not 0
         //outflow stays at 0 for most of the test

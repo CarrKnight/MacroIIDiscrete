@@ -142,7 +142,7 @@ public class PIDTargeter implements WorkforceTargeter, Steppable {
         }
 
         //run the controller (it will reschedule us)
-        pid.adjust(workerTarget, hr.getPlant().workerSize(), active, hr.getPlant().getModel(), this, ActionOrder.THINK);
+        pid.adjust(workerTarget, hr.getPlant().workerSize(), active, hr.getPlant().getModel(), this, ActionOrder.ADJUST_PRICES);
 
         //todo document rounding
         //initially round
@@ -241,7 +241,7 @@ public class PIDTargeter implements WorkforceTargeter, Steppable {
     @Override
     public void start() {
         //start stepping your PID!
-        hr.getFirm().getModel().scheduleSoon(ActionOrder.THINK,this);
+        hr.getFirm().getModel().scheduleSoon(ActionOrder.ADJUST_PRICES,this);
 
     }
 

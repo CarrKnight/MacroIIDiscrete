@@ -74,6 +74,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         //I am creating the PID controller here so that I can set the gains; I am sure it's a PID controller so I am sure the setGains() method exists
         controllerUsedByDelegate = ControllerFactory.buildController(PIDController.class,
                 salesDepartment.getFirm().getModel());
+
         delegate = new SalesControlWithFixedInventoryAndPID(salesDepartment,0,controllerUsedByDelegate);
 
 
@@ -104,6 +105,8 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         Preconditions.checkState(salesDepartment.getTodayInflow() >=0, "Negative inflow is weird");
 
         movingAverage.addObservation(salesDepartment.getTodayInflow());
+        System.out.println("today inflow" + salesDepartment.getTodayInflow() + ", ma:"+ movingAverage.getSmoothedObservation()
+        + ",production: " + salesDepartment.getFirm()) ;
 
         delegate.setTargetInventory((int) movingAverage.getSmoothedObservation());
 
@@ -156,7 +159,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
      */
     @Override
     public long price(Good g) {
-        return delegate.price(g);
+        return Math.max(delegate.price(g), 0);
     }
 
     /**
@@ -177,6 +180,35 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         delegate.setSpeed(samplingSpeed);
     }
 
+
+    public void setDerivativeGain(float derivativeGain) {
+        controllerUsedByDelegate.setDerivativeGain(derivativeGain);
+    }
+
+    public float getDerivativeGain() {
+        return controllerUsedByDelegate.getDerivativeGain();
+    }
+
+    public void setIntegralGain(float integralGain) {
+        controllerUsedByDelegate.setIntegralGain(integralGain);
+    }
+
+    public float getIntegralGain() {
+        return controllerUsedByDelegate.getIntegralGain();
+    }
+
+    public float getProportionalGain() {
+        return controllerUsedByDelegate.getProportionalGain();
+    }
+
+    public void setProportionalGain(float proportionalGain) {
+        controllerUsedByDelegate.setProportionalGain(proportionalGain);
+    }
+
+    public int getSpeed() {
+        return controllerUsedByDelegate.getSpeed();
+    }
+
     /**
      * Change the gains of the PID
      */
@@ -184,20 +216,12 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         controllerUsedByDelegate.setGains(proportionalGain, integralGain, derivativeGain);
     }
 
-    public float getProportionalGain() {
-        return controllerUsedByDelegate.getProportionalGain();
-    }
-
-    public float getIntegralGain() {
-        return controllerUsedByDelegate.getIntegralGain();
-    }
-
-    public float getDerivativeGain() {
-        return controllerUsedByDelegate.getDerivativeGain();
-    }
-
-    public int getSpeed() {
-        return controllerUsedByDelegate.getSpeed();
+    /**
+     * delegates
+     */
+    @Override
+    public boolean isInventoryAcceptable(int inventorySize) {
+        return delegate.isInventoryAcceptable(inventorySize);
     }
 
 }

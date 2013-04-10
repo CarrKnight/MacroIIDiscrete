@@ -68,4 +68,16 @@ public class MarkupFollower implements AskPricingStrategy {
     public void weekEnd() {
     }
 
+
+    /**
+     * tries to sell everything
+     *
+     * @param inventorySize
+     * @return
+     */
+    @Override
+    public boolean isInventoryAcceptable(int inventorySize) {
+        return inventorySize == 0; //tries to sell everything
+
+    }
 }

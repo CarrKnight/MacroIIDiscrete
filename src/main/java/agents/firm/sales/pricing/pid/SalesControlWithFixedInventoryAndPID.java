@@ -95,7 +95,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
         this.controller = controller;
         this.department = department;
         this.targetInventory = targetInventory;
-        department.getFirm().getModel().scheduleSoon(ActionOrder.THINK,this);
+        department.getFirm().getModel().scheduleSoon(ActionOrder.ADJUST_PRICES,this);
 
 
     }
@@ -137,25 +137,25 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     }
 
     /**
-     * this step manages the controller. It runs every THINK phase
+     * this step manages the controller. It runs every ADJUST_PRICES phase
      * @param state the MacroII object
      */
     @Override
     public void step(SimState state)
     {
         MacroII macroII = (MacroII) state;
-        Preconditions.checkState(macroII.getCurrentPhase().equals(ActionOrder.THINK), "I wanted to act on THINK, " +
+        Preconditions.checkState(macroII.getCurrentPhase().equals(ActionOrder.ADJUST_PRICES), "I wanted to act on ADJUST_PRICES, " +
                 "but I acted on " + macroII.getCurrentPhase());
         //run the controller to adjust prices
         //notice that i use todayOutflow as a measure of outflow because it gets reset at PREPARE_TO_TRADE and
-        // I am calling this at THINK (which is after TRADE, which is after PREPARE_TO_TRADE)
+        // I am calling this at ADJUST_PRICES (which is after TRADE, which is after PREPARE_TO_TRADE)
         ControllerInput input = new ControllerInput.ControllerInputBuilder().inputs((float) department.getHowManyToSell(),
                 (float)department.getTodayOutflow()).targets((float)targetInventory, (float)department.getTodayInflow()).build();
         //memorize old price before adjustment (this is so that if there is a change, we update old quotes)
         long oldPrice =  (long)Math.round(controller.getCurrentMV());
 
         controller.adjust(input,
-                department.getFirm().isActive(), macroII, this, ActionOrder.THINK);
+                department.getFirm().isActive(), macroII, this, ActionOrder.ADJUST_PRICES);
 
         getDepartment().getFirm().logEvent(getDepartment(),
                 MarketEvents.CHANGE_IN_POLICY,getDepartment().getFirm().getModel().getCurrentSimulationTimeInMillis(),
@@ -220,5 +220,19 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
         controller.setSpeed(samplingSpeed);
     }
 
+    /**
+     * tries to sell everything
+     *
+     * @param inventorySize
+     * @return
+     */
+    @Override
+    public boolean isInventoryAcceptable(int inventorySize) {
+        return inventorySize >= targetInventory;
+    }
 
+
+    public Controller getController() {
+        return controller;
+    }
 }

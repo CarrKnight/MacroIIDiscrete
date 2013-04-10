@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="apidocs">
+  <library name="lifelines">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/lib/lifelines/automaton.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/lifelines/Lifelines2.jar!/" />

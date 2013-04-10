@@ -216,7 +216,7 @@ public class OrderBookStockoutTest {
         //we weren't outcompeted, this is a stockout
         assertEquals(stockouts.getStockouts(), 3);
 
-        model.scheduleSoon(ActionOrder.THINK,strategy);
+        model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy);
         model.getPhaseScheduler().step(model);
         assertEquals(stockouts.getStockouts(), 1);
 

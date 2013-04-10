@@ -246,6 +246,7 @@ public class PIDController implements Controller{
             integral+= newError; //integral!
 
 
+
         //initialPrice is the offset, the rest is your standard PID
         currentMV = formula(derivative);
         if(!canGoNegative && currentMV < 0)
@@ -340,5 +341,9 @@ public class PIDController implements Controller{
 
     public void setRandomSpeed(boolean randomSpeed) {
         this.randomSpeed = randomSpeed;
+    }
+
+    public float getIntegral() {
+        return integral;
     }
 }
