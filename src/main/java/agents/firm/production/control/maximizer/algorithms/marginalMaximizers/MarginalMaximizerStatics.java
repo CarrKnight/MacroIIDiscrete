@@ -243,7 +243,7 @@ public final class MarginalMaximizerStatics {
 
             PurchasesDepartment dept = owner.getPurchaseDepartment(input); //get the purchase department that buys this input
             long costPerInput = targetWorkers > currentWorkers ? dept.predictPurchasePrice() : dept.getLastClosingPrice();
-             //if we are increasing production, predict. if we are decreasing production use old prices
+            //if we are increasing production, predict. if we are decreasing production use old prices
             //if there is no prediction, react to it
             costPerInput = costPerInput < 0 ? policy.replaceUnknownPrediction(owner.getPurchaseDepartment(input).getMarket(), p.getRandom()) : costPerInput;
 
@@ -251,12 +251,22 @@ public final class MarginalMaximizerStatics {
             if(costPerInput == 0)
                 marginalInputCosts+= 0 ;
             else
+            if(costPerInput < dept.getLastClosingPrice()) //if price is decreasing weirdly
+            {                                                                           //then assumes only the new stuff you buy will be discounted
+                marginalInputCosts+= (costPerInput * marginalInputNeeded);
+                totalInputCosts +=  costPerInput*marginalInputNeeded + dept.getLastClosingPrice() * ( totalInputNeeded-marginalInputNeeded) ;
+
+            }
+            else
+            {
                 marginalInputCosts+= (costPerInput * totalInputNeeded) - dept.getLastClosingPrice() *
                         p.hypotheticalWeeklyInputNeeds(input, currentWorkers) ;
+                totalInputCosts +=  costPerInput*totalInputNeeded;
+
+            }
 
             //marginal costs are negative (marginal savings) if we are reducing production
             assert (marginalInputCosts >= 0 && targetWorkers > currentWorkers) ^   (marginalInputCosts <= 0 && targetWorkers < currentWorkers);
-            totalInputCosts +=  costPerInput*totalInputNeeded;
             assert totalInputCosts >= 0;
         }
 

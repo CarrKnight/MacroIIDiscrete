@@ -6,26 +6,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b2f2be4b-01ab-4023-8729-b370a266331e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStaticsTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/CostEstimate.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/CostEstimate.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/personell/HumanResources.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/personell/HumanResources.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStatics.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStatics.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/MarginalMaximizerTest.java" afterPath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/MarginalMaximizerTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerWithUnitPID.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerWithUnitPID.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerWithUnitPIDCascadeEfficencyTest.java" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerWithUnitPIDCascadeEfficencyTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java" afterPath="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/Plant.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/Plant.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SalesControlFlowPIDWithFixedInventory.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SalesControlFlowPIDWithFixedInventory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SalesControlWithFixedInventoryAndPID.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SalesControlWithFixedInventoryAndPID.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartment.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SmoothedDailyInventoryPricingStrategy.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SmoothedDailyInventoryPricingStrategy.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/WeeklyWorkforceMaximizer.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/WeeklyWorkforceMaximizer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStaticsTest.java" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStaticsTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="MacroIIDiscrete.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/fragment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1366321165054" ignored="false" />
-    <file path="/Dummy.txt" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1366321165054" ignored="false" />
+    <file path="/Dummy.txt" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1366379896547" ignored="false" />
     <file path="/MacroII.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1362494994738" ignored="false" />
     <file path="/PhaseScheduler.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1360684299272" ignored="false" />
     <file path="/PurchasesDepartment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1363391490432" ignored="false" />
@@ -166,7 +154,7 @@
     <file path="/ChangeLookupMAMarketTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1361995976700" ignored="false" />
     <file path="/MarginalMaximizerWithUnitPIDCascadeEfficency.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1363119755894" ignored="false" />
     <file path="/ChangeLookupMAMarket.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1362424066025" ignored="false" />
-    <file path="/MarginalMaximizerStatics.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1366322339172" ignored="false" />
+    <file path="/MarginalMaximizerStatics.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1366380362408" ignored="false" />
     <file path="/MarginalMaximizerWithUnitPIDCascadeEfficencyTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1365274410924" ignored="false" />
     <file path="/CostEstimate.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1362434652104" ignored="false" />
     <file path="/MarginalPlantControlWithPIDUnitAndEfficencyAdjustment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1362436804211" ignored="false" />
@@ -2308,7 +2296,7 @@
     <file path="/mnt/0EA6C8BFA6C8A913/Git INET/src/edu/gmu/css/houseprice/control/ModelParameters.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1366224590669" ignored="false" />
     <file path="$PROJECT_DIR$/../TheGateMapper/src/reader/HTMLReader.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1366311166033" ignored="false" />
     <file path="/HTMLReader.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1366311143008" ignored="false" />
-    <file path="/MarginalMaximizerStaticsTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1366323228319" ignored="false" />
+    <file path="/MarginalMaximizerStaticsTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1366382577485" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -2469,7 +2457,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/test/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStaticsTest.java" line="214" class="agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerStaticsTest" package="agents.firm.production.control.maximizer.algorithms.marginalMaximizers">
+      <breakpoint url="file://$PROJECT_DIR$/src/test/java/tests/plantcontrol/MarginalMaximizerTest.java" line="107" class="tests.plantcontrol.MarginalMaximizerTest" package="tests.plantcontrol">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -2483,7 +2471,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/test/java/tests/plantcontrol/MarginalMaximizerTest.java" line="107" class="tests.plantcontrol.MarginalMaximizerTest" package="tests.plantcontrol">
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStatics.java" line="49" class="agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerStatics" package="agents.firm.production.control.maximizer.algorithms.marginalMaximizers">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -2545,31 +2533,27 @@
       <file leaf-file-name="MarginalMaximizerStaticsTest.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStaticsTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="287" column="33" selection-start="10997" selection-end="10997" vertical-scroll-proportion="-0.18983051">
+            <state line="590" column="70" selection-start="23943" selection-end="23943" vertical-scroll-proportion="12.123287">
               <folding>
-                <element signature="e#0#12057#0" expanded="true" />
+                <element signature="e#0#25330#0" expanded="true" />
                 <element signature="imports" expanded="true" />
                 <element signature="method#simpleRevenueTest#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
                 <element signature="method#simpleRevenueTest2#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
                 <element signature="method#simpleRevenueTest3#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
                 <element signature="method#simpleRevenueTest4#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
+                <element signature="method#doubleRevenueTest#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
                 <element signature="method#simpleWageCosts#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
                 <element signature="method#simpleWageCosts2#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
                 <element signature="method#simpleWageCosts3#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
                 <element signature="method#simpleWageCosts4#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
                 <element signature="method#simpleInputCosts#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
                 <element signature="method#simpleInputCosts2#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Plant.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/Plant.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="978" column="46" selection-start="29698" selection-end="29698" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="method#getOutputs#0;class#Plant#0" expanded="true" />
+                <element signature="method#simpleInputCosts3#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
+                <element signature="method#simpleInputCosts4#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
+                <element signature="method#doubleInputCosts#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
+                <element signature="method#marginalProfits1#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
+                <element signature="method#marginalProfits2#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
+                <element signature="method#marginalProfits3#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -2578,47 +2562,52 @@
       <file leaf-file-name="MarginalMaximizerStatics.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStatics.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="234" column="45" selection-start="11463" selection-end="11463" vertical-scroll-proportion="-8.2">
+            <state line="50" column="0" selection-start="1751" selection-end="1751" vertical-scroll-proportion="0.0">
               <folding>
-                <element signature="method#computeMarginalProfits#0;class#MarginalMaximizerStatics#0" expanded="true" />
-                <element signature="method#computeWageCosts#0;class#MarginalMaximizerStatics#0" expanded="true" />
-                <element signature="method#computeMarginalRevenue#0;class#MarginalMaximizerStatics#0" expanded="true" />
+                <element signature="method#marginalProduction#0;class#MarginalMaximizerStatics#0" expanded="true" />
+                <element signature="method#computeInputCosts#0;class#MarginalMaximizerStatics#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MonopolistWithInputScenarioTest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java">
+      <file leaf-file-name="MockitoMethodInvocationControl.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/powermock-api-mockito-1.5-sources.jar!/org/powermock/api/mockito/internal/invocation/MockitoMethodInvocationControl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="273" column="0" selection-start="9505" selection-end="9505" vertical-scroll-proportion="0.0">
+            <state line="241" column="0" selection-start="12116" selection-end="12116" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FilteredCGLIBProxyRealMethod.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/mockito-all-1.9.5-sources.jar!/org/mockito/internal/invocation/realmethod/FilteredCGLIBProxyRealMethod.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="29" column="0" selection-start="1038" selection-end="1038" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PowerMockJUnit44RunnerDelegateImpl.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-module-junit4/1.5/powermock-module-junit4-1.5-sources.jar!/org/powermock/modules/junit4/internal/impl/PowerMockJUnit44RunnerDelegateImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="331" column="0" selection-start="13809" selection-end="13809" vertical-scroll-proportion="0.0">
               <folding>
-                <element signature="imports" expanded="false" />
-                <element signature="method#rightPriceAndQuantityTestAsHillClimber#0;class#MonopolistWithInputScenarioTest#0" expanded="false" />
-                <element signature="method#rightPriceAndQuantityTestAsMarginal#0;class#MonopolistWithInputScenarioTest#0" expanded="false" />
-                <element signature="method#rightPriceAndQuantityTestAsMarginalWithPID#0;class#MonopolistWithInputScenarioTest#0" expanded="false" />
-                <element signature="method#rightPriceAndQuantityTestAsMarginalWithPIDUnit#0;class#MonopolistWithInputScenarioTest#0" expanded="false" />
-                <element signature="method#rightPriceAndQuantityTestAsMarginalWithSalesControlFlowPIDWithFixedInventory#0;class#MonopolistWithInputScenarioTest#0" expanded="false" />
-                <element signature="method#rightPriceAndQuantityTestAsMarginalWithPIDWithSalesControlFlowPIDWithFixedInventory#0;class#MonopolistWithInputScenarioTest#0" expanded="false" />
+                <element signature="method#executeTest#0;class#PowerMockJUnit44MethodRunner#0;class#PowerMockJUnit44RunnerDelegateImpl#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MarginalMaximizerTest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/tests/plantcontrol/MarginalMaximizerTest.java">
+      <file leaf-file-name="MethodRoadie.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/junit-4.11-sources.jar!/org/junit/internal/runners/MethodRoadie.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="98" column="102" selection-start="4178" selection-end="4178" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MarginalMaximizer.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="187" column="0" selection-start="6230" selection-end="6230" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="88" column="0" selection-start="3139" selection-end="3139" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="e#3057#3162#0" expanded="true" />
+                <element signature="method#runBeforesThenTestThenAfters#0;class#MethodRoadie#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -2757,6 +2746,48 @@
     </navigator>
     <panes>
       <pane id="Scope" />
+      <pane id="PackagesPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="model" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="agents" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -2831,63 +2862,21 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="MacroIIDiscrete" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="MacroIIDiscrete" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="MacroIIDiscrete" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="MacroIIDiscrete" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="model" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="MacroIIDiscrete" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="MacroIIDiscrete" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="agents" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="GenerateAntBuildDialog.generateIdeaHomeProperty" value="true" />
     <property name="project.structure.last.edited" value="Libraries" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
-    <property name="OverrideImplement.combined" value="false" />
     <property name="project.structure.proportion" value="0.15" />
+    <property name="OverrideImplement.combined" value="false" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="Repository.Attach.JavaDocs" value="true" />
-    <property name="MemberChooser.sorted" value="false" />
-    <property name="recentsLimit" value="5" />
     <property name="GenerateAntBuildDialog.generateSingleFile" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/java" />
+    <property name="recentsLimit" value="5" />
+    <property name="MemberChooser.sorted" value="false" />
     <property name="GenerateAntBuildDialog.inclineRuntiemClasspath" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/java" />
     <property name="GenerateAntBuildDialog.outputFileNameProperty" value="macroiidiscrete" />
     <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
@@ -2899,15 +2888,15 @@
     <property name="GoToFile.includeJavaFiles" value="false" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/src/test/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers" />
     <property name="options.lastSelected" value="preferences.pluginManager" />
-    <property name="project.structure.side.proportion" value="0.2" />
     <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
+    <property name="project.structure.side.proportion" value="0.2" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.includeInheritedMembers" value="false" />
     <property name="TODO_SCOPE" value="Project Files" />
     <property name="restartRequiresConfirmation" value="true" />
     <property name="GenerateAntBuildDialog.backupFiles" value="true" />
-    <property name="options.searchVisible" value="true" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.RecentsKey">
@@ -3099,19 +3088,6 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <method />
-    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -3137,6 +3113,19 @@
       <envs />
       <properties />
       <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -3503,7 +3492,11 @@
       <created>1365622433663</created>
       <updated>1365622433663</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="Changed a bit the pid pricings, started unit testing the static methods for marginal maximizer">
+      <created>1366337993383</created>
+      <updated>1366337993383</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -3533,7 +3526,6 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292683" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32150775" sideWeight="0.49786553" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2497332" sideWeight="0.6552106" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39356986" sideWeight="0.4855923" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31263858" sideWeight="0.50053364" order="13" side_tool="true" content_ui="tabs" />
@@ -3545,11 +3537,12 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.6552106" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39967984" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="JProfiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292683" sideWeight="0.49786553" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2145144" sideWeight="0.68292683" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31707317" sideWeight="0.47438633" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2145144" sideWeight="0.68292683" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31707317" sideWeight="0.47438633" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32959402" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="654" y="139" width="761" height="854" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32150775" sideWeight="0.49786553" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Run with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32852387" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Debug with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -3594,7 +3587,7 @@
     <option name="MAXIMUM_HISTORY_ROWS" value="1000" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Created yet another sales predictor that just seem to work as intended. Unfortunately that meant giving somewhat more purpose to agents which is not what I inteded, but hey, we take what we get.&#10;Also P controllers solve one-link supply chains. As long as inventories don't matter, we are fine! Which is not really fine, but okay." />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed a bit the pid pricings, started unit testing the static methods for marginal maximizer" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -3607,7 +3600,6 @@
     <option name="UPDATE_GROUP_BY_CHANGELIST" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="rebuild the array list phase scheduler now that i know it wasn't its fault" />
     <MESSAGE value="apparently I can make most tests of monopoly work just by giving it a bit more time and dividing FLOW PID SELLER a and b by half. Tuning,tuning,tuning,tuning." />
     <MESSAGE value="fixed the annealing maximizer; prevented it from getting stuck at 0 when temperature was still too high and rewrote the test to make it statistical since there is somewhat of randomness involved in choosing the right direction" />
     <MESSAGE value="added a simple one link supply chain, same problems" />
@@ -3632,6 +3624,7 @@
     <MESSAGE value="finally dealt with the sales department price predictor which was becoming more mysterious as central. Now it has been properly shown its place and reeducated for the common good" />
     <MESSAGE value="mostly just moved some stuff around" />
     <MESSAGE value="Created yet another sales predictor that just seem to work as intended. Unfortunately that meant giving somewhat more purpose to agents which is not what I inteded, but hey, we take what we get.&#10;Also P controllers solve one-link supply chains. As long as inventories don't matter, we are fine! Which is not really fine, but okay." />
+    <MESSAGE value="Changed a bit the pid pricings, started unit testing the static methods for marginal maximizer" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -3645,85 +3638,18 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/MarginalPlantControl.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/CostEstimate.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="13" selection-start="1107" selection-end="1107" vertical-scroll-proportion="0.0">
+        <state line="33" column="18" selection-start="829" selection-end="829" vertical-scroll-proportion="0.79322034">
           <folding>
-            <element signature="method#MarginalPlantControl#0;class#MarginalPlantControl#0" expanded="false" />
+            <element signature="method#toString#0;class#CostEstimate#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/LookAheadPredictor.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/Plant.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="0" selection-start="924" selection-end="924" vertical-scroll-proportion="0.14237288">
-          <folding>
-            <element signature="method#predictPurchasePrice#0;class#LookAheadPredictor#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/PurchasesPredictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="0" selection-start="602" selection-end="602" vertical-scroll-proportion="0.3322034">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/personell/HumanResources.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="442" column="0" selection-start="18457" selection-end="18457" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="method#getHumanResourcesIntegrated#1;class#HumanResources#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/PurchasesDepartment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="160" column="21" selection-start="5225" selection-end="5234" vertical-scroll-proportion="-7.52">
-          <folding>
-            <element signature="method#predictPurchasePrice#0;class#PurchasesDepartment#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/mockito-all-1.9.5-sources.jar!/org/mockito/Mockito.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1119" column="0" selection-start="49773" selection-end="49773" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerWithUnitPIDCascadeEfficencyTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="201" column="16" selection-start="9490" selection-end="9490" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="method#priceGoesDownEfficencyGoesDown#0;class#MarginalMaximizerWithUnitPIDCascadeEfficencyTest#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/sales/prediction/LinearExtrapolationPredictorTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="71" column="0" selection-start="1749" selection-end="1749" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerWithUnitPID.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="141" column="4" selection-start="6315" selection-end="6315" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="method#MarginalMaximizerWithUnitPID#1;class#MarginalMaximizerWithUnitPID#0" expanded="true" />
-            <element signature="method#setGains#0;class#MarginalMaximizerWithUnitPID#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="187" column="0" selection-start="6230" selection-end="6230" vertical-scroll-proportion="0.0">
+        <state line="978" column="46" selection-start="29698" selection-end="29698" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -3735,66 +3661,127 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/CostEstimate.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="18" selection-start="829" selection-end="829" vertical-scroll-proportion="0.79322034">
-          <folding>
-            <element signature="method#toString#0;class#CostEstimate#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="273" column="0" selection-start="9505" selection-end="9505" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/powermock-api-mockito-1.5-sources.jar!/org/powermock/api/mockito/PowerMockito.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="142" column="0" selection-start="6024" selection-end="6024" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/mockito-all-1.9.5-sources.jar!/org/mockito/Mockito.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1119" column="0" selection-start="49773" selection-end="49773" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/javassist-3.17.1-GA-sources.jar!/javassist/runtime/Desc.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="81" column="0" selection-start="2839" selection-end="2839" vertical-scroll-proportion="0.0">
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#rightPriceAndQuantityTestAsHillClimber#0;class#MonopolistWithInputScenarioTest#0" expanded="false" />
-            <element signature="method#rightPriceAndQuantityTestAsMarginal#0;class#MonopolistWithInputScenarioTest#0" expanded="false" />
-            <element signature="method#rightPriceAndQuantityTestAsMarginalWithPID#0;class#MonopolistWithInputScenarioTest#0" expanded="false" />
-            <element signature="method#rightPriceAndQuantityTestAsMarginalWithPIDUnit#0;class#MonopolistWithInputScenarioTest#0" expanded="false" />
-            <element signature="method#rightPriceAndQuantityTestAsMarginalWithSalesControlFlowPIDWithFixedInventory#0;class#MonopolistWithInputScenarioTest#0" expanded="false" />
-            <element signature="method#rightPriceAndQuantityTestAsMarginalWithPIDWithSalesControlFlowPIDWithFixedInventory#0;class#MonopolistWithInputScenarioTest#0" expanded="false" />
+            <element signature="method#getClazz#0;class#Desc#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/Plant.java">
+    <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/powermock-core-1.5-sources.jar!/org/powermock/core/MockGateway.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="978" column="46" selection-start="29698" selection-end="29698" vertical-scroll-proportion="0.0">
+        <state line="202" column="0" selection-start="8008" selection-end="8008" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/junit-4.11-sources.jar!/org/junit/Assert.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="518" column="0" selection-start="19549" selection-end="19549" vertical-scroll-proportion="0.0">
           <folding>
-            <element signature="method#getOutputs#0;class#Plant#0" expanded="true" />
+            <element signature="method#assertEquals#9;class#Assert#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-module-junit4/1.5/powermock-module-junit4-1.5-sources.jar!/org/powermock/modules/junit4/internal/impl/PowerMockJUnit49RunnerDelegateImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="76" column="0" selection-start="3378" selection-end="3378" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="method#executeTestInSuper#0;class#PowerMockJUnit49MethodRunner#0;class#PowerMockJUnit49RunnerDelegateImpl#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/mockito-all-1.9.5-sources.jar!/org/mockito/internal/invocation/realmethod/FilteredCGLIBProxyRealMethod.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="29" column="0" selection-start="1038" selection-end="1038" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/powermock/powermock-module-junit4/1.5/powermock-module-junit4-1.5-sources.jar!/org/powermock/modules/junit4/internal/impl/PowerMockJUnit44RunnerDelegateImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="331" column="0" selection-start="13809" selection-end="13809" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="method#executeTest#0;class#PowerMockJUnit44MethodRunner#0;class#PowerMockJUnit44RunnerDelegateImpl#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/junit-4.11-sources.jar!/org/junit/internal/runners/MethodRoadie.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="88" column="0" selection-start="3139" selection-end="3139" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#3057#3162#0" expanded="true" />
+            <element signature="method#runBeforesThenTestThenAfters#0;class#MethodRoadie#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/powermock-api-mockito-1.5-sources.jar!/org/powermock/api/mockito/internal/invocation/MockitoMethodInvocationControl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="241" column="0" selection-start="12116" selection-end="12116" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStatics.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="234" column="45" selection-start="11463" selection-end="11463" vertical-scroll-proportion="-8.2">
+        <state line="50" column="0" selection-start="1751" selection-end="1751" vertical-scroll-proportion="0.0">
           <folding>
-            <element signature="method#computeMarginalProfits#0;class#MarginalMaximizerStatics#0" expanded="true" />
-            <element signature="method#computeWageCosts#0;class#MarginalMaximizerStatics#0" expanded="true" />
-            <element signature="method#computeMarginalRevenue#0;class#MarginalMaximizerStatics#0" expanded="true" />
+            <element signature="method#marginalProduction#0;class#MarginalMaximizerStatics#0" expanded="true" />
+            <element signature="method#computeInputCosts#0;class#MarginalMaximizerStatics#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStaticsTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="287" column="33" selection-start="10997" selection-end="10997" vertical-scroll-proportion="-0.18983051">
+        <state line="590" column="70" selection-start="23943" selection-end="23943" vertical-scroll-proportion="12.123287">
           <folding>
-            <element signature="e#0#12057#0" expanded="true" />
+            <element signature="e#0#25330#0" expanded="true" />
             <element signature="imports" expanded="true" />
             <element signature="method#simpleRevenueTest#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
             <element signature="method#simpleRevenueTest2#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
             <element signature="method#simpleRevenueTest3#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
             <element signature="method#simpleRevenueTest4#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
+            <element signature="method#doubleRevenueTest#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
             <element signature="method#simpleWageCosts#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
             <element signature="method#simpleWageCosts2#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
             <element signature="method#simpleWageCosts3#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
             <element signature="method#simpleWageCosts4#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
             <element signature="method#simpleInputCosts#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
             <element signature="method#simpleInputCosts2#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
+            <element signature="method#simpleInputCosts3#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
+            <element signature="method#simpleInputCosts4#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
+            <element signature="method#doubleInputCosts#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
+            <element signature="method#marginalProfits1#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
+            <element signature="method#marginalProfits2#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
+            <element signature="method#marginalProfits3#0;class#MarginalMaximizerStaticsTest#0" expanded="true" />
           </folding>
         </state>
       </provider>
