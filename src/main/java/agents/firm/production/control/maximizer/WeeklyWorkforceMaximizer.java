@@ -224,7 +224,7 @@ public class WeeklyWorkforceMaximizer<ALG extends WorkerMaximizationAlgorithm> i
 
         //if the future target is negative, do it again next week (the subclass wants more info)
         if(futureTarget < 0){
-            System.out.println("delay");
+            //System.out.println("delay");
             reschedule(nextCheck + weeksToMakeObservation*7);
 
         }

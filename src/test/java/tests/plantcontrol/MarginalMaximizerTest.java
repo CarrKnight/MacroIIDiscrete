@@ -74,6 +74,7 @@ public class MarginalMaximizerTest {
         Plant p = mock(Plant.class); when(p.minimumWorkersNeeded()).thenReturn(0); when(p.maximumWorkersPossible()).thenReturn(1000);
         Blueprint b = new Blueprint.Builder().output(GoodType.GENERIC,1).build(); //just one output
         when(p.getBlueprint()).thenReturn(b);
+        when(p.getOutputs()).thenReturn(b.getOutputs().keySet());
         Firm owner = mock(Firm.class); when(p.getOwner()).thenReturn(owner); when(hr.getPlant()).thenReturn(p); when(hr.getFirm()).thenReturn(owner);
         when(owner.getModel()).thenReturn(new MacroII(1l));  when(p.workerSize()).thenReturn(10);
         when(hr.predictPurchasePrice()).thenReturn(-1l); //tell the hr to fail at predicting
@@ -95,7 +96,7 @@ public class MarginalMaximizerTest {
 
 
 
-        PlantControl control = mock(PlantControl.class);
+        PlantControl control = mock(PlantControl.class); when(control.getCurrentWage()).thenReturn(50l);
         //no delay exception thrown this time!!!
         MarginalMaximizer maximizer = new MarginalMaximizer(hr,control,p,owner);
         boolean exceptionThrown = false;

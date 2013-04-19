@@ -212,6 +212,9 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
         return department;
     }
 
+
+
+
     /**
      * Set the sampling speed of the controller (how often it updates, in days)
      * @param samplingSpeed the sampling speed

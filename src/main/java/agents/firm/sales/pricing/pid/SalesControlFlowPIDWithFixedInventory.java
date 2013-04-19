@@ -13,6 +13,7 @@ import ec.util.MersenneTwisterFast;
 import goods.Good;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.filters.Filter;
 import model.utilities.pid.PIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -61,6 +62,11 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
      * The PID controller that deals with it
      */
     private PIDController controller;
+
+    /**
+     * if given, this will filter the outflow from the sales department to deal with infrequent changes
+     */
+    private Filter<Integer> outflowFilter =null;
 
     /**
      * is the strategy active?
@@ -159,6 +165,9 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
         if(!isActive)
             return;
 
+        //get today ouflow (smoothed if you attached a filter)
+        float outflow = outflowFilter == null ? department.getTodayOutflow() : outflowFilter.getSmoothedObservation();
+
 
         //change phase
         switch (phase)
@@ -174,8 +183,9 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
         }
 
 
-        //change price
-        controller.adjustOnce(department.getTodayOutflow()-getTarget(),isActive);
+
+        controller.adjustOnce(outflow-getTarget(),isActive);
+
 
         if(getSpeed()==0)
             ((MacroII) state).scheduleTomorrow(ActionOrder.ADJUST_PRICES,this);
@@ -322,5 +332,33 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
 
     public float getProportionalGain() {
         return controller.getProportionalGain();
+    }
+
+
+    public void attachFilter(final Filter<Integer> outflowFilter)
+    {
+
+        //set it
+        this.outflowFilter = outflowFilter;
+        outflowFilter.addObservation(department.getTodayOutflow());
+        //schedule it
+        department.getFirm().getModel().scheduleSoon(ActionOrder.THINK,new Steppable() {
+            @Override
+            public void step(SimState state) {
+                if(SalesControlFlowPIDWithFixedInventory.this.outflowFilter != outflowFilter) //stop if you changed filter
+                    return;
+
+                //add observation
+                outflowFilter.addObservation(department.getTodayOutflow());
+
+                //reschedule yourself
+                department.getFirm().getModel().scheduleTomorrow(ActionOrder.THINK,this);
+
+
+            }
+        }
+
+        );
+
     }
 }

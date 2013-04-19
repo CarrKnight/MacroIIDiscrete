@@ -26,6 +26,7 @@ import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
+import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Preconditions;
@@ -38,6 +39,7 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.DailyStatCollector;
+import model.utilities.filters.MovingAverage;
 import model.utilities.pid.CascadePIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -105,12 +107,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
      */
     private int foodMultiplier = 1;
 
-    /**
-     * flag that when activated and inventories are above 1500, it reduces them by a 1000
-     * I am using a strategy that ignores inventory, then I can set this to true.
-     *
-     */
-    private boolean reduceInventoriesHack = false;
+
 
     /**
      * Called by MacroII, it creates agents and then schedules them.
@@ -131,28 +128,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         //create workers
         buildLaborSupplies();
 
-        if(reduceInventoriesHack)
-        {
-            model.scheduleSoon(ActionOrder.CLEANUP, new Steppable() {
-                @Override
-                public void step(SimState state) {
 
-                    for(EconomicAgent e : model.getAgents() )
-                    {
-                        for(GoodType g : GoodType.values())
-                        {
-                            while(e.hasHowMany(g) > 800)
-                            {
-                                for(int i=0; i <500; i++)
-                                    e.consume(g);
-                            }
-                        }
-                    }
-                    model.scheduleTomorrow(ActionOrder.CLEANUP,this);
-                }
-
-            });
-        }
 
     }
 
@@ -205,9 +181,8 @@ public class OneLinkSupplyChainScenario extends Scenario {
                         new SimpleBuyerSearch(goodmarket, firm), new SimpleSellerSearch(goodmarket, firm),
                         salesDepartmentType);
                 firm.registerSaleDepartment(dept, goodmarket.getGoodType());
-               /* SalesControlFlowPIDWithFixedInventory strategy;
-                strategy = new SalesControlFlowPIDWithFixedInventory(dept);
-                */
+
+
                 SmoothedDailyInventoryPricingStrategy strategy;
                 strategy = new SmoothedDailyInventoryPricingStrategy(dept);
                 strategy.setInitialPrice(model.random.nextInt(30)+70);
@@ -215,13 +190,28 @@ public class OneLinkSupplyChainScenario extends Scenario {
                 if(!goodmarket.getGoodType().equals(GoodType.FOOD))
                 {
 
+                    SalesControlFlowPIDWithFixedInventory strategy2 = new SalesControlFlowPIDWithFixedInventory(dept,50,5000,model,
+                            model.drawProportionalGain()/100f,
+                            model.drawIntegrativeGain()/100f,
+                            model.drawDerivativeGain(), model.random);
+                    strategy2.attachFilter(new MovingAverage<Integer>(7));
+                    strategy2.setSpeed(1);
+                    dept.setAskPricingStrategy(strategy2);
 
-                    strategy.setGains(strategy.getProportionalGain()/100f,0,0);
-                    strategy.setInitialPrice(50);
+             /*       SalesControlWithFixedInventoryAndPID strategy2;
+                    strategy2 = new SalesControlWithFixedInventoryAndPID(dept);
+                   // strategy2 = new SmoothedDailyInventoryPricingStrategy(dept);
+                    PIDController controller = (PIDController)strategy2.getController();
+                    strategy2.setTargetInventory(1000);
+                    controller.setGains(controller.getProportionalGain() * .01f, 0,
+                            0);
+                    strategy2.setInitialPrice(60);
+                    dept.setAskPricingStrategy(strategy2);
+                    */
                 }
-
-                // strategy.setProductionCostOverride(false);
-                dept.setAskPricingStrategy(strategy); //set strategy to PID
+                else
+                    // strategy.setProductionCostOverride(false);
+                    dept.setAskPricingStrategy(strategy); //set strategy to PID
 
 
                 //CREATE THE PLANT + Human resources
@@ -466,7 +456,6 @@ public class OneLinkSupplyChainScenario extends Scenario {
         OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
         scenario1.setControlType(MarginalPlantControlWithPIDUnit.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-        scenario1.setReduceInventoriesHack(false);
         // scenario1.setControlType(MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment.class);
 
 
@@ -500,27 +489,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
     }
 
 
-    /**
-     * Sets new flag that when activated and inventories are above 1500, it reduces them by a 1000
-     * I am using a strategy that ignores inventory, then I can set this to true..
-     *
-     * @param reduceInventoriesHack New value of flag that when activated and inventories are above 1500, it reduces them by a 1000
-     *                              I am using a strategy that ignores inventory, then I can set this to true..
-     */
-    public void setReduceInventoriesHack(boolean reduceInventoriesHack) {
-        this.reduceInventoriesHack = reduceInventoriesHack;
-    }
 
-    /**
-     * Gets flag that when activated and inventories are above 1500, it reduces them by a 1000
-     * I am using a strategy that ignores inventory, then I can set this to true..
-     *
-     * @return Value of flag that when activated and inventories are above 1500, it reduces them by a 1000
-     *         I am using a strategy that ignores inventory, then I can set this to true..
-     */
-    public boolean isReduceInventoriesHack() {
-        return reduceInventoriesHack;
-    }
 
 
     /**

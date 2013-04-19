@@ -94,8 +94,8 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
 
             float marginalProduction = MarginalMaximizerStatics.marginalProduction(getP(), currentWorkerTarget, currentWorkerTarget + 1);
             //cost
-            CostEstimate wageCosts = MarginalMaximizerStatics.computeWageCosts(getPolicy(), getP(), getHr(),
-                    getControl(), currentWorkerTarget, currentWorkerTarget + 1);
+            CostEstimate wageCosts = MarginalMaximizerStatics.computeWageCosts(getHr(), getControl(), currentWorkerTarget, currentWorkerTarget + 1, getPolicy()
+            );
             CostEstimate inputCosts = MarginalMaximizerStatics.computeInputCosts(getOwner(), getP(), getPolicy(),
                     currentWorkerTarget, currentWorkerTarget + 1);
             float marginalCosts = wageCosts.getMarginalCost() + inputCosts.getMarginalCost();
@@ -130,14 +130,16 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
 
 
 
-         /*   if(getP().getBlueprint().getOutputs().keySet().iterator().next() == GoodType.BEEF)
+/*            if(getP().getBlueprint().getOutputs().keySet().iterator().next() == GoodType.BEEF )
             {
                 System.out.println("marginal efficency:" + marginalEfficency + ", marginal benefits: " + marginalBenefits + ", marginal costs: " + marginalCosts );
                 System.out.println("target yestrday:" + mvYesterday + ", target today:" + pid.getCurrentMV() + ", integral: " + pid.getIntegral() );
                 System.out.println("wages:" + wageCosts.getMarginalCost() + ", price: " + getOwner().getModel().getMarket(GoodType.BEEF).getLastPrice() +
                         ", predicted price: " + getOwner().getSalesDepartment(GoodType.BEEF).predictSalePrice(inputCosts.getTotalCost() + wageCosts.getTotalCost()) + "\n");
+
             }
-         */
+
+  */
             //don't return more than the max or less than 0
             return Math.max(Math.min(Math.round(pid.getCurrentMV()), getHr().maximumWorkersPossible()), 0);
 

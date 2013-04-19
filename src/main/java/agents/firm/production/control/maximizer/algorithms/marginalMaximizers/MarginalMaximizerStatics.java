@@ -56,7 +56,7 @@ public final class MarginalMaximizerStatics {
         /**********************************************
          * WAGES
          *********************************************/
-        CostEstimate wageCosts = computeWageCosts(policy, p,hr,control, currentWorkers,targetWorkers);
+        CostEstimate wageCosts = computeWageCosts(hr, control, currentWorkers, targetWorkers, policy);
 
         /**********************************************
          * INPUTS
@@ -78,13 +78,13 @@ public final class MarginalMaximizerStatics {
         float marginalRevenue = computeMarginalRevenue(owner, p, policy, currentWorkers, targetWorkers, inputCosts.getTotalCost(), wageCosts.getTotalCost());
 
 
-        if(targetWorkers > currentWorkers)
+    /*    if(targetWorkers > currentWorkers)
         {
             System.out.println("total input: " + inputCosts.getTotalCost() + ", total wage costs: " + wageCosts.getTotalCost());
             System.out.println("marginal input: " + inputCosts.getMarginalCost() + ", marginal wages:" + wageCosts.getMarginalCost() + ", revenue: " +
                     marginalRevenue + " ----- workers: " + currentWorkers);
         }
-
+      */
         //FINALLY return
         return marginalRevenue - totalMarginalCosts;
 
@@ -137,14 +137,13 @@ public final class MarginalMaximizerStatics {
 
     /**
      * Computes the labor expenses associated with the proposed number of workers
-     * @param policy
-     *@param p @param currentWorkers the current number of workers
      * @param targetWorkers the proposed number of workers
+     * @param policy
      * @return the estimate of both the marginal costs and the total costs
      * @throws model.utilities.DelayException
      */
-    public static CostEstimate computeWageCosts(MarginalMaximizer.RandomizationPolicy policy, Plant p, HumanResources hr, PlantControl control,
-                                                int currentWorkers, int targetWorkers) throws DelayException {
+    public static CostEstimate computeWageCosts(HumanResources hr, PlantControl control, int currentWorkers,
+                                                int targetWorkers, MarginalMaximizer.RandomizationPolicy policy) throws DelayException {
         long marginalWageCosts; long futureWage;
 
         if(targetWorkers > currentWorkers)  //if we are going to hire somebody
@@ -152,12 +151,12 @@ public final class MarginalMaximizerStatics {
             //wages!
             futureWage = hr.predictPurchasePrice();
             //if there is no prediction react to it
-            futureWage = futureWage < 0 ? policy.replaceUnknownPrediction(hr.getMarket(), p.getRandom()) : futureWage;
+            futureWage = futureWage < 0 ? policy.replaceUnknownPrediction(hr.getMarket(), hr.getRandom()) : futureWage;
             //remember that you'll have to raise everybody's wages if you hire somebody new at a higher cost
             if(futureWage > control.getCurrentWage() && hr.isFixedPayStructure())  //if you have to raise your wages to hire somebody
             {
                 //your total costs then are the new wage + the adjustment you'll have to make to pay everybody that wage
-                marginalWageCosts = (futureWage * p.workerSize() - hr.getWagesPaid()) + futureWage * (targetWorkers-currentWorkers);
+                marginalWageCosts = ( (futureWage- control.getCurrentWage()) * currentWorkers) + futureWage * (targetWorkers-currentWorkers);
                 assert marginalWageCosts > 0 || futureWage == 0;
             }
             else{
@@ -167,9 +166,10 @@ public final class MarginalMaximizerStatics {
         else{
             //we are firing people, what wage would ensue then?
             futureWage = hr.hypotheticalWageAtThisLevel(targetWorkers);
+            assert futureWage <= control.getCurrentWage() : "firing people will result in higher wage, that's weird";
             //make a list of workers
 
-            marginalWageCosts = futureWage * (targetWorkers-currentWorkers); //get marginal cost!
+            marginalWageCosts = futureWage * targetWorkers -  control.getCurrentWage() * currentWorkers; //get marginal cost!
             assert marginalWageCosts <=0;    //cost should be negative! we are saving!
         }
         long totalFutureWageCosts = futureWage * targetWorkers;
@@ -193,11 +193,12 @@ public final class MarginalMaximizerStatics {
             targetWorkers, long totalFutureCosts, long totalFutureWageCosts) throws DelayException {
 
         float marginalRevenue = 0;
-        Set<GoodType> outputs = p.getBlueprint().getOutputs().keySet();
+        Set<GoodType> outputs = p.getOutputs();
         for(GoodType output : outputs)
         {
             float marginalProduction = p.hypotheticalThroughput(targetWorkers, output) - p.hypotheticalThroughput(currentWorkers, output);
-            assert (marginalProduction >= 0 && targetWorkers >= currentWorkers) ^  (marginalProduction <= 0 && targetWorkers < currentWorkers);
+            assert (marginalProduction >= 0 && targetWorkers >= currentWorkers) ^  (marginalProduction <= 0 && targetWorkers < currentWorkers) :
+                    "this method was thought for monotonic production functions.";
             //if you are increasing production, predict future price. Otherwise get last price
             long pricePerUnit = targetWorkers > currentWorkers ?
                     owner.getSalesDepartment(output).predictSalePrice(p.hypotheticalUnitOutputCost(output, totalFutureCosts, targetWorkers, totalFutureWageCosts)) :
@@ -231,7 +232,7 @@ public final class MarginalMaximizerStatics {
      * @throws model.utilities.DelayException
      */
     public static CostEstimate computeInputCosts(Firm owner, Plant p, MarginalMaximizer.RandomizationPolicy policy, int currentWorkers, int targetWorkers) throws DelayException {
-        Set<GoodType> inputs = p.getBlueprint().getInputs().keySet();
+        Set<GoodType> inputs = p.getInputs();
         long marginalInputCosts = 0; //here we will store the costs of increasing production
         long totalInputCosts = 0; //here we will store the TOTAL input costs of increased production
         for(GoodType input : inputs)
@@ -241,7 +242,8 @@ public final class MarginalMaximizerStatics {
             assert (marginalInputNeeded>=0 && targetWorkers > currentWorkers) ^ (marginalInputNeeded<=0 && targetWorkers < currentWorkers) ; //
 
             PurchasesDepartment dept = owner.getPurchaseDepartment(input); //get the purchase department that buys this input
-            long costPerInput = targetWorkers > currentWorkers ? dept.predictPurchasePrice() : dept.getLastClosingPrice(); //if we are increasing production, predict. if we are decreasing production use old prices
+            long costPerInput = targetWorkers > currentWorkers ? dept.predictPurchasePrice() : dept.getLastClosingPrice();
+             //if we are increasing production, predict. if we are decreasing production use old prices
             //if there is no prediction, react to it
             costPerInput = costPerInput < 0 ? policy.replaceUnknownPrediction(owner.getPurchaseDepartment(input).getMarket(), p.getRandom()) : costPerInput;
 

@@ -959,4 +959,23 @@ public class Plant implements Agent, InventoryListener {
     public long getThisWeekInputCosts() {
         return thisWeekInputCosts;
     }
+
+    /**
+     * get a set with all the outputs produced at this plant from the machinery
+     * @return
+     */
+    public Set<GoodType> getOutputs()
+    {
+       return blueprint.getOutputs().keySet();
+    }
+
+    /**
+     * gets a set of all the type of inputs used by this plant during production
+     * @return
+     */
+    public Set<GoodType> getInputs()
+    {
+
+        return blueprint.getInputs().keySet();
+    }
 }

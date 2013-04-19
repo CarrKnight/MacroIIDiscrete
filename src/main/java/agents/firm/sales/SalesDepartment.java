@@ -124,6 +124,8 @@ public abstract class  SalesDepartment  implements Department {
      * goods that were given to us to sell today
      */
     private int todayInflow;
+
+
     /**
      * How many days will inventories last at the current flow? It is 0 if there is no inventory, MAX_VALUE if there are more inflows than outflows!
      */
@@ -343,6 +345,7 @@ public abstract class  SalesDepartment  implements Department {
         //reset
         todayInflow = 0;
         todayOutflow = 0;
+
 
         model.scheduleTomorrow(ActionOrder.DAWN,new Steppable() {
             @Override
@@ -570,6 +573,7 @@ public abstract class  SalesDepartment  implements Department {
         //log it
         getFirm().logEvent(SalesDepartment.this, MarketEvents.SOLD
                 , getFirm().getModel().getCurrentSimulationTimeInMillis(), "price " + newResult.getPriceSold());
+
         todayOutflow++;
 
 

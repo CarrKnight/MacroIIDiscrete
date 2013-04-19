@@ -29,4 +29,12 @@ public class CostEstimate
     final public long getTotalCost() {
         return totalCost;
     }
+
+    @Override
+    public String toString() {
+        return "CostEstimate{" +
+                "marginalCost=" + marginalCost +
+                ", totalCost=" + totalCost +
+                '}';
+    }
 }

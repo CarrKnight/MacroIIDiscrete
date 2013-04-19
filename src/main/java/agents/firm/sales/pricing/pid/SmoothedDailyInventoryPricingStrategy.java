@@ -105,8 +105,6 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         Preconditions.checkState(salesDepartment.getTodayInflow() >=0, "Negative inflow is weird");
 
         movingAverage.addObservation(salesDepartment.getTodayInflow());
-        System.out.println("today inflow" + salesDepartment.getTodayInflow() + ", ma:"+ movingAverage.getSmoothedObservation()
-        + ",production: " + salesDepartment.getFirm()) ;
 
         delegate.setTargetInventory((int) movingAverage.getSmoothedObservation());
 

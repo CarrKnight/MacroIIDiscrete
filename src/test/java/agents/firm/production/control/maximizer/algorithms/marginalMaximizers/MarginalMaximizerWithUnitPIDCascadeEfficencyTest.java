@@ -79,8 +79,8 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficencyTest
         PowerMockito.when(MarginalMaximizerStatics.marginalProduction(any(Plant.class),anyInt(),anyInt())).thenReturn(1); //numbers are not important
         PowerMockito.when(MarginalMaximizerStatics.computeInputCosts(any(Firm.class),any(Plant.class),any(MarginalMaximizer.RandomizationPolicy.class),anyInt(),anyInt())).
                 thenReturn(mock(CostEstimate.class)); //numbers are not important
-        PowerMockito.when(MarginalMaximizerStatics.computeWageCosts(any(MarginalMaximizer.RandomizationPolicy.class),any(Plant.class),
-                any(HumanResources.class),any(PlantControl.class),anyInt(),anyInt())).
+        PowerMockito.when(MarginalMaximizerStatics.computeWageCosts(any(HumanResources.class), any(PlantControl.class), anyInt(), anyInt(), any(MarginalMaximizer.RandomizationPolicy.class)
+        )).
                 thenReturn(mock(CostEstimate.class)); //numbers are not important
 
 
@@ -158,8 +158,8 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficencyTest
         PowerMockito.when(MarginalMaximizerStatics.marginalProduction(any(Plant.class),anyInt(),anyInt())).thenReturn(1); //numbers are not important
         PowerMockito.when(MarginalMaximizerStatics.computeInputCosts(any(Firm.class),any(Plant.class),any(MarginalMaximizer.RandomizationPolicy.class),anyInt(),anyInt())).
                 thenReturn(mock(CostEstimate.class)); //numbers are not important
-        PowerMockito.when(MarginalMaximizerStatics.computeWageCosts(any(MarginalMaximizer.RandomizationPolicy.class),any(Plant.class),
-                any(HumanResources.class),any(PlantControl.class),anyInt(),anyInt())).
+        PowerMockito.when(MarginalMaximizerStatics.computeWageCosts(any(HumanResources.class), any(PlantControl.class), anyInt(), anyInt(), any(MarginalMaximizer.RandomizationPolicy.class)
+        )).
                 thenReturn(mock(CostEstimate.class)); //numbers are not important
 
 
@@ -234,8 +234,8 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficencyTest
         PowerMockito.when(MarginalMaximizerStatics.marginalProduction(any(Plant.class),anyInt(),anyInt())).thenReturn(1); //numbers are not important
         PowerMockito.when(MarginalMaximizerStatics.computeInputCosts(any(Firm.class),any(Plant.class),any(MarginalMaximizer.RandomizationPolicy.class),anyInt(),anyInt())).
                 thenReturn(mock(CostEstimate.class)); //numbers are not important
-        PowerMockito.when(MarginalMaximizerStatics.computeWageCosts(any(MarginalMaximizer.RandomizationPolicy.class),any(Plant.class),
-                any(HumanResources.class),any(PlantControl.class),anyInt(),anyInt())).
+        PowerMockito.when(MarginalMaximizerStatics.computeWageCosts(any(HumanResources.class), any(PlantControl.class), anyInt(), anyInt(), any(MarginalMaximizer.RandomizationPolicy.class)
+        )).
                 thenReturn(mock(CostEstimate.class)); //numbers are not important
 
 
