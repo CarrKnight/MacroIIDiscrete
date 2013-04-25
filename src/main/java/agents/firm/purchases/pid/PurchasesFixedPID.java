@@ -185,7 +185,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      */
     @Override
     public boolean canBuy() {
-        return  true;
+        return super.canBuy();
 
     }
 
@@ -200,7 +200,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      */
     @Override
     protected boolean shouldIBuy(HasInventory source, GoodType type, int quantity) {
-        return true;
+        return super.shouldIBuy(source,type,quantity);
     }
 
     /**
@@ -220,7 +220,8 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
     @Override
     public void start() {
 
-        getPurchasesDepartment().getFirm().getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE,
+        getPurchasesDepartment().getFirm().getModel().
+                scheduleSoon(ActionOrder.PREPARE_TO_TRADE,
                 this);
 
         super.start();

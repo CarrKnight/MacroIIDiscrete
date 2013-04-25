@@ -16,9 +16,10 @@ import lifelines.data.DataManager;
 import lifelines.data.GlobalEventData;
 import model.MacroII;
 import model.utilities.ExchangeNetwork;
-import org.jfree.chart.*;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.general.SeriesException;
 import org.jfree.data.time.*;
 import sim.portrayal.Inspector;
 import sim.portrayal.inspector.TabbedInspector;
@@ -370,11 +371,11 @@ public abstract class Market {
             weeklyVolume++;
 
 
-            Hour timeOfTrade = new Hour(new Date(buyer.getModel().getCurrentSimulationTimeInMillis()));
             try{
+                Hour timeOfTrade = new Hour(new Date(buyer.getModel().getCurrentSimulationTimeInMillis()));
                 prices.addOrUpdate(timeOfTrade, price);  //addSalesDepartmentListener it to the time series!
                 markups.addOrUpdate(timeOfTrade, (price - sellerCost) / sellerCost); //addSalesDepartmentListener it to the markups
-            }catch (SeriesException e){
+            }catch (Exception e){
                 if(!TESTING_MODE)  //might not be an issue if we are testing stuff.
                     throw e;
             }

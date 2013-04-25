@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package tests;
+package model.utilities.dummies;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
@@ -22,7 +22,7 @@ public class DummyBuyer extends Firm {
      * This is just so that I can have buyers return a quote without having to build the goods and all that
      */
 
-    long quotedPrice;
+    public long quotedPrice;
 
     public DummyBuyer(MacroII model, long price) {
         super(model,false);

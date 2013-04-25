@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package model.experimentalRun;
+package model.experiments;
 
 import goods.GoodType;
 import model.MacroII;
@@ -109,5 +109,9 @@ public class SimpleBuyerVarianceExperiment {
 
 
     }
+
+
+
+
 
 }

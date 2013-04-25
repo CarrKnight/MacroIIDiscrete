@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package tests.tuningRuns;
+package model.experiments.tuningRuns;
 
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
@@ -245,6 +245,7 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
 
                     macroII.schedule.step(macroII);
                     variance += Math.pow(scenario1.getMonopolist().getTotalWorkers()-oldWorkers,2);
+                    oldWorkers = scenario1.getMonopolist().getTotalWorkers();
                     deviation += Math.pow(scenario1.getMonopolist().getTotalWorkers()-22,2);
 
                 }

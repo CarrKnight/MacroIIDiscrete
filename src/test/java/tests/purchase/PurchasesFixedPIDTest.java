@@ -15,7 +15,7 @@ import model.utilities.ActionOrder;
 import model.utilities.pid.CascadePIDController;
 import org.junit.Test;
 import sim.engine.Schedule;
-import tests.DummySeller;
+import model.utilities.dummies.DummySeller;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

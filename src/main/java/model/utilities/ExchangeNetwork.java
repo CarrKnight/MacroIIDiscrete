@@ -24,8 +24,8 @@ import org.apache.commons.collections15.Transformer;
 import org.mockito.Mock;
 import sim.portrayal.Inspector;
 import sim.util.Bag;
-import tests.DummyBuyer;
-import tests.DummySeller;
+import model.utilities.dummies.DummyBuyer;
+import model.utilities.dummies.DummySeller;
 
 import javax.swing.*;
 import java.awt.*;

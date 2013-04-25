@@ -76,7 +76,7 @@ public class FixedInventoryControl extends AbstractInventoryControl {
      */
     @Override
     protected boolean shouldIBuy(HasInventory source, GoodType type, int quantity) {
-        return rateInventory(quantity).compareTo(Level.ACCEPTABLE) < 0; //keep buying as long as it is not at acceptable levels
+        return rateInventory(quantity).compareTo(Level.ACCEPTABLE) <= 0; //keep buying as long as it is not at acceptable levels
     }
 
     /**
@@ -88,7 +88,7 @@ public class FixedInventoryControl extends AbstractInventoryControl {
      */
     @Override
     public boolean canBuy() {
-        return rateInventory().compareTo(Level.ACCEPTABLE) < 0; //keep buying as long as it is not at acceptable levels
+        return rateInventory().compareTo(Level.ACCEPTABLE) <= 0; //keep buying as long as it is not at acceptable levels
     }
 
     /**

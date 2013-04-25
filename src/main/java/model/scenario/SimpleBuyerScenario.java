@@ -23,10 +23,10 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.pid.CascadePIDController;
-import model.utilities.pid.FlowAndStockController;
+import model.utilities.pid.Controller;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import tests.DummySeller;
+import model.utilities.dummies.DummySeller;
 
 import javax.annotation.Nonnull;
 
@@ -40,7 +40,7 @@ import javax.annotation.Nonnull;
  * <p/>
  * <p/>
  * <h4>References</h4>
- *
+ *                                                              f
  * @author carrknight
  * @version 2012-11-13
  * @see
@@ -78,7 +78,9 @@ public class SimpleBuyerScenario extends Scenario {
 
     public int consumedThisWeek = 0;
 
-    private boolean cascadeControl = false;
+    private Class<? extends Controller> controllerType = CascadePIDController.class;
+
+
 
 
     private float proportionalGainAVG = .5f;
@@ -113,29 +115,18 @@ public class SimpleBuyerScenario extends Scenario {
         department.setOpponentSearch(new SimpleBuyerSearch(market, firm));
         department.setSupplierSearch(new SimpleSellerSearch(market, firm));
         //  final PurchasesFixedPID control = new PurchasesFixedPID(department,proportionalGain,integralGain,derivativeGain,targetInventory);
-        if(cascadeControl){
-            final PurchasesFixedPID control = new PurchasesFixedPID(department,targetInventory, CascadePIDController.class,model);
-            control.setSpeed(pidPeriod);
-            if(filtersOn){
-                //filtering flows
-                assert !control.isInvertInputs();
-                control.filterInputExponentially(inputWeight,1);
-                control.filterTargetExponentially(inputWeight,1);
+        final PurchasesFixedPID control = new PurchasesFixedPID(department,targetInventory, controllerType,model);
+        control.setSpeed(pidPeriod);
+        if(filtersOn){
+            //filtering flows
+            assert !control.isInvertInputs();
+            control.filterInputExponentially(inputWeight,1);
+            control.filterTargetExponentially(inputWeight,1);
 
-            }
-            department.setControl(control);
-            department.setPricingStrategy(control);
         }
-        else {
+        department.setControl(control);
+        department.setPricingStrategy(control);
 
-            final PurchasesFixedPID control = new PurchasesFixedPID(department,targetInventory, FlowAndStockController.class,model);
-            control.setSpeed(pidPeriod);
-
-
-            //set up as the control!!
-            department.setControl(control);
-            department.setPricingStrategy(control);
-        }
         firm.registerPurchasesDepartment(department,GoodType.GENERIC);
 
         getAgents().add(firm); //add the buyer
@@ -257,7 +248,7 @@ public class SimpleBuyerScenario extends Scenario {
                         public void step(SimState state) {
                             assert firm.hasAny(GoodType.GENERIC);
                             firm.consume(GoodType.GENERIC);
-                            //System.out.println("Consumed!");
+                            System.out.println("Consumed!");
                             consumedThisWeek++;
                         }
                     });
@@ -280,7 +271,7 @@ public class SimpleBuyerScenario extends Scenario {
 
 
         //reset the counter
-                getModel().scheduleSoon(ActionOrder.CLEANUP,new Steppable() {
+        getModel().scheduleSoon(ActionOrder.CLEANUP,new Steppable() {
             @Override
             public void step(SimState state) {
                 consumedThisWeek=0;
@@ -410,13 +401,7 @@ public class SimpleBuyerScenario extends Scenario {
         return department;
     }
 
-    public boolean isCascadeControl() {
-        return cascadeControl;
-    }
 
-    public void setCascadeControl(boolean cascadeControl) {
-        this.cascadeControl = cascadeControl;
-    }
 
     public boolean isSupplyShift() {
         return supplyShift;
@@ -424,5 +409,23 @@ public class SimpleBuyerScenario extends Scenario {
 
     public void setSupplyShift(boolean supplyShift) {
         this.supplyShift = supplyShift;
+    }
+
+    /**
+     * Sets new controllerType.
+     *
+     * @param controllerType New value of controllerType.
+     */
+    public void setControllerType(Class<? extends Controller> controllerType) {
+        this.controllerType = controllerType;
+    }
+
+    /**
+     * Gets controllerType.
+     *
+     * @return Value of controllerType.
+     */
+    public Class<? extends Controller> getControllerType() {
+        return controllerType;
     }
 }

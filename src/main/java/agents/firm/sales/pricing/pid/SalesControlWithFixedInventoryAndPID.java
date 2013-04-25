@@ -41,7 +41,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     /**
      * how much inventory is correct to have. Any number below this should trigger the PID to raise prices, any number above this to lower them
      */
-    private int targetInventory = 5;
+    private int targetInventory = 15;
 
     /**
      * A controller to change prices as inventory changes. By default it's a cascade control
@@ -149,8 +149,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
         //run the controller to adjust prices
         //notice that i use todayOutflow as a measure of outflow because it gets reset at PREPARE_TO_TRADE and
         // I am calling this at ADJUST_PRICES (which is after TRADE, which is after PREPARE_TO_TRADE)
-        ControllerInput input = new ControllerInput.ControllerInputBuilder().inputs((float) department.getHowManyToSell(),
-                (float)department.getTodayOutflow()).targets((float)targetInventory, (float)department.getTodayInflow()).build();
+        ControllerInput input = getControllerInput();
         //memorize old price before adjustment (this is so that if there is a change, we update old quotes)
         long oldPrice =  (long)Math.round(controller.getCurrentMV());
 
@@ -238,4 +237,24 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     public Controller getController() {
         return controller;
     }
+
+    /**
+     * Generic controller input to feed in the generic controller (so it's not only PID)
+     * @return controller input object, good for all controllers
+     */
+    private ControllerInput getControllerInput()
+    {
+        ControllerInput.ControllerInputBuilder inputBuilder =  new ControllerInput.ControllerInputBuilder();
+        inputBuilder.inputs((float)department.getHowManyToSell(),(float)department.getTodayOutflow());
+        inputBuilder.targets((float)getTargetInventory(), (float)department.getTodayInflow());
+
+        /**
+         *  float acceptable = rateInventory().equals(Level.ACCEPTABLE) ? 0f : -1f;
+
+         inputBuilder.targets(acceptable);
+         */
+        return inputBuilder.build();
+
+    }
+
 }

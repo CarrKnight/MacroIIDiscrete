@@ -18,6 +18,7 @@ import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.dummies.DummyBuyer;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -6,6 +6,7 @@ import agents.firm.sales.exploration.SimpleBuyerSearch;
 import financial.OrderBookMarket;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.dummies.DummyBuyer;
 import org.junit.Before;
 import org.junit.Test;
 

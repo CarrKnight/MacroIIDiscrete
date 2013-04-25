@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package tests;
+package model.utilities.dummies;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;

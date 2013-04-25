@@ -16,7 +16,7 @@ import goods.GoodType;
 import model.MacroII;
 import org.junit.Before;
 import org.junit.Test;
-import tests.DummySeller;
+import model.utilities.dummies.DummySeller;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -137,10 +137,10 @@ public class FixedInventoryControlTest {
         inv.addListener(control); //re-addSalesDepartmentListener it!
 
 
-        for(int i=0; i <10; i++){ //you receive 10, every time you receive one and it's less than 6 in total you call buy() so you should have called it 5 times
+        for(int i=0; i <10; i++){ //you receive 10, every time you receive one and it's less than 8 (too much value) in total you call buy() so you should have called it 5 times
             f.receive(new Good(GoodType.GENERIC,f,0l),null);
         }
-        verify(dept,times(5)).buy();
+        verify(dept,times(8)).buy();
 
 
 
@@ -197,14 +197,13 @@ public class FixedInventoryControlTest {
             //now force the first buy, hopefully it'll cascade up until the firm has inventory 6
             dept.buy(); //goooooooooo
             dept.getFirm().getModel().getPhaseScheduler().step(dept.getFirm().getModel());
-            assertEquals(dept.toString(), f.hasHowMany(GoodType.GENERIC), 6);
+            assertEquals(dept.toString(), f.hasHowMany(GoodType.GENERIC), 8);
 
             //when the dust settles...
-            assertEquals(-1l, dept.getMarket().getBestBuyPrice()); //there shouldn't be a new buy order!
-            assertEquals(70l, dept.getMarket().getBestSellPrice());  //all the others should have been taken
-            assertEquals(60l, dept.getMarket().getLastPrice());    //although the max price is 80, the buyer defaults to the order book since it's visible
+            assertEquals(80l, dept.getMarket().getBestBuyPrice()); //there shouldn't be a new buy order!
+            assertEquals(90l, dept.getMarket().getBestSellPrice());  //all the others should have been taken
+            assertEquals(80l, dept.getMarket().getLastPrice());    //although the max price is 80, the buyer defaults to the order book since it's visible
 
-            assertEquals(790l, dept.getFirm().getCash());   //1000 - 345
 
 
 

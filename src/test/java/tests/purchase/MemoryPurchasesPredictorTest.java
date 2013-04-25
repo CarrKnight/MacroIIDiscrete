@@ -14,7 +14,7 @@ import model.utilities.ActionOrder;
 import org.junit.Test;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import tests.DummySeller;
+import model.utilities.dummies.DummySeller;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

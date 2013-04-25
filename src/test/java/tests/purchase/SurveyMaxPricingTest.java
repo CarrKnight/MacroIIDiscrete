@@ -13,7 +13,7 @@ import goods.GoodType;
 import model.MacroII;
 import org.junit.Before;
 import org.junit.Test;
-import tests.DummySeller;
+import model.utilities.dummies.DummySeller;
 
 import java.lang.reflect.Field;
 

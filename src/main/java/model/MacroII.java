@@ -52,7 +52,7 @@ public class MacroII extends SimState{
     public MacroII(long seed) {
         super(seed);
         hasGUI = false;
-        phaseScheduler = new TrueRandomScheduler(20000,random);
+        phaseScheduler = new TrueRandomScheduler(200000,random);
         scenario = new TestScenario(this);
     }
 

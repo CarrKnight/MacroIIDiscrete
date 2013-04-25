@@ -33,6 +33,7 @@ public class SalesControlFlowPIDWithFixedInventoryTest {
     public void activatesCorrectly()
     {
         SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
+        when(department.getFirm()).then(RETURNS_MOCKS);
         MacroII state = mock(MacroII.class); when(state.getCurrentPhase()).thenReturn(ActionOrder.ADJUST_PRICES);
         SalesControlFlowPIDWithFixedInventory pricing = new SalesControlFlowPIDWithFixedInventory(department,10,50,state,0,0,0,new MersenneTwisterFast());
 
@@ -78,6 +79,8 @@ public class SalesControlFlowPIDWithFixedInventoryTest {
     {
         MacroII state = mock(MacroII.class); when(state.getCurrentPhase()).thenReturn(ActionOrder.ADJUST_PRICES);
         SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
+        when(department.getFirm()).then(RETURNS_MOCKS);
+
         SalesControlFlowPIDWithFixedInventory pricing = new SalesControlFlowPIDWithFixedInventory(department,10,50,state,0,0,0,new MersenneTwisterFast());
 
         verify(state).scheduleSoon(ActionOrder.ADJUST_PRICES,pricing);
@@ -92,6 +95,8 @@ public class SalesControlFlowPIDWithFixedInventoryTest {
     {
 
         SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
+        when(department.getFirm()).then(RETURNS_MOCKS);
+
         MacroII state = mock(MacroII.class); when(state.getCurrentPhase()).thenReturn(ActionOrder.ADJUST_PRICES);
         SalesControlFlowPIDWithFixedInventory pricing = new SalesControlFlowPIDWithFixedInventory(department,10,50,state,2,1,.01f,new MersenneTwisterFast());
         pricing.setInitialPrice(100); //so it's not 0

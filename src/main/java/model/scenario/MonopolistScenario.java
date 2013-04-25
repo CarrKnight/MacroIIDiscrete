@@ -32,7 +32,7 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import tests.DummyBuyer;
+import model.utilities.dummies.DummyBuyer;
 
 import static org.mockito.Mockito.*;
 

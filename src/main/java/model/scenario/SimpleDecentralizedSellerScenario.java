@@ -24,7 +24,7 @@ import model.MacroII;
 import sim.engine.Schedule;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import tests.DummyBuyer;
+import model.utilities.dummies.DummyBuyer;
 
 /**
  * <h4>Description</h4>

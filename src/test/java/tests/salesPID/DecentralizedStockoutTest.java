@@ -24,8 +24,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import sim.engine.Schedule;
 import sim.engine.Steppable;
-import tests.DummyBuyer;
-import tests.DummySeller;
+import model.utilities.dummies.DummyBuyer;
+import model.utilities.dummies.DummySeller;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

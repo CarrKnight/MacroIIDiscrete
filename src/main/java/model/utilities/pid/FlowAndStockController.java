@@ -198,7 +198,7 @@ public class FlowAndStockController implements Controller{
         else
         {
             //we need to schedule ourselves since the PID won't do it
-            state.schedule.scheduleOnceIn(flowPIDRoot.getSpeed(),user);
+            state.scheduleTomorrow(phase,user);
         }
         stockAdjustmentUsed = false;
 

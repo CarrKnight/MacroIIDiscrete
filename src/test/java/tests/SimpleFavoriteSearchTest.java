@@ -7,6 +7,7 @@ import financial.OrderBookMarket;
 import financial.utilities.PurchaseResult;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.dummies.DummyBuyer;
 import org.junit.Before;
 import org.junit.Test;
 

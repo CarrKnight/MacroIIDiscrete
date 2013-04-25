@@ -23,7 +23,7 @@ import model.utilities.ActionOrder;
 import model.utilities.pid.CascadePIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import tests.DummySeller;
+import model.utilities.dummies.DummySeller;
 
 /**
  * <h4>Description</h4>

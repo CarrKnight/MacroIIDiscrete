@@ -14,7 +14,7 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import org.junit.Test;
-import tests.DummyBuyer;
+import model.utilities.dummies.DummyBuyer;
 
 import java.util.LinkedList;
 import java.util.List;

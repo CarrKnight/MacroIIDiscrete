@@ -15,8 +15,8 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import tests.DummyBuyer;
-import tests.DummySeller;
+import model.utilities.dummies.DummyBuyer;
+import model.utilities.dummies.DummySeller;
 
 /**
  * <h4>Description</h4>

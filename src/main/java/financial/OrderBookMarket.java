@@ -475,5 +475,13 @@ public class OrderBookMarket extends Market {
 
     }
 
+    public boolean containsQuotesFromThisBuyer(EconomicAgent buyer)
+    {
+        for(Quote q: bids)
+            if(q.getAgent().equals(buyer))
+                return true;
+        return false;
+    }
+
 
 }

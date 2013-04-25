@@ -19,7 +19,7 @@ import agents.firm.production.control.facades.MarginalPlantControl;
 import agents.firm.production.control.facades.MarginalPlantControlWithPIDUnit;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
-import agents.firm.purchases.pid.PurchasesWeeklyPID;
+import agents.firm.purchases.pid.PurchasesFixedPID;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentFactory;
@@ -39,17 +39,17 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.DailyStatCollector;
+import model.utilities.dummies.DummyBuyer;
 import model.utilities.filters.MovingAverage;
 import model.utilities.pid.CascadePIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import tests.DummyBuyer;
 
 import java.io.FileWriter;
 import java.io.IOException;
 
 import static org.mockito.Mockito.*;
-import static tests.tuningRuns.MarginalMaximizerWithUnitPIDTuningMultiThreaded.printProgressBar;
+import static model.experiments.tuningRuns.MarginalMaximizerWithUnitPIDTuningMultiThreaded.printProgressBar;
 
 /**
  * <h4>Description</h4>
@@ -198,16 +198,19 @@ public class OneLinkSupplyChainScenario extends Scenario {
                     strategy2.setSpeed(1);
                     dept.setAskPricingStrategy(strategy2);
 
-             /*       SalesControlWithFixedInventoryAndPID strategy2;
+                    /*
+                   SalesControlWithFixedInventoryAndPID strategy2;
                     strategy2 = new SalesControlWithFixedInventoryAndPID(dept);
                    // strategy2 = new SmoothedDailyInventoryPricingStrategy(dept);
                     PIDController controller = (PIDController)strategy2.getController();
                     strategy2.setTargetInventory(1000);
-                    controller.setGains(controller.getProportionalGain() * .01f, 0,
+                    controller.setGains(controller.getProportionalGain()*.01f, controller.getIntegralGain()*.005f,
                             0);
+                    strategy2.setSpeed(100);
                     strategy2.setInitialPrice(60);
                     dept.setAskPricingStrategy(strategy2);
                     */
+
                 }
                 else
                     // strategy.setProductionCostOverride(false);
@@ -238,7 +241,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
                     department.setOpponentSearch(new SimpleBuyerSearch(market, firm));
                     department.setSupplierSearch(new SimpleSellerSearch(market, firm));
 
-                    PurchasesWeeklyPID control = new PurchasesWeeklyPID(department, CascadePIDController.class,model);
+                    PurchasesFixedPID control = new PurchasesFixedPID(department,200, CascadePIDController.class,model);
 
                     department.setControl(control);
                     department.setPricingStrategy(control);
@@ -467,7 +470,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
         //create the CSVWriter
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("supplychainSigmoidNewPredictor.csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter("supplychainSigmoidNewPredictor2.csv"));
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
 
@@ -479,10 +482,10 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
 
 
-        while(macroII.schedule.getTime()<15000)
+        while(macroII.schedule.getTime()<50000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+            printProgressBar(50001,(int)macroII.schedule.getSteps(),100);
         }
 
 

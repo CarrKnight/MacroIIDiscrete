@@ -40,7 +40,7 @@ import model.utilities.DailyStatCollector;
 import model.utilities.pid.CascadePIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import tests.DummyBuyer;
+import model.utilities.dummies.DummyBuyer;
 
 import java.io.FileWriter;
 import java.io.IOException;

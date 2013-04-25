@@ -10,6 +10,7 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
+import financial.MarketEvents;
 import goods.Good;
 import model.MacroII;
 import model.utilities.ActionOrder;
@@ -185,6 +186,12 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
 
 
         controller.adjustOnce(outflow-getTarget(),isActive);
+
+        department.getFirm().logEvent(department, MarketEvents.CHANGE_IN_POLICY, department.getFirm().getModel().getCurrentSimulationTimeInMillis(),
+                "inventory: " + department.getHowManyToSell() + ", outflow:"
+                + outflow + ", target: "
+                + getTarget() + "\n whichphase? :" + phase + ", oldPrice:"
+                + oldprice + " || newPrice: " + controller.getCurrentMV() );
 
 
         if(getSpeed()==0)

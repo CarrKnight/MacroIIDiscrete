@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package tests.tuningRuns;
+package model.experiments.tuningRuns;
 
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;

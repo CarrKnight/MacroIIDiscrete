@@ -33,7 +33,7 @@ import model.utilities.pid.PIDController;
 import org.junit.Test;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import tests.DummyBuyer;
+import model.utilities.dummies.DummyBuyer;
 
 import java.lang.reflect.Field;
 import java.util.Collection;

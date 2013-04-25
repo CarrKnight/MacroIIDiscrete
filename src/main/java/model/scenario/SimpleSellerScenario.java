@@ -14,16 +14,17 @@ import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.AskPricingStrategy;
-import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
+import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
 import financial.OrderBookMarket;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.dummies.DummyBuyer;
+import model.utilities.dummies.DummyBuyerWithDelay;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import tests.DummyBuyer;
 
 /**
  * <h4>Description</h4>
@@ -50,18 +51,21 @@ public class SimpleSellerScenario extends Scenario {
 
     private boolean demandShifts = false;
 
+    private int buyerDelay = 0;
+
     /**
      * the strategy used by the sales department to tinker with prices
      */
-    private Class<? extends AskPricingStrategy> sellerStrategy = SmoothedDailyInventoryPricingStrategy.class;
+    private Class<? extends AskPricingStrategy> sellerStrategy = SalesControlFlowPIDWithFixedInventory.class;
 
-           // SmoothedDailyInventoryPricingStrategy.class;
-           //SalesControlWithFixedInventoryAndPID.class;
+    // SmoothedDailyInventoryPricingStrategy.class;
+    //SalesControlWithFixedInventoryAndPID.class;
 
     /**
      * The kind of sales department to use
      */
-    private Class<? extends SalesDepartment> salesDepartmentType = SalesDepartmentAllAtOnce.class;
+    protected Class<? extends SalesDepartment> salesDepartmentType = SalesDepartmentAllAtOnce.class;
+
 
     /**
      * Called by MacroII, it creates agents and then schedules them.
@@ -78,141 +82,26 @@ public class SimpleSellerScenario extends Scenario {
 
         //create 10 buyers
         for(int i=0;i<10;i++){
-
-
-
-            /**
-             * For this scenario we use a different kind of dummy buyer that, after "period" passed, puts a new order in the market
-             */
-            final DummyBuyer buyer = new DummyBuyer(getModel(),i*10){
-                @Override
-                public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
-                    //trick to get the steppable to recognize the anynimous me!
-                    final DummyBuyer reference = this;
-                    //schedule a new quote in period!
-                    this.getModel().scheduleTomorrow(ActionOrder.TRADE,new Steppable() {
-                        @Override
-                        public void step(SimState simState) {
-                            earn(1000l);
-                            //put another quote
-
-                            market.submitBuyQuote(reference,getFixedPrice());
-
-
-
-                        }
-                    });
-
-                }
-            };
-
-
-            //make it adjust once to register and submit the first quote
-
-            getModel().scheduleSoon(ActionOrder.TRADE,new Steppable() {
-                @Override
-                public void step(SimState simState) {
-                    market.registerBuyer(buyer);
-                    buyer.earn(1000l);
-                    //make the buyer submit a quote soon.
-                    market.submitBuyQuote(buyer,buyer.getFixedPrice());
-
-                }
-            }  );
-
-
-
-
-            getAgents().add(buyer);
-
+            buildBuyer(market, i*10);
 
 
         }
 
         //only one seller
-        final Firm seller = new Firm(getModel());
-        //give it a seller department at time 1
-        getModel().scheduleSoon(ActionOrder.DAWN,new Steppable() {
-            @Override
-            public void step(SimState simState) {
-                SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(seller, market, new SimpleBuyerSearch(market, seller),
-                        new SimpleSellerSearch(market, seller), salesDepartmentType);
-                seller.registerSaleDepartment(dept,GoodType.GENERIC);
-                try{
-                dept.setAskPricingStrategy(sellerStrategy.getConstructor(SalesDepartment.class).newInstance(dept)); //set strategy to PID
-                }
-                catch (Exception e){
-                    throw new UnsupportedOperationException("failed to build the ask pricing strategy. Exiting now!");
-                }
-                getAgents().add(seller);
-            }
-        });
+        final Firm seller = buildSeller(market);
 
 
 
 
         //arrange for goods to drop periodically in the firm
-        getModel().scheduleSoon(ActionOrder.PRODUCTION,new Steppable() {
-            @Override
-            public void step(SimState simState) {
-                //sell 4 goods!
-                for(int i=0; i<4; i++){
-                    Good good = new Good(GoodType.GENERIC,seller,10l);
-                    seller.receive(good,null);
-                    seller.reactToPlantProduction(good);
-                }
-                //every day
-                getModel().scheduleTomorrow(ActionOrder.PRODUCTION,this);
-            }
-        });
+        setupProduction(seller);
 
         //if demands shifts, add 10 more buyers after adjust 2000
         if(demandShifts)
         {
             //create 10 buyers
             for(int i=0;i<10;i++){
-
-
-
-                /**
-                 * For this scenario we use a different kind of dummy buyer that, after "period" passed, puts a new order in the market
-                 */
-                final DummyBuyer buyer = new DummyBuyer(getModel(),(i+10)*10){
-                    @Override
-                    public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
-                        //trick to get the steppable to recognize the anynimous me!
-                        final DummyBuyer reference = this;
-                        //schedule a new quote in period!
-                        this.getModel().scheduleTomorrow(ActionOrder.TRADE, new Steppable() {
-                            @Override
-                            public void step(SimState simState) {
-                                earn(1000l);
-                                //put another quote
-
-                                market.submitBuyQuote(reference, getFixedPrice());
-
-
-                            }
-                        });
-
-                    }
-                };
-
-
-                //make it adjust once to register and submit the first quote
-
-                getModel().scheduleAnotherDay(ActionOrder.TRADE,new Steppable() {
-                    @Override
-                    public void step(SimState simState) {
-                        market.registerBuyer(buyer);
-                        buyer.earn(1000l);
-                        //make the buyer submit a quote soon.
-                        market.submitBuyQuote(buyer,buyer.getFixedPrice());
-
-                    }
-                },2000  );
-
-
+                final DummyBuyer buyer = createAdditionalBuyer(market, i);
 
 
                 getAgents().add(buyer);
@@ -230,6 +119,157 @@ public class SimpleSellerScenario extends Scenario {
 
 
 
+    }
+
+    private DummyBuyer createAdditionalBuyer(final OrderBookMarket market, final int i) {
+        /**
+         * For this scenario we use a different kind of dummy buyer that, after "period" passed, puts a new order in the market
+         */
+        final DummyBuyer buyer = new DummyBuyer(getModel(),(i+10)*10){
+            @Override
+            public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
+                //trick to get the steppable to recognize the anynimous me!
+                final DummyBuyer reference = this;
+                //schedule a new quote in period!
+                this.getModel().scheduleTomorrow(ActionOrder.TRADE, new Steppable() {
+                    @Override
+                    public void step(SimState simState) {
+                        earn(1000l);
+                        //put another quote
+
+                        market.submitBuyQuote(reference, getFixedPrice());
+
+
+                    }
+                });
+
+            }
+        };
+
+
+        //make it adjust once to register and submit the first quote
+
+        getModel().scheduleAnotherDay(ActionOrder.TRADE,new Steppable() {
+            @Override
+            public void step(SimState simState) {
+                market.registerBuyer(buyer);
+                buyer.earn(1000l);
+                //make the buyer submit a quote soon.
+                market.submitBuyQuote(buyer,buyer.getFixedPrice());
+
+            }
+        },2000  );
+        return buyer;
+    }
+
+    private void setupProduction(final Firm seller) {
+        getModel().scheduleSoon(ActionOrder.PRODUCTION,new Steppable() {
+            @Override
+            public void step(SimState simState) {
+                //sell 4 goods!
+                for(int i=0; i<4; i++){
+                    Good good = new Good(GoodType.GENERIC,seller,10l);
+                    seller.receive(good,null);
+                    seller.reactToPlantProduction(good);
+                }
+                //every day
+                getModel().scheduleTomorrow(ActionOrder.PRODUCTION,this);
+            }
+        });
+    }
+
+    protected Firm buildSeller(final OrderBookMarket market) {
+        final Firm seller = new Firm(getModel());
+        getAgents().add(seller);
+
+        //give it a seller department at time 1
+        getModel().scheduleSoon(ActionOrder.DAWN,new Steppable() {
+            @Override
+            public void step(SimState simState) {
+                SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(seller, market, new SimpleBuyerSearch(market, seller),
+                        new SimpleSellerSearch(market, seller), salesDepartmentType);
+                seller.registerSaleDepartment(dept, GoodType.GENERIC);
+                AskPricingStrategy strategy =  AskPricingStrategy.Factory.newAskPricingStrategy(sellerStrategy,dept);
+
+                //strategy.setSpeed(sellerDelay);
+                dept.setAskPricingStrategy(strategy); //set strategy to PID
+
+            }
+        });
+        return seller;
+    }
+
+    protected void buildBuyer(final OrderBookMarket market, final long price) {
+        /**
+         * For this scenario we use a different kind of dummy buyer that, after "period" passed, puts a new order in the market
+         */
+        final DummyBuyer buyer;
+        if(buyerDelay ==0)
+        {
+
+            buyer = new DummyBuyer(getModel(),price){
+                @Override
+                public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
+                    //trick to get the steppable to recognize the anynimous me!
+                    final DummyBuyer reference = this;
+                    //schedule a new quote in period!
+                    this.getModel().scheduleTomorrow(ActionOrder.TRADE,new Steppable() {
+                        @Override
+                        public void step(SimState simState) {
+                            earn(1000l);
+                            //put another quote
+
+                            if(reference.getFixedPrice() >=0)
+                                market.submitBuyQuote(reference,getFixedPrice());
+
+
+
+                        }
+                    });
+
+                }
+            };
+            //make it adjust once to register and submit the first quote
+
+            getModel().scheduleSoon(ActionOrder.TRADE, new Steppable() {
+                @Override
+                public void step(SimState simState) {
+                    market.registerBuyer(buyer);
+                    buyer.earn(1000l);
+                    //make the buyer submit a quote soon.
+                    market.submitBuyQuote(buyer, buyer.getFixedPrice());
+
+                }
+            });
+
+        }
+        else
+        {
+            buyer = new DummyBuyerWithDelay(getModel(),price,buyerDelay,market);
+
+            //make it adjust once to register and submit the first quote
+            market.registerBuyer(buyer);
+
+            getModel().scheduleSoon(ActionOrder.TRADE,new Steppable() {
+                @Override
+                public void step(SimState simState) {
+                    buyer.earn(1000l);
+                    //make the buyer submit a quote soon.
+                    if(buyer.getFixedPrice() >=0 && !market.containsQuotesFromThisBuyer(buyer))
+                    {
+                        market.submitBuyQuote(buyer,100);
+                    }
+
+                    getModel().scheduleTomorrow(ActionOrder.TRADE,this);
+
+
+
+                }
+            }  );
+        }
+
+
+        getAgents().add(buyer);
     }
 
     /**
@@ -286,4 +326,15 @@ public class SimpleSellerScenario extends Scenario {
     public void setSalesDepartmentType(Class<? extends SalesDepartment> salesDepartmentType) {
         this.salesDepartmentType = salesDepartmentType;
     }
+
+    public int getBuyerDelay() {
+        return buyerDelay;
+    }
+
+    public void setBuyerDelay(int buyerDelay) {
+        this.buyerDelay = buyerDelay;
+    }
+
+
+
 }
