@@ -66,6 +66,16 @@ public class SimpleSellerScenario extends Scenario {
      */
     protected Class<? extends SalesDepartment> salesDepartmentType = SalesDepartmentAllAtOnce.class;
 
+    /**
+     * number of sellers in the model
+     */
+    protected int numberOfSellers = 1;
+
+    /**
+     * How many goods the seller receives every day
+     */
+    private int inflowPerSeller = 4;
+
 
     /**
      * Called by MacroII, it creates agents and then schedules them.
@@ -88,14 +98,11 @@ public class SimpleSellerScenario extends Scenario {
         }
 
         //only one seller
-        final Firm seller = buildSeller(market);
-
-
-
-
-        //arrange for goods to drop periodically in the firm
-        setupProduction(seller);
-
+        for(int i=0; i < numberOfSellers; i++)
+        {   final Firm seller = buildSeller(market);
+            //arrange for goods to drop periodically in the firm
+            setupProduction(seller);
+        }
         //if demands shifts, add 10 more buyers after adjust 2000
         if(demandShifts)
         {
@@ -167,7 +174,7 @@ public class SimpleSellerScenario extends Scenario {
             @Override
             public void step(SimState simState) {
                 //sell 4 goods!
-                for(int i=0; i<4; i++){
+                for(int i=0; i<inflowPerSeller; i++){
                     Good good = new Good(GoodType.GENERIC,seller,10l);
                     seller.receive(good,null);
                     seller.reactToPlantProduction(good);
@@ -336,5 +343,39 @@ public class SimpleSellerScenario extends Scenario {
     }
 
 
+    /**
+     * Gets How many goods the seller receives every day.
+     *
+     * @return Value of How many goods the seller receives every day.
+     */
+    public int getInflowPerSeller() {
+        return inflowPerSeller;
+    }
 
+    /**
+     * Sets new number of sellers in the model.
+     *
+     * @param numberOfSellers New value of number of sellers in the model.
+     */
+    public void setNumberOfSellers(int numberOfSellers) {
+        this.numberOfSellers = numberOfSellers;
+    }
+
+    /**
+     * Gets number of sellers in the model.
+     *
+     * @return Value of number of sellers in the model.
+     */
+    public int getNumberOfSellers() {
+        return numberOfSellers;
+    }
+
+    /**
+     * Sets new How many goods the seller receives every day.
+     *
+     * @param inflowPerSeller New value of How many goods the seller receives every day.
+     */
+    public void setInflowPerSeller(int inflowPerSeller) {
+        this.inflowPerSeller = inflowPerSeller;
+    }
 }

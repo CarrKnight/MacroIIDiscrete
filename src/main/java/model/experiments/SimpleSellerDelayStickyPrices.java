@@ -43,15 +43,15 @@ public class SimpleSellerDelayStickyPrices {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        CSVWriter writer = new CSVWriter(new FileWriter("simpleDelaySticky.csv"));
+        CSVWriter writer = new CSVWriter(new FileWriter("simpleDelaySticky3.csv"));
 
         ExecutorCompletionService executor = new ExecutorCompletionService(Executors.newFixedThreadPool(5));
 
         int combinations = 0;
 
-        for(int buyerDelays = 0; buyerDelays < 100; buyerDelays++)
+        for(int buyerDelays = 68; buyerDelays < 100; buyerDelays++)
         {
-            for(int sellerDelays = 0; sellerDelays < 100; sellerDelays++)
+            for(int sellerDelays = 0; sellerDelays < 17; sellerDelays++)
             {
 
                 for(int gap=5; gap<15; gap++)

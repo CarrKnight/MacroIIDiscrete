@@ -75,7 +75,7 @@ public class MonopolistScenario extends Scenario {
      * this is somewhat of an ugly trick to get the gui to be able to select the kind of class
      * the human resource should use. Mason GUI knows how to deal with enums
      */
-    private MonopolistScenarioIntegratedControlEnum controlType = MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID;
+    private MonopolistScenarioIntegratedControlEnum controlType = MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_SIMPLE;
 
     /**
      * Do agents go around look for better offers all the time?

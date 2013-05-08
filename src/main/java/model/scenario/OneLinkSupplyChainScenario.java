@@ -191,25 +191,17 @@ public class OneLinkSupplyChainScenario extends Scenario {
                 {
 
                     SalesControlFlowPIDWithFixedInventory strategy2 = new SalesControlFlowPIDWithFixedInventory(dept,50,5000,model,
-                            model.drawProportionalGain()/100f,
-                            model.drawIntegrativeGain()/100f,
-                            model.drawDerivativeGain(), model.random);
+                          0,0,0,//  model.drawProportionalGain()/100f,
+                         //   model.drawIntegrativeGain()/100f,
+                          //  model.drawDerivativeGain(),
+                           model.random);
+                    strategy2.setInitialPrice(31);
+
                     strategy2.attachFilter(new MovingAverage<Integer>(7));
                     strategy2.setSpeed(1);
                     dept.setAskPricingStrategy(strategy2);
 
-                    /*
-                   SalesControlWithFixedInventoryAndPID strategy2;
-                    strategy2 = new SalesControlWithFixedInventoryAndPID(dept);
-                   // strategy2 = new SmoothedDailyInventoryPricingStrategy(dept);
-                    PIDController controller = (PIDController)strategy2.getController();
-                    strategy2.setTargetInventory(1000);
-                    controller.setGains(controller.getProportionalGain()*.01f, controller.getIntegralGain()*.005f,
-                            0);
-                    strategy2.setSpeed(100);
-                    strategy2.setInitialPrice(60);
-                    dept.setAskPricingStrategy(strategy2);
-                    */
+
 
                 }
                 else
@@ -482,10 +474,10 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
 
 
-        while(macroII.schedule.getTime()<50000)
+        while(macroII.schedule.getTime()<15000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(50001,(int)macroII.schedule.getSteps(),100);
+            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
         }
 
 
