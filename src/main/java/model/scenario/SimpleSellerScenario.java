@@ -11,20 +11,28 @@ import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentFactory;
+import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.AskPricingStrategy;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
+import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
+import au.com.bytecode.opencsv.CSVWriter;
 import financial.OrderBookMarket;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.DailyStatCollector;
 import model.utilities.dummies.DummyBuyer;
 import model.utilities.dummies.DummyBuyerWithDelay;
 import sim.engine.SimState;
 import sim.engine.Steppable;
+
+import java.io.FileWriter;
+import java.io.IOException;
+
+import static model.experiments.tuningRuns.MarginalMaximizerWithUnitPIDTuningMultiThreaded.printProgressBar;
 
 /**
  * <h4>Description</h4>
@@ -56,7 +64,8 @@ public class SimpleSellerScenario extends Scenario {
     /**
      * the strategy used by the sales department to tinker with prices
      */
-    private Class<? extends AskPricingStrategy> sellerStrategy = SalesControlFlowPIDWithFixedInventory.class;
+    private Class<? extends AskPricingStrategy> sellerStrategy = SimpleFlowSellerPID.class;
+    // SalesControlFlowPIDWithFixedInventory.class;
 
     // SmoothedDailyInventoryPricingStrategy.class;
     //SalesControlWithFixedInventoryAndPID.class;
@@ -75,6 +84,16 @@ public class SimpleSellerScenario extends Scenario {
      * How many goods the seller receives every day
      */
     private int inflowPerSeller = 4;
+
+    /**
+     * If there is a demand shift, when will it appear?
+     */
+    public int howManyDaysLaterShockWillOccur = 2000;
+
+    /**
+     * the strategy used by the seller, after it has been instantiated
+     */
+    protected AskPricingStrategy strategy;
 
 
     /**
@@ -99,7 +118,8 @@ public class SimpleSellerScenario extends Scenario {
 
         //only one seller
         for(int i=0; i < numberOfSellers; i++)
-        {   final Firm seller = buildSeller(market);
+        {
+            final Firm seller = buildSeller(market);
             //arrange for goods to drop periodically in the firm
             setupProduction(seller);
         }
@@ -165,7 +185,7 @@ public class SimpleSellerScenario extends Scenario {
                 market.submitBuyQuote(buyer,buyer.getFixedPrice());
 
             }
-        },2000  );
+        }, howManyDaysLaterShockWillOccur);
         return buyer;
     }
 
@@ -189,20 +209,15 @@ public class SimpleSellerScenario extends Scenario {
         final Firm seller = new Firm(getModel());
         getAgents().add(seller);
 
-        //give it a seller department at time 1
-        getModel().scheduleSoon(ActionOrder.DAWN,new Steppable() {
-            @Override
-            public void step(SimState simState) {
-                SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(seller, market, new SimpleBuyerSearch(market, seller),
-                        new SimpleSellerSearch(market, seller), salesDepartmentType);
-                seller.registerSaleDepartment(dept, GoodType.GENERIC);
-                AskPricingStrategy strategy =  AskPricingStrategy.Factory.newAskPricingStrategy(sellerStrategy,dept);
 
-                //strategy.setSpeed(sellerDelay);
-                dept.setAskPricingStrategy(strategy); //set strategy to PID
 
-            }
-        });
+        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(seller, market, new SimpleBuyerSearch(market, seller),
+                new SimpleSellerSearch(market, seller), salesDepartmentType);
+        seller.registerSaleDepartment(dept, GoodType.GENERIC);
+        strategy = AskPricingStrategy.Factory.newAskPricingStrategy(sellerStrategy,dept);
+        //strategy.setSpeed(sellerDelay);
+        dept.setAskPricingStrategy(strategy); //set strategy to PID
+
         return seller;
     }
 
@@ -296,7 +311,6 @@ public class SimpleSellerScenario extends Scenario {
         this.demandShifts = demandShifts;
     }
 
-
     /**
      * Gets the strategy used by the sales department to tinker with prices.
      *
@@ -377,5 +391,79 @@ public class SimpleSellerScenario extends Scenario {
      */
     public void setInflowPerSeller(int inflowPerSeller) {
         this.inflowPerSeller = inflowPerSeller;
+    }
+
+
+
+
+
+    /**
+     * Runs the simple seller scenario with no GUI and writes a big CSV file  (to draw graphs for the paper)
+     * @param args
+     */
+    public static void main(String[] args)
+    {
+
+        //do it 10 times
+        for(int i=0; i<10;i++)
+        {
+
+            //set up
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            macroII.getRandom().setSeed(i);
+            SimpleSellerScenario scenario1 = new SimpleSellerScenario(macroII);
+            scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+            scenario1.setSellerStrategy(SimpleFlowSellerPID.class);
+            scenario1.setDemandShifts(true);
+            scenario1.setHowManyDaysLaterShockWillOccur(500);
+
+
+            //assign scenario
+            macroII.setScenario(scenario1);
+
+            macroII.start();
+
+
+
+            //CSV writer set up
+            try {
+                CSVWriter writer = new CSVWriter(new FileWriter("runs/simpleSeller/"+"simpleSellerShock"+i +".csv"));
+                DailyStatCollector collector = new DailyStatCollector(macroII,writer);
+                collector.start();
+
+            } catch (IOException e) {
+                System.err.println("failed to create the file!");
+            }
+
+
+            //run!
+            while(macroII.schedule.getTime()<1000)
+            {
+                macroII.schedule.step(macroII);
+                printProgressBar(1001,(int)macroII.schedule.getSteps(),100);
+            }
+
+
+        }
+
+    }
+
+
+    /**
+     * Gets If there is a demand shift, when will it appear?.
+     *
+     * @return Value of If there is a demand shift, when will it appear?.
+     */
+    public int getHowManyDaysLaterShockWillOccur() {
+        return howManyDaysLaterShockWillOccur;
+    }
+
+    /**
+     * Sets new If there is a demand shift, when will it appear?.
+     *
+     * @param howManyDaysLaterShockWillOccur New value of If there is a demand shift, when will it appear?.
+     */
+    public void setHowManyDaysLaterShockWillOccur(int howManyDaysLaterShockWillOccur) {
+        this.howManyDaysLaterShockWillOccur = howManyDaysLaterShockWillOccur;
     }
 }

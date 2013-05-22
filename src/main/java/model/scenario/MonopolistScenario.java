@@ -19,10 +19,12 @@ import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentFactory;
+import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
+import au.com.bytecode.opencsv.CSVWriter;
 import financial.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
 import financial.utilities.ShopSetPricePolicy;
@@ -30,10 +32,15 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.DailyStatCollector;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import model.utilities.dummies.DummyBuyer;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
+import static model.experiments.tuningRuns.MarginalMaximizerWithUnitPIDTuningMultiThreaded.printProgressBar;
 import static org.mockito.Mockito.*;
 
 /**
@@ -363,5 +370,45 @@ public class MonopolistScenario extends Scenario {
      */
     public Class<? extends SalesDepartment> getSalesDepartmentType() {
         return salesDepartmentType;
+    }
+
+
+    public static void main(String[] args)
+    {
+        //set up
+        final MacroII macroII = new MacroII(System.currentTimeMillis());
+        MonopolistScenario scenario1 = new MonopolistScenario(macroII);
+        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
+        scenario1.setControlType(MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_ALWAYS_MOVING);
+
+
+
+        //assign scenario
+        macroII.setScenario(scenario1);
+
+        macroII.start();
+
+
+
+        //CSV writer set up
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter("runs/monopolist/"+"alwaysClimbing"+".csv"));
+            DailyStatCollector collector = new DailyStatCollector(macroII,writer);
+            collector.start();
+
+        } catch (IOException e) {
+            System.err.println("failed to create the file!");
+        }
+
+
+        //run!
+        while(macroII.schedule.getTime()<3000)
+        {
+            macroII.schedule.step(macroII);
+            printProgressBar(3001,(int)macroII.schedule.getSteps(),100);
+        }
+
+
     }
 }

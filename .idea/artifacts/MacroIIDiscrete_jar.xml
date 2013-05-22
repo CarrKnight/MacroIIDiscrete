@@ -10,7 +10,6 @@
         <element id="dir-copy" path="$PROJECT_DIR$/lib/mason" />
       </element>
       <element id="library" level="project" name="net.sf.jung:jung-algorithms:2.0.1" />
-      <element id="library" level="project" name="org.jfree:jfreechart:1.0.14" />
       <element id="library" level="project" name="org.reflections:reflections:0.9.8" />
       <element id="library" level="project" name="junit:junit:4.11" />
       <element id="library" level="project" name="Maven: org.hamcrest:hamcrest-core:1.1" />

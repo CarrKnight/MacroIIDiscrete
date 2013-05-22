@@ -422,4 +422,36 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
     public void setProductionCostOverride(boolean productionCostOverride) {
         this.productionCostOverride = productionCostOverride;
     }
+
+
+    //--------------------------------------------------------------------------
+
+
+    public void setIntegralGain(float integralGain) {
+        controller.setIntegralGain(integralGain);
+    }
+
+    public float getIntegralGain() {
+        return controller.getIntegralGain();
+    }
+
+    public void setProportionalGain(float proportionalGain) {
+        controller.setProportionalGain(proportionalGain);
+    }
+
+    public float getProportionalGain() {
+        return controller.getProportionalGain();
+    }
+
+    public float getDerivativeGain() {
+        return controller.getDerivativeGain();
+    }
+
+    public void setDerivativeGain(float derivativeGain) {
+        controller.setDerivativeGain(derivativeGain);
+    }
+
+    public int getSpeed() {
+        return controller.getSpeed();
+    }
 }

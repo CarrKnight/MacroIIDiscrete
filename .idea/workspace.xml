@@ -14,17 +14,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b2f2be4b-01ab-4023-8729-b370a266331e" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/model/scenario/SimpleSellerScenarioUsingFlowSellerPID.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/jfree_jfreechart_1_0_13.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/org_jfree_jfreechart_1_0_14.xml" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MacroIIDiscrete.iml" afterPath="$PROJECT_DIR$/MacroIIDiscrete.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/MacroIIDiscrete_jar.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/MacroIIDiscrete_jar.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/scenario/MonopolistScenario.java" afterPath="$PROJECT_DIR$/src/main/java/model/scenario/MonopolistScenario.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java" afterPath="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/experiments/SimpleSellerDelayStickyPrices.java" afterPath="$PROJECT_DIR$/src/main/java/model/experiments/SimpleSellerDelayStickyPrices.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SimpleFlowSellerPID.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SimpleFlowSellerPID.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/scenario/SimpleSellerScenario.java" afterPath="$PROJECT_DIR$/src/main/java/model/scenario/SimpleSellerScenario.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/ant.xml" afterPath="$PROJECT_DIR$/.idea/ant.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/scenario/TripolistScenario.java" afterPath="$PROJECT_DIR$/src/main/java/model/scenario/TripolistScenario.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="MacroIIDiscrete.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/fragment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1366921506282" ignored="false" />
-    <file path="/Dummy.txt" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1368033701878" ignored="false" />
+    <file path="/fragment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1368740559784" ignored="false" />
+    <file path="/Dummy.txt" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1369245421325" ignored="false" />
     <file path="/MacroII.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1362494994738" ignored="false" />
     <file path="/PhaseScheduler.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1360684299272" ignored="false" />
     <file path="/PurchasesDepartment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1363391490432" ignored="false" />
@@ -76,13 +80,13 @@
     <file path="/SimpleFlowSellerPIDTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1357146699063" ignored="false" />
     <file path="/WeeklyInventoryControlTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1357148888641" ignored="false" />
     <file path="/OrderBookStockoutTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1357148987587" ignored="false" />
-    <file path="/MonopolistScenario.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1367781614884" ignored="false" />
+    <file path="/MonopolistScenario.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1369078508685" ignored="false" />
     <file path="/ProfitReport.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1361475760420" ignored="false" />
     <file path="/MarketEvents.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1357218478659" ignored="false" />
     <file path="/DummyBuyer.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1366742350122" ignored="false" />
-    <file path="/TripolistScenario.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1362695030251" ignored="false" />
+    <file path="/TripolistScenario.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1369081058366" ignored="false" />
     <file path="/TestScenario.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1357748975399" ignored="false" />
-    <file path="/SimpleSellerScenario.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1367783484228" ignored="false" />
+    <file path="/SimpleSellerScenario.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1368740548729" ignored="false" />
     <file path="/BuyerSetPricePolicy.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1357226216061" ignored="false" />
     <file path="/MultiProduction.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1362695003144" ignored="false" />
     <file path="/MultiProductionMonopolist.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1362695009354" ignored="false" />
@@ -2317,12 +2321,13 @@
     <file path="/SimpleSellerWithSellerDelay.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1366921706248" ignored="false" />
     <file path="/SimpleSellerDelayStickyPrices.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1367432238171" ignored="false" />
     <file path="/mnt/0EA6C8BFA6C8A913/Git INET/src/edu/gmu/css/houseprice/model/rules/structuralRules/liquidWealthProcessRules/LogTotalExpenditureLiquidWealthProcessRule.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1367535410224" ignored="false" />
-    <file path="/MacroIIGUI.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1367113831158" ignored="false" />
+    <file path="/MacroIIGUI.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1368729901656" ignored="false" />
     <file path="/mnt/0EA6C8BFA6C8A913/Git INET/src/edu/gmu/css/houseprice/model/rules/loanRules/loanApprovalRules/ExpenditureFirstLoanApprovalRule.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1367532197319" ignored="false" />
     <file path="/LogTotalExpenditureLiquidWealthProcessRule.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1367535214848" ignored="false" />
     <file path="/BankingSystem.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1367762736030" ignored="false" />
     <file path="/mnt/0EA6C8BFA6C8A913/Git INET/src/edu/gmu/css/houseprice/model/rules/buyerRules/desiredExpenditureRules/OldPSIDDesiredExpenditureRule.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1367771067729" ignored="false" />
     <file path="/OldPSIDDesiredExpenditureRule.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1367765484984" ignored="false" />
+    <file path="/SimpleSellerScenarioUsingFlowSellerPID.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1368753723016" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -2342,7 +2347,6 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
-    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="false" />
@@ -2605,7 +2609,23 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/model/scenario/SimpleSellerScenarioUsingFlowSellerPID.java" line="196" class="model.scenario.SimpleSellerScenarioUsingFlowSellerPID" package="model.scenario">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
     </line_breakpoints>
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_rules />
     <ui_properties />
   </component>
@@ -2615,66 +2635,38 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="SimpleSellerScenario.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="SimpleSellerScenario.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/SimpleSellerScenario.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="346" column="22" selection-start="10614" selection-end="10614" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#0#11559#0" expanded="false" />
-                <element signature="imports" expanded="false" />
-                <element signature="method#createAdditionalBuyer#0;class#SimpleSellerScenario#0" expanded="false" />
-                <element signature="class#3606:4329" expanded="false" />
-                <element signature="method#reactToFilledBidQuote#0;class#3606:4329" expanded="false" />
-                <element signature="class#4002:4302" expanded="false" />
-                <element signature="method#step#0;class#4002:4302" expanded="false" />
-                <element signature="class#4463:4775" expanded="false" />
-                <element signature="method#step#0;class#4463:4775" expanded="false" />
-                <element signature="class#4927:5417" expanded="false" />
-                <element signature="method#step#0;class#4927:5417" expanded="false" />
-                <element signature="method#buildSeller#0;class#SimpleSellerScenario#0" expanded="false" />
-                <element signature="class#5675:6330" expanded="false" />
-                <element signature="method#step#0;class#5675:6330" expanded="false" />
-                <element signature="class#6689:7533" expanded="false" />
-                <element signature="method#reactToFilledBidQuote#0;class#6689:7533" expanded="false" />
-                <element signature="class#7104:7498" expanded="false" />
-                <element signature="method#step#0;class#7104:7498" expanded="false" />
-                <element signature="class#7668:8013" expanded="false" />
-                <element signature="method#step#0;class#7668:8013" expanded="false" />
-                <element signature="class#8305:8802" expanded="false" />
-                <element signature="method#step#0;class#8305:8802" expanded="false" />
-                <element signature="method#SimpleSellerScenario#0;class#SimpleSellerScenario#0" expanded="false" />
-              </folding>
+            <state line="411" column="18" selection-start="12175" selection-end="12252" vertical-scroll-proportion="0.020524515">
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="OneLinkSupplyChainScenario.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java">
+      <file leaf-file-name="MonopolistScenario.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/MonopolistScenario.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="197" column="48" selection-start="6721" selection-end="6721" vertical-scroll-proportion="0.36283186">
-              <folding>
-                <element signature="method#start#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-                <element signature="method#buildLaborSupplies#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-                <element signature="method#populateMarkets#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-                <element signature="e#5533#8984#0" expanded="true" />
-                <element signature="e#8973#8974#0" expanded="true" />
-                <element signature="method#buildFoodDemand#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-                <element signature="method#createFoodConsumer#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-                <element signature="method#getBluePrint#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-                <element signature="method#addWorkers#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-                <element signature="method#main#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-              </folding>
+            <state line="364" column="55" selection-start="11148" selection-end="11148" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Person.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/agents/Person.java">
+      <file leaf-file-name="TripolistScenario.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/TripolistScenario.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="81" column="11" selection-start="1712" selection-end="1712" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="method#Person#2;class#Person#0" expanded="true" />
-              </folding>
+            <state line="134" column="44" selection-start="4621" selection-end="4621" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SimpleSellerScenarioUsingFlowSellerPID.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/SimpleSellerScenarioUsingFlowSellerPID.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="196" column="79" selection-start="5835" selection-end="5835" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -2709,9 +2701,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/financial/OrderBookMarket.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SalesControlFlowPIDWithFixedInventory.java" />
-        <option value="$PROJECT_DIR$/src/test/java/model/utilities/dummies/DummyBuyerWithDelayTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/agents/firm/sales/pricing/pid/SalesControlFlowPIDWithFixedInventoryTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/experimentalRun/SimpleSellerDelayStickyPrices.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/experiments/SimpleBuyerVarianceExperiment.java" />
@@ -2720,11 +2709,14 @@
         <option value="$PROJECT_DIR$/src/main/java/financial/Market.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/MarginalMaximizerWithUnitPIDTuningMultiThreaded.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/utilities/dummies/DummyBuyerWithDelay.java" />
-        <option value="$PROJECT_DIR$/src/main/java/model/MacroIIGUI.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/experiments/SimpleSellerDelayStickyPrices.java" />
-        <option value="$PROJECT_DIR$/src/main/java/model/scenario/MonopolistScenario.java" />
-        <option value="$PROJECT_DIR$/src/main/java/model/scenario/SimpleSellerScenario.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/MacroIIGUI.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/scenario/SimpleSellerScenario.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/scenario/SimpleSellerScenarioUsingFlowSellerPID.java" />
+        <option value="$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SimpleFlowSellerPID.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/scenario/MonopolistScenario.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/scenario/TripolistScenario.java" />
       </list>
     </option>
   </component>
@@ -2743,10 +2735,9 @@
     <scope name="my code" pattern="src:*..*||test:*..*" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1" />
     <option name="y" value="27" />
-    <option name="width" value="1922" />
-    <option name="height" value="1054" />
+    <option name="width" value="1920" />
+    <option name="height" value="1053" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -2812,6 +2803,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -2820,15 +2812,56 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="runs" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="simpleSeller" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="runs" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="GenerateAntBuildDialog.generateIdeaHomeProperty" value="true" />
-    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.last.edited" value="Libraries" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
     <property name="OverrideImplement.combined" value="false" />
     <property name="project.structure.proportion" value="0.15" />
@@ -2861,15 +2894,15 @@
     <property name="dynamic.classpath" value="false" />
   </component>
   <component name="RecentsManager">
-    <key name="CreateTestDialog.Recents.Supers">
-      <recent name="" />
-    </key>
     <key name="CreateTestDialog.RecentsKey">
       <recent name="model.utilities.dummies" />
       <recent name="model.scenario" />
       <recent name="agents.firm.production.control.maximizer.algorithms.marginalMaximizers" />
       <recent name="agents.firm.sales.prediction" />
       <recent name="agents.firm.sales.pricing.pid" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="model.utilities" />
@@ -2895,7 +2928,7 @@
       <recent name="agents.firm" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.OneLinkSupplyChainScenario">
+  <component name="RunManager" selected="Application.TripolistScenario">
     <configuration default="false" name="OneLinkSupplyChainScenario" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="model.scenario.OneLinkSupplyChainScenario" />
       <option name="VM_PARAMETERS" value="" />
@@ -2923,86 +2956,62 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <configuration default="false" name="SimpleBuyerScenarioTest" type="JUnit" factoryName="JUnit" temporary="true">
-      <module name="MacroIIDiscrete" />
+    <configuration default="false" name="SimpleSellerScenario" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="model.scenario.SimpleSellerScenario" />
+      <option name="VM_PARAMETERS" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="model.scenario" />
-      <option name="MAIN_CLASS_NAME" value="model.scenario.SimpleBuyerScenarioTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
+      <module name="MacroIIDiscrete" />
       <envs />
-      <patterns />
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <configuration default="false" name="FixedInventoryControlTest" type="JUnit" factoryName="JUnit" temporary="true">
-      <module name="MacroIIDiscrete" />
+    <configuration default="false" name="SimpleSellerScenarioUsingFlowSellerPID" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="model.scenario.SimpleSellerScenarioUsingFlowSellerPID" />
+      <option name="VM_PARAMETERS" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="tests.purchase" />
-      <option name="MAIN_CLASS_NAME" value="tests.purchase.FixedInventoryControlTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <dir value="$PROJECT_DIR$/src/test/java" />
-      <patterns />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
-    <configuration default="false" name="DummyBuyerWithDelayTest" type="JUnit" factoryName="JUnit" temporary="true">
       <module name="MacroIIDiscrete" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="model.utilities.dummies" />
-      <option name="MAIN_CLASS_NAME" value="model.utilities.dummies.DummyBuyerWithDelayTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
       <envs />
-      <patterns />
       <RunnerSettings RunnerId="Debug">
         <option name="DEBUG_PORT" value="" />
         <option name="TRANSPORT" value="0" />
         <option name="LOCAL" value="true" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="JProfiler">
-        <option name="WINDOW" value="false" />
-        <option name="JVMPI" value="false" />
-        <option name="INTERPRETED" value="false" />
       </RunnerSettings>
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Debug" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <configuration default="false" name="SimpleSellerDelayStickyPrices" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="model.experiments.SimpleSellerDelayStickyPrices" />
+    <configuration default="false" name="MonopolistScenario" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="model.scenario.MonopolistScenario" />
+      <option name="VM_PARAMETERS" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="MacroIIDiscrete" />
+      <envs />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="false" name="TripolistScenario" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="model.scenario.TripolistScenario" />
       <option name="VM_PARAMETERS" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
@@ -3215,18 +3224,18 @@
       <item index="1" class="java.lang.String" itemvalue="Application.MacroIIGUI" />
       <item index="2" class="java.lang.String" itemvalue="JUnit.All tests" />
       <item index="3" class="java.lang.String" itemvalue="Application.OneLinkSupplyChainScenario" />
-      <item index="4" class="java.lang.String" itemvalue="JUnit.SimpleBuyerScenarioTest" />
-      <item index="5" class="java.lang.String" itemvalue="JUnit.FixedInventoryControlTest" />
-      <item index="6" class="java.lang.String" itemvalue="JUnit.DummyBuyerWithDelayTest" />
-      <item index="7" class="java.lang.String" itemvalue="Application.SimpleSellerDelayStickyPrices" />
+      <item index="4" class="java.lang.String" itemvalue="Application.SimpleSellerScenario" />
+      <item index="5" class="java.lang.String" itemvalue="Application.SimpleSellerScenarioUsingFlowSellerPID" />
+      <item index="6" class="java.lang.String" itemvalue="Application.MonopolistScenario" />
+      <item index="7" class="java.lang.String" itemvalue="Application.TripolistScenario" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Application.OneLinkSupplyChainScenario" />
-        <item index="1" class="java.lang.String" itemvalue="Application.SimpleSellerDelayStickyPrices" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.DummyBuyerWithDelayTest" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.FixedInventoryControlTest" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.SimpleBuyerScenarioTest" />
+        <item index="0" class="java.lang.String" itemvalue="Application.TripolistScenario" />
+        <item index="1" class="java.lang.String" itemvalue="Application.MonopolistScenario" />
+        <item index="2" class="java.lang.String" itemvalue="Application.SimpleSellerScenarioUsingFlowSellerPID" />
+        <item index="3" class="java.lang.String" itemvalue="Application.SimpleSellerScenario" />
+        <item index="4" class="java.lang.String" itemvalue="Application.OneLinkSupplyChainScenario" />
       </list>
     </recent_temporary>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
@@ -3449,7 +3458,11 @@
       <created>1366929076569</created>
       <updated>1366929076569</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="Ran all the tuning. Modified slightly the simple seller">
+      <created>1368040132981</created>
+      <updated>1368040132981</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -3473,29 +3486,29 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="27" width="1922" height="1054" extended-state="6" />
+    <frame x="0" y="27" width="1920" height="1053" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292683" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32079646" sideWeight="0.49786553" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2497332" sideWeight="0.6552106" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39356986" sideWeight="0.4855923" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31263858" sideWeight="0.50053364" order="13" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292683" sideWeight="0.49573106" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30752212" sideWeight="0.49786553" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32815966" sideWeight="0.49786553" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21878335" sideWeight="0.32815966" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.6552106" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39967984" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="JProfiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292683" sideWeight="0.49786553" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17982924" sideWeight="0.68292683" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31707317" sideWeight="0.47438633" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.36858973" sideWeight="0.68292683" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32594234" sideWeight="0.47438633" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32959402" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="654" y="139" width="761" height="854" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3203991" sideWeight="0.49786553" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30641592" sideWeight="0.49786553" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32852387" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Debug with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -3544,7 +3557,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="created some scenarios where demand has a delay in order to test how to deal with it through PID" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ran all the tuning. Modified slightly the simple seller" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -3558,7 +3571,6 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="added a simple one link supply chain, same problems" />
     <MESSAGE value="forced PIDHillClimbe to work on marginal efficency instead" />
     <MESSAGE value="commiting work in progress for fear of losing everything. Added a few cool things including MaximizersUNIT pid which are fun. Got much better production but very weird prices still" />
     <MESSAGE value="Made all marginal maximizer methods static. Simple work that had to be done" />
@@ -3583,6 +3595,7 @@
     <MESSAGE value="Changed a bit the pid pricings, started unit testing the static methods for marginal maximizer" />
     <MESSAGE value="Finished wth marginal maxizer statics" />
     <MESSAGE value="created some scenarios where demand has a delay in order to test how to deal with it through PID" />
+    <MESSAGE value="Ran all the tuning. Modified slightly the simple seller" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -3596,62 +3609,14 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/financial/OrderBookMarket.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="477" column="46" selection-start="14434" selection-end="14461" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SimpleFlowSellerPID.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="238" column="154" selection-start="8355" selection-end="8355" vertical-scroll-proportion="-6.12" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/model/utilities/dummies/DummyBuyerWithDelayTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="60" column="44" selection-start="1711" selection-end="1711" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/sales/pricing/pid/SalesControlFlowPIDWithFixedInventoryTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="98" column="7" selection-start="3496" selection-end="3496" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SalesControlFlowPIDWithFixedInventory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="188" column="11" selection-start="6384" selection-end="6384" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="method#attachFilter#0;class#SalesControlFlowPIDWithFixedInventory#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/experiments/SimpleBuyerVarianceExperiment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="114" column="0" selection-start="3244" selection-end="3244" vertical-scroll-proportion="0.72542375" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/MarginalMaximizerWithUnitPIDTuningMultiThreaded.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="55" column="60" selection-start="1806" selection-end="1853" vertical-scroll-proportion="0.030508475" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/SimpleSellerWithSellerDelayScenario.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="66" column="37" selection-start="2022" selection-end="2022" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="66" column="37" selection-start="2022" selection-end="2022" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/dummies/DummyBuyerWithDelay.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="88" column="78" selection-start="2208" selection-end="2208" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/MacroIIGUI.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="67" column="52" selection-start="1504" selection-end="1504" vertical-scroll-proportion="0.030508475" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/model/experiments/SimpleSellerDelayStickyPrices.java">
@@ -3664,75 +3629,82 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/MonopolistScenario.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/Person.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="89" column="91" selection-start="2567" selection-end="2567" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="81" column="11" selection-start="1712" selection-end="1712" vertical-scroll-proportion="0.020501139" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/financial/Market.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="289" column="29" selection-start="7540" selection-end="7545" vertical-scroll-proportion="0.030508475">
+        <state line="560" column="37" selection-start="16656" selection-end="16671" vertical-scroll-proportion="0.020501139">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/ActionOrder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="62" column="9" selection-start="1036" selection-end="1043" vertical-scroll-proportion="0.7744875" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/DailyStatCollector.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="237" column="12" selection-start="6292" selection-end="6292" vertical-scroll-proportion="0.020501139" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/MacroIIGUI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="81" column="31" selection-start="1831" selection-end="1831" vertical-scroll-proportion="0.11845102" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="484" column="10" selection-start="14620" selection-end="15821" vertical-scroll-proportion="0.40546697">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/AskPricingStrategy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="145" column="57" selection-start="5243" selection-end="5243" vertical-scroll-proportion="0.4298957" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/MacroII.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="432" column="33" selection-start="11171" selection-end="11176" vertical-scroll-proportion="0.020809248">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SimpleFlowSellerPID.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="117" column="64" selection-start="3915" selection-end="3915" vertical-scroll-proportion="0.020809248" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/SimpleSellerScenarioUsingFlowSellerPID.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="196" column="79" selection-start="5835" selection-end="5835" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/TripolistScenario.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="134" column="44" selection-start="4621" selection-end="4621" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/MonopolistScenario.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="364" column="55" selection-start="11148" selection-end="11148" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/SimpleSellerScenario.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="346" column="22" selection-start="10614" selection-end="10614" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#0#11559#0" expanded="false" />
-            <element signature="imports" expanded="false" />
-            <element signature="method#createAdditionalBuyer#0;class#SimpleSellerScenario#0" expanded="false" />
-            <element signature="class#3606:4329" expanded="false" />
-            <element signature="method#reactToFilledBidQuote#0;class#3606:4329" expanded="false" />
-            <element signature="class#4002:4302" expanded="false" />
-            <element signature="method#step#0;class#4002:4302" expanded="false" />
-            <element signature="class#4463:4775" expanded="false" />
-            <element signature="method#step#0;class#4463:4775" expanded="false" />
-            <element signature="class#4927:5417" expanded="false" />
-            <element signature="method#step#0;class#4927:5417" expanded="false" />
-            <element signature="method#buildSeller#0;class#SimpleSellerScenario#0" expanded="false" />
-            <element signature="class#5675:6330" expanded="false" />
-            <element signature="method#step#0;class#5675:6330" expanded="false" />
-            <element signature="class#6689:7533" expanded="false" />
-            <element signature="method#reactToFilledBidQuote#0;class#6689:7533" expanded="false" />
-            <element signature="class#7104:7498" expanded="false" />
-            <element signature="method#step#0;class#7104:7498" expanded="false" />
-            <element signature="class#7668:8013" expanded="false" />
-            <element signature="method#step#0;class#7668:8013" expanded="false" />
-            <element signature="class#8305:8802" expanded="false" />
-            <element signature="method#step#0;class#8305:8802" expanded="false" />
-            <element signature="method#SimpleSellerScenario#0;class#SimpleSellerScenario#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/Person.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="81" column="11" selection-start="1712" selection-end="1712" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="method#Person#2;class#Person#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="197" column="48" selection-start="6721" selection-end="6721" vertical-scroll-proportion="0.36283186">
-          <folding>
-            <element signature="method#start#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-            <element signature="method#buildLaborSupplies#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-            <element signature="method#populateMarkets#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-            <element signature="e#5533#8984#0" expanded="true" />
-            <element signature="e#8973#8974#0" expanded="true" />
-            <element signature="method#buildFoodDemand#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-            <element signature="method#createFoodConsumer#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-            <element signature="method#getBluePrint#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-            <element signature="method#addWorkers#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-            <element signature="method#main#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-          </folding>
+        <state line="411" column="18" selection-start="12175" selection-end="12252" vertical-scroll-proportion="0.020524515">
+          <folding />
         </state>
       </provider>
     </entry>
@@ -3828,11 +3800,11 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
-          <last-edited>lifelines</last-edited>
+          <last-edited>jfree:jfreechart:1.0.13</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.2" />
+                <option value="0.30503455" />
               </list>
             </option>
           </splitter-proportions>
