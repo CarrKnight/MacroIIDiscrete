@@ -3,20 +3,22 @@ package tests.purchase;
 import agents.EconomicAgent;
 import agents.Inventory;
 import agents.firm.Firm;
+import agents.firm.purchases.FactoryProducedPurchaseDepartment;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.inventoryControl.FixedInventoryControl;
-import agents.firm.purchases.inventoryControl.InventoryControl;
 import agents.firm.purchases.inventoryControl.Level;
 import agents.firm.purchases.pricing.BidPricingStrategy;
+import agents.firm.sales.exploration.BuyerSearchAlgorithm;
+import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import financial.Bankruptcy;
 import financial.Market;
 import financial.OrderBookMarket;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.dummies.DummySeller;
 import org.junit.Before;
 import org.junit.Test;
-import model.utilities.dummies.DummySeller;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -62,8 +64,13 @@ public class FixedInventoryControlTest {
         when(f.getModel()).thenReturn(model);  when(f.getRandom()).thenReturn(model.random);
 
 
-        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, FixedInventoryControl.class,
-                null, null, null).getDepartment();
+        FactoryProducedPurchaseDepartment<FixedInventoryControl, BidPricingStrategy, BuyerSearchAlgorithm, SellerSearchAlgorithm>
+                factoryProducedPurchaseDepartment =
+                PurchasesDepartment.getPurchasesDepartment(0, f, market, FixedInventoryControl.class,
+                        null, null, null);
+        factoryProducedPurchaseDepartment.getInventoryControl().setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(1.5f);
+
+        PurchasesDepartment dept = factoryProducedPurchaseDepartment.getDepartment();
 
         //assuming target inventory is 6~~
 
@@ -86,9 +93,14 @@ public class FixedInventoryControlTest {
         Firm f = new Firm(model);
 
 
-
-        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, FixedInventoryControl.class,
-                null, null, null).getDepartment();
+        FactoryProducedPurchaseDepartment<FixedInventoryControl,BidPricingStrategy,BuyerSearchAlgorithm,SellerSearchAlgorithm>
+                factoryBuiltDepartment =
+                PurchasesDepartment.getPurchasesDepartment(0, f, market, FixedInventoryControl.class,
+                        null, null, null);
+        PurchasesDepartment dept =
+                factoryBuiltDepartment
+                        .getDepartment();
+        factoryBuiltDepartment.getInventoryControl().setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(1.5f);
 
 
         //assuming target inventory is 6~~
@@ -126,7 +138,8 @@ public class FixedInventoryControlTest {
         when(dept.getGoodType()).thenReturn(GoodType.GENERIC); //make sure you link to f
 
 
-        InventoryControl control = new FixedInventoryControl(dept);
+        FixedInventoryControl control = new FixedInventoryControl(dept);
+        control.setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(1.5f);
         //make sure it's registered as a listener
         Method method = EconomicAgent.class.getDeclaredMethod("getInventory");
         method.setAccessible(true);

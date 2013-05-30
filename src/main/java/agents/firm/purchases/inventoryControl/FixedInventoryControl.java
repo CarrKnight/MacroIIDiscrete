@@ -16,7 +16,8 @@ import javax.annotation.Nonnull;
  * <h4>Description</h4>
  * <p/> This is the simplest possible inventory control. It ignores plants and only targets a fixed number of inventory.
  * <p/> This is useful for, say, market makers who need an inventory without actually having plants producing anything.
- * <p/> ACCEPTABLE levels are 100% of the target, Barely is between 50 and 100, too much is over 150%
+ * <p/> ACCEPTABLE levels are 100% of the target, Barely is between 50 and 100, too much is over
+ * howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch%
  * <h4>Notes</h4>
  * Created with IntelliJ
  * <p/>
@@ -30,6 +31,12 @@ import javax.annotation.Nonnull;
 public class FixedInventoryControl extends AbstractInventoryControl {
 
     final int target;
+
+    /**
+     * so if you have more inventory than the target, when is that TOO MUCH? It is decided by
+     * howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch
+     */
+    private float howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch=3f;
 
 
     /**
@@ -56,11 +63,11 @@ public class FixedInventoryControl extends AbstractInventoryControl {
             return Level.DANGER;
         else if(currentLevel <  target)
             return Level.BARELY;
-        else if(currentLevel < 1.5f * target )
+        else if(currentLevel < howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch * target )
             return Level.ACCEPTABLE;
         else
         {
-            assert currentLevel >= 1.5f*target;
+            assert currentLevel >= howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch*target;
             return Level.TOOMUCH;
         }
     }
@@ -116,5 +123,29 @@ public class FixedInventoryControl extends AbstractInventoryControl {
      */
     public int getTarget() {
         return target;
+    }
+
+
+    /**
+     * Gets so if you have more inventory than the target, when is that TOO MUCH? It is decided by
+     * howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch.
+     *
+     * @return Value of so if you have more inventory than the target, when is that TOO MUCH? It is decided by
+     *         howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch.
+     */
+    public float getHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch() {
+        return howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch;
+    }
+
+    /**
+     * Sets new so if you have more inventory than the target, when is that TOO MUCH? It is decided by
+     * howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch.
+     *
+     * @param howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch
+     *         New value of so if you have more inventory than the target, when is that TOO MUCH? It is decided by
+     *         howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch.
+     */
+    public void setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(float howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch) {
+        this.howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch = howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch;
     }
 }

@@ -11,6 +11,7 @@ import ec.util.MersenneTwisterFast;
 import org.reflections.Reflections;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
@@ -100,7 +101,7 @@ public interface SalesPredictor {
          * Returns a new random search algorithm
          * @return the new rule to follow
          */
-        public static SalesPredictor randomSalesPredictor(MersenneTwisterFast randomizer)
+        public static SalesPredictor randomSalesPredictor(MersenneTwisterFast randomizer, SalesDepartment department)
         {
             Class<? extends SalesPredictor > salesPredictor = null;
             //now you are going to pick at random, but keep doing it as long as you draw abstract classes or interfaces
@@ -111,7 +112,7 @@ public interface SalesPredictor {
             }
 
             //now just instantiate it!
-            return newSalesPredictor(salesPredictor);
+            return newSalesPredictor(salesPredictor,department);
 
 
         }
@@ -123,7 +124,7 @@ public interface SalesPredictor {
          * @return the new rule to follow
          */
         public static <SP extends SalesPredictor> SP newSalesPredictor(
-                @Nonnull Class<SP> rule)
+                @Nonnull Class<SP> rule, SalesDepartment department)
         {
 
             if(!rules.contains(rule) || Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )
@@ -131,12 +132,17 @@ public interface SalesPredictor {
 
 
             try {
-                return rule.newInstance();
-            } catch (SecurityException | InstantiationException | IllegalAccessException |
-                    IllegalArgumentException ex) {
+                //we don't need a big switch here, since they are all without constructor except one
+
+                if(rule.equals(LinearExtrapolationPredictor.class))
+                    return rule.getConstructor(SalesDepartment.class).newInstance(department);
+                else
+                    return rule.newInstance();
+
+            } catch (SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException |
+                    NoSuchMethodException | InvocationTargetException ex) {
                 throw new RuntimeException("failed to instantiate BuyerSearchAlgorithm " + ex.getMessage());
             }
-
 
 
         }

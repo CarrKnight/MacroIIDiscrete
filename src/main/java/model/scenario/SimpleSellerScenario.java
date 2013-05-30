@@ -65,10 +65,6 @@ public class SimpleSellerScenario extends Scenario {
      * the strategy used by the sales department to tinker with prices
      */
     private Class<? extends AskPricingStrategy> sellerStrategy = SimpleFlowSellerPID.class;
-    // SalesControlFlowPIDWithFixedInventory.class;
-
-    // SmoothedDailyInventoryPricingStrategy.class;
-    //SalesControlWithFixedInventoryAndPID.class;
 
     /**
      * The kind of sales department to use
@@ -450,7 +446,7 @@ public class SimpleSellerScenario extends Scenario {
 
 
     /**
-     * Gets If there is a demand shift, when will it appear?.
+     * If there is a demand shift, when will it appear?.
      *
      * @return Value of If there is a demand shift, when will it appear?.
      */

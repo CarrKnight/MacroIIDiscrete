@@ -16,7 +16,10 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.pid.*;
+import model.utilities.pid.Controller;
+import model.utilities.pid.ControllerFactory;
+import model.utilities.pid.ControllerInput;
+import model.utilities.pid.PIDController;
 import model.utilities.pid.decorator.ExponentialFilterInputDecorator;
 import model.utilities.pid.decorator.ExponentialFilterOutputDecorator;
 import model.utilities.pid.decorator.ExponentialFilterTargetDecorator;
@@ -28,7 +31,8 @@ import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
- * <p/> This is a controller class that doubles as both a pricing and an inventory control strategy for purchases department. This implementation retrofit FixedInventoryControl by extending it.
+ * <p/> This is a controller class that doubles as both a pricing and an inventory control strategy for purchases department. This implementation retrofit
+ * FixedInventoryControl by extending it.
  * <p/>  It steps independently until receiving a turnoff signal. In the adjust process it adjust through its controller nature
  * <p/> This particular implementation uses the standard formula in spite of the fact that the observations are discrete
  * <h4>Notes</h4>
@@ -200,7 +204,13 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      */
     @Override
     protected boolean shouldIBuy(HasInventory source, GoodType type, int quantity) {
-        return super.shouldIBuy(source,type,quantity);
+        boolean shouldIBuy =        super.shouldIBuy(source,type,quantity);
+        if(!shouldIBuy)
+        {
+            System.out.println("Current Inventory:" + source.hasHowMany(type) + ", really?" + quantity);
+            System.out.println("Inventory Level" + super.rateInventory() + ", should buy?" + shouldIBuy);
+        }
+        return shouldIBuy;
     }
 
     /**
@@ -222,7 +232,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
 
         getPurchasesDepartment().getFirm().getModel().
                 scheduleSoon(ActionOrder.PREPARE_TO_TRADE,
-                this);
+                        this);
 
         super.start();
     }

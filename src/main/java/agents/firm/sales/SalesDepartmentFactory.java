@@ -102,9 +102,9 @@ public class SalesDepartmentFactory {
 
         SP salesPredictor;
         if (predictionStrategy == null)
-            salesPredictor = (SP) SalesPredictor.Factory.randomSalesPredictor(firm.getRandom());
+            salesPredictor = (SP) SalesPredictor.Factory.randomSalesPredictor(firm.getRandom(),dept);
         else
-            salesPredictor = SalesPredictor.Factory.newSalesPredictor(predictionStrategy);
+            salesPredictor = SalesPredictor.Factory.newSalesPredictor(predictionStrategy,dept);
 
 
         dept.setPredictorStrategy(salesPredictor);

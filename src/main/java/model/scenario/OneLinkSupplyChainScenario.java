@@ -190,12 +190,12 @@ public class OneLinkSupplyChainScenario extends Scenario {
                 if(!goodmarket.getGoodType().equals(GoodType.FOOD))
                 {
 
-                    SalesControlFlowPIDWithFixedInventory strategy2 = new SalesControlFlowPIDWithFixedInventory(dept,50,5000,model,
+                    SalesControlFlowPIDWithFixedInventory strategy2 = new SalesControlFlowPIDWithFixedInventory(dept,5,50,model,
                           0,0,0,//  model.drawProportionalGain()/100f,
                          //   model.drawIntegrativeGain()/100f,
                           //  model.drawDerivativeGain(),
                            model.random);
-                    strategy2.setInitialPrice(31);
+                    strategy2.setInitialPrice(32);
 
                     strategy2.attachFilter(new MovingAverage<Integer>(7));
                     strategy2.setSpeed(1);
@@ -451,7 +451,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
         scenario1.setControlType(MarginalPlantControlWithPIDUnit.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-        // scenario1.setControlType(MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment.class);
+
 
 
 
@@ -462,7 +462,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
         //create the CSVWriter
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("supplychainSigmoidNewPredictor2.csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/onelink.csv"));
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
 
