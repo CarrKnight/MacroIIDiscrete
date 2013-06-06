@@ -65,10 +65,11 @@ public class PlantTest {
         drs.addWorker(w1);drs.addWorker(w2);   w1.hired(crs.getOwner(),9999999); w2.hired(crs.getOwner(), 9999999);
 
 
-
-        crs.getOwner().registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class),GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
-        irs.getOwner().registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class),GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
-        drs.getOwner().registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class), GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+        SalesDepartmentAllAtOnce stub = mock(SalesDepartmentAllAtOnce.class);
+        crs.getOwner().registerSaleDepartment(stub,GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+        irs.getOwner().registerSaleDepartment(stub,GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+        drs.getOwner().registerSaleDepartment(stub, GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+        when(stub.isSelling(any(Good.class))).thenReturn(Boolean.TRUE);
 
 
         crs.setCostStrategy(new EmptyCostStrategy());
@@ -240,9 +241,9 @@ public class PlantTest {
         f.addPlant(localCRS);
 
 
-
-
-        localCRS.getOwner().registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class),GoodType.GENERIC); //fake sales
+        SalesDepartmentAllAtOnce stub = mock(SalesDepartmentAllAtOnce.class);
+        when(stub.isSelling(any(Good.class))).thenReturn(Boolean.TRUE);
+        localCRS.getOwner().registerSaleDepartment(stub,GoodType.GENERIC); //fake sales
         // department so that you don't try selling the stuff you build
 
 

@@ -10,12 +10,14 @@ import agents.firm.sales.SalesDepartment;
 import ec.util.MersenneTwisterFast;
 import goods.Good;
 import model.utilities.Deactivatable;
+import model.utilities.NonDrawable;
 import org.reflections.Reflections;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * <h4>Description</h4>
@@ -81,6 +83,9 @@ public interface AskPricingStrategy extends Deactivatable {
         static {
             Reflections strategyReader = new Reflections("agents.firm.sales.pricing");
             rules = new ArrayList<>(strategyReader.getSubTypesOf(AskPricingStrategy.class)); //read all the rules
+            //remove not drawables
+            Collection<Class<?>> nondrawables = strategyReader.getTypesAnnotatedWith(NonDrawable.class);
+            rules.removeAll(nondrawables);
             assert rules.size() > 0; // there should be at least one!!
         }
 
@@ -124,7 +129,8 @@ public interface AskPricingStrategy extends Deactivatable {
             Class<? extends AskPricingStrategy > askPricingStrategy = null;
             MersenneTwisterFast randomizer = sales.getFirm().getRandom(); //get the randomizer
             //now you are going to pick at random, but keep doing it as long as you draw abstract classes or interfaces
-            while(askPricingStrategy == null || Modifier.isAbstract(askPricingStrategy.getModifiers()) || askPricingStrategy.isInterface())
+            while(askPricingStrategy == null || Modifier.isAbstract(askPricingStrategy.getModifiers())
+                    || askPricingStrategy.isInterface())
             {
                 //get a new rule
                 askPricingStrategy = rules.get(randomizer.nextInt(rules.size()));

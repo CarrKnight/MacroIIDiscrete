@@ -132,7 +132,7 @@ public class MacroII extends SimState{
      */
     private static boolean hasGUI = false;
 
-    private final PhaseScheduler phaseScheduler;
+    private PhaseScheduler phaseScheduler;
 
 
     /********************
@@ -741,5 +741,13 @@ public class MacroII extends SimState{
      */
     public void scheduleAnotherDayWithFixedProbability(@Nonnull ActionOrder phase, @Nonnull Steppable action, float probability) {
         phaseScheduler.scheduleAnotherDayWithFixedProbability(phase, action, probability);
+    }
+
+    /**
+     * change the scheduler of the model. Probably not a good idea unless testing
+     * @param phaseScheduler
+     */
+    public void setPhaseScheduler(PhaseScheduler phaseScheduler) {
+        this.phaseScheduler = phaseScheduler;
     }
 }

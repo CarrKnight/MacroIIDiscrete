@@ -26,6 +26,8 @@ import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
+import agents.firm.sales.prediction.PricingSalesPredictor;
+import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import au.com.bytecode.opencsv.CSVWriter;
@@ -40,16 +42,16 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.DailyStatCollector;
 import model.utilities.dummies.DummyBuyer;
-import model.utilities.filters.MovingAverage;
-import model.utilities.pid.CascadePIDController;
+import model.utilities.filters.ExponentialFilter;
+import model.utilities.pid.PIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static org.mockito.Mockito.*;
 import static model.experiments.tuningRuns.MarginalMaximizerWithUnitPIDTuningMultiThreaded.printProgressBar;
+import static org.mockito.Mockito.*;
 
 /**
  * <h4>Description</h4>
@@ -107,6 +109,8 @@ public class OneLinkSupplyChainScenario extends Scenario {
      */
     private int foodMultiplier = 1;
 
+    //this is public only so that I can log it!
+    public SalesControlFlowPIDWithFixedInventory strategy2;
 
 
     /**
@@ -190,16 +194,18 @@ public class OneLinkSupplyChainScenario extends Scenario {
                 if(!goodmarket.getGoodType().equals(GoodType.FOOD))
                 {
 
-                    SalesControlFlowPIDWithFixedInventory strategy2 = new SalesControlFlowPIDWithFixedInventory(dept,5,50,model,
-                          0,0,0,//  model.drawProportionalGain()/100f,
-                         //   model.drawIntegrativeGain()/100f,
-                          //  model.drawDerivativeGain(),
+                    strategy2 = new SalesControlFlowPIDWithFixedInventory(dept,5,50,model,
+                            model.drawProportionalGain(),
+                            model.drawIntegrativeGain(),
+                            model.drawDerivativeGain(),
                            model.random);
-                    strategy2.setInitialPrice(32);
+                    strategy2.setInitialPrice(50);
 
-                    strategy2.attachFilter(new MovingAverage<Integer>(7));
-                    strategy2.setSpeed(1);
+                    strategy2.attachFilter(new ExponentialFilter<Integer>(.01f));
+                    strategy2.setSpeed(100);
                     dept.setAskPricingStrategy(strategy2);
+                    if(strategy2.getSpeed() > 7) //if the speed is less than weekly, turn off the sales predictor
+                        dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(PricingSalesPredictor.class,dept));
 
 
 
@@ -233,7 +239,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
                     department.setOpponentSearch(new SimpleBuyerSearch(market, firm));
                     department.setSupplierSearch(new SimpleSellerSearch(market, firm));
 
-                    PurchasesFixedPID control = new PurchasesFixedPID(department,200, CascadePIDController.class,model);
+                    PurchasesFixedPID control = new PurchasesFixedPID(department,200, PIDController.class,model);
 
                     department.setControl(control);
                     department.setPricingStrategy(control);
@@ -447,8 +453,8 @@ public class OneLinkSupplyChainScenario extends Scenario {
     {
 
 
-        final MacroII macroII = new MacroII(System.currentTimeMillis());
-        OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
+        final MacroII macroII = new MacroII(0);
+        final OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
         scenario1.setControlType(MarginalPlantControlWithPIDUnit.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
@@ -465,6 +471,32 @@ public class OneLinkSupplyChainScenario extends Scenario {
             CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/onelink.csv"));
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
+
+        } catch (IOException e) {
+            System.err.println("failed to create the file!");
+        }
+
+
+        //create the CSVWriter  for purchases prices
+        try {
+            final CSVWriter writer2 = new CSVWriter(new FileWriter("runs/supplychai/onelinkOfferPrices.csv"));
+            writer2.writeNext(new String[]{"buyer offer price","target","filtered Outflow"});
+            macroII.scheduleSoon(ActionOrder.CLEANUP, new Steppable() {
+                @Override
+                public void step(SimState state) {
+                    try {
+                        writer2.writeNext(new String[]{String.valueOf(
+                                macroII.getMarket(GoodType.BEEF).getBestBuyPrice()),
+                                String.valueOf(scenario1.strategy2.getTarget()),
+                                String.valueOf(scenario1.strategy2.getFilteredOutflow())});
+                        writer2.flush();
+                        ((MacroII) state).scheduleTomorrow(ActionOrder.CLEANUP, this);
+                    } catch (IllegalAccessException | IOException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+
+                }
+            });
 
         } catch (IOException e) {
             System.err.println("failed to create the file!");

@@ -8,6 +8,7 @@ package agents.firm.sales.pricing.decorators;
 
 import agents.firm.sales.pricing.AskPricingStrategy;
 import goods.Good;
+import model.utilities.NonDrawable;
 
 /**
  * <h4>Description</h4>
@@ -24,6 +25,7 @@ import goods.Good;
  * @version 2012-11-12
  * @see
  */
+@NonDrawable
 public class AskReservationPriceDecorator extends AskPricingDecorator {
 
     /**

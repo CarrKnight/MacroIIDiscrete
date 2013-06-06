@@ -10,6 +10,7 @@ import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
+import com.google.common.base.Preconditions;
 import financial.Market;
 import financial.utilities.ActionsAllowed;
 import goods.Good;
@@ -38,7 +39,12 @@ public class SalesDepartmentOneAtATime extends SalesDepartment
     /**
      * the lock is true while we are preparing to quote but we haven't quoted yet. This is to ensure that no ask is scheduled before the previous one is settled.
      */
-    boolean lock = false;
+    private boolean lock = false;
+
+    /**
+     * this is the good that we are about to quote. This is non-null in the time between preparing to place a quote and placing the quote
+     */
+    private Good beingQuoted = null;
 
 
     public SalesDepartmentOneAtATime(Firm firm, Market market, BuyerSearchAlgorithm buyerSearchAlgorithm,
@@ -73,9 +79,14 @@ public class SalesDepartmentOneAtATime extends SalesDepartment
      * @param g the good to quote
      */
     @Override
-    protected void prepareToPlaceAQuote(Good g) {
+    protected void prepareToPlaceAQuote(@Nonnull Good g) {
+        Preconditions.checkNotNull(g);
+        //lock the department from selling anything else in the mean time
         lock = true;
+        //schedule yourself!
         super.prepareToPlaceAQuote(g);
+        //prepare to quote!
+        beingQuoted = g;
     }
 
     /**
@@ -84,9 +95,21 @@ public class SalesDepartmentOneAtATime extends SalesDepartment
      */
     @Override
     protected void placeAQuoteNow(Good g) {
-        assert lock; //you should have locked!
+        Preconditions.checkState(lock);//you should have locked!
         lock = false;
-        super.placeAQuoteNow(g);
+
+        //make sure we are about to place a quote on what we were preparing to do
+        if(beingQuoted != null)
+        {
+            assert  beingQuoted ==g; //it must be the good we were supposed to quote!
+            beingQuoted = null; //forget it and quote it
+            super.placeAQuoteNow(g);
+        }
+        else
+        {
+            //in the unlikely event of the good having been consumed as we were in the process of placing it, then ignore this call and start over
+            placeIfAble();
+        }
     }
 
 
@@ -135,5 +158,31 @@ public class SalesDepartmentOneAtATime extends SalesDepartment
         super.reactToFilledQuote(g, price, buyer);
 
         placeIfAble();
+    }
+
+    /**
+     * This is called by the owner to tell the department to stop selling this specific good because it
+     * was consumed/destroyed.
+     * In the code all that happens is that reactToFilledQuote is called with a negative price as second argument
+     *
+     * @param g the good to stop selling
+     * @return true if, when this method was called, the sales department removed an order from the market. false otherwise
+     */
+    @Override
+    public boolean stopSellingThisGoodBecauseItWasConsumed(Good g) {
+        boolean toReturn = super.stopSellingThisGoodBecauseItWasConsumed(g);
+
+        //these two should be equal: because this sales department allows only one order it must always be true that if you
+        //removed the previous order, there are no other orders
+        assert (toReturn && !hasItPlacedAtLeastOneOrder()) || !toReturn;
+
+        //if you were preparing to quote the good, bad news!
+        if(beingQuoted == g)
+            beingQuoted = null;
+
+        //check if you are able to place an order
+        placeIfAble();
+        return toReturn;
+
     }
 }

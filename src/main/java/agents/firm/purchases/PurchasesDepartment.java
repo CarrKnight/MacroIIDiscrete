@@ -108,6 +108,11 @@ public class PurchasesDepartment implements Deactivatable, Department {
     private boolean queuedBuy = false;
 
     /**
+     * this is set to true when we scheduled a buy but haven't yet placed it
+     */
+    private boolean aboutToBuy = false;
+
+    /**
      * flag that, when set to true the market has "best visible price" activated, forces the purchase department to never
      * overpay
      */
@@ -616,7 +621,6 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
 
 
-
         }
         else{
             status = PurchasesDepartmentStatus.SHOPPING; //set your status to shopping!
@@ -632,16 +636,24 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * @param market the market to trade into
      */
     private void placeQuote(final GoodType type, final Market market) {
+
+        //this is a valid call only when you are idle!
+        assert status == PurchasesDepartmentStatus.IDLE;
+
+        //you are about to place a quote
+        status = PurchasesDepartmentStatus.PLACING_QUOTE;
+
         model.scheduleSoon(ActionOrder.TRADE, new Steppable() {
             @Override
             public void step(SimState state) {
-                if(status != PurchasesDepartmentStatus.IDLE) //if something came up while we were waiting, don't buy
+
+
+
+                if(status != PurchasesDepartmentStatus.PLACING_QUOTE) //if something came up while we were waiting, don't buy
                 {
                     queuedBuy = true;
                     return;
                 }
-
-                status = PurchasesDepartmentStatus.PLACING_QUOTE; //we are going to be placing a quote!
 
 
                 Quote q = market.submitBuyQuote(firm,maxPrice(type,market),PurchasesDepartment.this); //submit the quote!

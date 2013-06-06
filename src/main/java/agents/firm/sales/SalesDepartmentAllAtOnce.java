@@ -34,10 +34,6 @@ import javax.annotation.Nonnull;
  */
 public class SalesDepartmentAllAtOnce extends SalesDepartment{
 
-    /**
-     * the lock is true while we are preparing to quote but we haven't quoted yet. This is to ensure that no ask is scheduled before the previous one is settled.
-     */
-    boolean lock = false;
 
 
     @Override

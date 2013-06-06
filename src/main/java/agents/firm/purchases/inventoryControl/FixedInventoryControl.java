@@ -8,6 +8,7 @@ package agents.firm.purchases.inventoryControl;
 
 import agents.HasInventory;
 import agents.firm.purchases.PurchasesDepartment;
+import com.google.common.base.Preconditions;
 import goods.GoodType;
 
 import javax.annotation.Nonnull;
@@ -36,7 +37,7 @@ public class FixedInventoryControl extends AbstractInventoryControl {
      * so if you have more inventory than the target, when is that TOO MUCH? It is decided by
      * howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch
      */
-    private float howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch=3f;
+    private float howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch=2f;
 
 
     /**
@@ -146,6 +147,8 @@ public class FixedInventoryControl extends AbstractInventoryControl {
      *         howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch.
      */
     public void setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(float howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch) {
-        this.howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch = howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch;
+        Preconditions.checkArgument(howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch > 1f, "the argument has to be above 1!");
+
+                this.howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch = howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch;
     }
 }

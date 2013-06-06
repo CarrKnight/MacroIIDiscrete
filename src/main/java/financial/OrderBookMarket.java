@@ -483,5 +483,19 @@ public class OrderBookMarket extends Market {
         return false;
     }
 
+    /**
+     * Returns how many asks are currently in the market
+     */
+    public int numberOfAsks() {
+        return asks.size();
+    }
+
+
+    /**
+     * Returns how many bids are currently in the market
+     */
+    public int numberOfBids() {
+        return bids.size();
+    }
 
 }

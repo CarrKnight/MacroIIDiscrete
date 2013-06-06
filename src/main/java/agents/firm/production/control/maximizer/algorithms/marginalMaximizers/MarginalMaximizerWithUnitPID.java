@@ -130,16 +130,17 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
 
 
 
-/*            if(getP().getBlueprint().getOutputs().keySet().iterator().next() == GoodType.BEEF )
+        /*    if(getP().getBlueprint().getOutputs().keySet().iterator().next() == GoodType.BEEF )
             {
+                System.out.println("time: " +getP().getOwner().getModel().schedule.getTime());
                 System.out.println("marginal efficency:" + marginalEfficency + ", marginal benefits: " + marginalBenefits + ", marginal costs: " + marginalCosts );
                 System.out.println("target yestrday:" + mvYesterday + ", target today:" + pid.getCurrentMV() + ", integral: " + pid.getIntegral() );
                 System.out.println("wages:" + wageCosts.getMarginalCost() + ", price: " + getOwner().getModel().getMarket(GoodType.BEEF).getLastPrice() +
                         ", predicted price: " + getOwner().getSalesDepartment(GoodType.BEEF).predictSalePrice(inputCosts.getTotalCost() + wageCosts.getTotalCost()) + "\n");
 
             }
+          */
 
-  */
             //don't return more than the max or less than 0
             return Math.max(Math.min(Math.round(pid.getCurrentMV()), getHr().maximumWorkersPossible()), 0);
 

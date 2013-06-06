@@ -519,18 +519,69 @@ public abstract class  SalesDepartment  implements Department {
 
     }
 
+
+    /**
+     * This is called by the owner to tell the department to stop selling this specific good because it
+     * was consumed/destroyed.
+     * In the code all that happens is that reactToFilledQuote is called with a negative price as second argument
+     * @param g the good to stop selling
+     * @return true if, when this method was called, the sales department removed an order from the market. false otherwise
+     */
+    public boolean stopSellingThisGoodBecauseItWasConsumed(Good g)
+    {
+        //remove it from the masterlist
+        removeFromToSellMasterlist(g);
+
+
+        boolean toReturn = false;
+        //if needed, remove the quote
+        if( goodsQuotedOnTheMarket.containsKey(g))
+        {
+            //remove the good quoted in the market (and also remove it from memory)
+            market.removeSellQuote(goodsQuotedOnTheMarket.remove(g));
+            toReturn = true;
+        }
+        //erase from memory
+        salesResults.remove(g);
+
+        //make sure there is no trace in the tosell and  wait list
+        assert !toSell.contains(g);
+        assert !goodsQuotedOnTheMarket.containsKey(g);
+        //make sure there is no sale result associated to it
+        assert !salesResults.containsKey(g);
+
+        return toReturn;
+
+
+    }
+
     /**
      * This is called automatically whenever a quote we made was filled
      * @param g the good sold
-     * @param price the price for which it sold
+     * @param price the price for which it sold, the price must be positive or 0
      */
     public void reactToFilledQuote(Good g, long price, EconomicAgent buyer){
 
-        assert !firm.has(g); //we should have sold
-        boolean removedCorrectly = toSell.remove(g);  //remove it from the list of tosell
-        assert removedCorrectly;
+        Preconditions.checkArgument(price>=0);
 
+        //remove it from the masterlist
+        removeFromToSellMasterlist(g);
 
+        //if you were waiting for this good to sell as a quote, stop waiting
+        dontWaitForThisQuoteToBeFilled(g);
+
+        //if the price is 0 or positive it means it was a sale, so you should register/log it as such
+        logOutflow(g, price);
+
+        //make sure there is no trace in the tosell and  wait list
+        assert !toSell.contains(g);
+        assert !goodsQuotedOnTheMarket.containsKey(g);
+        //make sure there is a sale result associated to it
+        assert salesResults.containsKey(g);
+
+    }
+
+    protected void dontWaitForThisQuoteToBeFilled(Good g) {
         if(goodsQuotedOnTheMarket.remove(g) != null)  //do you remember having a quote at all?
         {
             //removed the quote
@@ -546,10 +597,12 @@ public abstract class  SalesDepartment  implements Department {
                     "The sales result is: " + salesResults.get(g);
 
         }
+    }
 
-        //register it!
-        logOutflow(g, price);
-
+    private void removeFromToSellMasterlist(Good g) {
+        assert !firm.has(g); //we should have sold
+        boolean removedCorrectly = toSell.remove(g);  //remove it from the list of tosell
+        Preconditions.checkState(removedCorrectly,"Removed a good I didn't have!");
     }
 
     /**
@@ -1149,5 +1202,15 @@ public abstract class  SalesDepartment  implements Department {
     public List<Plant> getServicedPlants()
     {
         return firm.getListOfPlantsProducingSpecificOutput(market.getGoodType());
+    }
+
+
+    /**
+     * asks the seller if it is selling a specific good
+     * @param o the good supposed to be sold by this department
+     * @return true if the sales department masterlist contains that good
+     */
+    public boolean isSelling(Good o) {
+        return toSell.contains(o);
     }
 }

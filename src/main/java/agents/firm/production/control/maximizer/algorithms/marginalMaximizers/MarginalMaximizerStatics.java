@@ -129,7 +129,7 @@ public final class MarginalMaximizerStatics {
         //for all the outputs
         for(GoodType output : outputs)
         {
-            marginalProduction += p.hypotheticalThroughput(targetWorkers, output) - p.hypotheticalThroughput(currentWorkers, output);
+            marginalProduction += Math.round(p.hypotheticalThroughput(targetWorkers, output) - p.hypotheticalThroughput(currentWorkers, output));
             assert (marginalProduction >= 0 && targetWorkers >= currentWorkers) ^  (marginalProduction <= 0 && targetWorkers < currentWorkers);
         }
         return marginalProduction;

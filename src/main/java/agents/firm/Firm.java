@@ -321,6 +321,29 @@ public class Firm extends EconomicAgent {
     }
 
 
+    /**
+     * This method burns inventory by 1. If there was a sales department selling that good, tell him
+     *
+     * @param g what good is consumed?
+     * @return the good consumed
+     */
+    @Override
+    public Good consume(GoodType g)
+    {
+        Good consumed =  super.consume(g);
+        //get the seller associated to this kind of good
+        SalesDepartment seller = salesDepartments.get(g);
+        if(seller != null)
+        {
+            //if there is a sales department for this kind of good, it'll have be to told its good has been consumed
+            assert seller.isSelling(consumed); //should be on sale there
+            seller.stopSellingThisGoodBecauseItWasConsumed(consumed);
+
+        }
+
+        return consumed;
+    }
+
     public MacroII getModel() {
         return model;
     }

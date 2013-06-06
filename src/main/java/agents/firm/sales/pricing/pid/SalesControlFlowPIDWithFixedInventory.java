@@ -167,7 +167,7 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
             return;
 
         //get today ouflow (smoothed if you attached a filter)
-        float outflow = outflowFilter == null ? department.getTodayOutflow() : outflowFilter.getSmoothedObservation();
+        float outflow = getFilteredOutflow();
 
 
         //change phase
@@ -184,7 +184,7 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
         }
 
 
-
+        System.out.println("target:" + getTarget() + ", outflow: " + outflow);
         controller.adjustOnce(outflow-getTarget(),isActive);
 
         department.getFirm().logEvent(department, MarketEvents.CHANGE_IN_POLICY, department.getFirm().getModel().getCurrentSimulationTimeInMillis(),
@@ -207,6 +207,10 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
         if(getPrice() != oldprice)
             department.updateQuotes();
 
+    }
+
+    public float getFilteredOutflow() {
+        return outflowFilter == null ? department.getTodayOutflow() : outflowFilter.getSmoothedObservation();
     }
 
 
