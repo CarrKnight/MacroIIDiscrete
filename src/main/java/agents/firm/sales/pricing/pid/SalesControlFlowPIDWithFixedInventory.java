@@ -184,7 +184,7 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
         }
 
 
-        System.out.println("target:" + getTarget() + ", outflow: " + outflow);
+        //System.out.println("target:" + getTarget() + ", outflow: " + outflow);
         controller.adjustOnce(outflow-getTarget(),isActive);
 
         department.getFirm().logEvent(department, MarketEvents.CHANGE_IN_POLICY, department.getFirm().getModel().getCurrentSimulationTimeInMillis(),

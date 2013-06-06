@@ -87,6 +87,9 @@ public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
      */
     @Override
     public void step(SimState state) {
+        //if you aren't attached to departments, you are turned off!
+        if(department == null)
+            return;
 
         Preconditions.checkState(((MacroII)state).getCurrentPhase().equals(ActionOrder.THINK));
 
@@ -102,6 +105,7 @@ public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
             if(lowWorkers == workers)
             {
                 lowWorkersPrice.addObservation(observePrice()); //whatever was the last price
+                assert highWorkers > lowWorkers || highWorkers == -1; //otherwise something is up
                 return; //done
             }
             else
@@ -114,6 +118,8 @@ public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
                 lowWorkers = workers;
                 lowWorkersPrice = new ExponentialFilter<Long>();
                 lowWorkersPrice.addObservation(observePrice()); //whatever was the last price
+                assert highWorkers > lowWorkers || highWorkers == -1; //otherwise something is up
+
 
             }
             else
@@ -123,9 +129,11 @@ public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
                 if(workers == highWorkers) //observe
                 {
                     highWorkersPrice.addObservation(observePrice()); //whatever was the last price
+                    assert highWorkers > lowWorkers || highWorkers == -1; //otherwise something is up
                     return; //done
                 }
                 else
+                if(workers > highWorkers)
                 {
                     //shift up, then observe
                     lowWorkers = highWorkers;
@@ -134,7 +142,17 @@ public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
                     highWorkers = workers;
                     highWorkersPrice = new ExponentialFilter<>();
                     highWorkersPrice.addObservation(observePrice());
+                    assert highWorkers > lowWorkers || highWorkers == -1; //otherwise something is up
 
+
+                }
+                else
+                {
+                    assert  lowWorkers < workers && workers < highWorkers;
+                    lowWorkers = workers;
+                    lowWorkersPrice = new ExponentialFilter<Long>();
+                    lowWorkersPrice.addObservation(observePrice()); //whatever was the last price
+                    assert highWorkers > lowWorkers || highWorkers == -1; //otherwise something is up
                 }
             }
 

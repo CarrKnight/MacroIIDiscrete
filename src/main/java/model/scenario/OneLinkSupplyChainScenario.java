@@ -47,6 +47,7 @@ import model.utilities.pid.PIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
+import javax.annotation.Nullable;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -70,8 +71,25 @@ import static org.mockito.Mockito.*;
  */
 public class OneLinkSupplyChainScenario extends Scenario {
 
+    /**
+     * The filter to attach to the beef ask pricing strategy
+     */
+    public ExponentialFilter<Integer> beefPriceFilterer = new ExponentialFilter<>(.01f);
+    /**
+     * If you want to change the proportional gain of BEEF selling pid
+     * for this scenario run by dividing it, here's what you are dividing it for
+     */
+    public float divideProportionalGainByThis = 1f;
+    /**
+     * If you want to change the proportional gain of BEEF selling pid
+     * for this scenario run by dividing it, here's what you are dividing it for
+     */
+    public float divideIntegrativeGainByThis = 1f;
 
-
+    /**
+     * the sampling speed of the BEEF selling pid
+     */
+    public int beefPricingSpeed = 100;
 
     public OneLinkSupplyChainScenario(MacroII model) {
         super(model);
@@ -195,14 +213,15 @@ public class OneLinkSupplyChainScenario extends Scenario {
                 {
 
                     strategy2 = new SalesControlFlowPIDWithFixedInventory(dept,5,50,model,
-                            model.drawProportionalGain(),
-                            model.drawIntegrativeGain(),
+                            model.drawProportionalGain()/ divideProportionalGainByThis,
+                            model.drawIntegrativeGain()/ divideIntegrativeGainByThis,
                             model.drawDerivativeGain(),
                            model.random);
                     strategy2.setInitialPrice(50);
-
-                    strategy2.attachFilter(new ExponentialFilter<Integer>(.01f));
-                    strategy2.setSpeed(100);
+                    //if you can, filter it!
+                    if(strategy2 instanceof  SalesControlFlowPIDWithFixedInventory && beefPriceFilterer != null)
+                        strategy2.attachFilter(beefPriceFilterer);
+                    strategy2.setSpeed(beefPricingSpeed);
                     dept.setAskPricingStrategy(strategy2);
                     if(strategy2.getSpeed() > 7) //if the speed is less than weekly, turn off the sales predictor
                         dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(PricingSalesPredictor.class,dept));
@@ -535,5 +554,89 @@ public class OneLinkSupplyChainScenario extends Scenario {
      */
     public void setSalesDepartmentType(Class<? extends SalesDepartment> salesDepartmentType) {
         this.salesDepartmentType = salesDepartmentType;
+    }
+
+
+    /**
+     * Gets If you want to change the proportional gain of BEEF selling pid
+     * for this scenario run by dividing it, here's what you are dividing it for.
+     *
+     * @return Value of If you want to change the proportional gain of BEEF selling pid
+     *         for this scenario run by dividing it, here's what you are dividing it for.
+     */
+    public float getDivideIntegrativeGainByThis() {
+        return divideIntegrativeGainByThis;
+    }
+
+    /**
+     * Gets If you want to change the proportional gain of BEEF selling pid
+     * for this scenario run by dividing it, here's what you are dividing it for.
+     *
+     * @return Value of If you want to change the proportional gain of BEEF selling pid
+     *         for this scenario run by dividing it, here's what you are dividing it for.
+     */
+    public float getDivideProportionalGainByThis() {
+        return divideProportionalGainByThis;
+    }
+
+    /**
+     * Gets the sampling speed of the BEEF selling pid.
+     *
+     * @return Value of the sampling speed of the BEEF selling pid.
+     */
+    public int getBeefPricingSpeed() {
+        return beefPricingSpeed;
+    }
+
+    /**
+     * Sets new the sampling speed of the BEEF selling pid.
+     *
+     * @param beefPricingSpeed New value of the sampling speed of the BEEF selling pid.
+     */
+    public void setBeefPricingSpeed(int beefPricingSpeed) {
+        this.beefPricingSpeed = beefPricingSpeed;
+    }
+
+
+    /**
+     * Sets new If you want to change the proportional gain of BEEF selling pid
+     * for this scenario run by dividing it, here's what you are dividing it for.
+     *
+     * @param divideIntegrativeGainByThis New value of If you want to change the proportional gain of BEEF selling pid
+     *                                    for this scenario run by dividing it, here's what you are dividing it for.
+     */
+    public void setDivideIntegrativeGainByThis(float divideIntegrativeGainByThis) {
+        this.divideIntegrativeGainByThis = divideIntegrativeGainByThis;
+    }
+
+    /**
+     * Sets new If you want to change the proportional gain of BEEF selling pid
+     * for this scenario run by dividing it, here's what you are dividing it for.
+     *
+     * @param divideProportionalGainByThis New value of If you want to change the proportional gain of BEEF selling pid
+     *                                     for this scenario run by dividing it, here's what you are dividing it for.
+     */
+    public void setDivideProportionalGainByThis(float divideProportionalGainByThis) {
+        this.divideProportionalGainByThis = divideProportionalGainByThis;
+    }
+
+
+    /**
+     * Gets The filter to attach to the beef ask pricing strategy.
+     *
+     * @return Value of The filter to attach to the beef ask pricing strategy.
+     */
+    public @Nullable ExponentialFilter<Integer> getBeefPriceFilterer() {
+        return beefPriceFilterer;
+    }
+
+
+    /**
+     * Sets new The filter to attach to the beef ask pricing strategy.
+     *
+     * @param beefPriceFilterer New value of The filter to attach to the beef ask pricing strategy.
+     */
+    public void setBeefPriceFilterer(@Nullable ExponentialFilter<Integer> beefPriceFilterer) {
+        this.beefPriceFilterer = beefPriceFilterer;
     }
 }

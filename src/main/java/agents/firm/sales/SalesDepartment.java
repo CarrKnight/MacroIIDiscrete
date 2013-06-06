@@ -949,6 +949,9 @@ public abstract class  SalesDepartment  implements Department {
     }
 
     public void setPredictorStrategy(SalesPredictor predictorStrategy) {
+        //turn off the previous one if needed
+        if(this.predictorStrategy != null)
+            this.predictorStrategy.turnOff();
         this.predictorStrategy = predictorStrategy;
     }
 
