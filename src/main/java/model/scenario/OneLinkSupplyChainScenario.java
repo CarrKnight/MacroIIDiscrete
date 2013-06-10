@@ -173,10 +173,10 @@ public class OneLinkSupplyChainScenario extends Scenario {
     private void instantiateMarkets() {
         Market beef = new OrderBookMarket(GoodType.BEEF);
         beef.setPricePolicy(new ShopSetPricePolicy());
-        getMarkets().put(beef.getGoodType(),beef);
+        getMarkets().put(beef.getGoodType(), beef);
         Market food = new OrderBookMarket(GoodType.FOOD);
         food.setPricePolicy(new ShopSetPricePolicy());
-        getMarkets().put(food.getGoodType(),food);
+        getMarkets().put(food.getGoodType(), food);
 
 
         Market beefLabor = new OrderBookMarket(GoodType.LABOR_BEEF);
@@ -199,79 +199,91 @@ public class OneLinkSupplyChainScenario extends Scenario {
             @Override
             public void step(SimState simState) {
                 //CREATE THE SALES DEPARTMENT
-                SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, goodmarket,
-                        new SimpleBuyerSearch(goodmarket, firm), new SimpleSellerSearch(goodmarket, firm),
-                        salesDepartmentType);
-                firm.registerSaleDepartment(dept, goodmarket.getGoodType());
-
-
-                SmoothedDailyInventoryPricingStrategy strategy;
-                strategy = new SmoothedDailyInventoryPricingStrategy(dept);
-                strategy.setInitialPrice(model.random.nextInt(30)+70);
-
-                if(!goodmarket.getGoodType().equals(GoodType.FOOD))
-                {
-
-                    strategy2 = new SalesControlFlowPIDWithFixedInventory(dept,5,50,model,
-                            model.drawProportionalGain()/ divideProportionalGainByThis,
-                            model.drawIntegrativeGain()/ divideIntegrativeGainByThis,
-                            model.drawDerivativeGain(),
-                           model.random);
-                    strategy2.setInitialPrice(50);
-                    //if you can, filter it!
-                    if(strategy2 instanceof  SalesControlFlowPIDWithFixedInventory && beefPriceFilterer != null)
-                        strategy2.attachFilter(beefPriceFilterer);
-                    strategy2.setSpeed(beefPricingSpeed);
-                    dept.setAskPricingStrategy(strategy2);
-                    if(strategy2.getSpeed() > 7) //if the speed is less than weekly, turn off the sales predictor
-                        dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(PricingSalesPredictor.class,dept));
-
-
-
-                }
-                else
-                    // strategy.setProductionCostOverride(false);
-                    dept.setAskPricingStrategy(strategy); //set strategy to PID
+                createSalesDepartment(firm, goodmarket);
 
 
                 //CREATE THE PLANT + Human resources
                 Blueprint blueprint =  getBluePrint(goodmarket.getGoodType());
-                Plant plant = new Plant(blueprint, firm);
-                plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
-                plant.setCostStrategy(new InputCostStrategy(plant));
-                firm.addPlant(plant);
-                FactoryProducedHumanResources produced =  HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, firm,
-                        laborMarket, plant, controlType, null, null);
-                HumanResources hr = produced.getDepartment();
-                hr.setFixedPayStructure(true);
-                hr.start();
+                createPlant(blueprint, firm, laborMarket);
 
                 //CREATE THE PURCHASES DEPARTMENTS NEEDED
-                for(GoodType input : blueprint.getInputs().keySet()){
-                    PurchasesDepartment department = PurchasesDepartment.getEmptyPurchasesDepartment(Long.MAX_VALUE, firm,
-                            getMarkets().get(input));
-                    float proportionalGain = model.drawProportionalGain();
-                    float integralGain = model.drawIntegrativeGain();
-                    float derivativeGain = model.drawDerivativeGain();
-                    Market market = model.getMarket(input);
-
-                    department.setOpponentSearch(new SimpleBuyerSearch(market, firm));
-                    department.setSupplierSearch(new SimpleSellerSearch(market, firm));
-
-                    PurchasesFixedPID control = new PurchasesFixedPID(department,200, PIDController.class,model);
-
-                    department.setControl(control);
-                    department.setPricingStrategy(control);
-                    firm.registerPurchasesDepartment(department, input);
-                    department.start();
-
-                }
+                createPurchaseDepartment(blueprint, firm);
 
             }
         });
 
         getAgents().add(firm);
         return firm;
+    }
+
+    protected void createSalesDepartment(Firm firm, Market goodmarket) {
+        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, goodmarket,
+                new SimpleBuyerSearch(goodmarket, firm), new SimpleSellerSearch(goodmarket, firm),
+                salesDepartmentType);
+        firm.registerSaleDepartment(dept, goodmarket.getGoodType());
+
+
+        SmoothedDailyInventoryPricingStrategy strategy;
+        strategy = new SmoothedDailyInventoryPricingStrategy(dept);
+        strategy.setInitialPrice(model.random.nextInt(30)+70);
+
+        if(!goodmarket.getGoodType().equals(GoodType.FOOD))
+        {
+
+            strategy2 = new SalesControlFlowPIDWithFixedInventory(dept,5,50,model,
+                    model.drawProportionalGain()/ divideProportionalGainByThis,
+                    model.drawIntegrativeGain()/ divideIntegrativeGainByThis,
+                    model.drawDerivativeGain(),
+                   model.random);
+            strategy2.setInitialPrice(50);
+            //if you can, filter it!
+            if(strategy2 instanceof  SalesControlFlowPIDWithFixedInventory && beefPriceFilterer != null)
+                strategy2.attachFilter(beefPriceFilterer);
+            strategy2.setSpeed(beefPricingSpeed);
+            dept.setAskPricingStrategy(strategy2);
+            if(strategy2.getSpeed() > 7) //if the speed is less than weekly, turn off the sales predictor
+                dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(PricingSalesPredictor.class,dept));
+
+
+
+        }
+        else
+            // strategy.setProductionCostOverride(false);
+            dept.setAskPricingStrategy(strategy); //set strategy to PID
+    }
+
+    protected void createPurchaseDepartment(Blueprint blueprint, Firm firm) {
+        for(GoodType input : blueprint.getInputs().keySet()){
+            PurchasesDepartment department = PurchasesDepartment.getEmptyPurchasesDepartment(Long.MAX_VALUE, firm,
+                    getMarkets().get(input));
+            float proportionalGain = model.drawProportionalGain();
+            float integralGain = model.drawIntegrativeGain();
+            float derivativeGain = model.drawDerivativeGain();
+            Market market = model.getMarket(input);
+
+            department.setOpponentSearch(new SimpleBuyerSearch(market, firm));
+            department.setSupplierSearch(new SimpleSellerSearch(market, firm));
+
+            PurchasesFixedPID control = new PurchasesFixedPID(department,200, PIDController.class,model);
+
+            department.setControl(control);
+            department.setPricingStrategy(control);
+            firm.registerPurchasesDepartment(department, input);
+            department.start();
+
+        }
+    }
+
+    protected void createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
+        Plant plant = new Plant(blueprint, firm);
+        plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
+        plant.setCostStrategy(new InputCostStrategy(plant));
+        firm.addPlant(plant);
+        FactoryProducedHumanResources produced =  HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, firm,
+                laborMarket, plant, controlType, null, null);
+        HumanResources hr = produced.getDepartment();
+        hr.setFixedPayStructure(true);
+        hr.start();
     }
 
     /**
@@ -487,7 +499,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
         //create the CSVWriter
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/onelink.csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/stickyPrices.csv"));
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
 

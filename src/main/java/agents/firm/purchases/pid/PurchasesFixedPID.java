@@ -143,7 +143,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
     public void step(SimState simState) {
 
         long oldprice = maxPrice(getGoodTypeToControl());
-        ControllerInput input = getControllerInput(getTarget());
+        ControllerInput input = getControllerInput(getInventoryTarget());
 
 
         controller.adjust(input, isActive(), (MacroII)simState, this, ActionOrder.PREPARE_TO_TRADE);
@@ -152,7 +152,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
         getPurchasesDepartment().getFirm().logEvent(getPurchasesDepartment(),
                 MarketEvents.CHANGE_IN_POLICY,
                 getPurchasesDepartment().getFirm().getModel().getCurrentSimulationTimeInMillis(),
-                "target: " + getTarget() + ", control :" + input.getInput(0) +
+                "target: " + getInventoryTarget() + ", control :" + input.getInput(0) +
                         "; oldprice:" + oldprice + ", newprice:" + newprice);
 
         if(oldprice != newprice) //if pid says to change prices, change prices

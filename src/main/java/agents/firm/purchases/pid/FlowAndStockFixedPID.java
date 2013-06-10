@@ -186,7 +186,7 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
                 stockPID.setOffset(0);
             }
             else{
-                stockPID.adjustOnce(super.getTarget(),
+                stockPID.adjustOnce(super.getInventoryTarget(),
                         getPurchasesDepartment().getFirm().hasHowMany(getGoodTypeToControl()), isActive());
                 stockAdjustmentUsed = true;
                 priceQuoted = Math.max(Math.round(flowPID.getCurrentMV() + stockPID.getCurrentMV()),0);

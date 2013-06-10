@@ -31,7 +31,11 @@ import javax.annotation.Nonnull;
  */
 public class FixedInventoryControl extends AbstractInventoryControl {
 
-    final int target;
+
+    /**
+     * The target inventory
+     */
+    private int inventoryTarget;
 
     /**
      * so if you have more inventory than the target, when is that TOO MUCH? It is decided by
@@ -60,15 +64,15 @@ public class FixedInventoryControl extends AbstractInventoryControl {
      */
     @Nonnull
     private Level rateInventory(int currentLevel){
-        if(currentLevel < .5f *  target)
+        if(currentLevel < .5f * inventoryTarget)
             return Level.DANGER;
-        else if(currentLevel <  target)
+        else if(currentLevel < inventoryTarget)
             return Level.BARELY;
-        else if(currentLevel < howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch * target )
+        else if(currentLevel < howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch * inventoryTarget)
             return Level.ACCEPTABLE;
         else
         {
-            assert currentLevel >= howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch*target;
+            assert currentLevel >= howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch* inventoryTarget;
             return Level.TOOMUCH;
         }
     }
@@ -105,7 +109,7 @@ public class FixedInventoryControl extends AbstractInventoryControl {
      */
     public FixedInventoryControl(@Nonnull final PurchasesDepartment purchasesDepartment) {
         super(purchasesDepartment);
-        target = purchasesDepartment.getFirm().getModel().drawFixedInventoryTarget();
+        inventoryTarget = purchasesDepartment.getFirm().getModel().drawFixedInventoryTarget();
 
     }
 
@@ -115,15 +119,15 @@ public class FixedInventoryControl extends AbstractInventoryControl {
      */
     public FixedInventoryControl(@Nonnull final PurchasesDepartment purchasesDepartment, int specificTarget) {
         super(purchasesDepartment);
-        target = specificTarget;
+        inventoryTarget = specificTarget;
 
     }
 
     /**
      * How much does control need?
      */
-    public int getTarget() {
-        return target;
+    public int getInventoryTarget() {
+        return inventoryTarget;
     }
 
 
@@ -147,8 +151,18 @@ public class FixedInventoryControl extends AbstractInventoryControl {
      *         howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch.
      */
     public void setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(float howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch) {
-        Preconditions.checkArgument(howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch > 1f, "the argument has to be above 1!");
+        Preconditions.checkArgument(howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch >= 1f, "the argument has to be above 1!");
 
                 this.howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch = howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch;
+    }
+
+
+    /**
+     * Sets new The target inventory.
+     *
+     * @param inventoryTarget New value of The target inventory.
+     */
+    public void setInventoryTarget(int inventoryTarget) {
+        this.inventoryTarget = inventoryTarget;
     }
 }

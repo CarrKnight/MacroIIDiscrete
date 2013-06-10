@@ -70,7 +70,7 @@ public class PurchasesFixedPIDTest {
         PurchasesFixedPID control = new PurchasesFixedPID(dept,.5f,2f,.05f);
         long pidPrice = control.maxPrice(GoodType.GENERIC);
         assertEquals(pidPrice, 0l);
-        assertEquals(control.getTarget(), 6);
+        assertEquals(control.getInventoryTarget(), 6);
 
         for(int i=0; i < 100; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
@@ -113,7 +113,7 @@ public class PurchasesFixedPIDTest {
         control.setInitialPrice(100l);
         long pidPrice = control.maxPrice(GoodType.GENERIC);
         assertEquals(pidPrice, 100l);
-        assertEquals(control.getTarget(), 6);
+        assertEquals(control.getInventoryTarget(), 6);
 
         for(int i=0; i < 100; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
@@ -154,7 +154,7 @@ public class PurchasesFixedPIDTest {
         PurchasesFixedPID control = new PurchasesFixedPID(dept,.5f,2f,.05f);
         long pidPrice = control.maxPrice(GoodType.GENERIC);
         assertEquals(pidPrice, 0l);
-        assertEquals(control.getTarget(), 6);
+        assertEquals(control.getInventoryTarget(), 6);
 
         //for the first 50 turns is like the first test
         model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE,control);
