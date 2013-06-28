@@ -131,7 +131,7 @@ public class TripolistScenario extends MonopolistScenario{
         TripolistScenario scenario1 = new TripolistScenario(macroII);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
-        scenario1.setControlType(MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_ALWAYS_MOVING);
+        scenario1.setControlType(MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID);
         scenario1.setAdditionalCompetitors(4);
 
 
@@ -145,7 +145,7 @@ public class TripolistScenario extends MonopolistScenario{
 
         //CSV writer set up
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("runs/monopolist/"+"tripolist"+".csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter("runs/monopolist/"+"tripolist2"+".csv"));
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
 
@@ -155,10 +155,10 @@ public class TripolistScenario extends MonopolistScenario{
 
 
         //run!
-        while(macroII.schedule.getTime()<3000)
+        while(macroII.schedule.getTime()<5000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(3001,(int)macroII.schedule.getSteps(),100);
+            printProgressBar(5001,(int)macroII.schedule.getSteps(),100);
         }
 
 

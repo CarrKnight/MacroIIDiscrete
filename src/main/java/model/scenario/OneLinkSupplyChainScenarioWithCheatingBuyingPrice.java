@@ -82,6 +82,9 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
+        //competition!
+    //    scenario1.setNumberOfBeefProducers(5);
+//        scenario1.setNumberOfFoodProducers(5);
 
 
 
@@ -92,7 +95,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
 
         //create the CSVWriter
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/cheater.csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/cheater2.csv"));
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
 
@@ -103,7 +106,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
 
         //create the CSVWriter  for purchases prices
         try {
-            final CSVWriter writer2 = new CSVWriter(new FileWriter("runs/supplychai/cheaterOfferPrices.csv"));
+            final CSVWriter writer2 = new CSVWriter(new FileWriter("runs/supplychai/cheaterOfferPricesWithCompetition.csv"));
             writer2.writeNext(new String[]{"buyer offer price","target","filtered Outflow"});
             macroII.scheduleSoon(ActionOrder.CLEANUP, new Steppable() {
                 @Override

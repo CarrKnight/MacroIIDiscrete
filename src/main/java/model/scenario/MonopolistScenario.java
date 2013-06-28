@@ -16,12 +16,17 @@ import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.facades.*;
 import agents.firm.production.technology.LinearConstantMachinery;
+import agents.firm.purchases.prediction.LookAheadPredictor;
+import agents.firm.purchases.prediction.PurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
+import agents.firm.sales.prediction.LinearExtrapolationPredictor;
+import agents.firm.sales.prediction.PricingSalesPredictor;
+import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
@@ -33,9 +38,9 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.DailyStatCollector;
+import model.utilities.dummies.DummyBuyer;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import model.utilities.dummies.DummyBuyer;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -98,8 +103,21 @@ public class MonopolistScenario extends Scenario {
      */
     protected Class<? extends AskPricingStrategy> askPricingStrategy = SimpleFlowSellerPID.class;
 
+    /**
+     * The type of sales predictor the sales department should use
+     */
+    protected Class<? extends SalesPredictor> salesPricePreditorStrategy = LinearExtrapolationPredictor.class;
 
+    /**
+     * The kind of sales department to use
+     */
     protected Class<? extends SalesDepartment> salesDepartmentType = SalesDepartmentAllAtOnce.class;
+
+
+    /**
+     * The type of price predictor the human resources department should use
+     */
+    protected Class<? extends PurchasesPredictor> purchasesPricePreditorStrategy = LookAheadPredictor.class;
 
     /**
      * Called by MacroII, it creates agents and then schedules them.
@@ -218,6 +236,7 @@ public class MonopolistScenario extends Scenario {
                 SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(monopolist, goodMarket,
                         new SimpleBuyerSearch(goodMarket, monopolist), new SimpleSellerSearch(goodMarket, monopolist),
                         salesDepartmentType);
+                dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(salesPricePreditorStrategy,dept));
                 monopolist.registerSaleDepartment(dept, GoodType.GENERIC);
                 dept.setAskPricingStrategy(AskPricingStrategy.Factory.newAskPricingStrategy(askPricingStrategy,dept)); //set strategy to PID
                 //add the plant
@@ -235,6 +254,8 @@ public class MonopolistScenario extends Scenario {
 
                 //       seller.registerHumanResources(plant, hr);
                 hr.setFixedPayStructure(fixedPayStructure);
+
+                hr.setPredictor(PurchasesPredictor.Factory.newPurchasesPredictor(purchasesPricePreditorStrategy,hr));
                 hr.start();
 
 
@@ -373,6 +394,8 @@ public class MonopolistScenario extends Scenario {
     }
 
 
+
+
     public static void main(String[] args)
     {
         //set up
@@ -380,7 +403,9 @@ public class MonopolistScenario extends Scenario {
         MonopolistScenario scenario1 = new MonopolistScenario(macroII);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
-        scenario1.setControlType(MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_ALWAYS_MOVING);
+        scenario1.setControlType(MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID);
+
+        scenario1.setSalesPricePreditorStrategy(PricingSalesPredictor.class);
 
 
 
@@ -393,7 +418,7 @@ public class MonopolistScenario extends Scenario {
 
         //CSV writer set up
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("runs/monopolist/"+"alwaysClimbing"+".csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter("runs/monopolist/"+"marginalNoPredictor"+".csv"));
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
 
@@ -410,5 +435,23 @@ public class MonopolistScenario extends Scenario {
         }
 
 
+    }
+
+    /**
+     * Sets new The type of sales predictor the sales department should use.
+     *
+     * @param salesPricePreditorStrategy New value of The type of sales predictor the sales department should use.
+     */
+    public void setSalesPricePreditorStrategy(Class<? extends SalesPredictor> salesPricePreditorStrategy) {
+        this.salesPricePreditorStrategy = salesPricePreditorStrategy;
+    }
+
+    /**
+     * Gets The type of sales predictor the sales department should use.
+     *
+     * @return Value of The type of sales predictor the sales department should use.
+     */
+    public Class<? extends SalesPredictor> getSalesPricePreditorStrategy() {
+        return salesPricePreditorStrategy;
     }
 }

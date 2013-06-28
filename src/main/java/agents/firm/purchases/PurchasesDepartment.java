@@ -161,12 +161,14 @@ public class PurchasesDepartment implements Deactivatable, Department {
         //register as a buyer
         market.registerBuyer(firm);
         if(market.isBestSalePriceVisible())
-            predictor = new LookAheadPredictor();
+            predictor = PurchasesPredictor.Factory.newPurchasesPredictor(LookAheadPredictor.class,this);
         else
-            predictor = new MarketPurchasesPredictor();
+            predictor = PurchasesPredictor.Factory.newPurchasesPredictor(MarketPurchasesPredictor.class,this);
 
         this.model = model;
         counter = new InflowOutflowCounter(model,firm,goodType);
+
+
 
 
 

@@ -74,7 +74,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
     /**
      * The filter to attach to the beef ask pricing strategy
      */
-    public ExponentialFilter<Integer> beefPriceFilterer = new ExponentialFilter<>(.01f);
+    public ExponentialFilter<Integer> beefPriceFilterer = null;
     /**
      * If you want to change the proportional gain of BEEF selling pid
      * for this scenario run by dividing it, here's what you are dividing it for
@@ -163,7 +163,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         for(int i=0; i < numberOfBeefProducers; i++)
             createFirm(getMarkets().get(GoodType.BEEF),getMarkets().get(GoodType.LABOR_BEEF));
         //food
-        for(int i=0; i < numberOfBeefProducers; i++)
+        for(int i=0; i < numberOfFoodProducers; i++)
             createFirm(getMarkets().get(GoodType.FOOD),getMarkets().get(GoodType.LABOR_FOOD));
     }
 
@@ -223,9 +223,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         firm.registerSaleDepartment(dept, goodmarket.getGoodType());
 
 
-        SmoothedDailyInventoryPricingStrategy strategy;
-        strategy = new SmoothedDailyInventoryPricingStrategy(dept);
-        strategy.setInitialPrice(model.random.nextInt(30)+70);
+
 
         if(!goodmarket.getGoodType().equals(GoodType.FOOD))
         {
@@ -248,8 +246,13 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
         }
         else
+        {
+            SmoothedDailyInventoryPricingStrategy strategy;
+            strategy = new SmoothedDailyInventoryPricingStrategy(dept);
+            strategy.setInitialPrice(model.random.nextInt(30)+70);
             // strategy.setProductionCostOverride(false);
             dept.setAskPricingStrategy(strategy); //set strategy to PID
+        }
     }
 
     protected void createPurchaseDepartment(Blueprint blueprint, Firm firm) {

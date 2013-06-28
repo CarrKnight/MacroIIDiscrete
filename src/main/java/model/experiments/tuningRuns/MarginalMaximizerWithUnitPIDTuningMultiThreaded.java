@@ -31,6 +31,7 @@ import sim.engine.Steppable;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
@@ -55,7 +56,9 @@ import static org.mockito.Mockito.*;
  */
 public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
 
-    public static Lock writerlock = new ReentrantLock();
+    private static Lock writerlock = new ReentrantLock();
+
+    private static DecimalFormat df = new DecimalFormat("#.##");
 
 
     public static void main(String[] args){
@@ -67,11 +70,11 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
 
 
 
-            ExecutorCompletionService executor = new ExecutorCompletionService(Executors.newFixedThreadPool(5));
+            ExecutorCompletionService<Runnable> executor = new ExecutorCompletionService<>(Executors.newFixedThreadPool(5));
 
             int combinations = 0;
-            for(float proportional=3.5f; proportional< 8f; proportional = proportional +.05f)
-                for(float integral=3.9f; integral< 8f; integral=  integral + .05f)
+            for(float proportional=5f; proportional< 9f; proportional = proportional +.05f)
+                for(float integral=5f; integral< 9f; integral=  integral + .05f)
                     for(float derivative = 0.01f; derivative <=.04; derivative = derivative + .01f)
                     {
                         combinations++;
@@ -79,7 +82,6 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
                         SingleRun run = new SingleRun(writer,proportional,integral,derivative);
                         executor.submit(run, null);
                     }
-
 
             System.out.println("total combinations to try: " + combinations );
 
@@ -163,12 +165,12 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
          */
         @Override
         public void run() {
- //           System.out.println("started");
 
             float futureTargetAverage =0f;
             double deviation = 0;
             double variance = 0;
             for(int i=0; i< 5; i++){
+
 
 
                 final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -239,6 +241,7 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
                 macroII.setScenario(scenario1);
                 macroII.start();
 
+
                 int oldWorkers = 0;
                 while(macroII.schedule.getTime()<3500)
                 {
@@ -256,12 +259,12 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
             futureTargetAverage= futureTargetAverage/5f;
             deviation = deviation/5f;
             variance = variance/5f;
- //           System.out.println("done");
+            System.out.println("done");
             writerlock.lock();
             try {
-                writer.writeNext(new String[]{Float.toString((proportional)),Float.toString((integrative))
-                        ,Float.toString((derivative)),Float.toString(futureTargetAverage),Double.toString(deviation)
-                        ,Double.toString(variance)});
+                writer.writeNext(new String[]{df.format(proportional),df.format(integrative)
+                        ,df.format(derivative),df.format(futureTargetAverage),df.format(deviation)
+                        ,df.format(variance)});
                 writer.flush();
             } catch (IOException e) {
                 System.err.println("fallito a scrivere!");

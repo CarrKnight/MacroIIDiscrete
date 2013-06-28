@@ -86,6 +86,10 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
     public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts,
                                   float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
 
+
+
+
+
         //check the marginals always one step forward (not because you are moving one step only,
         // but because it's less biased by mistaken prediction of price changes
 
@@ -132,14 +136,17 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
 
         /*    if(getP().getBlueprint().getOutputs().keySet().iterator().next() == GoodType.BEEF )
             {
-                System.out.println("time: " +getP().getOwner().getModel().schedule.getTime());
+                System.out.println("firm" + getP().getOwner() + " ,time: " +getP().getOwner().getModel().schedule.getTime());
                 System.out.println("marginal efficency:" + marginalEfficency + ", marginal benefits: " + marginalBenefits + ", marginal costs: " + marginalCosts );
+                System.out.println("total employment: " +
+                        (120-((OrderBookMarket)(getOwner().getModel().getMarket(GoodType.LABOR))).numberOfAsks()) +
+                        " ,firm employment:" + getP().workerSize() );
                 System.out.println("target yestrday:" + mvYesterday + ", target today:" + pid.getCurrentMV() + ", integral: " + pid.getIntegral() );
-                System.out.println("wages:" + wageCosts.getMarginalCost() + ", price: " + getOwner().getModel().getMarket(GoodType.BEEF).getLastPrice() +
-                        ", predicted price: " + getOwner().getSalesDepartment(GoodType.BEEF).predictSalePrice(inputCosts.getTotalCost() + wageCosts.getTotalCost()) + "\n");
+                System.out.println("wages:" + wageCosts.getMarginalCost() + ", price: " + getOwner().getModel().getMarket(GoodType.GENERIC).getLastPrice() +
+                        ", predicted price: " + getOwner().getSalesDepartment(GoodType.GENERIC).predictSalePrice(inputCosts.getTotalCost() + wageCosts.getTotalCost()) + "\n");
 
             }
-          */
+                 */
 
             //don't return more than the max or less than 0
             return Math.max(Math.min(Math.round(pid.getCurrentMV()), getHr().maximumWorkersPossible()), 0);
