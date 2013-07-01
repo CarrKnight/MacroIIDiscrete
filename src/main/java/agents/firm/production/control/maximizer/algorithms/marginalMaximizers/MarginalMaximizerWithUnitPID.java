@@ -60,7 +60,7 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
                                         @Nonnull Plant p, @Nonnull Firm owner, @Nonnull MersenneTwisterFast random,
                                         int currentWorkerSize) {
         this(hr, control, p, owner, random, currentWorkerSize,
-                5.25f, 7.35f, 0.01f );  //these numbers were tuned in the monopolist scenario
+                11.15f, 11f, 0.03f );  //these numbers were tuned in the monopolist scenario
         //these are tuned for nonsigmoid: 1.49f,3.99f,0.02f
     }
 

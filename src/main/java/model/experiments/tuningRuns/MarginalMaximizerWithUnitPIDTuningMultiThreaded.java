@@ -73,9 +73,9 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
             ExecutorCompletionService<Runnable> executor = new ExecutorCompletionService<>(Executors.newFixedThreadPool(5));
 
             int combinations = 0;
-            for(float proportional=5f; proportional< 9f; proportional = proportional +.05f)
-                for(float integral=5f; integral< 9f; integral=  integral + .05f)
-                    for(float derivative = 0.01f; derivative <=.04; derivative = derivative + .01f)
+            for(float proportional=10f; proportional< 50f; proportional = proportional +.2f)
+                for(float integral=10f; integral< 50f; integral=  integral + .2f)
+                    for(float derivative = 0.01f; derivative <=1; derivative = derivative + .3f)
                     {
                         combinations++;
 

@@ -39,7 +39,7 @@ public class PricingSalesPredictor implements SalesPredictor {
     @Override
     public long predictSalePrice(SalesDepartment dept, long expectedProductionCost) {
         //imagine a good with the right conditions
-        Good imaginaryGood =new Good(dept.getMarket().getGoodType(),dept.getFirm(),expectedProductionCost);
+        Good imaginaryGood =new Good(dept.getGoodType(),dept.getFirm(),expectedProductionCost);
         //what would the pricing section do?
         return dept.price(imaginaryGood);
     }

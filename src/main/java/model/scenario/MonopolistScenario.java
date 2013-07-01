@@ -25,7 +25,6 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.LinearExtrapolationPredictor;
-import agents.firm.sales.prediction.PricingSalesPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
@@ -405,7 +404,7 @@ public class MonopolistScenario extends Scenario {
         scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
         scenario1.setControlType(MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID);
 
-        scenario1.setSalesPricePreditorStrategy(PricingSalesPredictor.class);
+     //   scenario1.setSalesPricePreditorStrategy(PricingSalesPredictor.class);
 
 
 
@@ -437,6 +436,9 @@ public class MonopolistScenario extends Scenario {
 
     }
 
+
+
+
     /**
      * Sets new The type of sales predictor the sales department should use.
      *
@@ -453,5 +455,23 @@ public class MonopolistScenario extends Scenario {
      */
     public Class<? extends SalesPredictor> getSalesPricePreditorStrategy() {
         return salesPricePreditorStrategy;
+    }
+
+    /**
+     * Sets new The type of price predictor the human resources department should use.
+     *
+     * @param purchasesPricePreditorStrategy New value of The type of price predictor the human resources department should use.
+     */
+    public void setPurchasesPricePreditorStrategy(Class<? extends PurchasesPredictor> purchasesPricePreditorStrategy) {
+        this.purchasesPricePreditorStrategy = purchasesPricePreditorStrategy;
+    }
+
+    /**
+     * Gets The type of price predictor the human resources department should use.
+     *
+     * @return Value of The type of price predictor the human resources department should use.
+     */
+    public Class<? extends PurchasesPredictor> getPurchasesPricePreditorStrategy() {
+        return purchasesPricePreditorStrategy;
     }
 }

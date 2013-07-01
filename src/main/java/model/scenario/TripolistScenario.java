@@ -134,6 +134,9 @@ public class TripolistScenario extends MonopolistScenario{
         scenario1.setControlType(MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID);
         scenario1.setAdditionalCompetitors(4);
 
+     //   scenario1.setSalesPricePreditorStrategy(PricingSalesPredictor.class);
+     //   scenario1.setPurchasesPricePreditorStrategy(PricingPurchasesPredictor.class);
+
 
 
         //assign scenario
