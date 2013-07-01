@@ -76,7 +76,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
     /**
      * If the price we are quoting is LOWER than the production cost, what should we do? if true we quote the production cost if lower than the PID proposed price.
      */
-    private boolean productionCostOverride = true;
+    private boolean productionCostOverride = false;
 
 
     /**

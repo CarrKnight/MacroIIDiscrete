@@ -275,6 +275,7 @@ public class SimpleFlowSellerPIDTest {
         OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
         SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, market, new SimpleBuyerSearch(market, firm), new SimpleSellerSearch(market, firm), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept);
+        strategy.setProductionCostOverride(true);
         dept.setAskPricingStrategy(strategy);
 
         strategy.setInitialPrice(150l);

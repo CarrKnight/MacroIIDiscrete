@@ -194,7 +194,8 @@ public class MonopolistScenario extends Scenario {
          * Add  Monopolist
          ************************************************/
 
-        buildMonopolist();
+        monopolist = buildFirm();
+        monopolist.setName("monopolist");
 
 
         /************************************************
@@ -222,33 +223,33 @@ public class MonopolistScenario extends Scenario {
 
     }
 
-    public void buildMonopolist() {
+    public Firm buildFirm() {
         //only one seller
-        monopolist = new Firm(getModel());
-        monopolist.earn(1000000000l);
-        monopolist.setName("monopolist");
+        final Firm built= new Firm(getModel());
+        built.earn(1000000000l);
+       // built.setName("monopolist");
         //set up the firm at time 1
         getModel().scheduleSoon(ActionOrder.DAWN, new Steppable() {
             @Override
             public void step(SimState simState) {
                 //sales department
-                SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(monopolist, goodMarket,
-                        new SimpleBuyerSearch(goodMarket, monopolist), new SimpleSellerSearch(goodMarket, monopolist),
+                SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(built, goodMarket,
+                        new SimpleBuyerSearch(goodMarket, built), new SimpleSellerSearch(goodMarket, built),
                         salesDepartmentType);
                 dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(salesPricePreditorStrategy,dept));
-                monopolist.registerSaleDepartment(dept, GoodType.GENERIC);
+                built.registerSaleDepartment(dept, GoodType.GENERIC);
                 dept.setAskPricingStrategy(AskPricingStrategy.Factory.newAskPricingStrategy(askPricingStrategy,dept)); //set strategy to PID
                 //add the plant
-                Plant plant = new Plant(blueprint, monopolist);
+                Plant plant = new Plant(blueprint, built);
                 plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
                 plant.setCostStrategy(new InputCostStrategy(plant));
-                monopolist.addPlant(plant);
+                built.addPlant(plant);
 
 
                 //human resources
                 HumanResources hr;
 
-                hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, monopolist,
+                hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, built,
                         laborMarket, plant,controlType.getController(), null, null).getDepartment();
 
                 //       seller.registerHumanResources(plant, hr);
@@ -261,7 +262,8 @@ public class MonopolistScenario extends Scenario {
             }
         });
 
-        getAgents().add(monopolist);
+        getAgents().add(built);
+        return built;
     }
 
 

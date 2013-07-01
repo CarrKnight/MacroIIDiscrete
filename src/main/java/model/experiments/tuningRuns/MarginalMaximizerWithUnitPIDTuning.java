@@ -84,33 +84,32 @@ public class MarginalMaximizerWithUnitPIDTuning {
                         {
                             //override the monopolist construction in order to sweep through the pid parameters
                             @Override
-                            public void buildMonopolist() {
+                            public Firm buildFirm() {
                                 //only one seller
-                                monopolist = new Firm(getModel());
-                                monopolist.earn(1000000000l);
-                                monopolist.setName("monopolist");
+                                final Firm built = new Firm(getModel());
+                                built.earn(1000000000l);
                                 //set up the firm at time 1
                                 getModel().scheduleSoon(ActionOrder.DAWN, new Steppable() {
                                     @Override
                                     public void step(SimState simState) {
                                         //sales department
-                                        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(monopolist, goodMarket,
-                                                new SimpleBuyerSearch(goodMarket, monopolist), new SimpleSellerSearch(goodMarket, monopolist),
+                                        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(built, goodMarket,
+                                                new SimpleBuyerSearch(goodMarket, built), new SimpleSellerSearch(goodMarket, built),
                                                 SalesDepartmentAllAtOnce.class);
-                                        monopolist.registerSaleDepartment(dept, GoodType.GENERIC);
+                                        built.registerSaleDepartment(dept, GoodType.GENERIC);
                                         dept.setAskPricingStrategy(new SimpleFlowSellerPID(dept)); //set strategy to PID
 
                                         //add the plant
-                                        Plant plant = new Plant(blueprint, monopolist);
+                                        Plant plant = new Plant(blueprint, built);
                                         plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
                                         plant.setCostStrategy(new InputCostStrategy(plant));
-                                        monopolist.addPlant(plant);
+                                        built.addPlant(plant);
 
 
                                         //human resources
                                         HumanResources hr;
                                         //set up!
-                                        hr = HumanResources.getEmptyHumanResources(10000000000l, monopolist, laborMarket, plant);
+                                        hr = HumanResources.getEmptyHumanResources(10000000000l, built, laborMarket, plant);
                                         TargetAndMaximizePlantControl control = TargetAndMaximizePlantControl.emptyTargetAndMaximizePlantControl(hr);
                                         control.setTargeter(new PIDTargeter(hr,control));
                                         MarginalMaximizerWithUnitPID algorithm = new MarginalMaximizerWithUnitPID(hr,control,plant,plant.getOwner(),
@@ -130,7 +129,8 @@ public class MarginalMaximizerWithUnitPIDTuning {
                                     }
                                 });
 
-                                getAgents().add(monopolist);
+                                getAgents().add(built);
+                                return built;
                             }
                         };
 

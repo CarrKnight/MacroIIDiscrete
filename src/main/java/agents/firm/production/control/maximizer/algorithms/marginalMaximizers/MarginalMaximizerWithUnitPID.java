@@ -134,6 +134,8 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
 
 
 
+
+
         /*    if(getP().getBlueprint().getOutputs().keySet().iterator().next() == GoodType.BEEF )
             {
                 System.out.println("firm" + getP().getOwner() + " ,time: " +getP().getOwner().getModel().schedule.getTime());
