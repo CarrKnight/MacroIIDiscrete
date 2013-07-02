@@ -111,7 +111,7 @@ public class TripolistScenario extends MonopolistScenario{
 
         // scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
         scenario1.setSalesPricePreditorStrategy(PricingSalesPredictor.class);
-        //   scenario1.setPurchasesPricePreditorStrategy(PricingPurchasesPredictor.class);
+     //   scenario1.setPurchasesPricePreditorStrategy(PricingPurchasesPredictor.class);
 
 
 

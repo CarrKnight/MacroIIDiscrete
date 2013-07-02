@@ -64,11 +64,31 @@ import static org.mockito.Mockito.*;
  */
 public class MonopolistScenario extends Scenario {
 
+    private int laborProductivity = 1;
+    /**
+     * The intercept of the demand
+     */
+    private int demandIntercept = 101;
+
+    /**
+     * the slope of the demand (as a positive)
+     */
+    private int demandSlope = 1;
+
+    /**
+     * the intercept of the wage curve expressed in days (it gets multiplied in the model)
+     */
+    private int dailyWageIntercept = 14;
+
+    /**
+     * the slope of the wage
+     */
+    private int dailyWageSlope = 1;
 
     /**
      * The blueprint that the monopolist will use
      */
-    protected Blueprint blueprint = new Blueprint.Builder().output(GoodType.GENERIC, 1).build();
+    protected Blueprint blueprint;
     protected Firm monopolist;
 
 
@@ -134,22 +154,31 @@ public class MonopolistScenario extends Scenario {
         laborMarket.setPricePolicy(new BuyerSetPricePolicy()); //make the seller price matter
         getMarkets().put(GoodType.LABOR,laborMarket);
 
+        //this prepares the production of the firms
+        blueprint = new Blueprint.Builder().output(GoodType.GENERIC, laborProductivity).build();
+
 
 
 
         //buyers from 100 to 41 with increments of1
-        for(int i=41; i<101; i++)
+        for(int i=1; i< 100; i++)
         {
+
 
 
             /************************************************
              * Add Good Buyers
              ************************************************/
 
-            /**
+            /*
              * For this scenario we use a different kind of dummy buyer that, after "period" passed, puts a new order in the market
              */
-            final DummyBuyer buyer = new DummyBuyer(getModel(),i){
+            long buyerPrice = demandIntercept - demandSlope * i;
+            if(buyerPrice <= 0) //break if the price is 0 or lower, we are done drawing!
+                break;
+
+
+            final DummyBuyer buyer = new DummyBuyer(getModel(),buyerPrice){
                 @Override
                 public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
                     //trick to get the steppable to recognize the anonymous me!
@@ -203,10 +232,12 @@ public class MonopolistScenario extends Scenario {
          ************************************************/
 
         //with minimum wage from 15 to 65
-        for(int i=0; i<120; i++)
+        for(int i=1; i<120; i++)
         {
+
+            int dailyWage = dailyWageIntercept + dailyWageSlope * i;
             //dummy worker, really
-            final Person p = new Person(getModel(),0l,(15+i)*7,laborMarket);
+            final Person p = new Person(getModel(),0l,(dailyWage)*7,laborMarket);
 
             p.setSearchForBetterOffers(lookForBetterOffers);
 
@@ -397,6 +428,8 @@ public class MonopolistScenario extends Scenario {
 
 
 
+
+
     public static void main(String[] args)
     {
         //set up
@@ -475,5 +508,136 @@ public class MonopolistScenario extends Scenario {
      */
     public Class<? extends PurchasesPredictor> getPurchasesPricePreditorStrategy() {
         return purchasesPricePreditorStrategy;
+    }
+
+
+    public static int findWorkerTargetThatMaximizesProfits(int demandIntercept, int demandSlope, int dailyWageIntercept,
+                                                           int dailyWageSlope, int laborProductivity)
+    {
+        int workerMax = 0;
+        int profitsMax = 0;
+        //go through each possibility
+        for(int i=1; i<200; i++)
+        {
+            int quantity =  i * laborProductivity;
+            int totalRevenues = (demandIntercept - demandSlope * quantity)*quantity;
+            int totalWages =  (dailyWageIntercept + dailyWageSlope * i) * i;
+
+            int profits =  totalRevenues - totalWages;
+            if(profits>profitsMax)
+            {
+                profitsMax = profits;
+                workerMax = i ;
+            }
+
+
+
+        }
+
+        return workerMax;
+
+        /*
+        this is the formula, far more efficient but i guess there is really no point to have to deal with rounding errors
+
+        float  numerator = laborProductivity * demandIntercept - dailyWageIntercept;
+        float denominator = 2*(laborProductivity * laborProductivity * demandSlope + dailyWageSlope);
+
+        return Math.round(numerator/denominator );
+        */
+    }
+
+
+    /**
+     * Sets new the intercept of the wage curve expressed in days it gets multiplied in the model.
+     *
+     * @param dailyWageIntercept New value of the intercept of the wage curve expressed in days it gets multiplied in the model.
+     */
+    public void setDailyWageIntercept(int dailyWageIntercept) {
+        this.dailyWageIntercept = dailyWageIntercept;
+    }
+
+    /**
+     * Sets new The intercept of the demand.
+     *
+     * @param demandIntercept New value of The intercept of the demand.
+     */
+    public void setDemandIntercept(int demandIntercept) {
+        this.demandIntercept = demandIntercept;
+    }
+
+    /**
+     * Sets new the slope of the demand as a positive.
+     *
+     * @param demandSlope New value of the slope of the demand as a positive.
+     */
+    public void setDemandSlope(int demandSlope) {
+        this.demandSlope = demandSlope;
+    }
+
+    /**
+     * Gets The intercept of the demand.
+     *
+     * @return Value of The intercept of the demand.
+     */
+    public int getDemandIntercept() {
+        return demandIntercept;
+    }
+
+    /**
+     * Sets new the slope of the wage.
+     *
+     * @param dailyWageSlope New value of the slope of the wage.
+     */
+    public void setDailyWageSlope(int dailyWageSlope) {
+        this.dailyWageSlope = dailyWageSlope;
+    }
+
+    /**
+     * Gets the intercept of the wage curve expressed in days it gets multiplied in the model.
+     *
+     * @return Value of the intercept of the wage curve expressed in days it gets multiplied in the model.
+     */
+    public int getDailyWageIntercept() {
+        return dailyWageIntercept;
+    }
+
+    /**
+     * Gets the slope of the demand as a positive.
+     *
+     * @return Value of the slope of the demand as a positive.
+     */
+    public int getDemandSlope() {
+        return demandSlope;
+    }
+
+    /**
+     * Gets the slope of the wage.
+     *
+     * @return Value of the slope of the wage.
+     */
+    public int getDailyWageSlope() {
+        return dailyWageSlope;
+    }
+
+
+
+
+
+    /**
+     * Gets laborProductivity.
+     *
+     * @return Value of laborProductivity.
+     */
+    public int getLaborProductivity() {
+        return laborProductivity;
+    }
+
+    /**
+     * Sets new laborProductivity.
+     *
+     * @param laborProductivity New value of laborProductivity.
+     */
+    public void setLaborProductivity(int laborProductivity) {
+        this.laborProductivity = laborProductivity;
     }
 }
