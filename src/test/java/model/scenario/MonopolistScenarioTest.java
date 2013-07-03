@@ -67,7 +67,67 @@ public class MonopolistScenarioTest {
 
     }
 
+    //this one fails, I need to find out why!
+    @Test
+    public void problematicScenario1()
+    {
 
+        //run the test 15 times
+        for(int i=0; i<15; i++)
+        {
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+
+
+
+            MonopolistScenario scenario1 = new MonopolistScenario(macroII);
+
+            //generate random parameters for labor supply and good demand
+            int p0= 118; int p1= 3;
+            scenario1.setDemandIntercept(p0); scenario1.setDemandSlope(p1);
+            int w0=11; int w1=2;
+            scenario1.setDailyWageIntercept(w0); scenario1.setDailyWageSlope(w1);
+            int a=3;
+            scenario1.setLaborProductivity(a);
+
+
+            //    scenario1.setAlwaysMoving(true);
+            //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
+            macroII.setScenario(scenario1);
+            //choose a control at random, but avoid always moving
+
+            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID);
+
+            //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
+            scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
+
+            scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+
+
+
+
+            macroII.start();
+            while(macroII.schedule.getTime()<5500)
+                macroII.schedule.step(macroII);
+
+
+            //the pi maximizing labor force employed is:
+            int profitMaximizingLaborForce = MonopolistScenario.findWorkerTargetThatMaximizesProfits(p0,p1,w0,w1,a);
+            int profitMaximizingQuantity = profitMaximizingLaborForce*a;
+            int profitMaximizingPrice = p0 - p1 * profitMaximizingQuantity;
+
+            System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
+            System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType());
+
+            //you must be at most wrong by two (not well tuned and anyway sometimes it's hard!)
+            assertEquals(scenario1.monopolist.getTotalWorkers(), profitMaximizingLaborForce,2);
+
+        }
+
+
+
+
+
+    }
 
     @Test
     public void rightPriceAndQuantityTestRandomControlRandomSlopes()
@@ -87,7 +147,7 @@ public class MonopolistScenarioTest {
             scenario1.setDemandIntercept(p0); scenario1.setDemandSlope(p1);
             int w0=macroII.random.nextInt(10)+10; int w1=macroII.random.nextInt(3)+1;
             scenario1.setDailyWageIntercept(w0); scenario1.setDailyWageSlope(w1);
-            int a=1;
+            int a=macroII.random.nextInt(3)+1;
             scenario1.setLaborProductivity(a);
 
 
@@ -96,8 +156,8 @@ public class MonopolistScenarioTest {
             macroII.setScenario(scenario1);
             //choose a control at random, but avoid always moving
             do{
-            int controlChoices =  MonopolistScenario.MonopolistScenarioIntegratedControlEnum.values().length;
-            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.values()[macroII.random.nextInt(controlChoices)]);
+                int controlChoices =  MonopolistScenario.MonopolistScenarioIntegratedControlEnum.values().length;
+                scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.values()[macroII.random.nextInt(controlChoices)]);
             }
             while (scenario1.getControlType().equals(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_ALWAYS_MOVING));
             //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible

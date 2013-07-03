@@ -34,4 +34,11 @@ public interface Filter<T extends Number> {
      * @return the smoothed observation
      */
     public float getSmoothedObservation();
+
+    /**
+     * If it can predict (that is, if I call getSmoothedObservation i don't get a NaN)
+     * @return
+     */
+    public boolean isReady();
+
 }

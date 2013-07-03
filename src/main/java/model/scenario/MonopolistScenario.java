@@ -88,7 +88,7 @@ public class MonopolistScenario extends Scenario {
     /**
      * The blueprint that the monopolist will use
      */
-    protected Blueprint blueprint;
+    protected Blueprint blueprint= new Blueprint.Builder().output(GoodType.GENERIC, laborProductivity).build();
     protected Firm monopolist;
 
 
@@ -155,7 +155,7 @@ public class MonopolistScenario extends Scenario {
         getMarkets().put(GoodType.LABOR,laborMarket);
 
         //this prepares the production of the firms
-        blueprint = new Blueprint.Builder().output(GoodType.GENERIC, laborProductivity).build();
+        blueprint.getOutputs().put(GoodType.GENERIC,laborProductivity);
 
 
 

@@ -12,6 +12,7 @@ import com.google.common.base.Preconditions;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.filters.ExponentialFilter;
+import model.utilities.filters.Filter;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -68,7 +69,7 @@ public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
     /**
      * the price we saw with few workers
      */
-    private ExponentialFilter<Long> lowWorkersPrice;
+    private Filter<Long> lowWorkersPrice;
 
     private int highWorkers = -1; //start as non number
 
@@ -76,7 +77,7 @@ public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
     /**
      * the price we saw with high workers
      */
-    private ExponentialFilter<Long> highWorkersPrice;
+    private Filter<Long> highWorkersPrice;
 
 
     private boolean initialized = false;
@@ -116,7 +117,7 @@ public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
                 highWorkersPrice = lowWorkersPrice;
 
                 lowWorkers = workers;
-                lowWorkersPrice = new ExponentialFilter<Long>();
+                lowWorkersPrice = new ExponentialFilter<>(.1f);
                 lowWorkersPrice.addObservation(observePrice()); //whatever was the last price
                 assert highWorkers > lowWorkers || highWorkers == -1; //otherwise something is up
 
@@ -140,7 +141,7 @@ public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
                     lowWorkersPrice = highWorkersPrice;
 
                     highWorkers = workers;
-                    highWorkersPrice = new ExponentialFilter<>();
+                    highWorkersPrice = new ExponentialFilter<>(.1f);
                     highWorkersPrice.addObservation(observePrice());
                     assert highWorkers > lowWorkers || highWorkers == -1; //otherwise something is up
 
@@ -150,7 +151,7 @@ public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
                 {
                     assert  lowWorkers < workers && workers < highWorkers;
                     lowWorkers = workers;
-                    lowWorkersPrice = new ExponentialFilter<Long>();
+                    lowWorkersPrice = new ExponentialFilter<>(.1f);
                     lowWorkersPrice.addObservation(observePrice()); //whatever was the last price
                     assert highWorkers > lowWorkers || highWorkers == -1; //otherwise something is up
                 }
@@ -171,7 +172,7 @@ public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
         if(highWorkers == -1)
         {
             highWorkers = workers;
-            highWorkersPrice = new ExponentialFilter<>();
+            highWorkersPrice = new ExponentialFilter<>(.1f);
         }
     }
 
@@ -186,7 +187,7 @@ public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
             //this can only happen the first time
             initialized = true;
             lowWorkers = workers;
-            lowWorkersPrice = new ExponentialFilter<>();
+            lowWorkersPrice = new ExponentialFilter<>(.1f);
 
         }
 

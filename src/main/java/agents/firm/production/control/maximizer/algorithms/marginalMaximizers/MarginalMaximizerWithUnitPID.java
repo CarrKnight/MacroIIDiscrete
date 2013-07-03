@@ -60,7 +60,7 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
                                         @Nonnull Plant p, @Nonnull Firm owner, @Nonnull MersenneTwisterFast random,
                                         int currentWorkerSize) {
         this(hr, control, p, owner, random, currentWorkerSize,
-                11.15f, 11f, 0.03f );  //these numbers were tuned in the monopolist scenario
+                1.49f,3.99f,0.02f);  //these numbers were tuned in the monopolist scenario
         //these are tuned for nonsigmoid: 1.49f,3.99f,0.02f
     }
 
@@ -79,12 +79,14 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
         pid = new PIDController(proportional,integral,derivative,random);
         pid.setOffset(currentWorkerSize);
         pid.setWindupStop(false);
+        pid.setCanGoNegative(true);
     }
 
 
     @Override
     public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts,
                                   float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
+
 
 
 
@@ -114,7 +116,7 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
             //now that they are properly "averaged" we divide them and target efficency of 1
             float marginalEfficency = marginalBenefits/marginalCosts;
             //bound below at -0.5 to avoid infinity issues
-            marginalEfficency = (float) Math.max(marginalEfficency,-0.5);
+         //   marginalEfficency = (float) Math.max(marginalEfficency,-0.5);
 
 
 
@@ -124,9 +126,9 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
             if(sigmoid)
             {
                 pid.adjustOnce(
-                        MarginalMaximizerStatics.sigmoid(marginalEfficency)
+                        MarginalMaximizerStatics.exponentialSigmoid(marginalEfficency,getTargetEfficiency())
                                 -
-                                MarginalMaximizerStatics.sigmoid(getTargetEfficiency()),true);
+                                0.5f,true);
             }
             else
                 pid.adjustOnce(marginalEfficency- getTargetEfficiency(),true);
@@ -138,12 +140,13 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
 
         /*    if(getP().getBlueprint().getOutputs().keySet().iterator().next() == GoodType.BEEF )
             {
+
                 System.out.println("firm" + getP().getOwner() + " ,time: " +getP().getOwner().getModel().schedule.getTime());
                 System.out.println("marginal efficency:" + marginalEfficency + ", marginal benefits: " + marginalBenefits + ", marginal costs: " + marginalCosts );
                 System.out.println("total employment: " +
                         (120-((OrderBookMarket)(getOwner().getModel().getMarket(GoodType.LABOR))).numberOfAsks()) +
                         " ,firm employment:" + getP().workerSize() );
-                System.out.println("target yestrday:" + mvYesterday + ", target today:" + pid.getCurrentMV() + ", integral: " + pid.getIntegral() );
+                System.out.println("target yestrday:" + mvYesterday + ", target today:" + pid.getCurrentMV() + ", integral: " + pid.getIntegral());
                 System.out.println("wages:" + wageCosts.getMarginalCost() + ", price: " + getOwner().getModel().getMarket(GoodType.GENERIC).getLastPrice() +
                         ", predicted price: " + getOwner().getSalesDepartment(GoodType.GENERIC).predictSalePrice(inputCosts.getTotalCost() + wageCosts.getTotalCost()) + "\n");
 
@@ -151,7 +154,11 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
                  */
 
             //don't return more than the max or less than 0
-            return Math.max(Math.min(Math.round(pid.getCurrentMV()), getHr().maximumWorkersPossible()), 0);
+            int newWorkerObjective =  Math.max(Math.min(Math.round(pid.getCurrentMV()),
+                    getHr().maximumWorkersPossible()), 0);
+
+
+            return newWorkerObjective;
 
 
 

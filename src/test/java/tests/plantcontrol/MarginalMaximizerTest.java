@@ -160,9 +160,22 @@ public class MarginalMaximizerTest {
 
     }
 
+    @Test
+    public void testSigmoid2(){
+
+        assertEquals(MarginalMaximizerStatics.exponentialSigmoid(0,0), 0.5f, .0001f);
+        assertEquals(MarginalMaximizerStatics.exponentialSigmoid(1,1), 0.5f, .0001f);
+        assertEquals(MarginalMaximizerStatics.exponentialSigmoid(4f,0), 0.9820f, .0001f);
+        assertEquals(MarginalMaximizerStatics.exponentialSigmoid(-4f,0), 0.017986f, .0001f);
 
 
-   //the monopolist test now is in the scenario section
+
+    }
+
+
+
+
+    //the monopolist test now is in the scenario section
 
 
 

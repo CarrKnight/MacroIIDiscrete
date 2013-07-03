@@ -75,7 +75,10 @@ public class ExponentialFilter<T extends Number> implements Filter<T>
         this.weight = weight;
     }
 
-
+    /**
+     * If it can predict (that is, if I call getSmoothedObservation i don't get a NaN)
+     * @return
+     */
     public boolean isReady(){
         return !Float.isNaN(smoothedValue);
 

@@ -439,8 +439,12 @@ public class HumanResources extends PurchasesDepartment {
         return getPlant().maximumWorkersPossible();
     }
 
-
-
+    /**
+     * How many workers are in the plant?
+     */
+    public int getNumberOfWorkers() {
+        return plant.workerSize();
+    }
 }
 
 

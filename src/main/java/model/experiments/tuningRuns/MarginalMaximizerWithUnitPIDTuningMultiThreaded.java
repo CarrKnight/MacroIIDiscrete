@@ -73,9 +73,9 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
             ExecutorCompletionService<Runnable> executor = new ExecutorCompletionService<>(Executors.newFixedThreadPool(5));
 
             int combinations = 0;
-            for(float proportional=10f; proportional< 50f; proportional = proportional +.2f)
-                for(float integral=10f; integral< 50f; integral=  integral + .2f)
-                    for(float derivative = 0.01f; derivative <=1; derivative = derivative + .3f)
+            for(float proportional=0f; proportional< 8f; proportional = proportional +.2f)
+                for(float integral=0f; integral< 8f; integral=  integral + .2f)
+                    for(float derivative = 0.01f; derivative <=.5; derivative = derivative + .01f)
                     {
                         combinations++;
 
@@ -166,7 +166,7 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
         @Override
         public void run() {
 
-            float futureTargetAverage =0f;
+            float corrects =0f;
             double deviation = 0;
             double variance = 0;
             for(int i=0; i< 5; i++){
@@ -254,24 +254,23 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
 
                 }
 
-
-                futureTargetAverage+= scenario1.getMonopolist().getTotalWorkers();
+                if(scenario1.getMonopolist().getTotalWorkers()==22)
+                    corrects++;
             }
-            futureTargetAverage= futureTargetAverage/5f;
             deviation = deviation/5f;
             variance = variance/5f;
             System.out.println("done");
             writerlock.lock();
             try {
                 writer.writeNext(new String[]{df.format(proportional),df.format(integrative)
-                        ,df.format(derivative),df.format(futureTargetAverage),df.format(deviation)
+                        ,df.format(derivative),df.format(corrects),df.format(deviation)
                         ,df.format(variance)});
                 writer.flush();
             } catch (IOException e) {
                 System.err.println("fallito a scrivere!");
             }
             finally {
-  //              System.out.println("unlocked");
+                //              System.out.println("unlocked");
                 writerlock.unlock();
 
             }

@@ -59,8 +59,11 @@ public class MovingAverage<T extends Number> implements Filter<T>{
     }
 
     public float getSmoothedObservation(){
-        //if the stack is still not ready, just return the last
+        //if you have no observations, return nan
+        if(lastElements.isEmpty())
+            return Float.NaN;
 
+        //otherwise return the moving average of what you have
         assert lastElements.size()<=movingAverageSize;
 
         float n = lastElements.size();
@@ -84,6 +87,16 @@ public class MovingAverage<T extends Number> implements Filter<T>{
      */
     public int getMovingAverageSize() {
         return movingAverageSize;
+    }
+
+    /**
+     * If it can predict (that is, if I call getSmoothedObservation i don't get a NaN)
+     *
+     * @return
+     */
+    @Override
+    public boolean isReady() {
+        return !lastElements.isEmpty();
     }
 }
 

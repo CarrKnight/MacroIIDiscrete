@@ -1,6 +1,7 @@
 package model.utilities.pid;
 
 import model.utilities.filters.MovingAverage;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -79,5 +80,17 @@ public class MovingAverageTest {
 
 
 
+    }
+
+
+    @Test
+    public void isReadyTest()
+    {
+        MovingAverage<Float> ma = new MovingAverage<>(20);
+        Assert.assertTrue(!ma.isReady());
+        Assert.assertTrue(Float.isNaN(ma.getSmoothedObservation()));
+        ma.addObservation(1f);
+        Assert.assertTrue(ma.isReady());
+        Assert.assertTrue(!Float.isNaN(ma.getSmoothedObservation()));
     }
 }

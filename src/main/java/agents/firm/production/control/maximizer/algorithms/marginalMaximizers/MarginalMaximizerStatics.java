@@ -284,4 +284,14 @@ public final class MarginalMaximizerStatics {
         return x/(1+x);
     }
 
+
+    /**
+     * simply returns 1/(1+e^-x)-center
+     * @param x the x
+     * @return  1/(1+e^-(x-center))
+     */
+    public static float exponentialSigmoid(float x,float center)
+    {
+        return (float) (1f/(1+Math.exp(-(x- center)))) ;
+    }
 }
