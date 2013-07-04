@@ -12,11 +12,10 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.PricingSalesPredictor;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
-import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.DailyStatCollector;
+import model.utilities.stats.DailyStatCollector;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -124,7 +123,7 @@ public class TripolistScenario extends MonopolistScenario{
 
         //CSV writer set up
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("runs/monopolist/"+"tripolist2"+".csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter("runs/monopolist/"+"tripolist_withoutElasticityPrediction"+".csv"));
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
 
@@ -166,11 +165,11 @@ public class TripolistScenario extends MonopolistScenario{
                         {
                             Firm competitor = scenario1.competitors.get(i);
                             SalesDepartment dept = competitor.getSalesDepartment(GoodType.GENERIC);
-                            Good imaginaryGood =new Good(dept.getGoodType(),dept.getFirm(),0);
+
 
 
                             quantityline[i]=Long.toString(dept.getTodayOutflow());
-                            priceline[i] = Long.toString(dept.price(imaginaryGood));
+                            priceline[i] = Long.toString(competitor.hypotheticalSellPrice(GoodType.GENERIC));
                         }
                         writer2.writeNext(priceline);    writer3.writeNext(quantityline);
                         writer2.flush(); writer3.flush();

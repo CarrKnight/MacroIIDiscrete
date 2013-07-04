@@ -17,6 +17,7 @@ import model.scenario.Scenario;
 import model.scenario.TestScenario;
 import model.scenario.TripolistScenario;
 import model.utilities.ActionOrder;
+import model.utilities.Deactivatable;
 import model.utilities.scheduler.PhaseScheduler;
 import model.utilities.scheduler.TrueRandomScheduler;
 import sim.display.GUIState;
@@ -54,6 +55,7 @@ public class MacroII extends SimState{
         hasGUI = false;
         phaseScheduler = new TrueRandomScheduler(200000,random);
         scenario = new TestScenario(this);
+        toTurnOffAtFinish = new HashSet<>();
     }
 
     /**
@@ -133,6 +135,11 @@ public class MacroII extends SimState{
     private static boolean hasGUI = false;
 
     private PhaseScheduler phaseScheduler;
+
+    /**
+     * any object in this set gets their turnOff called during finish()
+     */
+    private Set<Deactivatable> toTurnOffAtFinish;
 
 
     /********************
@@ -484,7 +491,7 @@ public class MacroII extends SimState{
 
 
     /**
-     * Turn off method, clear all data
+     * Turn off method, clear all data and all registered objects to clear
      */
     @Override
     public void finish() {
@@ -497,6 +504,10 @@ public class MacroII extends SimState{
         agents = null;
 
         phaseScheduler.clear();
+
+        //turn off when needed
+        for(Deactivatable d :toTurnOffAtFinish)
+            d.turnOff();
 
 
     }
@@ -749,5 +760,14 @@ public class MacroII extends SimState{
      */
     public void setPhaseScheduler(PhaseScheduler phaseScheduler) {
         this.phaseScheduler = phaseScheduler;
+    }
+
+
+    /**
+     * when this is called, the argument goes in a set of Deactivable and when MacroII calls finish() then turnOff will be called for all elements in that list
+     */
+    public void registerDeactivable(Deactivatable d)
+    {
+        toTurnOffAtFinish.add(d);
     }
 }

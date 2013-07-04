@@ -109,4 +109,41 @@ public class DummySeller extends Firm {
         toReturn.setPriceTrade(finalPrice);
         return toReturn;
     }
+
+    /**
+     * this is a "utility" method that should be used sparingly. What it does is it creates a mock object, passes it to the sales department
+     * and ask for it for a price. It is no guarantee that the firm actually will charge such price when a real good gets created.
+     *
+     * @param goodType
+     * @return
+     */
+    @Override
+    public long hypotheticalSellPrice(GoodType goodType) {
+
+        return saleQuote;
+    }
+
+
+    /**
+     * this is a "utility" method to avoid tren wreck calls. Basically returns the outflow recorded by the sales department dealing with that good type
+     *
+     * @param goodType the good type the sales department deals with
+     * @return
+     */
+    @Override
+    public int getSalesDepartmentRecordedOutflow(GoodType goodType) {
+        throw new UnsupportedOperationException("still to code");
+
+    }
+
+    /**
+     * this is a "utility" method to avoid tren wreck calls. Basically returns the outflow recorded by the sales department dealing with that good type
+     *
+     * @param goodType the good type the sales department deals with
+     * @return
+     */
+    @Override
+    public int getSalesDepartmentRecordedInflow(GoodType goodType) {
+        throw new UnsupportedOperationException("still to code");
+    }
 }

@@ -1000,6 +1000,47 @@ public class Firm extends EconomicAgent {
     }
 
 
+    /**
+     * this is a "utility" method that should be used sparingly. What it does is it creates a mock object, passes it to the sales department
+     * and ask for it for a price. It is no guarantee that the firm actually will charge such price when a real good gets created.
+     * @param goodType the good type the sales department deals with
+     * @return
+     */
+    public long hypotheticalSellPrice(GoodType goodType)
+    {
+        Preconditions.checkArgument(salesDepartments.containsKey(goodType));
+
+        SalesDepartment dept = getSalesDepartment(goodType);
+        Good imaginaryGood =new Good(dept.getGoodType(),dept.getFirm(),0);
+        return dept.price(imaginaryGood);
+    }
+
+    /**
+     * this is a "utility" method to avoid tren wreck calls. Basically returns the outflow recorded by the sales department dealing with that good type
+     * @param goodType the good type the sales department deals with
+     * @return
+     */
+    public int getSalesDepartmentRecordedOutflow(GoodType goodType)
+    {
+        Preconditions.checkArgument(salesDepartments.containsKey(goodType));
+
+        SalesDepartment dept = getSalesDepartment(goodType);
+        return dept.getTodayOutflow();
+    }
+    /**
+     * this is a "utility" method to avoid tren wreck calls. Basically returns the outflow recorded by the sales department dealing with that good type
+     * @param goodType the good type the sales department deals with
+     * @return
+     */
+    public int getSalesDepartmentRecordedInflow(GoodType goodType)
+    {
+        Preconditions.checkArgument(salesDepartments.containsKey(goodType));
+
+        SalesDepartment dept = getSalesDepartment(goodType);
+        return dept.getTodayInflow();
+    }
+
+
 
 
     /**
@@ -1036,5 +1077,7 @@ public class Firm extends EconomicAgent {
         }
         return false;
     }
+
+
 
 }

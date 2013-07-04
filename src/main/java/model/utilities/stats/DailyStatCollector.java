@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package model.utilities;
+package model.utilities.stats;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
@@ -15,6 +15,7 @@ import com.sun.istack.internal.Nullable;
 import financial.Market;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 

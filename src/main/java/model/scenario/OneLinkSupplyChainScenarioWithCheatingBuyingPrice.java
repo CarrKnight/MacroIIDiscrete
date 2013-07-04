@@ -15,7 +15,7 @@ import financial.Market;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.DailyStatCollector;
+import model.utilities.stats.DailyStatCollector;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -83,8 +83,8 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
         scenario1.setBeefPriceFilterer(null);
 
         //competition!
-    //    scenario1.setNumberOfBeefProducers(5);
-//        scenario1.setNumberOfFoodProducers(5);
+        scenario1.setNumberOfBeefProducers(5);
+  //      scenario1.setNumberOfFoodProducers(5);
 
 
 
@@ -95,7 +95,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
 
         //create the CSVWriter
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/cheater2.csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/cheater3.csv"));
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
 

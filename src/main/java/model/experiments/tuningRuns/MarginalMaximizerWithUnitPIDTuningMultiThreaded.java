@@ -75,7 +75,7 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
             int combinations = 0;
             for(float proportional=0f; proportional< 8f; proportional = proportional +.2f)
                 for(float integral=0f; integral< 8f; integral=  integral + .2f)
-                    for(float derivative = 0.01f; derivative <=.5; derivative = derivative + .01f)
+                    for(float derivative = 0f; derivative <=.5; derivative = derivative + .05f)
                     {
                         combinations++;
 
@@ -169,7 +169,7 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
             float corrects =0f;
             double deviation = 0;
             double variance = 0;
-            for(int i=0; i< 5; i++){
+            for(int i=0; i< 15; i++){
 
 
 
