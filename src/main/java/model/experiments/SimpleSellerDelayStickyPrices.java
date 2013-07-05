@@ -9,7 +9,7 @@ package model.experiments;
 import au.com.bytecode.opencsv.CSVWriter;
 import goods.GoodType;
 import model.MacroII;
-import model.experiments.tuningRuns.MarginalMaximizerWithUnitPIDTuningMultiThreaded;
+import model.experiments.tuningRuns.MarginalMaximizerPIDTuning;
 import model.scenario.SimpleSellerWithSellerDelayScenario;
 
 import java.io.FileWriter;
@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static model.experiments.tuningRuns.MarginalMaximizerWithUnitPIDTuningMultiThreaded.printProgressBar;
+import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 
 /**
  * <h4>Description</h4>
@@ -76,7 +76,7 @@ public class SimpleSellerDelayStickyPrices {
         System.out.println("total combinations to try: " + combinations );
 
 
-        MarginalMaximizerWithUnitPIDTuningMultiThreaded.printProgressBar(combinations, 0, 20);
+        MarginalMaximizerPIDTuning.printProgressBar(combinations, 0, 20);
 
         //now start them all
         int i =0;

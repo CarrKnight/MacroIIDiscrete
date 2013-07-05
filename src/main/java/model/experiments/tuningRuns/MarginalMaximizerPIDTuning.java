@@ -12,7 +12,7 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
-import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPID;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalAndPIDMaximizer;
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartment;
@@ -54,7 +54,7 @@ import static org.mockito.Mockito.*;
  * @version 2013-04-07
  * @see
  */
-public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
+public class MarginalMaximizerPIDTuning {
 
     private static Lock writerlock = new ReentrantLock();
 
@@ -66,16 +66,16 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
 
         //create the writer
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("multithreadedTuning.csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter("multithreadedNonUnitTuning.csv"));
 
 
 
             ExecutorCompletionService<Runnable> executor = new ExecutorCompletionService<>(Executors.newFixedThreadPool(5));
 
             int combinations = 0;
-            for(float proportional=0f; proportional< .8f; proportional = proportional +.02f)
-                for(float integral=0f; integral< .8f; integral=  integral + .02f)
-                    for(float derivative = 0.01f; derivative <=.05; derivative = derivative + .01f)
+            for(float proportional=0f; proportional< 8f; proportional = proportional +.2f)
+                for(float integral=0f; integral< 8f; integral=  integral + .2f)
+                    for(float derivative = 0f; derivative <=.5; derivative = derivative + .05f)
                     {
                         combinations++;
 
@@ -169,7 +169,7 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
             float corrects =0f;
             double deviation = 0;
             double variance = 0;
-            for(int i=0; i< 5; i++){
+            for(int i=0; i< 15; i++){
 
 
 
@@ -207,13 +207,12 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
                                 hr = HumanResources.getEmptyHumanResources(10000000000l, built, laborMarket, plant);
                                 TargetAndMaximizePlantControl control = TargetAndMaximizePlantControl.emptyTargetAndMaximizePlantControl(hr);
                                 control.setTargeter(new PIDTargeter(hr,control));
-                                MarginalMaximizerWithUnitPID algorithm = new MarginalMaximizerWithUnitPID(hr,control,plant,plant.getOwner(),
-                                        model.random, hr.getPlant().workerSize());
-                                WeeklyWorkforceMaximizer<MarginalMaximizerWithUnitPID> maximizer =
+                                MarginalAndPIDMaximizer algorithm = new MarginalAndPIDMaximizer(hr,control,plant,plant.getOwner(),
+                                        proportional,integrative,derivative,model.getRandom());
+                                WeeklyWorkforceMaximizer<MarginalAndPIDMaximizer> maximizer =
                                         new WeeklyWorkforceMaximizer<>
                                                 (hr,control,algorithm);
 
-                                maximizer.getMaximizationAlgorithm().setSigmoid(true);
                                 maximizer.getMaximizationAlgorithm().setGains(proportional,integrative,derivative);
 
 
@@ -258,7 +257,7 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
                     corrects++;
             }
             deviation = deviation/5f;
-            variance = variance/5f;
+            variance = Math.sqrt(variance/5f);
             System.out.println("done");
             writerlock.lock();
             try {

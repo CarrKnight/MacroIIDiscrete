@@ -9,7 +9,7 @@ import model.utilities.filters.ExponentialFilter;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static model.experiments.tuningRuns.MarginalMaximizerWithUnitPIDTuningMultiThreaded.printProgressBar;
+import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 
 /**
  * <h4>Description</h4>

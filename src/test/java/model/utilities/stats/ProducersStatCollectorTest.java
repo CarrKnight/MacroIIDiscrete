@@ -54,6 +54,7 @@ public class ProducersStatCollectorTest
         CSVWriter quantities = mock(CSVWriter.class);
         ProducersStatCollector collector = new ProducersStatCollector(macroII,GoodType.GENERIC,
                 prices,quantities);
+        collector.start();
         //it should have scheduled itself already
         verify(macroII).scheduleSoon(ActionOrder.CLEANUP,collector);
 

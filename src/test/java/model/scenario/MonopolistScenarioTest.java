@@ -57,8 +57,8 @@ public class MonopolistScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(), 154);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79,1);
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
         }
 
 
@@ -222,8 +222,8 @@ public class MonopolistScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(), 154);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79,1);
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
 
 
 
@@ -259,8 +259,10 @@ public class MonopolistScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(), 154);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79,1);
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
+
+
 
 
 
@@ -291,12 +293,12 @@ public class MonopolistScenarioTest {
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
             macroII.start();
-            while(macroII.schedule.getTime()<3500)
+            while(macroII.schedule.getTime()<5500)
                 macroII.schedule.step(macroII);
 
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(), 154);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79,1);
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
 
 
 
@@ -338,8 +340,8 @@ public class MonopolistScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(), 154);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79,1);
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
 
 
 
@@ -375,8 +377,8 @@ public class MonopolistScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(), 154);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79,1);
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
 
 
 
@@ -406,12 +408,12 @@ public class MonopolistScenarioTest {
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
             macroII.start();
-            while(macroII.schedule.getTime()<3500)
+            while(macroII.schedule.getTime()<5500)
                 macroII.schedule.step(macroII);
 
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(), 154);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79,1);
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
 
 
 

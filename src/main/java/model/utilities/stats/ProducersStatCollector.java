@@ -52,7 +52,7 @@ public class ProducersStatCollector implements Steppable, Deactivatable{
     private LinkedList<Firm> sellers;
 
     /**
-     * when created, it schedules itself!
+     * when created, it doesn't schedule itself! Call start()
      * @param model the model to study
      * @param sector the sector in the market to study
      * @param pricesWriter the CSV writer where to write prices
@@ -65,11 +65,17 @@ public class ProducersStatCollector implements Steppable, Deactivatable{
         this.pricesWriter=pricesWriter;
         this.quantitiesWriter=quantitiesWriter;
 
+
+
+    }
+
+    /**
+     * schedules itself and register as deactivable
+     */
+    public void start() {
         model.scheduleSoon(ActionOrder.CLEANUP,this);
         //also set as deactivable
         model.registerDeactivable(this);
-
-
     }
 
     @Override
@@ -90,8 +96,8 @@ public class ProducersStatCollector implements Steppable, Deactivatable{
         //get data!
         for(Firm seller : sellers)
         {
-            prices[i] = String.valueOf(seller.hypotheticalSellPrice(GoodType.GENERIC));
-            quantities[i] = String.valueOf(seller.getSalesDepartmentRecordedOutflow(GoodType.GENERIC));
+            prices[i] = String.valueOf(seller.hypotheticalSellPrice(sector));
+            quantities[i] = String.valueOf(seller.getSalesDepartmentRecordedOutflow(sector));
             i++;
         }
         //now print it out

@@ -16,13 +16,14 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.stats.DailyStatCollector;
+import model.utilities.stats.ProducersStatCollector;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static model.experiments.tuningRuns.MarginalMaximizerWithUnitPIDTuningMultiThreaded.printProgressBar;
+import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 
 /**
  * <h4>Description</h4>
@@ -99,6 +100,10 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
 
+            final CSVWriter prices = new CSVWriter(new FileWriter("runs/supplychai/supplychainprices.csv"));
+            final CSVWriter quantities = new CSVWriter(new FileWriter("runs/supplychai/supplychainprices.csv"));
+            ProducersStatCollector collector2 = new ProducersStatCollector(macroII,GoodType.BEEF,prices,quantities);
+            collector2.start();
         } catch (IOException e) {
             System.err.println("failed to create the file!");
         }
@@ -128,7 +133,6 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
         } catch (IOException e) {
             System.err.println("failed to create the file!");
         }
-
 
 
 

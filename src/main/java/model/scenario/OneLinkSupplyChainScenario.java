@@ -51,7 +51,7 @@ import javax.annotation.Nullable;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static model.experiments.tuningRuns.MarginalMaximizerWithUnitPIDTuningMultiThreaded.printProgressBar;
+import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 import static org.mockito.Mockito.*;
 
 /**

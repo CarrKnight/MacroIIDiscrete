@@ -48,12 +48,12 @@ public class MonopolistWithInputScenarioTest {
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
             macroII.start();
-            while(macroII.schedule.getTime()<4500)
+            while(macroII.schedule.getTime()<5500)
                 macroII.schedule.step(macroII);
 
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(),98);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
 
         }
 
@@ -86,8 +86,8 @@ public class MonopolistWithInputScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(),87);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(),98);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
 
 
 
@@ -125,8 +125,8 @@ public class MonopolistWithInputScenarioTest {
                     "volume:" +
                     macroII.getMarket(GoodType.GENERIC).getLastWeekVolume());
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(),87);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(),98);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
 
 
 
@@ -137,6 +137,7 @@ public class MonopolistWithInputScenarioTest {
 
 
     }
+
 
     @Test
     public void rightPriceAndQuantityTestAsMarginalWithPIDUnit()
@@ -156,12 +157,12 @@ public class MonopolistWithInputScenarioTest {
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
             macroII.start();
-            while(macroII.schedule.getTime()<3500)
+            while(macroII.schedule.getTime()<5500)
                 macroII.schedule.step(macroII);
 
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(),87);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(),98);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
 
 
 
@@ -198,8 +199,8 @@ public class MonopolistWithInputScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(),87);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(),98);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
 
 
 
@@ -235,8 +236,8 @@ public class MonopolistWithInputScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(),87);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(),98);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
 
 
 
@@ -271,9 +272,8 @@ public class MonopolistWithInputScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(),87);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(),98);
-
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
 
 
 

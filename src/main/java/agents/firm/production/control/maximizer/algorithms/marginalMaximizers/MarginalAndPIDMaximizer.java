@@ -113,4 +113,44 @@ public class MarginalAndPIDMaximizer extends MarginalMaximizer {
 
 
     }
+
+
+    public float getProportionalGain() {
+        return pid.getProportionalGain();
+    }
+
+    public void setProportionalGain(float proportionalGain) {
+        pid.setProportionalGain(proportionalGain);
+    }
+
+    public float getIntegralGain() {
+        return pid.getIntegralGain();
+    }
+
+    public void setIntegralGain(float integralGain) {
+        pid.setIntegralGain(integralGain);
+    }
+
+    public float getDerivativeGain() {
+        return pid.getDerivativeGain();
+    }
+
+    public void setDerivativeGain(float derivativeGain) {
+        pid.setDerivativeGain(derivativeGain);
+    }
+
+    public int getSpeed() {
+        return pid.getSpeed();
+    }
+
+    public void setSpeed(int speed) {
+        pid.setSpeed(speed);
+    }
+
+    /**
+     * Change the gains of the PID
+     */
+    public void setGains(float proportionalGain, float integralGain, float derivativeGain) {
+        pid.setGains(proportionalGain, integralGain, derivativeGain);
+    }
 }

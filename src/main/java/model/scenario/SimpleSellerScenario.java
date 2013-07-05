@@ -32,7 +32,7 @@ import sim.engine.Steppable;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static model.experiments.tuningRuns.MarginalMaximizerWithUnitPIDTuningMultiThreaded.printProgressBar;
+import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 
 /**
  * <h4>Description</h4>
