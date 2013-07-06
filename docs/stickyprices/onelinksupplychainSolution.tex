@@ -1,0 +1,52 @@
+\documentclass[a4paper,12pt,english]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{ifpdf}
+\usepackage{hyperref}
+\usepackage{graphicx}
+% Additional Options
+%\usepackage{natbib}[
+\usepackage[style=authoryear-comp,doi=false, url=false,backend=biber]{biblatex}
+\usepackage{caption}
+\usepackage{adjustbox}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{pgf}
+\usepackage{pgf-umlsd}
+\usepackage{pgf-umlcd}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage[T1]{fontenc}
+
+
+\begin{document}
+\title{How the single supply chain works}
+\author{Ernesto}
+\maketitle
+Two sectors, each of them has a monopolist.
+The first sector is a farm that produces beef, the second sector is a restaurant that turns beef into food. The farm requires no input.
+It takes one unit of beef to make one unit of food. \\
+
+The restaurant sells to the demand function(representing the end consumers) \[ q_F = 101 - p_F \]
+Each firm faces its independent labor supply function; its daily wage curve is
+\[ w= \frac{5}{7}q\] \\
+
+The farm maximizes:
+\[\Pi_B = p_B q_B - q_B \frac{5}{7}q_B \]
+Derive to find the optimum:
+\[ p_B = \frac{10}{7} q_B\]
+The restaurant maximizes:
+\[ \Pi_F = (101-q_F)q_F - q_F(5/7)q_F-q_F p_B\]
+Derive to find the optimum:
+\[ q_F = (101-p_B) \frac{7}{24} \] \\
+
+Now find where the best responses intersect:
+\[\begin{cases}
+p_B = \frac{10}{7} q_B \\
+ q_F = (101-p_B) \frac{7}{24} \\
+ q_F = q_B
+\end{cases}\]
+We find that the solutions are 
+\[ q = 20.794, p = 29.706\]
+
+\end{document}

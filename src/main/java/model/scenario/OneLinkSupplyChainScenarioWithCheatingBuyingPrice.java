@@ -11,7 +11,6 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import au.com.bytecode.opencsv.CSVWriter;
-import financial.Market;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
@@ -56,7 +55,6 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
                     factoryProducedPurchaseDepartment =
                     PurchasesDepartment.getPurchasesDepartment(Long.MAX_VALUE,firm,getMarkets().get(input),FixedInventoryControl.class,
                             CheaterPricing.class,null,null);
-            Market market = model.getMarket(input);
 
             factoryProducedPurchaseDepartment.getInventoryControl().setInventoryTarget(200);
             factoryProducedPurchaseDepartment.getInventoryControl().setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(2f);
@@ -84,8 +82,8 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
         scenario1.setBeefPriceFilterer(null);
 
         //competition!
-        scenario1.setNumberOfBeefProducers(5);
-  //      scenario1.setNumberOfFoodProducers(5);
+        scenario1.setNumberOfBeefProducers(1);
+        scenario1.setNumberOfFoodProducers(10);
 
 
 
@@ -101,7 +99,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
             collector.start();
 
             final CSVWriter prices = new CSVWriter(new FileWriter("runs/supplychai/supplychainprices.csv"));
-            final CSVWriter quantities = new CSVWriter(new FileWriter("runs/supplychai/supplychainprices.csv"));
+            final CSVWriter quantities = new CSVWriter(new FileWriter("runs/supplychai/supplychainquantities.csv"));
             ProducersStatCollector collector2 = new ProducersStatCollector(macroII,GoodType.BEEF,prices,quantities);
             collector2.start();
         } catch (IOException e) {

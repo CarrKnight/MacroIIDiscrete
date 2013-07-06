@@ -113,7 +113,7 @@ public class ProducersStatCollector implements Steppable, Deactivatable{
             e.printStackTrace();
         }
 
-
+        model.getPhaseScheduler().scheduleTomorrow(ActionOrder.CLEANUP,this);
 
 
 
