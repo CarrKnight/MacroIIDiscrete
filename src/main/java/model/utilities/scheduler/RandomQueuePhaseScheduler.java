@@ -39,7 +39,7 @@ public class RandomQueuePhaseScheduler implements Steppable, PhaseScheduler {
     /**
      * where we store every possible action!
      */
-    private EnumMap<ActionOrder,RandomQueue<Steppable>> steppablesByPhase;
+    private EnumMap<ActionOrder,RandomQueue> steppablesByPhase;
 
     private MersenneTwisterFast randomizer;
 
@@ -50,7 +50,7 @@ public class RandomQueuePhaseScheduler implements Steppable, PhaseScheduler {
 
     private ActionOrder currentPhase = ActionOrder.DAWN;
 
-    final private ArrayList<Steppable> tomorrowSamePhase;
+    final private ArrayList<PrioritySteppablePair> tomorrowSamePhase;
 
     final private ArrayList<FutureAction> futureActions;
 
@@ -64,7 +64,7 @@ public class RandomQueuePhaseScheduler implements Steppable, PhaseScheduler {
         steppablesByPhase = new EnumMap<>(ActionOrder.class);
         for(ActionOrder order :ActionOrder.values())
         {
-            steppablesByPhase.put(order,new RandomQueue<Steppable>(randomizer));
+            steppablesByPhase.put(order,new RandomQueue(randomizer));
         }
 
         //initialize tomorrow schedule
@@ -90,13 +90,13 @@ public class RandomQueuePhaseScheduler implements Steppable, PhaseScheduler {
         {
             currentPhase = phase; //currentPhase!
 
-            RandomQueue<Steppable> steppables = steppablesByPhase.get(phase);
+            RandomQueue steppables = steppablesByPhase.get(phase);
             assert steppables != null;
 
             //while there are actions to take this phase, take them
             while(!steppables.isEmpty())
             {
-                Steppable steppable = steppables.poll();
+                Steppable steppable = steppables.poll().getSteppable();
                 assert steppable != null;
                 //act nau!!!
                 steppable.step(simState);
@@ -132,7 +132,7 @@ public class RandomQueuePhaseScheduler implements Steppable, PhaseScheduler {
             boolean ready = futureAction.spendOneDay();
             if(ready)
             {
-                scheduleSoon(futureAction.getPhase(),futureAction.getAction());
+                scheduleSoon(futureAction.getPhase(),futureAction.getAction(),futureAction.getPriority());
                 toRemove.add(futureAction);
             }
         }
@@ -148,8 +148,21 @@ public class RandomQueuePhaseScheduler implements Steppable, PhaseScheduler {
     public void scheduleSoon(@NonNull ActionOrder phase, @NonNull Steppable action){
 
         //put it among the steppables of that phase
-        steppablesByPhase.get(phase).add(action);
+        scheduleSoon(phase, action, Priority.STANDARD);
 
+    }
+
+    /**
+     * Schedule as soon as this phase occurs
+     *
+     * @param phase    the phase i want the action to occur in
+     * @param action   the steppable that should be called
+     * @param priority the action priority
+     */
+    @Override
+    public void scheduleSoon(@NonNull ActionOrder phase, @NonNull Steppable action, Priority priority) {
+        //put it among the steppables of that phase
+        steppablesByPhase.get(phase).add(new PrioritySteppablePair(action,priority));
     }
 
     /**
@@ -161,9 +174,24 @@ public class RandomQueuePhaseScheduler implements Steppable, PhaseScheduler {
     @Override
     public void scheduleTomorrow(ActionOrder phase, Steppable action){
 
+       scheduleTomorrow(phase, action, Priority.STANDARD);
+
+
+    }
+
+    /**
+     * Schedule tomorrow assuming the phase passed is EXACTLY the current phase
+     *
+     * @param phase    the phase i want the action to occur in
+     * @param action   the steppable that should be called
+     * @param priority the action priority
+     */
+    @Override
+    public void scheduleTomorrow(ActionOrder phase, Steppable action, Priority priority) {
+
         Preconditions.checkArgument(phase.equals(currentPhase));
         //put it among the steppables of that phase
-        tomorrowSamePhase.add(action);
+        tomorrowSamePhase.add(new PrioritySteppablePair(action,priority));
 
     }
 
@@ -177,8 +205,23 @@ public class RandomQueuePhaseScheduler implements Steppable, PhaseScheduler {
     public void scheduleAnotherDay(@Nonnull ActionOrder phase, @Nonnull Steppable action,
                                    int daysAway)
     {
+
+        scheduleAnotherDay(phase, action, daysAway,Priority.STANDARD);
+
+    }
+
+    /**
+     * Schedule in as many days as passed (at priority standard)
+     *
+     * @param phase    the phase i want the action to occur in
+     * @param action   the steppable that should be called
+     * @param daysAway how many days into the future should this happen
+     * @param priority the action priority
+     */
+    @Override
+    public void scheduleAnotherDay(@Nonnull ActionOrder phase, @Nonnull Steppable action, int daysAway, Priority priority) {
         Preconditions.checkArgument(daysAway > 0, "Days away must be positive");
-        futureActions.add(new FutureAction(phase,action,daysAway));
+        futureActions.add(new FutureAction(phase,action,priority,daysAway));
 
     }
 
@@ -193,6 +236,24 @@ public class RandomQueuePhaseScheduler implements Steppable, PhaseScheduler {
     public void scheduleAnotherDayWithFixedProbability(@Nonnull ActionOrder phase, @Nonnull Steppable action,
                                                        float probability)
     {
+
+
+        scheduleAnotherDayWithFixedProbability(phase, action, probability,Priority.STANDARD);
+
+
+
+    }
+
+
+    /**
+     * @param probability each day we check against this fixed probability to know if we will step on this action today
+     * @param phase       the phase i want the action to occur in
+     * @param action      the steppable that should be called
+     * @param
+     */
+    @Override
+    public void scheduleAnotherDayWithFixedProbability(@Nonnull ActionOrder phase, @Nonnull Steppable action,
+                                                       float probability, Priority priority) {
         Preconditions.checkArgument(probability > 0f && probability <=1f, "probability has to be in (0,1]");
         int daysAway = 0;
         do{
@@ -200,13 +261,8 @@ public class RandomQueuePhaseScheduler implements Steppable, PhaseScheduler {
         }
         while (!randomizer.nextBoolean(probability));
 
-        scheduleAnotherDay(phase,action,daysAway);
-
-
-
+        scheduleAnotherDay(phase,action,daysAway,priority);
     }
-
-
 
     @Override
     public ActionOrder getCurrentPhase() {
@@ -220,7 +276,7 @@ public class RandomQueuePhaseScheduler implements Steppable, PhaseScheduler {
         steppablesByPhase = new EnumMap<>(ActionOrder.class);
         for(ActionOrder order :ActionOrder.values())
         {
-            steppablesByPhase.put(order,new RandomQueue<Steppable>(randomizer));
+            steppablesByPhase.put(order,new RandomQueue(randomizer));
         }
 
         tomorrowSamePhase.clear();

@@ -3,6 +3,7 @@ package agents.firm.purchases.pricing;
 import agents.firm.purchases.PurchasesDepartment;
 import goods.Good;
 import goods.GoodType;
+import model.utilities.scheduler.Priority;
 
 /**
  * <h4>Description</h4>
@@ -36,10 +37,11 @@ public class CheaterPricing implements BidPricingStrategy {
 
     /**
      * creates the pricing strategy that looks at the market
-     * @param department
+     * @param department reference needed because it sets the priority of its action as "low" (trying to act after the sales departments)
      */
     public CheaterPricing(PurchasesDepartment department) {
         this.department = department;
+        department.setTradePriority(Priority.AFTER_STANDARD);
     }
 
     /**

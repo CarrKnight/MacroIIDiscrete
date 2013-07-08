@@ -347,7 +347,6 @@ public class MonopolistScenario extends Scenario {
 
         HILL_CLIMBER_ALWAYS_MOVING(DumbClimberControl.class),
 
-        MARGINAL_WITH_PID(MarginalPlantControlWithPID.class),
 
         MARGINAL_WITH_UNIT_PID(MarginalPlantControlWithPIDUnit.class);
 

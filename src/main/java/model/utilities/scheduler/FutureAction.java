@@ -19,15 +19,16 @@ public class FutureAction{
 
     final private Steppable action;
 
+    final private Priority priority;
+
     private int daysAway;
 
-    public FutureAction(ActionOrder phase, Steppable action, int daysAway) {
-        Preconditions.checkArgument(daysAway > 0); //delay has to be positive
+    public FutureAction(ActionOrder phase, Steppable action, Priority priority, int daysAway) {
         this.phase = phase;
         this.action = action;
+        this.priority = priority;
         this.daysAway = daysAway;
     }
-
 
     /**
      * Decrease days away by 1
@@ -47,5 +48,9 @@ public class FutureAction{
 
     public Steppable getAction() {
         return action;
+    }
+
+    public Priority getPriority() {
+        return priority;
     }
 }

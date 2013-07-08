@@ -15,89 +15,35 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b2f2be4b-01ab-4023-8729-b370a266331e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/MonopolistPI.ods" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/monopolist_2.ods" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/stickyprices/onelinksupplychainSolution.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/stickyprices/onelinksupplychainSolution.pdf" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/stickyprices/onelinksupplychainSolution.synctex.gz" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/Jmol.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/Jmol.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/MathJax.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/MathJax.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/colorpicker.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/colorpicker.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/colorpicker.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/colorpicker.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/embed.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/embed.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/farbtastic.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/farbtastic.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/farbtastic.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/farbtastic.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/ga.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/ga.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/jPicker-1.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/jPicker-1.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/jpicker-1.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/jpicker-1.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/jquery-1.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/jquery-1.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/jquery-ui-1.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/jquery-ui-1.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/jquery-ui-1.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/jquery-ui-1.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/jquery.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/jquery.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/jquery_002.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/jquery_002.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/jquery_003.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/jquery_003.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/jquery_004.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/jquery_004.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/json2.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/json2.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/localization.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/localization.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/main.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/main.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/master.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/master.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/stickyprices/merged.csv" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/notebook_dynamic.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/notebook_dynamic.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/notebook_lib.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/notebook_lib.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/stickyprices/onelinksupplychainSolution.aux" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/stickyprices/onelinksupplychainSolution.bcf" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/stickyprices/onelinksupplychainSolution.log" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/stickyprices/onelinksupplychainSolution.run.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/stickyprices/onelinksupplychainSolution.tex" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/sage3d.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/sage3d.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/stickyprices/simpleDelaySticky1.csv" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/stickyprices/simpleDelaySticky2.csv" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/stickyprices/stickyprices.R" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/tiny_mce.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/tiny_mce.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/tinymce.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/tinymce.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/tuning/tuning.R" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/tuning/tuningUnit.R" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/Supply Chain -- Sage_files/ui.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/docs/supplyChain/supplychainsolution_files/ui.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioWithCheatingBuyingPrice.java" afterPath="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioWithCheatingBuyingPrice.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/Priority.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/PrioritySteppablePair.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/java/model/utilities/scheduler/RandomQueuePhaseSchedulerTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/java/model/utilities/scheduler/TrueRandomSchedulerTest.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/MarginalPlantControlWithPID.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/HeapPhaseScheduler.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/NonRandomcheduler.java" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pricing/CheaterPricing.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pricing/CheaterPricing.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/FutureAction.java" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/FutureAction.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/MacroII.java" afterPath="$PROJECT_DIR$/src/main/java/model/MacroII.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/scenario/MonopolistScenario.java" afterPath="$PROJECT_DIR$/src/main/java/model/scenario/MonopolistScenario.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/model/scenario/MonopolistScenarioTest.java" afterPath="$PROJECT_DIR$/src/test/java/model/scenario/MonopolistScenarioTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java" afterPath="$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/PhaseScheduler.java" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/PhaseScheduler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/utilities/stats/ProducersStatCollector.java" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/stats/ProducersStatCollector.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/PurchasesDepartment.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/PurchasesDepartment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/RandomQueue.java" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/RandomQueue.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/RandomQueuePhaseScheduler.java" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/RandomQueuePhaseScheduler.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/model/utilities/scheduler/RandomQueueTest.java" afterPath="$PROJECT_DIR$/src/test/java/model/utilities/scheduler/RandomQueueTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/TrueRandomScheduler.java" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/TrueRandomScheduler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="MacroIIDiscrete.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/fragment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1372945107588" ignored="false" />
-    <file path="/Dummy.txt" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373102402688" ignored="false" />
-    <file path="/MacroII.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1372945284480" ignored="false" />
-    <file path="/PhaseScheduler.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1360684299272" ignored="false" />
-    <file path="/PurchasesDepartment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1372435026948" ignored="false" />
+    <file path="/fragment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373279393521" ignored="false" />
+    <file path="/Dummy.txt" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373271395288" ignored="false" />
+    <file path="/MacroII.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373278764316" ignored="false" />
+    <file path="/PhaseScheduler.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373272148129" ignored="false" />
+    <file path="/PurchasesDepartment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373278023076" ignored="false" />
     <file path="/HumanResources.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1372769723329" ignored="false" />
     <file path="/SalesDepartment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1370550380148" ignored="false" />
     <file path="/Person.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1357743095200" ignored="false" />
@@ -191,16 +137,16 @@
     <file path="/SimpleSellerScenarioTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1366397236985" ignored="false" />
     <file path="/SmoothedDailyInventoryPricingStrategy.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1365619486490" ignored="false" />
     <file path="/SmoothedDailyInventoryPricingStrategyTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1360633525275" ignored="false" />
-    <file path="/RandomQueue.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1360856479500" ignored="false" />
-    <file path="/RandomQueueTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1360616520274" ignored="false" />
+    <file path="/RandomQueue.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373277215401" ignored="false" />
+    <file path="/RandomQueueTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373280851522" ignored="false" />
     <file path="/weeklyWorkforceMaximizerTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1363128270169" ignored="false" />
     <file path="/SchedulePhaseScheduler.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1360684492369" ignored="false" />
     <file path="/HeapPhaseScheduler.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1360684155594" ignored="false" />
     <file path="/InflowOutflowCounter.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1360797509744" ignored="false" />
     <file path="/InflowOutflowCounterTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1360798811993" ignored="false" />
     <file path="/NonRandomcheduler.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1360873804871" ignored="false" />
-    <file path="/RandomQueuePhaseScheduler.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1360856707790" ignored="false" />
-    <file path="/TrueRandomScheduler.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1363394438786" ignored="false" />
+    <file path="/RandomQueuePhaseScheduler.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373282930330" ignored="false" />
+    <file path="/TrueRandomScheduler.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373279129704" ignored="false" />
     <file path="/AnnealingReactingMaximizerTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1363126731868" ignored="false" />
     <file path="/AnnealingMaximizer.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1363116643499" ignored="false" />
     <file path="/PIDHillClimberTuning.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1361816762432" ignored="false" />
@@ -2400,7 +2346,7 @@
     <file path="/SalesDepartmentStopConsumingTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1370483369776" ignored="false" />
     <file path="/AskReservationPriceDecorator.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1370468219736" ignored="false" />
     <file path="/OneLinkSupplyChainScenarioRegressionTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1370550862180" ignored="false" />
-    <file path="/CheaterPricing.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1370878457537" ignored="false" />
+    <file path="/CheaterPricing.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373279466704" ignored="false" />
     <file path="/CheaterPricingTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1370878846429" ignored="false" />
     <file path="/OneLinkSupplyChainScenarioWithCheatingBuyingPrice.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373017749922" ignored="false" />
     <file path="/PurchasesPredictor.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1372434750382" ignored="false" />
@@ -2412,6 +2358,12 @@
     <file path="/ProducersStatCollectorTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373017740527" ignored="false" />
     <file path="/DummySeller.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1372944313994" ignored="false" />
     <file path="/MacroIIFinishTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1372945347068" ignored="false" />
+    <file path="/Priority.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373271921775" ignored="false" />
+    <file path="/PrioritySteppablePair.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373274329406" ignored="false" />
+    <file path="/FutureAction.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373275629539" ignored="false" />
+    <file path="/RandomQueueForPrioritySteppablePair.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373276249956" ignored="false" />
+    <file path="/TrueRandomSchedulerTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373282398034" ignored="false" />
+    <file path="/RandomQueuePhaseSchedulerTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373282964496" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -2431,6 +2383,7 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="false" />
@@ -2496,21 +2449,6 @@
         <option name="CLASS_FILTERS_ENABLED" value="false" />
         <option name="INSTANCE_FILTERS_ENABLED" value="false" />
         <option name="CONDITION" value="oldcash &gt; cash&#13;&#13;JAVA" />
-        <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
-      </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/main/java/model/utilities/scheduler/NonRandomcheduler.java" line="85" class="model.utilities.scheduler.NonRandomcheduler" package="model.utilities.scheduler">
-        <option name="ENABLED" value="false" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="REMOVE_AFTER_HIT" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="SUSPEND" value="true" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="true" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="currentPhase.equals(ActionOrder.DAWN)&#13;&#13;JAVA" />
         <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
       </breakpoint>
       <breakpoint url="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/hillClimbers/AnnealingMaximizer.java" line="79" class="agents.firm.production.control.maximizer.algorithms.hillClimbers.AnnealingMaximizer" package="agents.firm.production.control.maximizer.algorithms.hillClimbers">
@@ -2738,8 +2676,67 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/test/java/model/utilities/scheduler/TrueRandomSchedulerTest.java" line="125" class="model.utilities.scheduler.TrueRandomSchedulerTest" package="model.utilities.scheduler">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/model/utilities/scheduler/TrueRandomScheduler.java" line="189" class="model.utilities.scheduler.TrueRandomScheduler" package="model.utilities.scheduler">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/test/java/model/utilities/scheduler/RandomQueuePhaseSchedulerTest.java" line="207" class="model.utilities.scheduler.RandomQueuePhaseSchedulerTest$9" package="model.utilities.scheduler">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/model/utilities/scheduler/TrueRandomScheduler.java" line="150" class="model.utilities.scheduler.TrueRandomScheduler" package="model.utilities.scheduler">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
     </line_breakpoints>
-    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_rules />
     <ui_properties />
   </component>
@@ -2749,78 +2746,92 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="OneLinkSupplyChainScenarioWithCheatingBuyingPrice.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioWithCheatingBuyingPrice.java">
+      <file leaf-file-name="RandomQueueTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/model/utilities/scheduler/RandomQueueTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="84" column="44" selection-start="3130" selection-end="3130" vertical-scroll-proportion="0.4864865">
+            <state line="81" column="104" selection-start="2085" selection-end="2085" vertical-scroll-proportion="0.0">
               <folding>
-                <element signature="method#createPurchaseDepartment#0;class#OneLinkSupplyChainScenarioWithCheatingBuyingPrice#0" expanded="true" />
+                <element signature="method#testRetainOrder#0;class#RandomQueueTest#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="OneLinkSupplyChainScenario.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java">
+      <file leaf-file-name="TrueRandomSchedulerTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/model/utilities/scheduler/TrueRandomSchedulerTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="493" column="79" selection-start="16445" selection-end="16445" vertical-scroll-proportion="-7.28">
+            <state line="68" column="12" selection-start="1643" selection-end="1643" vertical-scroll-proportion="0.0">
               <folding>
-                <element signature="method#start#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PurchasesDepartment.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/PurchasesDepartment.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="1038" column="127" selection-start="41709" selection-end="41709" vertical-scroll-proportion="-11.04">
-              <folding>
-                <element signature="e#0#42705#0" expanded="true" />
                 <element signature="imports" expanded="true" />
-                <element signature="method#shop#0;class#PurchasesDepartment#0" expanded="true" />
-                <element signature="method#buy#0;class#PurchasesDepartment#0" expanded="true" />
-                <element signature="method#buy#1;class#PurchasesDepartment#0" expanded="true" />
-                <element signature="method#placeQuote#0;class#PurchasesDepartment#0" expanded="true" />
+                <element signature="e#1428#1603#0" expanded="true" />
+                <element signature="e#1588#1589#0" expanded="true" />
+                <element signature="method#priorityTest#0;class#TrueRandomSchedulerTest#0" expanded="true" />
+                <element signature="method#priorityTomorrowTest#0;class#TrueRandomSchedulerTest#0" expanded="true" />
+                <element signature="method#priorityInFutureTest#0;class#TrueRandomSchedulerTest#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TripolistScenario.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/TripolistScenario.java">
+      <file leaf-file-name="MonopolistWithInputScenarioTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="112" column="31" selection-start="3206" selection-end="3214" vertical-scroll-proportion="-7.52">
+            <state line="178" column="0" selection-start="5576" selection-end="5576" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MonopolistScenarioTest.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistScenarioTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="320" column="3" selection-start="11275" selection-end="11275" vertical-scroll-proportion="0.6666667">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MonopolistScenario.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/MonopolistScenario.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="349" column="0" selection-start="11043" selection-end="11043" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RandomQueuePhaseSchedulerTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/model/utilities/scheduler/RandomQueuePhaseSchedulerTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="72" column="0" selection-start="1836" selection-end="1836" vertical-scroll-proportion="0.0">
               <folding>
-                <element signature="e#0#6276#0" expanded="true" />
+                <element signature="method#priorityInFutureTest#0;class#RandomQueuePhaseSchedulerTest#0" expanded="true" />
+                <element signature="e#5840#6037#0" expanded="true" />
+                <element signature="e#6018#6019#0" expanded="true" />
+                <element signature="e#6112#6309#0" expanded="true" />
+                <element signature="e#6290#6291#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Preconditions.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$PROJECT_DIR$/lib/guava/guava-14.0.1-sources.jar!/com/google/common/base/Preconditions.java">
+      <file leaf-file-name="RandomQueuePhaseScheduler.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/scheduler/RandomQueuePhaseScheduler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="75" column="0" selection-start="2911" selection-end="2911" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Firm.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/Firm.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="1010" column="0" selection-start="30376" selection-end="30376" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ProducersStatCollector.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/ProducersStatCollector.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="101" column="51" selection-start="2897" selection-end="2897" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="134" column="104" selection-start="3893" selection-end="3893" vertical-scroll-proportion="-14.92">
+              <folding>
+                <element signature="method#RandomQueuePhaseScheduler#0;class#RandomQueuePhaseScheduler#0" expanded="true" />
+                <element signature="method#step#0;class#RandomQueuePhaseScheduler#0" expanded="true" />
+                <element signature="method#scheduleSoon#0;class#RandomQueuePhaseScheduler#0" expanded="true" />
+                <element signature="method#scheduleSoon#1;class#RandomQueuePhaseScheduler#0" expanded="true" />
+                <element signature="method#scheduleTomorrow#0;class#RandomQueuePhaseScheduler#0" expanded="true" />
+                <element signature="method#scheduleTomorrow#1;class#RandomQueuePhaseScheduler#0" expanded="true" />
+                <element signature="method#scheduleAnotherDay#0;class#RandomQueuePhaseScheduler#0" expanded="true" />
+                <element signature="method#scheduleAnotherDay#1;class#RandomQueuePhaseScheduler#0" expanded="true" />
+                <element signature="method#scheduleAnotherDayWithFixedProbability#0;class#RandomQueuePhaseScheduler#0" expanded="true" />
+                <element signature="method#scheduleAnotherDayWithFixedProbability#1;class#RandomQueuePhaseScheduler#0" expanded="true" />
+                <element signature="method#clear#0;class#RandomQueuePhaseScheduler#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -2828,28 +2839,23 @@
       <file leaf-file-name="TrueRandomScheduler.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/scheduler/TrueRandomScheduler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="112" column="0" selection-start="3003" selection-end="3003" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ProducersStatCollectorTest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/model/utilities/stats/ProducersStatCollectorTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="21" column="72" selection-start="436" selection-end="436" vertical-scroll-proportion="0.0">
+            <state line="150" column="28" selection-start="4244" selection-end="4264" vertical-scroll-proportion="-47.8">
               <folding>
-                <element signature="imports" expanded="false" />
+                <element signature="method#TrueRandomScheduler#0;class#TrueRandomScheduler#0" expanded="true" />
+                <element signature="method#resetMap#0;class#TrueRandomScheduler#0" expanded="true" />
+                <element signature="method#allocateTomorrowSamePhaseActions#0;class#TrueRandomScheduler#0" expanded="true" />
+                <element signature="method#getHighestPriority#0;class#TrueRandomScheduler#0" expanded="true" />
+                <element signature="method#prepareForTomorrow#0;class#TrueRandomScheduler#0" expanded="true" />
+                <element signature="method#scheduleSoon#0;class#TrueRandomScheduler#0" expanded="true" />
+                <element signature="method#scheduleSoon#1;class#TrueRandomScheduler#0" expanded="true" />
+                <element signature="method#scheduleTomorrow#0;class#TrueRandomScheduler#0" expanded="true" />
+                <element signature="method#scheduleTomorrow#1;class#TrueRandomScheduler#0" expanded="true" />
+                <element signature="method#scheduleAnotherDay#0;class#TrueRandomScheduler#0" expanded="true" />
+                <element signature="method#scheduleAnotherDay#1;class#TrueRandomScheduler#0" expanded="true" />
+                <element signature="method#scheduleAnotherDayWithFixedProbability#0;class#TrueRandomScheduler#0" expanded="true" />
+                <element signature="method#scheduleAnotherDayWithFixedProbability#1;class#TrueRandomScheduler#0" expanded="true" />
+                <element signature="method#clear#0;class#TrueRandomScheduler#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DailyStatCollector.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/DailyStatCollector.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="40" column="13" selection-start="1128" selection-end="1128" vertical-scroll-proportion="0.0">
-              <folding />
             </state>
           </provider>
         </entry>
@@ -2884,22 +2890,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/LinearExtrapolationPredictor.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerWithUnitPID.java" />
-        <option value="$PROJECT_DIR$/src/main/java/model/scenario/TripolistScenario.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/Firm.java" />
-        <option value="$PROJECT_DIR$/src/main/java/model/utilities/dummies/DummySeller.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/PrioritySteppablePair.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/FutureAction.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/RandomQueueForPrioritySteppablePair.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/RandomQueue.java" />
+        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/PurchasesDepartment.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/MacroII.java" />
-        <option value="$PROJECT_DIR$/src/test/java/model/MacroIIFinishTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalAndPIDMaximizer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/MarginalMaximizerPIDTuning.java" />
-        <option value="$PROJECT_DIR$/src/test/java/model/scenario/MonopolistScenarioTest.java" />
-        <option value="$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/MarginalMaximizerWithUnitPIDTuningMultiThreaded.java" />
-        <option value="$PROJECT_DIR$/src/test/java/model/utilities/stats/ProducersStatCollectorTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/TrueRandomScheduler.java" />
+        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pricing/CheaterPricing.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/utilities/stats/ProducersStatCollector.java" />
-        <option value="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java" />
-        <option value="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioWithCheatingBuyingPrice.java" />
+        <option value="$PROJECT_DIR$/src/test/java/model/utilities/scheduler/RandomQueueTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/RandomQueuePhaseScheduler.java" />
+        <option value="$PROJECT_DIR$/src/test/java/model/utilities/scheduler/RandomQueuePhaseSchedulerTest.java" />
+        <option value="$PROJECT_DIR$/src/test/java/model/utilities/scheduler/TrueRandomSchedulerTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/scenario/MonopolistScenario.java" />
+        <option value="$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java" />
+        <option value="$PROJECT_DIR$/src/test/java/model/scenario/MonopolistScenarioTest.java" />
       </list>
     </option>
   </component>
@@ -2987,6 +2993,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -3036,10 +3043,6 @@
               <option name="myItemId" value="main" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
@@ -3055,24 +3058,77 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="model" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="model" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="utilities" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="model" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="utilities" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scheduler" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="GenerateAntBuildDialog.generateIdeaHomeProperty" value="true" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
-    <property name="project.structure.proportion" value="0.15" />
     <property name="OverrideImplement.combined" value="false" />
+    <property name="project.structure.proportion" value="0.15" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="Repository.Attach.JavaDocs" value="true" />
-    <property name="GenerateAntBuildDialog.generateSingleFile" value="false" />
-    <property name="recentsLimit" value="5" />
     <property name="MemberChooser.sorted" value="false" />
-    <property name="GenerateAntBuildDialog.inclineRuntiemClasspath" value="false" />
+    <property name="recentsLimit" value="5" />
+    <property name="GenerateAntBuildDialog.generateSingleFile" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/java" />
+    <property name="GenerateAntBuildDialog.inclineRuntiemClasspath" value="false" />
     <property name="GoToClass.includeJavaFiles" value="false" />
     <property name="GenerateAntBuildDialog.outputFileNameProperty" value="macroiidiscrete" />
     <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
@@ -3083,28 +3139,28 @@
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="Downloaded.Files.Path" value="$PROJECT_DIR$/lib/jung" />
     <property name="GoToFile.includeJavaFiles" value="false" />
-    <property name="last_directory_selection" value="$PROJECT_DIR$/src/main/java/model/utilities" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/src/main/java/model/utilities/scheduler" />
     <property name="options.lastSelected" value="preferences.pluginManager" />
-    <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
     <property name="project.structure.side.proportion" value="0.2" />
+    <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.includeInheritedMembers" value="false" />
     <property name="TODO_SCOPE" value="Project Files" />
     <property name="restartRequiresConfirmation" value="true" />
     <property name="GenerateAntBuildDialog.backupFiles" value="true" />
-    <property name="dynamic.classpath" value="false" />
     <property name="options.searchVisible" value="true" />
+    <property name="dynamic.classpath" value="false" />
   </component>
   <component name="RecentsManager">
-    <key name="CreateTestDialog.Recents.Supers">
-      <recent name="" />
-    </key>
     <key name="CreateTestDialog.RecentsKey">
+      <recent name="model.utilities.scheduler" />
       <recent name="model" />
       <recent name="model.utilities.stats" />
       <recent name="agents.firm.sales.prediction" />
       <recent name="agents.firm.purchases.pricing" />
-      <recent name="model.scenario" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="model.utilities" />
@@ -3130,7 +3186,7 @@
       <recent name="agents.firm" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.OneLinkSupplyChainScenarioWithCheatingBuyingPrice">
+  <component name="RunManager" selected="JUnit.All tests">
     <configuration default="false" name="OneLinkSupplyChainScenarioWithCheatingBuyingPrice" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="model.scenario.OneLinkSupplyChainScenarioWithCheatingBuyingPrice" />
       <option name="VM_PARAMETERS" value="" />
@@ -3153,34 +3209,28 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <configuration default="false" name="MacroIIFinishTest" type="JUnit" factoryName="JUnit" temporary="true">
-      <module name="MacroIIDiscrete" />
+    <configuration default="false" name="OneLinkSupplyChainScenario" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="model.scenario.OneLinkSupplyChainScenario" />
+      <option name="VM_PARAMETERS" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="model" />
-      <option name="MAIN_CLASS_NAME" value="model.MacroIIFinishTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
+      <module name="MacroIIDiscrete" />
       <envs />
-      <patterns />
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <configuration default="false" name="ProducersStatCollectorTest" type="JUnit" factoryName="JUnit" temporary="true">
+    <configuration default="false" name="TrueRandomSchedulerTest" type="JUnit" factoryName="JUnit" temporary="true">
       <module name="MacroIIDiscrete" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="model.utilities.stats" />
-      <option name="MAIN_CLASS_NAME" value="model.utilities.stats.ProducersStatCollectorTest" />
+      <option name="PACKAGE_NAME" value="model.utilities.scheduler" />
+      <option name="MAIN_CLASS_NAME" value="model.utilities.scheduler.TrueRandomSchedulerTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-ea" />
@@ -3203,12 +3253,12 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <configuration default="false" name="MonopolistScenarioTest" type="JUnit" factoryName="JUnit" temporary="true">
+    <configuration default="false" name="RandomQueuePhaseSchedulerTest" type="JUnit" factoryName="JUnit" temporary="true">
       <module name="MacroIIDiscrete" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="model.scenario" />
-      <option name="MAIN_CLASS_NAME" value="model.scenario.MonopolistScenarioTest" />
+      <option name="PACKAGE_NAME" value="model.utilities.scheduler" />
+      <option name="MAIN_CLASS_NAME" value="model.utilities.scheduler.RandomQueuePhaseSchedulerTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-ea" />
@@ -3225,20 +3275,31 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <configuration default="false" name="OneLinkSupplyChainScenario" type="Application" factoryName="Application" temporary="true">
-      <option name="MAIN_CLASS_NAME" value="model.scenario.OneLinkSupplyChainScenario" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+    <configuration default="false" name="RandomQueuePhaseSchedulerTest.priorityInFutureTest" type="JUnit" factoryName="JUnit" temporary="true">
+      <module name="MacroIIDiscrete" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="PACKAGE_NAME" value="model.utilities.scheduler" />
+      <option name="MAIN_CLASS_NAME" value="model.utilities.scheduler.RandomQueuePhaseSchedulerTest" />
+      <option name="METHOD_NAME" value="priorityInFutureTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="MacroIIDiscrete" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
       <envs />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
+      <dir value="$PROJECT_DIR$/src/test/java" />
+      <patterns />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <ConfigurationWrapper RunnerId="Debug" />
       <method />
     </configuration>
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
@@ -3253,6 +3314,19 @@
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
@@ -3280,19 +3354,6 @@
       <envs />
       <properties />
       <listeners />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -3439,18 +3500,18 @@
       <item index="1" class="java.lang.String" itemvalue="Application.MacroIIGUI" />
       <item index="2" class="java.lang.String" itemvalue="JUnit.All tests" />
       <item index="3" class="java.lang.String" itemvalue="Application.OneLinkSupplyChainScenarioWithCheatingBuyingPrice" />
-      <item index="4" class="java.lang.String" itemvalue="JUnit.MacroIIFinishTest" />
-      <item index="5" class="java.lang.String" itemvalue="JUnit.ProducersStatCollectorTest" />
-      <item index="6" class="java.lang.String" itemvalue="JUnit.MonopolistScenarioTest" />
-      <item index="7" class="java.lang.String" itemvalue="Application.OneLinkSupplyChainScenario" />
+      <item index="4" class="java.lang.String" itemvalue="Application.OneLinkSupplyChainScenario" />
+      <item index="5" class="java.lang.String" itemvalue="JUnit.TrueRandomSchedulerTest" />
+      <item index="6" class="java.lang.String" itemvalue="JUnit.RandomQueuePhaseSchedulerTest" />
+      <item index="7" class="java.lang.String" itemvalue="JUnit.RandomQueuePhaseSchedulerTest.priorityInFutureTest" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Application.OneLinkSupplyChainScenarioWithCheatingBuyingPrice" />
-        <item index="1" class="java.lang.String" itemvalue="Application.OneLinkSupplyChainScenario" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.MonopolistScenarioTest" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.ProducersStatCollectorTest" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.MacroIIFinishTest" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.TrueRandomSchedulerTest" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.RandomQueuePhaseSchedulerTest" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.RandomQueuePhaseSchedulerTest.priorityInFutureTest" />
+        <item index="3" class="java.lang.String" itemvalue="Application.OneLinkSupplyChainScenarioWithCheatingBuyingPrice" />
+        <item index="4" class="java.lang.String" itemvalue="Application.OneLinkSupplyChainScenario" />
       </list>
     </recent_temporary>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
@@ -3720,7 +3781,11 @@
       <created>1373028542057</created>
       <updated>1373028542057</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="added documents, in particular the sage notebook solutions to the supply chain problems">
+      <created>1373127298857</created>
+      <updated>1373127298858</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -3750,26 +3815,26 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292683" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31485587" sideWeight="0.49786553" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2497332" sideWeight="0.6552106" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39135256" sideWeight="0.4855923" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31929046" sideWeight="0.52561367" order="13" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37915742" sideWeight="0.4855923" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3181818" sideWeight="0.52561367" order="13" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292683" sideWeight="0.49573106" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30155212" sideWeight="0.49786553" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30044347" sideWeight="0.49786553" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32815966" sideWeight="0.49786553" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21878335" sideWeight="0.32815966" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.6552106" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39967984" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="JProfiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292683" sideWeight="0.49786553" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.41462114" sideWeight="0.6818182" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3181818" sideWeight="0.47438633" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2230523" sideWeight="0.6818182" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2497332" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31707317" sideWeight="0.47438633" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32959402" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="654" y="139" width="761" height="854" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31596452" sideWeight="0.49786553" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Run with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32852387" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Debug with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2497332" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39933628" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -3815,7 +3880,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="slightly made tests easier to pass (since unit PID is not very accurate). Also made ProducersStatCollector start recording after start() is called" />
+    <option name="LAST_COMMIT_MESSAGE" value="added documents, in particular the sage notebook solutions to the supply chain problems" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -3829,7 +3894,6 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="Added sigmoid to the UNIT pid, I need to retune it or it won't pass the tests" />
     <MESSAGE value="pushing all intellij settings to make it easy to open on another computer" />
     <MESSAGE value="added an ant build" />
     <MESSAGE value="switched to MAVEN, move a lot of stuff around and then update junit. A useless afternoon" />
@@ -3854,6 +3918,7 @@
     <MESSAGE value="Lowered a bit the alpha in the exponential filter in the linear extrapolation so that it's not drive exclusively by the very last days; also changed the sigmoid in the unit maximizer to be exponential; hoping this time i can find decent parameters for it" />
     <MESSAGE value="Added a different stat collector. My guess is that in supply chains only one or two firms actually survive, this should help me see that. Also another round of marginal maximizers tuning" />
     <MESSAGE value="slightly made tests easier to pass (since unit PID is not very accurate). Also made ProducersStatCollector start recording after start() is called" />
+    <MESSAGE value="added documents, in particular the sage notebook solutions to the supply chain problems" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -3867,136 +3932,193 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/MarginalMaximizerPIDTuning.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/PurchasesDepartment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="192" column="36" selection-start="6361" selection-end="6361" vertical-scroll-proportion="0.39795917" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/MonopolistScenario.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="349" column="39" selection-start="11082" selection-end="11082" vertical-scroll-proportion="0.39795917">
+        <state line="789" column="21" selection-start="34449" selection-end="34466" vertical-scroll-proportion="-244.44">
           <folding>
-            <element signature="method#MonopolistScenarioIntegratedControlEnum#0;class#MonopolistScenarioIntegratedControlEnum#0;class#MonopolistScenario#0" expanded="false" />
-            <element signature="method#main#0;class#MonopolistScenario#0" expanded="false" />
+            <element signature="imports" expanded="true" />
+            <element signature="method#shop#0;class#PurchasesDepartment#0" expanded="true" />
+            <element signature="method#placeQuote#0;class#PurchasesDepartment#0" expanded="true" />
+            <element signature="method#updateOfferPrices#0;class#PurchasesDepartment#0" expanded="true" />
+            <element signature="method#currentDaysOfInventory#0;class#PurchasesDepartment#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistScenarioTest.java">
+    <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/mockito-all-1.9.5-sources.jar!/org/mockito/Mockito.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="264" column="0" selection-start="9867" selection-end="9867" vertical-scroll-proportion="0.52040815">
+        <state line="1123" column="16" selection-start="49890" selection-end="49890" vertical-scroll-proportion="0.0">
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#rightPriceAndQuantityTestAsHillClimber#0;class#MonopolistScenarioTest#0" expanded="false" />
-            <element signature="method#problematicScenario1#0;class#MonopolistScenarioTest#0" expanded="false" />
-            <element signature="method#rightPriceAndQuantityTestRandomControlRandomSlopes#0;class#MonopolistScenarioTest#0" expanded="false" />
-            <element signature="method#rightPriceAndQuantityTestAsMarginal#0;class#MonopolistScenarioTest#0" expanded="false" />
-            <element signature="method#rightPriceAndQuantityTestAsMarginalWithPIDUnit#0;class#MonopolistScenarioTest#0" expanded="false" />
-            <element signature="method#rightPriceAndQuantityTestAsMarginalWithSalesControlFlowPIDWithFixedInventory#0;class#MonopolistScenarioTest#0" expanded="false" />
-            <element signature="method#rightPriceAndQuantityTestAsMarginalWithPIDWithSalesControlFlowPIDWithFixedInventory#0;class#MonopolistScenarioTest#0" expanded="false" />
-            <element signature="method#rightPriceAndQuantityTestAsMarginalWithPIDUnitWithSalesControlFlowPIDWithFixedInventory#0;class#MonopolistScenarioTest#0" expanded="false" />
-            <element signature="method#testfindWorkerTargetThatMaximizesProfits#0;class#MonopolistScenarioTest#0" expanded="false" />
+            <element signature="method#mock#0;class#Mockito#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/MacroII.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="226" column="58" selection-start="7605" selection-end="7605" vertical-scroll-proportion="0.56632656" />
+        <state line="818" column="35" selection-start="23264" selection-end="23264" vertical-scroll-proportion="-12.68">
+          <folding>
+            <element signature="method#MacroII#0;class#MacroII#0" expanded="true" />
+            <element signature="method#start#0;class#MacroII#0" expanded="true" />
+            <element signature="method#getCurrentSimulationTime#0;class#MacroII#0" expanded="true" />
+            <element signature="method#finish#0;class#MacroII#0" expanded="true" />
+            <element signature="method#scheduleSoon#0;class#MacroII#0" expanded="true" />
+            <element signature="method#scheduleASAP#0;class#MacroII#0" expanded="true" />
+            <element signature="method#scheduleTomorrow#0;class#MacroII#0" expanded="true" />
+            <element signature="method#scheduleSoon#1;class#MacroII#0" expanded="true" />
+            <element signature="method#scheduleAnotherDay#0;class#MacroII#0" expanded="true" />
+            <element signature="method#scheduleAnotherDayWithFixedProbability#0;class#MacroII#0" expanded="true" />
+            <element signature="method#getMainScheduleTime#0;class#MacroII#0" expanded="true" />
+          </folding>
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalAndPIDMaximizer.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/pricing/CheaterPricing.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="117" column="40" selection-start="4334" selection-end="4334" vertical-scroll-proportion="2.4104347" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/MarginalMaximizerWithUnitPIDTuningMultiThreaded.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="64" column="68" selection-start="2059" selection-end="2059" vertical-scroll-proportion="0.2857143" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/DailyStatCollector.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="13" selection-start="1128" selection-end="1128" vertical-scroll-proportion="0.0">
+        <state line="43" column="52" selection-start="1184" selection-end="1184" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/guava/guava-14.0.1-sources.jar!/com/google/common/base/Preconditions.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/scheduler/Priority.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="75" column="0" selection-start="2911" selection-end="2911" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/scheduler/TrueRandomScheduler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="112" column="0" selection-start="3003" selection-end="3003" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/Firm.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1010" column="0" selection-start="30376" selection-end="30376" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/ProducersStatCollector.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="101" column="51" selection-start="2897" selection-end="2897" vertical-scroll-proportion="0.0">
+        <state line="12" column="70" selection-start="437" selection-end="445" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/model/utilities/stats/ProducersStatCollectorTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="72" selection-start="436" selection-end="436" vertical-scroll-proportion="0.0">
+        <state line="63" column="0" selection-start="2044" selection-end="2044" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/ProducersStatCollector.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="115" column="0" selection-start="3276" selection-end="3276" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/scheduler/RandomQueue.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="272" column="0" selection-start="9859" selection-end="9859" vertical-scroll-proportion="1.0390493">
           <folding>
-            <element signature="imports" expanded="false" />
+            <element signature="method#RandomQueue#0;class#RandomQueue#0" expanded="true" />
+            <element signature="method#add#0;class#RandomQueue#0" expanded="true" />
+            <element signature="method#offer#0;class#RandomQueue#0" expanded="true" />
+            <element signature="method#remove#0;class#RandomQueue#0" expanded="true" />
+            <element signature="method#poll#0;class#RandomQueue#0" expanded="true" />
+            <element signature="method#element#0;class#RandomQueue#0" expanded="true" />
+            <element signature="method#clear#0;class#RandomQueue#0" expanded="true" />
+            <element signature="method#size#0;class#RandomQueue#0" expanded="true" />
+            <element signature="method#isEmpty#0;class#RandomQueue#0" expanded="true" />
+            <element signature="method#toString#0;class#RandomQueue#0" expanded="true" />
+            <element signature="method#hashCode#0;class#RandomQueue#0" expanded="true" />
+            <element signature="method#equals#0;class#RandomQueue#0" expanded="true" />
+            <element signature="method#peek#0;class#RandomQueue#0" expanded="true" />
+            <element signature="method#addAll#0;class#RandomQueue#0" expanded="true" />
+            <element signature="method#Entry#0;class#Entry#0;class#RandomQueue#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/TripolistScenario.java">
+    <entry file="file://$PROJECT_DIR$/src/test/java/model/utilities/scheduler/RandomQueueTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="112" column="31" selection-start="3206" selection-end="3214" vertical-scroll-proportion="-7.52">
+        <state line="81" column="104" selection-start="2085" selection-end="2085" vertical-scroll-proportion="0.0">
           <folding>
-            <element signature="e#0#6276#0" expanded="true" />
+            <element signature="method#testRetainOrder#0;class#RandomQueueTest#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/PurchasesDepartment.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/scheduler/TrueRandomScheduler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1038" column="127" selection-start="41709" selection-end="41709" vertical-scroll-proportion="-11.04">
+        <state line="150" column="28" selection-start="4244" selection-end="4264" vertical-scroll-proportion="-47.8">
           <folding>
-            <element signature="e#0#42705#0" expanded="true" />
+            <element signature="method#TrueRandomScheduler#0;class#TrueRandomScheduler#0" expanded="true" />
+            <element signature="method#resetMap#0;class#TrueRandomScheduler#0" expanded="true" />
+            <element signature="method#allocateTomorrowSamePhaseActions#0;class#TrueRandomScheduler#0" expanded="true" />
+            <element signature="method#getHighestPriority#0;class#TrueRandomScheduler#0" expanded="true" />
+            <element signature="method#prepareForTomorrow#0;class#TrueRandomScheduler#0" expanded="true" />
+            <element signature="method#scheduleSoon#0;class#TrueRandomScheduler#0" expanded="true" />
+            <element signature="method#scheduleSoon#1;class#TrueRandomScheduler#0" expanded="true" />
+            <element signature="method#scheduleTomorrow#0;class#TrueRandomScheduler#0" expanded="true" />
+            <element signature="method#scheduleTomorrow#1;class#TrueRandomScheduler#0" expanded="true" />
+            <element signature="method#scheduleAnotherDay#0;class#TrueRandomScheduler#0" expanded="true" />
+            <element signature="method#scheduleAnotherDay#1;class#TrueRandomScheduler#0" expanded="true" />
+            <element signature="method#scheduleAnotherDayWithFixedProbability#0;class#TrueRandomScheduler#0" expanded="true" />
+            <element signature="method#scheduleAnotherDayWithFixedProbability#1;class#TrueRandomScheduler#0" expanded="true" />
+            <element signature="method#clear#0;class#TrueRandomScheduler#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/scheduler/RandomQueuePhaseScheduler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="134" column="104" selection-start="3893" selection-end="3893" vertical-scroll-proportion="-14.92">
+          <folding>
+            <element signature="method#RandomQueuePhaseScheduler#0;class#RandomQueuePhaseScheduler#0" expanded="true" />
+            <element signature="method#step#0;class#RandomQueuePhaseScheduler#0" expanded="true" />
+            <element signature="method#scheduleSoon#0;class#RandomQueuePhaseScheduler#0" expanded="true" />
+            <element signature="method#scheduleSoon#1;class#RandomQueuePhaseScheduler#0" expanded="true" />
+            <element signature="method#scheduleTomorrow#0;class#RandomQueuePhaseScheduler#0" expanded="true" />
+            <element signature="method#scheduleTomorrow#1;class#RandomQueuePhaseScheduler#0" expanded="true" />
+            <element signature="method#scheduleAnotherDay#0;class#RandomQueuePhaseScheduler#0" expanded="true" />
+            <element signature="method#scheduleAnotherDay#1;class#RandomQueuePhaseScheduler#0" expanded="true" />
+            <element signature="method#scheduleAnotherDayWithFixedProbability#0;class#RandomQueuePhaseScheduler#0" expanded="true" />
+            <element signature="method#scheduleAnotherDayWithFixedProbability#1;class#RandomQueuePhaseScheduler#0" expanded="true" />
+            <element signature="method#clear#0;class#RandomQueuePhaseScheduler#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/model/utilities/scheduler/RandomQueuePhaseSchedulerTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="72" column="0" selection-start="1836" selection-end="1836" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="method#priorityInFutureTest#0;class#RandomQueuePhaseSchedulerTest#0" expanded="true" />
+            <element signature="e#5840#6037#0" expanded="true" />
+            <element signature="e#6018#6019#0" expanded="true" />
+            <element signature="e#6112#6309#0" expanded="true" />
+            <element signature="e#6290#6291#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/MonopolistScenario.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="349" column="0" selection-start="11043" selection-end="11043" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/model/utilities/scheduler/TrueRandomSchedulerTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="68" column="12" selection-start="1643" selection-end="1643" vertical-scroll-proportion="0.0">
+          <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#shop#0;class#PurchasesDepartment#0" expanded="true" />
-            <element signature="method#buy#0;class#PurchasesDepartment#0" expanded="true" />
-            <element signature="method#buy#1;class#PurchasesDepartment#0" expanded="true" />
-            <element signature="method#placeQuote#0;class#PurchasesDepartment#0" expanded="true" />
+            <element signature="e#1428#1603#0" expanded="true" />
+            <element signature="e#1588#1589#0" expanded="true" />
+            <element signature="method#priorityTest#0;class#TrueRandomSchedulerTest#0" expanded="true" />
+            <element signature="method#priorityTomorrowTest#0;class#TrueRandomSchedulerTest#0" expanded="true" />
+            <element signature="method#priorityInFutureTest#0;class#TrueRandomSchedulerTest#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java">
+    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="493" column="79" selection-start="16445" selection-end="16445" vertical-scroll-proportion="-7.28">
-          <folding>
-            <element signature="method#start#0;class#OneLinkSupplyChainScenario#0" expanded="true" />
-          </folding>
+        <state line="178" column="0" selection-start="5576" selection-end="5576" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioWithCheatingBuyingPrice.java">
+    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistScenarioTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="84" column="44" selection-start="3130" selection-end="3130" vertical-scroll-proportion="0.4864865">
-          <folding>
-            <element signature="method#createPurchaseDepartment#0;class#OneLinkSupplyChainScenarioWithCheatingBuyingPrice#0" expanded="true" />
-          </folding>
+        <state line="320" column="3" selection-start="11275" selection-end="11275" vertical-scroll-proportion="0.6666667">
+          <folding />
         </state>
       </provider>
     </entry>

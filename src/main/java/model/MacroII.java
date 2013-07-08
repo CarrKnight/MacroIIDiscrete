@@ -10,6 +10,7 @@ import agents.EconomicAgent;
 import agents.HasInventory;
 import agents.Person;
 import agents.firm.Firm;
+import com.sun.javafx.beans.annotations.NonNull;
 import ec.util.MersenneTwisterFast;
 import financial.Market;
 import goods.GoodType;
@@ -19,6 +20,7 @@ import model.scenario.TripolistScenario;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
 import model.utilities.scheduler.PhaseScheduler;
+import model.utilities.scheduler.Priority;
 import model.utilities.scheduler.TrueRandomScheduler;
 import sim.display.GUIState;
 import sim.engine.SimState;
@@ -693,6 +695,47 @@ public class MacroII extends SimState{
 
     }
 
+    /**
+     * Schedule tomorrow assuming the phase passed is EXACTLY the current phase
+     * @param phase the phase i want the action to occur in
+     * @param action the steppable that should be called
+     * @param priority the action priority
+     */
+    public void scheduleTomorrow(ActionOrder phase, Steppable action, Priority priority) {
+        phaseScheduler.scheduleTomorrow(phase, action, priority);
+    }
+
+    /**
+     * Schedule as soon as this phase occurs
+     * @param phase the phase i want the action to occur in
+     * @param action the steppable that should be called
+     * @param priority the action priority
+     *
+     */
+    public void scheduleSoon(@NonNull ActionOrder phase, @NonNull Steppable action, Priority priority) {
+        phaseScheduler.scheduleSoon(phase, action, priority);
+    }
+
+    /**
+     * Schedule in as many days as passed (at priority standard)
+     * @param phase the phase i want the action to occur in
+     * @param action the steppable that should be called
+     * @param daysAway how many days into the future should this happen
+     * @param priority the action priority
+     */
+    public void scheduleAnotherDay(@Nonnull ActionOrder phase, @Nonnull Steppable action, int daysAway, Priority priority) {
+        phaseScheduler.scheduleAnotherDay(phase, action, daysAway, priority);
+    }
+
+    /**
+     * @param probability each day we check against this fixed probability to know if we will step on this action today
+     * @param phase the phase i want the action to occur in
+     * @param action the steppable that should be called
+     * @param
+     */
+    public void scheduleAnotherDayWithFixedProbability(@Nonnull ActionOrder phase, @Nonnull Steppable action, float probability, Priority priority) {
+        phaseScheduler.scheduleAnotherDayWithFixedProbability(phase, action, probability, priority);
+    }
 
     /**
      *
@@ -769,5 +812,14 @@ public class MacroII extends SimState{
     public void registerDeactivable(Deactivatable d)
     {
         toTurnOffAtFinish.add(d);
+    }
+
+
+    /**
+     * utility method for schedule.getTime()
+     * @return
+     */
+    public double getMainScheduleTime() {
+        return schedule.getTime();
     }
 }

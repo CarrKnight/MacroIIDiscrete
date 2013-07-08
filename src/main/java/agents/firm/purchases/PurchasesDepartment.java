@@ -31,6 +31,7 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.Control;
 import model.utilities.Deactivatable;
+import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -89,6 +90,11 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * The strategy we are using to choose how to control the inventory
      */
     private Control control;
+
+    /**
+     * At what priority does the purchase department act when trading. It can be changed by its strategies.
+     */
+    private Priority tradePriority = Priority.STANDARD;
 
 
     /**
@@ -687,7 +693,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
                 }
 
             }
-        });
+        },tradePriority);
 
     }
 
@@ -1071,4 +1077,21 @@ public class PurchasesDepartment implements Deactivatable, Department {
     }
 
 
+    /**
+     * Sets new At what priority does the purchase department act when trading. It can be changed by its strategies..
+     *
+     * @param tradePriority New value of At what priority does the purchase department act when trading. It can be changed by its strategies..
+     */
+    public void setTradePriority(Priority tradePriority) {
+        this.tradePriority = tradePriority;
+    }
+
+    /**
+     * Gets At what priority does the purchase department act when trading. It can be changed by its strategies..
+     *
+     * @return Value of At what priority does the purchase department act when trading. It can be changed by its strategies..
+     */
+    public Priority getTradePriority() {
+        return tradePriority;
+    }
 }

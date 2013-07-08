@@ -42,21 +42,27 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
 
     /**
      * where we store every possible action!
+     * Each action order has an array list for every possible priority value
      */
-    private EnumMap<ActionOrder,ArrayList<Steppable>> steppablesByPhase;
+    private EnumMap<ActionOrder,ArrayList<Steppable>[]> steppablesByPhase;
 
+    /**
+     * The randomizer
+     */
     private final MersenneTwisterFast randomizer;
 
 
-
-
-
-
+    /**
+     * the maximum number of simulation days
+     */
     private final int simulationDays;
 
+    /**
+     * which phase are we in?
+     */
     private ActionOrder currentPhase = ActionOrder.DAWN;
 
-    final private ArrayList<Steppable> tomorrowSamePhase;
+    final private ArrayList<PrioritySteppablePair> tomorrowSamePhase;
 
     final private ArrayList<FutureAction> futureActions;
 
@@ -67,17 +73,28 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
 
 
         //initialize the enums
-        steppablesByPhase = new EnumMap<>(ActionOrder.class);
-        for(ActionOrder order :ActionOrder.values())
-        {
-            steppablesByPhase.put(order,new ArrayList<Steppable>());
-        }
+        resetMap();
 
         //initialize tomorrow schedule
         tomorrowSamePhase = new ArrayList<>();
 
         futureActions = new ArrayList<>();
 
+    }
+
+    private void resetMap() {
+        steppablesByPhase = new EnumMap<>(ActionOrder.class);
+        for(ActionOrder order :ActionOrder.values())
+        {
+            //put the array
+            ArrayList<Steppable>[] array = new ArrayList[Priority.values().length];
+            steppablesByPhase.put(order,array);
+
+            //populate the array
+            for(Priority p : Priority.values())
+                array[p.ordinal()]= new ArrayList<Steppable>();
+
+        }
     }
 
 
@@ -95,26 +112,35 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
         for(ActionOrder phase : ActionOrder.values())
         {
 
-
-
             currentPhase = phase; //currentPhase!
 
-            ArrayList<Steppable> steppables = steppablesByPhase.get(phase);
 
 
-            assert steppables != null;
-
-            //while there are actions to take this phase, take them
-            while(!steppables.isEmpty())
+            int highestPriority = getHighestPriority(phase);
+            while(highestPriority != -1) //as long as there are still things to do at any priority
             {
-                Steppable steppable = steppables.remove(simState.random.nextInt(steppables.size()));
+                //get the highest priority steppables
+                ArrayList<Steppable> steppables = steppablesByPhase.get(phase)[highestPriority];
+
+
+                assert steppables != null;
+                assert !steppables.isEmpty();
+
+                //take a random highest priority action and do it.
+
+                Steppable steppable = steppables.remove(randomizer.nextInt(steppables.size()));
                 assert steppable != null;
                 //act nau!!!
                 steppable.step(simState);
+
+                //update priority (low priority can still schedule stuff to happen at high priority so we need to keep checking)
+                highestPriority = getHighestPriority(phase);
+
             }
-            //schedule stuff to happen tomorrow
-            steppables.addAll(tomorrowSamePhase);
-            tomorrowSamePhase.clear(); //here we kept all steppables that are called to act the same phase tomorrow!
+
+
+            //add all the steppables that reserved a spot for tomorrow, same phase
+            allocateTomorrowSamePhaseActions(phase);
 
 
             //go to the next phase!
@@ -125,11 +151,37 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
         prepareForTomorrow();
 
         //see you tomorrow
-        if(simState.schedule.getTime() <= simulationDays)
+        if(((MacroII)simState).getMainScheduleTime() <= simulationDays)
             simState.schedule.scheduleOnceIn(1,this);
 
 
 
+    }
+
+    private void allocateTomorrowSamePhaseActions(ActionOrder phase) {
+        ArrayList<Steppable>[] current= steppablesByPhase.get(phase);
+        for(PrioritySteppablePair pair : tomorrowSamePhase)
+        {
+            current[pair.getPriority().ordinal()].add(pair.getSteppable());
+        }
+        tomorrowSamePhase.clear(); //here we kept all steppables that are called to act the same phase tomorrow!
+    }
+
+    /**
+     * gets the index of the steppable with the highest priority in a given action order
+     * @param phase the action phase
+     * @return the highest priority or -1 if there are none.
+     */
+    public int getHighestPriority(ActionOrder phase) {
+        ArrayList<Steppable> steppablesByPriority[] =  steppablesByPhase.get(phase);
+        for(int i=0; i<steppablesByPriority.length;i++)
+        {
+            assert steppablesByPriority[i] !=null; //because they are created once and never destroyed, all the arraylists should not be null
+
+            if(!steppablesByPriority[i].isEmpty())
+                return i;
+        }
+        return -1;
     }
 
     private void prepareForTomorrow() {
@@ -143,7 +195,7 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
             boolean ready = futureAction.spendOneDay();
             if(ready)
             {
-                scheduleSoon(futureAction.getPhase(),futureAction.getAction());
+                scheduleSoon(futureAction.getPhase(),futureAction.getAction(),futureAction.getPriority());
                 toRemove.add(futureAction);
             }
         }
@@ -158,8 +210,22 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
     @Override
     public void scheduleSoon(@NonNull ActionOrder phase, @NonNull Steppable action){
 
-        //put it among the steppables of that phase
-        steppablesByPhase.get(phase).add(action);
+        scheduleSoon(phase, action,Priority.STANDARD);
+
+    }
+
+
+    /**
+     * Schedule as soon as this phase occurs
+     *
+     * @param phase    the phase i want the action to occur in
+     * @param action   the steppable that should be called
+     * @param priority the action priority
+     */
+    @Override
+    public void scheduleSoon(@NonNull ActionOrder phase, @NonNull Steppable action, Priority priority) {
+
+        steppablesByPhase.get(phase)[priority.ordinal()].add(action);
 
     }
 
@@ -172,9 +238,24 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
     @Override
     public void scheduleTomorrow(ActionOrder phase, Steppable action){
 
+        this.scheduleTomorrow(phase, action,Priority.STANDARD);
+
+    }
+
+
+    /**
+     * Schedule tomorrow assuming the phase passed is EXACTLY the current phase
+     * This is allowed only if you are at a phase (say PRODUCTION) and you want the action to occur tomorrow at the same phase (PRODUCTION)
+     * @param phase    the phase i want the action to occur in
+     * @param action   the steppable that should be called
+     * @param priority the action priority
+     */
+    @Override
+    public void scheduleTomorrow(ActionOrder phase, Steppable action, Priority priority) {
+
         Preconditions.checkArgument(phase.equals(currentPhase));
         //put it among the steppables of that phase
-        tomorrowSamePhase.add(action);
+        tomorrowSamePhase.add(new PrioritySteppablePair(action,priority));
 
     }
 
@@ -188,8 +269,23 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
     public void scheduleAnotherDay(@Nonnull ActionOrder phase, @Nonnull Steppable action,
                                    int daysAway)
     {
+        scheduleAnotherDay(phase, action, daysAway,Priority.STANDARD);
+
+    }
+
+
+    /**
+     * Schedule in as many days as passed (at priority standard)
+     *
+     * @param phase    the phase i want the action to occur in
+     * @param action   the steppable that should be called
+     * @param daysAway how many days into the future should this happen
+     * @param priority the action priority
+     */
+    @Override
+    public void scheduleAnotherDay(@Nonnull ActionOrder phase, @Nonnull Steppable action, int daysAway, Priority priority) {
         Preconditions.checkArgument(daysAway > 0, "Days away must be positive");
-        futureActions.add(new FutureAction(phase,action,daysAway));
+        futureActions.add(new FutureAction(phase,action,priority,daysAway));
 
     }
 
@@ -204,6 +300,22 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
     public void scheduleAnotherDayWithFixedProbability(@Nonnull ActionOrder phase, @Nonnull Steppable action,
                                                        float probability)
     {
+
+        scheduleAnotherDayWithFixedProbability(phase, action, probability,Priority.STANDARD);
+
+
+
+    }
+
+    /**
+     * @param probability each day we check against this fixed probability to know if we will step on this action today
+     * @param phase       the phase i want the action to occur in
+     * @param action      the steppable that should be called
+     * @param
+     */
+    @Override
+    public void scheduleAnotherDayWithFixedProbability(@Nonnull ActionOrder phase, @Nonnull Steppable action,
+                                                       float probability, Priority priority) {
         Preconditions.checkArgument(probability > 0f && probability <=1f, "probability has to be in (0,1]");
         int daysAway = 0;
         do{
@@ -211,13 +323,8 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
         }
         while (!randomizer.nextBoolean(probability));
 
-        scheduleAnotherDay(phase,action,daysAway);
-
-
-
+        scheduleAnotherDay(phase,action,daysAway,priority);
     }
-
-
 
     @Override
     public ActionOrder getCurrentPhase() {
@@ -228,11 +335,8 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
     public void clear()
     {
         steppablesByPhase.clear();
-        steppablesByPhase = new EnumMap<>(ActionOrder.class);
-        for(ActionOrder order :ActionOrder.values())
-        {
-            steppablesByPhase.put(order,new ArrayList<Steppable>());
-        }
+        resetMap();
+
 
         tomorrowSamePhase.clear();
         futureActions.clear();

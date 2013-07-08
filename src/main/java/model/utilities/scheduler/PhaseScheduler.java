@@ -30,21 +30,39 @@ import javax.annotation.Nonnull;
 public interface PhaseScheduler extends Steppable {
 
     /**
-     * Schedule as soon as this phase occurs
+     * Schedule as soon as this phase occurs (at priority STANDARD)
      * @param phase the phase i want the action to occur in
      * @param action the steppable that should be called
      */
     void scheduleSoon(@NonNull ActionOrder phase, @NonNull Steppable action);
 
+
     /**
-     * Schedule tomorrow assuming the phase passed is EXACTLY the current phase
+     * Schedule as soon as this phase occurs
+     * @param phase the phase i want the action to occur in
+     * @param action the steppable that should be called
+     * @param priority the action priority
+     *
+     */
+    void scheduleSoon(@NonNull ActionOrder phase, @NonNull Steppable action, Priority priority);
+
+    /**
+     * Schedule tomorrow assuming the phase passed is EXACTLY the current phase (at priority STANDARD)
      * @param phase the phase i want the action to occur in
      * @param action the steppable that should be called
      */
     void scheduleTomorrow(ActionOrder phase, Steppable action);
 
     /**
-     * Schedule in as many days as passed
+     * Schedule tomorrow assuming the phase passed is EXACTLY the current phase
+     * @param phase the phase i want the action to occur in
+     * @param action the steppable that should be called
+     * @param priority the action priority
+     */
+    void scheduleTomorrow(ActionOrder phase, Steppable action,Priority priority);
+
+    /**
+     * Schedule in as many days as passed (at priority standard)
      * @param phase the phase i want the action to occur in
      * @param action the steppable that should be called
      * @param daysAway how many days into the future should this happen
@@ -53,12 +71,32 @@ public interface PhaseScheduler extends Steppable {
                             int daysAway);
 
     /**
+     * Schedule in as many days as passed (at priority standard)
+     * @param phase the phase i want the action to occur in
+     * @param action the steppable that should be called
+     * @param daysAway how many days into the future should this happen
+     * @param priority the action priority
+     */
+    void scheduleAnotherDay(@Nonnull ActionOrder phase, @Nonnull Steppable action,
+                            int daysAway,Priority priority);
+
+    /**
      *
      * @param phase the phase i want the action to occur in
+     * @param probability each day we check against this fixed probability to know if we will step on this action today
      * @param action the steppable that should be called
      */
     void scheduleAnotherDayWithFixedProbability(@Nonnull ActionOrder phase, @Nonnull Steppable action,
                                                 float probability);
+
+    /**
+     * @param probability each day we check against this fixed probability to know if we will step on this action today
+     * @param phase the phase i want the action to occur in
+     * @param action the steppable that should be called
+     * @param
+     */
+    void scheduleAnotherDayWithFixedProbability(@Nonnull ActionOrder phase, @Nonnull Steppable action,
+                                                float probability, Priority priority);
 
     /**
      * deletes everything

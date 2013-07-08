@@ -27,10 +27,10 @@ import java.util.PriorityQueue;
  * @version 2013-02-11
  * @see
  */
-public class RandomQueue<T>  {
+public class RandomQueue  {
 
 
-    private final PriorityQueue<Entry<T>> delegate;
+    private final PriorityQueue<Entry> delegate;
 
     private MersenneTwisterFast randomizer;
 
@@ -56,8 +56,8 @@ public class RandomQueue<T>  {
      * @throws IllegalArgumentException if some property of this element
      *                                  prevents it from being added to this queue
      */
-    public boolean add(T t) {
-        Entry<T> e = new Entry<>(t);
+    public boolean add(PrioritySteppablePair t) {
+        Entry e = new Entry(t);
         return delegate.add(e);
 
     }
@@ -79,8 +79,8 @@ public class RandomQueue<T>  {
      * @throws IllegalArgumentException if some property of this element
      *                                  prevents it from being added to this queue
      */
-    public boolean offer(T t) {
-        Entry<T> e = new Entry<>(t);
+    public boolean offer(PrioritySteppablePair t) {
+        Entry e = new Entry(t);
         return delegate.offer(e);
     }
 
@@ -93,8 +93,8 @@ public class RandomQueue<T>  {
      * @throws java.util.NoSuchElementException
      *          if this queue is empty
      */
-    public T remove() {
-        Entry<T> e = delegate.remove();
+    public PrioritySteppablePair remove() {
+        Entry e = delegate.remove();
         if(e==null)
             return null;
         else
@@ -107,8 +107,8 @@ public class RandomQueue<T>  {
      *
      * @return the head of this queue, or <tt>null</tt> if this queue is empty
      */
-    public T poll() {
-        Entry<T> e = delegate.poll();
+    public PrioritySteppablePair poll() {
+        Entry e = delegate.poll();
         if(e==null)
             return null;
         else
@@ -123,7 +123,7 @@ public class RandomQueue<T>  {
      * @throws java.util.NoSuchElementException
      *          if this queue is empty
      */
-    public T element() {
+    public PrioritySteppablePair element() {
         return delegate.element().getElement(); //throws an exception otherwise
     }
 
@@ -228,48 +228,54 @@ public class RandomQueue<T>  {
      *
      * @return the head of this queue, or <tt>null</tt> if this queue is empty
      */
-    public T peek() {
-        Entry<T> e = delegate.peek();
+    public PrioritySteppablePair peek() {
+        Entry e = delegate.peek();
         if(e==null)
             return null;
         else
             return e.getElement();
     }
 
-    public void addAll(Iterable<T> tomorrowSamePhase) {
-        for(T element : tomorrowSamePhase)
+    public void addAll(Iterable<PrioritySteppablePair> tomorrowSamePhase) {
+        for(PrioritySteppablePair element : tomorrowSamePhase)
             this.add(element);
 
     }
 
-    private class Entry<T> implements Comparable<Entry<T>>
+    private class Entry implements Comparable<Entry>
     {
         /**
          * the element of the queue
          */
-        private final T element;
+        private final PrioritySteppablePair element;
 
         /**
          * A random number given at construction to make it random
          */
-        private final Integer randomPosition;
+        private final Float randomPosition;
 
-        private Entry(T element) {
+        private Entry(PrioritySteppablePair element) {
             this.element = element;
-            randomPosition = randomizer.nextInt();
+            randomPosition = randomizer.nextFloat();
         }
 
 
-        public T getElement() {
+        public PrioritySteppablePair getElement() {
             return element;
         }
 
         /**
-         * Compares their random position
+         * Compares first by their priority AND THEN by their random position
          */
         @Override
-        public int compareTo(Entry<T> o) {
-            return Integer.compare(this.randomPosition,o.randomPosition);
+        public int compareTo(Entry o)
+        {
+            int priorityDifference = getElement().getPriority().compareTo(o.getElement().getPriority());
+
+            if(priorityDifference!= 0)
+                return priorityDifference;
+            else
+                return Float.compare(this.randomPosition,o.randomPosition);
         }
     }
 

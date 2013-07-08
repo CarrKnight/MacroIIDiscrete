@@ -100,43 +100,6 @@ public class MonopolistWithInputScenarioTest {
     }
 
 
-    @Test
-    public void rightPriceAndQuantityTestAsMarginalWithPID()
-    {
-        for(int i=0; i<5; i++)
-        {
-            //we know the profit maximizing equilibrium is q=220, price = 72
-            final MacroII macroII = new MacroII(System.currentTimeMillis());
-            MonopolistScenario scenario1 = new MonopolistWithInputScenario(macroII);
-            //    scenario1.setAlwaysMoving(true);
-            //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
-            macroII.setScenario(scenario1);
-            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_PID);
-       //     if(macroII.random.nextBoolean())
-     //           scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
-     //       else
-               scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-
-            macroII.start();
-            while(macroII.schedule.getTime()<3500)
-                macroII.schedule.step(macroII);
-
-            System.out.println("price:" + macroII.getMarket(GoodType.GENERIC).getLastPrice() +
-                    "volume:" +
-                    macroII.getMarket(GoodType.GENERIC).getLastWeekVolume());
-
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
-            assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
-
-
-
-
-
-
-        }
-
-
-    }
 
 
     @Test
@@ -213,41 +176,7 @@ public class MonopolistWithInputScenarioTest {
     }
 
 
-    @Test
-    public void rightPriceAndQuantityTestAsMarginalWithPIDWithSalesControlFlowPIDWithFixedInventory()
-    {
-        for(int i=0; i<5; i++)
-        {
-            //we know the profit maximizing equilibrium is q=220, price = 72
-            final MacroII macroII = new MacroII(System.currentTimeMillis());
-            MonopolistScenario scenario1 = new MonopolistWithInputScenario(macroII);
-            //    scenario1.setAlwaysMoving(true);
-            //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
-            macroII.setScenario(scenario1);
-            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_PID);
-            scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventory.class);
-            if(macroII.random.nextBoolean())
-                scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
-            else
-                scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
-            macroII.start();
-            while(macroII.schedule.getTime()<3500)
-                macroII.schedule.step(macroII);
-
-
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
-            assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
-
-
-
-
-
-
-        }
-
-
-    }
 
     @Test
     public void rightPriceAndQuantityTestAsMarginalWithPIDWithSalesControlFlowPIDUnitWithFixedInventory()

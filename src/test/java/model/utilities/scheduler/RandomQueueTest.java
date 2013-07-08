@@ -1,12 +1,15 @@
 package model.utilities.scheduler;
 
 import ec.util.MersenneTwisterFast;
-import static org.junit.Assert.*;import org.junit.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import sim.engine.Steppable;
 
+import static org.junit.Assert.assertEquals;
+import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
@@ -31,17 +34,19 @@ public class RandomQueueTest {
     public void testRetainOrder() throws Exception {
 
         MersenneTwisterFast randomizer = PowerMockito.mock(MersenneTwisterFast.class);
-        RandomQueue<Object> queue = new RandomQueue<>(randomizer);
+        RandomQueue queue = new RandomQueue(randomizer);
 
-        Object first = new Integer(0);
-        when(randomizer.nextInt()).thenReturn(0); //this will be the position randomly given to object
+        PrioritySteppablePair first = new PrioritySteppablePair(mock(Steppable.class),Priority.STANDARD);
+
+        when(randomizer.nextFloat()).thenReturn(0f); //this will be the position randomly given to object
         queue.add(first);
 
 
         for(int i=1; i < 100; i++)
         {
-            when(randomizer.nextInt()).thenReturn(i);
-            queue.add(new Integer(i));
+            when(randomizer.nextFloat()).thenReturn((float)i);
+            PrioritySteppablePair pair = new PrioritySteppablePair(mock(Steppable.class),Priority.STANDARD);
+            queue.add(pair);
 
 
 
@@ -60,22 +65,22 @@ public class RandomQueueTest {
     public void testInverseOrder() throws Exception {
 
         MersenneTwisterFast randomizer = PowerMockito.mock(MersenneTwisterFast.class);
-        RandomQueue<Object> queue = new RandomQueue<>(randomizer);
+        RandomQueue queue = new RandomQueue(randomizer);
 
 
 
 
         for(int i=1; i < 100; i++)
         {
-            when(randomizer.nextInt()).thenReturn(i);
-            queue.add(new Integer(i));
+            when(randomizer.nextFloat()).thenReturn((float)(i));
+            queue.add(new PrioritySteppablePair(mock(Steppable.class),Priority.STANDARD));
 
 
 
 
         }
-        Object last = new Integer(999);
-        when(randomizer.nextInt()).thenReturn(0); //this will be the position randomly given to object
+        PrioritySteppablePair last = new PrioritySteppablePair(mock(Steppable.class),Priority.STANDARD);
+        when(randomizer.nextFloat()).thenReturn((float)0); //this will be the position randomly given to object
         queue.add(last);
 
         assertEquals(last,queue.poll());
