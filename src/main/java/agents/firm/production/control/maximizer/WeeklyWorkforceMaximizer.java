@@ -382,4 +382,7 @@ public class WeeklyWorkforceMaximizer<ALG extends WorkerMaximizationAlgorithm> i
 
         this.maximizationAlgorithm = maximizationAlgorithm;
     }
+
+
+
 }

@@ -23,6 +23,7 @@ import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.Market;
+import financial.MarketEvents;
 import goods.Good;
 import goods.GoodType;
 
@@ -444,6 +445,28 @@ public class HumanResources extends PurchasesDepartment {
      */
     public int getNumberOfWorkers() {
         return plant.workerSize();
+    }
+
+
+    /**
+     * If an logEvent worth to be put in the timeline occurred, call this!
+     * @param agent the one who performed the logEvent
+     * @param action the action that has occurred
+     * @param time the "real" time when this occurred
+     * @param annotations additional information to display!
+     */
+    public void logEvent(Object agent, MarketEvents action, long time, String annotations) {
+        getFirm().logEvent(agent, action, time, annotations);
+    }
+
+    /**
+     * If an logEvent worth to be put in the timeline occurred, call this!
+     * @param agent the one who performed the logEvent
+     * @param action the action that has occurred
+     * @param time the "real" time when this occurred
+     */
+    public void logEvent(Object agent, MarketEvents action, long time) {
+        getFirm().logEvent(agent, action, time);
     }
 }
 

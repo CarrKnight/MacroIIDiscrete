@@ -67,6 +67,9 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
     }
 
 
+
+
+
     /**
      * Runs the supply chain with no GUI and writes a big CSV file
      * @param args
@@ -84,6 +87,11 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
         //competition!
         scenario1.setNumberOfBeefProducers(1);
         scenario1.setNumberOfFoodProducers(10);
+
+        scenario1.setDivideProportionalGainByThis(50f);
+        scenario1.setDivideIntegrativeGainByThis(50f);
+        //no delay
+        scenario1.setBeefPricingSpeed(0);
 
 
 

@@ -32,7 +32,9 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
 
-
+     /////////////////////////////////////////////////////////////////////////////
+    // Both Monopolists
+    //////////////////////////////////////////////////////////////////////////////
 
 
     /**
@@ -123,5 +125,100 @@ public class OneLinkSupplyChainScenarioRegressionTest
         }
     }
 
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // Beef Monopolists
+    //////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * With these parameters the beef seller waits for 100 days before changing its price
+     */
+    @Test
+    public void testBeefMonopolistWithStickyPrices()
+    {
+        //this will take a looong time
+        MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
+        for(int i=0; i <5; i++)
+        {
+            final MacroII macroII = new MacroII(random.nextLong());
+            final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist scenario1 = new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist(macroII);
+            scenario1.setControlType(MarginalPlantControlWithPIDUnit.class);
+            scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+            //use standard PID parameters
+            scenario1.setDivideProportionalGainByThis(1f);
+            scenario1.setDivideIntegrativeGainByThis(1f);
+            //100 days delay
+            scenario1.setBeefPricingSpeed(100);
+            //no need for filter with the cheating price
+            scenario1.setBeefPriceFilterer(null);
+
+
+
+            macroII.setScenario(scenario1);
+            macroII.start();
+
+
+            while(macroII.schedule.getTime()<15000)
+            {
+                macroII.schedule.step(macroII);
+                printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+            }
+
+            System.out.println("done with price: " +macroII.getMarket(GoodType.BEEF).getLastPrice() );
+            System.out.println();
+            //the beef price is in the ballpark
+            Assert.assertEquals(macroII.getMarket(GoodType.BEEF).getLastPrice(),62l,5l );
+            Assert.assertEquals(macroII.getMarket(GoodType.FOOD).getLastPrice(),85l,5l );
+
+        }
+
+    }
+
+
+    /**
+     * With these parameters the beef seller adjusts its prices everyday, but only ever so slightly!
+     */
+    @Test
+    public void testBeefMonopolistWithSlowPID()
+    {
+
+        //this will take a looong time
+        MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
+        for(int i=0; i <5; i++)
+        {
+            final MacroII macroII = new MacroII(random.nextLong());
+            final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist scenario1 = new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist(macroII);
+            scenario1.setControlType(MarginalPlantControlWithPIDUnit.class);
+            scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+            //divide standard PID parameters by 100
+            scenario1.setDivideProportionalGainByThis(100f);
+            scenario1.setDivideIntegrativeGainByThis(100f);
+            //no delay
+            scenario1.setBeefPricingSpeed(0);
+            //no real need of filter at this slow speed
+            scenario1.setBeefPriceFilterer(null);
+
+
+
+            macroII.setScenario(scenario1);
+            macroII.start();
+
+
+            while(macroII.schedule.getTime()<15000)
+            {
+                macroII.schedule.step(macroII);
+                printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+            }
+
+            System.out.println("done with price: " +macroII.getMarket(GoodType.BEEF).getLastPrice() );
+            System.out.println();
+            //the beef price is in the ballpark
+            Assert.assertEquals(macroII.getMarket(GoodType.BEEF).getLastPrice(),62l,5l );
+            Assert.assertEquals(macroII.getMarket(GoodType.FOOD).getLastPrice(),85l,5l );
+
+
+        }
+    }
 
 }

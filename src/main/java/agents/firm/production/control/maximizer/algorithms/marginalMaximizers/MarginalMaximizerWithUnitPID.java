@@ -11,6 +11,8 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import ec.util.MersenneTwisterFast;
+import financial.MarketEvents;
+import goods.GoodType;
 import model.utilities.DelayException;
 import model.utilities.pid.PIDController;
 
@@ -117,7 +119,7 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
             //now that they are properly "averaged" we divide them and target efficency of 1
             float marginalEfficency = marginalBenefits/marginalCosts;
             //bound below at -0.5 to avoid infinity issues
-         //   marginalEfficency = (float) Math.max(marginalEfficency,-0.5);
+            //   marginalEfficency = (float) Math.max(marginalEfficency,-0.5);
 
 
 
@@ -136,23 +138,47 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
 
 
 
+            String toAnnotate =  "marginal efficency:" + marginalEfficency + ", marginal benefits: " + marginalBenefits +
+                    ", marginal costs: " + marginalCosts + '\n' +
+
+                    " ,firm employment:" + getP().workerSize() + '\n' +
+                    "target yestrday:" + mvYesterday + ", target today:" + pid.getCurrentMV() + ", integral: " + pid.getIntegral() + '\n';
+
+            if(!getP().getOutputs().isEmpty())
+            {
+                GoodType goodType = getP().getOutputs().iterator().next();
+                if(getOwner().getModel().getMarket(goodType) != null)
+                {
+                    toAnnotate = toAnnotate +
+                            "wages:" + wageCosts.getMarginalCost() + ", price: " +
+                            getOwner().getModel().getMarket(goodType).getLastPrice() +
+                            ", predicted price: " + getOwner().getSalesDepartment(goodType).predictSalePrice(inputCosts.getTotalCost() + wageCosts.getTotalCost());
+
+                }
+            }
+            getHr().logEvent(getHr(),
+                    MarketEvents.CHANGE_IN_TARGET,
+                    getHr().getFirm().getModel().getCurrentSimulationTimeInMillis(), toAnnotate);
 
 
 
-        /*    if(getP().getBlueprint().getOutputs().keySet().iterator().next() == GoodType.BEEF )
+
+
+
+
+            if(getP().getBlueprint().getOutputs().keySet().iterator().next() == GoodType.BEEF )
             {
 
                 System.out.println("firm" + getP().getOwner() + " ,time: " +getP().getOwner().getModel().schedule.getTime());
                 System.out.println("marginal efficency:" + marginalEfficency + ", marginal benefits: " + marginalBenefits + ", marginal costs: " + marginalCosts );
-                System.out.println("total employment: " +
-                        (120-((OrderBookMarket)(getOwner().getModel().getMarket(GoodType.LABOR))).numberOfAsks()) +
+                System.out.println(
                         " ,firm employment:" + getP().workerSize() );
                 System.out.println("target yestrday:" + mvYesterday + ", target today:" + pid.getCurrentMV() + ", integral: " + pid.getIntegral());
-                System.out.println("wages:" + wageCosts.getMarginalCost() + ", price: " + getOwner().getModel().getMarket(GoodType.GENERIC).getLastPrice() +
-                        ", predicted price: " + getOwner().getSalesDepartment(GoodType.GENERIC).predictSalePrice(inputCosts.getTotalCost() + wageCosts.getTotalCost()) + "\n");
+                System.out.println("wages:" + wageCosts.getMarginalCost() + ", price: " + getOwner().getModel().getMarket(GoodType.BEEF).getLastPrice() +
+                        ", predicted price: " + getOwner().getSalesDepartment(GoodType.BEEF).predictSalePrice(inputCosts.getTotalCost() + wageCosts.getTotalCost()) + "\n");
 
             }
-                 */
+
 
             //don't return more than the max or less than 0
             int newWorkerObjective =  Math.max(Math.min(Math.round(pid.getCurrentMV()),

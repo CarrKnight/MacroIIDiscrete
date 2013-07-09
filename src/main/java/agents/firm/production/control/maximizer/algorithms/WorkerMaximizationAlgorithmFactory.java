@@ -13,6 +13,7 @@ import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.Ma
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPID;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPIDCascadeEfficency;
+import agents.firm.production.control.maximizer.algorithms.otherMaximizers.FixedTargetMaximizationAlgorithm;
 
 import javax.annotation.Nonnull;
 
@@ -75,6 +76,9 @@ public class WorkerMaximizationAlgorithmFactory
         if(tClass.equals(MarginalMaximizerWithUnitPIDCascadeEfficency.class))
             return tClass.cast(new MarginalMaximizerWithUnitPIDCascadeEfficency(hr,plantControl,hr.getPlant(),hr.getFirm(),hr.getRandom(),
                     hr.getPlant().workerSize()));
+        if(tClass.equals(FixedTargetMaximizationAlgorithm.class))
+            return tClass.cast(new FixedTargetMaximizationAlgorithm());
+
 
         //if we are here we didn't find it!
         throw new IllegalArgumentException("The WorkerMaximizationAlgorithmFactory doesn't know about the class supplied "

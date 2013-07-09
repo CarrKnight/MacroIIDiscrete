@@ -15,7 +15,6 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
-import agents.firm.production.control.facades.MarginalPlantControl;
 import agents.firm.production.control.facades.MarginalPlantControlWithPIDUnit;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
@@ -31,6 +30,7 @@ import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import au.com.bytecode.opencsv.CSVWriter;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import financial.Market;
 import financial.OrderBookMarket;
@@ -40,10 +40,10 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.stats.DailyStatCollector;
 import model.utilities.dummies.DummyBuyer;
 import model.utilities.filters.ExponentialFilter;
 import model.utilities.pid.PIDController;
+import model.utilities.stats.DailyStatCollector;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -100,7 +100,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
     /**
      * The type of integrated control that is used by human resources in firms to choose production
      */
-    private Class<? extends PlantControl> controlType = MarginalPlantControl.class;
+    private Class<? extends PlantControl> controlType = MarginalPlantControlWithPIDUnit.class;
 
     /**
      * the type of sales department firms use
@@ -128,6 +128,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
     private int foodMultiplier = 1;
 
     //this is public only so that I can log it!
+    @VisibleForTesting
     public SalesControlFlowPIDWithFixedInventory strategy2;
 
 
