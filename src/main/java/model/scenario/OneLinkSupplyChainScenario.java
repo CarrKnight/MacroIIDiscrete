@@ -10,12 +10,15 @@ import agents.EconomicAgent;
 import agents.Person;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
-import agents.firm.personell.FactoryProducedHumanResources;
+import agents.firm.personell.FactoryProducedHumanResourcesWithMaximizerAndTargeter;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
-import agents.firm.production.control.PlantControl;
-import agents.firm.production.control.facades.MarginalPlantControlWithPIDUnit;
+import agents.firm.production.control.TargetAndMaximizePlantControl;
+import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
+import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPID;
+import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesFixedPID;
@@ -23,6 +26,8 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.SalesDepartmentOneAtATime;
+import agents.firm.sales.exploration.BuyerSearchAlgorithm;
+import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.PricingSalesPredictor;
@@ -100,7 +105,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
     /**
      * The type of integrated control that is used by human resources in firms to choose production
      */
-    private Class<? extends PlantControl> controlType = MarginalPlantControlWithPIDUnit.class;
+    private Class<? extends WorkerMaximizationAlgorithm> controlType = MarginalMaximizerWithUnitPID.class;
 
     /**
      * the type of sales department firms use
@@ -126,6 +131,18 @@ public class OneLinkSupplyChainScenario extends Scenario {
      * how many units of beef you need for 1 unit of food
      */
     private int foodMultiplier = 1;
+
+    /**
+     * The maximization speed in weeks of beef producers
+     */
+    private int weeksToMakeObservationBeef = 3;
+
+    /**
+     * The maximization speed in weeks of food producers
+     */
+    private int weeksToMakeObservationFood = 3;
+
+
 
     //this is public only so that I can log it!
     @VisibleForTesting
@@ -240,9 +257,10 @@ public class OneLinkSupplyChainScenario extends Scenario {
                 strategy2.attachFilter(beefPriceFilterer);
             strategy2.setSpeed(beefPricingSpeed);
             dept.setAskPricingStrategy(strategy2);
-            if(strategy2.getSpeed() > 7) //if the speed is less than weekly, turn off the sales predictor
-                dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(PricingSalesPredictor.class,dept));
 
+          //  if(strategy2.getSpeed() > 7) //if the speed is less than weekly, turn off the sales predictor
+          //      dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(PricingSalesPredictor.class,dept));
+            buildBeefSalesPredictor(dept);
 
 
         }
@@ -254,6 +272,13 @@ public class OneLinkSupplyChainScenario extends Scenario {
             // strategy.setProductionCostOverride(false);
             dept.setAskPricingStrategy(strategy); //set strategy to PID
         }
+    }
+
+    protected void buildBeefSalesPredictor(SalesDepartment dept) {
+        if(strategy2.getSpeed() > 7) //if the speed is less than weekly, turn off the sales predictor
+            dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(PricingSalesPredictor.class,dept));
+
+
     }
 
     protected void createPurchaseDepartment(Blueprint blueprint, Firm firm) {
@@ -283,8 +308,19 @@ public class OneLinkSupplyChainScenario extends Scenario {
         plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
         plant.setCostStrategy(new InputCostStrategy(plant));
         firm.addPlant(plant);
-        FactoryProducedHumanResources produced =  HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, firm,
-                laborMarket, plant, controlType, null, null);
+        FactoryProducedHumanResourcesWithMaximizerAndTargeter<TargetAndMaximizePlantControl,BuyerSearchAlgorithm,
+                SellerSearchAlgorithm,PIDTargeter,WeeklyWorkforceMaximizer<WorkerMaximizationAlgorithm>,WorkerMaximizationAlgorithm>
+                produced =
+                HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE,firm,laborMarket,plant,
+                PIDTargeter.class,WeeklyWorkforceMaximizer.class,controlType,null,null);
+
+        if(blueprint.getOutputs().containsKey(GoodType.BEEF))
+            produced.getWorkforceMaximizer().setWeeksToMakeObservation(weeksToMakeObservationBeef);
+        else
+            produced.getWorkforceMaximizer().setWeeksToMakeObservation(weeksToMakeObservationFood);
+
+
+
         HumanResources hr = produced.getDepartment();
         hr.setFixedPayStructure(true);
         hr.start();
@@ -470,13 +506,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         this.numberOfFoodProducers = numberOfFoodProducers;
     }
 
-    public Class<? extends PlantControl> getControlType() {
-        return controlType;
-    }
 
-    public void setControlType(Class<? extends PlantControl> controlType) {
-        this.controlType = controlType;
-    }
 
 
 
@@ -490,7 +520,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
         final MacroII macroII = new MacroII(0);
         final OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
-        scenario1.setControlType(MarginalPlantControlWithPIDUnit.class);
+        scenario1.setControlType(MarginalMaximizerWithUnitPID.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
 
@@ -654,5 +684,60 @@ public class OneLinkSupplyChainScenario extends Scenario {
      */
     public void setBeefPriceFilterer(@Nullable ExponentialFilter<Integer> beefPriceFilterer) {
         this.beefPriceFilterer = beefPriceFilterer;
+    }
+
+    /**
+     * Gets The type of integrated control that is used by human resources in firms to choose production.
+     *
+     * @return Value of The type of integrated control that is used by human resources in firms to choose production.
+     */
+    public Class<? extends WorkerMaximizationAlgorithm> getControlType() {
+        return controlType;
+    }
+
+    /**
+     * Sets new The type of integrated control that is used by human resources in firms to choose production.
+     *
+     * @param controlType New value of The type of integrated control that is used by human resources in firms to choose production.
+     */
+    public void setControlType(Class<? extends WorkerMaximizationAlgorithm> controlType) {
+        this.controlType = controlType;
+    }
+
+
+    /**
+     * Sets new The maximization speed in weeks of beef producers.
+     *
+     * @param weeksToMakeObservationBeef New value of The maximization speed in weeks of beef producers.
+     */
+    public void setWeeksToMakeObservationBeef(int weeksToMakeObservationBeef) {
+        this.weeksToMakeObservationBeef = weeksToMakeObservationBeef;
+    }
+
+    /**
+     * Gets The maximization speed in weeks of food producers.
+     *
+     * @return Value of The maximization speed in weeks of food producers.
+     */
+    public int getWeeksToMakeObservationFood() {
+        return weeksToMakeObservationFood;
+    }
+
+    /**
+     * Sets new The maximization speed in weeks of food producers.
+     *
+     * @param weeksToMakeObservationFood New value of The maximization speed in weeks of food producers.
+     */
+    public void setWeeksToMakeObservationFood(int weeksToMakeObservationFood) {
+        this.weeksToMakeObservationFood = weeksToMakeObservationFood;
+    }
+
+    /**
+     * Gets The maximization speed in weeks of beef producers.
+     *
+     * @return Value of The maximization speed in weeks of beef producers.
+     */
+    public int getWeeksToMakeObservationBeef() {
+        return weeksToMakeObservationBeef;
     }
 }

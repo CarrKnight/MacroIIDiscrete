@@ -50,6 +50,7 @@ public class MarginalPlantControlWithPIDUnit implements PlantControl, PlantListe
             WeeklyWorkforceMaximizer<MarginalMaximizerWithUnitPID>>
             generatedControl;
 
+
     /**
      * A facade for a marginal plant control with PID used as a way to select the step size
      * @param hr
@@ -253,5 +254,33 @@ public class MarginalPlantControlWithPIDUnit implements PlantControl, PlantListe
     @Override
     public void changeInWageEvent(Plant p, int workerSize, long wage) {
         control.changeInWageEvent(p, workerSize, wage);
+    }
+
+
+
+    /**
+     * Sets new when this is true rather than rescheduling itself every x days, it sets  probability of being reschedueled every day.
+     *
+     * @param randomspeed New value of when this is true rather than rescheduling itself every x days, it sets  probability of being reschedueled every day.
+     */
+    public void setRandomspeed(boolean randomspeed) {
+        generatedControl.getWorkforceMaximizer().setRandomspeed(randomspeed);
+    }
+
+    /**
+     * Gets when this is true rather than rescheduling itself every x days, it sets  probability of being reschedueled every day.
+     *
+     * @return Value of when this is true rather than rescheduling itself every x days, it sets  probability of being reschedueled every day.
+     */
+    public boolean isRandomspeed() {
+        return generatedControl.getWorkforceMaximizer().isRandomspeed();
+    }
+
+    public void setWeeksToMakeObservation(int weeksToMakeObservation) {
+        generatedControl.getWorkforceMaximizer().setWeeksToMakeObservation(weeksToMakeObservation);
+    }
+
+    public int getWeeksToMakeObservation() {
+        return generatedControl.getWorkforceMaximizer().getWeeksToMakeObservation();
     }
 }

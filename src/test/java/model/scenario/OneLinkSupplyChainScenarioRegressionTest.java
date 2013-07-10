@@ -1,6 +1,6 @@
 package model.scenario;
 
-import agents.firm.production.control.facades.MarginalPlantControlWithPIDUnit;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPID;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import ec.util.MersenneTwisterFast;
 import goods.GoodType;
@@ -49,7 +49,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             final MacroII macroII = new MacroII(random.nextLong());
             final OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
-            scenario1.setControlType(MarginalPlantControlWithPIDUnit.class);
+            scenario1.setControlType(MarginalMaximizerWithUnitPID.class);
             scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
             //use standard PID parameters
             scenario1.setDivideProportionalGainByThis(1f);
@@ -94,7 +94,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             final MacroII macroII = new MacroII(random.nextLong());
             final OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
-            scenario1.setControlType(MarginalPlantControlWithPIDUnit.class);
+            scenario1.setControlType(MarginalMaximizerWithUnitPID.class);
             scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
             //divide standard PID parameters by 100
             scenario1.setDivideProportionalGainByThis(100f);
@@ -143,7 +143,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             final MacroII macroII = new MacroII(random.nextLong());
             final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist scenario1 = new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist(macroII);
-            scenario1.setControlType(MarginalPlantControlWithPIDUnit.class);
+            scenario1.setControlType(MarginalMaximizerWithUnitPID.class);
             scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
             //use standard PID parameters
             scenario1.setDivideProportionalGainByThis(1f);
@@ -189,7 +189,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             final MacroII macroII = new MacroII(random.nextLong());
             final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist scenario1 = new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist(macroII);
-            scenario1.setControlType(MarginalPlantControlWithPIDUnit.class);
+            scenario1.setControlType(MarginalMaximizerWithUnitPID.class);
             scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
             //divide standard PID parameters by 100
             scenario1.setDivideProportionalGainByThis(100f);
