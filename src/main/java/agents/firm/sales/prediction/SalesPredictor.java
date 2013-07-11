@@ -8,6 +8,8 @@ package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
 import ec.util.MersenneTwisterFast;
+import financial.Market;
+import model.MacroII;
 import org.reflections.Reflections;
 
 import javax.annotation.Nonnull;
@@ -32,6 +34,9 @@ import java.util.ArrayList;
  * @see
  */
 public interface SalesPredictor {
+
+
+
 
 
     /**
@@ -132,10 +137,13 @@ public interface SalesPredictor {
 
 
             try {
-                //we don't need a big switch here, since they are all without constructor except one
+                //we don't need a big switch here, they are mostly without constructor
 
                 if(rule.equals(LinearExtrapolationPredictor.class))
                     return rule.getConstructor(SalesDepartment.class).newInstance(department);
+                else if(rule.equals(RegressionSalePredictor.class))
+                    return rule.getConstructor(Market.class, MacroII.class).
+                            newInstance(department.getMarket(),department.getModel());
                 else
                     return rule.newInstance();
 

@@ -31,6 +31,7 @@ import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.PricingSalesPredictor;
+import agents.firm.sales.prediction.RegressionSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
@@ -277,7 +278,8 @@ public class OneLinkSupplyChainScenario extends Scenario {
     protected void buildBeefSalesPredictor(SalesDepartment dept) {
         if(strategy2.getSpeed() > 7) //if the speed is less than weekly, turn off the sales predictor
             dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(PricingSalesPredictor.class,dept));
-
+        else
+            dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(RegressionSalePredictor.class,dept));
 
     }
 

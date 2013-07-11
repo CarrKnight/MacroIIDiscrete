@@ -12,7 +12,7 @@ import agents.firm.Firm;
 import agents.firm.production.Plant;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
-import agents.firm.sales.prediction.LinearExtrapolationPredictor;
+import agents.firm.sales.prediction.RegressionSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.decorators.AskReservationPriceDecorator;
@@ -100,6 +100,9 @@ public abstract class  SalesDepartment  implements Department {
      */
     protected BuyerSearchAlgorithm buyerSearchAlgorithm;
     protected SellerSearchAlgorithm sellerSearchAlgorithm;
+
+    public static Class<? extends  SalesPredictor> defaultPredictorStrategy = RegressionSalePredictor.class;
+
     /**
      * This is the strategy to predict future sale prices when the order book is not visible.
      */
@@ -166,7 +169,7 @@ public abstract class  SalesDepartment  implements Department {
         this.model = model;
         totalUnsold = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
         this.firm = firm;
-        predictorStrategy = new LinearExtrapolationPredictor(this);
+        predictorStrategy = RegressionSalePredictor.Factory.newSalesPredictor(defaultPredictorStrategy,this);
         this.buyerSearchAlgorithm = buyerSearchAlgorithm;
         salesDepartmentListeners = new LinkedList<>();
         market.registerSeller(firm); //register!
@@ -1215,5 +1218,19 @@ public abstract class  SalesDepartment  implements Department {
      */
     public boolean isSelling(Good o) {
         return toSell.contains(o);
+    }
+
+    /**
+     * this is a "utility" method that should be used sparingly. What it does is it creates a mock good, passes it to the pricing department
+     * and asks for a price. It is no guarantee that the firm actually will charge such price when a real good gets created.
+     * @return
+     */
+    public long hypotheticalSalePrice(){
+        Good imaginaryGood =new Good(getGoodType(),getFirm(),0);
+        return price(imaginaryGood);
+    }
+
+    public MacroII getModel() {
+        return model;
     }
 }

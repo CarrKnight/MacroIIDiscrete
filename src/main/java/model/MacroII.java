@@ -227,11 +227,35 @@ public class MacroII extends SimState{
                 weekEnd(); //everybody is on weekend!
             }
         }, 7);
+        //schedule new days actions for everyone
+        scheduleSoon(ActionOrder.DAWN,new Steppable() {
+            @Override
+            public void step(SimState state) {
+                newDay();
+            }
+        });
 
         //get the phase scheduler to start
         schedule.scheduleOnce(0,phaseScheduler);
 
 
+
+    }
+
+
+    /**
+     * Calls new day statistics for all markets
+     */
+    public void newDay(){
+
+        for(Market market : markets.values())
+            market.collectDayStatistics();
+        scheduleTomorrow(ActionOrder.DAWN,new Steppable() {
+            @Override
+            public void step(SimState state) {
+                newDay();
+            }
+        });
 
     }
 

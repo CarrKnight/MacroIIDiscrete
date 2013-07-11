@@ -1011,8 +1011,9 @@ public class Firm extends EconomicAgent {
         Preconditions.checkArgument(salesDepartments.containsKey(goodType));
 
         SalesDepartment dept = getSalesDepartment(goodType);
-        Good imaginaryGood =new Good(dept.getGoodType(),dept.getFirm(),0);
-        return dept.price(imaginaryGood);
+
+        return dept.hypotheticalSalePrice();
+
     }
 
     /**

@@ -166,7 +166,7 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
 
 
 
-            if(getP().getBlueprint().getOutputs().keySet().iterator().next() == GoodType.BEEF )
+/*            if(getP().getBlueprint().getOutputs().keySet().iterator().next() == GoodType.BEEF )
             {
 
                 System.out.println("firm" + getP().getOwner() + " ,time: " +getP().getOwner().getModel().schedule.getTime());
@@ -177,7 +177,7 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
                 System.out.println("wages:" + wageCosts.getMarginalCost() + ", price: " + getOwner().getModel().getMarket(GoodType.BEEF).getLastPrice() +
                         ", predicted price: " + getOwner().getSalesDepartment(GoodType.BEEF).predictSalePrice(inputCosts.getTotalCost() + wageCosts.getTotalCost()) + "\n");
 
-            }
+            }  */
 
 
             //don't return more than the max or less than 0

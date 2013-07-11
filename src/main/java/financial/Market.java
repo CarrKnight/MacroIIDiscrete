@@ -38,7 +38,7 @@ import java.util.List;
  * Time: 10:50 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class Market {
+public abstract class Market{
 
     /**
      * The array holding all the trade listeners.
@@ -54,6 +54,22 @@ public abstract class Market {
      * How many goods were traded this week
      */
     protected int weeklyVolume = 0;
+
+    /**
+     * How many goods were traded yesterday
+     */
+    protected int yesterdayVolume = 0;
+
+    /**
+     * How many goods have been traded so far today
+     */
+    protected int todayVolume = 0;
+
+
+    /**
+     * What was the last closing price yesterday?
+     */
+    protected long yesterdayLastPrice = 0;
 
     /**
      * last price sold
@@ -369,6 +385,7 @@ public abstract class Market {
             lastFilledAsk = sellerQuote.getPriceQuoted();
             lastFilledBid = buyerQuote.getPriceQuoted();
             weeklyVolume++;
+            todayVolume++;
 
 
             try{
@@ -809,5 +826,46 @@ public abstract class Market {
             return lastFilledBid;
         else
             throw new IllegalStateException("You can't see the lastFilledBid in this kind of market!");
+    }
+
+
+    /**
+     * Resets "today volume" and sets yesterday volume and last price
+     */
+    public void collectDayStatistics()
+    {
+        yesterdayLastPrice = lastPrice;
+        yesterdayVolume = todayVolume;
+        todayVolume=0;
+
+
+    }
+
+
+    /**
+     * Gets What was the last closing price yesterday?.
+     *
+     * @return Value of What was the last closing price yesterday?.
+     */
+    public long getYesterdayLastPrice() {
+        return yesterdayLastPrice;
+    }
+
+    /**
+     * Gets How many goods were traded yesterday.
+     *
+     * @return Value of How many goods were traded yesterday.
+     */
+    public int getYesterdayVolume() {
+        return yesterdayVolume;
+    }
+
+    /**
+     * Gets How many goods have been traded so far today.
+     *
+     * @return Value of How many goods have been traded so far today.
+     */
+    public int getTodayVolume() {
+        return todayVolume;
     }
 }
