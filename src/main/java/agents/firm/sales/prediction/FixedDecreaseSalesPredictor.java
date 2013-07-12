@@ -25,10 +25,11 @@ import agents.firm.sales.SalesDepartment;
  */
 public class FixedDecreaseSalesPredictor implements SalesPredictor {
 
+    public static int defaultDecrementDelta = 1;
     /**
      * by how much we increase/decrease the price predicted in respect to current departmental price
      */
-    private int decrementDelta = 1;
+    private int decrementDelta = defaultDecrementDelta;
 
     /**
      * the delegate object we use to get the department price
@@ -37,7 +38,14 @@ public class FixedDecreaseSalesPredictor implements SalesPredictor {
 
 
     public FixedDecreaseSalesPredictor() {
+        this(defaultDecrementDelta);
+    }
+
+
+    public FixedDecreaseSalesPredictor(int decrementDelta) {
+        this.decrementDelta = decrementDelta;
         delegate = new PricingSalesPredictor();
+
     }
 
     /**

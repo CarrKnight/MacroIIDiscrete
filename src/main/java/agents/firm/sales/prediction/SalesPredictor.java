@@ -141,7 +141,7 @@ public interface SalesPredictor {
 
                 if(rule.equals(LinearExtrapolationPredictor.class))
                     return rule.getConstructor(SalesDepartment.class).newInstance(department);
-                else if(rule.equals(RegressionSalePredictor.class))
+                else if(rule.equals(RegressionSalePredictor.class) || rule.equals(LearningDecreaseSalesPredictor.class))
                     return rule.getConstructor(Market.class, MacroII.class).
                             newInstance(department.getMarket(),department.getModel());
                 else

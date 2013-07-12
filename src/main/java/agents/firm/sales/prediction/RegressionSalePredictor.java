@@ -82,7 +82,7 @@ public class RegressionSalePredictor implements SalesPredictor, Steppable {
     }
 
     /**
-     * Returns the regression prediction if it is possible or the last price otherwise.
+     * Runs the regression and returns the regression prediction if it is possible or the last price otherwise.
      *
      *
      * @param dept                   the sales department that has to answer this question
@@ -93,17 +93,26 @@ public class RegressionSalePredictor implements SalesPredictor, Steppable {
     public long predictSalePrice(SalesDepartment dept, long expectedProductionCost)
     {
         //regress and return
-        if(quantitiesObserved.size() >1)
-            regression.estimateModel(Doubles.toArray(quantitiesObserved),Doubles.toArray(pricesObserved));
+        updateModel();
 
         if(Double.isNaN(regression.getIntercept())) //if we couldn't do a regression, just return today's pricing
             return dept.hypotheticalSalePrice();
         else
-            return Math.round(regression.predict(market.getYesterdayVolume() + 1));
+        {
+            //if you are producing more than what's sold, use production to predict tomorrow's quantity
+            return Math.round(regression.predict(Math.max(market.getYesterdayVolume(),dept.getTodayInflow()) + 1));
+        }
 
 
 
+    }
 
+    /**
+     * Force the predictor to run a regression, if possible
+     */
+    public void updateModel() {
+        if(quantitiesObserved.size() >1)
+            regression.estimateModel(Doubles.toArray(quantitiesObserved),Doubles.toArray(pricesObserved));
     }
 
     /**
@@ -149,5 +158,24 @@ public class RegressionSalePredictor implements SalesPredictor, Steppable {
 
     public void setDailyProbabilityOfObserving(float dailyProbabilityOfObserving) {
         this.dailyProbabilityOfObserving = dailyProbabilityOfObserving;
+    }
+
+
+    /**
+     * Gets the intercept of the estimated model.
+     *
+     * @return Value of the intercept of the estimated model.
+     */
+    public double getIntercept() {
+        return regression.getIntercept();
+    }
+
+    /**
+     * Gets the slope of the estimated model.
+     *
+     * @return Value of the slope of the estimated model.
+     */
+    public double getSlope() {
+        return regression.getSlope();
     }
 }

@@ -7,7 +7,6 @@
 package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
-import goods.Good;
 
 /**
  * <h4>Description</h4>
@@ -39,9 +38,9 @@ public class PricingSalesPredictor implements SalesPredictor {
     @Override
     public long predictSalePrice(SalesDepartment dept, long expectedProductionCost) {
         //imagine a good with the right conditions
-        Good imaginaryGood =new Good(dept.getGoodType(),dept.getFirm(),expectedProductionCost);
+
         //what would the pricing section do?
-        return dept.price(imaginaryGood);
+        return dept.hypotheticalSalePrice();
     }
 
     /**

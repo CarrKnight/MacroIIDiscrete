@@ -183,7 +183,7 @@ public class DailyStatCollector implements Steppable{
             productionPerSector.put(output,production);
             workersPerSector.put(output,workers);
             marketPrice.put(output,market.getLastPrice());
-            marketVolume.put(output,market.getLastWeekVolume());
+            marketVolume.put(output,market.getYesterdayVolume());
             sellerTotalInventory.put(output,sellerInventory);
             buyerTotalInventory.put(output,buyerInventory);
             wereThereShortages.put(output,shortages);

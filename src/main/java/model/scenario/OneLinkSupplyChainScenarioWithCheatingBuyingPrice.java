@@ -12,7 +12,6 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
-import agents.firm.sales.prediction.PricingSalesPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import au.com.bytecode.opencsv.CSVWriter;
 import goods.GoodType;
@@ -79,7 +78,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
      * runs the supply chain by forcing the sales predictor of the beef to be fixed, so that the monopolist works
      * @param args
      */
-    public static void FixedDecreasesSalesPredictormain(String[] args)
+    public static void smain(String[] args)
     {
 
 
@@ -100,7 +99,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
         //competition!
         scenario1.setNumberOfBeefProducers(1);
         scenario1.setNumberOfFoodProducers(10);
-        scenario1.setWeeksToMakeObservationBeef(3);
+        scenario1.setWeeksToMakeObservationBeef(5);
 
         scenario1.setDivideProportionalGainByThis(100f);
         scenario1.setDivideIntegrativeGainByThis(100f);
@@ -173,7 +172,6 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
 
         final MacroII macroII = new MacroII(0);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
-        SalesDepartment.defaultPredictorStrategy = PricingSalesPredictor.class;
         scenario1.setControlType(MarginalMaximizerWithUnitPID.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
@@ -181,12 +179,12 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
         //competition!
         scenario1.setNumberOfBeefProducers(1);
         scenario1.setNumberOfFoodProducers(10);
-        scenario1.setWeeksToMakeObservationBeef(3);
+        scenario1.setWeeksToMakeObservationBeef(5);
 
-        scenario1.setDivideProportionalGainByThis(100f);
-        scenario1.setDivideIntegrativeGainByThis(100f);
+        scenario1.setDivideProportionalGainByThis(1f);
+        scenario1.setDivideIntegrativeGainByThis(1f);
         //no delay
-        scenario1.setBeefPricingSpeed(0);
+        scenario1.setBeefPricingSpeed(100);
 
 
 
