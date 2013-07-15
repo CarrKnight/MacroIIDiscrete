@@ -1,7 +1,11 @@
 package model.scenario;
 
+import agents.firm.Firm;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPID;
+import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
+import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
+import agents.firm.sales.prediction.SalesPredictor;
 import ec.util.MersenneTwisterFast;
 import goods.GoodType;
 import model.MacroII;
@@ -132,7 +136,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     //////////////////////////////////////////////////////////////////////////////
 
     /**
-     * With these parameters the beef seller waits for 100 days before changing its price
+     * force the beef monopolist to target the right production
      */
     @Test
     public void testBeefMonopolistWithStickyPrices()
@@ -175,10 +179,6 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     }
 
-
-    /**
-     * With these parameters the beef seller adjusts its prices everyday, but only ever so slightly!
-     */
     @Test
     public void testBeefMonopolistWithSlowPID()
     {
@@ -219,6 +219,110 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
         }
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    // Now the beef monopolist isn't told to produce the right amount, but it knows the price drops by 2 every increase in production
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Test
+    public  void alreadyLearnedBeefMonopolistSlowPID(){
+
+
+        final MacroII macroII = new MacroII(0);
+        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
+
+            @Override
+            protected void buildBeefSalesPredictor(SalesDepartment dept) {
+                FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
+                predictor.setDecrementDelta(2);
+                dept.setPredictorStrategy(predictor);
+            }
+        };
+        scenario1.setControlType(MarginalMaximizerWithUnitPID.class);
+        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setBeefPriceFilterer(null);
+
+        //competition!
+        scenario1.setNumberOfBeefProducers(1);
+        scenario1.setNumberOfFoodProducers(10);
+
+        scenario1.setDivideProportionalGainByThis(100f);
+        scenario1.setDivideIntegrativeGainByThis(100f);
+        //no delay
+        scenario1.setBeefPricingSpeed(0);
+
+
+        macroII.setScenario(scenario1);
+        macroII.start();
+
+
+        while(macroII.schedule.getTime()<15000)
+        {
+            macroII.schedule.step(macroII);
+            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+        }
+
+
+        Assert.assertEquals(((Firm)macroII.getMarket(GoodType.BEEF).getSellers().iterator().next()).getTotalWorkers(),16,2);
+        Assert.assertEquals(macroII.getMarket(GoodType.BEEF).getLastPrice(),62l,6l );
+        Assert.assertEquals(macroII.getMarket(GoodType.FOOD).getLastPrice(),85l,6l );
+
+
+
+
+
+    }
+
+
+    @Test
+    public  void alreadyLearnedBeefMonopolistStickyPID(){
+
+
+        final MacroII macroII = new MacroII(0);
+        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
+
+            @Override
+            protected void buildBeefSalesPredictor(SalesDepartment dept) {
+                FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
+                predictor.setDecrementDelta(2);
+                dept.setPredictorStrategy(predictor);
+            }
+        };
+        scenario1.setControlType(MarginalMaximizerWithUnitPID.class);
+        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setBeefPriceFilterer(null);
+
+        //competition!
+        scenario1.setNumberOfBeefProducers(1);
+        scenario1.setNumberOfFoodProducers(10);
+
+        scenario1.setDivideProportionalGainByThis(1f);
+        scenario1.setDivideIntegrativeGainByThis(1f);
+        //no delay
+        scenario1.setBeefPricingSpeed(100);
+
+
+        macroII.setScenario(scenario1);
+        macroII.start();
+
+
+        while(macroII.schedule.getTime()<15000)
+        {
+            macroII.schedule.step(macroII);
+            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+        }
+
+
+        Assert.assertEquals(((Firm)macroII.getMarket(GoodType.BEEF).getSellers().iterator().next()).getTotalWorkers(),16,2);
+        Assert.assertEquals(macroII.getMarket(GoodType.BEEF).getLastPrice(),62l,6l );
+        Assert.assertEquals(macroII.getMarket(GoodType.FOOD).getLastPrice(),85l,6l );
+
+
+
+
+
     }
 
 }

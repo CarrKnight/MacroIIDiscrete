@@ -12,6 +12,7 @@ import agents.firm.Firm;
 import agents.firm.production.Plant;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
+import agents.firm.sales.prediction.LearningDecreaseSalesPredictor;
 import agents.firm.sales.prediction.RegressionSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
@@ -101,7 +102,7 @@ public abstract class  SalesDepartment  implements Department {
     protected BuyerSearchAlgorithm buyerSearchAlgorithm;
     protected SellerSearchAlgorithm sellerSearchAlgorithm;
 
-    public static Class<? extends  SalesPredictor> defaultPredictorStrategy = RegressionSalePredictor.class;
+    public static Class<? extends  SalesPredictor> defaultPredictorStrategy = LearningDecreaseSalesPredictor.class;
 
     /**
      * This is the strategy to predict future sale prices when the order book is not visible.
@@ -1226,7 +1227,18 @@ public abstract class  SalesDepartment  implements Department {
      * @return
      */
     public long hypotheticalSalePrice(){
-        Good imaginaryGood =new Good(getGoodType(),getFirm(),0);
+        return hypotheticalSalePrice(0);
+    }
+
+
+    /**
+     * this is a "utility" method that should be used sparingly. What it does is it creates a mock good, passes it to the pricing department
+     * and asks for a price. It is no guarantee that the firm actually will charge such price when a real good gets created.
+     * @param productionCost the hypothetical cost of production of this good
+     * @return
+     */
+    public long hypotheticalSalePrice(long productionCost){
+        Good imaginaryGood =new Good(getGoodType(),getFirm(),productionCost);
         return price(imaginaryGood);
     }
 

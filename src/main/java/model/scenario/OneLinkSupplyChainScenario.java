@@ -258,8 +258,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
             strategy2.setSpeed(beefPricingSpeed);
             dept.setAskPricingStrategy(strategy2);
 
-          //  if(strategy2.getSpeed() > 7) //if the speed is less than weekly, turn off the sales predictor
-          //      dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(PricingSalesPredictor.class,dept));
+
             buildBeefSalesPredictor(dept);
 
 
@@ -587,7 +586,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
     /**
      * Gets the type of sales department firms use.
-     *
+ *
      * @return Value of the type of sales department firms use.
      */
     public Class<? extends SalesDepartment> getSalesDepartmentType() {

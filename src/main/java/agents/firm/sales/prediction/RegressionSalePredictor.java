@@ -112,7 +112,7 @@ public class RegressionSalePredictor implements SalesPredictor, Steppable {
      */
     public void updateModel() {
         if(quantitiesObserved.size() >1)
-            regression.estimateModel(Doubles.toArray(quantitiesObserved),Doubles.toArray(pricesObserved));
+            regression.estimateModel(Doubles.toArray(quantitiesObserved),Doubles.toArray(pricesObserved),null);
     }
 
     /**
@@ -178,4 +178,18 @@ public class RegressionSalePredictor implements SalesPredictor, Steppable {
     public double getSlope() {
         return regression.getSlope();
     }
+
+    protected LinearRegression getRegression() {
+        return regression;
+    }
+
+    protected LinkedList<Double> getPricesObserved() {
+        return pricesObserved;
+    }
+
+    protected LinkedList<Double> getQuantitiesObserved() {
+        return quantitiesObserved;
+    }
+
+
 }

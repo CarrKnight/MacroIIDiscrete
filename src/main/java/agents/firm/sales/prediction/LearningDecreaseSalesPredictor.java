@@ -42,11 +42,24 @@ public class LearningDecreaseSalesPredictor implements SalesPredictor {
     private final MacroII model;
 
 
-
+    /**
+     * Create a learning decrease sales predictor that uses weighted OLS
+     * @param market
+     * @param model
+     */
     public LearningDecreaseSalesPredictor(Market market, MacroII model)
     {
 
-        regressor = new RegressionSalePredictor(market,model);
+        this(market, model,true);
+
+    }
+
+    public LearningDecreaseSalesPredictor(Market market, MacroII model,boolean weighted)
+    {
+        if(weighted)
+            regressor = new RegressionWeightedSalePredictor(market,model);
+        else
+            regressor = new RegressionSalePredictor(market,model);
         predictor = new FixedDecreaseSalesPredictor(0);
         this.model = model;
 
@@ -75,7 +88,6 @@ public class LearningDecreaseSalesPredictor implements SalesPredictor {
             predictor.setDecrementDelta(0);
 
 
-        System.out.println(regressor.getIntercept() + " + " + regressor.getSlope()  + "* x" );
         return predictor.predictSalePrice(dept,expectedProductionCost);
 
     }

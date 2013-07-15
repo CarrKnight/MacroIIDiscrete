@@ -46,7 +46,7 @@ public class LinearRegressionTest {
 
 
         LinearRegression regression = new LinearRegression();
-        regression.estimateModel(x,y);
+        regression.estimateModel(x,y,null);
 
         //make sure the intercept and slope are correct!
         Assert.assertEquals(regression.getIntercept(),0.4674,.01);
@@ -56,6 +56,47 @@ public class LinearRegressionTest {
         Assert.assertEquals(regression.predict(20),102.177986,.01 );
         Assert.assertEquals(regression.predict(10),51.322676,.01 );
         Assert.assertEquals(regression.predict(11.1),56.91645,.01 );
+
+
+
+    }
+
+    @Test
+    public void weightedLinearRegressionTest()
+    {
+
+        //I am going to estimate this in R, and the results ought to be the same!
+
+        double[] x = new double[20];
+        double[] weights = new double[20];
+
+        for(int i=1; i <=20; i++)
+        {
+            x[i-1]=i;
+            weights[i-1]=i;
+        }
+
+        double[] y = new double[]{
+                5.544928,  10.462137,  14.655520,  21.852715,  24.383909 , 32.130177,  35.646123,  42.884142,  43.967171,
+                51.520706,  56.528435 , 62.053947 , 66.639255 , 72.551495 , 77.795903 , 82.147417 ,88.025807  ,91.112676 ,
+                96.816806 ,100.589558
+
+        };
+
+
+
+
+        LinearRegression regression = new LinearRegression();
+        regression.estimateModel(x,y,weights);
+
+        //make sure the intercept and slope are correct!
+        Assert.assertEquals(regression.getIntercept(),0.958,.01);
+        Assert.assertEquals(regression.getSlope(),5.050,.01);
+
+        //make sure predictions are correct
+        Assert.assertEquals(regression.predict(20),101.958,.01 );
+        Assert.assertEquals(regression.predict(10),51.458,.01 );
+        Assert.assertEquals(regression.predict(11.1),57.013,.01 );
 
 
 
@@ -80,7 +121,7 @@ public class LinearRegressionTest {
         };
 
         LinearRegression regression = new LinearRegression();
-        regression.estimateModel(x,y);
+        regression.estimateModel(x,y,null);
 
         //make sure the intercept and slope are correct!
         Assert.assertEquals(regression.getIntercept(), 26.22,.01);

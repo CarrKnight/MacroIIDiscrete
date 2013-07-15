@@ -7,7 +7,6 @@
 package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
-import goods.Good;
 import goods.GoodType;
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,7 +33,7 @@ public class FixedDecreaseSalesPredictorTest {
     public void testPredictSalePrice() throws Exception {
 
         SalesDepartment department = mock(SalesDepartment.class);
-        when(department.price(any(Good.class))).thenReturn(100l); //current department pricing 100$
+        when(department.hypotheticalSalePrice(anyLong())).thenReturn(100l); //current department pricing 100$
         when(department.getGoodType()).thenReturn(GoodType.GENERIC); //type of good produced
 
 

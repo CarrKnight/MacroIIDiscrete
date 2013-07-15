@@ -181,10 +181,10 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
         scenario1.setNumberOfFoodProducers(10);
         scenario1.setWeeksToMakeObservationBeef(5);
 
-        scenario1.setDivideProportionalGainByThis(1f);
-        scenario1.setDivideIntegrativeGainByThis(1f);
+        scenario1.setDivideProportionalGainByThis(100f);
+        scenario1.setDivideIntegrativeGainByThis(100f);
         //no delay
-        scenario1.setBeefPricingSpeed(100);
+        scenario1.setBeefPricingSpeed(0);
 
 
 

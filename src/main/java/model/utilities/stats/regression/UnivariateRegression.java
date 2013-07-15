@@ -6,6 +6,8 @@
 
 package model.utilities.stats.regression;
 
+import com.sun.istack.internal.Nullable;
+
 /**
  * <h4>Description</h4>
  * <p/> Any model that regresses x on y and then use that model to estimate y given x
@@ -29,9 +31,10 @@ public interface UnivariateRegression
      * Do the regression/estimation. The two arrays must be of the same size
      * @param x an array of observations of the independent variable
      * @param y an array of observations of the dependent variable
+     * @param weights an array of weights to apply to each observation
      *
      */
-    public void estimateModel(double[] x, double[] y);
+    public void estimateModel(double[] x, double[] y, @Nullable double[] weights);
 
 
     /**
