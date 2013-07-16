@@ -7,12 +7,9 @@ import agents.firm.purchases.FactoryProducedPurchaseDepartment;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.inventoryControl.FixedInventoryControl;
 import agents.firm.purchases.pricing.CheaterPricing;
-import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
-import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
-import agents.firm.sales.prediction.SalesPredictor;
 import au.com.bytecode.opencsv.CSVWriter;
 import goods.GoodType;
 import model.MacroII;
@@ -73,98 +70,6 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
 
 
 
-    /**
-     *
-     * runs the supply chain by forcing the sales predictor of the beef to be fixed, so that the monopolist works
-     * @param args
-     */
-    public static void smain(String[] args)
-    {
-
-
-        final MacroII macroII = new MacroII(0);
-        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
-
-            @Override
-            protected void buildBeefSalesPredictor(SalesDepartment dept) {
-                FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
-                predictor.setDecrementDelta(2);
-                dept.setPredictorStrategy(predictor);
-            }
-        };
-        scenario1.setControlType(MarginalMaximizerWithUnitPID.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-        scenario1.setBeefPriceFilterer(null);
-
-        //competition!
-        scenario1.setNumberOfBeefProducers(1);
-        scenario1.setNumberOfFoodProducers(10);
-        scenario1.setWeeksToMakeObservationBeef(5);
-
-        scenario1.setDivideProportionalGainByThis(100f);
-        scenario1.setDivideIntegrativeGainByThis(100f);
-        //no delay
-        scenario1.setBeefPricingSpeed(0);
-
-
-
-
-
-        macroII.setScenario(scenario1);
-        macroII.start();
-
-        //create the CSVWriter
-        try {
-            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/beefmonopolistfoodcompetitive/forcedsalespredictor.csv"));
-            DailyStatCollector collector = new DailyStatCollector(macroII,writer);
-            collector.start();
-
-            final CSVWriter prices = new CSVWriter(new FileWriter("runs/supplychai/beefmonopolistfoodcompetitive/forcedsalespredictorprices.csv"));
-            final CSVWriter quantities = new CSVWriter(new FileWriter("runs/supplychai/beefmonopolistfoodcompetitive/forcedsalespredictorquantities.csv"));
-            ProducersStatCollector collector2 = new ProducersStatCollector(macroII,GoodType.BEEF,prices,quantities);
-            collector2.start();
-        } catch (IOException e) {
-            System.err.println("failed to create the file!");
-        }
-
-
-        //create the CSVWriter  for purchases prices
-        try {
-            final CSVWriter writer2 = new CSVWriter(new FileWriter("runs/supplychai/beefmonopolistfoodcompetitive/forcedsalespredictorOfferPricesWithCompetition.csv"));
-            writer2.writeNext(new String[]{"buyer offer price","target","filtered Outflow"});
-            macroII.scheduleSoon(ActionOrder.CLEANUP, new Steppable() {
-                @Override
-                public void step(SimState state) {
-                    try {
-                        writer2.writeNext(new String[]{String.valueOf(
-                                macroII.getMarket(GoodType.BEEF).getBestBuyPrice()),
-                                String.valueOf(scenario1.strategy2.getTarget()),
-                                String.valueOf(scenario1.strategy2.getFilteredOutflow())});
-                        writer2.flush();
-                        ((MacroII) state).scheduleTomorrow(ActionOrder.CLEANUP, this);
-                    } catch (IllegalAccessException | IOException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    }
-
-                }
-            });
-
-        } catch (IOException e) {
-            System.err.println("failed to create the file!");
-        }
-
-
-
-
-        while(macroII.schedule.getTime()<15000)
-        {
-            macroII.schedule.step(macroII);
-            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
-        }
-
-
-    }
-
 
     public static void main(String[] args)
     {
@@ -178,8 +83,8 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
 
         //competition!
         scenario1.setNumberOfBeefProducers(1);
-        scenario1.setNumberOfFoodProducers(10);
-        scenario1.setWeeksToMakeObservationBeef(5);
+        scenario1.setNumberOfFoodProducers(5);
+        //scenario1.setWeeksToMakeObservationBeef(5);
 
         scenario1.setDivideProportionalGainByThis(100f);
         scenario1.setDivideIntegrativeGainByThis(100f);

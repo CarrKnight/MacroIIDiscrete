@@ -58,7 +58,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist e
 
         //make beef a monopolist
         setNumberOfBeefProducers(1);
-        setNumberOfFoodProducers(10);
+        setNumberOfFoodProducers(5);
     }
 
 
@@ -111,7 +111,8 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist e
     {
 
 
-        final MacroII macroII = new MacroII(0);
+
+        final MacroII macroII = new MacroII(System.currentTimeMillis());
         final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist scenario1 =
                 new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist(macroII);
         scenario1.setControlType(MarginalMaximizerWithUnitPID.class);

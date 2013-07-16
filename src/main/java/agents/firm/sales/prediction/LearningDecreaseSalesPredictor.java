@@ -8,6 +8,7 @@ package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
 import financial.Market;
+import goods.GoodType;
 import model.MacroII;
 
 /**
@@ -87,6 +88,8 @@ public class LearningDecreaseSalesPredictor implements SalesPredictor {
         else
             predictor.setDecrementDelta(0);
 
+        if(dept.getGoodType().equals(GoodType.BEEF))
+            System.out.println(regressor.getIntercept() + " x *"  +regressor.getSlope());
 
         return predictor.predictSalePrice(dept,expectedProductionCost);
 

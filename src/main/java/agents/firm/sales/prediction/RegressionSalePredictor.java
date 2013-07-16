@@ -51,6 +51,9 @@ public class RegressionSalePredictor implements SalesPredictor, Steppable {
 
     private final LinkedList<Double> quantitiesObserved;
 
+
+    private final LinkedList<Double> dayOfObservation;
+
     private boolean isActive = true;
 
 
@@ -76,6 +79,7 @@ public class RegressionSalePredictor implements SalesPredictor, Steppable {
 
         pricesObserved= new LinkedList<>();
         quantitiesObserved = new LinkedList<>();
+        dayOfObservation = new LinkedList<>();
 
         macroII.scheduleAnotherDayWithFixedProbability(ActionOrder.DAWN, this, dailyProbabilityOfObserving,
                 Priority.AFTER_STANDARD);
@@ -144,6 +148,7 @@ public class RegressionSalePredictor implements SalesPredictor, Steppable {
         {
             pricesObserved.add(price);
             quantitiesObserved.add(quantity);
+            dayOfObservation.add(state.schedule.getTime());
         }
 
 
