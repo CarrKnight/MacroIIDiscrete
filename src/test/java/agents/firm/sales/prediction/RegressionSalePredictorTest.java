@@ -70,6 +70,47 @@ public class RegressionSalePredictorTest {
 
 
     @Test
+    public void testPredictSalePriceWithLogs() throws Exception
+    {
+
+        Market market = mock(Market.class);
+        MacroII model = new MacroII(1l);
+        RegressionSalePredictor predictor = new RegressionSalePredictor(market,model );
+        predictor.setQuantityTransformer(LearningFixedElasticitySalesPredictor.logTransformer);
+        predictor.setPriceTransformer(LearningFixedElasticitySalesPredictor.logTransformer,
+                LearningFixedElasticitySalesPredictor.expTransformer);
+
+        //observation 1
+        when(market.getYesterdayLastPrice()).thenReturn(86l);
+        when(market.getYesterdayVolume()).thenReturn(6);
+        predictor.step(model);
+        //observation 2
+        when(market.getYesterdayLastPrice()).thenReturn(84l);
+        when(market.getYesterdayVolume()).thenReturn(7);
+        predictor.step(model);
+        //observation 3
+        when(market.getYesterdayLastPrice()).thenReturn(81l);
+        when(market.getYesterdayVolume()).thenReturn(8);
+        predictor.step(model);
+
+
+        //this should regress to log(p)=4.8275  -0.2068 * log(q)
+
+        when(market.getYesterdayVolume()).thenReturn(8);
+        //the sales predictor will be predict for 9 (yesterdayVolume + 1)
+        Assert.assertEquals(predictor.predictSalePrice(mock(SalesDepartment.class),100l),79l);
+
+
+
+
+
+
+
+
+    }
+
+
+    @Test
     public void testScheduledProperly()
     {
 
@@ -86,6 +127,8 @@ public class RegressionSalePredictorTest {
 
 
     }
+
+
 
 
     //Check defaults

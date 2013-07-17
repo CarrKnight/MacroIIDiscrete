@@ -141,7 +141,8 @@ public interface SalesPredictor {
 
                 if(rule.equals(LinearExtrapolationPredictor.class))
                     return rule.getConstructor(SalesDepartment.class).newInstance(department);
-                else if(rule.equals(RegressionSalePredictor.class) || rule.equals(RegressionWeightedSalePredictor.class) || rule.equals(LearningDecreaseSalesPredictor.class))
+                else if(rule.equals(RegressionSalePredictor.class) || rule.equals(RegressionWeightedSalePredictor.class)
+                        || rule.equals(LearningDecreaseSalesPredictor.class) || rule.equals(LearningFixedElasticitySalesPredictor.class))
                     return rule.getConstructor(Market.class, MacroII.class).
                             newInstance(department.getMarket(),department.getModel());
                 else

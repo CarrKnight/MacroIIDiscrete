@@ -8,7 +8,6 @@ package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
 import financial.Market;
-import goods.GoodType;
 import model.MacroII;
 
 /**
@@ -33,12 +32,12 @@ public class LearningDecreaseSalesPredictor implements SalesPredictor {
     /**
      * The regression predictor. It does all the stepping for itself, so just use it rather than duplicate code
      */
-    private final RegressionSalePredictor regressor;
+    protected final RegressionSalePredictor regressor;
 
     /**
      * The object that actually makes predictions. We just feed it the slope every time
      */
-    private final FixedDecreaseSalesPredictor predictor;
+    protected final FixedDecreaseSalesPredictor predictor;
 
     private final MacroII model;
 
@@ -79,7 +78,16 @@ public class LearningDecreaseSalesPredictor implements SalesPredictor {
     @Override
     public long predictSalePrice(SalesDepartment dept, long expectedProductionCost)
     {
+        updateRegressorAndUseItToUpdatePredictor();
 
+
+
+
+        return predictor.predictSalePrice(dept,expectedProductionCost);
+
+    }
+
+    protected void updateRegressorAndUseItToUpdatePredictor() {
         //force a regression
         regressor.updateModel();
         //update slope (we need to put the inverse as a sign because the number is subtracted from old price)
@@ -87,12 +95,6 @@ public class LearningDecreaseSalesPredictor implements SalesPredictor {
             predictor.setDecrementDelta((int) Math.round(-regressor.getSlope()));
         else
             predictor.setDecrementDelta(0);
-
-        if(dept.getGoodType().equals(GoodType.BEEF))
-            System.out.println(regressor.getIntercept() + " x *"  +regressor.getSlope());
-
-        return predictor.predictSalePrice(dept,expectedProductionCost);
-
     }
 
     /**

@@ -35,12 +35,23 @@ public class RegressionWeightedSalePredictor extends RegressionSalePredictor {
     public void updateModel() {
         if(getQuantitiesObserved().size() >1)
         {
+
+            while (getQuantitiesObserved().size() > 1000)
+            {
+                getQuantitiesObserved().removeFirst();
+                getPricesObserved().removeFirst();
+                getDayOfObservation().removeFirst();
+            }
+
             //create the weights
             double weight[] = new double[getQuantitiesObserved().size()];
             for(int i=0; i<weight.length; i++)
             {
                 weight[i]=i+1;
             }
+
+
+
 
             getRegression().estimateModel(Doubles.toArray(getQuantitiesObserved()),Doubles.toArray(getPricesObserved()),weight);
         }
