@@ -67,7 +67,7 @@ public class MonopolistScenarioTest {
 
     }
 
-    //this one failed, I needed to find out why!
+    //this one had failed, I needed to find out why!
     @Test
     public void problematicScenario1()
     {

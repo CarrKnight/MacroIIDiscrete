@@ -92,7 +92,7 @@ public class LearningDecreaseSalesPredictor implements SalesPredictor {
         regressor.updateModel();
         //update slope (we need to put the inverse as a sign because the number is subtracted from old price)
         if(!Double.isNaN(regressor.getSlope()))
-            predictor.setDecrementDelta((int) Math.round(-regressor.getSlope()));
+            predictor.setDecrementDelta((float) -regressor.getSlope());
         else
             predictor.setDecrementDelta(0);
     }

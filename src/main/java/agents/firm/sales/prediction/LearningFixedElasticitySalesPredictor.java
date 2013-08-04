@@ -71,8 +71,8 @@ public class LearningFixedElasticitySalesPredictor extends LearningDecreaseSales
         //update slope (we need to put the inverse as a sign because the number is subtracted from old price)
         if(!Double.isNaN(regressor.getSlope()))
             predictor.setDecrementDelta((int) Math.round(
-                    -regressor.getSlope() * Math.exp(regressor.getPricesObserved().getLast())/
-                            Math.exp(regressor.getQuantitiesObserved().getLast()) ));
+                    -regressor.getSlope() * Math.exp(regressor.getLastPriceObserved())/
+                            Math.exp(regressor.getLastQuantityObserved()) ));
         else
             predictor.setDecrementDelta(0);
     }

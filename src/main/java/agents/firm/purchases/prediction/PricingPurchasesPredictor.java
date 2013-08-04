@@ -24,6 +24,9 @@ import agents.firm.purchases.PurchasesDepartment;
  * @see
  */
 public class PricingPurchasesPredictor implements PurchasesPredictor {
+
+
+
     /**
      * Predicts the future price of the next good to buy
      *

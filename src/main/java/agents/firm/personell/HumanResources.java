@@ -17,6 +17,9 @@ import agents.firm.production.control.maximizer.WorkforceMaximizer;
 import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
 import agents.firm.production.control.targeter.WorkforceTargeter;
 import agents.firm.purchases.PurchasesDepartment;
+import agents.firm.purchases.prediction.LookAheadPredictor;
+import agents.firm.purchases.prediction.MarketPurchasesPredictor;
+import agents.firm.purchases.prediction.PurchasesPredictor;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
@@ -75,6 +78,10 @@ public class HumanResources extends PurchasesDepartment {
         super(budgetGiven, firm, market);
         assert market.getGoodType().isLabor(); //must be a labor market!
         this.plant = plant; //record the plant to supply.
+        if(market.isBestSalePriceVisible())
+            predictor = PurchasesPredictor.Factory.newPurchasesPredictor(LookAheadPredictor.class,this);
+        else
+            predictor = PurchasesPredictor.Factory.newPurchasesPredictor(MarketPurchasesPredictor.class,this);
     }
 
     /**

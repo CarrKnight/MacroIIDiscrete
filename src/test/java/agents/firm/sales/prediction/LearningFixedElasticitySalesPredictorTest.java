@@ -11,6 +11,7 @@ import financial.Market;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
+import model.utilities.stats.PeriodicMarketObserver;
 import org.junit.Assert;
 import org.junit.Test;
 import sim.engine.Steppable;
@@ -18,9 +19,7 @@ import sim.engine.Steppable;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyFloat;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * <h4>Description</h4>
@@ -43,7 +42,7 @@ public class LearningFixedElasticitySalesPredictorTest {
     @Test
     public void testPredictSalePrice() throws Exception
     {
-        RegressionSalePredictor.defaultDailyProbabilityOfObserving = 1f;
+        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1f;
 
 
 
@@ -69,8 +68,8 @@ public class LearningFixedElasticitySalesPredictorTest {
 
         SalesDepartment department = mock(SalesDepartment.class);
         when(department.hypotheticalSalePrice(anyLong())).thenReturn(200l);
-        //the sales predictor will be predict for 9 (yesterdayVolume + 1)
-        Assert.assertEquals(predictor.predictSalePrice(department, 100l), 197l); //200-2.6 (rounded)
+        //the sales predictor will be predicting for 9 (yesterdayVolume + 1)
+        Assert.assertEquals(predictor.predictSalePrice(department, 100l), 198l); //200-2.09 (rounded)
 
 
 
@@ -88,7 +87,7 @@ public class LearningFixedElasticitySalesPredictorTest {
 
         Market market = mock(Market.class);
         MacroII macroII = mock(MacroII.class);
-        RegressionSalePredictor.defaultDailyProbabilityOfObserving = .2f;
+        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = .2f;
 
         new LearningFixedElasticitySalesPredictor(market,macroII);
 
@@ -101,7 +100,7 @@ public class LearningFixedElasticitySalesPredictorTest {
     @Test
     public void testExtremes()
     {
-        RegressionSalePredictor.defaultDailyProbabilityOfObserving = 1f;
+        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1f;
 
         //no observations, should return whatever the sales department says
         Market market = mock(Market.class);

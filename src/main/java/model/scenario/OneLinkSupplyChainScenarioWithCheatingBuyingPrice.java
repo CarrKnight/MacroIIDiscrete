@@ -27,7 +27,7 @@ import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgr
 /**
  * <h4>Description</h4>
  * <p/> This is just like one link supply chain but the purchase department looks at the price rather than using PID.
- * In a way, this is just a boring
+ * In a way, only the sellers are price-makers, the buyers are price-takers!
  *
  * <p/>
  * <p/>
@@ -61,10 +61,14 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
 
             PurchasesDepartment department = factoryProducedPurchaseDepartment.getDepartment();
             firm.registerPurchasesDepartment(department, input);
+
+            if(input.equals(GoodType.FOOD))
+                buildFoodPurchasesDepartment(department);
             department.start();
 
         }
     }
+
 
 
 
@@ -83,7 +87,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
 
         //competition!
         scenario1.setNumberOfBeefProducers(1);
-        scenario1.setNumberOfFoodProducers(5);
+        scenario1.setNumberOfFoodProducers(1);
         //scenario1.setWeeksToMakeObservationBeef(5);
 
         scenario1.setDivideProportionalGainByThis(100f);

@@ -25,11 +25,11 @@ import agents.firm.sales.SalesDepartment;
  */
 public class FixedDecreaseSalesPredictor implements SalesPredictor {
 
-    public static int defaultDecrementDelta = 1;
+    public static float defaultDecrementDelta = 1;
     /**
      * by how much we increase/decrease the price predicted in respect to current departmental price
      */
-    private int decrementDelta = defaultDecrementDelta;
+    private float decrementDelta = defaultDecrementDelta;
 
     /**
      * the delegate object we use to get the department price
@@ -42,7 +42,7 @@ public class FixedDecreaseSalesPredictor implements SalesPredictor {
     }
 
 
-    public FixedDecreaseSalesPredictor(int decrementDelta) {
+    public FixedDecreaseSalesPredictor(float decrementDelta) {
         this.decrementDelta = decrementDelta;
         delegate = new PricingSalesPredictor();
 
@@ -55,7 +55,7 @@ public class FixedDecreaseSalesPredictor implements SalesPredictor {
     @Override
     public long predictSalePrice(SalesDepartment dept, long expectedProductionCost) {
 
-        return Math.max(0,delegate.predictSalePrice(dept, expectedProductionCost)-decrementDelta);
+        return Math.max(0,Math.round(delegate.predictSalePrice(dept, expectedProductionCost)-decrementDelta));
     }
 
     /**
@@ -68,20 +68,20 @@ public class FixedDecreaseSalesPredictor implements SalesPredictor {
 
 
     /**
-     * Gets by how much we increasedecrease the price predicted in respect to current departmental price.
+     * Gets by how much we decrease the price predicted in respect to current departmental price.
      *
-     * @return Value of by how much we increasedecrease the price predicted in respect to current departmental price.
+     * @return Value of by how much we increase/decrease the price predicted in respect to current departmental price.
      */
-    public int getDecrementDelta() {
+    public float getDecrementDelta() {
         return decrementDelta;
     }
 
     /**
-     * Sets by how much we increasedecrease the price predicted in respect to current departmental price.
+     * Sets by how much we increase/decrease the price predicted in respect to current departmental price.
      *
-     * @param decrementDelta New value of by how much we increasedecrease the price predicted in respect to current departmental price.
+     * @param decrementDelta New value of by how much we increase/decrease the price predicted in respect to current departmental price.
      */
-    public void setDecrementDelta(int decrementDelta) {
+    public void setDecrementDelta(float decrementDelta) {
         this.decrementDelta = decrementDelta;
     }
 }

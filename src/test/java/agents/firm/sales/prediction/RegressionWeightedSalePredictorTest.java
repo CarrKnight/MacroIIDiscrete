@@ -5,8 +5,11 @@ import financial.Market;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
+import model.utilities.stats.PeriodicMarketObserver;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.lang.reflect.Field;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -34,26 +37,18 @@ public class RegressionWeightedSalePredictorTest {
     public void testPredictSalePrice() throws Exception
     {
 
+        PeriodicMarketObserver observer = mock(PeriodicMarketObserver.class);
         Market market = mock(Market.class);
-        RegressionWeightedSalePredictor predictor = new RegressionWeightedSalePredictor(market,mock(MacroII.class) );
+        RegressionWeightedSalePredictor predictor = new RegressionWeightedSalePredictor(observer );
 
-        //observation 1
-        when(market.getYesterdayLastPrice()).thenReturn(86l);
-        when(market.getYesterdayVolume()).thenReturn(6);
-        predictor.step(mock(MacroII.class));
-        //observation 2
-        when(market.getYesterdayLastPrice()).thenReturn(84l);
-        when(market.getYesterdayVolume()).thenReturn(7);
-        predictor.step(mock(MacroII.class));
-        //observation 3
-        when(market.getYesterdayLastPrice()).thenReturn(81l);
-        when(market.getYesterdayVolume()).thenReturn(8);
-        predictor.step(mock(MacroII.class));
+        when(observer.getNumberOfObservations()).thenReturn(3);
+        when(observer.getPricesObservedAsArray()).thenReturn(new double[]{86,84,81});
+        when(observer.getQuantitiesObservedAsArray()).thenReturn(new double[]{6,7,8});
+        when(observer.getLastUntrasformedQuantity()).thenReturn(8d);
 
 
         //this should regress to p=101.9 -2.6 * q
 
-        when(market.getYesterdayVolume()).thenReturn(8);
         predictor.updateModel();
         Assert.assertEquals(predictor.getSlope(),-2.6d,.01);
         Assert.assertEquals(predictor.getIntercept(),101.9d,.01);
@@ -72,19 +67,24 @@ public class RegressionWeightedSalePredictorTest {
 
 
     @Test
-    public void testScheduledProperly()
-    {
+    public void testScheduledProperly() throws NoSuchFieldException, IllegalAccessException {
 
         Market market = mock(Market.class);
         MacroII macroII = mock(MacroII.class);
-        RegressionWeightedSalePredictor.defaultDailyProbabilityOfObserving = .2f;
+        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = .2f;
 
         RegressionWeightedSalePredictor predictor = new RegressionWeightedSalePredictor(market, macroII);
 
-        verify(macroII).scheduleAnotherDayWithFixedProbability(ActionOrder.DAWN,predictor,0.2f, Priority.AFTER_STANDARD);
+
+        //grab through reflection the reference to the observer!
+        Field field = RegressionSalePredictor.class.getDeclaredField("observer");
+        field.setAccessible(true);
+        PeriodicMarketObserver observer = (PeriodicMarketObserver) field.get(predictor);
+
+        verify(macroII).scheduleAnotherDayWithFixedProbability(ActionOrder.DAWN,observer,0.2f, Priority.AFTER_STANDARD);
         predictor.setDailyProbabilityOfObserving(.3f);
-        predictor.step(macroII);
-        verify(macroII).scheduleAnotherDayWithFixedProbability(ActionOrder.DAWN,predictor,0.3f, Priority.AFTER_STANDARD);
+        observer.step(macroII);
+        verify(macroII).scheduleAnotherDayWithFixedProbability(ActionOrder.DAWN,observer,0.3f, Priority.AFTER_STANDARD);
 
 
     }
@@ -94,9 +94,11 @@ public class RegressionWeightedSalePredictorTest {
     @Test
     public void testExtremes()
     {
+        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1f;
+
         //no observations, should return whatever the sales department says
         Market market = mock(Market.class);
-        MacroII macroII = mock(MacroII.class);
+        MacroII macroII = new MacroII(1l);
         SalesDepartment department = mock(SalesDepartment.class);
 
         RegressionWeightedSalePredictor predictor = new RegressionWeightedSalePredictor(market, macroII);
@@ -106,20 +108,20 @@ public class RegressionWeightedSalePredictorTest {
         //with one observation, it still returns whatever the sales department says
         when(market.getYesterdayLastPrice()).thenReturn(10l);
         when(market.getYesterdayVolume()).thenReturn(1);
-        predictor.step(mock(MacroII.class));
+        macroII.getPhaseScheduler().step(macroII);
         Assert.assertEquals(predictor.predictSalePrice(department,1000l),50l);
 
         //with no volume the observation is ignored
         when(market.getYesterdayLastPrice()).thenReturn(10l);
         when(market.getYesterdayVolume()).thenReturn(0);
-        predictor.step(mock(MacroII.class));
+        macroII.getPhaseScheduler().step(macroII);
         Assert.assertEquals(predictor.predictSalePrice(department,1000l),50l);
 
 
         //two observations, everything back to normal!
         when(market.getYesterdayLastPrice()).thenReturn(10l);
         when(market.getYesterdayVolume()).thenReturn(1);
-        predictor.step(mock(MacroII.class));
+        macroII.getPhaseScheduler().step(macroII);
         Assert.assertEquals(predictor.predictSalePrice(department,1000l),10l);
 
 

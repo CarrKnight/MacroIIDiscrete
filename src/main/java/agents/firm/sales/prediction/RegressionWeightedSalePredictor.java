@@ -1,8 +1,8 @@
 package agents.firm.sales.prediction;
 
-import com.google.common.primitives.Doubles;
 import financial.Market;
 import model.MacroII;
+import model.utilities.stats.PeriodicMarketObserver;
 
 /**
  * <h4>Description</h4>
@@ -29,22 +29,29 @@ public class RegressionWeightedSalePredictor extends RegressionSalePredictor {
     }
 
     /**
+     * Give a premade observer to sale predictor. The observer will be turned Off when the predictor is turned off!
+     *
+     * @param observer
+     */
+    public RegressionWeightedSalePredictor(PeriodicMarketObserver observer) {
+        super(observer);
+    }
+
+    /**
      * Force the predictor to run a regression, if possible
      */
     @Override
     public void updateModel() {
-        if(getQuantitiesObserved().size() >1)
+        if(observer.getNumberOfObservations() >1)
         {
 
-            while (getQuantitiesObserved().size() > 1000)
+            while (observer.getNumberOfObservations() > 1000)
             {
-                getQuantitiesObserved().removeFirst();
-                getPricesObserved().removeFirst();
-                getDayOfObservation().removeFirst();
+               observer.forgetOldestObservation();
             }
 
             //create the weights
-            double weight[] = new double[getQuantitiesObserved().size()];
+            double weight[] = new double[observer.getNumberOfObservations()];
             for(int i=0; i<weight.length; i++)
             {
                 weight[i]=i+1;
@@ -53,7 +60,8 @@ public class RegressionWeightedSalePredictor extends RegressionSalePredictor {
 
 
 
-            getRegression().estimateModel(Doubles.toArray(getQuantitiesObserved()),Doubles.toArray(getPricesObserved()),weight);
+            getRegression().estimateModel(observer.getQuantitiesObservedAsArray(),
+                    observer.getPricesObservedAsArray(),weight);
         }
 
     }

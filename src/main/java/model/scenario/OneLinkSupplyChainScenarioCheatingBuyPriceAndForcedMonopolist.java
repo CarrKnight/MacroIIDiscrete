@@ -36,7 +36,7 @@ import static org.mockito.Mockito.*;
 
 /**
  * <h4>Description</h4>
- * <p/> This is more for testing than a real scenario, what this is supposed to do is force beef monopolist to always produce 16, which is the solution of the supply chain
+ * <p/> This is more for testing than a real scenario, what this is supposed to do is force a monopolist to always produce 16, which is the solution of the supply chain
  * <p/>
  * <p/>
  * <h4>Notes</h4>
@@ -49,16 +49,29 @@ import static org.mockito.Mockito.*;
  * @version 2013-07-09
  * @see
  */
-public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist extends OneLinkSupplyChainScenarioWithCheatingBuyingPrice {
+public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist extends OneLinkSupplyChainScenarioWithCheatingBuyingPrice {
 
     private final int beefWorkerTarget = 16;
 
-    public OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist(MacroII model) {
-        super(model);
+    private final GoodType monopolistGoodType;
 
-        //make beef a monopolist
-        setNumberOfBeefProducers(1);
-        setNumberOfFoodProducers(5);
+    public OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(MacroII model, GoodType monopolistGood) {
+        super(model);
+        monopolistGoodType = monopolistGood;
+
+        if(monopolistGood.equals(GoodType.BEEF))
+        {
+            //make beef a monopolist
+            setNumberOfBeefProducers(1);
+            setNumberOfFoodProducers(5);
+        }
+        else
+        {
+            assert monopolistGood.equals(GoodType.FOOD);
+            setNumberOfBeefProducers(5);
+            setNumberOfFoodProducers(1);
+
+        }
     }
 
 
@@ -68,7 +81,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist e
      */
     @Override
     protected void createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
-        if(!blueprint.getOutputs().containsKey(GoodType.BEEF))
+        if(!blueprint.getOutputs().containsKey(monopolistGoodType))
             super.createPlant(blueprint, firm, laborMarket);
         else
         {
@@ -113,8 +126,8 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist e
 
 
         final MacroII macroII = new MacroII(System.currentTimeMillis());
-        final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist scenario1 =
-                new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedBeefMonopolist(macroII);
+        final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 =
+                new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.BEEF);
         scenario1.setControlType(MarginalMaximizerWithUnitPID.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);

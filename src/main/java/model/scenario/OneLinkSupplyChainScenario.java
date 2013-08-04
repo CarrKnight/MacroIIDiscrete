@@ -300,7 +300,18 @@ public class OneLinkSupplyChainScenario extends Scenario {
             firm.registerPurchasesDepartment(department, input);
             department.start();
 
+            if(input.equals(GoodType.FOOD))
+                buildFoodPurchasesDepartment(department);
+
         }
+    }
+
+    /**
+     * can be overriden in tests
+     * @param department
+     */
+    public void buildFoodPurchasesDepartment(PurchasesDepartment department) {
+
     }
 
     protected void createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {

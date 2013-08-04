@@ -4,24 +4,17 @@
  * See the file "LICENSE" for more information
  */
 
-package agents.firm.sales.prediction;
+package model.utilities.stats;
 
-import agents.firm.sales.SalesDepartment;
 import financial.Market;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
-import model.utilities.stats.PeriodicMarketObserver;
 import org.junit.Assert;
 import org.junit.Test;
 import sim.engine.Steppable;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyFloat;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * <h4>Description</h4>
@@ -35,22 +28,24 @@ import static org.mockito.Mockito.when;
  * <h4>References</h4>
  *
  * @author carrknight
- * @version 2013-07-12
+ * @version 2013-08-04
  * @see
  */
-public class LearningDecreaseSalesPredictorTest
-{
+public class PeriodicMarketObserverTest {
+
 
     @Test
-    public void testPredictSalePrice() throws Exception
+    public void basicObservationTest()
     {
+
+
         PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1f;
 
 
 
         Market market = mock(Market.class);
         MacroII model = new MacroII(System.currentTimeMillis());
-        LearningDecreaseSalesPredictor predictor = new LearningDecreaseSalesPredictor(market,model );
+        PeriodicMarketObserver observer = new PeriodicMarketObserver(market,model );
 
         //observation 1
         when(market.getYesterdayLastPrice()).thenReturn(86l);
@@ -66,74 +61,68 @@ public class LearningDecreaseSalesPredictorTest
         model.getPhaseScheduler().step(model);
 
 
-        //this should regress to p=101.9 -2.6  * q
-        //now Q doesn't matter anymore, only previous Price
-
-        SalesDepartment department = mock(SalesDepartment.class);
-        when(department.hypotheticalSalePrice(anyLong())).thenReturn(200l);
-        //the sales predictor will be predict for 9 (yesterdayVolume + 1)
-        Assert.assertEquals(predictor.predictSalePrice(department, 100l), 197l); //200-2.6 (rounded)
-
-
-
-
-
+        Assert.assertEquals(3,observer.getNumberOfObservations());
+        Assert.assertEquals(86,observer.getPricesObservedAsArray()[0],.0001);
+        Assert.assertEquals(84,observer.getPricesObservedAsArray()[1],.0001);
+        Assert.assertEquals(81,observer.getPricesObservedAsArray()[2],.0001);
+        Assert.assertEquals(6,observer.getQuantitiesObservedAsArray()[0],.0001);
+        Assert.assertEquals(7,observer.getQuantitiesObservedAsArray()[1],.0001);
+        Assert.assertEquals(8,observer.getQuantitiesObservedAsArray()[2],.0001);
 
 
 
     }
 
-
     @Test
-    public void testScheduledProperly()
+    public void basicScheduling()
     {
-
         Market market = mock(Market.class);
         MacroII macroII = mock(MacroII.class);
         PeriodicMarketObserver.defaultDailyProbabilityOfObserving = .2f;
 
-        new LearningDecreaseSalesPredictor(market,macroII);
+        new PeriodicMarketObserver(market,macroII );
 
         verify(macroII).scheduleAnotherDayWithFixedProbability(any(ActionOrder.class),any(Steppable.class),
                 anyFloat(),any(Priority.class));
     }
 
 
-    //Check defaults
     @Test
-    public void testExtremes()
+    public void knowsWhenNotToObserve()
     {
-        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1f;
-
         //no observations, should return whatever the sales department says
         Market market = mock(Market.class);
-        MacroII model = new MacroII(System.currentTimeMillis());
-        SalesDepartment department = mock(SalesDepartment.class);
+        MacroII model = mock(MacroII.class);
 
-        LearningDecreaseSalesPredictor predictor = new LearningDecreaseSalesPredictor(market,model );
-        when(department.hypotheticalSalePrice(anyLong())).thenReturn(50l);
-        Assert.assertEquals(predictor.predictSalePrice(department,1000l),50l);
+        PeriodicMarketObserver observer = new PeriodicMarketObserver(market,model );
+        Assert.assertEquals(observer.getNumberOfObservations(),0);
+
+
+
 
         //with one observation, it still returns whatever the sales department says
         when(market.getYesterdayLastPrice()).thenReturn(10l);
         when(market.getYesterdayVolume()).thenReturn(1);
-        model.getPhaseScheduler().step(model);
-        Assert.assertEquals(predictor.predictSalePrice(department,1000l),50l);
+        observer.step(mock(MacroII.class));
+        Assert.assertEquals(observer.getNumberOfObservations(),1);
+        Assert.assertEquals((double)observer.getLastPriceObserved(),10,.01);
+        Assert.assertEquals((double)observer.getLastQuantityObserved(),1,.01);
 
         //with no volume the observation is ignored
         when(market.getYesterdayLastPrice()).thenReturn(10l);
         when(market.getYesterdayVolume()).thenReturn(0);
-        model.getPhaseScheduler().step(model);
-        Assert.assertEquals(predictor.predictSalePrice(department,1000l),50l);
+        observer.step(mock(MacroII.class));
+        Assert.assertEquals(observer.getNumberOfObservations(),1);
+        Assert.assertEquals((double)observer.getLastPriceObserved(),10,.01);
+        Assert.assertEquals((double)observer.getLastQuantityObserved(),1,.01);
 
-
-        //two observations, everything back to normal! (but the slope is 0, so no effect)
+        //two observations, everything back to normal!
         when(market.getYesterdayLastPrice()).thenReturn(10l);
         when(market.getYesterdayVolume()).thenReturn(1);
-        model.getPhaseScheduler().step(model);
-        Assert.assertEquals(predictor.predictSalePrice(department,50l),50l);
-
-
+        observer.step(mock(MacroII.class));
+        Assert.assertEquals(observer.getNumberOfObservations(),2);
+        Assert.assertEquals((double)observer.getLastPriceObserved(),10,.01);
+        Assert.assertEquals((double)observer.getLastQuantityObserved(),1,.01);
     }
 
 }

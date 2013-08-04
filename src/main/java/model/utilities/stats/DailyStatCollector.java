@@ -59,38 +59,38 @@ public class DailyStatCollector implements Steppable{
     /**
      * How much was produced today
      */
-    EnumMap<GoodType,Integer> productionPerSector;
+    private EnumMap<GoodType,Integer> productionPerSector;
 
     /**
      * How many workers were working today
      */
-    EnumMap<GoodType,Integer> workersPerSector;
+    private EnumMap<GoodType,Integer> workersPerSector;
 
     /**
      * What's the current market price for this good
      */
-    EnumMap<GoodType,Long> marketPrice;
+    private EnumMap<GoodType,Long> marketPrice;
 
     /**
      * The amount traded in the market
      */
-    EnumMap<GoodType,Integer> marketVolume;
+    private EnumMap<GoodType,Integer> marketVolume;
 
     /**
      * How much of the good is owned by the sellers
      */
-    EnumMap<GoodType,Integer> sellerTotalInventory;
+    private EnumMap<GoodType,Integer> sellerTotalInventory;
 
     /**
      * How much of the good is owned by the buyers
      */
-    EnumMap<GoodType,Integer> buyerTotalInventory;
+    private EnumMap<GoodType,Integer> buyerTotalInventory;
 
 
     /**
      * The flag is true for the output if at least one producing plant had its production halted
      */
-    EnumMap<GoodType,Boolean> wereThereShortages;
+    private EnumMap<GoodType,Boolean> wereThereShortages;
 
 
 
@@ -282,5 +282,34 @@ public class DailyStatCollector implements Steppable{
         }
 
         header = todayRow.toArray(new String[todayRow.size()]);
+    }
+
+
+    public EnumMap<GoodType, Integer> getProductionPerSector() {
+        return productionPerSector;
+    }
+
+    public EnumMap<GoodType, Integer> getWorkersPerSector() {
+        return workersPerSector;
+    }
+
+    public EnumMap<GoodType, Long> getMarketPrice() {
+        return marketPrice;
+    }
+
+    public EnumMap<GoodType, Integer> getMarketVolume() {
+        return marketVolume;
+    }
+
+    public EnumMap<GoodType, Integer> getSellerTotalInventory() {
+        return sellerTotalInventory;
+    }
+
+    public EnumMap<GoodType, Integer> getBuyerTotalInventory() {
+        return buyerTotalInventory;
+    }
+
+    public EnumMap<GoodType, Boolean> getWereThereShortages() {
+        return wereThereShortages;
     }
 }

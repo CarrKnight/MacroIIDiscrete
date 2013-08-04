@@ -8,9 +8,12 @@ package agents.firm.purchases.prediction;
 
 import agents.firm.purchases.PurchasesDepartment;
 import ec.util.MersenneTwisterFast;
+import financial.Market;
+import model.MacroII;
 import org.reflections.Reflections;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
@@ -130,15 +133,18 @@ public interface PurchasesPredictor
 
 
             try {
-                //we don't need a big switch here, since they are all without constructor
+                //we don't need a big switch here, since they are all without constructor except one
+                if(rule.equals(LearningIncreasePurchasesPredictor.class))
+                    return rule.getConstructor(Market.class, MacroII.class).
+                            newInstance(department.getMarket(), department.getModel());
+                else
+                    return rule.newInstance();
 
-                return rule.newInstance();
 
-
-            } catch (SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException ex) {
+            } catch (SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException |
+                    NoSuchMethodException |InvocationTargetException  ex  ) {
                 throw new RuntimeException("failed to instantiate BuyerSearchAlgorithm " + ex.getMessage());
             }
-
 
         }
 

@@ -7,25 +7,17 @@
 package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
-import com.google.common.base.Preconditions;
-import com.google.common.primitives.Doubles;
-import com.sun.istack.internal.Nullable;
 import financial.Market;
 import model.MacroII;
-import model.utilities.ActionOrder;
-import model.utilities.scheduler.Priority;
+import model.utilities.stats.PeriodicMarketObserver;
 import model.utilities.stats.regression.LinearRegression;
 import org.apache.commons.collections15.Transformer;
-import sim.engine.SimState;
-import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
-import java.util.LinkedList;
 
 /**
  * <h4>Description</h4>
- * <p/> This sales predictor checks periodically the price-quantity relationship in the market and feeds it into a
- * linear regression model
+ * <p/> This object spawns a periodic market observer to look
  * <p/>
  * <p/>
  * <h4>Notes</h4>
@@ -38,75 +30,42 @@ import java.util.LinkedList;
  * @version 2013-07-11
  * @see
  */
-public class RegressionSalePredictor implements SalesPredictor, Steppable {
+public class RegressionSalePredictor implements SalesPredictor{
 
-    /**
-     * The market we are going to observe!
-     */
-    private final Market market;
+
 
     /**
      * the regression object we use
      */
-    private LinearRegression regression;
+    protected LinearRegression regression;
 
-    private final LinkedList<Double> pricesObserved;
-
-    private final LinkedList<Double> quantitiesObserved;
-
-
-    private final LinkedList<Double> dayOfObservation;
-
-    private boolean isActive = true;
-
-
-    public static float defaultDailyProbabilityOfObserving =  0.142f;
 
     /**
-     * A function we can put in to transform the observed price before reading it in
+     * The object that periodically reads in stuff from the market
      */
-    @Nullable
-    private Transformer<Double, Double> priceTransformer;
+    protected PeriodicMarketObserver observer;
 
 
     /**
-     *  The inverse function of price transform, required for prediction
-     */
-    @Nullable
-    private Transformer<Double, Double> priceInverseTransformer;
-
-
-    /**
-     * A function we can put in to transform the observed price before reading it in
-     */
-    @Nullable
-    private Transformer<Double, Double> quantityTransformer;
-
-
-    /**
-     * The probability each day the predictor will memorize today's price and quantity as an observation
-     */
-    private float dailyProbabilityOfObserving = defaultDailyProbabilityOfObserving; //this corresponds to weekly
-
-
-    /**
-     *
+     * The PeriodicMarketObserver is created straight into the constructor
      * @param market the market to observe
      * @param macroII a link to the model to schedule yourself
      */
-
-
     public RegressionSalePredictor(Market market, MacroII macroII)
     {
-        this.market = market;
+
+       this(new PeriodicMarketObserver(market,macroII));
+
+    }
+
+    /**
+     * Give a premade observer to sale predictor. The observer will be turned Off when the predictor is turned off!
+     * @param observer
+     */
+    public RegressionSalePredictor(PeriodicMarketObserver observer) {
         regression = new LinearRegression();
 
-        pricesObserved= new LinkedList<>();
-        quantitiesObserved = new LinkedList<>();
-        dayOfObservation = new LinkedList<>();
-
-        macroII.scheduleAnotherDayWithFixedProbability(ActionOrder.DAWN, this, dailyProbabilityOfObserving,
-                Priority.AFTER_STANDARD);
+        this.observer = observer;
     }
 
     /**
@@ -128,14 +87,14 @@ public class RegressionSalePredictor implements SalesPredictor, Steppable {
         else
         {
             //if you are producing more than what's sold, use production to predict tomorrow's quantity
-            double x = Math.max(market.getYesterdayVolume(),dept.getTodayInflow()) + 1;
-            if(quantityTransformer != null)
-                x = quantityTransformer.transform(x);
+            double x = getFutureXForSale(dept);
+            if(observer.getQuantityTransformer() != null)
+                x = observer.getQuantityTransformer().transform(x);
             double y =  regression.predict(x);
-            if(priceTransformer != null)
+            if(observer.getPriceTransformer() != null)
             {
-                assert priceInverseTransformer != null ;
-                y = priceInverseTransformer.transform(y);
+                assert observer.getPriceInverseTransformer() != null ;
+                y = observer.getPriceInverseTransformer().transform(y);
             }
 
             return Math.round(y);
@@ -146,11 +105,21 @@ public class RegressionSalePredictor implements SalesPredictor, Steppable {
     }
 
     /**
+     * Usually we just predict lastX+1, we need to make sure we transform it correctly, though
+     * @param dept
+     * @return
+     */
+    private double getFutureXForSale(SalesDepartment dept) {
+        return Math.max(observer.getLastUntrasformedQuantity(),dept.getTodayInflow()) + 1;
+    }
+
+    /**
      * Force the predictor to run a regression, if possible
      */
     public void updateModel() {
-        if(quantitiesObserved.size() >1)
-            regression.estimateModel(Doubles.toArray(quantitiesObserved),Doubles.toArray(pricesObserved),null);
+        if(observer.getNumberOfObservations() >1)
+            regression.estimateModel(observer.getQuantitiesObservedAsArray(),
+                    observer.getPricesObservedAsArray(),null);
     }
 
     /**
@@ -158,53 +127,12 @@ public class RegressionSalePredictor implements SalesPredictor, Steppable {
      */
     @Override
     public void turnOff() {
-        isActive=false;
+        observer.turnOff();
     }
 
 
-    /**
-     * reads and memorizes price quantity, and schedules itself again approximately in a week.
-     *
-     * @param state
-     */
-    @Override
-    public void step(SimState state)
-    {
-        if(!isActive)
-            return;
-
-        Preconditions.checkState(state instanceof MacroII);
-        MacroII model = (MacroII) state;
-
-        double price = market.getYesterdayLastPrice();
-        if(priceTransformer!=null)
-            price = priceTransformer.transform(price);
-        double quantity = market.getYesterdayVolume();
-        if(quantityTransformer!=null)
-            quantity = quantityTransformer.transform(quantity);
 
 
-        //if some trade actually occurred:
-        if( price!= -1 && quantity != 0)
-        {
-            pricesObserved.add(price);
-            quantitiesObserved.add(quantity);
-            dayOfObservation.add(model.getMainScheduleTime());
-        }
-
-
-        model.scheduleAnotherDayWithFixedProbability(ActionOrder.DAWN,this,dailyProbabilityOfObserving,
-                Priority.AFTER_STANDARD);
-    }
-
-
-    public float getDailyProbabilityOfObserving() {
-        return dailyProbabilityOfObserving;
-    }
-
-    public void setDailyProbabilityOfObserving(float dailyProbabilityOfObserving) {
-        this.dailyProbabilityOfObserving = dailyProbabilityOfObserving;
-    }
 
 
     /**
@@ -229,47 +157,9 @@ public class RegressionSalePredictor implements SalesPredictor, Steppable {
         return regression;
     }
 
-    protected LinkedList<Double> getPricesObserved() {
-        return pricesObserved;
-    }
 
-    protected LinkedList<Double> getQuantitiesObserved() {
-        return quantitiesObserved;
-    }
-
-
-    protected LinkedList<Double> getDayOfObservation() {
-        return dayOfObservation;
-    }
-
-
-    /**
-     * Sets new A function we can put in to transform the observed price before reading it in.
-     *
-     * @param quantityTransformer New value of A function we can put in to transform the observed price before reading it in.
-     */
-    public void setQuantityTransformer(Transformer<Double, Double> quantityTransformer) {
-        this.quantityTransformer = quantityTransformer;
-    }
-
-    /**
-     * Gets A function we can put in to transform the observed price before reading it in.
-     *
-     * @return Value of A function we can put in to transform the observed price before reading it in.
-     */
-    public Transformer<Double, Double> getQuantityTransformer() {
-        return quantityTransformer;
-    }
-
-    /**
-     * Sets new A function we can put in to transform the observed price before reading it in.
-     *
-     * @param priceTransformer New value of A function we can put in to transform the observed price before reading it in.
-     */
-    public void setPriceTransformer(@Nonnull Transformer<Double, Double> priceTransformer,
-                                    @Nonnull Transformer<Double, Double> priceInverseTransformer) {
-        this.priceTransformer = priceTransformer;
-        this.priceInverseTransformer  = priceInverseTransformer;
+    public Transformer<Double, Double> getPriceInverseTransformer() {
+        return observer.getPriceInverseTransformer();
     }
 
     /**
@@ -278,10 +168,71 @@ public class RegressionSalePredictor implements SalesPredictor, Steppable {
      * @return Value of A function we can put in to transform the observed price before reading it in.
      */
     public Transformer<Double, Double> getPriceTransformer() {
-        return priceTransformer;
+        return observer.getPriceTransformer();
     }
 
-    public Transformer<Double, Double> getPriceInverseTransformer() {
-        return priceInverseTransformer;
+    /**
+     * Sets new A function we can put in to transform the observed price before reading it in.
+     *
+     * @param priceTransformer New value of A function we can put in to transform the observed price before reading it in.
+     */
+    public void setPriceTransformer(@Nonnull Transformer<Double, Double> priceTransformer, @Nonnull Transformer<Double, Double> priceInverseTransformer) {
+        observer.setPriceTransformer(priceTransformer, priceInverseTransformer);
+    }
+
+    /**
+     * Gets A function we can put in to transform the observed price before reading it in.
+     *
+     * @return Value of A function we can put in to transform the observed price before reading it in.
+     */
+    public Transformer<Double, Double> getQuantityTransformer() {
+        return observer.getQuantityTransformer();
+    }
+
+    /**
+     * Sets new A function we can put in to transform the observed price before reading it in.
+     *
+     * @param quantityTransformer New value of A function we can put in to transform the observed price before reading it in.
+     */
+    public void setQuantityTransformer(Transformer<Double, Double> quantityTransformer) {
+        observer.setQuantityTransformer(quantityTransformer);
+    }
+
+    public int numberOfObservations() {
+        return observer.getNumberOfObservations();
+    }
+
+
+    /**
+     * get the last (newest) observation day
+     * @return
+     */
+    public Double getLastDayObserved() {
+        return observer.getLastDayObserved();
+    }
+
+    /**
+     * get the last (newest) observation of price
+     * @return
+     */
+    public Double getLastPriceObserved() {
+        return observer.getLastPriceObserved();
+    }
+
+    /**
+     * get the last (newest) observation of quantity
+     * @return
+     */
+    public Double getLastQuantityObserved() {
+        return observer.getLastQuantityObserved();
+    }
+
+
+    public void setDailyProbabilityOfObserving(float dailyProbabilityOfObserving) {
+        observer.setDailyProbabilityOfObserving(dailyProbabilityOfObserving);
+    }
+
+    public float getDailyProbabilityOfObserving() {
+        return observer.getDailyProbabilityOfObserving();
     }
 }

@@ -8,6 +8,7 @@ import financial.Market;
 import financial.OrderBookMarket;
 import goods.Good;
 import goods.GoodType;
+import model.MacroII;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -91,8 +92,9 @@ public class MaximumBidPriceDecoratorTest {
 
         Market market = new OrderBookMarket(GoodType.GENERIC);
 
-
-        PurchasesDepartment department = PurchasesDepartment.getEmptyPurchasesDepartment(10000l,mock(Firm.class),market);
+        Firm firm = mock(Firm.class);
+        when(firm.getModel()).thenReturn(mock(MacroII.class));
+        PurchasesDepartment department = PurchasesDepartment.getEmptyPurchasesDepartment(10000l,firm,market);
 
         BidPricingStrategy strategy = mock(BidPricingStrategy.class);
         when(strategy.maxPrice(any(GoodType.class))).thenReturn(decoratedPrice);

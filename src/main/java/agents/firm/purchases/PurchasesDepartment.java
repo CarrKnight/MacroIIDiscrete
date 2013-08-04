@@ -11,8 +11,7 @@ import agents.firm.Department;
 import agents.firm.Firm;
 import agents.firm.purchases.inventoryControl.InventoryControl;
 import agents.firm.purchases.inventoryControl.Level;
-import agents.firm.purchases.prediction.LookAheadPredictor;
-import agents.firm.purchases.prediction.MarketPurchasesPredictor;
+import agents.firm.purchases.prediction.LearningIncreasePurchasesPredictor;
 import agents.firm.purchases.prediction.PurchasesPredictor;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.purchases.pricing.decorators.MaximumBidPriceDecorator;
@@ -143,7 +142,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
     /**
      * The predictor for next purchases. It is set in the constructor but that can be changed
      */
-    private PurchasesPredictor predictor;
+    protected PurchasesPredictor predictor;
 
     /**
      * an explicit link to the model, to reschedule yourself
@@ -164,14 +163,16 @@ public class PurchasesDepartment implements Deactivatable, Department {
         this.firm = firm;
         this.market = market;
         this.goodType = market.getGoodType();
+        this.model = model;
+
         //register as a buyer
         market.registerBuyer(firm);
-        if(market.isBestSalePriceVisible())
+        predictor = PurchasesPredictor.Factory.newPurchasesPredictor(LearningIncreasePurchasesPredictor.class,this);
+    /*    if(market.isBestSalePriceVisible())
             predictor = PurchasesPredictor.Factory.newPurchasesPredictor(LookAheadPredictor.class,this);
         else
             predictor = PurchasesPredictor.Factory.newPurchasesPredictor(MarketPurchasesPredictor.class,this);
-
-        this.model = model;
+      */
         counter = new InflowOutflowCounter(model,firm,goodType);
 
 
@@ -461,14 +462,15 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     public long maxPrice(GoodType type, Market market){
 
-        try {if(!market.isBestSalePriceVisible() || market.getBestSellPrice() < 0)    //if it's not visible or whatever, return the strategy or the budget
-            return Math.min(pricingStrategy.maxPrice(type), getAvailableBudget());
-        else{
-            long strategyPrice = pricingStrategy.maxPrice(type);
-            long bestReadyPrice = looksAhead? market.getBestSellPrice(): Long.MAX_VALUE;
-            long budget = getAvailableBudget();
-            return Math.min(Math.min(strategyPrice,bestReadyPrice),budget); //basically return the smallest of the 3: the best price visible, the budget and the strategic price
-        }
+        try {
+            if(!market.isBestSalePriceVisible() || market.getBestSellPrice() < 0)    //if it's not visible or whatever, return the strategy or the budget
+                return Math.min(pricingStrategy.maxPrice(type), getAvailableBudget());
+            else{
+                long strategyPrice = pricingStrategy.maxPrice(type);
+                long bestReadyPrice = looksAhead? market.getBestSellPrice(): Long.MAX_VALUE;
+                long budget = getAvailableBudget();
+                return Math.min(Math.min(strategyPrice,bestReadyPrice),budget); //basically return the smallest of the 3: the best price visible, the budget and the strategic price
+            }
         } catch (IllegalAccessException e) {
             throw new RuntimeException("I was promised that sale price was visible! But it wasn't!");
         }
@@ -1093,5 +1095,9 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     public Priority getTradePriority() {
         return tradePriority;
+    }
+
+    public MacroII getModel() {
+        return model;
     }
 }
