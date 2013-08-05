@@ -300,19 +300,12 @@ public class OneLinkSupplyChainScenario extends Scenario {
             firm.registerPurchasesDepartment(department, input);
             department.start();
 
-            if(input.equals(GoodType.FOOD))
-                buildFoodPurchasesDepartment(department);
+
 
         }
     }
 
-    /**
-     * can be overriden in tests
-     * @param department
-     */
-    public void buildFoodPurchasesDepartment(PurchasesDepartment department) {
 
-    }
 
     protected void createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
         Plant plant = new Plant(blueprint, firm);
@@ -533,6 +526,9 @@ public class OneLinkSupplyChainScenario extends Scenario {
         final OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
         scenario1.setControlType(MarginalMaximizerWithUnitPID.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+
+        scenario1.setNumberOfBeefProducers(1);
+        scenario1.setNumberOfFoodProducers(5);
 
 
 

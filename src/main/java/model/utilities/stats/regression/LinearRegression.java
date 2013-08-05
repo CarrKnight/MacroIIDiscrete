@@ -226,4 +226,17 @@ public class LinearRegression implements UnivariateRegression
     public double getIntercept() {
         return intercept;
     }
+
+
+    @Override
+    public String toString() {
+        if(slope ==0)
+            return "y= " + getIntercept();
+        else
+        {
+            String plus = slope > 0 ? " + " : " ";
+            return "y= " + getIntercept() + plus + getSlope() +" * x";
+
+        }
+    }
 }

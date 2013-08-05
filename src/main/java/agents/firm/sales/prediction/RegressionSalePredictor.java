@@ -235,4 +235,10 @@ public class RegressionSalePredictor implements SalesPredictor{
     public float getDailyProbabilityOfObserving() {
         return observer.getDailyProbabilityOfObserving();
     }
+
+
+    @Override
+    public String toString() {
+        return regression.toString();
+    }
 }

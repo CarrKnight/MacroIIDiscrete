@@ -6,6 +6,8 @@ import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.Ma
 import agents.firm.purchases.FactoryProducedPurchaseDepartment;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.inventoryControl.FixedInventoryControl;
+import agents.firm.purchases.prediction.LearningIncreasePurchasesPredictor;
+import agents.firm.purchases.prediction.PurchasesPredictor;
 import agents.firm.purchases.pricing.CheaterPricing;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
@@ -62,17 +64,18 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
             PurchasesDepartment department = factoryProducedPurchaseDepartment.getDepartment();
             firm.registerPurchasesDepartment(department, input);
 
-            if(input.equals(GoodType.FOOD))
-                buildFoodPurchasesDepartment(department);
+            if(input.equals(GoodType.BEEF))
+                buildFoodPurchasesPredictor(department);
             department.start();
 
         }
     }
 
+    public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
 
+        department.setPredictor(PurchasesPredictor.Factory.newPurchasesPredictor(LearningIncreasePurchasesPredictor.class,department));
 
-
-
+    }
 
 
     public static void main(String[] args)
@@ -87,7 +90,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
 
         //competition!
         scenario1.setNumberOfBeefProducers(1);
-        scenario1.setNumberOfFoodProducers(1);
+        scenario1.setNumberOfFoodProducers(5);
         //scenario1.setWeeksToMakeObservationBeef(5);
 
         scenario1.setDivideProportionalGainByThis(100f);
@@ -145,10 +148,10 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
 
 
 
-        while(macroII.schedule.getTime()<15000)
+        while(macroII.schedule.getTime()<45000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+            printProgressBar(45001,(int)macroII.schedule.getSteps(),100);
         }
 
 

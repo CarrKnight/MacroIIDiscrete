@@ -183,7 +183,7 @@ public class MacroII extends SimState{
     /**
      * @return the value for the field counter.
      */
-    public static int getCounter() {
+    public synchronized static int getCounter() {
         return counter++;
     }
 

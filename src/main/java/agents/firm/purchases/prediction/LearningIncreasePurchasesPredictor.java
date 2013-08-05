@@ -120,7 +120,8 @@ public class LearningIncreasePurchasesPredictor implements PurchasesPredictor {
         if(observer.getNumberOfObservations() > 0)
         {
             updateModel();
-            predictor.setIncrementDelta((float) Math.max(regression.getSlope(),0));
+       //     System.out.print(regression);
+            predictor.setIncrementDelta((float) regression.getSlope());
         }
 
         return predictor.predictPurchasePrice(dept);

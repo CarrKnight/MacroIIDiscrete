@@ -50,11 +50,13 @@ public class RegressionWeightedSalePredictor extends RegressionSalePredictor {
                observer.forgetOldestObservation();
             }
 
+
             //create the weights
             double weight[] = new double[observer.getNumberOfObservations()];
+            double dayObserved[] = observer.getObservationDaysAsArray();
             for(int i=0; i<weight.length; i++)
             {
-                weight[i]=i+1;
+                weight[i]=1+i;
             }
 
 
