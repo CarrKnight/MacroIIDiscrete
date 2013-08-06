@@ -133,13 +133,13 @@ public class SimpleBuyerScenario extends Scenario {
 
 
         //set up the department to start buying soon
-        getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
+   /*     getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
             @Override
             public void step(SimState state) {
                 department.start();
             }
         });
-
+     */
 
         if(burstConsumption)
             setUpBurstConsumption(firm, department);
@@ -210,8 +210,10 @@ public class SimpleBuyerScenario extends Scenario {
             }
         });
 
-
-        getAgents().add(seller);
+        if(initialDelay >0)
+            getModel().addAgent(seller);
+        else
+            getAgents().add(seller);
     }
 
 

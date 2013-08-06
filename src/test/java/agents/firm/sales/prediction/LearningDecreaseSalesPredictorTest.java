@@ -49,20 +49,22 @@ public class LearningDecreaseSalesPredictorTest
 
 
         Market market = mock(Market.class);
+        when(market.getYesterdayVolume()).thenReturn(1);
+
         MacroII model = new MacroII(System.currentTimeMillis());
         LearningDecreaseSalesPredictor predictor = new LearningDecreaseSalesPredictor(market,model );
 
         //observation 1
         when(market.getYesterdayLastPrice()).thenReturn(86l);
-        when(market.getYesterdayVolume()).thenReturn(6);
+        when(market.countYesterdayConsumptionByRegisteredBuyers()).thenReturn(6);
         model.getPhaseScheduler().step(model);
         //observation 2
         when(market.getYesterdayLastPrice()).thenReturn(84l);
-        when(market.getYesterdayVolume()).thenReturn(7);
+        when(market.countYesterdayConsumptionByRegisteredBuyers()).thenReturn(7);
         model.getPhaseScheduler().step(model);
         //observation 3
         when(market.getYesterdayLastPrice()).thenReturn(81l);
-        when(market.getYesterdayVolume()).thenReturn(8);
+        when(market.countYesterdayConsumptionByRegisteredBuyers()).thenReturn(8);
         model.getPhaseScheduler().step(model);
 
 

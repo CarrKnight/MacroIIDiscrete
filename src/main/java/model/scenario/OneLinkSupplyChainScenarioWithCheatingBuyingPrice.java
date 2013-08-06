@@ -66,7 +66,6 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
 
             if(input.equals(GoodType.BEEF))
                 buildFoodPurchasesPredictor(department);
-            department.start();
 
         }
     }

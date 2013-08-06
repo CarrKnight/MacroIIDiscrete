@@ -227,7 +227,6 @@ public class MultiProduction extends Scenario{
                             laborMarket,plant,DiscreteSlowPlantControl.class,null,null).getDepartment();
                //     seller.registerHumanResources(plant, hr);
                 //    hr.setProbabilityForgetting(.05f);
-                    hr.start();
 
 
                 }
@@ -251,7 +250,6 @@ public class MultiProduction extends Scenario{
             final Person p = new Person(getModel(),0l,10+i*10,laborMarket);
 
 
-            p.start();
 
             getAgents().add(p);
 

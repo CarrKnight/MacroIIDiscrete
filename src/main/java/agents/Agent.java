@@ -6,6 +6,8 @@
 
 package agents;
 
+import model.MacroII;
+import model.utilities.Deactivatable;
 import sim.engine.Steppable;
 
 /**
@@ -15,8 +17,12 @@ import sim.engine.Steppable;
  * Time: 7:39 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface Agent extends Steppable {
+public interface Agent extends Steppable, Deactivatable{
 
+    /**
+     * called when the agent has to start acting!
+     */
+    public void start(MacroII state);
 
     /**
      * Like weekStart, weekEnd should be mostly about accounting.

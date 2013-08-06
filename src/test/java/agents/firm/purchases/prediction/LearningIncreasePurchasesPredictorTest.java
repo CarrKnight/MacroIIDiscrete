@@ -49,21 +49,22 @@ public class LearningIncreasePurchasesPredictorTest
 
 
         Market market = mock(Market.class);
+        when(market.getYesterdayVolume()).thenReturn(1);
         MacroII model = new MacroII(System.currentTimeMillis());
         LearningIncreasePurchasesPredictor predictor = new LearningIncreasePurchasesPredictor(market,model );
         predictor.setUsingWeights(true);
 
         //observation 1
         when(market.getYesterdayLastPrice()).thenReturn(86l);
-        when(market.getYesterdayVolume()).thenReturn(8);
+        when(market.countYesterdayProductionByRegisteredSellers()).thenReturn(8);
         model.getPhaseScheduler().step(model);
         //observation 2
         when(market.getYesterdayLastPrice()).thenReturn(84l);
-        when(market.getYesterdayVolume()).thenReturn(7);
+        when(market.countYesterdayProductionByRegisteredSellers()).thenReturn(7);
         model.getPhaseScheduler().step(model);
         //observation 3
         when(market.getYesterdayLastPrice()).thenReturn(81l);
-        when(market.getYesterdayVolume()).thenReturn(6);
+        when(market.countYesterdayProductionByRegisteredSellers()).thenReturn(6);
         model.getPhaseScheduler().step(model);
 
 

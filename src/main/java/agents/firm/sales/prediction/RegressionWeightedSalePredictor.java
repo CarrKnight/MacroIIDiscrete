@@ -60,10 +60,10 @@ public class RegressionWeightedSalePredictor extends RegressionSalePredictor {
             }
 
 
-
-
-            getRegression().estimateModel(observer.getQuantitiesObservedAsArray(),
+            getRegression().estimateModel(observer.getQuantitiesTradedObservedAsArray(),
                     observer.getPricesObservedAsArray(),weight);
+
+
         }
 
     }

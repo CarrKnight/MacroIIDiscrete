@@ -52,14 +52,33 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
     private final LinkedList<Double> pricesObserved;
 
     /**
-     * a list holding all the quantities observed
+     * a list holding all the quantities traded observed
      */
-    private final LinkedList<Double> quantitiesObserved;
+    private final LinkedList<Double> quantitiesTradedObserved;
 
     /**
-     * This is the last quantity observed
+     * a list holding all the quantities consumed observed
      */
-    private double lastUntrasformedQuantity;
+    private final LinkedList<Double> quantitiesConsumedObserved;
+
+
+    /**
+     * a list holding all the quantity produced observed
+     */
+    private final LinkedList<Double> quantitiesProducedObserved;
+
+    /**
+     * This is the last quantity traded observed
+     */
+    private double lastUntrasformedQuantityTraded;
+    /**
+     * This is the last quantity produced observed
+     */
+    private double lastUntrasformedQuantityProduced;
+    /**
+     * This is the last quantity consumed observed
+     */
+    private double lastUntrasformedQuantityConsumption;
 
     /**
      * a list holding all the quantities observed
@@ -114,8 +133,10 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
     {
         this.market = market;
         pricesObserved = new LinkedList<>();
-        quantitiesObserved = new LinkedList<>();
+        quantitiesTradedObserved = new LinkedList<>();
         observationDays = new LinkedList<>();
+        quantitiesConsumedObserved = new LinkedList<>();
+        quantitiesProducedObserved = new LinkedList<>();
 
         if(dailyProbabilityOfObserving < 1)
         {
@@ -143,10 +164,30 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
      * get the last (newest) observation of quantity
      * @return
      */
-    public Double getLastQuantityObserved()
+    public Double getLastQuantityTradedObserved()
     {
-        return quantitiesObserved.getLast();
+        return quantitiesTradedObserved.getLast();
     }
+
+    /**
+     * get the last (newest) observation of quantity
+     * @return
+     */
+    public Double getLastQuantityConsumedObserved()
+    {
+        return quantitiesConsumedObserved.getLast();
+    }
+
+    /**
+     * get the last (newest) observation of quantity
+     * @return
+     */
+    public Double getLastQuantityProducedObserved()
+    {
+        return quantitiesProducedObserved.getLast();
+    }
+
+
 
     /**
      * get the last (newest) observation day
@@ -178,17 +219,30 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
         double price = market.getYesterdayLastPrice();
         if(priceTransformer!=null)
             price = priceTransformer.transform(price);
-        double quantity = market.getYesterdayVolume();
-        lastUntrasformedQuantity = quantity; //remember it, you might need it for prediction
-        if(quantityTransformer!=null)
-            quantity = quantityTransformer.transform(quantity);
 
+        //read quantities
+        double quantity = market.getYesterdayVolume();
+        double produced = market.countYesterdayProductionByRegisteredSellers();
+        double consumed = market.countYesterdayConsumptionByRegisteredBuyers();
+        //remember them before transforming them
+        lastUntrasformedQuantityTraded = quantity;
+        lastUntrasformedQuantityProduced = produced;
+        lastUntrasformedQuantityConsumption = consumed;
+
+        if(quantityTransformer!=null)
+        {
+            quantity = quantityTransformer.transform(quantity);
+            produced = quantityTransformer.transform(produced);
+            consumed = quantityTransformer.transform(consumed);
+        }
 
         //if some trade actually occurred:
-        if( price!= -1 && quantity != 0)
+        if( price!= -1 && lastUntrasformedQuantityTraded != 0)
         {
             pricesObserved.add(price);
-            quantitiesObserved.add(quantity);
+            quantitiesTradedObserved.add(quantity);
+            quantitiesConsumedObserved.add(consumed);
+            quantitiesProducedObserved.add(produced);
             observationDays.add(model.getMainScheduleTime());
         }
 
@@ -219,16 +273,34 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
      * Get unmodifiable view of the list
      * @return
      */
-    protected List<Double> getQuantitiesObserved() {
-        return Collections.unmodifiableList(quantitiesObserved);
+    protected List<Double> getQuantitiesTradedObserved() {
+        return Collections.unmodifiableList(quantitiesTradedObserved);
     }
 
     /**
      * Copies quantities observed into a double[] and return it. Useful for regressions and other manipulations
      * @return
      */
-    public double[] getQuantitiesObservedAsArray(){
-        return Doubles.toArray(quantitiesObserved);
+    public double[] getQuantitiesTradedObservedAsArray(){
+        return Doubles.toArray(quantitiesTradedObserved);
+    }
+
+
+    /**
+     * Copies quantities observed into a double[] and return it. Useful for regressions and other manipulations
+     * @return
+     */
+    public double[] getQuantitiesProducedObservedAsArray(){
+        return Doubles.toArray(quantitiesProducedObserved);
+    }
+
+
+    /**
+     * Copies quantities observed into a double[] and return it. Useful for regressions and other manipulations
+     * @return
+     */
+    public double[] getQuantitiesConsumedObservedAsArray(){
+        return Doubles.toArray(quantitiesConsumedObserved);
     }
 
 
@@ -258,8 +330,10 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
 
         int size = getNumberOfObservations();
         pricesObserved.removeFirst();
-        quantitiesObserved.removeFirst();
+        quantitiesTradedObserved.removeFirst();
         observationDays.removeFirst();
+        quantitiesProducedObserved.removeFirst();
+        quantitiesConsumedObserved.removeFirst();
         assert  size == getNumberOfObservations() + 1;
 
     }
@@ -272,8 +346,10 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
     {
         int size = pricesObserved.size();
         //all sizes should be the same
-        assert  size == quantitiesObserved.size();
+        assert  size == quantitiesTradedObserved.size();
         assert size == observationDays.size();
+        assert size == quantitiesProducedObserved.size();
+        assert size == quantitiesConsumedObserved.size();
 
         return size;
 
@@ -323,8 +399,8 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
     }
 
 
-    public double getLastUntrasformedQuantity() {
-        return lastUntrasformedQuantity;
+    public double getLastUntrasformedQuantityTraded() {
+        return lastUntrasformedQuantityTraded;
     }
 
     public float getDailyProbabilityOfObserving() {

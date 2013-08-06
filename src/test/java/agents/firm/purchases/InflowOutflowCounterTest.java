@@ -6,10 +6,11 @@ import financial.Market;
 import financial.OrderBookMarket;
 import goods.Good;
 import goods.GoodType;
-import static org.junit.Assert.*;import model.MacroII;
+import model.MacroII;
 import model.utilities.ActionOrder;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 /**
@@ -135,7 +136,7 @@ public class InflowOutflowCounterTest {
         Market market = new OrderBookMarket(GoodType.GENERIC);
         PurchasesDepartment toTest = new PurchasesDepartment(10000000,firm,market,model); toTest.setControl(mock(InventoryControl.class));
         firm.registerPurchasesDepartment(toTest,GoodType.GENERIC);
-        firm.start();
+        firm.start(model);
 
         assertEquals(toTest.getTodayInflow(), 0);
         assertEquals(toTest.getTodayInflow(),0);

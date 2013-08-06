@@ -298,7 +298,6 @@ public class OneLinkSupplyChainScenario extends Scenario {
             department.setControl(control);
             department.setPricingStrategy(control);
             firm.registerPurchasesDepartment(department, input);
-            department.start();
 
 
 
@@ -327,7 +326,6 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
         HumanResources hr = produced.getDepartment();
         hr.setFixedPayStructure(true);
-        hr.start();
     }
 
     /**
@@ -428,7 +426,6 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
             p.setSearchForBetterOffers(false);
 
-            p.start();
 
             getAgents().add(p);
 

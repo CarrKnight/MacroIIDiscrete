@@ -50,14 +50,20 @@ public class PeriodicMarketObserverTest {
         //observation 1
         when(market.getYesterdayLastPrice()).thenReturn(86l);
         when(market.getYesterdayVolume()).thenReturn(6);
+        when(market.countYesterdayConsumptionByRegisteredBuyers()).thenReturn(1);
+        when(market.countYesterdayProductionByRegisteredSellers()).thenReturn(10);
         model.getPhaseScheduler().step(model);
         //observation 2
         when(market.getYesterdayLastPrice()).thenReturn(84l);
         when(market.getYesterdayVolume()).thenReturn(7);
+        when(market.countYesterdayConsumptionByRegisteredBuyers()).thenReturn(2);
+        when(market.countYesterdayProductionByRegisteredSellers()).thenReturn(20);
         model.getPhaseScheduler().step(model);
         //observation 3
         when(market.getYesterdayLastPrice()).thenReturn(81l);
         when(market.getYesterdayVolume()).thenReturn(8);
+        when(market.countYesterdayConsumptionByRegisteredBuyers()).thenReturn(3);
+        when(market.countYesterdayProductionByRegisteredSellers()).thenReturn(30);
         model.getPhaseScheduler().step(model);
 
 
@@ -65,9 +71,16 @@ public class PeriodicMarketObserverTest {
         Assert.assertEquals(86,observer.getPricesObservedAsArray()[0],.0001);
         Assert.assertEquals(84,observer.getPricesObservedAsArray()[1],.0001);
         Assert.assertEquals(81,observer.getPricesObservedAsArray()[2],.0001);
-        Assert.assertEquals(6,observer.getQuantitiesObservedAsArray()[0],.0001);
-        Assert.assertEquals(7,observer.getQuantitiesObservedAsArray()[1],.0001);
-        Assert.assertEquals(8,observer.getQuantitiesObservedAsArray()[2],.0001);
+        Assert.assertEquals(6,observer.getQuantitiesTradedObservedAsArray()[0],.0001);
+        Assert.assertEquals(7,observer.getQuantitiesTradedObservedAsArray()[1],.0001);
+        Assert.assertEquals(8,observer.getQuantitiesTradedObservedAsArray()[2],.0001);
+
+        Assert.assertEquals(1,observer.getQuantitiesConsumedObservedAsArray()[0],.0001);
+        Assert.assertEquals(2,observer.getQuantitiesConsumedObservedAsArray()[1],.0001);
+        Assert.assertEquals(3,observer.getQuantitiesConsumedObservedAsArray()[2],.0001);
+        Assert.assertEquals(10,observer.getQuantitiesProducedObservedAsArray()[0],.0001);
+        Assert.assertEquals(20,observer.getQuantitiesProducedObservedAsArray()[1],.0001);
+        Assert.assertEquals(30,observer.getQuantitiesProducedObservedAsArray()[2],.0001);
 
 
 
@@ -106,7 +119,7 @@ public class PeriodicMarketObserverTest {
         observer.step(mock(MacroII.class));
         Assert.assertEquals(observer.getNumberOfObservations(),1);
         Assert.assertEquals((double)observer.getLastPriceObserved(),10,.01);
-        Assert.assertEquals((double)observer.getLastQuantityObserved(),1,.01);
+        Assert.assertEquals((double)observer.getLastQuantityTradedObserved(),1,.01);
 
         //with no volume the observation is ignored
         when(market.getYesterdayLastPrice()).thenReturn(10l);
@@ -114,7 +127,7 @@ public class PeriodicMarketObserverTest {
         observer.step(mock(MacroII.class));
         Assert.assertEquals(observer.getNumberOfObservations(),1);
         Assert.assertEquals((double)observer.getLastPriceObserved(),10,.01);
-        Assert.assertEquals((double)observer.getLastQuantityObserved(),1,.01);
+        Assert.assertEquals((double)observer.getLastQuantityTradedObserved(),1,.01);
 
         //two observations, everything back to normal!
         when(market.getYesterdayLastPrice()).thenReturn(10l);
@@ -122,7 +135,7 @@ public class PeriodicMarketObserverTest {
         observer.step(mock(MacroII.class));
         Assert.assertEquals(observer.getNumberOfObservations(),2);
         Assert.assertEquals((double)observer.getLastPriceObserved(),10,.01);
-        Assert.assertEquals((double)observer.getLastQuantityObserved(),1,.01);
+        Assert.assertEquals((double)observer.getLastQuantityTradedObserved(),1,.01);
     }
 
 }

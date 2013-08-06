@@ -342,7 +342,7 @@ public class SupplyChainScenario extends Scenario
 
             p.setSearchForBetterOffers(false);
 
-            p.start();
+            p.start(getModel());
 
             getAgents().add(p);
 

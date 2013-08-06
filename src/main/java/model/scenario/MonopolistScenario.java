@@ -241,7 +241,6 @@ public class MonopolistScenario extends Scenario {
 
             p.setSearchForBetterOffers(lookForBetterOffers);
 
-            p.start();
 
             getAgents().add(p);
 
@@ -287,7 +286,6 @@ public class MonopolistScenario extends Scenario {
                 hr.setFixedPayStructure(fixedPayStructure);
 
                 hr.setPredictor(PurchasesPredictor.Factory.newPurchasesPredictor(purchasesPricePreditorStrategy,hr));
-                hr.start();
 
 
             }

@@ -91,7 +91,6 @@ public class MonopolistWithInputScenario extends MonopolistScenario {
         department.setPricingStrategy(control);
         department.setPredictor(new LookAheadPredictor());
         monopolist.registerPurchasesDepartment(department, GoodType.LEATHER);
-        department.start();
     }
 
     private void createSuppliers() {

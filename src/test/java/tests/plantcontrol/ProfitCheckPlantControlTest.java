@@ -100,7 +100,7 @@ public class ProfitCheckPlantControlTest {
 
         for(int i=0; i < 200; i++){
             Person worker = new Person(model,0,i,market);
-            worker.start();
+            worker.start(model);
         }
         //make them search for job
 
@@ -224,7 +224,7 @@ public class ProfitCheckPlantControlTest {
 
         for(int i=0; i < 200; i++){
             Person worker = new Person(model,0,i,market);
-            worker.start();
+            worker.start(model);
         }
         //make them search for job
         ArrayList<Steppable> todaySteppables = new ArrayList<>(steppableList);

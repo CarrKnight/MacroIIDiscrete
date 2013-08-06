@@ -248,13 +248,13 @@ public class SimpleBuyerSellerScenario extends Scenario {
             department.setPricingStrategy(new MaximumBidPriceDecorator(control,maximumPrice));
 
         //set up the department to start buying soon
-        getModel().schedule.scheduleOnceIn(Math.max(5.0f + getModel().random.nextGaussian(),1f), new Steppable() {
+   /*     getModel().schedule.scheduleOnceIn(Math.max(5.0f + getModel().random.nextGaussian(),1f), new Steppable() {
             @Override
             public void step(SimState state) {
                 department.start();
             }
         });
-
+     */
 
 
         getModel().schedule.scheduleRepeating(5.0f + getModel().random.nextGaussian(), new Steppable() {

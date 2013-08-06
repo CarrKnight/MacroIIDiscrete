@@ -7,6 +7,7 @@
 package agents;
 
 
+import agents.firm.DailyProductionAndConsumptionCounter;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.Bankruptcy;
@@ -57,6 +58,16 @@ public abstract class EconomicAgent implements Agent, HasInventory{
      */
     final protected MacroII model;
 
+    /**
+     * the object that counts all our productions
+     */
+    final protected DailyProductionAndConsumptionCounter counter;
+
+    /**
+     * True if the start() method has already been called
+     */
+    protected boolean startWasCalled = false;
+
 
 
 
@@ -72,9 +83,21 @@ public abstract class EconomicAgent implements Agent, HasInventory{
 
 
     protected EconomicAgent(@Nonnull final MacroII model,final long cash) {
-       this.model = model;
+        this.model = model;
         this.cash = cash;
+        this.counter = new DailyProductionAndConsumptionCounter();
 
+    }
+
+    /**
+     * called when the agent has to start acting!
+     */
+    @Override
+    public void start(MacroII state) {
+        Preconditions.checkArgument(!startWasCalled);
+        startWasCalled = true;
+
+        counter.start(state);
 
     }
 
@@ -84,7 +107,7 @@ public abstract class EconomicAgent implements Agent, HasInventory{
 
         long oldcash = cash;
         cash += money;
-     //   MacroII.logger.log(Level.FINEST, this + " just earned: " + money +", now it has " + getCash() );
+        //   MacroII.logger.log(Level.FINEST, this + " just earned: " + money +", now it has " + getCash() );
 
         assert oldcash <= cash;
 
@@ -131,7 +154,7 @@ public abstract class EconomicAgent implements Agent, HasInventory{
             throw new Bankruptcy(this);
 
 
-       // MacroII.logger.log(Level.FINEST, this + " just paid: " + money + ", now it has " + getCash());
+        // MacroII.logger.log(Level.FINEST, this + " just paid: " + money + ", now it has " + getCash());
 
 
     }
@@ -251,6 +274,7 @@ public abstract class EconomicAgent implements Agent, HasInventory{
      */
     @Override
     public void receive(Good g, @Nullable HasInventory sender) {
+        counter.countNewReceive(g.getType());
         getInventory().receive(g, sender);
     }
 
@@ -285,6 +309,7 @@ public abstract class EconomicAgent implements Agent, HasInventory{
      */
     @Override
     public Good consume(GoodType g) {
+        countNewConsumption(g);
         return getInventory().consume(g);
     }
 
@@ -293,6 +318,8 @@ public abstract class EconomicAgent implements Agent, HasInventory{
      */
     @Override
     public void consumeAll() {
+        for(GoodType g : GoodType.values())
+            countNewConsumption(g,getInventory().hasHowMany(g));
         getInventory().consumeAll();
     }
 
@@ -382,5 +409,95 @@ public abstract class EconomicAgent implements Agent, HasInventory{
         Preconditions.checkArgument(numberNeeded > 0);
         Preconditions.checkState(hasHowMany(type) < numberNeeded);
         inventory.fireFailedToConsumeEvent(type, numberNeeded);
+    }
+
+
+    @Override
+    public void turnOff() {
+        counter.turnOff();
+    }
+
+    /**
+     * get today Production
+     */
+    public int getTodayAcquisitions(GoodType type) {
+        return counter.getTodayAcquisitions(type);
+    }
+
+    /**
+     * get yesterday Production
+     */
+    public int getYesterdayAcquisitions(GoodType type) {
+        return counter.getYesterdayAcquisitions(type);
+    }
+
+    /**
+     * get yesterday consumption
+     */
+    public int getYesterdayConsumption(GoodType type) {
+        return counter.getYesterdayConsumption(type);
+    }
+
+    /**
+     * Tell the counter something has been consumed multiple times
+     */
+    public void countNewReceive(GoodType type, Integer n) {
+        counter.countNewReceive(type, n);
+    }
+
+    /**
+     * Tell the counter something has been consumed multiple times
+     */
+    public void countNewConsumption(GoodType type, Integer n) {
+        counter.countNewConsumption(type, n);
+    }
+
+    /**
+     * Tell the counter something has been consumed
+     */
+    public void countNewConsumption(GoodType type) {
+        counter.countNewConsumption(type);
+    }
+
+    /**
+     * get today Production
+     */
+    public int getTodayProduction(GoodType type) {
+        return counter.getTodayProduction(type);
+    }
+
+    /**
+     * get yesterday Production
+     */
+    public int getYesterdayProduction(GoodType type) {
+        return counter.getYesterdayProduction(type);
+    }
+
+    /**
+     * Tell the counter something has been consumed
+     */
+    public void countNewReceive(GoodType type) {
+        counter.countNewReceive(type);
+    }
+
+    /**
+     * Tell the counter something has been consumed multiple times
+     */
+    public void countNewProduction(GoodType type, Integer n) {
+        counter.countNewProduction(type, n);
+    }
+
+    /**
+     * get today consumption
+     */
+    public int getTodayConsumption(GoodType type) {
+        return counter.getTodayConsumption(type);
+    }
+
+    /**
+     * Tell the counter something has been consumed
+     */
+    public void countNewProduction(GoodType type) {
+        counter.countNewProduction(type);
     }
 }

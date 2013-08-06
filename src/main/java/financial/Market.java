@@ -868,4 +868,53 @@ public abstract class Market{
     public int getTodayVolume() {
         return todayVolume;
     }
+
+    /**
+     * utility method for summing up all production by all sellers
+     * @return
+     */
+    public int countYesterdayProductionByRegisteredSellers()
+    {
+        int sum = 0;
+        for(EconomicAgent a : sellers)
+            sum += a.getYesterdayProduction(getGoodType());
+        return sum;
+    }
+
+    /**
+     * utility method for summing up all production by all sellers
+     * @return
+     */
+    public int countTodayProductionByRegisteredSellers()
+    {
+        int sum = 0;
+        for(EconomicAgent a : sellers)
+            sum += a.getTodayProduction(getGoodType());
+        return sum;
+    }
+
+
+    /**
+     * utility method for summing up all consumption by all buyers
+     * @return
+     */
+    public int countYesterdayConsumptionByRegisteredBuyers()
+    {
+        int sum = 0;
+        for(EconomicAgent a : buyers)
+            sum += a.getYesterdayConsumption(getGoodType());
+        return sum;
+    }
+
+    /**
+     * utility method for summing up all consumption by all buyers
+     * @return
+     */
+    public int countTodayConsumptionByRegisteredBuyers()
+    {
+        int sum = 0;
+        for(EconomicAgent a : buyers)
+            sum += a.getTodayConsumption(getGoodType());
+        return sum;
+    }
 }

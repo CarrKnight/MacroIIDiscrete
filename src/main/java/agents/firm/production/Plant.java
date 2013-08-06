@@ -7,6 +7,7 @@
 package agents.firm.production;
 
 import agents.*;
+import agents.firm.Department;
 import agents.firm.Firm;
 import agents.firm.cost.PlantCostStrategy;
 import agents.firm.personell.HumanResources;
@@ -18,6 +19,7 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import sim.engine.SimState;
+import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -37,7 +39,7 @@ import java.util.*;
  * @version %I%, %G%
  * @see
  */
-public class Plant implements Agent, InventoryListener {
+public class Plant implements Department, Steppable, InventoryListener {
 
 
     /**
@@ -281,6 +283,9 @@ public class Plant implements Agent, InventoryListener {
                 owner.receive(newProduct, null);
                 owner.reactToPlantProduction(newProduct); //tell the owner!
             }
+            //tell the firm it is a new production!
+            if(totalOutput > 0)
+                owner.countNewProduction(output.getKey(),totalOutput);
 
         }
 
@@ -573,7 +578,6 @@ public class Plant implements Agent, InventoryListener {
      * Week end is a time of joy for the plant where the age increases by one.
      * @param time
      */
-    @Override
     public void weekEnd(double time) {
         age++;
         if(age == usefulLife)

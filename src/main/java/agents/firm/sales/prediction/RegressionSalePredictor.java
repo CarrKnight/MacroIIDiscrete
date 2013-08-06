@@ -110,7 +110,7 @@ public class RegressionSalePredictor implements SalesPredictor{
      * @return
      */
     private double getFutureXForSale(SalesDepartment dept) {
-        return Math.max(observer.getLastUntrasformedQuantity(),dept.getTodayInflow()) + 1;
+        return Math.max(observer.getLastUntrasformedQuantityTraded(),dept.getTodayInflow()) + 1;
     }
 
     /**
@@ -118,7 +118,7 @@ public class RegressionSalePredictor implements SalesPredictor{
      */
     public void updateModel() {
         if(observer.getNumberOfObservations() >1)
-            regression.estimateModel(observer.getQuantitiesObservedAsArray(),
+            regression.estimateModel(observer.getQuantitiesConsumedObservedAsArray(),
                     observer.getPricesObservedAsArray(),null);
     }
 
@@ -224,7 +224,7 @@ public class RegressionSalePredictor implements SalesPredictor{
      * @return
      */
     public Double getLastQuantityObserved() {
-        return observer.getLastQuantityObserved();
+        return observer.getLastQuantityTradedObserved();
     }
 
 
@@ -236,6 +236,29 @@ public class RegressionSalePredictor implements SalesPredictor{
         return observer.getDailyProbabilityOfObserving();
     }
 
+    /**
+     * get the last (newest) observation of quantity
+     * @return
+     */
+    public Double getLastQuantityProducedObserved() {
+        return observer.getLastQuantityProducedObserved();
+    }
+
+    /**
+     * get the last (newest) observation of quantity
+     * @return
+     */
+    public Double getLastQuantityTradedObserved() {
+        return observer.getLastQuantityTradedObserved();
+    }
+
+    /**
+     * get the last (newest) observation of quantity
+     * @return
+     */
+    public Double getLastQuantityConsumedObserved() {
+        return observer.getLastQuantityConsumedObserved();
+    }
 
     @Override
     public String toString() {

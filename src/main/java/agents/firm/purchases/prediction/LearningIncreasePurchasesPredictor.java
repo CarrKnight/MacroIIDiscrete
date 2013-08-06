@@ -85,8 +85,9 @@ public class LearningIncreasePurchasesPredictor implements PurchasesPredictor {
         double[] weights = usingWeights ? buildWeights() : null;
         assert !usingWeights || weights.length ==  observer.getNumberOfObservations();
 
-        regression.estimateModel(observer.getQuantitiesObservedAsArray(),observer.getPricesObservedAsArray(),
+        regression.estimateModel(observer.getQuantitiesProducedObservedAsArray(),observer.getPricesObservedAsArray(),
                 weights);
+
 
 
     }

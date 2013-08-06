@@ -11,6 +11,8 @@ import agents.Person;
 import agents.firm.owner.DividendStrategy;
 import agents.firm.owner.NoDividendStrategy;
 import agents.firm.personell.HumanResources;
+import agents.firm.production.Plant;
+import agents.firm.production.PlantStatus;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.sales.SalesDepartment;
 import com.google.common.base.Preconditions;
@@ -23,14 +25,14 @@ import financial.utilities.Quote;
 import financial.utilities.TimelineManager;
 import goods.Good;
 import goods.GoodType;
-import agents.firm.production.Plant;
-import agents.firm.production.PlantStatus;
 import lifelines.LifelinesPanel;
 import lifelines.data.DataManager;
 import lifelines.data.GlobalEventData;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import sim.display.GUIState;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 import sim.portrayal.Inspector;
 import sim.portrayal.inspector.TabbedInspector;
 
@@ -177,7 +179,7 @@ public class Firm extends EconomicAgent {
      * @param p the plant to be controlled by HR
      * @param hr the human resources object
      */
-    public void registerHumanResources(Plant p, HumanResources hr){
+    public void registerHumanResources(Plant p, final HumanResources hr){
         assert plants.contains(p);
         HumanResources oldHR = humanResources.remove(p);
         assert hr !=oldHR : "you are registering the same hr department twice";
@@ -190,6 +192,18 @@ public class Firm extends EconomicAgent {
 
         //put it in.
         humanResources.put(p,hr);
+
+        //if start was already called, you need to start this too next dawn
+        if(startWasCalled)
+        {
+             model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
+                 @Override
+                 public void step(SimState state) {
+                     hr.start();
+                 }
+             });
+        }
+
 
 
     }
@@ -493,12 +507,23 @@ public class Firm extends EconomicAgent {
     /**
      * This is called to addSalesDepartmentListener a sales department as part of this firm. Makes sure there is only one for each market
      */
-    public void registerPurchasesDepartment(PurchasesDepartment newPurchases, GoodType type){
+    public void registerPurchasesDepartment(final PurchasesDepartment newPurchases, GoodType type){
         assert !purchaseDepartments.containsKey(type);
         //log it
         addAgentToLog(newPurchases);
         //add it
         purchaseDepartments.put(type,newPurchases);
+
+        //if start was already called, you need to start this too next dawn
+        if(startWasCalled)
+        {
+            model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
+                @Override
+                public void step(SimState state) {
+                    newPurchases.start();
+                }
+            });
+        }
 
 
 
@@ -621,6 +646,7 @@ public class Firm extends EconomicAgent {
      * The firm turns off all its departments and plants and clears all its data structures
      */
     public void turnOff(){
+        super.turnOff();
         for(SalesDepartment dept : salesDepartments.values())
             dept.turnOff();
         salesDepartments.clear();
@@ -640,7 +666,9 @@ public class Firm extends EconomicAgent {
     /**
      * Start all the subcomponents you have
      */
-    public void start(){
+    @Override
+    public void start(MacroII state){
+        super.start(state);
         for(PurchasesDepartment dept : purchaseDepartments.values())
             dept.start();
         for(HumanResources hr : humanResources.values())

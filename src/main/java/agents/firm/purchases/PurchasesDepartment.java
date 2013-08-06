@@ -124,6 +124,8 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     private boolean looksAhead = false;
 
+
+
     /**
      * algorithm to search the registry for opponents
      */
@@ -154,6 +156,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * a counter to check daily inflows and outflows. Created at constructor, started and turned off. Steps itself independetly
      */
     private InflowOutflowCounter counter;
+    private boolean startWasCalled=false;
 
 
     protected PurchasesDepartment(long budgetGiven,@Nonnull Firm firm,@Nonnull Market market,
@@ -980,6 +983,9 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * Start the inventory control and make the purchaseDepartment, if needed, buy stuff
      */
     public void start(){
+        Preconditions.checkArgument(!startWasCalled);
+        startWasCalled = true;
+
         counter.start();
         control.start();
 

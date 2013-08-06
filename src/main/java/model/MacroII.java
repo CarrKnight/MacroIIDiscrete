@@ -6,6 +6,7 @@
 
 package model;
 
+import agents.Agent;
 import agents.EconomicAgent;
 import agents.HasInventory;
 import agents.Person;
@@ -143,6 +144,11 @@ public class MacroII extends SimState{
      */
     private Set<Deactivatable> toTurnOffAtFinish;
 
+    /**
+     * This flag is set to true when hasStarted has been called. It will never be set to false
+     */
+    private boolean hasStarted = false;
+
 
     /********************
      * Parameters of ProfitCheckPlantControl
@@ -206,6 +212,7 @@ public class MacroII extends SimState{
     @Override
     public void start() {
         super.start();
+        hasStarted=true;
         //make sure counters are at 0
         weeksPassed = 0;
         counter = 0;
@@ -219,6 +226,10 @@ public class MacroII extends SimState{
         //get the agents set
         markets = scenario.getMarkets();
         agents = scenario.getAgents();
+
+        //go through all the agents and call their start!
+        for(Agent a : agents)
+                a.start(this);
 
         //schedule weekends for everyone
         scheduleAnotherDay(ActionOrder.DAWN, new Steppable() {
@@ -554,6 +565,26 @@ public class MacroII extends SimState{
 
         return random.nextGaussian();
 
+    }
+
+    /**
+     * Will add this agent to the masterlist. It will also schedule a start for the agent next dawn it if the model has already started
+     * @param a the new agent
+     */
+    public void addAgent(final EconomicAgent a)
+    {
+
+        agents.add(a);
+        if(hasStarted)
+        {
+            final MacroII reference = this;
+            scheduleSoon(ActionOrder.DAWN,new Steppable() {
+                @Override
+                public void step(SimState state) {
+                    a.start(reference);
+                }
+            },Priority.BEFORE_STANDARD);
+        }
     }
 
     /**

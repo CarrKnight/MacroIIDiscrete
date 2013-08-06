@@ -397,7 +397,8 @@ public class Person extends EconomicAgent {
     /**
      * call this to start the person and let it move a bit
      */
-    public void start(){
+    public void start(MacroII state){
+        super.start(state);
         //you have been activated!
         setActive(true);
 

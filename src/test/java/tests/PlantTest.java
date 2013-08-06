@@ -19,6 +19,7 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.PhaseScheduler;
 import model.utilities.scheduler.RandomQueuePhaseScheduler;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -201,6 +202,7 @@ public class PlantTest {
         assertTrue(crs.getOwner().hasAny(GoodType.GENERIC));
         assertTrue(crs.getOwner().hasHowMany(GoodType.GENERIC) == 2);
 
+        //here we produced 2
 
 
 
@@ -215,6 +217,10 @@ public class PlantTest {
         assertEquals(crs.getStatus(), PlantStatus.WAITING_FOR_INPUT);
         assertTrue(crs.getOwner().hasAny(GoodType.GENERIC));       //no change!
         assertTrue(crs.getOwner().hasHowMany(GoodType.GENERIC) == 1);
+
+        //check that the counts are right
+        Assert.assertEquals(crs.getOwner().getTodayConsumption(GoodType.GENERIC),2);
+        Assert.assertEquals(crs.getOwner().getTodayProduction(GoodType.GENERIC),3);
 
 
 

@@ -151,10 +151,6 @@ public class DailyStatCollector implements Steppable{
                     continue;
 
 
-                //sum up production
-                production += ((Firm) seller).getLastWeekProduction(output);
-                assert production >= 0 : "negative production is weird";
-
                 //sum up workers
                 workers += ((Firm) seller).getTotalWorkersWhoProduceThisGood(output);
                 assert workers >=0;
@@ -180,6 +176,7 @@ public class DailyStatCollector implements Steppable{
 
             }
 
+            production = market.countTodayProductionByRegisteredSellers();
             productionPerSector.put(output,production);
             workersPerSector.put(output,workers);
             marketPrice.put(output,market.getLastPrice());

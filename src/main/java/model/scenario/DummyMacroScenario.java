@@ -112,7 +112,6 @@ public class DummyMacroScenario extends Scenario {
                 public void step(SimState simState) {
 
 
-                    p.start();
                     //generate demand
                     long maxPrice =  Math.max(Math.round((float)(averageDemandFood + getModel().random.nextGaussian() *  stdDemandFood)),0);
                     long consumptionTime =  Math.max(Math.round((float)(averageConsumptionSpeed + getModel().random.nextGaussian() *  stdConsumptionSpeed)),1l);
@@ -166,7 +165,6 @@ public class DummyMacroScenario extends Scenario {
                             laborMarket, plant, DiscreteSlowPlantControl.class, null, null).getDepartment();
           //          seller.registerHumanResources(plant, hr);
             //        hr.setProbabilityForgetting(.05f);
-                    hr.start();
 
 
                 }

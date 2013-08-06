@@ -43,8 +43,8 @@ public class RegressionWeightedSalePredictorTest {
 
         when(observer.getNumberOfObservations()).thenReturn(3);
         when(observer.getPricesObservedAsArray()).thenReturn(new double[]{86,84,81});
-        when(observer.getQuantitiesObservedAsArray()).thenReturn(new double[]{6,7,8});
-        when(observer.getLastUntrasformedQuantity()).thenReturn(8d);
+        when(observer.getQuantitiesConsumedObservedAsArray()).thenReturn(new double[]{6, 7, 8});
+        when(observer.getLastUntrasformedQuantityTraded()).thenReturn(8d);
 
 
         //this should regress to p=101.9 -2.6 * q

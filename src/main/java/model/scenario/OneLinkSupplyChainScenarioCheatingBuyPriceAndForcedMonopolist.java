@@ -101,7 +101,6 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
 
             HumanResources hr = produced.getDepartment();
             hr.setFixedPayStructure(true);
-            hr.start();
         }
     }
 
