@@ -23,15 +23,12 @@ import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesFixedPID;
 import agents.firm.sales.SalesDepartment;
-import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
-import agents.firm.sales.prediction.LearningDecreaseSalesPredictor;
-import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import au.com.bytecode.opencsv.CSVWriter;
@@ -110,7 +107,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
     /**
      * the type of sales department firms use
      */
-    private Class<? extends  SalesDepartment> salesDepartmentType = SalesDepartmentAllAtOnce.class;
+    private Class<? extends  SalesDepartment> salesDepartmentType = SalesDepartmentOneAtATime.class;
 
     /**
      * total number of firms producing beef
@@ -274,10 +271,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
     }
 
     protected void buildBeefSalesPredictor(SalesDepartment dept) {
-        if(strategy2.getSpeed() > 7) //if the speed is less than weekly, turn off the sales predictor
-            dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(LearningDecreaseSalesPredictor.class,dept));
-        else
-            dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(LearningDecreaseSalesPredictor.class,dept));
+
 
     }
 
@@ -353,6 +347,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         final DummyBuyer buyer = new DummyBuyer(getModel(), reservationPrice){
             @Override
             public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
+                consume(g.getType());
                 //trick to get the steppable to recognize the anonymous me!
                 final DummyBuyer reference = this;
                 //schedule a new quote in period!

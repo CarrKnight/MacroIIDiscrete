@@ -19,8 +19,8 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -49,23 +49,23 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
     /**
      * a list holding all the prices observed
      */
-    private final LinkedList<Double> pricesObserved;
+    private final ArrayList<Double> pricesObserved;
 
     /**
      * a list holding all the quantities traded observed
      */
-    private final LinkedList<Double> quantitiesTradedObserved;
+    private final ArrayList<Double> quantitiesTradedObserved;
 
     /**
      * a list holding all the quantities consumed observed
      */
-    private final LinkedList<Double> quantitiesConsumedObserved;
+    private final ArrayList<Double> quantitiesConsumedObserved;
 
 
     /**
      * a list holding all the quantity produced observed
      */
-    private final LinkedList<Double> quantitiesProducedObserved;
+    private final ArrayList<Double> quantitiesProducedObserved;
 
     /**
      * This is the last quantity traded observed
@@ -83,7 +83,7 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
     /**
      * a list holding all the quantities observed
      */
-    private final LinkedList<Double> observationDays;
+    private final ArrayList<Double> observationDays;
 
 
 
@@ -124,6 +124,11 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
     public static float defaultDailyProbabilityOfObserving =  0.142f;
 
     /**
+     * if "isExact" is set to true, the market observer doesn't check "at random" but at fixed intervals of size 1/probabilityOfObserving
+     */
+    public boolean isExact = true;
+
+    /**
      * When created, it automatically schedules itself. It also register itself as deactivable so that it will be turned
      * off when MacroII is finished
      * @param market a link to the market to observe
@@ -132,16 +137,20 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
     public PeriodicMarketObserver(Market market, MacroII macroII)
     {
         this.market = market;
-        pricesObserved = new LinkedList<>();
-        quantitiesTradedObserved = new LinkedList<>();
-        observationDays = new LinkedList<>();
-        quantitiesConsumedObserved = new LinkedList<>();
-        quantitiesProducedObserved = new LinkedList<>();
+        pricesObserved = new ArrayList<>(100);
+        quantitiesTradedObserved = new ArrayList<>(100);
+        observationDays = new ArrayList<>(100);
+        quantitiesConsumedObserved = new ArrayList<>(100);
+        quantitiesProducedObserved = new ArrayList<>(100);
 
         if(dailyProbabilityOfObserving < 1)
         {
-            macroII.scheduleAnotherDayWithFixedProbability(ActionOrder.DAWN, this, dailyProbabilityOfObserving,
-                    Priority.AFTER_STANDARD);
+            if(!isExact)
+                macroII.scheduleAnotherDayWithFixedProbability(ActionOrder.DAWN, this, dailyProbabilityOfObserving,
+                        Priority.AFTER_STANDARD);
+            else
+                macroII.scheduleAnotherDay(ActionOrder.DAWN, this, Math.max(1,Math.round(1f/dailyProbabilityOfObserving)),
+                        Priority.AFTER_STANDARD);
         }
         else
         {
@@ -157,7 +166,7 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
      */
     public Double getLastPriceObserved()
     {
-        return pricesObserved.getLast();
+        return pricesObserved.get(pricesObserved.size() - 1);
     }
 
     /**
@@ -166,7 +175,7 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
      */
     public Double getLastQuantityTradedObserved()
     {
-        return quantitiesTradedObserved.getLast();
+        return quantitiesTradedObserved.get(quantitiesTradedObserved.size()-1);
     }
 
     /**
@@ -175,7 +184,7 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
      */
     public Double getLastQuantityConsumedObserved()
     {
-        return quantitiesConsumedObserved.getLast();
+        return quantitiesConsumedObserved.get(quantitiesConsumedObserved.size()-1);
     }
 
     /**
@@ -184,7 +193,7 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
      */
     public Double getLastQuantityProducedObserved()
     {
-        return quantitiesProducedObserved.getLast();
+        return quantitiesProducedObserved.get(quantitiesProducedObserved.size()-1);
     }
 
 
@@ -195,7 +204,7 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
      */
     public Double getLastDayObserved()
     {
-        return observationDays.getLast();
+        return observationDays.get(observationDays.size()-1);
     }
 
     @Override
@@ -304,14 +313,6 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
     }
 
 
-    /**
-     * Get unmodifiable view of the list
-     * @return
-     */
-    protected List<Double> getObservationDays() {
-
-        return Collections.unmodifiableList(observationDays);
-    }
 
     /**
      * Copies observation days into a double[] and return sit. Useful for regressions and other manipulations
@@ -329,11 +330,11 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
     {
 
         int size = getNumberOfObservations();
-        pricesObserved.removeFirst();
-        quantitiesTradedObserved.removeFirst();
-        observationDays.removeFirst();
-        quantitiesProducedObserved.removeFirst();
-        quantitiesConsumedObserved.removeFirst();
+        pricesObserved.remove(0);
+        quantitiesTradedObserved.remove(0);
+        observationDays.remove(0);
+        quantitiesProducedObserved.remove(0);
+        quantitiesConsumedObserved.remove(0);
         assert  size == getNumberOfObservations() + 1;
 
     }
@@ -409,5 +410,13 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
 
     public void setDailyProbabilityOfObserving(float dailyProbabilityOfObserving) {
         this.dailyProbabilityOfObserving = dailyProbabilityOfObserving;
+    }
+
+    public boolean isExact() {
+        return isExact;
+    }
+
+    public void setExact(boolean exact) {
+        isExact = exact;
     }
 }

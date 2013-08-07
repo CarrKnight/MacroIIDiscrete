@@ -134,7 +134,7 @@ public interface PurchasesPredictor
 
             try {
                 //we don't need a big switch here, since they are all without constructor except one
-                if(rule.equals(LearningIncreasePurchasesPredictor.class))
+                if(rule.equals(LearningIncreasePurchasesPredictor.class) || rule.equals(LearningIncreaseWithTimeSeriesPurchasePredictor.class) )
                     return rule.getConstructor(Market.class, MacroII.class).
                             newInstance(department.getMarket(), department.getModel());
                 else

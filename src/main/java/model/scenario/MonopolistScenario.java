@@ -14,9 +14,12 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
-import agents.firm.production.control.facades.*;
+import agents.firm.production.control.facades.DiscreteSlowPlantControl;
+import agents.firm.production.control.facades.DumbClimberControl;
+import agents.firm.production.control.facades.MarginalPlantControl;
+import agents.firm.production.control.facades.MarginalPlantControlWithPIDUnit;
 import agents.firm.production.technology.LinearConstantMachinery;
-import agents.firm.purchases.prediction.LookAheadPredictor;
+import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.PurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
@@ -24,7 +27,6 @@ import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
-import agents.firm.sales.prediction.LinearExtrapolationPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
@@ -36,8 +38,8 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.stats.DailyStatCollector;
 import model.utilities.dummies.DummyBuyer;
+import model.utilities.stats.DailyStatCollector;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -125,7 +127,7 @@ public class MonopolistScenario extends Scenario {
     /**
      * The type of sales predictor the sales department should use
      */
-    protected Class<? extends SalesPredictor> salesPricePreditorStrategy = LinearExtrapolationPredictor.class;
+    protected Class<? extends SalesPredictor> salesPricePreditorStrategy = SalesDepartment.defaultPredictorStrategy;
 
     /**
      * The kind of sales department to use
@@ -136,7 +138,7 @@ public class MonopolistScenario extends Scenario {
     /**
      * The type of price predictor the human resources department should use
      */
-    protected Class<? extends PurchasesPredictor> purchasesPricePreditorStrategy = LookAheadPredictor.class;
+    protected Class<? extends PurchasesPredictor> purchasesPricePreditorStrategy = PurchasesDepartment.defaultPurchasePredictor;
 
     /**
      * Called by MacroII, it creates agents and then schedules them.

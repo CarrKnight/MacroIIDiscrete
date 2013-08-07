@@ -101,11 +101,11 @@ public class DummyBuyer extends Firm {
     @Override
     public void reactToFilledAskedQuote(Good g, long price, EconomicAgent buyer) {
         //don't react
-
     }
 
     @Override
     public void reactToFilledBidQuote(Good g, long price, EconomicAgent seller) {
+        consume(g.getType());
 
     }
 

@@ -64,56 +64,13 @@ public class LinearRegression implements UnivariateRegression
         //if all observations of X are the same, just return an intercept only model with a=average of Y
         if(isXAllTheSame)
         {
-            double sum = 0;
-            for(double yObs : y)
-            {
-                sum += yObs;
-            }
+            double average = takeYAverage(y);
             slope=0;
-            intercept = sum/(double)y.length;
+            intercept = average;
         }
         else
         {
-            //build weights
-
-
-            //build the X matrix
-            Matrix xMatrix= new Matrix(x.length,2);
-            for(int row=0;row<x.length;row++)
-            {
-                double column1 = 1;
-                double column2 = x[row];
-                if(weights!=null)       //if needed, weight
-                {
-                    column1= column1 * Math.sqrt(weights[row]);
-                    column2= column2 * Math.sqrt(weights[row]);
-                }
-                xMatrix.set(row,0,column1);
-                xMatrix.set(row,1,column2);
-            }
-            //build the Y matrix
-            Matrix yMatrix= new Matrix(x.length,1);
-            for(int row=0;row<y.length;row++)
-            {
-                if(weights != null)
-                    y[row] = y[row] * Math.sqrt(weights[row]);
-                yMatrix.set(row,0,y[row]);
-            }
-
-
-
-            //the usual formula is (X'X)^-1 X'y
-            //(X'X)^-1:
-            Matrix xMatrixTranspose = xMatrix.transpose();
-            Matrix xtx = xMatrixTranspose.times(xMatrix);
-            xtx = xtx.inverse();
-            //(X'Y):
-            Matrix xty = xMatrixTranspose.times(yMatrix);
-            //result:
-            Matrix result = xtx.times(xty);
-
-            assert result.getRowDimension()==2;
-            assert result.getColumnDimension()==1;
+            Matrix result = regress(y, weights, x);
 
             slope = result.get(1,0);
             intercept = result.get(0,0);
@@ -183,9 +140,78 @@ public class LinearRegression implements UnivariateRegression
 
 
 
+    }
+
+    public static double takeYAverage(double[] y) {
+        double sum = 0;
+        for(double yObs : y)
+        {
+            sum += yObs;
+        }
+        sum = sum/(double)y.length;
+        return sum;
+    }
+
+    public static Matrix regress(double[] y, double[] weights, double[]... regressors) {
+        //build weights
+
+        Preconditions.checkArgument(regressors.length > 0);
+
+        //build the X matrix
+        Matrix xMatrix= new Matrix(regressors[0].length,regressors.length+1);
+
+        double[] intercept = new double[regressors[0].length];
+        //if there are weights, do this:
+        if(weights!=null)
+        {
+            //get the square root of the weight and multiply everything by it!
+            for(int i=0; i< weights.length; i++)
+            {
+                double w = Math.sqrt(weights[i]);
+                intercept[i] = w;
+                //reweight x
+                for(double[] x : regressors)
+                    x[i] = x[i] * w;
+                //reweight y
+                y[i] = y[i] * w;
+
+            }
+        }
+        //otherwise all intercept is one
+        else
+        {
+            for(int i=0; i<intercept.length; i++)
+                intercept[i]=1;
+        }
+        //build the Y matrix
+        Matrix yMatrix= new Matrix(intercept.length,1);
+
+        //set them in the matrix
+        for(int row=0; row< xMatrix.getRowDimension(); row++)
+        {
+            xMatrix.set(row,0,intercept[row]);
+            for(int i=0; i < regressors.length; i++)
+                xMatrix.set(row,i+1,regressors[i][row]);
+            yMatrix.set(row,0,y[row]);
+        }
 
 
 
+
+
+        //the usual formula is (X'X)^-1 X'y
+        //(X'X)^-1:
+        Matrix xMatrixTranspose = xMatrix.transpose();
+        Matrix xtx = xMatrixTranspose.times(xMatrix);
+        xtx = xtx.inverse();
+        //(X'Y):
+        Matrix xty = xMatrixTranspose.times(yMatrix);
+        //result:
+        Matrix result = xtx.times(xty);
+
+        assert result.getRowDimension()==regressors.length+1;
+        assert result.getColumnDimension()==1;
+        return result;
     }
 
     /**

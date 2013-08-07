@@ -6,7 +6,7 @@ import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.Ma
 import agents.firm.purchases.FactoryProducedPurchaseDepartment;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.inventoryControl.FixedInventoryControl;
-import agents.firm.purchases.prediction.LearningIncreasePurchasesPredictor;
+import agents.firm.purchases.prediction.LearningIncreaseWithTimeSeriesPurchasePredictor;
 import agents.firm.purchases.prediction.PurchasesPredictor;
 import agents.firm.purchases.pricing.CheaterPricing;
 import agents.firm.sales.SalesDepartmentOneAtATime;
@@ -72,7 +72,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
 
     public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
 
-        department.setPredictor(PurchasesPredictor.Factory.newPurchasesPredictor(LearningIncreasePurchasesPredictor.class,department));
+        department.setPredictor(PurchasesPredictor.Factory.newPurchasesPredictor(LearningIncreaseWithTimeSeriesPurchasePredictor.class,department));
 
     }
 
