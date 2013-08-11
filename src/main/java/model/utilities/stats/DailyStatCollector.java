@@ -61,6 +61,12 @@ public class DailyStatCollector implements Steppable{
      */
     private EnumMap<GoodType,Integer> productionPerSector;
 
+
+    /**
+     * How much was consumed today
+     */
+    private EnumMap<GoodType,Integer> consumptionPerSector;
+
     /**
      * How many workers were working today
      */
@@ -102,6 +108,7 @@ public class DailyStatCollector implements Steppable{
     public DailyStatCollector(MacroII model) {
         this.model = model;
         productionPerSector = new EnumMap<>(GoodType.class);
+        consumptionPerSector = new EnumMap<>(GoodType.class);
         workersPerSector = new EnumMap<>(GoodType.class);
         marketPrice  = new EnumMap<>(GoodType.class);
         marketVolume  = new EnumMap<>(GoodType.class);
@@ -143,7 +150,8 @@ public class DailyStatCollector implements Steppable{
                 continue;
 
 
-            int production = 0; int workers = 0;int sellerInventory=0; boolean shortages= false; //prepare all the counts
+            int production = 0; int workers = 0;int sellerInventory=0; int consumption = 0;
+            boolean shortages= false; //prepare all the counts
 
             for(EconomicAgent seller : market.getSellers() ) //for each firm
             {
@@ -177,7 +185,9 @@ public class DailyStatCollector implements Steppable{
             }
 
             production = market.countTodayProductionByRegisteredSellers();
+            consumption = market.countTodayConsumptionByRegisteredBuyers();
             productionPerSector.put(output,production);
+            consumptionPerSector.put(output,consumption);
             workersPerSector.put(output,workers);
             marketPrice.put(output,market.getLastPrice());
             marketVolume.put(output,market.getYesterdayVolume());
@@ -240,6 +250,7 @@ public class DailyStatCollector implements Steppable{
 
 
             row.add(Integer.toString(productionPerSector.get(type)));
+            row.add(Integer.toString(consumptionPerSector.get(type)));
             row.add(Integer.toString(workersPerSector.get(type)));
             row.add(Long.toString(marketPrice.get(type)));
             row.add(Integer.toString(marketVolume.get(type)));
@@ -269,6 +280,7 @@ public class DailyStatCollector implements Steppable{
 
 
             todayRow.add(type.name() + '_' + "production");
+            todayRow.add(type.name() + '_' + "consumption");
             todayRow.add(type.name() + '_' + "workers");
             todayRow.add(type.name() + '_' + "price");
             todayRow.add(type.name() + '_' + "volume");

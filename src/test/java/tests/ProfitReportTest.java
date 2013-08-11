@@ -1,7 +1,7 @@
 package tests;
 
 import agents.firm.Firm;
-import agents.firm.ProfitReport;
+import agents.firm.WeeklyProfitReport;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
@@ -80,7 +80,7 @@ public class ProfitReportTest {
         when(plant2.getLastWeekThroughput()).thenReturn(production2);
 
 
-        ProfitReport test = new ProfitReport(firm);
+        WeeklyProfitReport test = new WeeklyProfitReport(firm);
         test.weekEnd();
         assertEquals(test.getPlantProfits(plant1), 140,.001);
         assertEquals(test.getPlantProfits(plant2), 780,.001);

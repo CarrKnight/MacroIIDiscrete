@@ -106,24 +106,32 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
 
 
             //compute profits if we decrease
-             float profitsIfWeDecrease = currentWorkerTarget > p.minimumWorkersNeeded() ? //can we decrease production?
+            float profitsIfWeDecrease = currentWorkerTarget > p.minimumWorkersNeeded() ? //can we decrease production?
                     MarginalMaximizerStatics.computeMarginalProfits(owner, p, hr, plantControl, policy, currentWorkerTarget, currentWorkerTarget - 1) //if so check marginal profits
                     :
                     Float.NEGATIVE_INFINITY; //otherwise ignore this choice!
 
             if(profitsIfWeDecrease < 0 && profitsIfWeIncrease < 0)
+            {
 
                 //if profits decrease in both direction, stay where you are
+     //           System.out.println(currentWorkerTarget);
                 return currentWorkerTarget;
+
+            }
             else
             if(profitsIfWeIncrease >= profitsIfWeDecrease){ //if we increase profits going up, let's do that
                 assert profitsIfWeIncrease >= 0;
+    //            System.out.println(currentWorkerTarget + 1);
                 return currentWorkerTarget+1;
             }
             else
             {
-                assert profitsIfWeDecrease >0;
+                assert profitsIfWeDecrease >=0;
+  //              System.out.println(currentWorkerTarget -1);
+
                 return currentWorkerTarget-1;
+
             }
 
         }catch (DelayException e)
@@ -131,6 +139,7 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
             //if an exception was thrown, it must be because we need more time!
             return -1;
         }
+
 
 
     }
@@ -246,4 +255,6 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
     public HumanResources getHr() {
         return hr;
     }
+
+
 }

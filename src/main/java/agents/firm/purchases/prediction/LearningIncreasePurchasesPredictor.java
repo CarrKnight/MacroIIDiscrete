@@ -117,7 +117,7 @@ public class LearningIncreasePurchasesPredictor implements PurchasesPredictor {
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePrice(PurchasesDepartment dept) {
+    public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
         if(observer.getNumberOfObservations() > 0)
         {
             updateModel();
@@ -125,8 +125,19 @@ public class LearningIncreasePurchasesPredictor implements PurchasesPredictor {
             predictor.setIncrementDelta((float) regression.getSlope());
         }
 
-        return predictor.predictPurchasePrice(dept);
+        return predictor.predictPurchasePriceWhenIncreasingProduction(dept);
     }
+
+    @Override
+    public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
+        if(observer.getNumberOfObservations() > 0)
+        {
+            updateModel();
+            //     System.out.print(regression);
+            predictor.setIncrementDelta((float) regression.getSlope());
+        }
+
+        return predictor.predictPurchasePriceWhenIncreasingProduction(dept);    }
 
     /**
      * Call this to kill the predictor

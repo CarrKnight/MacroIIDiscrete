@@ -48,6 +48,6 @@ public class PriceLookupPurchaseDepartment implements PriceLookup {
      */
     @Override
     public long getPrice() {
-        return department.predictPurchasePrice();
+        return department.predictPurchasePriceWhenIncreasingProduction();
     }
 }

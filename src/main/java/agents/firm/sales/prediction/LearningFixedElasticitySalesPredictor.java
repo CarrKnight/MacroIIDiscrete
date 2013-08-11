@@ -76,4 +76,6 @@ public class LearningFixedElasticitySalesPredictor extends LearningDecreaseSales
         else
             predictor.setDecrementDelta(0);
     }
+
+
 }

@@ -7,8 +7,8 @@
 package model.utilities.dummies;
 
 import agents.EconomicAgent;
+import agents.firm.DummyProfitReport;
 import agents.firm.Firm;
-import agents.firm.ProfitReport;
 import financial.Market;
 import financial.MarketEvents;
 import financial.utilities.PurchaseResult;
@@ -18,8 +18,6 @@ import goods.GoodType;
 import model.MacroII;
 
 import javax.annotation.Nonnull;
-
-import static org.mockito.Mockito.mock;
 
 /**
  * <h4>Description</h4>
@@ -47,7 +45,7 @@ public class DummySeller extends Firm {
         super(model,false);
         saleQuote = quote;
         getProfitReport().turnOff();
-        setProfitReport(mock(ProfitReport.class));
+        setProfitReport(new DummyProfitReport());
     }
 
 

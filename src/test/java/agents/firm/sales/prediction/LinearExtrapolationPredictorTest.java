@@ -84,7 +84,7 @@ public class LinearExtrapolationPredictorTest {
         predictor.step(macroII);
         Assert.assertEquals(predictor.getLowWorkersPrice(),15f,.001f); //float because it's rounding
         Assert.assertEquals(predictor.getHighWorkersPrice(),10f,.001f); //float because it's rounding
-        Assert.assertEquals(predictor.predictSalePrice(dept,1000l),5l);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(dept, 1000l, 1),5l);
     }
 
     //test precipitous drop!
@@ -123,7 +123,7 @@ public class LinearExtrapolationPredictorTest {
         predictor.step(macroII);
 
         //the prediction should now be
-        Assert.assertEquals(predictor.predictSalePrice(dept,1000l),100l-2l*6);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(dept, 1000l, 1),100l-2l*6);
 
 
 
@@ -167,7 +167,7 @@ public class LinearExtrapolationPredictorTest {
 
 
         //the only difference is that it ignores 0 and just quotes the #1 worker price
-        Assert.assertEquals(predictor.predictSalePrice(dept,1000l),10l);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(dept, 1000l, 1),10l);
 
 
 

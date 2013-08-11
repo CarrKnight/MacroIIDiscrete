@@ -32,8 +32,7 @@ public class MultipleLinearRegressionTest {
 
 
     @Test
-    public void linearRegressionTest()
-    {
+    public void linearRegressionTest() throws LinearRegression.CollinearityException {
 
         //I am going to estimate this in R, and the results ought to be the same!
 
@@ -49,7 +48,7 @@ public class MultipleLinearRegressionTest {
         };
 
 
-        MultipleLinearRegression regression = new MultipleLinearRegression(1);
+        MultipleLinearRegression regression = new MultipleLinearRegression();
         regression.estimateModel(y,null,x);
 
         //make sure the intercept and slope are correct!
@@ -66,8 +65,7 @@ public class MultipleLinearRegressionTest {
     }
 
     @Test
-    public void weightedLinearRegressionTest()
-    {
+    public void weightedLinearRegressionTest() throws LinearRegression.CollinearityException {
 
         //I am going to estimate this in R, and the results ought to be the same!
 
@@ -90,7 +88,7 @@ public class MultipleLinearRegressionTest {
 
 
 
-        MultipleLinearRegression regression = new MultipleLinearRegression(1);
+        MultipleLinearRegression regression = new MultipleLinearRegression();
         regression.estimateModel(y,weights,x);
 
         //make sure the intercept and slope are correct!
@@ -108,44 +106,14 @@ public class MultipleLinearRegressionTest {
 
 
 
-    //if we input every x being the same, it should produce a y = a model
-    @Test
-    public void onlyIntercept()
-    {
-        double[] x = new double[20];
-        for(int i=1; i <=20; i++)
-            x[i-1]=5; //always 5
 
-        //y is always different
-        double[] y = new double[]{
-                26.45868, 25.28469, 25.89083 ,27.73012, 25.25402, 25.70781, 25.81495, 27.48750 ,27.70585, 25.74754,
-                26.87425, 26.10124, 24.12670, 27.25951 ,26.05331, 26.32221, 26.20726, 25.61510, 25.67823
-                ,27.00796
-
-        };
-
-        MultipleLinearRegression regression = new MultipleLinearRegression(1);
-        regression.estimateModel(y,null,x);
-
-        //make sure the intercept and slope are correct!
-        Assert.assertEquals(regression.getResultMatrix()[0], 26.22,.01);
-        Assert.assertEquals(regression.getResultMatrix()[1],0,.01);
-
-        //make sure predictions are correct
-        Assert.assertEquals(regression.predict(20),26.22,.01 );
-        Assert.assertEquals(regression.predict(10),26.22,.01 );
-        Assert.assertEquals(regression.predict(11.1),26.22,.01 );
-
-
-
-    }
 
 
     //if we input every x being the same, it should produce a y = a model
     @Test
     public void noEstimationReturnsNaN()
     {
-        MultipleLinearRegression regression = new MultipleLinearRegression(1);
+        MultipleLinearRegression regression = new MultipleLinearRegression();
 
 
         //make sure the intercept and slope are correct!
@@ -164,8 +132,7 @@ public class MultipleLinearRegressionTest {
     //multiple linear regressions here
 
     @Test
-    public void multipleLinearRegressionTest()
-    {
+    public void multipleLinearRegressionTest() throws LinearRegression.CollinearityException {
 
         //I am going to estimate this in R, and the results ought to be the same!
 
@@ -185,7 +152,7 @@ public class MultipleLinearRegressionTest {
         };
 
 
-        MultipleLinearRegression regression = new MultipleLinearRegression(2);
+        MultipleLinearRegression regression = new MultipleLinearRegression();
         regression.estimateModel(y,null,x,z);
 
         //make sure the intercept and slope are correct!
@@ -204,8 +171,7 @@ public class MultipleLinearRegressionTest {
 
 
     @Test
-    public void collinearity()
-    {
+    public void collinearity() throws LinearRegression.CollinearityException {
 
         //I am going to estimate this in R, and the results ought to be the same!
 
@@ -225,21 +191,33 @@ public class MultipleLinearRegressionTest {
         };
 
 
-        MultipleLinearRegression regression = new MultipleLinearRegression(2);
-        regression.estimateModel(y,null,x,z);
+        MultipleLinearRegression regression = new MultipleLinearRegression();
+        boolean collinearityFound = false;
+        try{
+            regression.estimateModel(y,null,x,z);
+        }
+        catch (LinearRegression.CollinearityException ex)
+        {
+            collinearityFound = true;
+            regression.estimateModel(y,null,x);
 
+        }
+        Assert.assertTrue(collinearityFound);
         //make sure the intercept and slope are correct!
-        Assert.assertEquals(regression.getResultMatrix()[0], -255.2446, .01);
-        Assert.assertEquals(regression.getResultMatrix()[1],0,.01);
-        Assert.assertEquals(regression.getResultMatrix()[2],0,.01);
+        Assert.assertEquals(regression.getResultMatrix()[0], 154.08, .01);
+        Assert.assertEquals(regression.getResultMatrix()[1],-38.98,.01);
+        //Assert.assertEquals(regression.getResultMatrix()[2],0,.01);
 
         //make sure predictions are correct
-        Assert.assertEquals(regression.predict(20,20*20),-255.2446,.01 );
-        Assert.assertEquals(regression.predict(10,100),-255.2446,.01 );
-        Assert.assertEquals(regression.predict(11.1,11.1*11.1),-255.2446,.01 );
+        Assert.assertEquals(regression.predict(20),-625.5892,.01 );
+        Assert.assertEquals(regression.predict(10),-235.7528,.01 );
+        Assert.assertEquals(regression.predict(11.1), -278.6348,.01 );
 
 
 
     }
+
+
+
 
 }

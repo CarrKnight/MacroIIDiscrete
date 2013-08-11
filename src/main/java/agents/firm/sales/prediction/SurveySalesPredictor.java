@@ -7,17 +7,7 @@
 package agents.firm.sales.prediction;
 
 import agents.EconomicAgent;
-import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
-import agents.firm.sales.exploration.BuyerSearchAlgorithm;
-import ec.util.MersenneTwisterFast;
-import financial.Market;
-import org.reflections.Reflections;
-
-import javax.annotation.Nonnull;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 
 /**
  * <h4>Description</h4>
@@ -43,12 +33,14 @@ public class SurveySalesPredictor implements SalesPredictor {
     /**
      * The prediction of this class involves using the buyer search to
      *
+     *
      * @param dept                   the sales department that has to answer this question
      * @param expectedProductionCost the HQ estimate of costs in producing whatever it wants to sell. It isn't necesarilly used.
+     * @param increaseStep ignored
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePrice(SalesDepartment dept, long expectedProductionCost) {
+    public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
         EconomicAgent bestBuyer = dept.getBuyerSearchAlgorithm().getBestInSampleBuyer();     //sample the best buyer
         if(bestBuyer == null)
             return -1; //none found, return sadly
@@ -58,6 +50,21 @@ public class SurveySalesPredictor implements SalesPredictor {
             assert offer >= 0; //should be a real offer!
             return offer;
         }
+    }
+
+    /**
+     * This is called by the firm when it wants to predict the price they can sell to if they increase production
+     *
+     *
+     * @param dept                   the sales department that has to answer this question
+     * @param expectedProductionCost the HQ estimate of costs in producing whatever it wants to sell. It isn't necesarilly used.
+     * @param decreaseStep ignored
+     * @return the best offer available/predicted or -1 if there are no quotes/good predictions
+     */
+    @Override
+    public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
+        return dept.getLastClosingPrice();
+
     }
 
     /**

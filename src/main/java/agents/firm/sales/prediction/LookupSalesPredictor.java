@@ -33,12 +33,14 @@ public class LookupSalesPredictor implements SalesPredictor {
      * This is called by the firm when it wants to predict the price they can sell to
      * (usually in order to guide production). <br>
      *
+     *
      * @param dept                   the sales department that has to answer this question
      * @param expectedProductionCost the HQ estimate of costs in producing whatever it wants to sell. It isn't necesarilly used.
+     * @param increaseStep ignored
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePrice(SalesDepartment dept, long expectedProductionCost) {
+    public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
         Market market = dept.getMarket();
         if(market.isBestBuyPriceVisible())
             try {
@@ -76,6 +78,20 @@ public class LookupSalesPredictor implements SalesPredictor {
             }
         else
             return dept.getLastClosingPrice();
+    }
+
+    /**
+     * defaults to the last closing price.
+     *
+     * @param dept the sales department that has to answer this question
+     * @param expectedProductionCost the HQ estimate of costs in producing whatever it wants to sell. It isn't necesarilly used.
+     * @param decreaseStep ignored
+     * @return
+     */
+    @Override
+    public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
+        return dept.getLastClosingPrice();
+
     }
 
     private long getBuyerPrice(Market market) throws IllegalAccessException {

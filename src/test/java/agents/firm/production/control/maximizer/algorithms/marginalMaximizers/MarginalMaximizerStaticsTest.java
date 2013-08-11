@@ -70,7 +70,7 @@ public class MarginalMaximizerStaticsTest
         SalesDepartment department = mock(SalesDepartment.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
         when(department.getLastClosingPrice()).thenReturn(60l);
-        when(department.predictSalePrice(anyInt())).thenReturn(59l);
+        when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59l);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
 
@@ -100,7 +100,7 @@ public class MarginalMaximizerStaticsTest
         SalesDepartment department = mock(SalesDepartment.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
         when(department.getLastClosingPrice()).thenReturn(60l);
-        when(department.predictSalePrice(anyInt())).thenReturn(59l);
+        when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59l);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
 
@@ -108,7 +108,7 @@ public class MarginalMaximizerStaticsTest
                 MarginalMaximizer.RandomizationPolicy.MORE_TIME,1,2,0,0),   580f,.00001);
     }
 
-    //if you predict price going up, ignore the effect on goods you were already selling.
+    //if you predict price going up
     //increase production by 10(workers: 1-->2), price INCREASES from 60 to 70. You were producing 10
     //old revenue: 60*10
     //new revenue 70*20
@@ -126,12 +126,12 @@ public class MarginalMaximizerStaticsTest
         SalesDepartment department = mock(SalesDepartment.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
         when(department.getLastClosingPrice()).thenReturn(60l);
-        when(department.predictSalePrice(anyInt())).thenReturn(70l);
+        when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(70l);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
 
         Assert.assertEquals(MarginalMaximizerStatics.computeMarginalRevenue(owner,plant,
-                MarginalMaximizer.RandomizationPolicy.MORE_TIME,1,2,0,0),   700f,.00001);
+                MarginalMaximizer.RandomizationPolicy.MORE_TIME,1,2,0,0),   800f,.00001);
     }
 
     //marginal revenue with step different from 1 (numbers are the same as simple revenue test 1)
@@ -153,7 +153,7 @@ public class MarginalMaximizerStaticsTest
         SalesDepartment department = mock(SalesDepartment.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
         when(department.getLastClosingPrice()).thenReturn(60l);
-        when(department.predictSalePrice(anyInt())).thenReturn(59l);
+        when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59l);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
 
@@ -186,7 +186,7 @@ public class MarginalMaximizerStaticsTest
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
         when(owner.getSalesDepartment(GoodType.BEEF)).thenReturn(department);
         when(department.getLastClosingPrice()).thenReturn(60l);
-        when(department.predictSalePrice(anyInt())).thenReturn(59l);
+        when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59l);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
 
@@ -211,7 +211,7 @@ public class MarginalMaximizerStaticsTest
     public void simpleWageCosts() throws DelayException {
 
         HumanResources hr = mock(HumanResources.class);
-        when(hr.predictPurchasePrice()).thenReturn(10l);
+        when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
         when(hr.isFixedPayStructure()).thenReturn(true);
         PlantControl control = mock(PlantControl.class);
         when(control.getCurrentWage()).thenReturn(5l);
@@ -230,7 +230,7 @@ public class MarginalMaximizerStaticsTest
     public void simpleWageCosts2() throws DelayException {
 
         HumanResources hr = mock(HumanResources.class);
-        when(hr.predictPurchasePrice()).thenReturn(10l);
+        when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
         when(hr.isFixedPayStructure()).thenReturn(true);
         PlantControl control = mock(PlantControl.class);
         when(control.getCurrentWage()).thenReturn(5l);
@@ -309,7 +309,7 @@ public class MarginalMaximizerStaticsTest
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         when(owner.getPurchaseDepartment(GoodType.GENERIC)).thenReturn(department);
         when(department.getLastClosingPrice()).thenReturn(5l);
-        when(department.predictPurchasePrice()).thenReturn(10l);
+        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeInputCosts(owner, plant, MarginalMaximizer.RandomizationPolicy.MORE_TIME, 1, 2);
@@ -343,7 +343,7 @@ public class MarginalMaximizerStaticsTest
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         when(owner.getPurchaseDepartment(GoodType.GENERIC)).thenReturn(department);
         when(department.getLastClosingPrice()).thenReturn(5l);
-        when(department.predictPurchasePrice()).thenReturn(10l);
+        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeInputCosts(owner, plant, MarginalMaximizer.RandomizationPolicy.MORE_TIME, 1, 2);
@@ -357,7 +357,7 @@ public class MarginalMaximizerStaticsTest
     }
 
 
-    //price of input decreases weirdly. The method should ignore the drop for the stuff we are already buying
+    //price of input decreases weirdly.
     //1--->2 workers
     //1--->2 weekly inputs
     //price of input will move from 5 to 3
@@ -379,14 +379,14 @@ public class MarginalMaximizerStaticsTest
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         when(owner.getPurchaseDepartment(GoodType.GENERIC)).thenReturn(department);
         when(department.getLastClosingPrice()).thenReturn(5l);
-        when(department.predictPurchasePrice()).thenReturn(3l);
+        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(3l);
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeInputCosts(owner, plant, MarginalMaximizer.RandomizationPolicy.MORE_TIME, 1, 2);
 
 
-        Assert.assertEquals(estimate.getMarginalCost(),3,.0001f);
-        Assert.assertEquals(estimate.getTotalCost(),8,.0001f);
+        Assert.assertEquals(estimate.getMarginalCost(),1,.0001f);
+        Assert.assertEquals(estimate.getTotalCost(),6,.0001f);
 
 
 
@@ -394,9 +394,9 @@ public class MarginalMaximizerStaticsTest
     //same numbers as the first test, but now we are decreasing the workers
     //2--->1 workers
     //2--->1 weekly inputs
-    //price of input will move from 5 to 10 (but it is ignored)
-    //total input costs = 10
-    //marginal input costs= -10
+    //price of input will move from 10 to 5 (but it is ignored)
+    //total input costs = 5
+    //marginal input costs= -15
     @Test
     public void simpleInputCosts4() throws DelayException {
 
@@ -412,15 +412,15 @@ public class MarginalMaximizerStaticsTest
         Firm owner = mock(Firm.class);
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         when(owner.getPurchaseDepartment(GoodType.GENERIC)).thenReturn(department);
+        when(department.predictPurchasePriceWhenDecreasingProduction()).thenReturn(5l);
         when(department.getLastClosingPrice()).thenReturn(10l);
-        when(department.predictPurchasePrice()).thenReturn(5l);
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeInputCosts(owner, plant, MarginalMaximizer.RandomizationPolicy.MORE_TIME, 2, 1);
 
 
-        Assert.assertEquals(estimate.getMarginalCost(),-10,.0001f);
-        Assert.assertEquals(estimate.getTotalCost(),10,.0001f);
+        Assert.assertEquals(estimate.getMarginalCost(),-15,.0001f);
+        Assert.assertEquals(estimate.getTotalCost(),5,.0001f);
 
 
 
@@ -454,7 +454,7 @@ public class MarginalMaximizerStaticsTest
         when(owner.getPurchaseDepartment(GoodType.GENERIC)).thenReturn(department);
         when(owner.getPurchaseDepartment(GoodType.BEEF)).thenReturn(department);
         when(department.getLastClosingPrice()).thenReturn(5l);
-        when(department.predictPurchasePrice()).thenReturn(10l);
+        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeInputCosts(owner, plant, MarginalMaximizer.RandomizationPolicy.MORE_TIME, 1, 2);

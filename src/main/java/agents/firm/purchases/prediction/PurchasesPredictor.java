@@ -41,7 +41,15 @@ public interface PurchasesPredictor
      * @param dept the department that needs to buy it
      * @return the predicted price or -1 if there are no predictions.
      */
-    public long predictPurchasePrice(PurchasesDepartment dept);
+    public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept);
+
+
+    /**
+     * Predicts the future price of the next good to buy
+     * @param dept the department that needs to buy it
+     * @return the predicted price or -1 if there are no predictions.
+     */
+    public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept);
 
 
     /**

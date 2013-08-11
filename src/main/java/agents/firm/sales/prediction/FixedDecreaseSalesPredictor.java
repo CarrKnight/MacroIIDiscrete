@@ -7,6 +7,7 @@
 package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
+import com.google.common.base.Preconditions;
 
 /**
  * <h4>Description</h4>
@@ -53,9 +54,23 @@ public class FixedDecreaseSalesPredictor implements SalesPredictor {
      * Never returns less than 0
      */
     @Override
-    public long predictSalePrice(SalesDepartment dept, long expectedProductionCost) {
+    public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
+        Preconditions.checkArgument(increaseStep >= 0);
 
-        return Math.max(0,Math.round(delegate.predictSalePrice(dept, expectedProductionCost)-decrementDelta));
+        return Math.max(0,Math.round(delegate.predictSalePriceAfterIncreasingProduction(dept, expectedProductionCost,increaseStep )
+                -decrementDelta* (float)increaseStep));
+    }
+
+    /**
+     * This  returns the sales department current price for a new good - the fixed decrement delta.
+     * Never returns less than 0
+     */
+    @Override
+    public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
+        Preconditions.checkArgument(decreaseStep >= 0);
+
+        return Math.max(0,Math.round(delegate.predictSalePriceAfterDecreasingProduction(dept, expectedProductionCost, decreaseStep)
+                + decrementDelta * (float) decreaseStep));
     }
 
     /**

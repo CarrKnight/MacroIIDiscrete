@@ -69,7 +69,7 @@ public class MemoryPredictorStrategyTest {
         market.submitSellQuote(seller,300l,new Good(GoodType.GENERIC,seller,300l));
 
 
-        assertEquals(-1, strategy.predictSalePrice(department, 200)); //fails because there is nothing memory
+        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //fails because there is nothing memory
 
 
     }
@@ -113,7 +113,7 @@ public class MemoryPredictorStrategyTest {
         assertEquals(50, buyer3.getCash());
         assertEquals(250, seller2.getCash());
 
-        assertEquals(-1, strategy.predictSalePrice(department, 200)); //copy last closing price
+        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //copy last closing price
 
 
     }
@@ -163,8 +163,8 @@ public class MemoryPredictorStrategyTest {
         assertEquals(50, buyer3.getCash());
         assertEquals(250, seller2.getCash());
 
-        assertEquals(-1, strategy.predictSalePrice(department, 200)); //copy last closing price
-        assertEquals(-1, department.predictSalePrice(200)); //not overriden this time!
+        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //copy last closing price
+        assertEquals(-1, department.predictSalePriceAfterIncreasingProduction(200, 1)); //not overriden this time!
 
     }
 
@@ -182,8 +182,8 @@ public class MemoryPredictorStrategyTest {
         strategy = new MemorySalesPredictor();
         department.setPredictorStrategy(strategy);
 
-        assertEquals(-1, strategy.predictSalePrice(department, 200)); //useless
-        assertEquals(-1, department.predictSalePrice(200)); //useless
+        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200,1 )); //useless
+        assertEquals(-1, department.predictSalePriceAfterIncreasingProduction(200, 1)); //useless
 
     }
 
@@ -236,7 +236,7 @@ public class MemoryPredictorStrategyTest {
         assertEquals(50, buyer3.getCash());
         assertEquals(250, f.getCash());
 
-        assertEquals(250, strategy.predictSalePrice(department, 200)); //copy YOUR last closing price
+        assertEquals(250, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //copy YOUR last closing price
 
     }
 

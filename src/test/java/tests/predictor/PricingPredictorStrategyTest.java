@@ -71,9 +71,9 @@ public class PricingPredictorStrategyTest {
         DummySeller seller = new DummySeller(model, 300l); market.registerSeller(seller);
         market.submitSellQuote(seller,300l,new Good(GoodType.GENERIC,seller,300l));
 
-        assertEquals(240, strategy.predictSalePrice(department, 200)); //markup 20% (since you haven't stepped and seen the competition)
+        assertEquals(240, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //markup 20% (since you haven't stepped and seen the competition)
         pricing.step(model);
-        assertEquals(297, strategy.predictSalePrice(department, 200)); //undercut by 1%
+        assertEquals(297, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //undercut by 1%
 
 
     }
@@ -119,9 +119,9 @@ public class PricingPredictorStrategyTest {
         assertEquals(50, buyer3.getCash());
         assertEquals(250, seller2.getCash());
 
-        assertEquals(240, strategy.predictSalePrice(department, 200)); //markup 20% (since you haven't stepped and seen the competition)
+        assertEquals(240, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //markup 20% (since you haven't stepped and seen the competition)
         pricing.step(model);
-        assertEquals(297, strategy.predictSalePrice(department, 200)); //undercute by 1%
+        assertEquals(297, strategy.predictSalePriceAfterIncreasingProduction(department, 200,1 )); //undercute by 1%
 
 
     }
@@ -174,10 +174,10 @@ public class PricingPredictorStrategyTest {
         assertEquals(50, buyer3.getCash());
         assertEquals(250, seller2.getCash());
 
-        assertEquals(240, strategy.predictSalePrice(department, 200)); //markup 20% (since you haven't stepped and seen the competition)
+        assertEquals(240, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //markup 20% (since you haven't stepped and seen the competition)
         pricing.step(model);
-        assertEquals(297, strategy.predictSalePrice(department, 200)); //undercut 1%
-        assertEquals(297, department.predictSalePrice(200)); //not overriden this time!
+        assertEquals(297, strategy.predictSalePriceAfterIncreasingProduction(department, 200,1 )); //undercut 1%
+        assertEquals(297, department.predictSalePriceAfterIncreasingProduction(200,1 )); //not overriden this time!
 
     }
 
@@ -196,8 +196,8 @@ public class PricingPredictorStrategyTest {
         UndercuttingAskPricing pricing = new UndercuttingAskPricing(department);
 
         department.setAskPricingStrategy(pricing) ;
-        assertEquals(240, strategy.predictSalePrice(department, 200)); //markup 20% (since you haven't stepped and seen the competition)
-        assertEquals(240, department.predictSalePrice(200)); //can't find anything on the order book, better ask the predict strategy
+        assertEquals(240, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //markup 20% (since you haven't stepped and seen the competition)
+        assertEquals(240, department.predictSalePriceAfterIncreasingProduction(200, 1)); //can't find anything on the order book, better ask the predict strategy
 
     }
 
@@ -252,9 +252,9 @@ public class PricingPredictorStrategyTest {
         assertEquals(50, buyer3.getCash());
         assertEquals(250, f.getCash());
 
-        assertEquals(240, strategy.predictSalePrice(department, 200)); //markup 20% (since you haven't stepped and seen the competition)
+        assertEquals(240, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //markup 20% (since you haven't stepped and seen the competition)
         pricing.step(model);
-        assertEquals(297, strategy.predictSalePrice(department, 200)); //copy the last closing price (which is our closing price anyway)
+        assertEquals(297, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //copy the last closing price (which is our closing price anyway)
 
     }
 

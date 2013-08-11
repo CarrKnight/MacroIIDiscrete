@@ -81,10 +81,10 @@ public class RegressionWeightedSalePredictorTest {
         field.setAccessible(true);
         PeriodicMarketObserver observer = (PeriodicMarketObserver) field.get(predictor);
 
-        verify(macroII).scheduleAnotherDayWithFixedProbability(ActionOrder.DAWN,observer,0.2f, Priority.AFTER_STANDARD);
+        verify(macroII).scheduleAnotherDay(ActionOrder.DAWN,observer,5, Priority.AFTER_STANDARD);
         predictor.setDailyProbabilityOfObserving(.3f);
         observer.step(macroII);
-        verify(macroII).scheduleAnotherDayWithFixedProbability(ActionOrder.DAWN,observer,0.3f, Priority.AFTER_STANDARD);
+        verify(macroII).scheduleAnotherDay(ActionOrder.DAWN,observer,3, Priority.AFTER_STANDARD);
 
 
     }
@@ -103,26 +103,27 @@ public class RegressionWeightedSalePredictorTest {
 
         RegressionWeightedSalePredictor predictor = new RegressionWeightedSalePredictor(market, macroII);
         when(department.hypotheticalSalePrice()).thenReturn(50l);
-        Assert.assertEquals(predictor.predictSalePrice(department,1000l),50l);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000l, 1),50l);
 
         //with one observation, it still returns whatever the sales department says
         when(market.getYesterdayLastPrice()).thenReturn(10l);
         when(market.getYesterdayVolume()).thenReturn(1);
         macroII.getPhaseScheduler().step(macroII);
-        Assert.assertEquals(predictor.predictSalePrice(department,1000l),50l);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000l,1 ),50l);
 
-        //with no volume the observation is ignored
-        when(market.getYesterdayLastPrice()).thenReturn(10l);
+        //with no price the observation is ignored
+        when(market.getYesterdayLastPrice()).thenReturn(-1l);
         when(market.getYesterdayVolume()).thenReturn(0);
         macroII.getPhaseScheduler().step(macroII);
-        Assert.assertEquals(predictor.predictSalePrice(department,1000l),50l);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000l,1 ),50l);
 
 
         //two observations, everything back to normal!
         when(market.getYesterdayLastPrice()).thenReturn(10l);
         when(market.getYesterdayVolume()).thenReturn(1);
         macroII.getPhaseScheduler().step(macroII);
-        Assert.assertEquals(predictor.predictSalePrice(department,1000l),10l);
+        when(department.hypotheticalSalePrice()).thenReturn(10l);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000l,1 ),10l);
 
 
     }

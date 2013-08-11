@@ -95,8 +95,8 @@ public class PeriodicMarketObserverTest {
 
         new PeriodicMarketObserver(market,macroII );
 
-        verify(macroII).scheduleAnotherDayWithFixedProbability(any(ActionOrder.class),any(Steppable.class),
-                anyFloat(),any(Priority.class));
+        verify(macroII).scheduleAnotherDay(any(ActionOrder.class),any(Steppable.class),
+                anyInt(),any(Priority.class));
     }
 
 
@@ -121,8 +121,8 @@ public class PeriodicMarketObserverTest {
         Assert.assertEquals((double)observer.getLastPriceObserved(),10,.01);
         Assert.assertEquals((double)observer.getLastQuantityTradedObserved(),1,.01);
 
-        //with no volume the observation is ignored
-        when(market.getYesterdayLastPrice()).thenReturn(10l);
+        //with no price the observation is ignored
+        when(market.getYesterdayLastPrice()).thenReturn(-1l);
         when(market.getYesterdayVolume()).thenReturn(0);
         observer.step(mock(MacroII.class));
         Assert.assertEquals(observer.getNumberOfObservations(),1);

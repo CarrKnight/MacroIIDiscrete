@@ -1023,6 +1023,8 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * @param predictor the predictor
      */
     public void setPredictor(PurchasesPredictor predictor) {
+        if(predictor != null)
+            this.predictor.turnOff();
         this.predictor = predictor;
     }
 
@@ -1030,10 +1032,18 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * Predicts the future price of the next good to buy
      * @return the predicted price or -1 if there are no predictions.
      */
-    public long predictPurchasePrice() {
-        return predictor.predictPurchasePrice(this);
+    public long predictPurchasePriceWhenIncreasingProduction() {
+        return predictor.predictPurchasePriceWhenIncreasingProduction(this);
     }
 
+    /**
+     * Predicts the future price of the next good to buy
+     * @return the predicted price or -1 if there are no predictions.
+     */
+    public long predictPurchasePriceWhenDecreasingProduction()
+    {
+        return predictor.predictPurchasePriceWhenDecreasingProduction(this);
+    }
 
     /**
      * Gets flag that, when set to true and the market has "best visible price" activated, forces the purchase department to never

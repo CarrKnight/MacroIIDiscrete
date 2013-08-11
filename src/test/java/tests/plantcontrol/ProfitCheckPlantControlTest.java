@@ -2,7 +2,7 @@ package tests.plantcontrol;
 
 import agents.Person;
 import agents.firm.Firm;
-import agents.firm.ProfitReport;
+import agents.firm.WeeklyProfitReport;
 import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
@@ -122,7 +122,7 @@ public class ProfitCheckPlantControlTest {
 //        assertTrue(p.workerSize() > 0);
 
 
-        ProfitReport profits = mock(ProfitReport.class);
+        WeeklyProfitReport profits = mock(WeeklyProfitReport.class);
         firm.setProfitReport(profits);
 
 
@@ -249,7 +249,7 @@ public class ProfitCheckPlantControlTest {
         assertTrue(control.toString(),!steppableList.contains(control));
      //   assertTrue(p.workerSize() > 0);
 
-        ProfitReport profits = mock(ProfitReport.class);
+        WeeklyProfitReport profits = mock(WeeklyProfitReport.class);
         firm.setProfitReport(profits);
 
 

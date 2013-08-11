@@ -26,7 +26,7 @@ import agents.firm.purchases.PurchasesDepartment;
 public class LookAheadPredictor implements PurchasesPredictor {
 
 
-    SurveyPurchasesPredictor defaultTo;
+    PricingPurchasesPredictor defaultTo;
 
     /**
      * Predicts the future price of the next good to buy
@@ -35,7 +35,7 @@ public class LookAheadPredictor implements PurchasesPredictor {
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePrice(PurchasesDepartment dept) {
+    public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
         //can we see the best price?
         if(dept.getMarket().isBestSalePriceVisible())
             try {
@@ -50,10 +50,18 @@ public class LookAheadPredictor implements PurchasesPredictor {
             //we can't see it, go to basics
             //if this is our first time we need to instantiate the default predictor
             if(defaultTo == null)
-                defaultTo = new SurveyPurchasesPredictor();
-            return defaultTo.predictPurchasePrice(dept);
+                defaultTo = new PricingPurchasesPredictor();
+            return defaultTo.predictPurchasePriceWhenIncreasingProduction(dept);
 
         }
+
+    }
+
+    @Override
+    public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
+        if(defaultTo == null)
+            defaultTo = new PricingPurchasesPredictor();
+        return defaultTo.predictPurchasePriceWhenIncreasingProduction(dept);
 
     }
 

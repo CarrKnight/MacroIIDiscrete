@@ -50,7 +50,7 @@ public class MarginalMaximizerTest {
         Blueprint b = new Blueprint.Builder().output(GoodType.GENERIC,1).build(); //just one output
         Firm owner = mock(Firm.class); when(p.getOwner()).thenReturn(owner); when(hr.getPlant()).thenReturn(p); when(hr.getFirm()).thenReturn(owner);
         when(owner.getModel()).thenReturn(new MacroII(1l));  when(p.workerSize()).thenReturn(10);
-        when(hr.predictPurchasePrice()).thenReturn(-1l); //tell the hr to fail at predicting
+        when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(-1l); //tell the hr to fail at predicting
         PlantControl control = mock(PlantControl.class);
         //it should immediately fail
         MarginalMaximizer maximizer = new MarginalMaximizer(hr,control,p,owner);
@@ -77,7 +77,7 @@ public class MarginalMaximizerTest {
         when(p.getOutputs()).thenReturn(b.getOutputs().keySet());
         Firm owner = mock(Firm.class); when(p.getOwner()).thenReturn(owner); when(hr.getPlant()).thenReturn(p); when(hr.getFirm()).thenReturn(owner);
         when(owner.getModel()).thenReturn(new MacroII(1l));  when(p.workerSize()).thenReturn(10);
-        when(hr.predictPurchasePrice()).thenReturn(-1l); //tell the hr to fail at predicting
+        when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(-1l); //tell the hr to fail at predicting
         SalesDepartment sales = mock(SalesDepartmentAllAtOnce.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(sales);
         when(p.hypotheticalThroughput(anyInt(),any(GoodType.class))).thenAnswer(new Answer<Object>() {     //production is just number of workers
@@ -90,9 +90,10 @@ public class MarginalMaximizerTest {
 
 
         //say that wages are always 50, sell prices are always 100
-        when(hr.predictPurchasePrice()).thenReturn(50l); when(hr.hypotheticalWageAtThisLevel(anyInt())).thenReturn(50l);
+        when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(50l); when(hr.hypotheticalWageAtThisLevel(anyInt())).thenReturn(50l);
         when(hr.getWagesPaid()).thenReturn(10*50l);
-        when(sales.predictSalePrice(anyLong())).thenReturn(100l); when(sales.getLastClosingPrice()).thenReturn(100l);
+        when(sales.predictSalePriceAfterIncreasingProduction(anyLong(), anyInt())).thenReturn(100l); when(sales.getLastClosingPrice()).thenReturn(100l);
+        when(sales.predictSalePriceAfterDecreasingProduction(anyLong(), anyInt())).thenReturn(100l);
 
 
 
@@ -135,10 +136,10 @@ public class MarginalMaximizerTest {
 
 
             //do it again, but this time it pays to cut back
-            when(hr.predictPurchasePrice()).thenReturn(100l);
+            when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(100l);
             when(hr.getWagesPaid()).thenReturn(10*50l);
-            when(sales.predictSalePrice(anyLong())).thenReturn(100l); when(sales.getLastClosingPrice()).thenReturn(100l);
-
+            when(sales.predictSalePriceAfterIncreasingProduction(anyLong(), anyInt())).thenReturn(100l); when(sales.getLastClosingPrice()).thenReturn(100l);
+            when(sales.predictSalePriceAfterDecreasingProduction(anyLong(), anyInt())).thenReturn(100l);
 
 
         } catch (NoSuchMethodException  | InvocationTargetException | IllegalAccessException e) {

@@ -47,11 +47,11 @@ public class MemoryPurchasesPredictorTest {
 
         for(long i=0; i<100; i++){
             when(dept.getLastClosingPrice()).thenReturn(i);
-            assertEquals(predictor.predictPurchasePrice(dept), i);
+            assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), i);
         }
 
         when(dept.getLastClosingPrice()).thenReturn(-1l);
-        assertEquals(predictor.predictPurchasePrice(dept), -1l);
+        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), -1l);
 
 
 
@@ -69,7 +69,7 @@ public class MemoryPurchasesPredictorTest {
          *********************************************/
         assertTrue(dept.getLastClosingPrice() >= 20 && dept.maxPrice(GoodType.GENERIC, market) <= 30);
         MemoryPurchasesPredictor predictor = new MemoryPurchasesPredictor();
-        assertTrue(predictor.predictPurchasePrice(dept) >= 20 && predictor.predictPurchasePrice(dept) <= 30);
+        assertTrue(predictor.predictPurchasePriceWhenIncreasingProduction(dept) >= 20 && predictor.predictPurchasePriceWhenIncreasingProduction(dept) <= 30);
     }
 
     /**

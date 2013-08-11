@@ -37,7 +37,7 @@ public class PricingPurchasesPredictorTest {
 
         for(long i=0; i<100; i++){
             when(dept.maxPrice(any(GoodType.class),any(Market.class))).thenReturn(i);
-            assertEquals(predictor.predictPurchasePrice(dept), i);
+            assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), i);
         }
 
 
@@ -56,7 +56,7 @@ public class PricingPurchasesPredictorTest {
          * Make sure the last closing price is correctly predicted by the predictor!
          *********************************************/
         PricingPurchasesPredictor predictor = new PricingPurchasesPredictor();
-        assertTrue(predictor.predictPurchasePrice(dept) >= 20 && predictor.predictPurchasePrice(dept) <= 30);
+        assertTrue(predictor.predictPurchasePriceWhenIncreasingProduction(dept) >= 20 && predictor.predictPurchasePriceWhenIncreasingProduction(dept) <= 30);
     }
 
 }

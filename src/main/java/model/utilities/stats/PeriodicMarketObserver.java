@@ -145,18 +145,24 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
 
         if(dailyProbabilityOfObserving < 1)
         {
-            if(!isExact)
-                macroII.scheduleAnotherDayWithFixedProbability(ActionOrder.DAWN, this, dailyProbabilityOfObserving,
-                        Priority.AFTER_STANDARD);
-            else
-                macroII.scheduleAnotherDay(ActionOrder.DAWN, this, Math.max(1,Math.round(1f/dailyProbabilityOfObserving)),
-                        Priority.AFTER_STANDARD);
+            reschedule(macroII);
         }
         else
         {
             assert dailyProbabilityOfObserving == 1;
             macroII.scheduleSoon(ActionOrder.DAWN,this,Priority.AFTER_STANDARD);
         }
+    }
+
+    private void reschedule(MacroII macroII) {
+
+        if(!isExact)
+            macroII.scheduleAnotherDayWithFixedProbability(ActionOrder.DAWN, this, dailyProbabilityOfObserving,
+                    Priority.AFTER_STANDARD);
+        else
+            macroII.scheduleAnotherDay(ActionOrder.DAWN, this, Math.max(1,Math.round(1f/dailyProbabilityOfObserving)),
+                    Priority.AFTER_STANDARD);
+
     }
 
 
@@ -246,7 +252,7 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
         }
 
         //if some trade actually occurred:
-        if( price!= -1 && lastUntrasformedQuantityTraded != 0)
+        if( price!= -1)
         {
             pricesObserved.add(price);
             quantitiesTradedObserved.add(quantity);
@@ -256,8 +262,8 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
         }
 
         //reschedule yourself
-        model.scheduleAnotherDayWithFixedProbability(ActionOrder.DAWN,this,dailyProbabilityOfObserving,
-                Priority.AFTER_STANDARD);
+        reschedule(model);
+
 
     }
 
@@ -419,4 +425,7 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
     public void setExact(boolean exact) {
         isExact = exact;
     }
+
+
+
 }

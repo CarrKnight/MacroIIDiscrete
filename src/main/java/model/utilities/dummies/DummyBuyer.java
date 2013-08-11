@@ -7,15 +7,15 @@
 package model.utilities.dummies;
 
 import agents.EconomicAgent;
+import agents.firm.DummyProfitReport;
 import agents.firm.Firm;
-import agents.firm.ProfitReport;
 import agents.firm.sales.SalesDepartment;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
-
-import static org.mockito.Mockito.mock;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 
 public class DummyBuyer extends Firm {
     /**
@@ -28,7 +28,7 @@ public class DummyBuyer extends Firm {
         super(model,false);
         quotedPrice = price;
         getProfitReport().turnOff();
-        setProfitReport(mock(ProfitReport.class));
+        setProfitReport(new DummyProfitReport());
     }
 
     /**
@@ -104,8 +104,13 @@ public class DummyBuyer extends Firm {
     }
 
     @Override
-    public void reactToFilledBidQuote(Good g, long price, EconomicAgent seller) {
-        consume(g.getType());
+    public void reactToFilledBidQuote(final Good g, long price, EconomicAgent seller) {
+        getModel().scheduleASAP(new Steppable() {
+            @Override
+            public void step(SimState state) {
+                consume(g.getType());
+            }
+        });
 
     }
 

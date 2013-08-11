@@ -108,7 +108,7 @@ public class MonopolistScenario extends Scenario {
      * this is somewhat of an ugly trick to get the gui to be able to select the kind of class
      * the human resource should use. Mason GUI knows how to deal with enums
      */
-    private MonopolistScenarioIntegratedControlEnum controlType = MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_SIMPLE;
+    private MonopolistScenarioIntegratedControlEnum controlType = MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID;
 
     /**
      * Do agents go around look for better offers all the time?
@@ -183,6 +183,7 @@ public class MonopolistScenario extends Scenario {
             final DummyBuyer buyer = new DummyBuyer(getModel(),buyerPrice){
                 @Override
                 public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
+                    super.reactToFilledBidQuote(g,price,b);
                     //trick to get the steppable to recognize the anonymous me!
                     final DummyBuyer reference = this;
                     //schedule a new quote in period!
@@ -287,7 +288,7 @@ public class MonopolistScenario extends Scenario {
                 //       seller.registerHumanResources(plant, hr);
                 hr.setFixedPayStructure(fixedPayStructure);
 
-                hr.setPredictor(PurchasesPredictor.Factory.newPurchasesPredictor(purchasesPricePreditorStrategy,hr));
+            //    hr.setPredictor(PurchasesPredictor.Factory.newPurchasesPredictor(purchasesPricePreditorStrategy,hr));
 
 
             }
@@ -639,4 +640,6 @@ public class MonopolistScenario extends Scenario {
     public void setLaborProductivity(int laborProductivity) {
         this.laborProductivity = laborProductivity;
     }
+
+
 }

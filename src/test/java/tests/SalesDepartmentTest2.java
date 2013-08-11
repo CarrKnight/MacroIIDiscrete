@@ -140,7 +140,7 @@ public class SalesDepartmentTest2 {
     @Test
     public void testPredictSalePrice() throws Exception {
 
-        assertEquals(56l, dept2.predictSalePrice(10)); //just queries the order book.
+        assertEquals(56l, dept2.predictSalePriceAfterIncreasingProduction(10, 1)); //just queries the order book.
     }
 
     @Test

@@ -7,7 +7,6 @@
 package model.utilities.stats.regression;
 
 import Jama.Matrix;
-import com.google.common.base.Preconditions;
 import com.sun.istack.internal.Nullable;
 
 /**
@@ -27,7 +26,6 @@ import com.sun.istack.internal.Nullable;
  */
 public class MultipleLinearRegression implements MultivariateRegression {
 
-    final private int numberOfRegressorsBesidesIntercept;
 
     /**
      * the matrix where we store intercept, slope and so on.
@@ -35,9 +33,7 @@ public class MultipleLinearRegression implements MultivariateRegression {
     private Matrix resultMatrix;
 
 
-    public MultipleLinearRegression(int numberOfRegressorsBesidesIntercept) {
-        this.numberOfRegressorsBesidesIntercept = numberOfRegressorsBesidesIntercept;
-        Preconditions.checkArgument(numberOfRegressorsBesidesIntercept>=1);
+    public MultipleLinearRegression() {
     }
 
     /**
@@ -48,30 +44,23 @@ public class MultipleLinearRegression implements MultivariateRegression {
      * @param x       each array is a column containing all the observations of one regressor.
      */
     @Override
-    public void estimateModel(double[] y, @Nullable double[] weights, double[]... x) {
+    public void estimateModel(double[] y, @Nullable double[] weights, double[]... x) throws LinearRegression.CollinearityException {
 
-        Preconditions.checkArgument(x.length==numberOfRegressorsBesidesIntercept);
-        if(y.length > numberOfRegressorsBesidesIntercept + 2)
+     //   Preconditions.checkArgument(x.length==numberOfRegressorsBesidesIntercept);
+        if(y.length > x.length + 2)
         {
-            try{
-                resultMatrix = LinearRegression.regress(y,weights,x);
 
-            }catch (RuntimeException matrixIsSingular)
-            {
-                //if here, the matrix is singular!
-                resultMatrix = new Matrix(1,1+numberOfRegressorsBesidesIntercept);
-                resultMatrix.set(0,0,LinearRegression.takeYAverage(y));
-                for(int i=0;i<numberOfRegressorsBesidesIntercept; i++)
-                    resultMatrix.set(0,i+1,0);
+            double[] weightClone = weights == null ? null :  weights.clone();
+            resultMatrix = LinearRegression.regress(y.clone(), weightClone,x.clone());
 
-            }
+
         }
         else
         {
             //default to average, if needed
-            resultMatrix = new Matrix(1,1+numberOfRegressorsBesidesIntercept);
+            resultMatrix = new Matrix(1,1+x.length);
             resultMatrix.set(0,0,LinearRegression.takeYAverage(y));
-            for(int i=0;i<numberOfRegressorsBesidesIntercept; i++)
+            for(int i=0;i<x.length; i++)
                 resultMatrix.set(0,i+1,0);
         }
 
@@ -85,7 +74,6 @@ public class MultipleLinearRegression implements MultivariateRegression {
      */
     @Override
     public double predict(double... x) {
-        Preconditions.checkArgument(x.length==numberOfRegressorsBesidesIntercept);
 
         if(resultMatrix == null)
             return Double.NaN;
@@ -100,15 +88,6 @@ public class MultipleLinearRegression implements MultivariateRegression {
 
     }
 
-    /**
-     * What is the dimension of this model?
-     *
-     * @return
-     */
-    @Override
-    public int getNumberOfRegressors() {
-        return numberOfRegressorsBesidesIntercept;
-    }
 
     /**
      * get the coefficients in an array or null if there is no result
@@ -120,4 +99,6 @@ public class MultipleLinearRegression implements MultivariateRegression {
         else
             return null;
     }
+
+
 }

@@ -151,8 +151,9 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
                 {
                     toAnnotate = toAnnotate +
                             "wages:" + wageCosts.getMarginalCost() + ", price: " +
-                            getOwner().getModel().getMarket(goodType).getLastPrice() +
-                            ", predicted price: " + getOwner().getSalesDepartment(goodType).predictSalePrice(inputCosts.getTotalCost() + wageCosts.getTotalCost());
+                            getOwner().getModel().getMarket(goodType).getLastPrice();
+                       //     +
+                         //   ", predicted price: " + getOwner().getSalesDepartment(goodType).predictSalePriceAfterIncreasingProduction(inputCosts.getTotalCost() + wageCosts.getTotalCost());
 
                 }
             }
@@ -175,7 +176,7 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
                         " ,firm employment:" + getP().workerSize() );
                 System.out.println("target yestrday:" + mvYesterday + ", target today:" + pid.getCurrentMV() + ", integral: " + pid.getIntegral());
                 System.out.println("wages:" + wageCosts.getMarginalCost() + ", price: " + getOwner().getModel().getMarket(GoodType.BEEF).getLastPrice() +
-                        ", predicted price: " + getOwner().getSalesDepartment(GoodType.BEEF).predictSalePrice(inputCosts.getTotalCost() + wageCosts.getTotalCost()) + "\n");
+                        ", predicted price: " + getOwner().getSalesDepartment(GoodType.BEEF).predictSalePriceAfterIncreasingProduction(inputCosts.getTotalCost() + wageCosts.getTotalCost()) + "\n");
 
             }
        */

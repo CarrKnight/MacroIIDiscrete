@@ -58,6 +58,7 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictorTest {
             prices.add(Double.parseDouble(newLine[2]));
         }
 
+        reader.close();
 
         //make data visible through the periodic observer
         PeriodicMarketObserver observer = mock(PeriodicMarketObserver.class);
@@ -68,7 +69,8 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictorTest {
         //create the predictor
         LearningIncreaseWithTimeSeriesPurchasePredictor predictor = new LearningIncreaseWithTimeSeriesPurchasePredictor(observer);
         //force an update
-        predictor.predictPurchasePrice(mock(PurchasesDepartment.class));
+        predictor.setUsingWeights(false);
+        predictor.predictPurchasePriceWhenIncreasingProduction(mock(PurchasesDepartment.class));
         //0.8527228*price - 6.596947
         //notice here that there is a LOT of difference between the R results and my results.
         // The regression are only slightly off, but unfortunately the division amplifies the discrepancy
@@ -77,7 +79,55 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictorTest {
 
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         when(department.maxPrice(any(GoodType.class),any(Market.class))).thenReturn(100l);
-        Assert.assertEquals(101,predictor.predictPurchasePrice(department));
+        Assert.assertEquals(Math.round(100+1d/0.8527228),predictor.predictPurchasePriceWhenIncreasingProduction(department));
+        Assert.assertEquals(Math.round(100-1d/0.8527228),predictor.predictPurchasePriceWhenDecreasingProduction(department));
+
+
+
+    }
+
+
+
+    //another solution, in this one I copy pasted the results!
+    @Test
+    public void testing2() throws IOException {
+
+        //read data from file!
+
+
+        double[] prices = new double[]{
+                100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 99.0, 99.0, 99.0, 99.0, 99.0, 99.0, 98.0, 98.0, 98.0,
+                98.0, 98.0, 98.0, 98.0, 98.0, 97.0, 97.0, 97.0, 97.0, 97.0, 97.0, 97.0, 97.0, 96.0, 96.0, 96.0, 95.0,
+                95.0, 94.0, 94.0, 94.0, 94.0, 94.0, 94.0, 94.0, 94.0, 93.0, 93.0, 93.0, 93.0, 93.0, 92.0, 92.0, 92.0,
+                92.0, 92.0, 92.0, 92.0, 91.0, 91.0, 91.0
+        };
+        double[] production = new double[]{
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 3.0,
+                3.0, 3.0, 3.0, 3.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 5.0, 5.0, 5.0, 6.0, 6.0, 7.0, 7.0, 7.0,
+                7.0, 7.0, 7.0, 7.0,
+                7.0, 8.0, 8.0, 8.0, 8.0, 8.0, 9.0, 9.0, 9.0, 9.0, 9.0, 9.0, 9.0, 10.0, 10.0, 10.0
+        };
+
+
+
+        //make data visible through the periodic observer
+        PeriodicMarketObserver observer = mock(PeriodicMarketObserver.class);
+        when(observer.getQuantitiesProducedObservedAsArray()).thenReturn(production);
+        when(observer.getPricesObservedAsArray()).thenReturn(prices);
+        when(observer.getNumberOfObservations()).thenReturn(prices.length);
+
+        //create the predictor
+        LearningIncreaseWithTimeSeriesPurchasePredictor predictor = new LearningIncreaseWithTimeSeriesPurchasePredictor(observer);
+        //force an update
+        predictor.predictPurchasePriceWhenIncreasingProduction(mock(PurchasesDepartment.class));
+
+        Assert.assertEquals(-1, predictor.extractSlopeOfDemandFromRegression(), .01);
+        Assert.assertEquals(101,predictor.extractInterceptOfDemandFromRegression(),.01);
+
+        PurchasesDepartment department = mock(PurchasesDepartment.class);
+        when(department.maxPrice(any(GoodType.class),any(Market.class))).thenReturn(100l);
+        Assert.assertEquals(99,predictor.predictPurchasePriceWhenIncreasingProduction(department));
+        Assert.assertEquals(101,predictor.predictPurchasePriceWhenDecreasingProduction(department));
 
 
 

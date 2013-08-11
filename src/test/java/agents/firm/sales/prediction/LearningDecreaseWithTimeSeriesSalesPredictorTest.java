@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.*;
@@ -41,9 +42,13 @@ public class LearningDecreaseWithTimeSeriesSalesPredictorTest {
     @Test
     public void testing() throws IOException {
 
+        System.out.println(Paths.get(System.getProperty("user.dir"),"src","test",
+                "regressionTestConsumption.csv"));
         //read data from file!
-        CSVReader reader = new CSVReader(new FileReader("./src/test/regressionTestConsumption.csv"));
-        reader.readNext(); //ignore the header!
+        CSVReader reader = new CSVReader(new FileReader(
+                Paths.get(System.getProperty("user.dir"),"src","test",
+                        "regressionTestConsumption.csv").toFile()));
+                        reader.readNext(); //ignore the header!
 
         ArrayList<Double> prices = new ArrayList<>(900);
         ArrayList<Double> consumption = new ArrayList<>(900);
@@ -67,20 +72,67 @@ public class LearningDecreaseWithTimeSeriesSalesPredictorTest {
         //create the predictor
         LearningDecreaseWithTimeSeriesSalesPredictor predictor = new LearningDecreaseWithTimeSeriesSalesPredictor(observer);
         //force an update
-        predictor.predictSalePrice(mock(SalesDepartment.class),1l);
+        predictor.setUsingWeights(false); predictor.setCorrectingWithDeltaPrice(false);
+        predictor.predictSalePriceAfterIncreasingProduction(mock(SalesDepartment.class), 1l, 1);
         //0.8527228*price - 6.596947
         //notice here that there is a LOT of difference between the R results and my results.
-        // The regression are only slightly off, but unfortunately the division amplifies the discrepancy
-        Assert.assertEquals(-0.09629347, predictor.extractSlopeOfDemandFromRegression(), .025);
-        Assert.assertEquals(18.02149,predictor.extractInterceptOfDemandFromRegression(),.5);
+        Assert.assertEquals(-0.09629347, predictor.extractSlopeOfDemandFromRegression(), .01);
+        Assert.assertEquals(18.02149,predictor.extractInterceptOfDemandFromRegression(),.01);
 
         SalesDepartment department = mock(SalesDepartment.class);
         when(department.hypotheticalSalePrice(anyLong())).thenReturn(100l);
-        Assert.assertEquals(100,predictor.predictSalePrice(department,100));
+        Assert.assertEquals(Math.round(100-1d/0.09629347d),predictor.predictSalePriceAfterIncreasingProduction(department, 100, 1));
 
 
 
 
     }
+
+
+    //another solution, in this one I copy pasted the results!
+    @Test
+    public void testing2() throws IOException {
+
+        //read data from file!
+
+
+        double[] prices = new double[]{
+                100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 99.0, 99.0, 99.0, 99.0, 99.0, 99.0, 98.0, 98.0, 98.0,
+                98.0, 98.0, 98.0, 98.0, 98.0, 97.0, 97.0, 97.0, 97.0, 97.0, 97.0, 97.0, 97.0, 96.0, 96.0, 96.0, 95.0,
+                95.0, 94.0, 94.0, 94.0, 94.0, 94.0, 94.0, 94.0, 94.0, 93.0, 93.0, 93.0, 93.0, 93.0, 92.0, 92.0, 92.0,
+                92.0, 92.0, 92.0, 92.0, 91.0, 91.0, 91.0
+        };
+        double[] consumption = new double[]{
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 3.0,
+                3.0, 3.0, 3.0, 3.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 4.0, 5.0, 5.0, 5.0, 6.0, 6.0, 7.0, 7.0, 7.0,
+                7.0, 7.0, 7.0, 7.0,
+                7.0, 8.0, 8.0, 8.0, 8.0, 8.0, 9.0, 9.0, 9.0, 9.0, 9.0, 9.0, 9.0, 10.0, 10.0, 10.0
+        };
+
+
+
+        //make data visible through the periodic observer
+        PeriodicMarketObserver observer = mock(PeriodicMarketObserver.class);
+        when(observer.getQuantitiesConsumedObservedAsArray()).thenReturn(consumption);
+        when(observer.getPricesObservedAsArray()).thenReturn(prices);
+        when(observer.getNumberOfObservations()).thenReturn(prices.length);
+
+        //create the predictor
+        LearningDecreaseWithTimeSeriesSalesPredictor predictor = new LearningDecreaseWithTimeSeriesSalesPredictor(observer);
+        //force an update
+        predictor.predictSalePriceAfterIncreasingProduction(mock(SalesDepartment.class), 1l, 1);
+
+        Assert.assertEquals(-1, predictor.extractSlopeOfDemandFromRegression(), .01);
+        Assert.assertEquals(101,predictor.extractInterceptOfDemandFromRegression(),.01);
+
+        SalesDepartment department = mock(SalesDepartment.class);
+        when(department.hypotheticalSalePrice(anyLong())).thenReturn(100l);
+        Assert.assertEquals(99,predictor.predictSalePriceAfterIncreasingProduction(department, 100, 1));
+
+
+
+
+    }
+
 
 }

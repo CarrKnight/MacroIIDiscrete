@@ -32,7 +32,7 @@ public interface MultivariateRegression {
      * @param x each array is a column containing all the observations of one regressor.
      *
      */
-    public void estimateModel(double[] y, @Nullable double[] weights,double[]... x);
+    public void estimateModel(double[] y, @Nullable double[] weights,double[]... x) throws LinearRegression.CollinearityException;
 
 
     /**
@@ -42,10 +42,5 @@ public interface MultivariateRegression {
      */
     public double predict(double... x);
 
-    /**
-     * What is the dimension of this model?
-     * @return
-     */
-    public int getNumberOfRegressors();
 
 }

@@ -18,7 +18,6 @@ import org.junit.Test;
 import sim.engine.Steppable;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyFloat;
 import static org.mockito.Mockito.*;
 
 /**
@@ -74,7 +73,7 @@ public class LearningIncreasePurchasesPredictorTest
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         when(department.maxPrice(any(GoodType.class),any(Market.class))).thenReturn(200l);
         //the sales predictor will be predict for 9 (yesterdayVolume + 1)
-        Assert.assertEquals(predictor.predictPurchasePrice(department), 203l); //200+2.6 (rounded)
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 203l); //200+2.6 (rounded)
 
     }
 
@@ -91,8 +90,8 @@ public class LearningIncreasePurchasesPredictorTest
 
         new LearningIncreasePurchasesPredictor(market,macroII);
 
-        verify(macroII).scheduleAnotherDayWithFixedProbability(any(ActionOrder.class),any(Steppable.class),
-                anyFloat(),any(Priority.class));
+        verify(macroII).scheduleAnotherDay(any(ActionOrder.class),any(Steppable.class),
+                anyInt(),any(Priority.class));
     }
 
 
@@ -109,26 +108,26 @@ public class LearningIncreasePurchasesPredictorTest
 
         LearningIncreasePurchasesPredictor predictor = new LearningIncreasePurchasesPredictor(market,model );
         when(department.maxPrice(any(GoodType.class),any(Market.class))).thenReturn(50l);
-        Assert.assertEquals(predictor.predictPurchasePrice(department), 50l);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50l);
 
         //with one observation, it still returns whatever the sales department says
         when(market.getYesterdayLastPrice()).thenReturn(10l);
         when(market.getYesterdayVolume()).thenReturn(1);
         model.getPhaseScheduler().step(model);
-        Assert.assertEquals(predictor.predictPurchasePrice(department), 50l);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50l);
 
         //with no volume the observation is ignored
         when(market.getYesterdayLastPrice()).thenReturn(10l);
         when(market.getYesterdayVolume()).thenReturn(0);
         model.getPhaseScheduler().step(model);
-        Assert.assertEquals(predictor.predictPurchasePrice(department), 50l);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50l);
 
 
         //two observations, everything back to normal! (but the slope is 0, so no effect)
         when(market.getYesterdayLastPrice()).thenReturn(10l);
         when(market.getYesterdayVolume()).thenReturn(1);
         model.getPhaseScheduler().step(model);
-        Assert.assertEquals(predictor.predictPurchasePrice(department), 50l);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50l);
 
 
     }

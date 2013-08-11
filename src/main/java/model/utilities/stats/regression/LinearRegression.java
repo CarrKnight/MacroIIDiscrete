@@ -9,6 +9,7 @@ package model.utilities.stats.regression;
 import Jama.Matrix;
 import com.google.common.base.Preconditions;
 import com.sun.istack.internal.Nullable;
+import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 
 /**
  * <h4>Description</h4>
@@ -52,30 +53,22 @@ public class LinearRegression implements UnivariateRegression
         Preconditions.checkArgument(x.length > 0, "no observations in x!");
         Preconditions.checkArgument(weights == null || weights.length == x.length, "the length of weights is wrong");
 
-        //check for non-invertibility (this is faster than building all the matrices)
-        boolean isXAllTheSame=true;
-        for(int i=1;i<x.length;i++)
-        {
-            isXAllTheSame =  x[i]==x[i-1];
-            if(!isXAllTheSame)
-                break;
-        }
+        //the try is to check for non-invertibility (this is faster than building all the matrices)
+        try{
+            double[] clonedWeights = weights == null ? null : weights.clone();
+            Matrix result = regress(y.clone(), clonedWeights, x.clone());
 
-        //if all observations of X are the same, just return an intercept only model with a=average of Y
-        if(isXAllTheSame)
+            slope = result.get(1,0);
+            intercept = result.get(0,0);
+        }
+        catch (CollinearityException ex)
         {
             double average = takeYAverage(y);
             slope=0;
             intercept = average;
         }
-        else
-        {
-            Matrix result = regress(y, weights, x);
 
-            slope = result.get(1,0);
-            intercept = result.get(0,0);
 
-        }
 
 
 
@@ -152,7 +145,7 @@ public class LinearRegression implements UnivariateRegression
         return sum;
     }
 
-    public static Matrix regress(double[] y, double[] weights, double[]... regressors) {
+    public static Matrix regress(double[] y, double[] weights, double[]... regressors) throws CollinearityException {
         //build weights
 
         Preconditions.checkArgument(regressors.length > 0);
@@ -199,10 +192,16 @@ public class LinearRegression implements UnivariateRegression
 
 
 
+
+
         //the usual formula is (X'X)^-1 X'y
         //(X'X)^-1:
         Matrix xMatrixTranspose = xMatrix.transpose();
         Matrix xtx = xMatrixTranspose.times(xMatrix);
+
+        if(Math.abs(xtx.det())<.01)
+            throw new CollinearityException();
+
         xtx = xtx.inverse();
         //(X'Y):
         Matrix xty = xMatrixTranspose.times(yMatrix);
@@ -213,6 +212,60 @@ public class LinearRegression implements UnivariateRegression
         assert result.getColumnDimension()==1;
         return result;
     }
+
+    public static Matrix regress2(double[] y, double[] weights, double[]... regressors) {
+        //build weights
+        double[] intercept = new double[regressors[0].length];
+
+
+        //if there are weights, do this:
+        if(weights!=null)
+        {
+            //get the square root of the weight and multiply everything by it!
+            for(int i=0; i< weights.length; i++)
+            {
+                double w = Math.sqrt(weights[i]);
+                intercept[i] = w;
+                //reweight x
+                for(double[] x : regressors)
+                    x[i] = x[i] * w;
+                //reweight y
+                y[i] = y[i] * w;
+
+            }
+        }
+        //otherwise all intercept is one
+        else
+        {
+            for(int i=0; i<intercept.length; i++)
+                intercept[i]=1;
+        }
+
+        double observations[][] = new double[intercept.length][];
+        for(int i=0; i<observations.length; i++)
+        {
+            observations[i] = new double[regressors.length+1];
+            observations[i][0] = intercept[i];
+            for(int j=0; j<regressors.length; j++)
+            {
+                observations[i][j+1]=regressors[j][i];
+            }
+
+        }
+
+
+
+        OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
+        regression.setNoIntercept(true);
+
+        regression.newSampleData(y,observations);
+
+        Matrix resultingMatrix = new Matrix(regression.estimateRegressionParameters(), regressors.length+1);
+        return resultingMatrix;
+    }
+
+
+
 
     /**
      * What is the model prediction for the y associated to this specific x
@@ -264,5 +317,11 @@ public class LinearRegression implements UnivariateRegression
             return "y= " + getIntercept() + plus + getSlope() +" * x";
 
         }
+    }
+
+
+    public static class CollinearityException extends Exception
+    {
+
     }
 }

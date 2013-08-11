@@ -68,7 +68,7 @@ public class SurveyPredictorStrategyTest {
         market.submitSellQuote(seller,300l,new Good(GoodType.GENERIC,seller,300l));
 
 
-        assertEquals(199, strategy.predictSalePrice(department, 200)); //dummy buyer 2 always answers "199"
+        assertEquals(199, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //dummy buyer 2 always answers "199"
 
 
     }
@@ -113,9 +113,9 @@ public class SurveyPredictorStrategyTest {
         assertEquals(250, seller2.getCash());
 
 
-        assertEquals(250l, strategy.predictSalePrice(department, 200)); //find buyer 3
+        assertEquals(250l, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 3
         market.deregisterBuyer(buyer3);
-        assertEquals(199l, strategy.predictSalePrice(department, 200)); //find buyer 2
+        assertEquals(199l, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 2
 
 
     }
@@ -165,9 +165,9 @@ public class SurveyPredictorStrategyTest {
         assertEquals(50, buyer3.getCash());
         assertEquals(250, seller2.getCash());
 
-        assertEquals(250l, strategy.predictSalePrice(department, 200)); //find buyer 3
+        assertEquals(250l, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 3
         market.deregisterBuyer(buyer3);
-        assertEquals(199l, strategy.predictSalePrice(department, 200)); //find buyer 2        assertEquals(199l,department.predictSalePrice(200)); //not overriden this time!
+        assertEquals(199l, strategy.predictSalePriceAfterIncreasingProduction(department, 200,1 )); //find buyer 2        assertEquals(199l,department.predictSalePriceAfterIncreasingProduction(200)); //not overriden this time!
 
     }
 
@@ -185,8 +185,8 @@ public class SurveyPredictorStrategyTest {
         strategy = new SurveySalesPredictor();
         department.setPredictorStrategy(strategy);
 
-        assertEquals(-1, strategy.predictSalePrice(department, 200)); //useless
-        assertEquals(-1, department.predictSalePrice(200)); //useless
+        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //useless
+        assertEquals(-1, department.predictSalePriceAfterIncreasingProduction(200, 1)); //useless
 
     }
 
@@ -239,9 +239,9 @@ public class SurveyPredictorStrategyTest {
         assertEquals(50, buyer3.getCash());
         assertEquals(250, f.getCash());
 
-        assertEquals(250l, strategy.predictSalePrice(department, 200)); //find buyer 3
+        assertEquals(250l, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 3
         market.deregisterBuyer(buyer3);
-        assertEquals(199l, strategy.predictSalePrice(department, 200)); //find buyer 2        assertEquals(200,department.predictSalePrice(200)); //overridden by looking at the order book.
+        assertEquals(199l, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 2        assertEquals(200,department.predictSalePriceAfterIncreasingProduction(200)); //overridden by looking at the order book.
 
     }
 

@@ -238,14 +238,30 @@ public abstract class  SalesDepartment  implements Department {
      *     <li> Otherwise use the department pricePredictor</li>
      * </ul>
      *
+     *
      * @param expectedProductionCost the HQ estimate of costs in producing whatever it wants to sell. It isn't necesarilly used.
+     * @param increaseStep by how much does production increase?
      * @return the best offer available or -1 if there are no quotes
      */
-    public long predictSalePrice(long expectedProductionCost)
+    public long predictSalePriceAfterIncreasingProduction(long expectedProductionCost, int increaseStep)
     {
+        Preconditions.checkArgument(increaseStep >= 0);
 
 
-        return predictorStrategy.predictSalePrice(this,expectedProductionCost);
+        return predictorStrategy.predictSalePriceAfterIncreasingProduction(this, expectedProductionCost, increaseStep);
+    }
+
+    /**
+     * This is called by the firm when it wants to predict the price they can sell to if they increase production
+     *
+     * @param expectedProductionCost the HQ estimate of costs in producing whatever it wants to sell. It isn't necesarilly used.
+     * @param decreaseStep by how much daily production will decrease
+     * @return the best offer available/predicted or -1 if there are no quotes/good predictions
+     */
+    public long predictSalePriceAfterDecreasingProduction(long expectedProductionCost, int decreaseStep) {
+        Preconditions.checkArgument(decreaseStep >= 0);
+
+        return predictorStrategy.predictSalePriceAfterDecreasingProduction(this, expectedProductionCost,decreaseStep );
     }
 
     /**

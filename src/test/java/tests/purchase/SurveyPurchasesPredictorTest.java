@@ -60,14 +60,14 @@ public class SurveyPurchasesPredictorTest {
         });
 
         SurveyPurchasesPredictor predictor = new SurveyPurchasesPredictor();
-        assertEquals(predictor.predictPurchasePrice(dept), 10);
+        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), 10);
 
         Firm seller = mock(Firm.class);
         Quote q = mock(Quote.class); when(q.getAgent()).thenReturn(seller); when(q.getPriceQuoted()).thenReturn(1l); when(q.getGood()).thenReturn(mock(Good.class));
         when(seller.askedForASaleQuote(any(EconomicAgent.class), any(GoodType.class))).thenReturn(q);
         market.registerSeller(seller);
 
-        assertEquals(predictor.predictPurchasePrice(dept), 1);
+        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), 1);
 
     }
 

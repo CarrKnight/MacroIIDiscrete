@@ -385,7 +385,7 @@ public class MacroII extends SimState{
         //System.out.println("Weekend!");
         weeksPassed++;
 
-        Collections.shuffle(agents,new Random(random.nextLong())); //todo make this shuffled by the MersenneTwisterFast
+    //    Collections.shuffle(agents,new Random(random.nextLong())); //todo make this shuffled by the MersenneTwisterFast
 
         //agents on weekend!
         for(EconomicAgent agent : agents)

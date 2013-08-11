@@ -125,7 +125,7 @@ public class Firm extends EconomicAgent {
         purchaseDepartments = new EnumMap<>(GoodType.class);
         humanResources = HashBiMap.create(1); //factory method for this
         numberOfPlantsListeners = new HashSet<>(); //prepare for listeners
-        profitReport = new ProfitReport(this);
+        profitReport = new WeeklyProfitReport(this);
         //create the timeline manager
 
         if(MacroII.hasGUI()){
@@ -156,7 +156,7 @@ public class Firm extends EconomicAgent {
         purchaseDepartments = new EnumMap<>(GoodType.class);
         humanResources = HashBiMap.create(1); //factory method for this
         numberOfPlantsListeners = new HashSet<>(); //prepare for listeners
-        profitReport = new ProfitReport(this);
+        profitReport = new WeeklyProfitReport(this);
         //create the timeline manager
 
         firmInspector = null;
@@ -955,10 +955,10 @@ public class Firm extends EconomicAgent {
 
     /**
      * This is probably not used unless you want to inject a profit report object for testing reasons.
-     * @param profitReport the new profit report.
+     * @param weeklyProfitReport the new profit report.
      */
-    public void setProfitReport(ProfitReport profitReport) {
-        this.profitReport = profitReport;
+    public void setProfitReport(ProfitReport weeklyProfitReport) {
+        this.profitReport = weeklyProfitReport;
     }
 
     /**

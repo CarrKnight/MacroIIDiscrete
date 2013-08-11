@@ -198,12 +198,14 @@ public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
      * This is called by the firm when it wants to predict the price they can sell to
      * (usually in order to guide production). <br>
      *
+     *
      * @param dept                   the sales department that has to answer this question
      * @param expectedProductionCost the HQ estimate of costs in producing whatever it wants to sell. It isn't necesarilly used.
+     * @param increaseStep
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePrice(SalesDepartment dept, long expectedProductionCost) {
+    public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
 
         //if we aren't ready, default to last closing price
         if(lowWorkers == -1 || highWorkers == -1 || !highWorkersPrice.isReady() || !lowWorkersPrice.isReady() || lowWorkers == 0) //when low workers are 0 the prediction will be wrong because of no data
@@ -227,6 +229,43 @@ public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
         long priceDifference = Math.round((lowWorkersPrice.getSmoothedObservation()-highWorkersPrice.getSmoothedObservation())/stepSize);
         return Math.max(currentPrice - priceDifference,0);
 
+
+    }
+
+
+    /**
+     * This is called by the firm when it wants to predict the price they can sell to if they increase production
+     *
+     *
+     * @param dept                   the sales department that has to answer this question
+     * @param expectedProductionCost the HQ estimate of costs in producing whatever it wants to sell. It isn't necesarilly used.
+     * @param decreaseStep
+     * @return the best offer available/predicted or -1 if there are no quotes/good predictions
+     */
+    @Override
+    public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
+
+        //if we aren't ready, default to last closing price
+        if(lowWorkers == -1 || highWorkers == -1 || !highWorkersPrice.isReady() || !lowWorkersPrice.isReady() || lowWorkers == 0) //when low workers are 0 the prediction will be wrong because of no data
+        {
+            //create a fake good, get it valued, return that value
+            return dept.getLastClosingPrice();
+        }
+
+
+
+        float stepSize = highWorkers - lowWorkers;
+        assert stepSize > 0;
+
+        //delay if you can't make it
+        int workers = totalNumberOfWorkers();
+        if( workers != highWorkers && workers != lowWorkers)
+            return -1; //delay
+
+        long currentPrice = highWorkers==totalNumberOfWorkers() ?  Math.round(highWorkersPrice.getSmoothedObservation())
+                : Math.round(lowWorkersPrice.getSmoothedObservation())  ;
+        long priceDifference = Math.round((lowWorkersPrice.getSmoothedObservation()-highWorkersPrice.getSmoothedObservation())/stepSize);
+        return Math.max(currentPrice + priceDifference,0);
 
     }
 

@@ -7,6 +7,7 @@
 package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
+import com.google.common.base.Preconditions;
 import financial.Market;
 import model.MacroII;
 import model.utilities.stats.PeriodicMarketObserver;
@@ -72,13 +73,17 @@ public class RegressionSalePredictor implements SalesPredictor{
      * Runs the regression and returns the regression prediction if it is possible or the last price otherwise.
      *
      *
+     *
      * @param dept                   the sales department that has to answer this question
      * @param expectedProductionCost the HQ estimate of costs in producing whatever it wants to sell. It isn't necesarilly used.
+     * @param increaseStep ignored
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePrice(SalesDepartment dept, long expectedProductionCost)
+    public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep)
     {
+        Preconditions.checkArgument(increaseStep >= 0);
+
         //regress and return
         updateModel();
 
@@ -87,7 +92,7 @@ public class RegressionSalePredictor implements SalesPredictor{
         else
         {
             //if you are producing more than what's sold, use production to predict tomorrow's quantity
-            double x = getFutureXForSale(dept);
+            double x = Math.max(observer.getLastUntrasformedQuantityTraded(),dept.getTodayInflow()) + increaseStep;
             if(observer.getQuantityTransformer() != null)
                 x = observer.getQuantityTransformer().transform(x);
             double y =  regression.predict(x);
@@ -105,19 +110,45 @@ public class RegressionSalePredictor implements SalesPredictor{
     }
 
     /**
-     * Usually we just predict lastX+1, we need to make sure we transform it correctly, though
-     * @param dept
-     * @return
+     * This is called by the firm when it wants to predict the price they can sell to if they increase production
+     *
+     *
+     * @param dept                   the sales department that has to answer this question
+     * @param expectedProductionCost the HQ estimate of costs in producing whatever it wants to sell. It isn't necesarilly used.
+     * @param decreaseStep ignored
+     * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
-    private double getFutureXForSale(SalesDepartment dept) {
-        return Math.max(observer.getLastUntrasformedQuantityTraded(),dept.getTodayInflow()) + 1;
+    @Override
+    public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
+        Preconditions.checkArgument(decreaseStep >= 0);
+        //regress and return
+        updateModel();
+
+        if(Double.isNaN(regression.getIntercept())) //if we couldn't do a regression, just return today's pricing
+            return dept.hypotheticalSalePrice();
+        else
+        {
+            //if you are producing more than what's sold, use production to predict tomorrow's quantity
+            double x = Math.max(observer.getLastUntrasformedQuantityTraded(),dept.getTodayInflow()) - decreaseStep;
+            if(observer.getQuantityTransformer() != null)
+                x = observer.getQuantityTransformer().transform(x);
+            double y =  regression.predict(x);
+            if(observer.getPriceTransformer() != null)
+            {
+                assert observer.getPriceInverseTransformer() != null ;
+                y = observer.getPriceInverseTransformer().transform(y);
+            }
+
+            return Math.round(y);
+        }
+
     }
 
     /**
      * Force the predictor to run a regression, if possible
      */
     public void updateModel() {
-        if(observer.getNumberOfObservations() >1)
+        if(observer.getNumberOfObservations() >2)
             regression.estimateModel(observer.getQuantitiesConsumedObservedAsArray(),
                     observer.getPricesObservedAsArray(),null);
     }

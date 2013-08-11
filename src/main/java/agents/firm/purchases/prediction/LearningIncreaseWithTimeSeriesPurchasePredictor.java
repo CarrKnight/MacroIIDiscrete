@@ -10,7 +10,9 @@ import agents.firm.purchases.PurchasesDepartment;
 import com.google.common.base.Preconditions;
 import financial.Market;
 import model.MacroII;
+import model.utilities.filters.MovingAverage;
 import model.utilities.stats.PeriodicMarketObserver;
+import model.utilities.stats.regression.LinearRegression;
 import model.utilities.stats.regression.MultipleLinearRegression;
 
 /**
@@ -47,6 +49,11 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
      */
     private final FixedIncreasePurchasesPredictor predictor;
 
+    /**
+     * should the regression be weighted?
+     */
+    private boolean usingWeights = true;
+
 
 
 
@@ -68,7 +75,7 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
     public LearningIncreaseWithTimeSeriesPurchasePredictor(PeriodicMarketObserver observer)
     {
         this.observer = observer;
-        regression = new MultipleLinearRegression(2);
+        regression = new MultipleLinearRegression();
         predictor = new FixedIncreasePurchasesPredictor();
         predictor.setIncrementDelta(0); //initially stay flat
 
@@ -83,7 +90,24 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePrice(PurchasesDepartment dept) {
+    public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
+        if(observer.getNumberOfObservations() > 25)
+        {
+            updateModel();
+            //     System.out.print(regression);
+
+            double intercept = - extractInterceptOfDemandFromRegression() / extractSlopeOfDemandFromRegression();
+            double slope = 1d/ extractSlopeOfDemandFromRegression();
+            predictor.setIncrementDelta((float) slope);
+
+        }
+
+        return predictor.predictPurchasePriceWhenIncreasingProduction(dept);
+
+    }
+
+    @Override
+    public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         if(observer.getNumberOfObservations() > 25)
         {
             updateModel();
@@ -92,12 +116,11 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
 
             double intercept = - extractInterceptOfDemandFromRegression() / extractSlopeOfDemandFromRegression();
             double slope = 1d/ extractSlopeOfDemandFromRegression();
-            System.out.println("supply: " + (intercept + slope * (dept.getMarket().countYesterdayProductionByRegisteredSellers()+1)));
-            return Math.round(intercept + slope * (dept.getMarket().getYesterdayVolume()+1));
+            predictor.setIncrementDelta((float) slope);
+
         }
 
-        return predictor.predictPurchasePrice(dept);
-
+        return predictor.predictPurchasePriceWhenDecreasingProduction(dept);
     }
 
     private void updateModel() {
@@ -121,15 +144,50 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
         //now create price by lopping off the first element
         double[] todayPrice = new double[production.length-1];
         double[] price = observer.getPricesObservedAsArray();
-        for(int i=1; i<todayPrice.length; i++)
+        double[] deltaPrice = new double[production.length-1];
+        for(int i=1; i<todayPrice.length+1; i++)
+        {
             todayPrice[i-1]=price[i];
-
+            deltaPrice[i-1] = price[i] - price[i-1];
+        }
         assert todayPrice.length == laggedProduction.length;
 
+
+        //build weights
+
+        double[] weights = null;
+        if(usingWeights)
+        {
+            weights = new double[laggedProduction.length];
+            MovingAverage<Double> ma = new MovingAverage<>(5);
+            for(int i=0; i < weights.length; i++)
+            {
+                ma.addObservation(Math.exp(1+Math.abs(deltaPrice[i])));
+                weights[i] = 1/ma.getSmoothedObservation();
+            }
+            weights[0]=weights[4];
+            weights[1]=weights[4];
+            weights[2]=weights[4];
+            weights[3]=weights[4];
+        }
+
         //done with that torture, just regress!
-        regression.estimateModel(deltaProduction,null,laggedProduction,todayPrice);
-
-
+        double[] clonedWeights = weights == null ? null : weights.clone();
+        try{
+            regression.estimateModel(deltaProduction.clone(),clonedWeights,laggedProduction.clone(),todayPrice.clone(),deltaPrice.clone());
+        }
+        catch (LinearRegression.CollinearityException collinearit)
+        {
+            //it must be that the deltaPrice were collinear, try again!
+            try{
+            regression.estimateModel(deltaProduction.clone(),clonedWeights,laggedProduction.clone(),todayPrice.clone());
+            }
+            catch (LinearRegression.CollinearityException ex)
+            {
+                //again collinear, that's impossiburu!
+                throw new RuntimeException("Too many collinearities, I can't deal with this!");
+            }
+        }
     }
 
     /**
@@ -142,13 +200,12 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
     }
 
     /**
-     * get the demand slope estimated by the time series. Need to call updateModel or predictPurchasePrice first
+     * get the demand slope estimated by the time series. Need to call updateModel or predictPurchasePriceWhenIncreasingProduction first
      * @return
      */
     public double extractSlopeOfDemandFromRegression()
     {
         double[] coefficients = regression.getResultMatrix();
-        assert coefficients.length == 3;
         double alpha = coefficients[1];
         double gamma = coefficients[2];
 
@@ -159,14 +216,13 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
     }
 
     /**
-     * get the demand slope estimated by the time series. Need to call updateModel or predictPurchasePrice first
+     * get the demand slope estimated by the time series. Need to call updateModel or predictPurchasePriceWhenIncreasingProduction first
 
      * @return
      */
     public double extractInterceptOfDemandFromRegression()
     {
         double[] coefficients = regression.getResultMatrix();
-        assert coefficients.length == 3;
         double alpha = coefficients[1];
         double beta = coefficients[0];
 
@@ -174,5 +230,24 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
             return - beta/alpha;
         else
             return 0;
+    }
+
+
+    /**
+     * Gets should the regression be weighted?.
+     *
+     * @return Value of should the regression be weighted?.
+     */
+    public boolean isUsingWeights() {
+        return usingWeights;
+    }
+
+    /**
+     * Sets new should the regression be weighted?.
+     *
+     * @param usingWeights New value of should the regression be weighted?.
+     */
+    public void setUsingWeights(boolean usingWeights) {
+        this.usingWeights = usingWeights;
     }
 }

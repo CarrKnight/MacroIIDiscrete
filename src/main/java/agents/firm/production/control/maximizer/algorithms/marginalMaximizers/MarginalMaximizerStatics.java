@@ -149,7 +149,7 @@ public final class MarginalMaximizerStatics {
         if(targetWorkers > currentWorkers)  //if we are going to hire somebody
         {
             //wages!
-            futureWage = hr.predictPurchasePrice();
+            futureWage = hr.predictPurchasePriceWhenIncreasingProduction();
             //if there is no prediction react to it
             futureWage = futureWage < 0 ? policy.replaceUnknownPrediction(hr.getMarket(), hr.getRandom()) : futureWage;
             //remember that you'll have to raise everybody's wages if you hire somebody new at a higher cost
@@ -199,24 +199,55 @@ public final class MarginalMaximizerStatics {
             float marginalProduction = p.hypotheticalThroughput(targetWorkers, output) - p.hypotheticalThroughput(currentWorkers, output);
             assert (marginalProduction >= 0 && targetWorkers >= currentWorkers) ^  (marginalProduction <= 0 && targetWorkers < currentWorkers) :
                     "this method was thought for monotonic production functions.";
-            //if you are increasing production, predict future price. Otherwise get last price
-            long pricePerUnit = targetWorkers > currentWorkers ?
-                    owner.getSalesDepartment(output).predictSalePrice(p.hypotheticalUnitOutputCost(output, totalFutureCosts, targetWorkers, totalFutureWageCosts)) :
-                    owner.getSalesDepartment(output).getLastClosingPrice();
-            //if prediction is not available, react to it!
-            pricePerUnit = pricePerUnit < 0 ? policy.replaceUnknownPrediction(owner.getSalesDepartment(output).getMarket(), p.getRandom()) : pricePerUnit;
-            //add it to the revenue
-            marginalRevenue += pricePerUnit * marginalProduction;
-            //but now decrease it if you caused the price to change
-            //if you sold anything today (if you haven't and you use very old "closing price" then your estimates are very wrong
-            if(owner.getSalesDepartment(output).getTodayOutflow() > 0
-                    &&
-                    owner.getSalesDepartment(output).getLastClosingPrice() > pricePerUnit )
+            long oldPrice = owner.getSalesDepartment(output).getLastClosingPrice();
+            //are we increasing or decreasing production?
+            if(targetWorkers>currentWorkers)
             {
+                //increasing production
+                long pricePerUnit =
+                        owner.getSalesDepartment(output).predictSalePriceAfterIncreasingProduction(
+                                p.hypotheticalUnitOutputCost(output, totalFutureCosts, targetWorkers, totalFutureWageCosts
+                                ), Math.round(marginalProduction/7f));
 
-                marginalRevenue -= (owner.getSalesDepartment(output).getLastClosingPrice()-
-                        pricePerUnit) * p.hypotheticalThroughput(currentWorkers, output);
+                //if prediction is not available, react to it!
+                pricePerUnit = pricePerUnit < 0 ? policy.replaceUnknownPrediction(owner.getSalesDepartment(output).getMarket(), p.getRandom()) : pricePerUnit;
+
+                //GAINS: new sales at the new price
+                marginalRevenue += pricePerUnit * marginalProduction;
+                //LOSSES: lower revenue from previous sales if you lowered the total sale price
+                //if you sold anything today (if you haven't and you use very old "closing price" then your estimates are very wrong
+                if(owner.getSalesDepartment(output).getTodayOutflow() > 0
+                        &&
+                        oldPrice != pricePerUnit )
+                {
+
+                    marginalRevenue -= (oldPrice -
+                            pricePerUnit) * p.hypotheticalThroughput(currentWorkers, output);
+                }
             }
+            else
+            {
+                //decreasing production!
+                assert targetWorkers < currentWorkers;
+                assert marginalProduction <=0;
+                //predict new price!
+                long pricePerUnit = owner.getSalesDepartment(output).predictSalePriceAfterDecreasingProduction(
+                        p.hypotheticalUnitOutputCost(output, totalFutureCosts, targetWorkers, totalFutureWageCosts),Math.round(-marginalProduction/7f) );
+                //if prediction is not available, react to it!
+                pricePerUnit = pricePerUnit < 0 ? policy.replaceUnknownPrediction(owner.getSalesDepartment(output).getMarket(), p.getRandom()) : pricePerUnit;
+
+                //LOSSES: lower production at old price
+                float losses = oldPrice * marginalProduction; //marginal production should be 0 or lower
+                assert losses<=0;
+                //GAINS: remaining sales should sell at higher prices!
+                float gains = p.hypotheticalThroughput(targetWorkers, output) * (pricePerUnit- oldPrice);
+                assert gains >=0 ^ pricePerUnit< oldPrice;
+
+                marginalRevenue += gains + losses; //losses are already negative!
+
+            }
+            //if you are increasing production, predict future price. Otherwise get last price
+
 
         }
         return marginalRevenue;
@@ -242,28 +273,20 @@ public final class MarginalMaximizerStatics {
             assert (marginalInputNeeded>=0 && targetWorkers > currentWorkers) ^ (marginalInputNeeded<=0 && targetWorkers < currentWorkers) ; //
 
             PurchasesDepartment dept = owner.getPurchaseDepartment(input); //get the purchase department that buys this input
-            long costPerInput = targetWorkers > currentWorkers ? dept.predictPurchasePrice() : dept.getLastClosingPrice();
+            long costPerInput = targetWorkers > currentWorkers ?
+                    dept.predictPurchasePriceWhenIncreasingProduction() :
+                    dept.predictPurchasePriceWhenDecreasingProduction();
             //if we are increasing production, predict. if we are decreasing production use old prices
             //if there is no prediction, react to it
             costPerInput = costPerInput < 0 ? policy.replaceUnknownPrediction(owner.getPurchaseDepartment(input).getMarket(), p.getRandom()) : costPerInput;
 
             //count the costs!
-            if(costPerInput == 0)
-                marginalInputCosts+= 0 ;
-            else
-            if(costPerInput < dept.getLastClosingPrice()) //if price is decreasing weirdly
-            {                                                                           //then assumes only the new stuff you buy will be discounted
-                marginalInputCosts+= (costPerInput * marginalInputNeeded);
-                totalInputCosts +=  costPerInput*marginalInputNeeded + dept.getLastClosingPrice() * ( totalInputNeeded-marginalInputNeeded) ;
 
-            }
-            else
-            {
-                marginalInputCosts+= (costPerInput * totalInputNeeded) - dept.getLastClosingPrice() *
-                        p.hypotheticalWeeklyInputNeeds(input, currentWorkers) ;
-                totalInputCosts +=  costPerInput*totalInputNeeded;
+            marginalInputCosts+= (costPerInput * totalInputNeeded) - dept.getLastClosingPrice() *
+                    p.hypotheticalWeeklyInputNeeds(input, currentWorkers) ;
+            totalInputCosts +=  costPerInput*totalInputNeeded;
 
-            }
+
 
             //marginal costs are negative (marginal savings) if we are reducing production
             assert (marginalInputCosts >= 0 && targetWorkers > currentWorkers) ^   (marginalInputCosts <= 0 && targetWorkers < currentWorkers);

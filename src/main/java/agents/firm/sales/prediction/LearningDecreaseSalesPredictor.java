@@ -7,6 +7,7 @@
 package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
+import com.google.common.base.Preconditions;
 import financial.Market;
 import model.MacroII;
 
@@ -71,20 +72,44 @@ public class LearningDecreaseSalesPredictor implements SalesPredictor {
      * This is called by the firm when it wants to predict the price they can sell to
      * (usually in order to guide production). <br>
      *
+     *
      * @param dept                   the sales department that has to answer this question
      * @param expectedProductionCost the HQ estimate of costs in producing whatever it wants to sell. It isn't necesarilly used.
+     * @param increaseStep
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePrice(SalesDepartment dept, long expectedProductionCost)
+    public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep)
     {
+        Preconditions.checkArgument(increaseStep >= 0);
         updateRegressorAndUseItToUpdatePredictor();
 
 
 
 
-        return predictor.predictSalePrice(dept,expectedProductionCost);
+        return predictor.predictSalePriceAfterIncreasingProduction(dept, expectedProductionCost,increaseStep );
 
+    }
+
+
+    /**
+     * This is called by the firm when it wants to predict the price they can sell to if they increase production
+     *
+     *
+     * @param dept                   the sales department that has to answer this question
+     * @param expectedProductionCost the HQ estimate of costs in producing whatever it wants to sell. It isn't necesarilly used.
+     * @param decreaseStep  by how much the production will decrease, has to be positive
+     * @return the best offer available/predicted or -1 if there are no quotes/good predictions
+     */
+    @Override
+    public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
+        Preconditions.checkArgument(decreaseStep >= 0);
+        updateRegressorAndUseItToUpdatePredictor();
+
+
+
+
+        return predictor.predictSalePriceAfterDecreasingProduction(dept, expectedProductionCost, decreaseStep);
     }
 
     protected void updateRegressorAndUseItToUpdatePredictor() {
