@@ -7,6 +7,7 @@
 package agents.firm.purchases;
 
 import agents.EconomicAgent;
+import agents.InventoryListener;
 import agents.firm.Department;
 import agents.firm.Firm;
 import agents.firm.purchases.inventoryControl.InventoryControl;
@@ -1085,6 +1086,17 @@ public class PurchasesDepartment implements Deactivatable, Department {
         return counter.getTodayInflow();
     }
 
+    public int getTodayFailuresToConsume() {
+        return counter.getTodayFailuresToConsume();
+    }
+
+    /**
+     * utility method, asks the firm for the inventory in the type of good this purchase department deals in
+     */
+    public int currentInventory()
+    {
+          return getFirm().hasHowMany(getGoodType());
+    }
     /**
      * Answers how many days, at the current rate, will it take for all the inventories to be gone
      * @return If outflow > inflow it returns inventorySize/netOutflow, otherwise returns infinity
@@ -1114,5 +1126,31 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
     public MacroII getModel() {
         return model;
+    }
+
+    /**
+     * This is somewhat similar to rate current level. It estimates the excess (or shortage)of goods purchased. It is basically
+     * currentInventory-AcceptableInventory
+     * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
+     */
+    public int estimateDemandGap() {
+        return control.estimateDemandGap();
+    }
+
+
+    /**
+     * Add a new inventory listener
+     */
+    public void addInventoryListener(InventoryListener listener) {
+        firm.addInventoryListener(listener);
+    }
+
+    /**
+     * Remove specific listener
+     * @param listener the listener to remove
+     * @return true if it was removed succesfully.
+     */
+    public boolean removeInventoryListener(InventoryListener listener) {
+        return firm.removeInventoryListener(listener);
     }
 }

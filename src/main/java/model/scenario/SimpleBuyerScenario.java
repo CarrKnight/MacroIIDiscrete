@@ -22,11 +22,11 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.pid.CascadePIDController;
+import model.utilities.dummies.DummySeller;
 import model.utilities.pid.Controller;
+import model.utilities.pid.FlowAndStockController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import model.utilities.dummies.DummySeller;
 
 import javax.annotation.Nonnull;
 
@@ -67,9 +67,9 @@ public class SimpleBuyerScenario extends Scenario {
 
     float inputWeight = 0.5f;
 
-    int targetInventory = 6;
+    int targetInventory = 20;
 
-    int consumptionRate = 2;
+    int consumptionRate = 4;
 
 
     float outputWeight = .35f;
@@ -78,7 +78,8 @@ public class SimpleBuyerScenario extends Scenario {
 
     public int consumedThisWeek = 0;
 
-    private Class<? extends Controller> controllerType = CascadePIDController.class;
+   // private Class<? extends Controller> controllerType = CascadePIDController.class;
+    private Class<? extends Controller> controllerType = FlowAndStockController.class;
 
 
 
@@ -273,7 +274,7 @@ public class SimpleBuyerScenario extends Scenario {
 
 
         //reset the counter
-        getModel().scheduleSoon(ActionOrder.CLEANUP,new Steppable() {
+        getModel().scheduleSoon(ActionOrder.PRODUCTION,new Steppable() {
             @Override
             public void step(SimState state) {
                 consumedThisWeek=0;
@@ -293,7 +294,7 @@ public class SimpleBuyerScenario extends Scenario {
 
                 }while (consumedThisWeek<consumptionRate && firm.hasAny(GoodType.GENERIC));
 
-                getModel().scheduleTomorrow(ActionOrder.CLEANUP,this);
+                getModel().scheduleTomorrow(ActionOrder.PRODUCTION,this);
 
             }
 
@@ -305,7 +306,7 @@ public class SimpleBuyerScenario extends Scenario {
     private void setUpBurstConsumption(final Firm firm, final PurchasesDepartment department){
 
         assert burstConsumption;
-        getModel().scheduleSoon(ActionOrder.CLEANUP, new Steppable() {
+        getModel().scheduleSoon(ActionOrder.PRODUCTION, new Steppable() {
             @Override
             public void step(SimState state) {
                 int initialInventory = firm.hasHowMany(GoodType.GENERIC);
@@ -321,7 +322,7 @@ public class SimpleBuyerScenario extends Scenario {
                         + ",final inventory: " + firm.hasHowMany(GoodType.GENERIC));
 
                 //do it again tomorrow
-                getModel().scheduleTomorrow(ActionOrder.CLEANUP,this);
+                getModel().scheduleTomorrow(ActionOrder.PRODUCTION,this);
             }
         });
     }

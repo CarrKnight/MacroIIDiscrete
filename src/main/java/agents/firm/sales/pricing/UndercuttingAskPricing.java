@@ -8,6 +8,8 @@ package agents.firm.sales.pricing;
 
 import agents.firm.sales.SalesDepartment;
 import goods.Good;
+import model.MacroII;
+import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -63,8 +65,7 @@ public class UndercuttingAskPricing implements AskPricingStrategy,Steppable{
         this.sales = sales;
         percentageToUndercut = sales.getFirm().getModel().drawNewUndercutReduction(sales.getFirm(),sales.getMarket());
         strategySpeed = sales.getFirm().getModel().drawNewUndercutSpeed(sales.getFirm(),sales.getMarket());
-
-        step(sales.getFirm().getModel());
+        getSales().getModel().scheduleSoon(ActionOrder.ADJUST_PRICES,this);
 
 
     }
@@ -110,7 +111,8 @@ public class UndercuttingAskPricing implements AskPricingStrategy,Steppable{
             if(bestOpponentPriceFound != oldBestPrice) //if we changed
                 sales.updateQuotes(); //update quotes!
 
-            simState.schedule.scheduleOnceIn(strategySpeed,this);
+            ((MacroII)simState).scheduleTomorrow(ActionOrder.ADJUST_PRICES,this);
+
 
         }
 

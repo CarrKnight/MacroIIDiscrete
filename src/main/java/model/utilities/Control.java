@@ -35,6 +35,15 @@ public interface Control {
     @Nullable
     public Level rateCurrentLevel();
 
+
+
+    /**
+     * This is somewhat similar to rate current level. It estimates the excess (or shortage)of goods purchased. It is basically
+     * currentInventory-AcceptableInventory
+     * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
+     */
+    public int estimateDemandGap();
+
     /**
      * Call this if we change/remove the control to stop it from giving more orders.Turn off is irreversible
      */

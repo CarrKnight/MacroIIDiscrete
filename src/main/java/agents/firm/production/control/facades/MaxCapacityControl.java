@@ -101,6 +101,19 @@ public class MaxCapacityControl implements PlantControl, PlantListener {
         return control.getTarget();
     }
 
+
+    /**
+     * This is somewhat similar to rate current level. It estimates the excess (or shortage)of goods purchased. It is basically
+     * currentInventory-AcceptableInventory
+     *
+     * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
+     */
+    @Override
+    public int estimateDemandGap() {
+        return getHr().getNumberOfWorkers()-control.getTarget();
+
+    }
+
     /**
      * Set the flag to allow or ban the hr from hiring people
      * @param canBuy true if the hr can hire more people at this wage.

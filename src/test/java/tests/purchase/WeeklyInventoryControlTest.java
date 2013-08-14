@@ -67,15 +67,122 @@ public class WeeklyInventoryControlTest {
 
         //target inventory is going to be 0 because there is no plant
 
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         when(f.hasHowMany(GoodType.GENERIC)).thenReturn(10);
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         when(f.hasHowMany(GoodType.GENERIC)).thenReturn(5);
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
 
     }
 
 
+    @Test
+    public void demandGap()
+    {
+        Market.TESTING_MODE = true;
+        model.setWeekLength(100);
+
+
+        Firm f = new Firm(model);
+        Plant plant = new Plant( Blueprint.simpleBlueprint(GoodType.GENERIC,6,GoodType.CAPITAL,1),f);
+        plant.setPlantMachinery(mock(Machinery.class));
+        f.addPlant(plant);
+
+
+
+        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, WeeklyInventoryControl.class,
+                null, null, null).getDepartment();
+
+
+        //without workers and machinery the need is always 0
+
+        f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        assertEquals(0,dept.estimateDemandGap());
+        assertEquals(dept.canBuy(), false);
+
+        for(int i=0; i <9; i++)
+            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        assertEquals(0,dept.estimateDemandGap());
+        assertEquals(dept.canBuy(), false);
+
+        for(int i=0; i <5; i++)
+            f.consume(GoodType.GENERIC);
+        assertEquals(0,dept.estimateDemandGap());
+        assertEquals(dept.canBuy(), false);
+
+        for(int i=0; i <100; i++)
+            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        assertEquals(0,dept.estimateDemandGap());
+        assertEquals(dept.canBuy(), false);
+
+        //adding a new plant has no effect at all!
+        Plant newPlant = new Plant( Blueprint.simpleBlueprint(GoodType.GENERIC,100,GoodType.CAPITAL,1),f);
+        newPlant.setPlantMachinery(mock(Machinery.class));
+        f.addPlant(newPlant);
+        //the new requirement should automatically be put to 100
+        assertEquals(0,dept.estimateDemandGap());
+        assertEquals(dept.canBuy(), false);
+
+        for(int i=0; i <5; i++)
+            f.receive(new Good(GoodType.GENERIC, f, 0l), null);
+        assertEquals(0,dept.estimateDemandGap());
+        assertEquals(dept.canBuy(), false);
+
+
+        //without workers the need is stil 0
+        plant.setPlantMachinery(new CRSExponentialMachinery(GoodType.CAPITAL,f,0l,plant,1));
+
+        f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        assertEquals(0,dept.estimateDemandGap());
+        assertEquals(dept.canBuy(), false);
+
+        for(int i=0; i <9; i++)
+            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        assertEquals(0,dept.estimateDemandGap());
+        assertEquals(dept.canBuy(), false);
+
+        for(int i=0; i <5; i++)
+            f.consume(GoodType.GENERIC);
+        assertEquals(0,dept.estimateDemandGap());
+        assertEquals(dept.canBuy(), false);
+
+        for(int i=0; i <100; i++)
+            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        assertEquals(0,dept.estimateDemandGap());
+        assertEquals(dept.canBuy(), false);
+
+
+
+        //now with workers the need is different
+        plant.addWorker(new Person(model));     //we make 100 runs a week each requiring 6 ---> weekly needs = 600, danger level should still be 6 (single production run of non-empty firms)
+
+
+        //216 goods as of now
+        f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        assertEquals(216-600,dept.estimateDemandGap());
+        assertEquals(dept.canBuy(), true);
+
+        for(int i=0; i <9; i++)
+            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        assertEquals(216+9-600,dept.estimateDemandGap());
+        assertEquals(dept.canBuy(), true);
+
+        for(int i=0; i <400; i++)
+            f.receive(new Good(GoodType.GENERIC, f, 0l), null);
+        assertEquals(0,dept.estimateDemandGap());
+        assertEquals(dept.canBuy(), true);
+
+        while(f.hasAny(GoodType.GENERIC))
+            f.consume(GoodType.GENERIC);
+        assertEquals(dept.rateCurrentLevel(), Level.DANGER);
+        assertEquals(-600,dept.estimateDemandGap());
+
+        assertEquals(dept.canBuy(), true);
+
+    }
+
+
+    //with no plants, it is basically useless
 
     @Test
     public void InventoryRatingNoPlant()
@@ -91,17 +198,17 @@ public class WeeklyInventoryControlTest {
         //target inventory is going to be 0 because there is no plant
 
         f.receive(new Good(GoodType.GENERIC,f,0l),null);
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <9; i++)
             f.receive(new Good(GoodType.GENERIC,f,0l),null);
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <5; i++)
             f.consume(GoodType.GENERIC);
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
 
@@ -128,11 +235,11 @@ public class WeeklyInventoryControlTest {
         //unfortunately weekly production is still 0!
 
         when(f.hasHowMany(GoodType.GENERIC)).thenReturn(1);
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         when(f.hasHowMany(GoodType.GENERIC)).thenReturn(10);
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         when(f.hasHowMany(GoodType.GENERIC)).thenReturn(5);
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
 
 
         //simulate a faster production
@@ -176,22 +283,22 @@ public class WeeklyInventoryControlTest {
         //without workers and machinery the need is always 0
 
         f.receive(new Good(GoodType.GENERIC,f,0l),null);
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <9; i++)
             f.receive(new Good(GoodType.GENERIC,f,0l),null);
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <5; i++)
             f.consume(GoodType.GENERIC);
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <100; i++)
             f.receive(new Good(GoodType.GENERIC,f,0l),null);
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         //adding a new plant has no effect at all!
@@ -199,12 +306,12 @@ public class WeeklyInventoryControlTest {
         newPlant.setPlantMachinery(mock(Machinery.class));
         f.addPlant(newPlant);
         //the new requirement should automatically be put to 100
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <5; i++)
             f.receive(new Good(GoodType.GENERIC, f, 0l), null);
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
 
@@ -212,22 +319,22 @@ public class WeeklyInventoryControlTest {
         plant.setPlantMachinery(new CRSExponentialMachinery(GoodType.CAPITAL,f,0l,plant,1));
 
         f.receive(new Good(GoodType.GENERIC,f,0l),null);
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <9; i++)
             f.receive(new Good(GoodType.GENERIC,f,0l),null);
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <5; i++)
             f.consume(GoodType.GENERIC);
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <100; i++)
             f.receive(new Good(GoodType.GENERIC,f,0l),null);
-        assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
+        assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
 

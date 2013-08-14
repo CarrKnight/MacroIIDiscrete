@@ -17,6 +17,7 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.dummies.DummySeller;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -132,13 +133,14 @@ public class FixedInventoryControlTest {
     @Test
     public void InventoryRatingShouldBuyMock() throws IllegalAccessException, NoSuchFieldException, InvocationTargetException, NoSuchMethodException {
         Firm f = new Firm(model);
-        PurchasesDepartment dept = mock(PurchasesDepartment.class);
 
-        when(dept.getFirm()).thenReturn(f); //make sure you link to f
-        when(dept.getGoodType()).thenReturn(GoodType.GENERIC); //make sure you link to f
+
+        PurchasesDepartment dept = PurchasesDepartment.getEmptyPurchasesDepartment(0l,f,market,model);
+        dept = spy(dept);
 
 
         FixedInventoryControl control = new FixedInventoryControl(dept);
+
         control.setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(1.5f);
         //make sure it's registered as a listener
         Method method = EconomicAgent.class.getDeclaredMethod("getInventory");
@@ -234,9 +236,36 @@ public class FixedInventoryControlTest {
     }
 
 
+    @Test
+    public void DemandGap() throws Exception {
+
+        PurchasesDepartment department = mock(PurchasesDepartment.class);
+        FixedInventoryControl control = new FixedInventoryControl(department,10);
+        control.setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(2f);
+
+        when(department.currentInventory()).thenReturn(0);
+        Assert.assertEquals(-10,control.estimateDemandGap());
+
+        when(department.currentInventory()).thenReturn(5);
+        Assert.assertEquals(-5,control.estimateDemandGap());
+
+
+        when(department.currentInventory()).thenReturn(9);
+        Assert.assertEquals(-1,control.estimateDemandGap());
+
+        when(department.currentInventory()).thenReturn(10);
+        Assert.assertEquals(0,control.estimateDemandGap());
+
+        when(department.currentInventory()).thenReturn(15);
+        Assert.assertEquals(0,control.estimateDemandGap());
+
+        when(department.currentInventory()).thenReturn(20);
+        Assert.assertEquals(0,control.estimateDemandGap());
+
+        when(department.currentInventory()).thenReturn(25);
+        Assert.assertEquals(5, control.estimateDemandGap());
 
 
 
-
-
+    }
 }

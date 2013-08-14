@@ -9,6 +9,7 @@ package agents.firm.sales.pricing;
 import agents.firm.sales.SalesDepartment;
 import goods.Good;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -72,7 +73,7 @@ public class EverythingMustGoAdaptive implements AskPricingStrategy {
             markup = Math.max(0,markup - model.getMarkupIncreases());
         //if markup has changed, adjust your sales department to change prices soon
         if(Math.abs(markup - oldMarkup) > .001)
-            model.schedule.scheduleOnce(new Steppable() { //I am not doing this IMMEDIATELY because I don't want to screw up other people's weekend routine
+            model.scheduleSoon(ActionOrder.TRADE,new Steppable() { //I am not doing this IMMEDIATELY because I don't want to screw up other people's weekend routine
                 @Override
                 public void step(SimState simState) {
                     department.updateQuotes(); //update quotes (becaue the price is going to be different!)

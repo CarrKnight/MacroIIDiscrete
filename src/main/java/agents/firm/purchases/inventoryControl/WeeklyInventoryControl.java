@@ -143,7 +143,7 @@ public class WeeklyInventoryControl extends AbstractInventoryControl implements 
     @Nonnull
     @Override
     protected Level rateInventory() {
-        int inventoryAmount = getPurchasesDepartment().getFirm().hasHowMany(getGoodTypeToControl()); //get inventory
+        int inventoryAmount = getPurchasesDepartment().currentInventory(); //get inventory
         return rateInventory(inventoryAmount); //call the method
     }
 
@@ -162,7 +162,7 @@ public class WeeklyInventoryControl extends AbstractInventoryControl implements 
             return Level.DANGER;
         else if(currentLevel < weeklyNeeds)
             return Level.BARELY;
-        else if(currentLevel < 1.5f*weeklyNeeds )
+        else if(currentLevel < 1.5f*weeklyNeeds || weeklyNeeds == 0)
             return Level.ACCEPTABLE;
         else
         {
@@ -183,7 +183,7 @@ public class WeeklyInventoryControl extends AbstractInventoryControl implements 
      */
     @Override
     public boolean canBuy() {
-        return rateInventory().compareTo(Level.ACCEPTABLE) <= 0; //keep buying as long as it is not at acceptable levels
+        return weeklyNeeds > 0 && rateInventory().compareTo(Level.ACCEPTABLE) <= 0; //keep buying as long as it is not at acceptable levels
 
     }
 
@@ -261,5 +261,31 @@ public class WeeklyInventoryControl extends AbstractInventoryControl implements 
      */
     @Override
     public void changeInWageEvent(Plant p, int workerSize, long wage) {
+    }
+
+
+    /**
+     * This is somewhat similar to rate current level. It estimates the excess (or shortage)of goods purchased. It is basically
+     * currentInventory-AcceptableInventory
+     *
+     * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
+     */
+    @Override
+    public int estimateDemandGap()
+    {
+        Level currentLevel = rateCurrentLevel();
+        if(currentLevel == null || currentLevel.equals(Level.ACCEPTABLE))
+            return 0;
+        else
+        {
+            int currentInventory = getPurchasesDepartment().currentInventory();
+            if(currentInventory<3 * weeklyNeeds)
+            {
+                return Math.round(currentInventory - weeklyNeeds);
+            }
+            else
+                return Math.round(currentInventory - 1.5f*weeklyNeeds);
+        }
+
     }
 }

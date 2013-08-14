@@ -50,6 +50,19 @@ public class TargetAndMaximizePlantControl extends AbstractPlantControl {
      */
     private WorkforceMaximizer maximizer;
 
+
+
+    /**
+     * This is somewhat similar to rate current level. It estimates the excess (or shortage)of goods purchased. It is basically
+     * currentInventory-AcceptableInventory
+     *
+     * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
+     */
+    @Override
+    public int estimateDemandGap() {
+        return getHr().getNumberOfWorkers()-targeter.getTarget();
+
+    }
     /**
      * the method just calls the start of the Targeter and the Maximizer
      */

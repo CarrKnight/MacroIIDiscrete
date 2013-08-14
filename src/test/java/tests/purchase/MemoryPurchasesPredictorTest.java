@@ -116,6 +116,14 @@ public class MemoryPurchasesPredictorTest {
                 @Override
                 public void step(SimState state) {
 //create 10 sellers
+
+                    System.out.println("DAWN INV:" + f.hasHowMany(GoodType.GENERIC));
+                }});
+
+            model.scheduleSoon(ActionOrder.TRADE,new Steppable() {
+                @Override
+                public void step(SimState state) {
+//create 10 sellers
                     for(int i=0; i<10; i++)
                     {
                         DummySeller seller = new DummySeller(model,i*10 + 10);
@@ -126,7 +134,7 @@ public class MemoryPurchasesPredictorTest {
                         quotes.add(q);
                     }
 
-                    System.out.println("DAWN INV:" + f.hasHowMany(GoodType.GENERIC));
+                    System.out.println("TRADE INV:" + f.hasHowMany(GoodType.GENERIC));
                 }});
 
             model.scheduleSoon(ActionOrder.CLEANUP,new Steppable() {
@@ -158,7 +166,7 @@ public class MemoryPurchasesPredictorTest {
                         f.consume(GoodType.GENERIC);
 
 
-                    inventoryAtProduction[0] = f.hasHowMany(GoodType.GENERIC);
+               //     inventoryAtProduction[0] = f.hasHowMany(GoodType.GENERIC);
                 }
             });
 
@@ -174,7 +182,7 @@ public class MemoryPurchasesPredictorTest {
         Market.TESTING_MODE = false;
         //I expect the price to go high so that the firm builds up its reserves and then drop so that it only needs to buy 2 a adjust to keep things constant
         assertTrue(dept.maxPrice(GoodType.GENERIC, market) >= 20 && dept.maxPrice(GoodType.GENERIC, market) <= 30);
-        assertEquals(inventoryAtProduction[0], 6); //has 6 but I just consumed 2
+        assertEquals(f.hasHowMany(GoodType.GENERIC), 6); //has 6 but I just consumed 2
         return dept;
 
     }

@@ -33,6 +33,7 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 /**
  * <h4>Description</h4>
@@ -203,7 +204,8 @@ public class SalesDepartmentTest2 {
         Quote q = dept1.getMarket().submitSellQuote(seller,73l,new Good(GoodType.GENERIC,seller,73l));
 
 
-        strategy2.step(dept1.getFirm().getModel()); //now it should undercut to 72
+        MacroII fakeModel = mock(MacroII.class);
+        strategy2.step(fakeModel); //now it should undercut to 72
 
         dept1.getMarket().removeSellQuote(q); dept1.getMarket().deregisterSeller(seller);  //exit
 
@@ -217,11 +219,9 @@ public class SalesDepartmentTest2 {
 
         assertEquals(dept1.getMarket().getLastPrice(), 46l); //UNSOLD
         assertEquals(dept1.getMarket().getBestBuyPrice(), 70l); //UNSOLD
-        assertEquals(dept1.getMarket().getBestSellPrice(), 72l); //UNSOLD
 
 
 
-        strategy2.step(dept1.getFirm().getModel()); //shouldn't undercut himself so it automatically reverts to 12
 
         good = new Good(GoodType.GENERIC,dept2.getFirm(),10);
         dept2.getFirm().receive(good,null);

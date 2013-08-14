@@ -402,7 +402,7 @@ public abstract class  SalesDepartment  implements Department {
                     //shall we try again?
                     double tryAgainIn = tryAgainNextTime(g);
                     if(tryAgainIn > 0)   //if we do want to try again
-                        firm.getModel().schedule.scheduleOnceIn(tryAgainIn,new Steppable() {
+                        firm.getModel().scheduleSoon(ActionOrder.TRADE,new Steppable() {
                             @Override
                             public void step(SimState simState) {     //schedule to peddle again!
                                 peddleNow(g);

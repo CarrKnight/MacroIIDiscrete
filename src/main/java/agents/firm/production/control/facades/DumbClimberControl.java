@@ -49,6 +49,18 @@ public class DumbClimberControl implements PlantControl
     }
 
 
+
+    /**
+     * This is somewhat similar to rate current level. It estimates the excess (or shortage)of goods purchased. It is basically
+     * currentInventory-AcceptableInventory
+     *
+     * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
+     */
+    @Override
+    public int estimateDemandGap() {
+        return control.estimateDemandGap();
+    }
+
     /**
      * Answer the question: how much am I willing to pay for this kind of labor?
      * Notice that NO UPDATING SHOULD TAKE PLACE in calling this method. Human Resources expects maxPrice() to be consistent from one call to the next.

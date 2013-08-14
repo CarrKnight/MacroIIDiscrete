@@ -129,11 +129,11 @@ public class SimpleInventoryControlTest {
 
         //assuming target inventory is 6~~
 
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(1);
+        when(dept.currentInventory()).thenReturn(1);
         assertEquals(dept.rateCurrentLevel(), Level.DANGER);
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(10);
+        when(dept.currentInventory()).thenReturn(10);
         assertEquals(dept.rateCurrentLevel(), Level.BARELY);
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(5);
+        when(dept.currentInventory()).thenReturn(5);
         assertEquals(dept.rateCurrentLevel(), Level.DANGER);
 
     }
@@ -203,11 +203,8 @@ public class SimpleInventoryControlTest {
         f.addPlant(p);
 
 
-        PurchasesDepartment dept = mock(PurchasesDepartment.class);
-
-        when(dept.getFirm()).thenReturn(f); //make sure you link to f
-        when(dept.getGoodType()).thenReturn(GoodType.GENERIC); //make sure you link to f
-
+        PurchasesDepartment dept = PurchasesDepartment.getEmptyPurchasesDepartment(0l,f,market,model);
+        dept = spy(dept);
 
         InventoryControl control = new SimpleInventoryControl(dept);
         //make sure it's registered as a listener
@@ -370,4 +367,39 @@ public class SimpleInventoryControlTest {
 
     }
 
+
+    @Test
+    public void demandGap() throws Exception
+    {
+        Firm f = mock(Firm.class);
+        //set up the firm so that it returns first 1 then 10 then 5
+        when(f.getModel()).thenReturn(model);  when(f.getRandom()).thenReturn(model.random);
+
+        Plant p = mock(Plant.class);
+        Blueprint b = Blueprint.simpleBlueprint(GoodType.GENERIC,6,GoodType.CAPITAL,1);    //daily needs are 6
+        when(p.getBlueprint()).thenReturn(b);
+        LinkedList<Plant> list = new LinkedList<>();
+        list.add(p);
+        when(f.getListOfPlantsUsingSpecificInput(GoodType.GENERIC)).thenReturn(list);
+
+
+        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, SimpleInventoryControl.class,
+                null, null, null).getDepartment();
+
+        //assuming target inventory is 6~~
+
+        when(dept.currentInventory()).thenReturn(1);
+        assertEquals(-11,dept.estimateDemandGap());
+        when(dept.currentInventory()).thenReturn(10);
+        assertEquals(-2,dept.estimateDemandGap());
+        when(dept.currentInventory()).thenReturn(5);
+        assertEquals(-7,dept.estimateDemandGap());
+        when(dept.currentInventory()).thenReturn(12);
+        assertEquals(0,dept.estimateDemandGap());
+        when(dept.currentInventory()).thenReturn(24);
+        assertEquals(6,dept.estimateDemandGap());
+        when(dept.currentInventory()).thenReturn(25);
+        assertEquals(7,dept.estimateDemandGap());
+
+    }
 }

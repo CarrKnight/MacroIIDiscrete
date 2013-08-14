@@ -425,7 +425,7 @@ public class MacroII extends SimState{
     }
 
     public float getPeddlingSpeed() {
-        return (float) (peddlingSpeed *random.nextGaussian());
+        return 0;
     }
 
 

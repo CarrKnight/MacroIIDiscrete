@@ -32,7 +32,7 @@ import javax.annotation.Nonnull;
  *     Unfortunately for things like OrderBook Market we can't really have numberOfCustomers so we will estimate it as: goodsSold + stockOuts where stockOuts is how many trades
  *     occur at a price ABOVE our last closing price when the sales department has NO goods to sell.
  * <p/> In order to learn stockouts events we make this strategy a TradeListener (if the quotes aren't visible) or BidListener.
- * <p/>  It's important that <b>PID is overruled by production costs</b> by default, but that can be set off. Still price is never negative!
+ * <p/>  It's important that <b>PID can be overruled by production costs</b> , but that is set off by default. Still price is never negative!
  * <h4>Notes</h4>
  * It's important to notice that the sales department needs to invert the PID controller. I obviate to this by simpling supplying the inverse of the target.
  * That is the target will be coded as goodsSold + stockout - goodsToSell --> 0 This way negative error (more goods to sell than sold) will push prices down.

@@ -13,6 +13,7 @@ import financial.MarketEvents;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.technology.Machinery;
+import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -60,26 +61,26 @@ public class MarketLookTargeter implements WorkforceTargeter {
     private int target = 0;
 
     /**
-     * How much time passes between each call of hire()?
+     * How many days unused pass between one attempt to hire and the next?
      */
-    private float speed = 5;
+    private int speed = 0;
 
     /**
      * Creates a new market-look targeter. Throws an state exception if the market doesn't allow for the best ask to be visible!
      * @param hr the human resources
      */
     public MarketLookTargeter(HumanResources hr,PlantControl control) {
-       this(hr,control, 5f);
+        this(hr,control, 0);
     }
 
     /**
      * Creates a new market-look targeter. Throws an state exception if the market doesn't allow for the best ask to be visible!
      * @param hr the human resources
      */
-    public MarketLookTargeter(@Nonnull HumanResources hr,@Nonnull PlantControl control, float speed ) {
+    public MarketLookTargeter(@Nonnull HumanResources hr,@Nonnull PlantControl control, int speed ) {
 
         Preconditions.checkState(hr.getMarket().isBestSalePriceVisible()); //this can't work without looking at prices
-        Preconditions.checkArgument(speed > 0);
+        Preconditions.checkArgument(speed >= 0);
         this.control = control;
         this.hr = hr;
         this.speed = speed;
@@ -107,13 +108,7 @@ public class MarketLookTargeter implements WorkforceTargeter {
 
             if(lowestWage == -1 ) //if there is no worker available check back in a while!
             {
-                hr.getFirm().getModel().schedule.scheduleOnceIn(Math.max(speed*3 + hr.getFirm().getModel().random.nextGaussian()
-                        ,0.01f),new Steppable() {
-                    @Override
-                    public void step(SimState simState) {
-                        hire(); //try again soon!
-                    }
-                });
+                rescheduleHire();
                 return;
             }
 
@@ -127,13 +122,8 @@ public class MarketLookTargeter implements WorkforceTargeter {
                 hr.buy();
             }
             //check back in a second
-            hr.getFirm().getModel().schedule.scheduleOnceIn(Math.max(speed + hr.getFirm().getModel().random.nextGaussian()
-                    , 0.01f),new Steppable() {
-                @Override
-                public void step(SimState simState) {
-                    hire(); //check if we need more!
-                }
-            });
+            rescheduleHire();
+
 
         } catch (IllegalAccessException e) {
             assert false;
@@ -141,6 +131,29 @@ public class MarketLookTargeter implements WorkforceTargeter {
             System.exit(-1);
         }
 
+    }
+
+    private void rescheduleHire() {
+        if(speed ==0)
+            hr.getFirm().getModel().scheduleTomorrow(ActionOrder.TRADE
+                    ,new Steppable() {
+                @Override
+                public void step(SimState simState) {
+                    hire(); //try again soon!
+                }
+            }
+            );
+        else
+            hr.getFirm().getModel().scheduleAnotherDay(ActionOrder.TRADE
+                    , new Steppable() {
+                @Override
+                public void step(SimState simState) {
+                    hire(); //try again soon!
+                }
+            }
+                    , speed
+            );
+        return;
     }
 
     /**

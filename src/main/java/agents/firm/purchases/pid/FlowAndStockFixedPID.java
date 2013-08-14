@@ -24,7 +24,7 @@ import sim.engine.Steppable;
 
 /**
  * <h4>Description</h4>
- * <p/>
+ * <p/>This PID is just a ugly cascade pid. There is an inner flow pid and a second
  * <p/>
  * <p/>
  * <h4>Notes</h4>
@@ -169,7 +169,13 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
         else
         {
             //we need to schedule ourselves since the PID won't do it
-            state.schedule.scheduleOnceIn(flowPIDRoot.getSpeed(),this);
+            assert state instanceof MacroII;
+            if(flowPIDRoot.getSpeed()==0)
+                ((MacroII)state).scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE,this);
+            else{
+                assert flowPIDRoot.getSpeed()>=1;
+                ((MacroII)state).scheduleAnotherDay(ActionOrder.PREPARE_TO_TRADE,this,flowPIDRoot.getSpeed());
+            }
         }
         stockAdjustmentUsed = false;
 
@@ -206,20 +212,17 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
         //reset inflows and outflows
 
 
-        super.resetInflow();
-        super.resetOutflow();
-
         if(oldPrice != priceQuoted )
-                getPurchasesDepartment().updateOfferPrices();
+            getPurchasesDepartment().updateOfferPrices();
 
 
     }
 
     private void filterObservations() {
         if(inflowFilterer != null)
-            inflowFilterer.addObservation(super.getInflow());
+            inflowFilterer.addObservation(getPurchasesDepartment().getTodayInflow());
         if(outflowFilterer != null)
-            outflowFilterer.addObservation(super.getOutflow());
+            outflowFilterer.addObservation(getPurchasesDepartment().getTodayOutflow());
     }
 
     /**
@@ -229,7 +232,7 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
      */
     private boolean isInflowEqualOutflow() {
 
-      //  return super.getInflow() == super.getOutflow();
+        //  return super.getInflow() == super.getOutflow();
         return Math.abs(getInflowAsFloat() - getOutflowAsFloat()) < .2f;
     }
 
@@ -238,7 +241,7 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
      */
     protected float getInflowAsFloat() {
         if(inflowFilterer == null || Float.isNaN(inflowFilterer.getSmoothedObservation()))
-            return super.getInflow();    //To change body of overridden methods use File | Settings | File Templates.
+            return getPurchasesDepartment().getTodayInflow();
         else
             return inflowFilterer.getSmoothedObservation();
     }
@@ -249,7 +252,7 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
      */
     public float getOutflowAsFloat() {
         if(outflowFilterer == null || Float.isNaN(outflowFilterer.getSmoothedObservation()))
-            return super.getOutflow();    //To change body of overridden methods use File | Settings | File Templates.
+            return getPurchasesDepartment().getTodayOutflow() + getPurchasesDepartment().getTodayFailuresToConsume();
         else
             return outflowFilterer.getSmoothedObservation();
     }

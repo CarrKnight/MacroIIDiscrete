@@ -97,7 +97,7 @@ public class PriceImitatorTest {
 
 
         assertEquals(strategy.price(good), 12);  //with no adjust, it just goes default
-        strategy.step(seller.getModel());   //you should have been able to find 20
+        strategy.step(mock(MacroII.class));   //you should have been able to find 20
         assertEquals(strategy.price(good), 20);  //now just copy the opponent!
 
 
@@ -115,13 +115,13 @@ public class PriceImitatorTest {
         assertEquals(strategy.price(good), 100l); //fail to copy price and instead price them minimum
 
 
-        strategy.step(seller.getModel()); //now there is nobody anymore. Go back to ask 20%
+        strategy.step(mock(MacroII.class)); //now there is nobody anymore. Go back to ask 20%
         assertEquals(strategy.price(good), 120l);
 
 
 
         market.submitSellQuote(seller,21l,good);
-        strategy.step(seller.getModel());   //you should have been able to find 21 and undercut him instead!
+        strategy.step(mock(MacroII.class));   //you should have been able to find 21 and undercut him instead!
         assertEquals(strategy.price(good), 100); //limited by the cost of production
         good.setLastValidPrice(1l);
         assertEquals(strategy.price(good), 21); //now markup should be 100% and lastValue is 20

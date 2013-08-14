@@ -45,15 +45,7 @@ public abstract class AbstractInventoryControl implements InventoryControl{
 
     private boolean isActive = true;
 
-    /**
-     * A simple counter for all new goods
-     */
-    private int inflow =0;
 
-    /**
-     * A simple counter for all new goods
-     */
-    private int outflow =0;
 
 
     /**
@@ -63,7 +55,7 @@ public abstract class AbstractInventoryControl implements InventoryControl{
     public AbstractInventoryControl(@Nonnull final PurchasesDepartment purchasesDepartment) {
         this.purchasesDepartment = purchasesDepartment;
         this.goodTypeToControl = purchasesDepartment.getGoodType();
-        purchasesDepartment.getFirm().addInventoryListener(this);  //addSalesDepartmentListener yourself as inventory listener
+        purchasesDepartment.addInventoryListener(this);  //addSalesDepartmentListener yourself as inventory listener
 
         //adjust yourself to start buying
 
@@ -107,19 +99,15 @@ public abstract class AbstractInventoryControl implements InventoryControl{
         if(!isActive || type != goodTypeToControl) //if you have been turned off or this isn't the good you are controlling for, don't bother
             return;
 
-        //count it
-        inflow++;
 
 
         assert source == purchasesDepartment.getFirm(); //should be our own firm, otherwise it's weird
-//        assert goodTypeToControl == type; //we should have been notified only of stuff that relates to us
         assert getPurchasesDepartment().getFirm().hasHowMany(getGoodTypeToControl()) == quantity; //make sure the quantity supplied is valid
 
 
         if(shouldIBuy(source,type,quantity)) //if I should buy, buy
             purchasesDepartment.buy();
-     //   else
-     //       System.err.println("No need to buy!~");
+
 
     }
 
@@ -136,8 +124,6 @@ public abstract class AbstractInventoryControl implements InventoryControl{
         if(!isActive || type != goodTypeToControl) //if you have been turned off, don't bother
             return;
 
-        //count it
-        outflow++;
 
 
         assert source == purchasesDepartment.getFirm(); //should be our own firm, otherwise it's weird
@@ -146,8 +132,6 @@ public abstract class AbstractInventoryControl implements InventoryControl{
 
         if(shouldIBuy(source,type,quantity)) //if I should buy, buy
             purchasesDepartment.buy();
-    //    else
-      //      System.err.println("No need to buy!~");
 
 
     }
@@ -161,8 +145,7 @@ public abstract class AbstractInventoryControl implements InventoryControl{
      */
     @Override
     public void failedToConsumeEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int numberNeeded) {
-        outflow= outflow + numberNeeded; //count it as outflow
-
+        //nothing happens here. It is counted by the InflowOutflowCounter in the purchase department
     }
 
     /**
@@ -211,25 +194,6 @@ public abstract class AbstractInventoryControl implements InventoryControl{
         return isActive;
     }
 
-    /**
-     * The number of goods bought since the last reset
-     */
-    protected int getInflow() {
-        return inflow;
-    }
-
-    protected void resetInflow(){
-        inflow = 0;
-    }
-
-    public int getOutflow() {
-        return outflow;
-    }
-
-
-    protected void resetOutflow(){
-        outflow=0;
-    }
 
 
 
@@ -253,20 +217,21 @@ public abstract class AbstractInventoryControl implements InventoryControl{
     protected ControllerInput getControllerInput(float target) {
         ControllerInput.ControllerInputBuilder inputBuilder =  new ControllerInput.ControllerInputBuilder();
         //prepare inputs
+        int todayInflow = getPurchasesDepartment().getTodayInflow();
+        int todayInventory = getPurchasesDepartment().getFirm().hasHowMany(getGoodTypeToControl());
         if(invertInputs)
-            inputBuilder.inputs((float)getInflow(),
-                    (float)getPurchasesDepartment().getFirm().hasHowMany(getGoodTypeToControl()));
+            inputBuilder.inputs((float) todayInflow,
+                    (float) todayInventory);
         else
-            inputBuilder.inputs((float)getPurchasesDepartment().getFirm().hasHowMany(getGoodTypeToControl()),
-                    (float)getInflow());
-        resetInflow();
+            inputBuilder.inputs((float) todayInventory,
+                    (float) todayInflow);
 
         //prepare targets
+        int todayOutflow = getPurchasesDepartment().getTodayOutflow() + getPurchasesDepartment().getTodayFailuresToConsume();
         if(invertTargets)
-            inputBuilder.targets((float)getOutflow(),target);
+            inputBuilder.targets((float) todayOutflow,target);
         else
-            inputBuilder.targets(target,(float)getOutflow());
-        resetOutflow();
+            inputBuilder.targets(target,(float) todayOutflow);
 
 
 
@@ -293,4 +258,7 @@ public abstract class AbstractInventoryControl implements InventoryControl{
     public void setInvertTargets(boolean invertTargets) {
         this.invertTargets = invertTargets;
     }
+
+
+
 }

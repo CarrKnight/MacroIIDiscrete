@@ -52,7 +52,7 @@ public class FixedInventoryControl extends AbstractInventoryControl {
     @Override
     protected Level rateInventory() {
         //how much do we have?
-        int currentLevel = getPurchasesDepartment().getFirm().hasHowMany(getGoodTypeToControl());
+        int currentLevel = getPurchasesDepartment().currentInventory();
         return rateInventory(currentLevel);
 
     }
@@ -108,8 +108,7 @@ public class FixedInventoryControl extends AbstractInventoryControl {
      * IT also sets itself up to adjust at the next possible moment
      */
     public FixedInventoryControl(@Nonnull final PurchasesDepartment purchasesDepartment) {
-        super(purchasesDepartment);
-        inventoryTarget = purchasesDepartment.getFirm().getModel().drawFixedInventoryTarget();
+        this(purchasesDepartment,purchasesDepartment.getFirm().getModel().drawFixedInventoryTarget());
 
     }
 
@@ -164,5 +163,26 @@ public class FixedInventoryControl extends AbstractInventoryControl {
      */
     public void setInventoryTarget(int inventoryTarget) {
         this.inventoryTarget = inventoryTarget;
+    }
+
+    /**
+     * This is somewhat similar to rate current level. It estimates the excess (or shortage)of goods purchased. It is basically
+     * currentInventory-AcceptableInventory
+     *
+     * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
+     */
+    @Override
+    public int estimateDemandGap() {
+        if(rateInventory().equals(Level.ACCEPTABLE))
+            return  0;
+        else
+        {
+            int currentInventory = getPurchasesDepartment().currentInventory();
+            if( currentInventory< inventoryTarget)
+                return  currentInventory-inventoryTarget;
+            else
+                return currentInventory - Math.round(inventoryTarget *howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch);
+
+        }
     }
 }

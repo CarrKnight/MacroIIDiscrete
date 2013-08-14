@@ -68,6 +68,12 @@ public class InflowOutflowCounter implements Deactivatable, InventoryListener, S
 
 
     /**
+     * counts how many times a plant wanted to consume a product but failed to do so because it wasn't available.
+     */
+    private int todayFailuresToConsume;
+
+
+    /**
      * called every dawn (and reschedules itself if active), resets all the counters
      */
     public void restartAtDawn()
@@ -80,6 +86,8 @@ public class InflowOutflowCounter implements Deactivatable, InventoryListener, S
             todayInflow = 0;
 
             todayOutflow = 0;
+
+            todayFailuresToConsume = 0;
 
             model.scheduleTomorrow(ActionOrder.DAWN,this);
 
@@ -157,7 +165,9 @@ public class InflowOutflowCounter implements Deactivatable, InventoryListener, S
      */
     @Override
     public void failedToConsumeEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int numberNeeded) {
-         //nothing here
+        if(this.type.equals(type))
+            todayFailuresToConsume += numberNeeded;
+
     }
 
     /**
@@ -205,4 +215,8 @@ public class InflowOutflowCounter implements Deactivatable, InventoryListener, S
         return todayInflow;
     }
 
+
+    public int getTodayFailuresToConsume() {
+        return todayFailuresToConsume;
+    }
 }

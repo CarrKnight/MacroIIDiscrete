@@ -13,12 +13,12 @@ import goods.GoodType;
 import model.MacroII;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 /**
  * <h4>Description</h4>
@@ -82,7 +82,7 @@ public class UndercuttingPricingTest {
         Good good =    new Good(GoodType.GENERIC,seller,10l);
         seller.receive(good,null);
         Firm buyer = dept.getFirm(); market.registerBuyer(buyer);
-        buyer.registerPurchasesDepartment(Mockito.mock(PurchasesDepartment.class),GoodType.GENERIC);
+        buyer.registerPurchasesDepartment(mock(PurchasesDepartment.class),GoodType.GENERIC);
 
         assertEquals(strategy.price(good), 12); //with no adjust, it just goes default
 
@@ -99,7 +99,7 @@ public class UndercuttingPricingTest {
 
 
         assertEquals(strategy.price(good), 12);  //with no adjust, it just goes default
-        strategy.step(seller.getModel());   //you should have been able to find 20
+        strategy.step(mock(MacroII.class));   //you should have been able to find 20
         assertEquals(strategy.price(good), 19);  //now just undercut 1% the opponent
 
 
@@ -117,13 +117,13 @@ public class UndercuttingPricingTest {
         assertEquals(strategy.price(good), 100l); //fail to copy price and instead price them minimum
 
 
-        strategy.step(seller.getModel()); //now there is nobody anymore. Go back to ask 20%
+        strategy.step(mock(MacroII.class)); //now there is nobody anymore. Go back to ask 20%
         assertEquals(strategy.price(good), 120l);
 
 
 
         market.submitSellQuote(seller,21l,good);
-        strategy.step(seller.getModel());   //you should have been able to find 21 and undercut him instead!
+        strategy.step(mock(MacroII.class));   //you should have been able to find 21 and undercut him instead!
         assertEquals(strategy.price(good), 100); //limited by the cost of production
         good.setLastValidPrice(1l);
         assertEquals(strategy.price(good), 20); //now markup should be 100% and lastValue is 20
