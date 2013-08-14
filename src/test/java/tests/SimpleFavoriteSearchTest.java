@@ -53,11 +53,11 @@ public class SimpleFavoriteSearchTest {
     @Test
     public void scenario1(){
 
-        DummyBuyer buyer1 = new DummyBuyer(model,10); market.registerBuyer(buyer1);
-        DummyBuyer buyer2 = new DummyBuyer(model,20); market.registerBuyer(buyer2);
-        DummyBuyer buyer3 = new DummyBuyer(model,30); market.registerBuyer(buyer3);
-        DummyBuyer buyer4 = new DummyBuyer(model,40); market.registerBuyer(buyer4);
-        DummyBuyer buyer5 = new DummyBuyer(model,50); market.registerBuyer(buyer5);
+        DummyBuyer buyer1 = new DummyBuyer(model,10,market); market.registerBuyer(buyer1);
+        DummyBuyer buyer2 = new DummyBuyer(model,20,market); market.registerBuyer(buyer2);
+        DummyBuyer buyer3 = new DummyBuyer(model,30,market); market.registerBuyer(buyer3);
+        DummyBuyer buyer4 = new DummyBuyer(model,40,market); market.registerBuyer(buyer4);
+        DummyBuyer buyer5 = new DummyBuyer(model,50,market); market.registerBuyer(buyer5);
 
         List<EconomicAgent> sample = Arrays.asList(toTest.sampleBuyers());
         assertTrue(sample.size() == 5);
@@ -96,12 +96,12 @@ public class SimpleFavoriteSearchTest {
     @Test
     public void scenario2(){
 
-        DummyBuyer buyer1 = new DummyBuyer(model,-1); market.registerBuyer(buyer1);
-        DummyBuyer buyer2 = new DummyBuyer(model,-1); market.registerBuyer(buyer2);
-        DummyBuyer buyer3 = new DummyBuyer(model,100); market.registerBuyer(buyer3);
-        DummyBuyer buyer4 = new DummyBuyer(model,2000); market.registerBuyer(buyer4);
-        DummyBuyer buyer5 = new DummyBuyer(model,-1); market.registerBuyer(buyer5);
-        DummyBuyer buyer6 = new DummyBuyer(model,-1); market.registerBuyer(buyer6);
+        DummyBuyer buyer1 = new DummyBuyer(model,-1,market); market.registerBuyer(buyer1);
+        DummyBuyer buyer2 = new DummyBuyer(model,-1,market); market.registerBuyer(buyer2);
+        DummyBuyer buyer3 = new DummyBuyer(model,100,market); market.registerBuyer(buyer3);
+        DummyBuyer buyer4 = new DummyBuyer(model,2000,market); market.registerBuyer(buyer4);
+        DummyBuyer buyer5 = new DummyBuyer(model,-1,market); market.registerBuyer(buyer5);
+        DummyBuyer buyer6 = new DummyBuyer(model,-1,market); market.registerBuyer(buyer6);
 
 
         List<EconomicAgent> sample = Arrays.asList(toTest.sampleBuyers());
@@ -117,8 +117,8 @@ public class SimpleFavoriteSearchTest {
     @Test
     public void scenario3(){
 
-        DummyBuyer buyer1 = new DummyBuyer(model,100); market.registerBuyer(buyer1);
-        DummyBuyer buyer2 = new DummyBuyer(model,-1); market.registerBuyer(buyer2);
+        DummyBuyer buyer1 = new DummyBuyer(model,100,market); market.registerBuyer(buyer1);
+        DummyBuyer buyer2 = new DummyBuyer(model,-1,market); market.registerBuyer(buyer2);
 
 
 
@@ -136,8 +136,8 @@ public class SimpleFavoriteSearchTest {
     @Test
     public void scenario4(){
 
-        DummyBuyer buyer1 = new DummyBuyer(model,-1); market.registerBuyer(buyer1);
-        DummyBuyer buyer2 = new DummyBuyer(model,-1); market.registerBuyer(buyer2);
+        DummyBuyer buyer1 = new DummyBuyer(model,-1,market); market.registerBuyer(buyer1);
+        DummyBuyer buyer2 = new DummyBuyer(model,-1,market); market.registerBuyer(buyer2);
 
 
 

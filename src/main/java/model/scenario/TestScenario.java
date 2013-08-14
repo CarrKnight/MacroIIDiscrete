@@ -51,7 +51,7 @@ public class TestScenario extends Scenario {
         getMarkets().put(GoodType.GENERIC,testMarket);
 
         //create fake buyer
-        final DummyBuyer buyer = new DummyBuyer(getModel(),100);  buyer.earn(1000000000l);
+        final DummyBuyer buyer = new DummyBuyer(getModel(),100,testMarket);  buyer.earn(1000000000l);
         //create fake seller
         final DummySeller seller = new DummySeller(getModel(),100);
         //add them to the list

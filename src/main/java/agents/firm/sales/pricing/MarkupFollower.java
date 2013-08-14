@@ -80,4 +80,12 @@ public class MarkupFollower implements AskPricingStrategy {
         return inventorySize == 0; //tries to sell everything
 
     }
+
+    /**
+     * All inventory is unwanted
+     */
+    @Override
+    public int estimateSupplyGap() {
+        return sales.getHowManyToSell();
+    }
 }

@@ -67,6 +67,17 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
      */
     private final ArrayList<Double> quantitiesProducedObserved;
 
+
+    /**
+     * a list holding all the demand gaps considered by the
+     */
+    private final ArrayList<Double> demandGaps;
+
+    /**
+     * a list holding all the quantity produced observed
+     */
+    private final ArrayList<Double> supplyGaps;
+
     /**
      * This is the last quantity traded observed
      */
@@ -142,6 +153,8 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
         observationDays = new ArrayList<>(100);
         quantitiesConsumedObserved = new ArrayList<>(100);
         quantitiesProducedObserved = new ArrayList<>(100);
+        demandGaps = new ArrayList<>(100);
+        supplyGaps = new ArrayList<>(100);
 
         if(dailyProbabilityOfObserving < 1)
         {
@@ -239,6 +252,8 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
         double quantity = market.getYesterdayVolume();
         double produced = market.countYesterdayProductionByRegisteredSellers();
         double consumed = market.countYesterdayConsumptionByRegisteredBuyers();
+        double demandgap = market.sumDemandGaps();
+        double supplygap = market.sumSupplyGaps();
         //remember them before transforming them
         lastUntrasformedQuantityTraded = quantity;
         lastUntrasformedQuantityProduced = produced;
@@ -259,6 +274,8 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
             quantitiesConsumedObserved.add(consumed);
             quantitiesProducedObserved.add(produced);
             observationDays.add(model.getMainScheduleTime());
+            demandGaps.add(demandgap);
+            supplyGaps.add(supplygap);
         }
 
         //reschedule yourself
@@ -327,6 +344,26 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
     public double[] getObservationDaysAsArray(){
         return Doubles.toArray(observationDays);
     }
+
+
+
+    /**
+     * Copies quantities observed into a double[] and return it. Useful for regressions and other manipulations
+     * @return
+     */
+    public double[] getDemandGapsAsArray(){
+        return Doubles.toArray(demandGaps);
+    }
+
+
+    /**
+     * Copies quantities observed into a double[] and return it. Useful for regressions and other manipulations
+     * @return
+     */
+    public double[] getSupplyGapsAsArray(){
+        return Doubles.toArray(supplyGaps);
+    }
+
 
 
     /**

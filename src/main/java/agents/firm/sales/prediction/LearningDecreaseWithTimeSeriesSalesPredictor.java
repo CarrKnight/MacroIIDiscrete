@@ -55,7 +55,7 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
     /**
      * adds DeltaP as a regressor
      */
-    private boolean correctingWithDeltaPrice = true;
+    private boolean correctingWithDeltaPrice = false;
 
     /**
      * The constructor that creates the linear regression, market observer and predictor
@@ -200,7 +200,8 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
         //grab the consumption
         double[] consumption = observer.getQuantitiesConsumedObservedAsArray();
         //grab production
-        double[] production = observer.getQuantitiesProducedObservedAsArray();
+        double[] supplyGaps = observer.getSupplyGapsAsArray();
+        double[] demandGaps = observer.getDemandGapsAsArray();
         Preconditions.checkArgument(consumption != null && consumption.length >= 3); //there needs to be enough observations to do this!
 
         //create delta consumption and lagged consumption
@@ -234,8 +235,8 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
             MovingAverage<Double> ma = new MovingAverage<>(5);
             for(int i=0; i < weights.length; i++)
             {
-                ma.addObservation(Math.abs(deltaPrice[i]));
-                weights[i] = 1/Math.exp(1 + ma.getSmoothedObservation());
+                ma.addObservation(Math.abs(demandGaps[i])+Math.abs(supplyGaps[i]));
+                weights[i] = 1/(1 + ma.getSmoothedObservation());
             }
             weights[0]=weights[4];
             weights[1]=weights[4];
@@ -259,6 +260,7 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
         {
             //it must be that the deltaPrice were collinear, try again!
             try{
+                clonedWeights = weights == null ? null : weights.clone();
                 regression.estimateModel(deltaConsumption.clone(),clonedWeights,laggedConsumption.clone(),todayPrice.clone());
             }
             catch (LinearRegression.CollinearityException ex)

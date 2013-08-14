@@ -62,9 +62,9 @@ public class MarketPredictorStrategyTest {
         department.setPredictorStrategy(strategy);
 
 
-        DummyBuyer buyer1 = new DummyBuyer(model,100l); market.registerBuyer(buyer1);
+        DummyBuyer buyer1 = new DummyBuyer(model,100l,market); market.registerBuyer(buyer1);
         market.submitBuyQuote(buyer1,100l);
-        DummyBuyer buyer2 = new DummyBuyer(model,200l); market.registerBuyer(buyer2);
+        DummyBuyer buyer2 = new DummyBuyer(model,200l,market); market.registerBuyer(buyer2);
         market.submitBuyQuote(buyer2,200l);
         DummySeller seller = new DummySeller(model, 300l); market.registerSeller(seller);
         market.submitSellQuote(seller,300l,new Good(GoodType.GENERIC,seller,300l));
@@ -94,16 +94,16 @@ public class MarketPredictorStrategyTest {
 
 
 
-        DummyBuyer buyer1 = new DummyBuyer(model,100l); market.registerBuyer(buyer1);
+        DummyBuyer buyer1 = new DummyBuyer(model,100l,market); market.registerBuyer(buyer1);
         market.submitBuyQuote(buyer1,100l);
-        DummyBuyer buyer2 = new DummyBuyer(model,200l); market.registerBuyer(buyer2);
+        DummyBuyer buyer2 = new DummyBuyer(model,200l,market); market.registerBuyer(buyer2);
         market.submitBuyQuote(buyer2,200l);
         DummySeller seller = new DummySeller(model, 300l); market.registerSeller(seller);
         market.submitSellQuote(seller,300l,new Good(GoodType.GENERIC,seller,300l));
 
 
         Good sold = new Good(GoodType.GENERIC,seller,200l);
-        DummyBuyer buyer3 = new DummyBuyer(model,250); market.registerBuyer(buyer3);   buyer3.earn(300);
+        DummyBuyer buyer3 = new DummyBuyer(model,250,market); market.registerBuyer(buyer3);   buyer3.earn(300);
         market.submitBuyQuote(buyer3,250l);
         DummySeller seller2 = new DummySeller(model, 250); market.registerSeller(seller2);
         seller2.receive(sold,null);
@@ -144,16 +144,16 @@ public class MarketPredictorStrategyTest {
 
 
 
-        DummyBuyer buyer1 = new DummyBuyer(model,100l); market.registerBuyer(buyer1);
+        DummyBuyer buyer1 = new DummyBuyer(model,100l,market); market.registerBuyer(buyer1);
         market.submitBuyQuote(buyer1,100l);
-        DummyBuyer buyer2 = new DummyBuyer(model,200l); market.registerBuyer(buyer2);
+        DummyBuyer buyer2 = new DummyBuyer(model,200l,market); market.registerBuyer(buyer2);
         market.submitBuyQuote(buyer2,200l);
         DummySeller seller = new DummySeller(model, 300l); market.registerSeller(seller);
         market.submitSellQuote(seller,300l,new Good(GoodType.GENERIC,seller,300l));
 
 
         Good sold = new Good(GoodType.GENERIC,seller,200l);
-        DummyBuyer buyer3 = new DummyBuyer(model,250); market.registerBuyer(buyer3);   buyer3.earn(300);
+        DummyBuyer buyer3 = new DummyBuyer(model,250,market); market.registerBuyer(buyer3);   buyer3.earn(300);
         market.submitBuyQuote(buyer3,250l);
         DummySeller seller2 = new DummySeller(model, 250); market.registerSeller(seller2);
         seller2.receive(sold,null);
@@ -211,16 +211,16 @@ public class MarketPredictorStrategyTest {
 
 
 
-        DummyBuyer buyer1 = new DummyBuyer(model,100l); market.registerBuyer(buyer1);
+        DummyBuyer buyer1 = new DummyBuyer(model,100l,market); market.registerBuyer(buyer1);
         market.submitBuyQuote(buyer1,100l);
-        DummyBuyer buyer2 = new DummyBuyer(model,200l); market.registerBuyer(buyer2);
+        DummyBuyer buyer2 = new DummyBuyer(model,200l,market); market.registerBuyer(buyer2);
         market.submitBuyQuote(buyer2,200l);
         DummySeller seller = new DummySeller(model, 300l); market.registerSeller(seller);
         market.submitSellQuote(seller,300l,new Good(GoodType.GENERIC,seller,300l));
 
 
         Good sold = new Good(GoodType.GENERIC,seller,200l);
-        DummyBuyer buyer3 = new DummyBuyer(model,250); market.registerBuyer(buyer3);   buyer3.earn(300);
+        DummyBuyer buyer3 = new DummyBuyer(model,250,market); market.registerBuyer(buyer3);   buyer3.earn(300);
         market.submitBuyQuote(buyer3, 250l);
         //market.registerSeller(department.getFirm()); Automatically registered when you create the sales department
         department.getFirm().receive(sold,null);

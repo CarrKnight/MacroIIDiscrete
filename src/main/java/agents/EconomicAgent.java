@@ -417,6 +417,17 @@ public abstract class EconomicAgent implements Agent, HasInventory{
         counter.turnOff();
     }
 
+
+    /**
+     * how "far" purchases inventory are from target.
+     */
+    public abstract int estimateDemandGap(GoodType type);
+
+    /**
+     * how "far" sales inventory are from target.
+     */
+    public abstract int estimateSupplyGap(GoodType type);
+
     /**
      * get today Production
      */

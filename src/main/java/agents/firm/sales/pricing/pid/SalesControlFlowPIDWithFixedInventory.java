@@ -275,6 +275,24 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
         return inventorySize >= minimumInventory;
     }
 
+
+    /**
+     * All inventory is unwanted
+     */
+    @Override
+    public int estimateSupplyGap() {
+        int currentInventory = department.getHowManyToSell();
+        if(phase.equals(SimpleInventoryAndFlowPIDPhase.SELL))
+        {
+            return Math.round(getTarget()-getFilteredOutflow());
+        }
+        else
+        {
+            assert phase.equals(SimpleInventoryAndFlowPIDPhase.BUILDUP);
+            return department.getHowManyToSell() - acceptableInventory;
+        }
+    }
+
     /**
      * since this controller puts the same price for every good, we can use this rather than passing a good
      * @return

@@ -124,7 +124,7 @@ public class SimpleDecentralizedSellerScenario extends Scenario
         /**
          * For this scenario we use dummy buyers that shop only once every "period"
          */
-        final DummyBuyer buyer = new DummyBuyer(getModel(),price);  market.registerBuyer(buyer); buyer.earn(1000000l);
+        final DummyBuyer buyer = new DummyBuyer(getModel(),price,market);  market.registerBuyer(buyer); buyer.earn(1000000l);
 
         //Make it shop 10 times a week for one good only!
         getModel().schedule.scheduleRepeating(time + getModel().random.nextGaussian(),

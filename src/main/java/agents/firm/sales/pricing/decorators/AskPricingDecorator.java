@@ -76,6 +76,17 @@ public abstract class AskPricingDecorator implements AskPricingStrategy{
         return toDecorate.isInventoryAcceptable(inventorySize);
     }
 
+
+    /**
+     * This is somewhat similar to rate current level. It estimates the excess (or shortage)of goods sold. It is basically
+     * currentInventory-AcceptableInventory
+     * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
+     */
+    @Override
+    public int estimateSupplyGap() {
+        return toDecorate.estimateSupplyGap();
+    }
+
     /**
      * Returns the strategy being decorated
      */

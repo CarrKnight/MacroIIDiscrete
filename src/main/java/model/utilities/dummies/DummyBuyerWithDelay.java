@@ -55,7 +55,7 @@ public class DummyBuyerWithDelay extends DummyBuyer {
     private boolean realOffer = false;
 
     public DummyBuyerWithDelay(final MacroII model, long price, final int delay, final Market market) {
-        super(model, price);
+        super(model, price,market);
         Preconditions.checkArgument(delay>=1);
         this.delay = delay;
         this.market = market;

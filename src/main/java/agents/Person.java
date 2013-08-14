@@ -448,4 +448,21 @@ public class Person extends EconomicAgent {
             employerSearch.setMarket(laborMarket);
 
     }
+
+    /**
+     * how "far" purchases inventory are from target.
+     */
+    @Override
+    public int estimateDemandGap(GoodType type) {
+        return 0;
+
+    }
+
+    /**
+     * how "far" sales inventory are from target.
+     */
+    @Override
+    public int estimateSupplyGap(GoodType type) {
+        return 0;
+    }
 }

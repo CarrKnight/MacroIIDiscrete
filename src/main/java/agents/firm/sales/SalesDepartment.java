@@ -402,7 +402,7 @@ public abstract class  SalesDepartment  implements Department {
                     //shall we try again?
                     double tryAgainIn = tryAgainNextTime(g);
                     if(tryAgainIn > 0)   //if we do want to try again
-                        firm.getModel().scheduleSoon(ActionOrder.TRADE,new Steppable() {
+                        firm.getModel().scheduleSoon(ActionOrder.TRADE, new Steppable() {
                             @Override
                             public void step(SimState simState) {     //schedule to peddle again!
                                 peddleNow(g);
@@ -1261,4 +1261,14 @@ public abstract class  SalesDepartment  implements Department {
     public MacroII getModel() {
         return model;
     }
+
+    /**
+     * This is somewhat similar to rate current level. It estimates the excess (or shortage)of goods sold. It is basically
+     * currentInventory-AcceptableInventory
+     * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
+     */
+    public int estimateSupplyGap() {
+        return askPricingStrategy.estimateSupplyGap();
+    }
 }
+

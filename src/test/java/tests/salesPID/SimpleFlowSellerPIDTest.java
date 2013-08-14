@@ -71,7 +71,7 @@ public class SimpleFlowSellerPIDTest {
             //1 buyer
             for(int i=1; i<11; i++)
             {
-                DummyBuyer buyer = new DummyBuyer(model,i*10);
+                DummyBuyer buyer = new DummyBuyer(model,i*10,market);
                 market.registerBuyer(buyer);
                 buyer.earn(1000l);
                 Quote q = market.submitBuyQuote(buyer,i*10);
@@ -136,7 +136,7 @@ public class SimpleFlowSellerPIDTest {
             //1 buyer
             for(int i=1; i<11; i++)
             {
-                DummyBuyer buyer = new DummyBuyer(model,i*10);
+                DummyBuyer buyer = new DummyBuyer(model,i*10,market);
                 market.registerBuyer(buyer);
                 buyer.earn(1000l);
                 Quote q = market.submitBuyQuote(buyer,i*10);
@@ -211,7 +211,7 @@ public class SimpleFlowSellerPIDTest {
             //1 buyer
             for(int i=1; i<11; i++)
             {
-                DummyBuyer buyer = new DummyBuyer(model,i*10);
+                DummyBuyer buyer = new DummyBuyer(model,i*10,market);
                 market.registerBuyer(buyer);
                 buyer.earn(1000l);
                 Quote q = market.submitBuyQuote(buyer,i*10);
@@ -294,7 +294,7 @@ public class SimpleFlowSellerPIDTest {
             //1 buyer
             for(int i=1; i<11; i++)
             {
-                DummyBuyer buyer = new DummyBuyer(model,i*10);
+                DummyBuyer buyer = new DummyBuyer(model,i*10,market);
                 market.registerBuyer(buyer);
                 buyer.earn(1000l);
                 Quote q = market.submitBuyQuote(buyer,i*10);

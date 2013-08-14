@@ -264,7 +264,7 @@ public class SupplyChainScenario extends Scenario
         /**
          * For this scenario we use a different kind of dummy buyer that, after "period" passed, puts a new order in the market
          */
-        final DummyBuyer buyer = new DummyBuyer(getModel(), reservationPrice){
+        final DummyBuyer buyer = new DummyBuyer(getModel(), reservationPrice,marketToBuyFrom){
             @Override
             public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
                 //trick to get the steppable to recognize the anonymous me!

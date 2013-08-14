@@ -10,10 +10,12 @@ import agents.EconomicAgent;
 import agents.firm.DummyProfitReport;
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
+import financial.Market;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -24,9 +26,14 @@ public class DummyBuyer extends Firm {
 
     public long quotedPrice;
 
-    public DummyBuyer(MacroII model, long price) {
+    public boolean boughtToday = false;
+
+    final private Market market;
+
+    public DummyBuyer(MacroII model, long price,Market market) {
         super(model,false);
         quotedPrice = price;
+        this.market = market;
         getProfitReport().turnOff();
         setProfitReport(new DummyProfitReport());
     }
@@ -105,12 +112,20 @@ public class DummyBuyer extends Firm {
 
     @Override
     public void reactToFilledBidQuote(final Good g, long price, EconomicAgent seller) {
+        boughtToday = true;
         getModel().scheduleASAP(new Steppable() {
             @Override
             public void step(SimState state) {
                 consume(g.getType());
+                getModel().scheduleSoon(ActionOrder.DAWN, new Steppable() {
+                    @Override
+                    public void step(SimState state) {
+                        boughtToday=false;
+                    }
+                });
             }
         });
+
 
     }
 
@@ -120,5 +135,24 @@ public class DummyBuyer extends Firm {
      */
     public long getFixedPrice() {
         return quotedPrice;
+    }
+
+    /**
+     * how "far" purchases inventory are from target.
+     */
+    @Override
+    public int estimateDemandGap(GoodType type) {
+        if(!boughtToday && market.getLastPrice() <= quotedPrice)
+            return 1;
+        else
+            return 0;
+    }
+
+    /**
+     * how "far" sales inventory are from target.
+     */
+    @Override
+    public int estimateSupplyGap(GoodType type) {
+        return 0;
     }
 }

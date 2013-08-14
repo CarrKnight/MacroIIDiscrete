@@ -99,6 +99,18 @@ public class DailyStatCollector implements Steppable{
     private EnumMap<GoodType,Boolean> wereThereShortages;
 
 
+    /**
+     * The flag is true for the output if at least one producing plant had its production halted
+     */
+    private EnumMap<GoodType,Integer> sumDemandGap;
+
+
+    /**
+     * The flag is true for the output if at least one producing plant had its production halted
+     */
+    private EnumMap<GoodType,Integer> sumSupplyGap;
+
+
 
 
     /**
@@ -115,6 +127,8 @@ public class DailyStatCollector implements Steppable{
         sellerTotalInventory = new EnumMap<>(GoodType.class);
         buyerTotalInventory = new EnumMap<>(GoodType.class);
         wereThereShortages = new EnumMap<>(GoodType.class);
+        sumDemandGap = new EnumMap<>(GoodType.class);
+        sumSupplyGap = new EnumMap<>(GoodType.class);
 
     }
 
@@ -194,6 +208,8 @@ public class DailyStatCollector implements Steppable{
             sellerTotalInventory.put(output,sellerInventory);
             buyerTotalInventory.put(output,buyerInventory);
             wereThereShortages.put(output,shortages);
+            sumDemandGap.put(output,market.sumDemandGaps());
+            sumSupplyGap.put(output,market.sumSupplyGaps());
 
 
         }
@@ -257,6 +273,8 @@ public class DailyStatCollector implements Steppable{
             row.add(Integer.toString(sellerTotalInventory.get(type)));
             row.add(Integer.toString(buyerTotalInventory.get(type)));
             row.add(Boolean.toString(wereThereShortages.get(type)));
+            row.add(Integer.toString(sumDemandGap.get(type)));
+            row.add(Integer.toString(sumSupplyGap.get(type)));
 
         }
         return row.toArray(new String[row.size()]);
@@ -287,6 +305,8 @@ public class DailyStatCollector implements Steppable{
             todayRow.add(type.name() + '_' + "outputInventory");
             todayRow.add(type.name() + '_' + "inputInventory");
             todayRow.add(type.name() + '_' + "shortages");
+            todayRow.add(type.name() + '_' + "demandGap");
+            todayRow.add(type.name() + '_' + "supplyGap");
 
         }
 

@@ -445,6 +445,7 @@ public class Firm extends EconomicAgent {
 
 
 
+
     /**
      * This is called by a peddler/survey to the agent and asks what would be the maximum he's willing to pay to buy a new good.
      *
@@ -1107,6 +1108,28 @@ public class Firm extends EconomicAgent {
         return false;
     }
 
+    /**
+     * how "far" purchases inventory are from target.
+     */
+    @Override
+    public int estimateDemandGap(GoodType type) {
+        PurchasesDepartment department = purchaseDepartments.get(type);
+        if(department == null)
+            return 0;
+        else
+            return department.estimateDemandGap();
 
+    }
 
+    /**
+     * how "far" sales inventory are from target.
+     */
+    @Override
+    public int estimateSupplyGap(GoodType type) {
+        SalesDepartment department = salesDepartments.get(type);
+        if(department == null)
+            return 0;
+        else
+            return department.estimateSupplyGap();
+    }
 }

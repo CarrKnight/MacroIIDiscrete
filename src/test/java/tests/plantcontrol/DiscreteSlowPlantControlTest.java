@@ -571,7 +571,7 @@ public class DiscreteSlowPlantControlTest {
         for(int i=9; i>2;i --)
         {
 
-            DummyBuyer buyer = new DummyBuyer(model,i+1);
+            DummyBuyer buyer = new DummyBuyer(model,i+1,market);
             market.registerBuyer(buyer);
             buyer.earn(1000l);
             Quote q = market.submitBuyQuote(buyer,i+1);

@@ -163,7 +163,7 @@ public class OrderBookStockoutTest {
 
 
         //buyer 1
-        EconomicAgent buyer1 = new DummyBuyer(model,20);  buyer1.earn(10000);
+        EconomicAgent buyer1 = new DummyBuyer(model,20,market);  buyer1.earn(10000);
         market.registerBuyer(buyer1);
         Quote q = market.submitBuyQuote(buyer1,20);
         assertEquals(stockouts.getStockouts(),1);
@@ -178,7 +178,7 @@ public class OrderBookStockoutTest {
         buyer1=null;
 
         //buyer 2: same as buyer 1 but we aren't outcompeted
-        EconomicAgent buyer2 = new DummyBuyer(model,20);  buyer2.earn(10000);
+        EconomicAgent buyer2 = new DummyBuyer(model,20,market);  buyer2.earn(10000);
         market.registerBuyer(buyer2);
         q = market.submitBuyQuote(buyer2,20);
         assertEquals(stockouts.getStockouts(),1);
@@ -194,14 +194,14 @@ public class OrderBookStockoutTest {
 
 
         //buyer 3 places a bid and forgets about it
-        EconomicAgent buyer3 = new DummyBuyer(model,20);  buyer3.earn(10000);
+        EconomicAgent buyer3 = new DummyBuyer(model,20,market);  buyer3.earn(10000);
         market.registerBuyer(buyer3);
         market.submitBuyQuote(buyer3,20);
         assertEquals(stockouts.getStockouts(), 2);
 
 
         //buyer4
-        EconomicAgent buyer4 = new DummyBuyer(model,20);  buyer4.earn(10000);
+        EconomicAgent buyer4 = new DummyBuyer(model,20,market);  buyer4.earn(10000);
         market.registerBuyer(buyer4);
         market.submitBuyQuote(buyer4,19);         good = new Good(GoodType.GENERIC,competitor,0); competitor.receive(good,null);
         market.submitSellQuote(competitor,9,good);
@@ -209,7 +209,7 @@ public class OrderBookStockoutTest {
         assertEquals(stockouts.getStockouts(), 2);
 
         //buyer5
-        EconomicAgent buyer5 = new DummyBuyer(model,20);  buyer5.earn(10000);
+        EconomicAgent buyer5 = new DummyBuyer(model,20,market);  buyer5.earn(10000);
         market.registerBuyer(buyer5);
         market.submitBuyQuote(buyer5,19);         good = new Good(GoodType.GENERIC,competitor,0); competitor.receive(good,null);
         market.submitSellQuote(competitor,11,good);

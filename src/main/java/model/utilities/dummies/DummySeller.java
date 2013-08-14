@@ -16,6 +16,9 @@ import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.ActionOrder;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
 
@@ -40,6 +43,8 @@ public class DummySeller extends Firm {
     public long saleQuote;
 
     private Market market;
+
+    boolean soldToday = false;
 
     public DummySeller(MacroII model,long quote) {
         super(model,false);
@@ -78,6 +83,20 @@ public class DummySeller extends Firm {
     @Override
     public void reactToFilledAskedQuote(Good g, long price, EconomicAgent buyer) {
         //don't react
+        /**
+         * how "far" purchases inventory are from target.
+         */
+        soldToday = true;
+
+        model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
+            @Override
+            public void step(SimState state) {
+
+                soldToday = false;
+            }
+        });
+
+
 
     }
 
@@ -144,4 +163,23 @@ public class DummySeller extends Firm {
     public int getSalesDepartmentRecordedInflow(GoodType goodType) {
         throw new UnsupportedOperationException("still to code");
     }
+
+
+    /**
+     * how "far" purchases inventory are from target.
+     */
+    @Override
+    public int estimateDemandGap(GoodType type) {
+        return 0;
+    }
+
+    /**
+     * how "far" sales inventory are from target.
+     */
+    @Override
+    public int estimateSupplyGap(GoodType type) {
+        if(!soldToday && market.getLastPrice() >= saleQuote)
+            return 1;
+        else
+            return 0;    }
 }

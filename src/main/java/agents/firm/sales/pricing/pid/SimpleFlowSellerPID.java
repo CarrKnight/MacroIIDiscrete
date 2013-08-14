@@ -374,6 +374,13 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         return initialInventory;
     }
 
+    /**
+     * All inventory is unwanted
+     */
+    @Override
+    public int estimateSupplyGap() {
+        return sales.getHowManyToSell();
+    }
 
     /**
      * Basically asks whether or not the salesDepartment has anything to sell currently.

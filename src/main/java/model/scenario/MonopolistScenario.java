@@ -180,7 +180,7 @@ public class MonopolistScenario extends Scenario {
                 break;
 
 
-            final DummyBuyer buyer = new DummyBuyer(getModel(),buyerPrice){
+            final DummyBuyer buyer = new DummyBuyer(getModel(),buyerPrice,goodMarket){
                 @Override
                 public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
                     super.reactToFilledBidQuote(g,price,b);

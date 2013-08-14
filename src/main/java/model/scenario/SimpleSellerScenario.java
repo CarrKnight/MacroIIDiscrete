@@ -148,7 +148,7 @@ public class SimpleSellerScenario extends Scenario {
         /**
          * For this scenario we use a different kind of dummy buyer that, after "period" passed, puts a new order in the market
          */
-        final DummyBuyer buyer = new DummyBuyer(getModel(),(i+10)*10){
+        final DummyBuyer buyer = new DummyBuyer(getModel(),(i+10)*10,market){
             @Override
             public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
                 //trick to get the steppable to recognize the anynimous me!
@@ -225,7 +225,7 @@ public class SimpleSellerScenario extends Scenario {
         if(buyerDelay ==0)
         {
 
-            buyer = new DummyBuyer(getModel(),price){
+            buyer = new DummyBuyer(getModel(),price,market){
                 @Override
                 public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
                     //trick to get the steppable to recognize the anynimous me!

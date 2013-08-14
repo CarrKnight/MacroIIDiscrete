@@ -74,7 +74,7 @@ public class SalesDepartmentTest2 {
 
         for(int i=0; i<10; i++) //create 10 buyers!!!!!!!!
         {
-            DummyBuyer buyer = new DummyBuyer(model,10+i*10){
+            DummyBuyer buyer = new DummyBuyer(model,10+i*10,market){
 
                 @Override
                 public void pay(long money,@Nonnull EconomicAgent receiver,Market market1) throws Bankruptcy {
@@ -105,7 +105,7 @@ public class SalesDepartmentTest2 {
     @Test
     public void testAskedForASalePrice() throws NoSuchFieldException, IllegalAccessException{
 
-        DummyBuyer dummy = new DummyBuyer(dept1.getFirm().getModel(),100l); //just ask stuff
+        DummyBuyer dummy = new DummyBuyer(dept1.getFirm().getModel(),100l,market); //just ask stuff
         assertEquals(-1, dept1.askedForASalePrice(dummy).getPriceQuoted()); //we have no goods, can't answer that question!
         Good toQuote = new Good(GoodType.GENERIC,dept1.getFirm(),1000l);
         dept1.getFirm().receive(toQuote,null);
@@ -308,7 +308,7 @@ public class SalesDepartmentTest2 {
 
 
         //NEW BUYER
-        DummyBuyer buyer = new DummyBuyer(dept1.getFirm().getModel(),100);
+        DummyBuyer buyer = new DummyBuyer(dept1.getFirm().getModel(),100,market);
         buyer.earn(100);
         dept1.getMarket().registerBuyer(buyer);
         dept1.getMarket().submitBuyQuote(buyer,buyer.quotedPrice);

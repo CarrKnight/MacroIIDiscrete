@@ -906,6 +906,24 @@ public abstract class Market{
         return sum;
     }
 
+    public int sumDemandGaps(){
+        int sum = 0;
+        for(EconomicAgent a : buyers)
+            sum += a.estimateDemandGap(getGoodType());
+        return sum;
+
+
+    }
+
+    public int sumSupplyGaps(){
+        int sum = 0;
+        for(EconomicAgent a : sellers)
+            sum += a.estimateSupplyGap(getGoodType());
+        return sum;
+
+
+    }
+
     /**
      * utility method for summing up all consumption by all buyers
      * @return
