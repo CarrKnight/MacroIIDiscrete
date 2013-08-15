@@ -289,7 +289,7 @@ public final class MarginalMaximizerStatics {
 
 
             //marginal costs are negative (marginal savings) if we are reducing production
-            assert (marginalInputCosts >= 0 && targetWorkers > currentWorkers) ^   (marginalInputCosts <= 0 && targetWorkers < currentWorkers);
+     //       assert (marginalInputCosts >= 0 && targetWorkers > currentWorkers) ^   (marginalInputCosts <= 0 && targetWorkers < currentWorkers);
             assert totalInputCosts >= 0;
         }
 

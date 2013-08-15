@@ -128,7 +128,8 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
         //grab the production
         double[] production = observer.getQuantitiesProducedObservedAsArray();
         Preconditions.checkArgument(production.length >=3); //there needs to be enough observations to do this!
-
+        double[] supplyGaps = observer.getSupplyGapsAsArray();
+        double[] demandGaps = observer.getDemandGapsAsArray();
         //create delta production and lagged production
         double[] laggedProduction = new double[production.length-1];
         double[] deltaProduction = new double[production.length-1];
@@ -162,13 +163,14 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
             MovingAverage<Double> ma = new MovingAverage<>(5);
             for(int i=0; i < weights.length; i++)
             {
-                ma.addObservation(Math.exp(1+Math.abs(deltaPrice[i])));
-                weights[i] = 1/ma.getSmoothedObservation();
+                ma.addObservation(Math.abs(demandGaps[i])+Math.abs(supplyGaps[i]));
+                weights[i] = 1/(1 + Math.exp(Math.abs(demandGaps[i])+Math.abs(supplyGaps[i])));
             }
-            weights[0]=weights[4];
+           /* weights[0]=weights[4];
             weights[1]=weights[4];
             weights[2]=weights[4];
             weights[3]=weights[4];
+            */
         }
 
         //done with that torture, just regress!
@@ -180,12 +182,29 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
         {
             //it must be that the deltaPrice were collinear, try again!
             try{
+
             regression.estimateModel(deltaProduction.clone(),clonedWeights,laggedProduction.clone(),todayPrice.clone());
             }
             catch (LinearRegression.CollinearityException ex)
             {
                 //again collinear, that's impossiburu!
-                throw new RuntimeException("Too many collinearities, I can't deal with this!");
+                //make weights less heavy
+                weights = new double[laggedProduction.length];
+                MovingAverage<Double> ma = new MovingAverage<>(5);
+                for(int i=0; i < weights.length; i++)
+                {
+                    ma.addObservation(Math.abs(demandGaps[i])+Math.abs(supplyGaps[i]));
+                    weights[i] = 1/(1 + (Math.abs(demandGaps[i])+Math.abs(supplyGaps[i])));
+                }
+                try {
+                    regression.estimateModel(deltaProduction.clone(),weights,laggedProduction.clone(),todayPrice.clone());
+                } catch (LinearRegression.CollinearityException e) {
+                    throw new RuntimeException("Too many collinearities, I can't deal with this!");
+
+
+                }
+
+
             }
         }
     }

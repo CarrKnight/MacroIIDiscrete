@@ -12,6 +12,7 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.filters.ExponentialFilter;
 import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.concurrent.*;
@@ -203,7 +204,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     /**
      * force the beef monopolist to target the right production
      */
-   // @Test
+    @Test
     public void testBeefMonopolistFixedProductionWithStickyPrices() throws ExecutionException, InterruptedException {
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
@@ -278,7 +279,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                 macroII.getMarket(GoodType.FOOD).getLastPrice(),macroII.getMarket(GoodType.BEEF).getYesterdayVolume());
     }
 
-   // @Test
+    //@Test
     public void testBeefMonopolistFixedProductionWithSlowPID() throws ExecutionException, InterruptedException {
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());

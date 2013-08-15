@@ -249,8 +249,8 @@ public class SimpleFlowSellerPIDTest {
 
         //this is not necessarilly true because of the order with which things are sold
         assertEquals(market.getBestBuyPrice(), 60l);
-        assertTrue(strategy1.getTargetPrice() > 60 && strategy1.getTargetPrice() <=75);
-        assertTrue(strategy2.getTargetPrice() > 60 && strategy2.getTargetPrice() <=75);
+        assertTrue(strategy1.getTargetPrice() >= 60 && strategy1.getTargetPrice() <=75);
+        assertTrue(strategy2.getTargetPrice() >= 60 && strategy2.getTargetPrice() <=75);
 
 
 

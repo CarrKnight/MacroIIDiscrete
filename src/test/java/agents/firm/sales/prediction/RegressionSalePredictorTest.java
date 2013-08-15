@@ -114,10 +114,10 @@ public class RegressionSalePredictorTest {
         field.setAccessible(true);
         PeriodicMarketObserver observer = (PeriodicMarketObserver) field.get(predictor);
 
-        verify(macroII).scheduleAnotherDay(ActionOrder.DAWN,observer,5, Priority.AFTER_STANDARD);
+        verify(macroII).scheduleAnotherDay(ActionOrder.CLEANUP,observer,5, Priority.AFTER_STANDARD);
         predictor.setDailyProbabilityOfObserving(.3f);
         observer.step(macroII);
-        verify(macroII).scheduleAnotherDay(ActionOrder.DAWN,observer,3, Priority.AFTER_STANDARD);
+        verify(macroII).scheduleAnotherDay(ActionOrder.CLEANUP,observer,3, Priority.AFTER_STANDARD);
 
 
     }

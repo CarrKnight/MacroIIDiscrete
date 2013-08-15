@@ -6,13 +6,19 @@
 
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
+import agents.firm.sales.prediction.LearningDecreaseWithTimeSeriesSalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
 import goods.GoodType;
 import model.MacroII;
 import model.scenario.MonopolistScenario;
+import model.utilities.ActionOrder;
+import model.utilities.scheduler.Priority;
 import model.utilities.stats.DailyStatCollector;
+import model.utilities.stats.PeriodicMarketObserver;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -151,7 +157,7 @@ public class MarginalMaximizerToCSVTest {
 
 
 
-        MonopolistScenario scenario1 = new MonopolistScenario(macroII);
+        final MonopolistScenario scenario1 = new MonopolistScenario(macroII);
 
         //generate random parameters for labor supply and good demand
         int p0= macroII.random.nextInt(100)+100; int p1= macroII.random.nextInt(3)+1;
@@ -193,7 +199,29 @@ public class MarginalMaximizerToCSVTest {
             System.err.println("failed to create the file!");
         }
 
+
+
+
+
         macroII.start();
+
+        //give the purchase department a periodic observer that outputs to file
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter("runs/maximizerTestPeriodic.csv"));
+            PeriodicMarketObserver observer = new PeriodicMarketObserver(scenario1.getMarkets().get(GoodType.GENERIC),macroII);
+            observer.attachCSVWriter(writer);
+            final LearningDecreaseWithTimeSeriesSalesPredictor predictor = new LearningDecreaseWithTimeSeriesSalesPredictor(observer);
+            macroII.scheduleSoon(ActionOrder.DAWN, new Steppable() {
+                @Override
+                public void step(SimState state) {
+                    scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC).setPredictorStrategy(predictor);
+                }
+            }, Priority.AFTER_STANDARD);
+        } catch (IOException e) {
+            System.err.println("failed to create the file!");
+        }
+
+
         while(macroII.schedule.getTime()<10000)
             macroII.schedule.step(macroII);
 

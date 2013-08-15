@@ -6,6 +6,7 @@
 
 package model.utilities.stats;
 
+import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Doubles;
 import com.sun.istack.internal.Nullable;
@@ -19,8 +20,10 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -40,6 +43,11 @@ import java.util.List;
  * @see
  */
 public class PeriodicMarketObserver implements Steppable, Deactivatable {
+
+    /**
+     * an optional writer so we can output observations
+     */
+    private CSVWriter writer;
 
     /**
      * The market we are going to observe!
@@ -163,17 +171,17 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
         else
         {
             assert dailyProbabilityOfObserving == 1;
-            macroII.scheduleSoon(ActionOrder.DAWN,this,Priority.AFTER_STANDARD);
+            macroII.scheduleSoon(ActionOrder.CLEANUP,this,Priority.AFTER_STANDARD);
         }
     }
 
     private void reschedule(MacroII macroII) {
 
         if(!isExact)
-            macroII.scheduleAnotherDayWithFixedProbability(ActionOrder.DAWN, this, dailyProbabilityOfObserving,
+            macroII.scheduleAnotherDayWithFixedProbability(ActionOrder.CLEANUP, this, dailyProbabilityOfObserving,
                     Priority.AFTER_STANDARD);
         else
-            macroII.scheduleAnotherDay(ActionOrder.DAWN, this, Math.max(1,Math.round(1f/dailyProbabilityOfObserving)),
+            macroII.scheduleAnotherDay(ActionOrder.CLEANUP, this, Math.max(1,Math.round(1f/dailyProbabilityOfObserving)),
                     Priority.AFTER_STANDARD);
 
     }
@@ -276,10 +284,54 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
             observationDays.add(model.getMainScheduleTime());
             demandGaps.add(demandgap);
             supplyGaps.add(supplygap);
+
+            if(writer != null)
+                outputToFile();
         }
 
         //reschedule yourself
         reschedule(model);
+
+
+    }
+
+    public void attachCSVWriter(CSVWriter writer) throws IOException {
+        this.writer = writer;
+        LinkedList<String> row = new LinkedList<>();
+
+        row.add("price");
+        row.add("traded");
+        row.add("produced");
+        row.add("consumed");
+        row.add("day");
+        row.add("demand gap");
+        row.add("supply gap");
+
+        writer.writeNext(row.toArray(new String[row.size()]));
+        writer.flush();
+    }
+
+
+    private void outputToFile()
+    {
+        Preconditions.checkState(writer!=null);
+        LinkedList<String> row = new LinkedList<>();
+
+        row.add(Double.toString(getLastPriceObserved()));
+        row.add(Double.toString(getLastQuantityTradedObserved()));
+        row.add(Double.toString(getLastQuantityProducedObserved()));
+        row.add(Double.toString(getLastQuantityConsumedObserved()));
+        row.add(Double.toString(getLastDayObserved()));
+        row.add(Double.toString(demandGaps.get(demandGaps.size() - 1)));
+        row.add(Double.toString(supplyGaps.get(supplyGaps.size()-1)));
+
+        writer.writeNext(row.toArray(new String[row.size()]));
+        try {
+            writer.flush();
+        } catch (IOException e) {
+
+
+        }
 
 
     }

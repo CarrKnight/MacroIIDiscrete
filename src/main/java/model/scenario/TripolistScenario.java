@@ -196,5 +196,7 @@ public class TripolistScenario extends MonopolistScenario{
 
     }
 
-
+    public LinkedList<Firm> getCompetitors() {
+        return competitors;
+    }
 }

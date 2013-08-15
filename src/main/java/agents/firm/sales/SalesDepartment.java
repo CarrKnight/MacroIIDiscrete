@@ -13,6 +13,7 @@ import agents.firm.production.Plant;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.prediction.LearningDecreaseWithTimeSeriesSalesPredictor;
+import agents.firm.sales.prediction.LinearExtrapolationPredictor;
 import agents.firm.sales.prediction.RegressionSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
@@ -102,7 +103,7 @@ public abstract class  SalesDepartment  implements Department {
     protected BuyerSearchAlgorithm buyerSearchAlgorithm;
     protected SellerSearchAlgorithm sellerSearchAlgorithm;
 
-    public static Class<? extends  SalesPredictor> defaultPredictorStrategy = LearningDecreaseWithTimeSeriesSalesPredictor.class;
+    public static Class<? extends  SalesPredictor> defaultPredictorStrategy = LinearExtrapolationPredictor.class;
 
     /**
      * This is the strategy to predict future sale prices when the order book is not visible.

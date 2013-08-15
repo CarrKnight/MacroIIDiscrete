@@ -119,6 +119,7 @@ public class LearningDecreaseWithTimeSeriesSalesPredictorTest {
 
         //create the predictor
         LearningDecreaseWithTimeSeriesSalesPredictor predictor = new LearningDecreaseWithTimeSeriesSalesPredictor(observer);
+        predictor.setUsingWeights(false);
         //force an update
         predictor.predictSalePriceAfterIncreasingProduction(mock(SalesDepartment.class), 1l, 1);
 

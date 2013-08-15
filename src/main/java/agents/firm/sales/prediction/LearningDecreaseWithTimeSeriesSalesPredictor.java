@@ -236,7 +236,7 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
             for(int i=0; i < weights.length; i++)
             {
                 ma.addObservation(Math.abs(demandGaps[i])+Math.abs(supplyGaps[i]));
-                weights[i] = 1/(1 + ma.getSmoothedObservation());
+                weights[i] = 1/(1 + Math.exp(Math.abs(demandGaps[i])+Math.abs(supplyGaps[i])));
             }
             weights[0]=weights[4];
             weights[1]=weights[4];

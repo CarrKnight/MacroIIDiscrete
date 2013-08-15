@@ -178,6 +178,8 @@ public class DummySeller extends Firm {
      */
     @Override
     public int estimateSupplyGap(GoodType type) {
+        if(market==null)
+            return 0;
         if(!soldToday && market.getLastPrice() >= saleQuote)
             return 1;
         else
