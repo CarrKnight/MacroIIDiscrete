@@ -4,10 +4,11 @@
  * See the file "LICENSE" for more information
  */
 
-package financial;
+package financial.market;
 
 import agents.EconomicAgent;
 import agents.firm.Department;
+import financial.*;
 import financial.utilities.*;
 import goods.Good;
 import goods.GoodType;
@@ -16,6 +17,8 @@ import lifelines.data.DataManager;
 import lifelines.data.GlobalEventData;
 import model.MacroII;
 import model.utilities.ExchangeNetwork;
+import model.utilities.stats.MarketData;
+import model.utilities.stats.MarketDataType;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -131,6 +134,11 @@ public abstract class Market{
      */
     private int lastWeekVolume;
 
+    /**
+     * the data collector, created at start()
+     */
+    private MarketData marketData;
+
     protected Market(GoodType goodType) {
         this.goodType = goodType;
         //if the market is a labor market, buyers hire and sellers get hired. Otherwise buyers receive and sellers earn
@@ -138,6 +146,8 @@ public abstract class Market{
             policy = new SimpleHiringTradePolicy();
         else
             policy = SimpleGoodTradePolicy.getInstance();
+
+
 
         //build the gui inspector
         if(MacroII.hasGUI()){
@@ -583,6 +593,26 @@ public abstract class Market{
      */
     private LifelinesPanel recordPanel;
 
+
+    /**
+     * tells the market that the model is starting up, and it would be a good idea to start the data collector
+     * @param model
+     */
+    public void start(MacroII model)
+    {
+        marketData = new MarketData();
+
+        marketData.start(model,this);
+
+    }
+
+    public void turnOff()
+    {
+        //the game is over, tell the rest of the crew
+        marketData.turnOff();
+    }
+
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "-->" + getGoodType();
@@ -934,5 +964,68 @@ public abstract class Market{
         for(EconomicAgent a : buyers)
             sum += a.getTodayConsumption(getGoodType());
         return sum;
+    }
+
+
+    /**
+     * how many days worth of observations are here?
+     */
+    public int numberOfObservations() {
+        return marketData.numberOfObservations();
+    }
+
+    /**
+     * check which days have observations that are okay with the acceptor!
+     */
+    public int[] getAcceptableDays(@Nonnull int[] days, MarketData.MarketDataAcceptor acceptor) {
+        return marketData.getAcceptableDays(days, acceptor);
+    }
+
+    /**
+     * returns a copy of all the observed last prices so far!
+     */
+    public double[] getAllRecordedObservations(MarketDataType type) {
+        return marketData.getAllRecordedObservations(type);
+    }
+
+    /**
+     * utility method to analyze only specific days
+     */
+    public double[] getObservationsRecordedTheseDays(MarketDataType type, @Nonnull int[] days) {
+        return marketData.getObservationsRecordedTheseDays(type, days);
+    }
+
+    /**
+     * utility method to analyze only specific days
+     */
+    public double[] getObservationsRecordedTheseDays(MarketDataType type, int beginningDay, int lastDay) {
+        return marketData.getObservationsRecordedTheseDays(type, beginningDay, lastDay);
+    }
+
+    /**
+     * utility method to analyze only  a specific day
+     */
+    public double getObservationRecordedThisDay(MarketDataType type, int day) {
+        return marketData.getObservationRecordedThisDay(type, day);
+    }
+
+    /**
+     * return the latest price observed
+     */
+    public Double getLatestObservation(MarketDataType type) {
+        return marketData.getLatestObservation(type);
+    }
+
+    /**
+     * a method to check if, given the acceptor, the latest observation is valid
+     * @param acceptor
+     * @return
+     */
+    public boolean isLastDayAcceptable(MarketData.MarketDataAcceptor acceptor) {
+        return marketData.isLastDayAcceptable(acceptor);
+    }
+
+    public int getLastObservedDay() {
+        return marketData.getLastObservedDay()-1;
     }
 }

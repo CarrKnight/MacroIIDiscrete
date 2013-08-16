@@ -7,7 +7,7 @@
 package agents.firm.purchases.prediction;
 
 import agents.firm.purchases.PurchasesDepartment;
-import financial.Market;
+import financial.market.Market;
 import model.MacroII;
 import model.utilities.stats.PeriodicMarketObserver;
 import model.utilities.stats.regression.LinearRegression;

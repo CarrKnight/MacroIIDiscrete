@@ -6,7 +6,7 @@
 
 package model.utilities.stats;
 
-import financial.Market;
+import financial.market.Market;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
@@ -47,24 +47,30 @@ public class PeriodicMarketObserverTest {
         MacroII model = new MacroII(System.currentTimeMillis());
         PeriodicMarketObserver observer = new PeriodicMarketObserver(market,model );
 
-        //observation 1
-        when(market.getYesterdayLastPrice()).thenReturn(86l);
-        when(market.getYesterdayVolume()).thenReturn(6);
-        when(market.countYesterdayConsumptionByRegisteredBuyers()).thenReturn(1);
-        when(market.countYesterdayProductionByRegisteredSellers()).thenReturn(10);
-        model.getPhaseScheduler().step(model);
-        //observation 2
-        when(market.getYesterdayLastPrice()).thenReturn(84l);
-        when(market.getYesterdayVolume()).thenReturn(7);
-        when(market.countYesterdayConsumptionByRegisteredBuyers()).thenReturn(2);
-        when(market.countYesterdayProductionByRegisteredSellers()).thenReturn(20);
-        model.getPhaseScheduler().step(model);
-        //observation 3
-        when(market.getYesterdayLastPrice()).thenReturn(81l);
-        when(market.getYesterdayVolume()).thenReturn(8);
-        when(market.countYesterdayConsumptionByRegisteredBuyers()).thenReturn(3);
-        when(market.countYesterdayProductionByRegisteredSellers()).thenReturn(30);
-        model.getPhaseScheduler().step(model);
+        //observations should all go!
+        when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(1d);
+        for(int i=0; i<3; i++)
+        {
+            when(market.getLastObservedDay()).thenReturn(i);
+            model.getPhaseScheduler().step(model);
+        }
+
+        when(market.getObservationsRecordedTheseDays(MarketDataType.CLOSING_PRICE, new int[]{0, 1, 2})).thenReturn(
+                new double[]{
+                        86,84,81
+                });
+        when(market.getObservationsRecordedTheseDays(MarketDataType.VOLUME_TRADED, new int[]{0,1, 2})).thenReturn(
+                new double[]{
+                        6,7,8
+                });
+        when(market.getObservationsRecordedTheseDays(MarketDataType.VOLUME_CONSUMED, new int[]{0,1, 2})).thenReturn(
+                new double[]{
+                        1,2,3
+                });
+        when(market.getObservationsRecordedTheseDays(MarketDataType.VOLUME_PRODUCED, new int[]{0,1, 2})).thenReturn(
+                new double[]{
+                        10,20,30
+                });
 
 
         Assert.assertEquals(3,observer.getNumberOfObservations());
@@ -114,28 +120,27 @@ public class PeriodicMarketObserverTest {
 
 
         //with one observation, it still returns whatever the sales department says
-        when(market.getYesterdayLastPrice()).thenReturn(10l);
-        when(market.getYesterdayVolume()).thenReturn(1);
+        when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(10d);
+        when(market.getLastObservedDay()).thenReturn(0);
+        when(market.getLastObservedDay()).thenReturn(0);
         observer.step(mock(MacroII.class));
-        Assert.assertEquals(observer.getNumberOfObservations(),1);
-        Assert.assertEquals((double)observer.getLastPriceObserved(),10,.01);
-        Assert.assertEquals((double)observer.getLastQuantityTradedObserved(),1,.01);
 
         //with no price the observation is ignored
-        when(market.getYesterdayLastPrice()).thenReturn(-1l);
-        when(market.getYesterdayVolume()).thenReturn(0);
+        when(market.getLastObservedDay()).thenReturn(1);
+        when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(-1d);
         observer.step(mock(MacroII.class));
-        Assert.assertEquals(observer.getNumberOfObservations(),1);
-        Assert.assertEquals((double)observer.getLastPriceObserved(),10,.01);
-        Assert.assertEquals((double)observer.getLastQuantityTradedObserved(),1,.01);
 
         //two observations, everything back to normal!
-        when(market.getYesterdayLastPrice()).thenReturn(10l);
-        when(market.getYesterdayVolume()).thenReturn(1);
+        when(market.getLastObservedDay()).thenReturn(2);
+        when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(10d);
         observer.step(mock(MacroII.class));
-        Assert.assertEquals(observer.getNumberOfObservations(),2);
-        Assert.assertEquals((double)observer.getLastPriceObserved(),10,.01);
-        Assert.assertEquals((double)observer.getLastQuantityTradedObserved(),1,.01);
+
+        Assert.assertArrayEquals(observer.getDaysObserved(),new int[]{0,2});
+
+
+
+
+
     }
 
 }

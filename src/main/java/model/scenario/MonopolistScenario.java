@@ -31,7 +31,7 @@ import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
-import financial.OrderBookMarket;
+import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;

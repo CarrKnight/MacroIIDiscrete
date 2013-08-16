@@ -10,6 +10,7 @@ import agents.EconomicAgent;
 import agents.Person;
 import agents.firm.Firm;
 import com.google.common.base.Preconditions;
+import financial.market.Market;
 import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;

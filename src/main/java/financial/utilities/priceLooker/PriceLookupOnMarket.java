@@ -6,7 +6,7 @@
 
 package financial.utilities.priceLooker;
 
-import financial.Market;
+import financial.market.Market;
 
 import javax.annotation.Nonnull;
 

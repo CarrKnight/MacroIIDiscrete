@@ -9,7 +9,7 @@ package model.utilities.dummies;
 import agents.EconomicAgent;
 import agents.firm.DummyProfitReport;
 import agents.firm.Firm;
-import financial.Market;
+import financial.market.Market;
 import financial.MarketEvents;
 import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;

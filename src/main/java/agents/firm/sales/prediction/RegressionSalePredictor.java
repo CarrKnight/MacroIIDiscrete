@@ -8,7 +8,7 @@ package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
 import com.google.common.base.Preconditions;
-import financial.Market;
+import financial.market.Market;
 import model.MacroII;
 import model.utilities.stats.PeriodicMarketObserver;
 import model.utilities.stats.regression.LinearRegression;
@@ -289,6 +289,14 @@ public class RegressionSalePredictor implements SalesPredictor{
      */
     public Double getLastQuantityConsumedObserved() {
         return observer.getLastQuantityConsumedObserved();
+    }
+
+    public double getLastUntrasformedQuantityTraded() {
+        return observer.getLastUntrasformedQuantityTraded();
+    }
+
+    public double getLastUntrasformedPrice() {
+        return observer.getLastUntrasformedPrice();
     }
 
     @Override

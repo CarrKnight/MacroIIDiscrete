@@ -4,7 +4,7 @@ import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
-import financial.Market;
+import financial.market.Market;
 import financial.utilities.changeLooker.ChangeLookupMAMarket;
 import model.MacroII;
 import model.utilities.ActionOrder;

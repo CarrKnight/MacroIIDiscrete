@@ -8,7 +8,7 @@ package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
 import ec.util.MersenneTwisterFast;
-import financial.Market;
+import financial.market.Market;
 import model.MacroII;
 import org.reflections.Reflections;
 

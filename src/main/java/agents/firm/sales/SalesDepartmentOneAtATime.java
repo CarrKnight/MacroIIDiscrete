@@ -11,7 +11,7 @@ import agents.firm.Firm;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import com.google.common.base.Preconditions;
-import financial.Market;
+import financial.market.Market;
 import financial.utilities.ActionsAllowed;
 import goods.Good;
 import model.MacroII;

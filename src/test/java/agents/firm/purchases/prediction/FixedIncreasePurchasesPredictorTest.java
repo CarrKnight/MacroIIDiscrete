@@ -7,7 +7,7 @@
 package agents.firm.purchases.prediction;
 
 import agents.firm.purchases.PurchasesDepartment;
-import financial.Market;
+import financial.market.Market;
 import goods.GoodType;
 import org.junit.Assert;
 import org.junit.Test;

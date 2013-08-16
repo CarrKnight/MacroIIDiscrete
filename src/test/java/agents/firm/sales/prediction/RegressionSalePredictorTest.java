@@ -7,10 +7,11 @@
 package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
-import financial.Market;
+import financial.market.Market;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
+import model.utilities.stats.MarketDataType;
 import model.utilities.stats.PeriodicMarketObserver;
 import org.junit.Assert;
 import org.junit.Test;
@@ -129,35 +130,55 @@ public class RegressionSalePredictorTest {
     @Test
     public void testExtremes()
     {
-        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1;
+        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1f;
 
         //no observations, should return whatever the sales department says
         Market market = mock(Market.class);
-        MacroII macroII = new MacroII(System.currentTimeMillis());
+        MacroII model = new MacroII(System.currentTimeMillis());
         SalesDepartment department = mock(SalesDepartment.class);
 
-        RegressionSalePredictor predictor = new RegressionSalePredictor(market, macroII);
+
+        //these are the data you were looking for:
+        when(market.getObservationsRecordedTheseDays(MarketDataType.CLOSING_PRICE, new int[]{0})).thenReturn(
+                new double[]{
+                        50
+                });
+        when(market.getObservationsRecordedTheseDays(MarketDataType.VOLUME_TRADED,new int[]{0})).thenReturn(
+                new double[]{
+                        1
+                });
+
+
+        RegressionSalePredictor predictor = new RegressionSalePredictor(market,model );
         when(department.hypotheticalSalePrice()).thenReturn(50l);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000l, 1),50l);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000l, 1), 50l);
 
         //with one observation, it still returns whatever the sales department says
-        when(market.getYesterdayLastPrice()).thenReturn(10l);
-        when(market.getYesterdayVolume()).thenReturn(1);
-        macroII.getPhaseScheduler().step(macroII);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000l, 1),50l);
+        when(market.getLastObservedDay()).thenReturn(0);
+        when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(0d);
+        model.getPhaseScheduler().step(model);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000l, 1), 50l);
 
         //with no volume the observation is ignored
-        when(market.getYesterdayLastPrice()).thenReturn(10l);
-        when(market.getYesterdayVolume()).thenReturn(0);
-        macroII.getPhaseScheduler().step(macroII);
+        when(market.getLastObservedDay()).thenReturn(1);
+        when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(-1d);
+        model.getPhaseScheduler().step(model);
         Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000l, 1),50l);
 
 
-        //two observations, everything back to normal!
-        when(market.getYesterdayLastPrice()).thenReturn(10l);
-        when(market.getYesterdayVolume()).thenReturn(1);
-        macroII.getPhaseScheduler().step(macroII);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000l, 1),10l);
+        //two observations, everything back to normal! (but the slope is 0, so no effect)
+        when(market.getLastObservedDay()).thenReturn(2);
+        when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(1d);
+        when(market.getObservationsRecordedTheseDays(MarketDataType.CLOSING_PRICE, new int[]{0, 2})).thenReturn(
+                new double[]{
+                        50,50
+                });
+        when(market.getObservationsRecordedTheseDays(MarketDataType.VOLUME_CONSUMED, new int[]{0, 2})).thenReturn(
+                new double[]{
+                        1,1
+                });
+        model.getPhaseScheduler().step(model);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 50l, 1),50l);
 
 
     }

@@ -19,7 +19,7 @@ import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import au.com.bytecode.opencsv.CSVWriter;
-import financial.Market;
+import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;

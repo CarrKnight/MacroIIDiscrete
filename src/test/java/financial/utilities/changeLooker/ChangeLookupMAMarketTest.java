@@ -1,6 +1,6 @@
 package financial.utilities.changeLooker;
 
-import financial.Market;
+import financial.market.Market;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import org.junit.Test;

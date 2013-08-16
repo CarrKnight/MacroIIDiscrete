@@ -16,7 +16,7 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentListener;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import financial.BidListener;
-import financial.Market;
+import financial.market.Market;
 import financial.MarketEvents;
 import financial.TradeListener;
 import financial.utilities.Quote;

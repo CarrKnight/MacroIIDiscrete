@@ -7,7 +7,7 @@
 package model.scenario;
 
 import agents.EconomicAgent;
-import financial.Market;
+import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
 import org.reflections.Reflections;

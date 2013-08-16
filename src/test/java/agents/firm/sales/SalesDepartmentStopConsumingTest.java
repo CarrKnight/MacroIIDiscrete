@@ -5,7 +5,7 @@ import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.MarkupFollower;
-import financial.OrderBookMarket;
+import financial.market.OrderBookMarket;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;

@@ -4,11 +4,14 @@
  * See the file "LICENSE" for more information
  */
 
-package financial;
+package financial.market;
 
 import agents.EconomicAgent;
 import agents.firm.Department;
 import com.google.common.base.Preconditions;
+import financial.Bankruptcy;
+import financial.BidListener;
+import financial.MarketEvents;
 import financial.utilities.ActionsAllowed;
 import financial.utilities.HistogramDecoratedPriorityBook;
 import financial.utilities.PurchaseResult;
@@ -150,7 +153,7 @@ public class OrderBookMarket extends Market {
         //tell the GUI!
         if(MacroII.hasGUI())
         {
-          getRecords().event(seller,MarketEvents.SUBMIT_SELL_QUOTE, seller.getModel().getCurrentSimulationTimeInMillis()
+          getRecords().event(seller, MarketEvents.SUBMIT_SELL_QUOTE, seller.getModel().getCurrentSimulationTimeInMillis()
                   ,"price: " + q.getPriceQuoted());
         }
 

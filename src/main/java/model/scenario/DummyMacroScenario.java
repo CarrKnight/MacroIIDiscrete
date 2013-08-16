@@ -22,7 +22,7 @@ import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
-import financial.OrderBookMarket;
+import financial.market.OrderBookMarket;
 import financial.utilities.ShopSetPricePolicy;
 import goods.GoodType;
 import model.MacroII;

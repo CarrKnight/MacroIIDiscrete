@@ -13,7 +13,7 @@ import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.maximizer.WorkforceMaximizer;
 import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
 import ec.util.MersenneTwisterFast;
-import financial.Market;
+import financial.market.Market;
 import model.utilities.DelayException;
 
 import javax.annotation.Nonnull;

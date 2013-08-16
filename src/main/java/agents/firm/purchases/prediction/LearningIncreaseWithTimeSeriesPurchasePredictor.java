@@ -8,7 +8,7 @@ package agents.firm.purchases.prediction;
 
 import agents.firm.purchases.PurchasesDepartment;
 import com.google.common.base.Preconditions;
-import financial.Market;
+import financial.market.Market;
 import model.MacroII;
 import model.utilities.filters.MovingAverage;
 import model.utilities.stats.PeriodicMarketObserver;

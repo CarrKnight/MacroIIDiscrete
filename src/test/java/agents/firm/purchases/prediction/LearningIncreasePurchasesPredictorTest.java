@@ -7,11 +7,12 @@
 package agents.firm.purchases.prediction;
 
 import agents.firm.purchases.PurchasesDepartment;
-import financial.Market;
+import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
+import model.utilities.stats.MarketDataType;
 import model.utilities.stats.PeriodicMarketObserver;
 import org.junit.Assert;
 import org.junit.Test;
@@ -54,17 +55,20 @@ public class LearningIncreasePurchasesPredictorTest
         predictor.setUsingWeights(true);
 
         //observation 1
-        when(market.getYesterdayLastPrice()).thenReturn(86l);
-        when(market.countYesterdayProductionByRegisteredSellers()).thenReturn(8);
-        model.getPhaseScheduler().step(model);
-        //observation 2
-        when(market.getYesterdayLastPrice()).thenReturn(84l);
-        when(market.countYesterdayProductionByRegisteredSellers()).thenReturn(7);
-        model.getPhaseScheduler().step(model);
-        //observation 3
-        when(market.getYesterdayLastPrice()).thenReturn(81l);
-        when(market.countYesterdayProductionByRegisteredSellers()).thenReturn(6);
-        model.getPhaseScheduler().step(model);
+        when(market.getLastObservedDay()).thenReturn(0,1,2);
+        when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(86d,84d,81d);
+        //these are the data you were looking for:
+        when(market.getObservationsRecordedTheseDays(MarketDataType.CLOSING_PRICE,new int[]{0,1,2})).thenReturn(
+                new double[]{
+                   86,84,81
+                });
+        when(market.getObservationsRecordedTheseDays(MarketDataType.VOLUME_PRODUCED,new int[]{0,1,2})).thenReturn(
+                new double[]{
+                        8,7,6
+                });
+
+        for (int i=0; i<3; i++)
+            model.getPhaseScheduler().step(model);
 
 
         //this should regress to p=101.9 -2.6  * q
@@ -106,27 +110,49 @@ public class LearningIncreasePurchasesPredictorTest
         MacroII model = new MacroII(System.currentTimeMillis());
         PurchasesDepartment department = mock(PurchasesDepartment.class);
 
+
+
+        //these are the data you were looking for:
+        when(market.getObservationsRecordedTheseDays(MarketDataType.CLOSING_PRICE,new int[]{0})).thenReturn(
+                new double[]{
+                        50
+                });
+        when(market.getObservationsRecordedTheseDays(MarketDataType.VOLUME_PRODUCED,new int[]{0})).thenReturn(
+                new double[]{
+                        1
+                });
+
+
+
         LearningIncreasePurchasesPredictor predictor = new LearningIncreasePurchasesPredictor(market,model );
         when(department.maxPrice(any(GoodType.class),any(Market.class))).thenReturn(50l);
         Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50l);
 
         //with one observation, it still returns whatever the sales department says
-        when(market.getYesterdayLastPrice()).thenReturn(10l);
-        when(market.getYesterdayVolume()).thenReturn(1);
+        when(market.getLastObservedDay()).thenReturn(0);
+        when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(0d);
         model.getPhaseScheduler().step(model);
         Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50l);
 
-        //with no volume the observation is ignored
-        when(market.getYesterdayLastPrice()).thenReturn(10l);
-        when(market.getYesterdayVolume()).thenReturn(0);
+        //with negative price the observation is ignored
+        when(market.getLastObservedDay()).thenReturn(1);
+        when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(-1d);
         model.getPhaseScheduler().step(model);
         Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50l);
 
 
         //two observations, everything back to normal! (but the slope is 0, so no effect)
-        when(market.getYesterdayLastPrice()).thenReturn(10l);
-        when(market.getYesterdayVolume()).thenReturn(1);
+        when(market.getLastObservedDay()).thenReturn(2);
+        when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(0d);
         model.getPhaseScheduler().step(model);
+        when(market.getObservationsRecordedTheseDays(MarketDataType.CLOSING_PRICE,new int[]{0,2})).thenReturn(
+                new double[]{
+                        50,50
+                });
+        when(market.getObservationsRecordedTheseDays(MarketDataType.VOLUME_PRODUCED,new int[]{0,2})).thenReturn(
+                new double[]{
+                        1,1
+                });
         Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50l);
 
 

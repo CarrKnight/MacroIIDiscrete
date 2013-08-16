@@ -14,9 +14,9 @@ import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import ec.util.MersenneTwisterFast;
-import financial.Market;
-import financial.OrderBookBlindMarket;
-import financial.OrderBookMarket;
+import financial.market.Market;
+import financial.market.OrderBookBlindMarket;
+import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
@@ -220,6 +220,7 @@ public class PurchasesDepartmentTest {
         Firm firm = new Firm(model);
         firm.earn(100);
         Market market = new OrderBookMarket(GoodType.GENERIC);
+        market.start(model);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100,firm,market,
@@ -282,6 +283,7 @@ public class PurchasesDepartmentTest {
         Firm firm = new Firm(model);
         firm.earn(1000);
         Market market = new OrderBookBlindMarket(GoodType.GENERIC);
+        market.start(model);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
@@ -341,6 +343,7 @@ public class PurchasesDepartmentTest {
         Firm firm = new Firm(model);
         firm.earn(1000);
         final Market market = new OrderBookMarket(GoodType.GENERIC);
+        market.start(model);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(2000,firm,market,
@@ -374,6 +377,7 @@ public class PurchasesDepartmentTest {
 
         //now cascade!
         dept.buy();
+
         model.getPhaseScheduler().step(model);
 
 
@@ -615,6 +619,7 @@ public class PurchasesDepartmentTest {
         Firm firm = new Firm(model);
         firm.earn(1000);
         final Market market = new OrderBookMarket(GoodType.GENERIC);
+        market.start(model);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
@@ -653,6 +658,7 @@ public class PurchasesDepartmentTest {
         Firm firm = new Firm(model);
         firm.earn(1000);
         Market market = new OrderBookBlindMarket(GoodType.GENERIC);
+        market.start(model);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
@@ -714,6 +720,7 @@ public class PurchasesDepartmentTest {
         Firm firm = new Firm(model);
         firm.earn(1000);
         final Market market = new OrderBookMarket(GoodType.GENERIC);
+        market.start(model);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(2000,firm,market,

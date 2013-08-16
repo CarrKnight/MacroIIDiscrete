@@ -14,7 +14,7 @@ import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
 import com.google.common.base.Preconditions;
-import financial.OrderBookMarket;
+import financial.market.OrderBookMarket;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;

@@ -9,7 +9,7 @@ package agents.firm.sales;
 import agents.firm.Firm;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
-import financial.Market;
+import financial.market.Market;
 import financial.utilities.ActionsAllowed;
 import goods.Good;
 import model.MacroII;

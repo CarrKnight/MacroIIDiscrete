@@ -3,7 +3,7 @@ package agents.firm.sales.pricing.pid;
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
-import financial.Market;
+import financial.market.Market;
 import goods.Good;
 import model.MacroII;
 import model.utilities.ActionOrder;

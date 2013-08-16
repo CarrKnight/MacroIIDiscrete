@@ -16,8 +16,8 @@ import agents.firm.purchases.inventoryControl.Level;
 import agents.firm.purchases.inventoryControl.SimpleInventoryControl;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import financial.Bankruptcy;
-import financial.Market;
-import financial.OrderBookMarket;
+import financial.market.Market;
+import financial.market.OrderBookMarket;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
@@ -280,6 +280,7 @@ public class SimpleInventoryControlTest {
         assertEquals(f.hasHowMany(GoodType.GENERIC), 0);
         //you could buy 10 but your max price is 80 so you end up buying only 8!
         dept.buy(); //goooooooooo
+        market.start(model);
         model.getPhaseScheduler().step(model);
         assertEquals(f.hasHowMany(GoodType.GENERIC), 8);
 

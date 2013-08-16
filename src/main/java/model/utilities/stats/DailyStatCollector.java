@@ -12,7 +12,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.sun.istack.internal.Nullable;
-import financial.Market;
+import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;

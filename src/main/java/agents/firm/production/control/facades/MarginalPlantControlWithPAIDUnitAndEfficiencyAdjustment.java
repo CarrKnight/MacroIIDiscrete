@@ -16,7 +16,7 @@ import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.Ma
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.Machinery;
 import agents.firm.purchases.inventoryControl.Level;
-import financial.Market;
+import financial.market.Market;
 import goods.Good;
 import goods.GoodType;
 

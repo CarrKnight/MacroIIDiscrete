@@ -4,7 +4,7 @@ import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.pricing.AskPricingStrategy;
-import financial.Market;
+import financial.market.Market;
 import goods.Good;
 import model.MacroII;
 import org.junit.Test;

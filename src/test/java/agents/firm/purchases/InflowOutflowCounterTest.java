@@ -2,8 +2,8 @@ package agents.firm.purchases;
 
 import agents.firm.Firm;
 import agents.firm.purchases.inventoryControl.InventoryControl;
-import financial.Market;
-import financial.OrderBookMarket;
+import financial.market.Market;
+import financial.market.OrderBookMarket;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;

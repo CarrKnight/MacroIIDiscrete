@@ -13,7 +13,7 @@ import agents.Person;
 import agents.firm.Firm;
 import com.sun.javafx.beans.annotations.NonNull;
 import ec.util.MersenneTwisterFast;
-import financial.Market;
+import financial.market.Market;
 import goods.GoodType;
 import model.scenario.Scenario;
 import model.scenario.TestScenario;
@@ -230,6 +230,9 @@ public class MacroII extends SimState{
         //go through all the agents and call their start!
         for(Agent a : agents)
                 a.start(this);
+
+        for(Market m : markets.values())
+                m.start(this);
 
         //schedule weekends for everyone
         scheduleAnotherDay(ActionOrder.DAWN, new Steppable() {
@@ -532,6 +535,9 @@ public class MacroII extends SimState{
      */
     @Override
     public void finish() {
+
+        for(Market m : markets.values())
+            m.turnOff();
 
         markets.clear();
         markets = null;

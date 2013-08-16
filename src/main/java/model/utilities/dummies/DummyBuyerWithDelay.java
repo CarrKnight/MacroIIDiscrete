@@ -7,7 +7,7 @@
 package model.utilities.dummies;
 
 import com.google.common.base.Preconditions;
-import financial.Market;
+import financial.market.Market;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import sim.engine.SimState;

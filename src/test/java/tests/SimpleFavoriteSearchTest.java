@@ -3,7 +3,7 @@ package tests;
 import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.sales.exploration.SimpleFavoriteBuyerSearch;
-import financial.OrderBookMarket;
+import financial.market.OrderBookMarket;
 import financial.utilities.PurchaseResult;
 import goods.GoodType;
 import model.MacroII;

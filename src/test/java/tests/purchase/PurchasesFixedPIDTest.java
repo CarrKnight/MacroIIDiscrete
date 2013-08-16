@@ -5,8 +5,8 @@ import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesFixedPID;
-import financial.Market;
-import financial.OrderBookBlindMarket;
+import financial.market.Market;
+import financial.market.OrderBookBlindMarket;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
@@ -202,6 +202,7 @@ public class PurchasesFixedPIDTest {
         Firm f = new Firm(model);
         f.earn(10000000);
         model.start();
+        market.start(model);
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartmentIntegrated(
                 10000000,f,market,PurchasesFixedPID.class,null,null).getDepartment();    //i'm assuming fixed target is 6
@@ -214,7 +215,7 @@ public class PurchasesFixedPIDTest {
 
         final ArrayList<Quote> quotes = new ArrayList<>(); //here we'll store all the seller quotes
 
-
+        market.start(model);
         for(int  j =0; j<100; j++) //for 50 stinking turns
         {
 

@@ -1,6 +1,6 @@
 package financial.utilities.priceLooker;
 
-import financial.Market;
+import financial.market.Market;
 import static org.junit.Assert.*;import org.junit.Test;
 
 import static org.mockito.Mockito.mock;

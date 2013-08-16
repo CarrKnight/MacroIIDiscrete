@@ -10,7 +10,7 @@ import agents.firm.Firm;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import ec.util.MersenneTwisterFast;
-import financial.Market;
+import financial.market.Market;
 import financial.utilities.ActionsAllowed;
 import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;

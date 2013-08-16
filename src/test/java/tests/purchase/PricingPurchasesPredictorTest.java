@@ -2,8 +2,8 @@ package tests.purchase;
 
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.PricingPurchasesPredictor;
-import financial.Market;
-import financial.OrderBookMarket;
+import financial.market.Market;
+import financial.market.OrderBookMarket;
 import goods.GoodType;
 import org.junit.Test;
 
@@ -50,6 +50,7 @@ public class PricingPurchasesPredictorTest {
     public void fullyDressedTest() throws Exception {
 
         Market market = new OrderBookMarket(GoodType.GENERIC);
+
         PurchasesDepartment dept = MemoryPurchasesPredictorTest.fixedPIDTest(market);
 
         /**********************************************

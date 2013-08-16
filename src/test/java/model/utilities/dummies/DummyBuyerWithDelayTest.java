@@ -7,8 +7,8 @@
 package model.utilities.dummies;
 
 import agents.EconomicAgent;
-import financial.Market;
-import financial.OrderBookMarket;
+import financial.market.Market;
+import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;

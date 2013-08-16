@@ -2,8 +2,8 @@ package tests.purchase;
 
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.MarketPurchasesPredictor;
-import financial.Market;
-import financial.OrderBookBlindMarket;
+import financial.market.Market;
+import financial.market.OrderBookBlindMarket;
 import goods.GoodType;
 import org.junit.Test;
 

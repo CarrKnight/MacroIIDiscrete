@@ -7,7 +7,7 @@
 package agents.firm.sales.exploration;
 
 import agents.EconomicAgent;
-import financial.Market;
+import financial.market.Market;
 import financial.utilities.PurchaseResult;
 
 /**

@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package financial;
+package financial.market;
 
 import agents.EconomicAgent;
 import financial.utilities.Quote;

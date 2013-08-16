@@ -1,9 +1,9 @@
 package tests;
 
 import agents.DummyPerson;
-import financial.DecentralizedMarket;
-import financial.Market;
-import financial.OrderBookMarket;
+import financial.market.DecentralizedMarket;
+import financial.market.Market;
+import financial.market.OrderBookMarket;
 import financial.utilities.ActionsAllowed;
 import financial.utilities.Quote;
 import goods.Good;

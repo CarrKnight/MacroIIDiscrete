@@ -2,8 +2,8 @@ package tests;
 
 import agents.EconomicAgent;
 import agents.Person;
-import financial.Market;
-import financial.OrderBookMarket;
+import financial.market.Market;
+import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;

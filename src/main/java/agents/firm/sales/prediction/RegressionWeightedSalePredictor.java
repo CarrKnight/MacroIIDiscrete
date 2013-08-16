@@ -1,6 +1,6 @@
 package agents.firm.sales.prediction;
 
-import financial.Market;
+import financial.market.Market;
 import model.MacroII;
 import model.utilities.stats.PeriodicMarketObserver;
 

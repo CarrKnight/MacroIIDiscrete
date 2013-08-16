@@ -7,7 +7,7 @@
 package financial.utilities.changeLooker;
 
 import com.google.common.base.Preconditions;
-import financial.Market;
+import financial.market.Market;
 import financial.utilities.priceLooker.PriceLookupOnMarket;
 import model.MacroII;
 import model.utilities.ActionOrder;

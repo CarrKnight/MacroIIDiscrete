@@ -8,7 +8,7 @@ package agents.firm.sales.exploration;
 
 import agents.EconomicAgent;
 import ec.util.MersenneTwisterFast;
-import financial.Market;
+import financial.market.Market;
 import financial.utilities.PurchaseResult;
 import model.utilities.Deactivatable;
 import org.reflections.Reflections;

@@ -6,7 +6,7 @@
 
 package model;
 
-import financial.Market;
+import financial.market.Market;
 import model.scenario.SupplyChainScenario;
 import model.utilities.ActionOrder;
 import sim.engine.SimState;

@@ -6,7 +6,7 @@
 
 package agents.firm.sales.prediction;
 
-import financial.Market;
+import financial.market.Market;
 import model.MacroII;
 import org.apache.commons.collections15.Transformer;
 

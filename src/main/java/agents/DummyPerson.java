@@ -12,7 +12,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import financial.Bankruptcy;
-import financial.Market;
+import financial.market.Market;
 import financial.utilities.ActionsAllowed;
 import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;

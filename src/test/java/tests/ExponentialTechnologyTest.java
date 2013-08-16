@@ -8,7 +8,7 @@ import agents.firm.production.technology.CRSExponentialMachinery;
 import agents.firm.production.technology.DRSExponentialMachinery;
 import agents.firm.production.technology.ExponentialMachinery;
 import agents.firm.production.technology.IRSExponentialMachinery;
-import financial.Market;
+import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
 import org.junit.Before;

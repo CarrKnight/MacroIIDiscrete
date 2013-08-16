@@ -9,7 +9,7 @@ package agents.firm.purchases.prediction;
 import agents.firm.purchases.PurchasesDepartment;
 import au.com.bytecode.opencsv.CSVReader;
 import com.google.common.primitives.Doubles;
-import financial.Market;
+import financial.market.Market;
 import goods.GoodType;
 import model.utilities.stats.PeriodicMarketObserver;
 import org.junit.Assert;
@@ -107,6 +107,11 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictorTest {
                 7.0, 7.0, 7.0, 7.0,
                 7.0, 8.0, 8.0, 8.0, 8.0, 8.0, 9.0, 9.0, 9.0, 9.0, 9.0, 9.0, 9.0, 10.0, 10.0, 10.0
         };
+        double[] gap = new double[production.length];
+        for(int i=0; i< gap.length; i++)
+        {
+            gap[i] = 0;
+        }
 
 
 
@@ -114,6 +119,8 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictorTest {
         PeriodicMarketObserver observer = mock(PeriodicMarketObserver.class);
         when(observer.getQuantitiesProducedObservedAsArray()).thenReturn(production);
         when(observer.getPricesObservedAsArray()).thenReturn(prices);
+        when(observer.getDemandGapsAsArray()).thenReturn(gap);
+        when(observer.getSupplyGapsAsArray()).thenReturn(gap);
         when(observer.getNumberOfObservations()).thenReturn(prices.length);
 
         //create the predictor

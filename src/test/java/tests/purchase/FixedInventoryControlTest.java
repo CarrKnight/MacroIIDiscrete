@@ -11,8 +11,8 @@ import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import financial.Bankruptcy;
-import financial.Market;
-import financial.OrderBookMarket;
+import financial.market.Market;
+import financial.market.OrderBookMarket;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
@@ -169,6 +169,7 @@ public class FixedInventoryControlTest {
         for(int k=0; k<100; k++){ //do this test 100 times because it used to fail only every now and then
             setup();
             Market.TESTING_MODE = true;
+            market.start(model);
 
 
             Firm f = new Firm(model); f.earn(1000);

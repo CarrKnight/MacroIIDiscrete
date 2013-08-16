@@ -10,7 +10,7 @@ import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.sales.SaleResult;
 import agents.firm.sales.SalesDepartment;
-import financial.Market;
+import financial.market.Market;
 import financial.utilities.Quote;
 import goods.Good;
 

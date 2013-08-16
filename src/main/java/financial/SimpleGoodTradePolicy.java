@@ -7,6 +7,7 @@
 package financial;
 
 import agents.EconomicAgent;
+import financial.market.Market;
 import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;

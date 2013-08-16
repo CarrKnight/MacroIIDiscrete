@@ -8,7 +8,7 @@ package agents.firm.sales.exploration;
 
 import agents.EconomicAgent;
 import com.sun.istack.internal.Nullable;
-import financial.Market;
+import financial.market.Market;
 import financial.utilities.PurchaseResult;
 
 /**

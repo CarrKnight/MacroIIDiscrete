@@ -8,7 +8,7 @@ package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
 import com.google.common.base.Preconditions;
-import financial.Market;
+import financial.market.Market;
 import model.MacroII;
 
 /**

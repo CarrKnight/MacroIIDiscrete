@@ -9,8 +9,8 @@ import agents.firm.production.technology.IRSExponentialMachinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesSimplePID;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
-import financial.Market;
-import financial.OrderBookBlindMarket;
+import financial.market.Market;
+import financial.market.OrderBookBlindMarket;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
@@ -279,7 +279,7 @@ public class PurchasesSimplePIDTest {
         },10);
 
 
-
+        market.start(model);
         do
             if (!model.schedule.step(model)) break;
         while(model.schedule.getSteps() < 6000);

@@ -8,7 +8,7 @@ package agents.firm.sales.pricing.pid;
 
 import agents.firm.sales.SalesDepartmentListener;
 import financial.BidListener;
-import financial.Market;
+import financial.market.Market;
 import financial.TradeListener;
 
 /**

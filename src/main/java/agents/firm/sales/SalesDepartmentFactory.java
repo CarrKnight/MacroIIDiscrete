@@ -11,7 +11,7 @@ import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
-import financial.Market;
+import financial.market.Market;
 import goods.GoodType;
 
 import javax.annotation.Nonnull;

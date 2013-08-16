@@ -11,7 +11,7 @@ import agents.firm.DailyProductionAndConsumptionCounter;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.Bankruptcy;
-import financial.Market;
+import financial.market.Market;
 import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;

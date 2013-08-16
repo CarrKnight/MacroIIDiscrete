@@ -25,7 +25,7 @@ import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
-import financial.Market;
+import financial.market.Market;
 import financial.MarketEvents;
 import goods.Good;
 import goods.GoodType;

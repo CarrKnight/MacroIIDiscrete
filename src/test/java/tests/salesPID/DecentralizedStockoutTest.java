@@ -10,9 +10,9 @@ import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.DecentralizedStockout;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import agents.firm.sales.pricing.pid.StockoutEstimator;
-import financial.DecentralizedMarket;
-import financial.Market;
-import financial.OrderBookBlindMarket;
+import financial.market.DecentralizedMarket;
+import financial.market.Market;
+import financial.market.OrderBookBlindMarket;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
@@ -327,6 +327,8 @@ public class DecentralizedStockoutTest {
         //make sure the PID has scheduled itself
         Field f = SalesDepartment.class.getDeclaredField("askPricingStrategy"); f.setAccessible(true);
         SimpleFlowSellerPID pid = (SimpleFlowSellerPID) f.get(dept);
+
+        market.start(model);
 
         //okay, keep stepping it for 100 times
         for(int j=0; j<100; j++)
