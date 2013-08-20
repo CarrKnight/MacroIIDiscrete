@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package model.utilities.stats;
+package model.utilities.stats.collectors;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Preconditions;
@@ -16,6 +16,7 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
 import model.utilities.scheduler.Priority;
+import model.utilities.stats.collectors.enums.MarketDataType;
 import org.apache.commons.collections15.Transformer;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -130,17 +131,17 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
         else
         {
             assert dailyProbabilityOfObserving == 1;
-            macroII.scheduleSoon(ActionOrder.CLEANUP,this,Priority.AFTER_STANDARD);
+            macroII.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING,this,Priority.AFTER_STANDARD);
         }
     }
 
     private void reschedule(MacroII macroII) {
 
         if(!isExact)
-            macroII.scheduleAnotherDayWithFixedProbability(ActionOrder.CLEANUP, this, dailyProbabilityOfObserving,
+            macroII.scheduleAnotherDayWithFixedProbability(ActionOrder.CLEANUP_DATA_GATHERING, this, dailyProbabilityOfObserving,
                     Priority.AFTER_STANDARD);
         else
-            macroII.scheduleAnotherDay(ActionOrder.CLEANUP, this, Math.max(1,Math.round(1f/dailyProbabilityOfObserving)),
+            macroII.scheduleAnotherDay(ActionOrder.CLEANUP_DATA_GATHERING, this, Math.max(1,Math.round(1f/dailyProbabilityOfObserving)),
                     Priority.AFTER_STANDARD);
 
     }

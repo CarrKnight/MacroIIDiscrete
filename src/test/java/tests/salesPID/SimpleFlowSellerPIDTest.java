@@ -177,87 +177,92 @@ public class SimpleFlowSellerPIDTest {
     public void scenario3() throws IllegalAccessException   //now it's 2 sellers, each with 2 goods to sell each
     {
 
-        Market.TESTING_MODE = true;
-        System.out.println("-------------------------------------------------------------------------------------");
-        System.out.println("SimpleFlowSeller scenario3");
+        for(int k=0; k< 25; k++) //this used to fail a lot
+        {
 
-        MacroII model = new MacroII(1l);
-        OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
+            Market.TESTING_MODE = true;
+            System.out.println("-------------------------------------------------------------------------------------");
+            System.out.println("SimpleFlowSeller scenario3");
 
-        Firm firm1 = new Firm(model);
-        SalesDepartment dept1 = SalesDepartmentFactory.incompleteSalesDepartment(firm1, market, new SimpleBuyerSearch(market, firm1), new SimpleSellerSearch(market, firm1), agents.firm.sales.SalesDepartmentAllAtOnce.class);
-        SimpleFlowSellerPID strategy1 = new SimpleFlowSellerPID(dept1);
-        dept1.setAskPricingStrategy(strategy1);
-        firm1.registerSaleDepartment(dept1,GoodType.GENERIC);
+            MacroII model = new MacroII(1l);
+            OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
 
-
-        Firm firm2 = new Firm(model);
-        SalesDepartment dept2 = SalesDepartmentFactory.incompleteSalesDepartment(firm2, market, new SimpleBuyerSearch(market, firm2), new SimpleSellerSearch(market, firm2), agents.firm.sales.SalesDepartmentAllAtOnce.class);
-        SimpleFlowSellerPID strategy2 = new SimpleFlowSellerPID(dept2);
-        dept2.setAskPricingStrategy(strategy2);
-        firm2.registerSaleDepartment(dept2,GoodType.GENERIC);
+            Firm firm1 = new Firm(model);
+            SalesDepartment dept1 = SalesDepartmentFactory.incompleteSalesDepartment(firm1, market, new SimpleBuyerSearch(market, firm1), new SimpleSellerSearch(market, firm1), agents.firm.sales.SalesDepartmentAllAtOnce.class);
+            SimpleFlowSellerPID strategy1 = new SimpleFlowSellerPID(dept1);
+            dept1.setAskPricingStrategy(strategy1);
+            firm1.registerSaleDepartment(dept1,GoodType.GENERIC);
 
 
-
-
-
-        List<Quote> quotes =new LinkedList<>();
-
-        for(int j=0;j<100;j++){ //do 100 times!
+            Firm firm2 = new Firm(model);
+            SalesDepartment dept2 = SalesDepartmentFactory.incompleteSalesDepartment(firm2, market, new SimpleBuyerSearch(market, firm2), new SimpleSellerSearch(market, firm2), agents.firm.sales.SalesDepartmentAllAtOnce.class);
+            SimpleFlowSellerPID strategy2 = new SimpleFlowSellerPID(dept2);
+            dept2.setAskPricingStrategy(strategy2);
+            firm2.registerSaleDepartment(dept2,GoodType.GENERIC);
 
 
 
-            //10 sellers
-            //1 buyer
-            for(int i=1; i<11; i++)
-            {
-                DummyBuyer buyer = new DummyBuyer(model,i*10,market);
-                market.registerBuyer(buyer);
-                buyer.earn(1000l);
-                Quote q = market.submitBuyQuote(buyer,i*10);
-                quotes.add(q);
+
+
+            List<Quote> quotes =new LinkedList<>();
+
+            for(int j=0;j<100;j++){ //do 100 times!
+
+
+
+                //10 sellers
+                //1 buyer
+                for(int i=1; i<11; i++)
+                {
+                    DummyBuyer buyer = new DummyBuyer(model,i*10,market);
+                    market.registerBuyer(buyer);
+                    buyer.earn(1000l);
+                    Quote q = market.submitBuyQuote(buyer,i*10);
+                    quotes.add(q);
+                }
+
+                //sell 2 goods!
+                for(int i=0; i<2; i++){
+                    Good good = new Good(GoodType.GENERIC,firm1,10l);
+                    firm1.receive(good,null);
+                    dept1.sellThis(good);
+                }
+                //sell 2 goods!
+                for(int i=0; i<2; i++){
+                    Good good = new Good(GoodType.GENERIC,firm2,10l);
+                    firm2.receive(good,null);
+                    dept2.sellThis(good);
+                }
+
+                //          model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy1);
+                //         model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy2);
+
+                model.getPhaseScheduler().step(model);
+
+                System.out.println("At time: " +j +" seller1 price :" + strategy1.getTargetPrice() + " ---  seller2 price :" + strategy2.getTargetPrice());
+                if(j<99)
+                    for(Quote q : quotes)
+                        try{
+                            market.removeBuyQuote(q);
+                        }
+                        catch (IllegalArgumentException ignored){}
+
+                System.out.println("At time: " +j +" seller1 price :" + strategy1.getTargetPrice() + " ---  seller2 price :" + strategy2.getTargetPrice());
+
             }
 
-            //sell 2 goods!
-            for(int i=0; i<2; i++){
-                Good good = new Good(GoodType.GENERIC,firm1,10l);
-                firm1.receive(good,null);
-                dept1.sellThis(good);
-            }
-            //sell 2 goods!
-            for(int i=0; i<2; i++){
-                Good good = new Good(GoodType.GENERIC,firm2,10l);
-                firm2.receive(good,null);
-                dept2.sellThis(good);
-            }
 
-            model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy1);
-            model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy2);
+            //this is not necessarilly true because of the order with which things are sold
+            assertEquals(market.getBestBuyPrice(), 60l);
+            assertTrue(strategy1.getTargetPrice() > 60 && strategy1.getTargetPrice() <=75);
+            assertTrue(strategy2.getTargetPrice() > 60 && strategy2.getTargetPrice() <=75);
 
-            model.getPhaseScheduler().step(model);
 
-            System.out.println("At time: " +j +" seller1 price :" + strategy1.getTargetPrice() + " ---  seller2 price :" + strategy2.getTargetPrice());
-            if(j<99)
-                for(Quote q : quotes)
-                    try{
-                        market.removeBuyQuote(q);
-                    }
-                    catch (IllegalArgumentException ignored){}
 
+
+
+            System.out.println("-------------------------------------------------------------------------------------");
         }
-
-
-        //this is not necessarilly true because of the order with which things are sold
-        assertEquals(market.getBestBuyPrice(), 60l);
-        assertTrue(strategy1.getTargetPrice() >= 60 && strategy1.getTargetPrice() <=75);
-        assertTrue(strategy2.getTargetPrice() >= 60 && strategy2.getTargetPrice() <=75);
-
-
-
-
-
-        System.out.println("-------------------------------------------------------------------------------------");
-
     }
 
 

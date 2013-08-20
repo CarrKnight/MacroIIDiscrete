@@ -138,7 +138,7 @@ public class MemoryPurchasesPredictorTest {
                     System.out.println("TRADE INV:" + f.hasHowMany(GoodType.GENERIC));
                 }});
 
-            model.scheduleSoon(ActionOrder.CLEANUP,new Steppable() {
+            model.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING,new Steppable() {
                 @Override
                 public void step(SimState state) {
 

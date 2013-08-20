@@ -97,7 +97,7 @@ public class PurchasesWeeklyPIDTest {
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
             int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
-            //System.out.println(currentInventory + " ---> " + pidPrice);
+            //System.out.println(getCurrentInventory + " ---> " + pidPrice);
             assertTrue((currentInventory <= 6 && pidPrice > oldPrice) ||
                     (currentInventory >= 6 && pidPrice < oldPrice) ||
                     (currentInventory == 6 && pidPrice == oldPrice));
@@ -155,7 +155,7 @@ public class PurchasesWeeklyPIDTest {
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
             int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
-            // System.out.println(currentInventory + " ---> " + pidPrice);
+            // System.out.println(getCurrentInventory + " ---> " + pidPrice);
             assertTrue((currentInventory <= 6 && pidPrice > oldPrice) ||
                     (currentInventory >= 6 && pidPrice < oldPrice) ||
                     (currentInventory == 6 && pidPrice == oldPrice));
@@ -212,7 +212,7 @@ public class PurchasesWeeklyPIDTest {
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
             int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
-            // System.out.println(currentInventory + " ---> " + pidPrice);
+            // System.out.println(getCurrentInventory + " ---> " + pidPrice);
             assertTrue((currentInventory <= 6 && pidPrice > oldPrice) ||
                     (currentInventory >= 6 && pidPrice < oldPrice) ||
                     (currentInventory == 6 && pidPrice == oldPrice));
@@ -228,7 +228,7 @@ public class PurchasesWeeklyPIDTest {
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
             int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
-            //   System.out.println(currentInventory + " ****> " + pidPrice);
+            //   System.out.println(getCurrentInventory + " ****> " + pidPrice);
             assertTrue((currentInventory <= 6 && pidPrice > oldPrice) ||
                     (currentInventory >= 6 && pidPrice < oldPrice) ||
                     (currentInventory == 6 && pidPrice == oldPrice));

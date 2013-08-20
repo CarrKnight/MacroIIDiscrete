@@ -23,8 +23,8 @@ import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.stats.DailyStatCollector;
-import model.utilities.stats.ProducersStatCollector;
+import model.utilities.stats.collectors.DailyStatCollector;
+import model.utilities.stats.collectors.ProducersStatCollector;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -63,12 +63,12 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
         {
             //make beef a monopolist
             setNumberOfBeefProducers(1);
-            setNumberOfFoodProducers(5);
+            setNumberOfFoodProducers(10);
         }
         else
         {
             assert monopolistGood.equals(GoodType.FOOD);
-            setNumberOfBeefProducers(5);
+            setNumberOfBeefProducers(10);
             setNumberOfFoodProducers(1);
 
         }
@@ -159,7 +159,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
         try {
             final CSVWriter writer2 = new CSVWriter(new FileWriter("runs/supplychai/forcedmonopolistTestOfferPricesWithCompetition.csv"));
             writer2.writeNext(new String[]{"buyer offer price","target","filtered Outflow"});
-            macroII.scheduleSoon(ActionOrder.CLEANUP, new Steppable() {
+            macroII.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING, new Steppable() {
                 @Override
                 public void step(SimState state) {
                     try {
@@ -168,7 +168,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
                                 String.valueOf(scenario1.strategy2.getTarget()),
                                 String.valueOf(scenario1.strategy2.getFilteredOutflow())});
                         writer2.flush();
-                        ((MacroII) state).scheduleTomorrow(ActionOrder.CLEANUP, this);
+                        ((MacroII) state).scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
                     } catch (IllegalAccessException | IOException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }

@@ -129,11 +129,11 @@ public class SimpleInventoryControlTest {
 
         //assuming target inventory is 6~~
 
-        when(dept.currentInventory()).thenReturn(1);
+        when(dept.getCurrentInventory()).thenReturn(1);
         assertEquals(dept.rateCurrentLevel(), Level.DANGER);
-        when(dept.currentInventory()).thenReturn(10);
+        when(dept.getCurrentInventory()).thenReturn(10);
         assertEquals(dept.rateCurrentLevel(), Level.BARELY);
-        when(dept.currentInventory()).thenReturn(5);
+        when(dept.getCurrentInventory()).thenReturn(5);
         assertEquals(dept.rateCurrentLevel(), Level.DANGER);
 
     }
@@ -389,17 +389,17 @@ public class SimpleInventoryControlTest {
 
         //assuming target inventory is 6~~
 
-        when(dept.currentInventory()).thenReturn(1);
+        when(dept.getCurrentInventory()).thenReturn(1);
         assertEquals(-11,dept.estimateDemandGap());
-        when(dept.currentInventory()).thenReturn(10);
+        when(dept.getCurrentInventory()).thenReturn(10);
         assertEquals(-2,dept.estimateDemandGap());
-        when(dept.currentInventory()).thenReturn(5);
+        when(dept.getCurrentInventory()).thenReturn(5);
         assertEquals(-7,dept.estimateDemandGap());
-        when(dept.currentInventory()).thenReturn(12);
+        when(dept.getCurrentInventory()).thenReturn(12);
         assertEquals(0,dept.estimateDemandGap());
-        when(dept.currentInventory()).thenReturn(24);
+        when(dept.getCurrentInventory()).thenReturn(24);
         assertEquals(6,dept.estimateDemandGap());
-        when(dept.currentInventory()).thenReturn(25);
+        when(dept.getCurrentInventory()).thenReturn(25);
         assertEquals(7,dept.estimateDemandGap());
 
     }

@@ -50,7 +50,7 @@ public class MacroII extends SimState{
     /**
      * Add more diagnostics
      */
-    final public static boolean SAFE_MODE = true;
+    final public static boolean SAFE_MODE = false;
 
 
     public MacroII(long seed) {

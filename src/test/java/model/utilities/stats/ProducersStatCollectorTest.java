@@ -9,6 +9,7 @@ import financial.market.OrderBookMarket;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.stats.collectors.ProducersStatCollector;
 import org.junit.Test;
 
 import java.util.LinkedHashSet;
@@ -56,7 +57,7 @@ public class ProducersStatCollectorTest
                 prices,quantities);
         collector.start();
         //it should have scheduled itself already
-        verify(macroII).scheduleSoon(ActionOrder.CLEANUP,collector);
+        verify(macroII).scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING,collector);
 
         //DAY 1: (write header and first observation)
         when(firm1.hypotheticalSellPrice(GoodType.GENERIC)).thenReturn(10l);

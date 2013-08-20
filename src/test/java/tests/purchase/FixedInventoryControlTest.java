@@ -244,26 +244,26 @@ public class FixedInventoryControlTest {
         FixedInventoryControl control = new FixedInventoryControl(department,10);
         control.setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(2f);
 
-        when(department.currentInventory()).thenReturn(0);
+        when(department.getCurrentInventory()).thenReturn(0);
         Assert.assertEquals(-10,control.estimateDemandGap());
 
-        when(department.currentInventory()).thenReturn(5);
+        when(department.getCurrentInventory()).thenReturn(5);
         Assert.assertEquals(-5,control.estimateDemandGap());
 
 
-        when(department.currentInventory()).thenReturn(9);
+        when(department.getCurrentInventory()).thenReturn(9);
         Assert.assertEquals(-1,control.estimateDemandGap());
 
-        when(department.currentInventory()).thenReturn(10);
+        when(department.getCurrentInventory()).thenReturn(10);
         Assert.assertEquals(0,control.estimateDemandGap());
 
-        when(department.currentInventory()).thenReturn(15);
+        when(department.getCurrentInventory()).thenReturn(15);
         Assert.assertEquals(0,control.estimateDemandGap());
 
-        when(department.currentInventory()).thenReturn(20);
+        when(department.getCurrentInventory()).thenReturn(20);
         Assert.assertEquals(0,control.estimateDemandGap());
 
-        when(department.currentInventory()).thenReturn(25);
+        when(department.getCurrentInventory()).thenReturn(25);
         Assert.assertEquals(5, control.estimateDemandGap());
 
 

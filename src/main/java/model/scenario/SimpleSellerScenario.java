@@ -23,7 +23,7 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.stats.DailyStatCollector;
+import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.dummies.DummyBuyer;
 import model.utilities.dummies.DummyBuyerWithDelay;
 import sim.engine.SimState;

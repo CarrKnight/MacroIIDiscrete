@@ -52,7 +52,7 @@ public class FixedInventoryControl extends AbstractInventoryControl {
     @Override
     protected Level rateInventory() {
         //how much do we have?
-        int currentLevel = getPurchasesDepartment().currentInventory();
+        int currentLevel = getPurchasesDepartment().getCurrentInventory();
         return rateInventory(currentLevel);
 
     }
@@ -167,7 +167,7 @@ public class FixedInventoryControl extends AbstractInventoryControl {
 
     /**
      * This is somewhat similar to rate current level. It estimates the excess (or shortage)of goods purchased. It is basically
-     * currentInventory-AcceptableInventory
+     * getCurrentInventory-AcceptableInventory
      *
      * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
      */
@@ -177,7 +177,7 @@ public class FixedInventoryControl extends AbstractInventoryControl {
             return  0;
         else
         {
-            int currentInventory = getPurchasesDepartment().currentInventory();
+            int currentInventory = getPurchasesDepartment().getCurrentInventory();
             if( currentInventory< inventoryTarget)
                 return  currentInventory-inventoryTarget;
             else

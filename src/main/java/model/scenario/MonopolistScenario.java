@@ -39,7 +39,7 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.dummies.DummyBuyer;
-import model.utilities.stats.DailyStatCollector;
+import model.utilities.stats.collectors.DailyStatCollector;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 

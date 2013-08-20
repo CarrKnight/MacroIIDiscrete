@@ -15,8 +15,8 @@ import model.MacroII;
 import model.scenario.MonopolistScenario;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
-import model.utilities.stats.DailyStatCollector;
-import model.utilities.stats.PeriodicMarketObserver;
+import model.utilities.stats.collectors.DailyStatCollector;
+import model.utilities.stats.collectors.PeriodicMarketObserver;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 

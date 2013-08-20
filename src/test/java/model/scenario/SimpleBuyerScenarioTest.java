@@ -38,7 +38,7 @@ public class SimpleBuyerScenarioTest
     @Test
     public void rightPriceAndQuantityTestWithPIDControllerFixed()
     {
-        for(int i=0; i<5; i++)
+        for(int i=0; i<50; i++)
         {
             //to sell 4 you need to price them between 60 and 51 everytime
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -57,10 +57,11 @@ public class SimpleBuyerScenarioTest
 
 
             //price should be any between 60 and 51
-            assertTrue(macroII.getMarket(GoodType.GENERIC).getLastPrice() < 140);
-            assertTrue(macroII.getMarket(GoodType.GENERIC).getLastPrice() >= 130);
+            assertTrue(String.valueOf(macroII.getMarket(GoodType.GENERIC).getLastPrice()),macroII.getMarket(GoodType.GENERIC).getLastPrice() < 140);
+            assertTrue(String.valueOf(macroII.getMarket(GoodType.GENERIC).getLastPrice()),macroII.getMarket(GoodType.GENERIC).getLastPrice() >= 130);
             assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(), 4 * 7); //every day 4 goods should have been traded
-            assertEquals(scenario.getDepartment().getFirm().hasHowMany(GoodType.GENERIC),20);
+            assertEquals(Integer.toString(scenario.getDepartment().getFirm().hasHowMany(GoodType.GENERIC)),
+                    scenario.getDepartment().getFirm().hasHowMany(GoodType.GENERIC),20);
 
         }
 
@@ -70,7 +71,7 @@ public class SimpleBuyerScenarioTest
     @Test
     public void rightPriceAndQuantityTestWithCascadeControllerFixed()
     {
-        for(int i=0; i<5; i++)
+        for(int i=0; i<50; i++)
         {
             //to sell 4 you need to price them between 60 and 51 everytime
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -88,8 +89,8 @@ public class SimpleBuyerScenarioTest
 
 
             //price should be any between 60 and 51
-            assertTrue(macroII.getMarket(GoodType.GENERIC).getLastPrice() < 140);
-            assertTrue(macroII.getMarket(GoodType.GENERIC).getLastPrice() >= 130);
+            assertTrue(String.valueOf(macroII.getMarket(GoodType.GENERIC).getLastPrice()),macroII.getMarket(GoodType.GENERIC).getLastPrice() < 140);
+            assertTrue(String.valueOf(macroII.getMarket(GoodType.GENERIC).getLastPrice()),macroII.getMarket(GoodType.GENERIC).getLastPrice() >= 130);
             assertEquals(macroII.getMarket(GoodType.GENERIC).getYesterdayVolume(), 4); //every day 4 goods should have been traded
             assertEquals(scenario.getDepartment().getFirm().hasHowMany(GoodType.GENERIC),20);
 

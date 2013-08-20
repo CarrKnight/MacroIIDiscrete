@@ -2,7 +2,7 @@ package agents.firm.sales.prediction;
 
 import financial.market.Market;
 import model.MacroII;
-import model.utilities.stats.PeriodicMarketObserver;
+import model.utilities.stats.collectors.PeriodicMarketObserver;
 
 /**
  * <h4>Description</h4>

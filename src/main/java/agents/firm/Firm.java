@@ -1091,6 +1091,25 @@ public class Firm extends EconomicAgent {
 
     }
 
+
+    /**
+     * Count all the workers at plants that consume (as input) a specific output
+     * @param goodType the type of output
+     * @return the total number of workers
+     */
+    public int getNumberOfWorkersWhoConsumeThisGood(GoodType goodType)
+    {
+        int totalWorkers = 0;
+        for(Plant p : plants){
+            Integer inputProduced = p.getBlueprint().getInputs().get(goodType);
+            if(inputProduced != null && inputProduced > 0)
+                totalWorkers += p.workerSize();
+        }
+        return totalWorkers;
+
+
+    }
+
     /**
      * Checks if at least one plant that was producing a specific good had its production halted today because of missing inputs
      * @param goodType the type of good the plant should be producing

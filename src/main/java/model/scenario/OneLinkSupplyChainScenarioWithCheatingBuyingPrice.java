@@ -6,8 +6,6 @@ import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.Ma
 import agents.firm.purchases.FactoryProducedPurchaseDepartment;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.inventoryControl.FixedInventoryControl;
-import agents.firm.purchases.prediction.LearningIncreaseWithTimeSeriesPurchasePredictor;
-import agents.firm.purchases.prediction.PurchasesPredictor;
 import agents.firm.purchases.pricing.CheaterPricing;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
@@ -16,8 +14,8 @@ import au.com.bytecode.opencsv.CSVWriter;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.stats.DailyStatCollector;
-import model.utilities.stats.ProducersStatCollector;
+import model.utilities.stats.collectors.DailyStatCollector;
+import model.utilities.stats.collectors.ProducersStatCollector;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -72,7 +70,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
 
     public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
 
-        department.setPredictor(PurchasesPredictor.Factory.newPurchasesPredictor(LearningIncreaseWithTimeSeriesPurchasePredictor.class,department));
+   //     department.setPredictor(PurchasesPredictor.Factory.newPurchasesPredictor(LearningIncreaseWithTimeSeriesPurchasePredictor.class,department));
 
     }
 
@@ -123,7 +121,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
         try {
             final CSVWriter writer2 = new CSVWriter(new FileWriter("runs/supplychai/cheaterOfferPricesWithCompetition.csv"));
             writer2.writeNext(new String[]{"buyer offer price","target","filtered Outflow"});
-            macroII.scheduleSoon(ActionOrder.CLEANUP, new Steppable() {
+            macroII.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING, new Steppable() {
                 @Override
                 public void step(SimState state) {
                     try {
@@ -132,7 +130,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
                                 String.valueOf(scenario1.strategy2.getTarget()),
                                 String.valueOf(scenario1.strategy2.getFilteredOutflow())});
                         writer2.flush();
-                        ((MacroII) state).scheduleTomorrow(ActionOrder.CLEANUP, this);
+                        ((MacroII) state).scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
                     } catch (IllegalAccessException | IOException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }

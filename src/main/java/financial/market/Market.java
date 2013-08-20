@@ -17,8 +17,8 @@ import lifelines.data.DataManager;
 import lifelines.data.GlobalEventData;
 import model.MacroII;
 import model.utilities.ExchangeNetwork;
-import model.utilities.stats.MarketData;
-import model.utilities.stats.MarketDataType;
+import model.utilities.stats.collectors.MarketData;
+import model.utilities.stats.collectors.enums.MarketDataType;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -78,6 +78,11 @@ public abstract class Market{
      * last price sold
      */
     protected long lastPrice = -1;
+
+    protected float todaySumOfClosingPrices = 0;
+
+
+    protected float yesterdaySumOfClosingPrices = 0;
 
     /**
      * last filled bid
@@ -392,6 +397,7 @@ public abstract class Market{
 
             //record
             lastPrice = price;
+            todaySumOfClosingPrices +=price;
             lastFilledAsk = sellerQuote.getPriceQuoted();
             lastFilledBid = buyerQuote.getPriceQuoted();
             weeklyVolume++;
@@ -865,8 +871,10 @@ public abstract class Market{
     public void collectDayStatistics()
     {
         yesterdayLastPrice = lastPrice;
+        yesterdaySumOfClosingPrices = todaySumOfClosingPrices;
         yesterdayVolume = todayVolume;
         todayVolume=0;
+        todaySumOfClosingPrices = 0;
 
 
     }
@@ -934,6 +942,12 @@ public abstract class Market{
         for(EconomicAgent a : buyers)
             sum += a.getYesterdayConsumption(getGoodType());
         return sum;
+    }
+
+
+    public float getTodayAveragePrice()
+    {
+        return todaySumOfClosingPrices /((float) todayVolume);
     }
 
     public int sumDemandGaps(){

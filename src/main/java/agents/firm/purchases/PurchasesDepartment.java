@@ -12,7 +12,7 @@ import agents.firm.Department;
 import agents.firm.Firm;
 import agents.firm.purchases.inventoryControl.InventoryControl;
 import agents.firm.purchases.inventoryControl.Level;
-import agents.firm.purchases.prediction.LearningIncreaseWithTimeSeriesPurchasePredictor;
+import agents.firm.purchases.prediction.LinearExtrapolatorPurchasePredictor;
 import agents.firm.purchases.prediction.PurchasesPredictor;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.purchases.pricing.decorators.MaximumBidPriceDecorator;
@@ -20,8 +20,8 @@ import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
-import financial.market.Market;
 import financial.MarketEvents;
+import financial.market.Market;
 import financial.utilities.ActionsAllowed;
 import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
@@ -32,6 +32,8 @@ import model.utilities.ActionOrder;
 import model.utilities.Control;
 import model.utilities.Deactivatable;
 import model.utilities.scheduler.Priority;
+import model.utilities.stats.collectors.PurchaseDepartmentData;
+import model.utilities.stats.collectors.enums.PurchasesDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -56,8 +58,8 @@ import javax.annotation.Nullable;
 public class PurchasesDepartment implements Deactivatable, Department {
 
 
-    public static Class<LearningIncreaseWithTimeSeriesPurchasePredictor> defaultPurchasePredictor =
-            LearningIncreaseWithTimeSeriesPurchasePredictor.class;
+    public static Class<? extends PurchasesPredictor> defaultPurchasePredictor =
+            LinearExtrapolatorPurchasePredictor.class;
     /**
      * The weekly budget given by the firm to this purchase department to carry out its tasks
      */
@@ -144,6 +146,8 @@ public class PurchasesDepartment implements Deactivatable, Department {
     private long lastClosingPrice = -1;
 
 
+    private final PurchaseDepartmentData purchasesData;
+
     /**
      * The predictor for next purchases. It is set in the constructor but that can be changed
      */
@@ -178,6 +182,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
 
         counter = new InflowOutflowCounter(model,firm,goodType);
+        purchasesData = new PurchaseDepartmentData();
 
 
 
@@ -904,6 +909,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
         opponentSearch.turnOff(); //turn off buyer search
         predictor.turnOff(); //turn off the predictor
         counter.turnOff();
+        purchasesData.turnOff();
 
 
 
@@ -989,6 +995,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
         counter.start();
         control.start();
+        purchasesData.start(model,this);
 
     }
 
@@ -1023,8 +1030,8 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * changes the way the purchases department makes prediction about future prices
      * @param predictor the predictor
      */
-    public void setPredictor(PurchasesPredictor predictor) {
-        if(predictor != null)
+    public void setPredictor(@Nonnull PurchasesPredictor predictor) {
+        if(this.predictor != null)
             this.predictor.turnOff();
         this.predictor = predictor;
     }
@@ -1093,7 +1100,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
     /**
      * utility method, asks the firm for the inventory in the type of good this purchase department deals in
      */
-    public int currentInventory()
+    public int getCurrentInventory()
     {
           return getFirm().hasHowMany(getGoodType());
     }
@@ -1130,7 +1137,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
     /**
      * This is somewhat similar to rate current level. It estimates the excess (or shortage)of goods purchased. It is basically
-     * currentInventory-AcceptableInventory
+     * getCurrentInventory-AcceptableInventory
      * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
      */
     public int estimateDemandGap() {
@@ -1152,5 +1159,55 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     public boolean removeInventoryListener(InventoryListener listener) {
         return firm.removeInventoryListener(listener);
+    }
+
+    /**
+     * check a specific datum of a given day
+     */
+    public double getObservationRecordedThisDay(PurchasesDataType type, int day) {
+        return purchasesData.getObservationRecordedThisDay(type, day);
+    }
+
+    /**
+     * check the time series of a specific datum between two days
+     */
+    public double[] getObservationsRecordedTheseDays(PurchasesDataType type, int beginningDay, int lastDay) {
+        return purchasesData.getObservationsRecordedTheseDays(type, beginningDay, lastDay);
+    }
+
+    /**
+     *  check the time series of a specific datum between on an array of days
+     */
+    public double[] getObservationsRecordedTheseDays(PurchasesDataType type, @Nonnull int[] days) {
+        return purchasesData.getObservationsRecordedTheseDays(type, days);
+    }
+
+    /**
+     * return the latest (yesterday's) observation of a given datum
+     */
+    public Double getLatestObservation(PurchasesDataType type) {
+        return purchasesData.getLatestObservation(type);
+    }
+
+    /**
+     * return all the observations of a given datum
+     */
+    public double[] getAllRecordedObservations(PurchasesDataType type) {
+        return purchasesData.getAllRecordedObservations(type);
+    }
+
+    /**
+     * The last day recorded by the PurchaseDepartmentData
+     * */
+    public int getLastObservedDay() {
+        return purchasesData.getLastObservedDay();
+    }
+
+    /**
+     * Count all the workers at plants that consume (as input) what this purchase department buys
+     * @return the total number of workers
+     */
+    public int getNumberOfWorkersWhoConsumeWhatWePurchase() {
+        return firm.getNumberOfWorkersWhoConsumeThisGood(getGoodType());
     }
 }

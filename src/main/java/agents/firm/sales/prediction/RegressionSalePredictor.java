@@ -10,7 +10,7 @@ import agents.firm.sales.SalesDepartment;
 import com.google.common.base.Preconditions;
 import financial.market.Market;
 import model.MacroII;
-import model.utilities.stats.PeriodicMarketObserver;
+import model.utilities.stats.collectors.PeriodicMarketObserver;
 import model.utilities.stats.regression.LinearRegression;
 import org.apache.commons.collections15.Transformer;
 

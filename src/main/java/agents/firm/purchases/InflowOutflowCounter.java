@@ -14,6 +14,7 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
+import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -89,7 +90,7 @@ public class InflowOutflowCounter implements Deactivatable, InventoryListener, S
 
             todayFailuresToConsume = 0;
 
-            model.scheduleTomorrow(ActionOrder.DAWN,this);
+            model.scheduleTomorrow(ActionOrder.DAWN,this, Priority.BEFORE_STANDARD);
 
 
         }
@@ -105,7 +106,7 @@ public class InflowOutflowCounter implements Deactivatable, InventoryListener, S
     {
         assert isActive;
         //schedule your first reset
-        model.scheduleSoon(ActionOrder.DAWN, this);
+        model.scheduleSoon(ActionOrder.DAWN, this,Priority.BEFORE_STANDARD);
         //add yourself as a listener
         agent.addInventoryListener(this);
 

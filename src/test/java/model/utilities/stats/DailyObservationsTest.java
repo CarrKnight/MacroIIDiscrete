@@ -6,6 +6,7 @@
 
 package model.utilities.stats;
 
+import model.utilities.stats.collectors.DailyObservations;
 import org.junit.Assert;
 import org.junit.Test;
 

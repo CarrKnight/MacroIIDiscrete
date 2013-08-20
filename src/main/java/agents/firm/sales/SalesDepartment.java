@@ -809,17 +809,7 @@ public abstract class  SalesDepartment  implements Department {
 
         if(MacroII.SAFE_MODE) //if safe mode is on
         {
-            for(Map.Entry<Good, SaleResult> saleRecord : salesResults.entrySet())      //go back through all the salesResults
-            {
-                assert firm.has(saleRecord.getKey()); //unsold should still be in inventory
-                assert toSell.contains(saleRecord.getKey()); //should be owned by us, now
-                assert saleRecord.getValue().getResult() != SaleResult.Result.SOLD; //all successes should have been eliminated
-            }
-
-            for(Good g : toSell)
-            {
-                assert firm.has(g); //unsold should still be in inventory
-            }
+            additionalDiagnostics();
         }
 
 
@@ -846,6 +836,20 @@ public abstract class  SalesDepartment  implements Department {
 
 
 
+    }
+
+    private void additionalDiagnostics() {
+        for(Map.Entry<Good, SaleResult> saleRecord : salesResults.entrySet())      //go back through all the salesResults
+        {
+            assert firm.has(saleRecord.getKey()); //unsold should still be in inventory
+            assert toSell.contains(saleRecord.getKey()); //should be owned by us, now
+            assert saleRecord.getValue().getResult() != SaleResult.Result.SOLD; //all successes should have been eliminated
+        }
+
+        for(Good g : toSell)
+        {
+            assert firm.has(g); //unsold should still be in inventory
+        }
     }
 
     /**
@@ -1264,7 +1268,7 @@ public abstract class  SalesDepartment  implements Department {
 
     /**
      * This is somewhat similar to rate current level. It estimates the excess (or shortage)of goods sold. It is basically
-     * currentInventory-AcceptableInventory
+     * getCurrentInventory-AcceptableInventory
      * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
      */
     public int estimateSupplyGap() {

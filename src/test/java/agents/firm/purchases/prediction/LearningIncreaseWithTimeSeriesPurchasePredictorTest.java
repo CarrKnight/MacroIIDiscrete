@@ -11,7 +11,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import com.google.common.primitives.Doubles;
 import financial.market.Market;
 import goods.GoodType;
-import model.utilities.stats.PeriodicMarketObserver;
+import model.utilities.stats.collectors.PeriodicMarketObserver;
 import org.junit.Assert;
 import org.junit.Test;
 

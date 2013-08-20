@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package model.utilities.stats;
+package model.utilities.stats.collectors;
 
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Doubles;

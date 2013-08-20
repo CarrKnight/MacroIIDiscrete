@@ -9,7 +9,7 @@ package agents.firm.sales.prediction;
 import agents.firm.sales.SalesDepartment;
 import au.com.bytecode.opencsv.CSVReader;
 import com.google.common.primitives.Doubles;
-import model.utilities.stats.PeriodicMarketObserver;
+import model.utilities.stats.collectors.PeriodicMarketObserver;
 import org.junit.Assert;
 import org.junit.Test;
 

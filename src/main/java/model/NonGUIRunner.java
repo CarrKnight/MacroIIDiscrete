@@ -40,7 +40,7 @@ public class NonGUIRunner {
         scenario1.setNumberOfFoodProducers(1);
 
         //schedule a print to screen stat collector
-        macroII.scheduleSoon(ActionOrder.CLEANUP, new Steppable() {
+        macroII.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING, new Steppable() {
             @Override
             public void step(SimState state)
             {
@@ -49,7 +49,7 @@ public class NonGUIRunner {
                           "quantity: " + market.getLastWeekVolume());
 
                 System.out.println("-----------------------------------------------");
-                macroII.scheduleTomorrow(ActionOrder.CLEANUP,this);
+                macroII.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING,this);
 
 
             }

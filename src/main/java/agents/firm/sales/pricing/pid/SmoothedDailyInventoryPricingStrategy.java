@@ -171,7 +171,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
 
     /**
      * This is somewhat similar to rate current level. It estimates the excess (or shortage)of goods sold. It is basically
-     * currentInventory-AcceptableInventory
+     * getCurrentInventory-AcceptableInventory
      *
      * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
      */

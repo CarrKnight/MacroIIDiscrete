@@ -7,7 +7,7 @@ import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
 import goods.GoodType;
 import model.MacroII;
-import model.utilities.stats.DailyStatCollector;
+import model.utilities.stats.collectors.DailyStatCollector;
 import org.junit.Assert;
 import org.junit.Test;
 

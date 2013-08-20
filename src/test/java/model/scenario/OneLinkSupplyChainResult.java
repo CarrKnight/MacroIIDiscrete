@@ -23,28 +23,28 @@ package model.scenario;
  */
 public class OneLinkSupplyChainResult {
 
-    final private float beefPrice;
+    final private double beefPrice;
 
-    final private float foodPrice;
+    final private double foodPrice;
 
-    final private float quantity;
+    final private double quantity;
 
-    public OneLinkSupplyChainResult(float beefPrice, float foodPrice, float quantity) {
+    public OneLinkSupplyChainResult(double beefPrice, double foodPrice, double quantity) {
         this.beefPrice = beefPrice;
         this.foodPrice = foodPrice;
         this.quantity = quantity;
     }
 
 
-    public float getBeefPrice() {
+    public double getBeefPrice() {
         return beefPrice;
     }
 
-    public float getFoodPrice() {
+    public double getFoodPrice() {
         return foodPrice;
     }
 
-    public float getQuantity() {
+    public double getQuantity() {
         return quantity;
     }
 }

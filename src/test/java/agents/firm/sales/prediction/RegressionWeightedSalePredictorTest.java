@@ -5,8 +5,8 @@ import financial.market.Market;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
-import model.utilities.stats.MarketDataType;
-import model.utilities.stats.PeriodicMarketObserver;
+import model.utilities.stats.collectors.enums.MarketDataType;
+import model.utilities.stats.collectors.PeriodicMarketObserver;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -82,10 +82,10 @@ public class RegressionWeightedSalePredictorTest {
         field.setAccessible(true);
         PeriodicMarketObserver observer = (PeriodicMarketObserver) field.get(predictor);
 
-        verify(macroII).scheduleAnotherDay(ActionOrder.CLEANUP,observer,5, Priority.AFTER_STANDARD);
+        verify(macroII).scheduleAnotherDay(ActionOrder.CLEANUP_DATA_GATHERING,observer,5, Priority.AFTER_STANDARD);
         predictor.setDailyProbabilityOfObserving(.3f);
         observer.step(macroII);
-        verify(macroII).scheduleAnotherDay(ActionOrder.CLEANUP,observer,3, Priority.AFTER_STANDARD);
+        verify(macroII).scheduleAnotherDay(ActionOrder.CLEANUP_DATA_GATHERING,observer,3, Priority.AFTER_STANDARD);
 
 
     }

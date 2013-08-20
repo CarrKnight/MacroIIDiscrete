@@ -4,19 +4,17 @@
  * See the file "LICENSE" for more information
  */
 
-package model.utilities.stats;
+package model.utilities.stats.collectors;
 
 import com.google.common.base.Preconditions;
 import financial.market.Market;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.Deactivatable;
+import model.utilities.stats.collectors.enums.MarketDataType;
 import sim.engine.SimState;
-import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.EnumMap;
 
 /**
  * <h4>Description</h4>
@@ -33,13 +31,13 @@ import java.util.EnumMap;
  * @version 2013-08-15
  * @see
  */
-public class MarketData implements Steppable, Deactivatable
+public class MarketData extends DataGatherer<MarketDataType>
 {
 
 
 
 
-    final private EnumMap<MarketDataType,DailyObservations> data;
+
 
 
     /**
@@ -52,20 +50,11 @@ public class MarketData implements Steppable, Deactivatable
      */
     private Market marketToFollow;
 
-    /**
-     * the day you started recording.
-     */
-    private int startingDay;
+
 
     public MarketData() {
-
-        data = new EnumMap<>(MarketDataType.class);
-
-        for(MarketDataType type : MarketDataType.values() )
-            data.put(type,new DailyObservations());
-
+        super(MarketDataType.class);
     }
-
 
     @Override
     public void step(SimState state) {
@@ -75,7 +64,7 @@ public class MarketData implements Steppable, Deactivatable
         //make sure it's the right time
         assert state instanceof MacroII;
         MacroII model = (MacroII) state;
-        Preconditions.checkState(model.getCurrentPhase().equals(ActionOrder.CLEANUP));
+        Preconditions.checkState(model.getCurrentPhase().equals(ActionOrder.CLEANUP_DATA_GATHERING));
         Preconditions.checkNotNull(marketToFollow);
 
         //memorize
@@ -85,9 +74,10 @@ public class MarketData implements Steppable, Deactivatable
         data.get(MarketDataType.VOLUME_PRODUCED).add((double) marketToFollow.countTodayProductionByRegisteredSellers());
         data.get(MarketDataType.DEMAND_GAP).add((double)marketToFollow.sumDemandGaps());
         data.get(MarketDataType.SUPPLY_GAP).add((double) marketToFollow.sumSupplyGaps());
+        data.get(MarketDataType.AVERAGE_CLOSING_PRICE).add((double) marketToFollow.getTodayAveragePrice());
 
         //reschedule
-        model.scheduleTomorrow(ActionOrder.CLEANUP,this);
+        model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING,this);
 
 
 
@@ -102,13 +92,13 @@ public class MarketData implements Steppable, Deactivatable
 
         //schedule yourself
         this.marketToFollow = marketToFollow;
-        this.startingDay = (int) Math.round(state.getMainScheduleTime())+1;
+        setStartingDay((int) Math.round(state.getMainScheduleTime())+1);
 
         for(DailyObservations obs : data.values())
-            obs.setStartingDay(startingDay);
+            obs.setStartingDay(getStartingDay());
 
-        Preconditions.checkState(startingDay >=0);
-        state.scheduleSoon(ActionOrder.CLEANUP,this);
+        Preconditions.checkState(getStartingDay() >=0);
+        state.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING,this);
     }
 
 
@@ -117,20 +107,7 @@ public class MarketData implements Steppable, Deactivatable
         active = false;
     }
 
-    /**
-     * how many days worth of observations are here?
-     */
-    public int numberOfObservations()
-    {
-        int numberOfObs = data.get(MarketDataType.CLOSING_PRICE).size();
-        assert numberOfObs ==  data.get(MarketDataType.VOLUME_TRADED).size();
-        assert numberOfObs ==  data.get(MarketDataType.VOLUME_CONSUMED).size();
-        assert numberOfObs ==  data.get(MarketDataType.VOLUME_PRODUCED).size();
-        assert numberOfObs == data.get(MarketDataType.DEMAND_GAP).size();
-        assert numberOfObs == data.get(MarketDataType.SUPPLY_GAP).size();
-        return numberOfObs;
 
-    }
 
 
     /**
@@ -154,13 +131,6 @@ public class MarketData implements Steppable, Deactivatable
 
     }
 
-
-    public int getLastObservedDay()
-    {
-
-        return numberOfObservations()+startingDay;
-
-    }
 
     /**
      * check which days have observations that are okay with the acceptor!
@@ -204,62 +174,6 @@ public class MarketData implements Steppable, Deactivatable
 
 
     }
-
-
-    private void checkThatThereIsAtLeastOneObservation() {
-        Preconditions.checkState(numberOfObservations() > 0, "no observations recorded yet");
-    }
-
-
-    /**
-     * returns a copy of all the observed last prices so far!
-     */
-    public double[] getAllRecordedObservations(MarketDataType type){
-        checkThatThereIsAtLeastOneObservation();
-        return data.get(type).getAllRecordedObservations();
-
-    }
-
-
-
-
-    /**
-     * utility method to analyze only specific days
-     */
-    public double[] getObservationsRecordedTheseDays(MarketDataType type,@Nonnull int[] days)
-    {
-        return data.get(type).getObservationsRecordedTheseDays(days);
-
-    }
-
-
-    /**
-     * utility method to analyze only specific days
-     */
-    public double[] getObservationsRecordedTheseDays(MarketDataType type,int beginningDay, int lastDay)
-    {
-        return data.get(type).getObservationsRecordedTheseDays(beginningDay, lastDay);
-
-    }
-
-
-    /**
-     * utility method to analyze only  a specific day
-     */
-    public double getObservationRecordedThisDay(MarketDataType type,int day)
-    {
-        return data.get(type).getObservationRecordedThisDay(day);
-    }
-
-    /**
-     * return the latest price observed
-     */
-    public Double getLatestObservation(MarketDataType type)
-    {
-        checkThatThereIsAtLeastOneObservation();
-        return data.get(type).get(numberOfObservations()-1);
-    }
-
 
 
 

@@ -12,7 +12,7 @@ import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Preconditions;
 import model.MacroII;
-import model.utilities.stats.DailyStatCollector;
+import model.utilities.stats.collectors.DailyStatCollector;
 
 import java.io.FileWriter;
 import java.io.IOException;

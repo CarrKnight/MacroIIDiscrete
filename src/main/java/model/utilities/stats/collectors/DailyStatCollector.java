@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package model.utilities.stats;
+package model.utilities.stats.collectors;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
@@ -26,7 +26,7 @@ import java.util.LinkedList;
 /**
  * <h4>Description</h4>
  * <p/> A simple object that schedules itself at the end of each day and collects aggregate information.
- * <p/> It schedules itself at start() and acts during CLEANUP phase
+ * <p/> It schedules itself at start() and acts during CLEANUP_DATA_GATHERING phase
  * <p/> It aggregates firms by their output. This means that a firm with multiple outputs will show up multiple times
  * <h4>Notes</h4>
  * Created with IntelliJ
@@ -75,7 +75,7 @@ public class DailyStatCollector implements Steppable{
     /**
      * What's the current market price for this good
      */
-    private EnumMap<GoodType,Long> marketPrice;
+    private EnumMap<GoodType,Float> marketPrice;
 
     /**
      * The amount traded in the market
@@ -148,7 +148,7 @@ public class DailyStatCollector implements Steppable{
      */
     public void start()
     {
-        model.scheduleSoon(ActionOrder.CLEANUP,this);
+        model.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING,this);
     }
 
 
@@ -203,7 +203,7 @@ public class DailyStatCollector implements Steppable{
             productionPerSector.put(output,production);
             consumptionPerSector.put(output,consumption);
             workersPerSector.put(output,workers);
-            marketPrice.put(output,market.getLastPrice());
+            marketPrice.put(output,market.getTodayAveragePrice());
             marketVolume.put(output,market.getYesterdayVolume());
             sellerTotalInventory.put(output,sellerInventory);
             buyerTotalInventory.put(output,buyerInventory);
@@ -231,7 +231,7 @@ public class DailyStatCollector implements Steppable{
 
         }
 
-        model.scheduleTomorrow(ActionOrder.CLEANUP, this);
+        model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
 
 
     }
@@ -268,7 +268,7 @@ public class DailyStatCollector implements Steppable{
             row.add(Integer.toString(productionPerSector.get(type)));
             row.add(Integer.toString(consumptionPerSector.get(type)));
             row.add(Integer.toString(workersPerSector.get(type)));
-            row.add(Long.toString(marketPrice.get(type)));
+            row.add(Float.toString(marketPrice.get(type)));
             row.add(Integer.toString(marketVolume.get(type)));
             row.add(Integer.toString(sellerTotalInventory.get(type)));
             row.add(Integer.toString(buyerTotalInventory.get(type)));
@@ -322,7 +322,7 @@ public class DailyStatCollector implements Steppable{
         return workersPerSector;
     }
 
-    public EnumMap<GoodType, Long> getMarketPrice() {
+    public EnumMap<GoodType, Float> getMarketPrice() {
         return marketPrice;
     }
 

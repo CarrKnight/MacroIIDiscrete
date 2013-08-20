@@ -45,7 +45,7 @@ import model.utilities.ActionOrder;
 import model.utilities.dummies.DummyBuyer;
 import model.utilities.filters.ExponentialFilter;
 import model.utilities.pid.PIDController;
-import model.utilities.stats.DailyStatCollector;
+import model.utilities.stats.collectors.DailyStatCollector;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -545,7 +545,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         try {
             final CSVWriter writer2 = new CSVWriter(new FileWriter("runs/supplychai/onelinkOfferPrices.csv"));
             writer2.writeNext(new String[]{"buyer offer price","target","filtered Outflow"});
-            macroII.scheduleSoon(ActionOrder.CLEANUP, new Steppable() {
+            macroII.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING, new Steppable() {
                 @Override
                 public void step(SimState state) {
                     try {
@@ -554,7 +554,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
                                 String.valueOf(scenario1.strategy2.getTarget()),
                                 String.valueOf(scenario1.strategy2.getFilteredOutflow())});
                         writer2.flush();
-                        ((MacroII) state).scheduleTomorrow(ActionOrder.CLEANUP, this);
+                        ((MacroII) state).scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
                     } catch (IllegalAccessException | IOException e) {
                         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }

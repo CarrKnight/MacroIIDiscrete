@@ -369,8 +369,9 @@ public class SimpleSellerScenarioTest {
 
     @Test
     public void rightPriceAndQuantityShiftWithSalesControlFlowPIDWithFixedInventoryOneAtATime(){
-        for(int i=0; i<5; i++)
+        for(int i=0; i<500; i++)
         {
+            System.out.println(i);
             //to sell 4 you need to price them between 60 and 51 everytime
             final MacroII macroII = new MacroII(System.currentTimeMillis());
             SimpleSellerScenario scenario = new SimpleSellerScenario(macroII);
@@ -386,8 +387,8 @@ public class SimpleSellerScenarioTest {
 
 
             //price should be any between 60 and 51
-            assertTrue(macroII.getMarket(GoodType.GENERIC).getLastPrice() <= 160);
-            assertTrue(macroII.getMarket(GoodType.GENERIC).getLastPrice() >= 151);
+            assertTrue(String.valueOf(System.currentTimeMillis()),macroII.getMarket(GoodType.GENERIC).getLastPrice() <= 160);
+            assertTrue(String.valueOf(System.currentTimeMillis()),macroII.getMarket(GoodType.GENERIC).getLastPrice() >= 151);
             assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(), 4 * 7); //every day 4 goods should have been traded
 
         }

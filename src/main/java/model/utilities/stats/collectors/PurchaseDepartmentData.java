@@ -1,0 +1,108 @@
+/*
+ * Copyright (c) 2013 by Ernesto Carrella
+ * Licensed under the Academic Free License version 3.0
+ * See the file "LICENSE" for more information
+ */
+
+package model.utilities.stats.collectors;
+
+import agents.firm.purchases.PurchasesDepartment;
+import com.google.common.base.Preconditions;
+import model.MacroII;
+import model.utilities.ActionOrder;
+import model.utilities.stats.collectors.enums.PurchasesDataType;
+import sim.engine.SimState;
+
+import javax.annotation.Nonnull;
+
+/**
+ * <h4>Description</h4>
+ * <p/> Similar to MarketData, but storing flows in and out of the department + last closing prices
+ * <p/>
+ * <p/>
+ * <h4>Notes</h4>
+ * Created with IntelliJ
+ * <p/>
+ * <p/>
+ * <h4>References</h4>
+ *
+ * @author carrknight
+ * @version 2013-08-19
+ * @see
+ */
+public class PurchaseDepartmentData extends DataGatherer<PurchasesDataType> {
+
+
+
+    /**
+     * when it is set to off, it stops rescheduling itself!
+     */
+    private boolean active = true;
+
+    /**
+     * the department we are documenting
+     */
+    private PurchasesDepartment departmentToFollow = null;
+
+
+    /**
+     * creates an empty purchase department data gatherer. It starts collecting at start!
+     */
+    public PurchaseDepartmentData() {
+        super(PurchasesDataType.class);
+    }
+
+
+
+    /**
+     * called when the data gathering is supposed to start. It schedules itself to start at next CLEANUP phase
+     */
+    public void start(@Nonnull MacroII state, @Nonnull PurchasesDepartment departmentToFollow) {
+        if(!active)
+            return;
+
+        Preconditions.checkState(this.departmentToFollow == null, " can't start the gatherer twice!");
+
+        //schedule yourself
+        this.departmentToFollow = departmentToFollow;
+        setStartingDay((int) Math.round(state.getMainScheduleTime())+1);
+
+        for(DailyObservations obs : data.values())
+            obs.setStartingDay(getStartingDay());
+
+        Preconditions.checkState(getStartingDay() >= 0);
+        state.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING,this);
+    }
+
+
+    @Override
+    public void step(SimState state) {
+        if(!active)
+            return;
+
+        //make sure it's the right time
+        assert state instanceof MacroII;
+        MacroII model = (MacroII) state;
+        assert model.getCurrentPhase().equals(ActionOrder.CLEANUP_DATA_GATHERING);
+        assert  (this.departmentToFollow)!=null;
+
+        //memorize
+        data.get(PurchasesDataType.INFLOW).add(Double.valueOf(departmentToFollow.getTodayInflow()));
+        data.get(PurchasesDataType.OUTFLOW).add(Double.valueOf(departmentToFollow.getTodayOutflow()));
+        data.get(PurchasesDataType.CLOSING_PRICES).add(Double.valueOf(departmentToFollow.getLastClosingPrice()));
+        data.get(PurchasesDataType.INVENTORY).add(Double.valueOf(departmentToFollow.getCurrentInventory()));
+        data.get(PurchasesDataType.FAILURES_TO_CONSUME).add(Double.valueOf(departmentToFollow.getTodayFailuresToConsume()));
+        data.get(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD).add(Double.valueOf(departmentToFollow.getNumberOfWorkersWhoConsumeWhatWePurchase()));
+
+        //reschedule
+        model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
+
+
+
+    }
+
+    @Override
+    public void turnOff() {
+        active = false;
+    }
+}

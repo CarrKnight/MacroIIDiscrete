@@ -60,7 +60,7 @@ public enum ActionOrder
     /**
      * Final Phase, just maintenance
      */
-    CLEANUP
+    CLEANUP_DATA_GATHERING
 
 
 

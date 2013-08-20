@@ -9,6 +9,8 @@ package model.utilities.stats;
 import financial.market.Market;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.stats.collectors.MarketData;
+import model.utilities.stats.collectors.enums.MarketDataType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -40,15 +42,15 @@ public class MarketDataTest
         MarketData data = new MarketData();
 
         data.start(model,market);
-        verify(model).scheduleSoon(ActionOrder.CLEANUP, data);
-        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP);
+        verify(model).scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING, data);
+        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         data.step(model);
         data.step(model);
-        verify(model, times(2)).scheduleTomorrow(ActionOrder.CLEANUP, data);
+        verify(model, times(2)).scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, data);
         //turn off doesn't reschedule
         data.turnOff();
         data.step(model);
-        verify(model, times(2)).scheduleTomorrow(ActionOrder.CLEANUP, data); //only the two old times are counted!
+        verify(model, times(2)).scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, data); //only the two old times are counted!
     }
     
     
@@ -57,7 +59,7 @@ public class MarketDataTest
     {
         Market market = mock(Market.class);
         MacroII model = mock(MacroII.class);
-        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP);
+        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
         MarketData data = new MarketData();
 
@@ -88,7 +90,7 @@ public class MarketDataTest
 
         Market market = mock(Market.class);
         MacroII model = mock(MacroII.class);
-        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP);
+        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
         MarketData data = new MarketData();
 
@@ -120,7 +122,7 @@ public class MarketDataTest
 
         Market market = mock(Market.class);
         MacroII model = mock(MacroII.class);
-        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP);
+        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
         MarketData data = new MarketData();
 
@@ -151,7 +153,7 @@ public class MarketDataTest
 
         Market market = mock(Market.class);
         MacroII model = mock(MacroII.class);
-        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP);
+        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
         MarketData data = new MarketData();
 
@@ -183,7 +185,7 @@ public class MarketDataTest
 
         Market market = mock(Market.class);
         MacroII model = mock(MacroII.class);
-        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP);
+        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
         MarketData data = new MarketData();
 
@@ -216,7 +218,7 @@ public class MarketDataTest
 
         Market market = mock(Market.class);
         MacroII model = mock(MacroII.class);
-        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP);
+        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
         MarketData data = new MarketData();
 
@@ -249,7 +251,7 @@ public class MarketDataTest
 
         Market market = mock(Market.class);
         MacroII model = mock(MacroII.class);
-        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP);
+        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
         MarketData data = new MarketData();
 

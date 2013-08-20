@@ -1,4 +1,4 @@
-package model.utilities.stats;
+package model.utilities.stats.collectors;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
@@ -73,7 +73,7 @@ public class ProducersStatCollector implements Steppable, Deactivatable{
      * schedules itself and register as deactivable
      */
     public void start() {
-        model.scheduleSoon(ActionOrder.CLEANUP,this);
+        model.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING,this);
         //also set as deactivable
         model.registerDeactivable(this);
     }
@@ -113,7 +113,7 @@ public class ProducersStatCollector implements Steppable, Deactivatable{
             e.printStackTrace();
         }
 
-        model.scheduleTomorrow(ActionOrder.CLEANUP,this);
+        model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING,this);
 
 
 

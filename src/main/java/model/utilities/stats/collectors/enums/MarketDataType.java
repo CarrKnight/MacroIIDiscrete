@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package model.utilities.stats;
+package model.utilities.stats.collectors.enums;
 
 /**
 * <h4>Description</h4>
@@ -24,6 +24,8 @@ package model.utilities.stats;
 public enum MarketDataType {
 
     CLOSING_PRICE,
+
+    AVERAGE_CLOSING_PRICE,
 
     VOLUME_TRADED,
 

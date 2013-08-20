@@ -11,7 +11,7 @@ import com.google.common.base.Preconditions;
 import financial.market.Market;
 import model.MacroII;
 import model.utilities.filters.MovingAverage;
-import model.utilities.stats.PeriodicMarketObserver;
+import model.utilities.stats.collectors.PeriodicMarketObserver;
 import model.utilities.stats.regression.LinearRegression;
 import model.utilities.stats.regression.MultipleLinearRegression;
 
