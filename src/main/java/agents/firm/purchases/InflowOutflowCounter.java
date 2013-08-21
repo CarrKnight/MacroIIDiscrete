@@ -67,7 +67,6 @@ public class InflowOutflowCounter implements Deactivatable, InventoryListener, S
      */
     private int todayOutflow;
 
-
     /**
      * counts how many times a plant wanted to consume a product but failed to do so because it wasn't available.
      */
@@ -220,4 +219,7 @@ public class InflowOutflowCounter implements Deactivatable, InventoryListener, S
     public int getTodayFailuresToConsume() {
         return todayFailuresToConsume;
     }
+
+
+
 }

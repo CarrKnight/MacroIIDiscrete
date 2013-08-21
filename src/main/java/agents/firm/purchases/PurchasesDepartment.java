@@ -32,7 +32,7 @@ import model.utilities.ActionOrder;
 import model.utilities.Control;
 import model.utilities.Deactivatable;
 import model.utilities.scheduler.Priority;
-import model.utilities.stats.collectors.PurchaseDepartmentData;
+import model.utilities.stats.collectors.PurchasesDepartmentData;
 import model.utilities.stats.collectors.enums.PurchasesDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -146,7 +146,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
     private long lastClosingPrice = -1;
 
 
-    private final PurchaseDepartmentData purchasesData;
+    private final PurchasesDepartmentData purchasesData;
 
     /**
      * The predictor for next purchases. It is set in the constructor but that can be changed
@@ -162,6 +162,13 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * a counter to check daily inflows and outflows. Created at constructor, started and turned off. Steps itself independetly
      */
     private InflowOutflowCounter counter;
+
+    /**
+     * a counter to compute the daily average closing price from filled quotes. Resets itself at DAWN every day
+     */
+    private AveragePurchasePriceCounter averagePriceCounter;
+
+
     private boolean startWasCalled=false;
 
 
@@ -182,7 +189,8 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
 
         counter = new InflowOutflowCounter(model,firm,goodType);
-        purchasesData = new PurchaseDepartmentData();
+        averagePriceCounter = new AveragePurchasePriceCounter();
+        purchasesData = new PurchasesDepartmentData();
 
 
 
@@ -530,6 +538,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
             //we will return to the buy method so we don't need to deal with anything inside here.
         }
 
+        averagePriceCounter.getNotifiedOfFilledQuote(price);
         getFirm().logEvent(this, MarketEvents.BOUGHT, getFirm().getModel().getCurrentSimulationTimeInMillis(), "price: " + price);
 
     }
@@ -905,6 +914,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
         market.deregisterBuyer(firm);
         pricingStrategy.turnOff(); //turn off prices
         control.turnOff(); //turn off control
+        averagePriceCounter.turnOff();
         supplierSearch.turnOff(); //turn off seller search
         opponentSearch.turnOff(); //turn off buyer search
         predictor.turnOff(); //turn off the predictor
@@ -994,6 +1004,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
         startWasCalled = true;
 
         counter.start();
+        averagePriceCounter.start(model);
         control.start();
         purchasesData.start(model,this);
 
@@ -1197,7 +1208,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
     }
 
     /**
-     * The last day recorded by the PurchaseDepartmentData
+     * The last day recorded by the PurchasesDepartmentData
      * */
     public int getLastObservedDay() {
         return purchasesData.getLastObservedDay();
@@ -1209,5 +1220,13 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     public int getNumberOfWorkersWhoConsumeWhatWePurchase() {
         return firm.getNumberOfWorkersWhoConsumeThisGood(getGoodType());
+    }
+
+
+    /**
+     * the average closing price of today's trades, or -1 if there were no trades
+     */
+    public float getTodayAverageClosingPrice() {
+        return averagePriceCounter.getTodayAverageClosingPrice();
     }
 }

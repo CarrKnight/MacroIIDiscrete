@@ -144,7 +144,8 @@ public class CheaterPricingTest {
             Assert.assertTrue(firm.hasHowMany(GoodType.GENERIC)==0);
 
             //punch it
-            model.getPhaseScheduler().step(model);
+            model.start();
+            model.schedule.step(model);
             //after:
             Assert.assertEquals(market.numberOfAsks(),1);
             Assert.assertTrue(firm.hasHowMany(GoodType.GENERIC)==2);

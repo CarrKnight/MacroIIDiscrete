@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
  * @version 2013-08-19
  * @see
  */
-public class PurchaseDepartmentData extends DataGatherer<PurchasesDataType> {
+public class PurchasesDepartmentData extends DataGatherer<PurchasesDataType> {
 
 
 
@@ -48,7 +48,7 @@ public class PurchaseDepartmentData extends DataGatherer<PurchasesDataType> {
     /**
      * creates an empty purchase department data gatherer. It starts collecting at start!
      */
-    public PurchaseDepartmentData() {
+    public PurchasesDepartmentData() {
         super(PurchasesDataType.class);
     }
 
@@ -65,12 +65,9 @@ public class PurchaseDepartmentData extends DataGatherer<PurchasesDataType> {
 
         //schedule yourself
         this.departmentToFollow = departmentToFollow;
-        setStartingDay((int) Math.round(state.getMainScheduleTime())+1);
+        //we are going to set the starting day at -1 and then change it at our first step()
+        setStartingDay(-1);
 
-        for(DailyObservations obs : data.values())
-            obs.setStartingDay(getStartingDay());
-
-        Preconditions.checkState(getStartingDay() >= 0);
         state.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING,this);
     }
 
@@ -86,6 +83,14 @@ public class PurchaseDepartmentData extends DataGatherer<PurchasesDataType> {
         assert model.getCurrentPhase().equals(ActionOrder.CLEANUP_DATA_GATHERING);
         assert  (this.departmentToFollow)!=null;
 
+
+        if(getStartingDay()==-1)
+            setCorrectStartingDate(model);
+
+        assert getStartingDay() >=0;
+
+
+
         //memorize
         data.get(PurchasesDataType.INFLOW).add(Double.valueOf(departmentToFollow.getTodayInflow()));
         data.get(PurchasesDataType.OUTFLOW).add(Double.valueOf(departmentToFollow.getTodayOutflow()));
@@ -93,12 +98,20 @@ public class PurchaseDepartmentData extends DataGatherer<PurchasesDataType> {
         data.get(PurchasesDataType.INVENTORY).add(Double.valueOf(departmentToFollow.getCurrentInventory()));
         data.get(PurchasesDataType.FAILURES_TO_CONSUME).add(Double.valueOf(departmentToFollow.getTodayFailuresToConsume()));
         data.get(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD).add(Double.valueOf(departmentToFollow.getNumberOfWorkersWhoConsumeWhatWePurchase()));
+        data.get(PurchasesDataType.AVERAGE_CLOSING_PRICES).add(Double.valueOf(departmentToFollow.getTodayAverageClosingPrice()));
 
         //reschedule
         model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
 
 
 
+    }
+
+    private void setCorrectStartingDate(MacroII model) {
+        setStartingDay((int) Math.round(model.getMainScheduleTime()));
+
+        for(DailyObservations obs : data.values())
+            obs.setStartingDay(getStartingDay());
     }
 
     @Override

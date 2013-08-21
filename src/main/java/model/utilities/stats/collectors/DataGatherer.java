@@ -45,7 +45,7 @@ public abstract class DataGatherer<T extends  Enum<T>> implements Steppable, Dea
     /**
      * the day you started recording.
      */
-    private int startingDay;
+    private int startingDay = -1;
 
     protected DataGatherer(Class<T> enumType) {
         data = new EnumMap<>(enumType);

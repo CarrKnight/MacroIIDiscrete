@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
  * @version 2013-08-19
  * @see
  */
-public class PurchaseDepartmentDataTest {
+public class PurchasesDepartmentDataTest {
 
 
     @Test
@@ -38,7 +38,7 @@ public class PurchaseDepartmentDataTest {
     {
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         MacroII model = mock(MacroII.class);
-        PurchaseDepartmentData data = new PurchaseDepartmentData();
+        PurchasesDepartmentData data = new PurchasesDepartmentData();
 
         data.start(model,department);
         verify(model).scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING, data);
@@ -64,12 +64,13 @@ public class PurchaseDepartmentDataTest {
         MacroII model = mock(MacroII.class);
         when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
-        PurchaseDepartmentData data = new PurchaseDepartmentData();
+        PurchasesDepartmentData data = new PurchasesDepartmentData();
 
 
         data.start(model,department);
         //put in price data
         when(department.getLastClosingPrice()).thenReturn(1l,2l,3l);
+        when(model.getMainScheduleTime()).thenReturn(0d,1d,2d);
         data.step(model);
         data.step(model);
         data.step(model);
@@ -98,12 +99,13 @@ public class PurchaseDepartmentDataTest {
         MacroII model = mock(MacroII.class);
         when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
-        PurchaseDepartmentData data = new PurchaseDepartmentData();
+        PurchasesDepartmentData data = new PurchasesDepartmentData();
 
 
         data.start(model,department);
         //put in price data
         when(department.getTodayInflow()).thenReturn(1,2,3);
+        when(model.getMainScheduleTime()).thenReturn(0d,1d,2d);
         data.step(model);
         data.step(model);
         data.step(model);
@@ -131,12 +133,13 @@ public class PurchaseDepartmentDataTest {
         MacroII model = mock(MacroII.class);
         when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
-        PurchaseDepartmentData data = new PurchaseDepartmentData();
+        PurchasesDepartmentData data = new PurchasesDepartmentData();
 
 
         data.start(model,department);
         //put in price data
         when(department.getTodayOutflow()).thenReturn(1,2,3);
+        when(model.getMainScheduleTime()).thenReturn(0d,1d,2d);
         data.step(model);
         data.step(model);
         data.step(model);
@@ -164,12 +167,13 @@ public class PurchaseDepartmentDataTest {
         MacroII model = mock(MacroII.class);
         when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
-        PurchaseDepartmentData data = new PurchaseDepartmentData();
+        PurchasesDepartmentData data = new PurchasesDepartmentData();
 
 
         data.start(model,department);
         //put in price data
         when(department.getTodayFailuresToConsume()).thenReturn(1, 2, 3);
+        when(model.getMainScheduleTime()).thenReturn(0d,1d,2d);
         data.step(model);
         data.step(model);
         data.step(model);
@@ -198,12 +202,13 @@ public class PurchaseDepartmentDataTest {
         MacroII model = mock(MacroII.class);
         when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
-        PurchaseDepartmentData data = new PurchaseDepartmentData();
+        PurchasesDepartmentData data = new PurchasesDepartmentData();
 
 
         data.start(model,department);
         //put in price data
         when(department.getCurrentInventory()).thenReturn(1, 2, 3);
+        when(model.getMainScheduleTime()).thenReturn(0d,1d,2d);
         data.step(model);
         data.step(model);
         data.step(model);

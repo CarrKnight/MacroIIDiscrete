@@ -152,7 +152,8 @@ public class InflowOutflowCounterTest {
         assertEquals(toTest.getTodayOutflow(),2);
 
         //reset
-        model.getPhaseScheduler().step(model);
+        model.start();
+        model.schedule.step(model);
         assertEquals(toTest.getTodayInflow(),0);
         assertEquals(toTest.getTodayInflow(),0);
 
@@ -166,7 +167,7 @@ public class InflowOutflowCounterTest {
 
 
         //reset
-        model.getPhaseScheduler().step(model);
+        model.schedule.step(model);
 
         //netouflow = 1
         firm.receive(new Good(GoodType.GENERIC,mock(Firm.class),1l),null); //this is counted

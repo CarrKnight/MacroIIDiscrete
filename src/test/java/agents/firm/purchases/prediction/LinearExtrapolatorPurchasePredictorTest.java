@@ -12,7 +12,7 @@ import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.stats.collectors.PurchaseDepartmentData;
+import model.utilities.stats.collectors.PurchasesDepartmentData;
 import model.utilities.stats.collectors.enums.PurchasesDataType;
 import org.junit.Assert;
 import org.junit.Test;
@@ -71,7 +71,7 @@ public class LinearExtrapolatorPurchasePredictorTest
 
 
         //where we store the data:
-        final PurchaseDepartmentData data = new PurchaseDepartmentData();
+        final PurchasesDepartmentData data = new PurchasesDepartmentData();
         data.start(macroII,department);
         //what we are testing
         LinearExtrapolatorPurchasePredictor predictor =
@@ -83,7 +83,7 @@ public class LinearExtrapolatorPurchasePredictorTest
         {
             //fake 200 days of observations
             when(department.getNumberOfWorkersWhoConsumeWhatWePurchase()).thenReturn(day);
-            when(department.getLastClosingPrice()).thenReturn(Long.valueOf(day));
+            when(department.getTodayAverageClosingPrice()).thenReturn(Float.valueOf(day));
             when(macroII.getMainScheduleTime()).thenReturn(Double.valueOf(day));
 
             data.step(macroII);
@@ -140,27 +140,28 @@ public class LinearExtrapolatorPurchasePredictorTest
         CSVReader reader = new CSVReader(new FileReader("./src/test/EMAtest.csv"));
         reader.readNext(); //ignore the header!
 
-        ArrayList<Long> prices = new ArrayList<>(200);
+        ArrayList<Float> prices = new ArrayList<>(200);
         ArrayList<Integer> workers = new ArrayList<>(200);
         String[] newLine;
         while(( newLine = reader.readNext()) != null)
         {
 
             workers.add(Integer.parseInt(newLine[1]));
-            prices.add(Long.parseLong(newLine[2]));
+            prices.add(Float.parseFloat(newLine[2]));
         }
 
         reader.close();
 
 
         //where we store the data:
-        final PurchaseDepartmentData data = new PurchaseDepartmentData();
+        final PurchasesDepartmentData data = new PurchasesDepartmentData();
         data.start(macroII,department);
         //what we are testing
         LinearExtrapolatorPurchasePredictor predictor =
                 new LinearExtrapolatorPurchasePredictor(department, macroII);
         predictor.setWeight(.2f);
-        predictor.setHowManyDaysBackShallILook(150);
+        predictor.setMaximumNumberOfDaysToLookAhead(150);
+        predictor.setHowManyDaysBackShallILook(10);
 
 
 
@@ -168,7 +169,7 @@ public class LinearExtrapolatorPurchasePredictorTest
         {
             //fake 200 days of observations
             when(department.getNumberOfWorkersWhoConsumeWhatWePurchase()).thenReturn(workers.get(day));
-            when(department.getLastClosingPrice()).thenReturn(prices.get(day));
+            when(department.getTodayAverageClosingPrice()).thenReturn(prices.get(day));
             when(macroII.getMainScheduleTime()).thenReturn(Double.valueOf(day));
 
             data.step(macroII);

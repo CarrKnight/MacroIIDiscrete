@@ -389,7 +389,7 @@ public class SimpleSellerScenarioTest {
             //price should be any between 60 and 51
             assertTrue(String.valueOf(System.currentTimeMillis()),macroII.getMarket(GoodType.GENERIC).getLastPrice() <= 160);
             assertTrue(String.valueOf(System.currentTimeMillis()),macroII.getMarket(GoodType.GENERIC).getLastPrice() >= 151);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(), 4 * 7); //every day 4 goods should have been traded
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getYesterdayVolume(), 4); //every day 4 goods should have been traded
 
         }
 

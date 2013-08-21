@@ -86,12 +86,12 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
     /**
      * how many days before the shock can you look into?
      */
-    private int howManyDaysBackShallILook  = 10;
+    private int howManyDaysBackShallILook  = 15;
 
     /**
      * how many days after the shock can you look into?
      */
-    private int maximumNumberOfDaysToLookAhead = 100;
+    private int maximumNumberOfDaysToLookAhead = 30;
 
     /**
      * the exponential weight used
@@ -175,7 +175,7 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
             //if the bounds are all the same, no point in re-evaluating since the result would be the same!
             if ((newLowBound != lowerBoundObservation || newUpperBound != higherBoundObservation)
                     &&
-                    newUpperBound>lastWorkerShockDay+1
+                    newUpperBound>lastWorkerShockDay+1 && newLowBound < lastWorkerShockDay
                     )
             {
                 //at least one bound is different!
@@ -185,7 +185,10 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
                 float deltaWorkers =  newestNumberOfWorkersObserved - olderNumberOfWorkersObserved;
                 assert deltaWorkers!=0;
                 float deltaPrice = computeAfterShockPrice() - computeBeforeShockPrice();
-                predictor.setIncrementDelta(deltaPrice/deltaWorkers);
+                if(!Float.isNaN(deltaPrice/deltaWorkers)) //NaN implies that there weren't enough good observations (probably because the few days before changing workers there was no production)x
+                    predictor.setIncrementDelta(deltaPrice/deltaWorkers);
+                System.out.println(predictor.getIncrementDelta());
+
             }
 
 
@@ -209,16 +212,17 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
 
         //take the EMA
         ExponentialFilter<Double> afterShockPrice = new ExponentialFilter<>(weight);
-        double[] observations = department.getObservationsRecordedTheseDays(PurchasesDataType.CLOSING_PRICES,lastWorkerShockDay+1,higherBoundObservation);
+        double[] observations = department.getObservationsRecordedTheseDays(PurchasesDataType.AVERAGE_CLOSING_PRICES,lastWorkerShockDay,higherBoundObservation);
         assert observations.length > 0;
         float sum = 0;
         for(double observation : observations)
         {
-            afterShockPrice.addObservation(observation);
+            if(observation >= 0)
+                afterShockPrice.addObservation(observation);
             sum += observation;
         }
         //return it!
-       // return sum/observations.length;
+        // return sum/observations.length;
         return afterShockPrice.getSmoothedObservation();
 
     }
@@ -241,13 +245,15 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
 
         //take the EMA
         ExponentialFilter<Double> beforeShockPrice = new ExponentialFilter<>(weight);
-        double[] observations = department.getObservationsRecordedTheseDays(PurchasesDataType.CLOSING_PRICES,
-                lowerBoundObservation,lastWorkerShockDay);
+        double[] observations = department.getObservationsRecordedTheseDays(PurchasesDataType.AVERAGE_CLOSING_PRICES,
+                lowerBoundObservation,lastWorkerShockDay-1);
         assert observations.length > 0;
         float sum = 0;
         for(double observation : observations)
         {
-            beforeShockPrice.addObservation(observation);
+            if(observation >= 0)
+
+                beforeShockPrice.addObservation(observation);
             sum += observation;
         }
         //return it!
@@ -262,11 +268,11 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
      * @return
      */
     private boolean checkTheObservationsAreCorrect() {
-        assert department.getObservationRecordedThisDay(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD,lastWorkerShockDay+1)
+        assert department.getObservationRecordedThisDay(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD,lastWorkerShockDay)
                 == newestNumberOfWorkersObserved; // shouldn't have changed!
-        assert department.getObservationRecordedThisDay(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD,lastWorkerShockDay)
+        assert department.getObservationRecordedThisDay(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD,lastWorkerShockDay-1)
                 != newestNumberOfWorkersObserved; // the day before it must have been different!
-        assert department.getObservationRecordedThisDay(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD,lastWorkerShockDay)
+        assert department.getObservationRecordedThisDay(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD,lastWorkerShockDay-1)
                 == olderNumberOfWorkersObserved; // the day before it must have been different!
         return true;
     }
@@ -279,7 +285,7 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
     public int computeLowerBound()
     {
         int oldestDay = lastWorkerShockDay - Math.min(howManyDaysBackShallILook,lastWorkerShockDay-olderWorkerShockDay);
-        return Math.max(0,oldestDay)+1;
+        return Math.max(0,oldestDay);
     }
 
     /**

@@ -31,6 +31,8 @@ public enum PurchasesDataType {
 
     CLOSING_PRICES,
 
+    AVERAGE_CLOSING_PRICES,
+
     INVENTORY,
 
     WORKERS_CONSUMING_THIS_GOOD

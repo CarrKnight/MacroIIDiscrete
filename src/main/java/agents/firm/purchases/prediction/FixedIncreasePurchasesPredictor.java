@@ -7,6 +7,7 @@
 package agents.firm.purchases.prediction;
 
 import agents.firm.purchases.PurchasesDepartment;
+import com.google.common.base.Preconditions;
 
 /**
  * <h4>Description</h4>
@@ -85,6 +86,7 @@ public class FixedIncreasePurchasesPredictor implements PurchasesPredictor {
     }
 
     public void setIncrementDelta(float incrementDelta) {
+        Preconditions.checkState(!Float.isNaN(incrementDelta) && !Float.isInfinite(incrementDelta));
         this.incrementDelta = incrementDelta;
     }
 }

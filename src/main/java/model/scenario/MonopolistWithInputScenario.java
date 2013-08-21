@@ -10,7 +10,6 @@ import agents.EconomicAgent;
 import agents.firm.production.Blueprint;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesWeeklyPID;
-import agents.firm.purchases.prediction.LookAheadPredictor;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import financial.market.Market;
@@ -20,10 +19,10 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.dummies.DummySeller;
 import model.utilities.pid.CascadePIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import model.utilities.dummies.DummySeller;
 
 /**
  * <h4>Description</h4>
@@ -89,7 +88,7 @@ public class MonopolistWithInputScenario extends MonopolistScenario {
 
         department.setControl(control);
         department.setPricingStrategy(control);
-        department.setPredictor(new LookAheadPredictor());
+       // department.setPredictor(new LookAheadPredictor());
         monopolist.registerPurchasesDepartment(department, GoodType.LEATHER);
     }
 

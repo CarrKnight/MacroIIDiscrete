@@ -610,7 +610,8 @@ public class PurchasesDepartmentTest {
     }
 
     @Test
-    public void testUpdatePrices() throws Exception {
+    public void testUpdatePrices() throws Exception
+    {
 
         Market.TESTING_MODE = true;
 
@@ -631,7 +632,8 @@ public class PurchasesDepartmentTest {
         dept.setPricingStrategy(pricingStrategy);
 
         dept.start();
-        model.getPhaseScheduler().step(model);
+        model.start();
+        model.schedule.step(model);
 
         assertEquals(market.getBestBuyPrice(), 150l);
         when(pricingStrategy.maxPrice(any(GoodType.class))).thenReturn(75l);
