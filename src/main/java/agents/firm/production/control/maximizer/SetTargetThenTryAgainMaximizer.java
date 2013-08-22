@@ -21,8 +21,8 @@ import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
- * <p/> This is a maximizer that every week checks profits and may decide to change workforce targets. It's abstract because it is really a template class. It takes care of checking profits and waiting a fixed number of weeks
- * before making a choice but the choice itself is made in a method to be overriden so that I can have many maximizers and so on.
+ * <p/> This is a maximizer that sets a target for itself and then wait until the target has been achieved for a while before
+ * asking the maximization algorithm what should be the new target.
  * <p/>
  * <p/>
  * <h4>Notes</h4>
@@ -35,7 +35,7 @@ import javax.annotation.Nonnull;
  * @version 2012-09-23
  * @see
  */
-public class WeeklyWorkforceMaximizer<ALG extends WorkerMaximizationAlgorithm> implements WorkforceMaximizer<ALG>, Steppable {
+public class SetTargetThenTryAgainMaximizer<ALG extends WorkerMaximizationAlgorithm> implements WorkforceMaximizer<ALG>, Steppable {
 
 
 
@@ -102,7 +102,7 @@ public class WeeklyWorkforceMaximizer<ALG extends WorkerMaximizationAlgorithm> i
      * @param control the plant control
      * @param algorithm the pre-made algorithm
      */
-    public WeeklyWorkforceMaximizer(HumanResources hr, PlantControl control, ALG algorithm) {
+    public SetTargetThenTryAgainMaximizer(HumanResources hr, PlantControl control, ALG algorithm) {
         this.hr = hr;
         this.control = control;
         this.maximizationAlgorithm = algorithm;
@@ -115,7 +115,7 @@ public class WeeklyWorkforceMaximizer<ALG extends WorkerMaximizationAlgorithm> i
      * @param control the plant control
      * @param algorithmClass the type of algorithm to make!
      */
-    public WeeklyWorkforceMaximizer(HumanResources hr, PlantControl control, Class<ALG> algorithmClass) {
+    public SetTargetThenTryAgainMaximizer(HumanResources hr, PlantControl control, Class<ALG> algorithmClass) {
         this.hr = hr;
         this.control = control;
         this.maximizationAlgorithm = WorkerMaximizationAlgorithmFactory.buildMaximizationAlgorithm(hr,control,algorithmClass);
@@ -190,13 +190,13 @@ public class WeeklyWorkforceMaximizer<ALG extends WorkerMaximizationAlgorithm> i
 
 
         //if you haven't achieved your worker objective you can't really make a judgment so just try again in next week
-        if(isActive() && hr.getPlant().workerSize() != control.getTarget()){
+        if(isActive() && hr.getPlant().getNumberOfWorkers() != control.getTarget()){
             reschedule(nextCheck);
             checkWeek = false; //if it was observation week and you missed on your target, start over :(
             return;
         }
         //if we are at the right target then we move to checkWeek status
-        if(hr.getPlant().workerSize() == control.getTarget() && !checkWeek){
+        if(hr.getPlant().getNumberOfWorkers() == control.getTarget() && !checkWeek){
             checkWeek = true; //next observation is check week!
             reschedule(nextCheck + weeksToMakeObservation*7);
             return;
@@ -208,7 +208,7 @@ public class WeeklyWorkforceMaximizer<ALG extends WorkerMaximizationAlgorithm> i
         //if we are here, it's observation week!
         assert checkWeek;
         //todo this happens very rarely during messy world, should I be concerned?
-        assert hr.getPlant().workerSize() == control.getTarget() :  hr.getPlant().workerSize() + "," +  control.getTarget();
+        assert hr.getPlant().getNumberOfWorkers() == control.getTarget() :  hr.getPlant().getNumberOfWorkers() + "," +  control.getTarget();
 
         //get profits
         float newProfits = hr.getFirm().getPlantProfits(hr.getPlant());

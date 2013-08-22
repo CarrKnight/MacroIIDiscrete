@@ -94,14 +94,14 @@ public class MaxCapacityControlTest {
         //check before start
         assertEquals(steppableList.size(),0);
      //   assertTrue(!steppableList.contains(control));
-        assertTrue(p.workerSize()==0);
+        assertTrue(p.getNumberOfWorkers()==0);
 
         //start the human resources
         humanResources.start();
         //some stuff might have happened, but surely the control should have called "schedule in"
 //        assertEquals(steppableList.size(),1);
      //   assertTrue(steppableList.contains(control));
-//        assertTrue(p.workerSize() > 0);
+//        assertTrue(p.getNumberOfWorkers() > 0);
 
 
         //now "adjust" 100 times
@@ -119,14 +119,14 @@ public class MaxCapacityControlTest {
 
      //       assertTrue(steppableList.contains(control));
 
-         //   System.out.println("old wage:" + oldWage +" , new wage: " + newWage + " , worker size: " + p.workerSize());
+         //   System.out.println("old wage:" + oldWage +" , new wage: " + newWage + " , worker size: " + p.getNumberOfWorkers());
 
 
             //make sure it is adjusting in the right direction
-            assertTrue((p.workerSize() <= 90 && newWage > oldWage) ||       //notice 90, 110: this controller is very imprecise
-                    (p.workerSize() >= 110 && newWage < oldWage) ||
-                    (p.workerSize() == 100 && newWage == oldWage) ||
-                    (p.workerSize() > 90 && newWage < 110) ||
+            assertTrue((p.getNumberOfWorkers() <= 90 && newWage > oldWage) ||       //notice 90, 110: this controller is very imprecise
+                    (p.getNumberOfWorkers() >= 110 && newWage < oldWage) ||
+                    (p.getNumberOfWorkers() == 100 && newWage == oldWage) ||
+                    (p.getNumberOfWorkers() > 90 && newWage < 110) ||
                     i < 10);//derivative is pretty strong here
 
 

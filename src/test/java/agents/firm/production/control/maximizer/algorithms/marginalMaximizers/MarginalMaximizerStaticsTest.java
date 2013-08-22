@@ -478,7 +478,7 @@ public class MarginalMaximizerStaticsTest
     public void marginalProfits1() throws DelayException {
 
         mockStatic(MarginalMaximizerStatics.class);
-        Plant p = mock(Plant.class); when(p.workerSize()).thenReturn(1);
+        Plant p = mock(Plant.class); when(p.getNumberOfWorkers()).thenReturn(1);
 
         //costs
         CostEstimate wages = new CostEstimate(100,100000);
@@ -516,7 +516,7 @@ public class MarginalMaximizerStaticsTest
     public void marginalProfits2() throws DelayException {
 
         mockStatic(MarginalMaximizerStatics.class);
-        Plant p = mock(Plant.class); when(p.workerSize()).thenReturn(1);
+        Plant p = mock(Plant.class); when(p.getNumberOfWorkers()).thenReturn(1);
 
         //costs
         CostEstimate wages = new CostEstimate(100,100000);
@@ -552,7 +552,7 @@ public class MarginalMaximizerStaticsTest
     public void marginalProfits3() throws DelayException {
 
         mockStatic(MarginalMaximizerStatics.class);
-        Plant p = mock(Plant.class); when(p.workerSize()).thenReturn(1);
+        Plant p = mock(Plant.class); when(p.getNumberOfWorkers()).thenReturn(1);
 
         //costs
         CostEstimate wages = new CostEstimate(100,100000);
@@ -588,7 +588,7 @@ public class MarginalMaximizerStaticsTest
     public void marginalProfits4() throws DelayException {
 
         mockStatic(MarginalMaximizerStatics.class);
-        Plant p = mock(Plant.class); when(p.workerSize()).thenReturn(2);
+        Plant p = mock(Plant.class); when(p.getNumberOfWorkers()).thenReturn(2);
 
         //costs
         CostEstimate wages = new CostEstimate(-100,100000);

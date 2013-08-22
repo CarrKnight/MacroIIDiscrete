@@ -15,7 +15,7 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
+import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPID;
 import agents.firm.production.control.targeter.PIDTargeter;
@@ -306,10 +306,10 @@ public class OneLinkSupplyChainScenario extends Scenario {
         plant.setCostStrategy(new InputCostStrategy(plant));
         firm.addPlant(plant);
         FactoryProducedHumanResourcesWithMaximizerAndTargeter<TargetAndMaximizePlantControl,BuyerSearchAlgorithm,
-                SellerSearchAlgorithm,PIDTargeter,WeeklyWorkforceMaximizer<WorkerMaximizationAlgorithm>,WorkerMaximizationAlgorithm>
+                SellerSearchAlgorithm,PIDTargeter,SetTargetThenTryAgainMaximizer<WorkerMaximizationAlgorithm>,WorkerMaximizationAlgorithm>
                 produced =
                 HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE,firm,laborMarket,plant,
-                PIDTargeter.class,WeeklyWorkforceMaximizer.class,controlType,null,null);
+                PIDTargeter.class,SetTargetThenTryAgainMaximizer.class,controlType,null,null);
 
         if(blueprint.getOutputs().containsKey(GoodType.BEEF))
             produced.getWorkforceMaximizer().setWeeksToMakeObservation(weeksToMakeObservationBeef);

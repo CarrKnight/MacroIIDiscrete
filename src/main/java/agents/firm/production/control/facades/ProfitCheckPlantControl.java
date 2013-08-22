@@ -11,7 +11,7 @@ import agents.firm.production.Plant;
 import agents.firm.production.PlantListener;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
+import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.hillClimbers.GradientMaximizer;
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.Machinery;
@@ -48,7 +48,7 @@ public class ProfitCheckPlantControl  implements PlantControl, PlantListener
      */
     public ProfitCheckPlantControl(@Nonnull HumanResources hr) {
         //instantiate the real control
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class,WeeklyWorkforceMaximizer.class,
+        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class,SetTargetThenTryAgainMaximizer.class,
                 GradientMaximizer.class).getControl();
 
     }

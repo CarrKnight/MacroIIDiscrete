@@ -113,13 +113,13 @@ public class ProfitCheckPlantControlTest {
 
         //check before start
         assertTrue(!steppableList.contains(control));
-        assertTrue(p.workerSize()==0);
+        assertTrue(p.getNumberOfWorkers()==0);
 
         //start the human resources
         humanResources.start();
         //some stuff might have happened, but surely the control should have called "schedule in"
         assertTrue(control.toString(),!steppableList.contains(control));
-//        assertTrue(p.workerSize() > 0);
+//        assertTrue(p.getNumberOfWorkers() > 0);
 
 
         WeeklyProfitReport profits = mock(WeeklyProfitReport.class);
@@ -130,7 +130,7 @@ public class ProfitCheckPlantControlTest {
         for(int i=0; i < 5000; i++)
         {
 
-            when(profits.getPlantProfits(p)).thenReturn(p.workerSize() * 2f);
+            when(profits.getPlantProfits(p)).thenReturn(p.getNumberOfWorkers() * 2f);
 
             //put the stuff to adjust in its own list
             Set<Steppable> toStep = new HashSet<>(steppableList);
@@ -144,7 +144,7 @@ public class ProfitCheckPlantControlTest {
 
 
             long newWage = humanResources.maxPrice(GoodType.LABOR,market);
-            System.out.println("old wage:" + oldWage +" , new wage: " + newWage + " , worker size: " + p.workerSize() + ", old target: " + oldTarget + ", new target: " + control.getTarget());
+            System.out.println("old wage:" + oldWage +" , new wage: " + newWage + " , worker size: " + p.getNumberOfWorkers() + ", old target: " + oldTarget + ", new target: " + control.getTarget());
 
 
 //            assertTrue(steppableList.contains(control));
@@ -152,16 +152,16 @@ public class ProfitCheckPlantControlTest {
 
 
             //make sure it is adjusting in the right direction
-            /*       assertTrue((p.workerSize() <= oldTarget && newWage >= oldWage) ||       // this controller is very imprecise
-(p.workerSize() >= oldTarget && newWage <= oldWage) ||
-(p.workerSize() == oldTarget && newWage == oldWage) || i<10);
+            /*       assertTrue((p.getNumberOfWorkers() <= oldTarget && newWage >= oldWage) ||       // this controller is very imprecise
+(p.getNumberOfWorkers() >= oldTarget && newWage <= oldWage) ||
+(p.getNumberOfWorkers() == oldTarget && newWage == oldWage) || i<10);
             */
 
 
         }
         System.out.println("--------------------------------------------------------------------------------------");
 
-        assertTrue(p.workerSize() == 100);
+        assertTrue(p.getNumberOfWorkers() == 100);
 
 
 
@@ -241,13 +241,13 @@ public class ProfitCheckPlantControlTest {
         //check before start
         //assertEquals(steppableList.size(),0);
         assertTrue(control.toString(),!steppableList.contains(control));
-        assertTrue(p.workerSize()==0);
+        assertTrue(p.getNumberOfWorkers()==0);
 
         //start the human resources
         humanResources.start();
         //some stuff might have happened, but surely the control should have called "schedule in"
         assertTrue(control.toString(),!steppableList.contains(control));
-     //   assertTrue(p.workerSize() > 0);
+     //   assertTrue(p.getNumberOfWorkers() > 0);
 
         WeeklyProfitReport profits = mock(WeeklyProfitReport.class);
         firm.setProfitReport(profits);
@@ -257,7 +257,7 @@ public class ProfitCheckPlantControlTest {
         for(int i=0; i < 5000; i++)
         {
             //always profitable
-            when(profits.getPlantProfits(p)).thenReturn(p.workerSize() * 2f);
+            when(profits.getPlantProfits(p)).thenReturn(p.getNumberOfWorkers() * 2f);
 
             //put the stuff to adjust in its own list
             Set<Steppable> toStep = new HashSet<>(steppableList);
@@ -271,25 +271,25 @@ public class ProfitCheckPlantControlTest {
 
 
             long newWage = humanResources.maxPrice(GoodType.LABOR,market);
-            System.out.println("old wage:" + oldWage +" , new wage: " + newWage + " , worker size: " + p.workerSize() + ", old target: " + oldTarget + ", new target: " +
+            System.out.println("old wage:" + oldWage +" , new wage: " + newWage + " , worker size: " + p.getNumberOfWorkers() + ", old target: " + oldTarget + ", new target: " +
                     control.getTarget());
 
 
             assertTrue(control.toString(),!steppableList.contains(control));
-            System.out.println(p.workerSize());
+            System.out.println(p.getNumberOfWorkers());
 
 
             //make sure it is adjusting in the right direction
-            /*       assertTrue((p.workerSize() <= oldTarget && newWage >= oldWage) ||       // this controller is very imprecise
-(p.workerSize() >= oldTarget && newWage <= oldWage) ||
-(p.workerSize() == oldTarget && newWage == oldWage) || i<10);
+            /*       assertTrue((p.getNumberOfWorkers() <= oldTarget && newWage >= oldWage) ||       // this controller is very imprecise
+(p.getNumberOfWorkers() >= oldTarget && newWage <= oldWage) ||
+(p.getNumberOfWorkers() == oldTarget && newWage == oldWage) || i<10);
             */
 
         }
 
         System.out.println("--------------------------------------------------------------------------------------");
 
-        assertTrue(p.workerSize() == 100);
+        assertTrue(p.getNumberOfWorkers() == 100);
 
 
 

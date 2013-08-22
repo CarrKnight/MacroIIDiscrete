@@ -163,7 +163,7 @@ public class ParticleMaximizer extends  HillClimberMaximizer {
         if(newProfits > randomCompetitor.getPlantProfits(competitorPlant) )
             return currentWorkerTarget;
         else
-            return competitorPlant.workerSize();
+            return competitorPlant.getNumberOfWorkers();
 
 
     }
@@ -206,7 +206,7 @@ public class ParticleMaximizer extends  HillClimberMaximizer {
 
         assert bestPlant != null : "max Profits: " + maxProfits +", best competitor: " + bestCompetitor + ", agents: " + agents; //at worst it's us
         assert maxProfits >= newProfits;
-        return bestPlant.workerSize();
+        return bestPlant.getNumberOfWorkers();
 
 
 

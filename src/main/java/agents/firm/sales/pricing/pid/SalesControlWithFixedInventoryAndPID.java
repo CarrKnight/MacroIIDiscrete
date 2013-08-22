@@ -46,7 +46,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     /**
      * A controller to change prices as inventory changes. By default it's a cascade control
      */
-    private final Controller controller;
+    private final CascadePIDController controller;
 
 
     /**
@@ -66,7 +66,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
      */
     public SalesControlWithFixedInventoryAndPID(SalesDepartment department, int targetInventory)
     {
-        this(department,targetInventory, PIDController.class);
+        this(department,targetInventory, CascadePIDController.class);
         //by default, set it proportional
 
 
@@ -79,10 +79,12 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
      * @param controllerType the type of controller to use
      */
     public SalesControlWithFixedInventoryAndPID(SalesDepartment department,int targetInventory,
-                                                Class<? extends Controller> controllerType )
+                                                Class<? extends CascadePIDController> controllerType )
     {
         //use default constructor
         this(department,targetInventory,ControllerFactory.buildController(controllerType,department.getFirm().getModel()));
+
+
 
     }
     /**
@@ -91,11 +93,14 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
      * @param targetInventory the target inventory of this control
      * @param controller the type of controller to use
      */
-    public SalesControlWithFixedInventoryAndPID(SalesDepartment department, int targetInventory,Controller controller) {
+    public SalesControlWithFixedInventoryAndPID(SalesDepartment department, int targetInventory,CascadePIDController controller) {
         this.controller = controller;
         this.department = department;
         this.targetInventory = targetInventory;
         department.getFirm().getModel().scheduleSoon(ActionOrder.ADJUST_PRICES,this);
+
+        //careful how you set up your controller!
+        controller.setupAsInventoryCascade(department.getModel());
 
 
     }
@@ -153,8 +158,13 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
         //memorize old price before adjustment (this is so that if there is a change, we update old quotes)
         long oldPrice =  (long)Math.round(controller.getCurrentMV());
 
+        //first PID tries to deal with difference in inventory
+        //second PID is fed in AS INPUT the difference in flows, the first PID is only a P so when the inventory is of the right size
+        //the first PID feeds in to the second the target 0, which means that inflows and outflows have to equalize
         controller.adjust(input,
                 department.getFirm().isActive(), macroII, this, ActionOrder.ADJUST_PRICES);
+
+
 
         getDepartment().getFirm().logEvent(getDepartment(),
                 MarketEvents.CHANGE_IN_POLICY,getDepartment().getFirm().getModel().getCurrentSimulationTimeInMillis(),

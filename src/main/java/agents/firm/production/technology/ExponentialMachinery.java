@@ -89,7 +89,7 @@ public abstract class ExponentialMachinery extends Machinery {
      */
     @Override
     public float expectedWaitingTime() {
-        return hypotheticalWaitingTime(plant.workerSize());
+        return hypotheticalWaitingTime(plant.getNumberOfWorkers());
     }
 
 
@@ -98,7 +98,7 @@ public abstract class ExponentialMachinery extends Machinery {
      * @return expected weekly production
      */
     public float expectedWeeklyProductionRuns(){
-        return hypotheticalWeeklyProductionRuns(plant.workerSize());
+        return hypotheticalWeeklyProductionRuns(plant.getNumberOfWorkers());
     }
 
     /**
@@ -109,7 +109,7 @@ public abstract class ExponentialMachinery extends Machinery {
     @Override
     public float weeklyThroughput(GoodType outputType) {
         Preconditions.checkArgument(plant.getBlueprint().getOutputs().containsKey(outputType),"Expecting production of the wrong good!");
-        if(plant.workerSize() <minimumWorkersNeeded())
+        if(plant.getNumberOfWorkers() <minimumWorkersNeeded())
             return 0;
         else
         //expected weekly production is poisson times blueprint multipliers
@@ -125,15 +125,15 @@ public abstract class ExponentialMachinery extends Machinery {
         //check it makes sense
         if(!plant.getBlueprint().getOutputs().containsKey(outputType))
             throw new IllegalArgumentException("Expecting production of the wrong good!");
-        if(plant.workerSize() ==0)
+        if(plant.getNumberOfWorkers() ==0)
             return getOutputMultiplier(outputType) * plant.getBlueprint().getOutputs().get(outputType) * hypotheticalWeeklyProductionRuns(1);
         else
         {
 
-            assert plant.workerSize() > 0;
+            assert plant.getNumberOfWorkers() > 0;
 
             return getOutputMultiplier(outputType) * plant.getBlueprint().getOutputs().get(outputType) * (
-                    hypotheticalWeeklyProductionRuns(plant.workerSize() + 1) - hypotheticalWeeklyProductionRuns(plant.workerSize())) ;
+                    hypotheticalWeeklyProductionRuns(plant.getNumberOfWorkers() + 1) - hypotheticalWeeklyProductionRuns(plant.getNumberOfWorkers())) ;
 
         }
     }
@@ -167,8 +167,8 @@ public abstract class ExponentialMachinery extends Machinery {
 
     @Override
     public float nextWaitingTime() {
-        assert plant.checkForWorkers() && plant.workerSize() > 0;
-        return drawExponential(plant.getRandom(),deltaFunction(plant.workerSize()));
+        assert plant.checkForWorkers() && plant.getNumberOfWorkers() > 0;
+        return drawExponential(plant.getRandom(),deltaFunction(plant.getNumberOfWorkers()));
 
     }
 
@@ -191,7 +191,7 @@ public abstract class ExponentialMachinery extends Machinery {
      */
     @Override
     public float marginalProductionRuns() {
-        return hypotheticalWeeklyProductionRuns(plant.workerSize() + 1) - hypotheticalWeeklyProductionRuns(plant.workerSize() + 1);
+        return hypotheticalWeeklyProductionRuns(plant.getNumberOfWorkers() + 1) - hypotheticalWeeklyProductionRuns(plant.getNumberOfWorkers() + 1);
 
     }
 

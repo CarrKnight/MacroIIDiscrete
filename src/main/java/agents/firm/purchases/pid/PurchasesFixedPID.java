@@ -16,10 +16,7 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.pid.Controller;
-import model.utilities.pid.ControllerFactory;
-import model.utilities.pid.ControllerInput;
-import model.utilities.pid.PIDController;
+import model.utilities.pid.*;
 import model.utilities.pid.decorator.ExponentialFilterInputDecorator;
 import model.utilities.pid.decorator.ExponentialFilterOutputDecorator;
 import model.utilities.pid.decorator.ExponentialFilterTargetDecorator;
@@ -100,7 +97,9 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
         super(purchasesDepartment,specificTarget);
         rootController = ControllerFactory.buildController(controllerType,model);
         controller = rootController;
-
+        //if you have a pid controller, play a bit with it
+        if(controllerType.equals(CascadePIDController.class))
+            ((CascadePIDController)controller).setupAsInventoryCascade(model);
 
     }
 

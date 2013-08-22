@@ -141,7 +141,7 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
             String toAnnotate =  "marginal efficency:" + marginalEfficency + ", marginal benefits: " + marginalBenefits +
                     ", marginal costs: " + marginalCosts + '\n' +
 
-                    " ,firm employment:" + getP().workerSize() + '\n' +
+                    " ,firm employment:" + getP().getNumberOfWorkers() + '\n' +
                     "target yestrday:" + mvYesterday + ", target today:" + pid.getCurrentMV() + ", integral: " + pid.getIntegral() + '\n';
 
             if(!getP().getOutputs().isEmpty())
@@ -173,7 +173,7 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
                 System.out.println("firm" + getP().getOwner() + " ,time: " +getP().getOwner().getModel().schedule.getTime());
                 System.out.println("marginal efficency:" + marginalEfficency + ", marginal benefits: " + marginalBenefits + ", marginal costs: " + marginalCosts );
                 System.out.println(
-                        " ,firm employment:" + getP().workerSize() );
+                        " ,firm employment:" + getP().getNumberOfWorkers() );
                 System.out.println("target yestrday:" + mvYesterday + ", target today:" + pid.getCurrentMV() + ", integral: " + pid.getIntegral());
                 System.out.println("wages:" + wageCosts.getMarginalCost() + ", price: " + getOwner().getModel().getMarket(GoodType.BEEF).getLastPrice() +
                         ", predicted price: " + getOwner().getSalesDepartment(GoodType.BEEF).predictSalePriceAfterIncreasingProduction(inputCosts.getTotalCost() + wageCosts.getTotalCost()) + "\n");

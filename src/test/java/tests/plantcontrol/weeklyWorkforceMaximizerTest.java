@@ -5,7 +5,7 @@ import agents.firm.cost.PlantCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
+import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.hillClimbers.AnnealingReactingMaximizer;
 import agents.firm.production.control.maximizer.algorithms.hillClimbers.HillClimberMaximizer;
 import ec.util.MersenneTwisterFast;
@@ -44,7 +44,7 @@ public class weeklyWorkforceMaximizerTest {
 
 
     /**
-     * Profits are workerSize^2
+     * Profits are getNumberOfWorkers^2
      */
     @Test
     public void scenario1Test()
@@ -90,10 +90,10 @@ public class weeklyWorkforceMaximizerTest {
 
 
         //maximize!
-        WeeklyWorkforceMaximizer<HillClimberMaximizer> maximizer = new WeeklyWorkforceMaximizer<>(hr,control,HillClimberMaximizer.class);
+        SetTargetThenTryAgainMaximizer<HillClimberMaximizer> maximizer = new SetTargetThenTryAgainMaximizer<>(hr,control,HillClimberMaximizer.class);
 
         maximizer.start();
-        when(plant.workerSize()).thenReturn(currentTarget);
+        when(plant.getNumberOfWorkers()).thenReturn(currentTarget);
         when(control.getTarget()).thenReturn(currentTarget);
 
         for(int i=0; i<100; i++)
@@ -107,7 +107,7 @@ public class weeklyWorkforceMaximizerTest {
             when(firm.getPlantProfits(any(Plant.class))).thenReturn((float)
                     (currentTarget * currentTarget)
             );
-            when(plant.workerSize()).thenReturn(currentTarget);
+            when(plant.getNumberOfWorkers()).thenReturn(currentTarget);
             when(control.getTarget()).thenReturn(currentTarget);
 
 
@@ -122,7 +122,7 @@ public class weeklyWorkforceMaximizerTest {
 
 
     /**
-     * Profits are workerSize^2
+     * Profits are getNumberOfWorkers^2
      */
     @Test
     public void scenario2Test()
@@ -169,11 +169,11 @@ public class weeklyWorkforceMaximizerTest {
 
 
         //maximize!
-        WeeklyWorkforceMaximizer<HillClimberMaximizer> maximizer = new WeeklyWorkforceMaximizer<>(hr,control,
+        SetTargetThenTryAgainMaximizer<HillClimberMaximizer> maximizer = new SetTargetThenTryAgainMaximizer<>(hr,control,
                 HillClimberMaximizer.class);
 
         maximizer.start();
-        when(plant.workerSize()).thenReturn(currentTarget);
+        when(plant.getNumberOfWorkers()).thenReturn(currentTarget);
         when(control.getTarget()).thenReturn(currentTarget);
 
         for(int i=0; i<100; i++)
@@ -188,7 +188,7 @@ public class weeklyWorkforceMaximizerTest {
             when(firm.getPlantProfits(any(Plant.class))).thenReturn(
                     currentTarget < 10 ? (float) (currentTarget * currentTarget) : 0f
             );
-            when(plant.workerSize()).thenReturn(currentTarget);
+            when(plant.getNumberOfWorkers()).thenReturn(currentTarget);
             when(control.getTarget()).thenReturn(currentTarget);
 
 
@@ -204,7 +204,7 @@ public class weeklyWorkforceMaximizerTest {
 
 
     /**
-     * Profits are workerSize^2
+     * Profits are getNumberOfWorkers^2
      */
     @Test
     public void scenario3Test()
@@ -251,11 +251,11 @@ public class weeklyWorkforceMaximizerTest {
 
 
         //maximize!
-        WeeklyWorkforceMaximizer<AnnealingReactingMaximizer> maximizer =
-                new WeeklyWorkforceMaximizer<>(hr,control,AnnealingReactingMaximizer.class);
+        SetTargetThenTryAgainMaximizer<AnnealingReactingMaximizer> maximizer =
+                new SetTargetThenTryAgainMaximizer<>(hr,control,AnnealingReactingMaximizer.class);
 
         maximizer.start();
-        when(plant.workerSize()).thenReturn(currentTarget);
+        when(plant.getNumberOfWorkers()).thenReturn(currentTarget);
         when(control.getTarget()).thenReturn(currentTarget);
 
         for(int i=0; i<100; i++)
@@ -270,7 +270,7 @@ public class weeklyWorkforceMaximizerTest {
             when(firm.getPlantProfits(any(Plant.class))).thenReturn(
                     currentTarget < 10 ? (float) (currentTarget * currentTarget) : 0f
             );
-            when(plant.workerSize()).thenReturn(currentTarget);
+            when(plant.getNumberOfWorkers()).thenReturn(currentTarget);
             when(control.getTarget()).thenReturn(currentTarget);
 
 
@@ -292,7 +292,7 @@ public class weeklyWorkforceMaximizerTest {
             when(firm.getPlantProfits(any(Plant.class))).thenReturn(
                     currentTarget < 10 ? 1f/((float)currentTarget) : currentTarget * currentTarget
             );
-            when(plant.workerSize()).thenReturn(currentTarget);
+            when(plant.getNumberOfWorkers()).thenReturn(currentTarget);
             when(control.getTarget()).thenReturn(currentTarget);
 
 

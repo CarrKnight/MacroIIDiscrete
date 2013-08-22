@@ -219,19 +219,22 @@ public abstract class AbstractInventoryControl implements InventoryControl{
         //prepare inputs
         int todayInflow = getPurchasesDepartment().getTodayInflow();
         int todayInventory = getPurchasesDepartment().getFirm().hasHowMany(getGoodTypeToControl());
-        if(invertInputs)
-            inputBuilder.inputs((float) todayInflow,
-                    (float) todayInventory);
-        else
-            inputBuilder.inputs((float) todayInventory,
-                    (float) todayInflow);
+
 
         //prepare targets
         int todayOutflow = getPurchasesDepartment().getTodayOutflow() + getPurchasesDepartment().getTodayFailuresToConsume();
-        if(invertTargets)
-            inputBuilder.targets((float) todayOutflow,target);
+
+        if(invertInputs)
+            inputBuilder.inputs((float) todayOutflow,
+                    (float) todayInventory);
         else
-            inputBuilder.targets(target,(float) todayOutflow);
+            inputBuilder.inputs((float) todayInventory,
+                    (float) todayOutflow);
+
+        if(invertTargets)
+            inputBuilder.targets((float) todayInflow,target);
+        else
+            inputBuilder.targets(target,(float) todayInflow);
 
 
 

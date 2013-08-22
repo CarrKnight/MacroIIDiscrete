@@ -10,7 +10,7 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
+import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.hillClimbers.AnnealingReactingMaximizer;
 import agents.firm.production.control.targeter.MarketLookTargeter;
 import agents.firm.production.technology.Machinery;
@@ -47,7 +47,7 @@ public class LookAheadAnnealingControl implements PlantControl
     public LookAheadAnnealingControl(@Nonnull HumanResources hr) {
         //instantiate the real control
         control = TargetAndMaximizePlantControl.
-                PlantControlFactory(hr, MarketLookTargeter.class,WeeklyWorkforceMaximizer.class,
+                PlantControlFactory(hr, MarketLookTargeter.class,SetTargetThenTryAgainMaximizer.class,
                         AnnealingReactingMaximizer.class).getControl();
 
     }

@@ -18,6 +18,9 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.Deactivatable;
+import model.utilities.stats.collectors.enums.PlantData;
+import model.utilities.stats.collectors.enums.PlantDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -39,7 +42,7 @@ import java.util.*;
  * @version %I%, %G%
  * @see
  */
-public class Plant implements Department, Steppable, InventoryListener {
+public class Plant implements Department, Steppable, Deactivatable, InventoryListener {
 
 
     /**
@@ -60,6 +63,7 @@ public class Plant implements Department, Steppable, InventoryListener {
         this.usefulLife = usefulLife;
         this.listeners = new LinkedHashSet<>();
         this.model = owner.getModel();
+        this.dataStorage = new PlantData();
 
         //add yourself as an inventory listener AND log
         owner.addInventoryListener(this);
@@ -151,6 +155,11 @@ public class Plant implements Department, Steppable, InventoryListener {
      */
     private float timeRemainingTillNextProductionRun = 0f;
 
+    /**
+     * the data storage object. It starts with the start() which is itself called by the HR object when it is started
+     */
+    private PlantData dataStorage;
+
 
     /**
      * Production counter
@@ -190,9 +199,17 @@ public class Plant implements Department, Steppable, InventoryListener {
     }
 
     /**
+     * start for the plant simply starts collecting data. Nothing more
+     */
+    public void start()
+    {
+        dataStorage.start(getModel(),this);
+    }
+
+    /**
      * How many workers are in the plant?
      */
-    public int workerSize(){
+    public int getNumberOfWorkers(){
         return workers.size();
     }
 
@@ -502,7 +519,7 @@ public class Plant implements Department, Steppable, InventoryListener {
      * @return the worker fired
      */
     public Person removeWorker(@Nonnull Person w){
-        if(workerSize() <=0)
+        if(getNumberOfWorkers() <=0)
             throw new IllegalStateException("Trying to fire a worker from an empty plant!");
 
         //did I remove him successfully?
@@ -511,11 +528,11 @@ public class Plant implements Department, Steppable, InventoryListener {
 
             //notify the listeners
             for(PlantListener l : listeners)
-                l.changeInWorkforceEvent(this,workerSize());
+                l.changeInWorkforceEvent(this, getNumberOfWorkers());
 
             //log it
             getOwner().logEvent(this, MarketEvents.LOST_WORKER, getOwner().getModel().getCurrentSimulationTimeInMillis(),
-                    " Total workers: " + workerSize());
+                    " Total workers: " + getNumberOfWorkers());
             //tell the market about it
             if(MacroII.hasGUI()){
                 if(getHr() != null) //it might be null if we are turning off
@@ -548,8 +565,8 @@ public class Plant implements Department, Steppable, InventoryListener {
      */
     public void addWorkers(Person... newHires)
     {
-        if(workerSize() + newHires.length > maxWorkers)
-            throw new IllegalStateException("Trying to too many workers to the firm " + workerSize() + newHires.length);
+        if(getNumberOfWorkers() + newHires.length > maxWorkers)
+            throw new IllegalStateException("Trying to too many workers to the firm " + getNumberOfWorkers() + newHires.length);
 
 
         for(Person p : newHires){
@@ -562,10 +579,10 @@ public class Plant implements Department, Steppable, InventoryListener {
         //now fire the listeners
         //tell the listener
         for(PlantListener l : listeners)
-            l.changeInWorkforceEvent(this,workerSize());
+            l.changeInWorkforceEvent(this, getNumberOfWorkers());
         //tell the gui, if needed
         getOwner().logEvent(this, MarketEvents.HIRED_WORKER, getOwner().getModel().getCurrentSimulationTimeInMillis(),
-                "Hired " + newHires.length + ", new total: " + workerSize());
+                "Hired " + newHires.length + ", new total: " + getNumberOfWorkers());
 
 
         //if you were waiting for a worker, try again
@@ -778,6 +795,9 @@ public class Plant implements Department, Steppable, InventoryListener {
         for(PlantListener listener : listeners)
             listener.plantShutdownEvent(this);
 
+        //turn off the data storage
+        dataStorage.turnOff();
+
     }
 
     public PlantCostStrategy getCostStrategy() {
@@ -804,7 +824,7 @@ public class Plant implements Department, Steppable, InventoryListener {
      */
     public void fireWageEvent(long wage){
         for(PlantListener listener : listeners)
-            listener.changeInWageEvent(this,workerSize(),wage);
+            listener.changeInWageEvent(this, getNumberOfWorkers(),wage);
     }
 
     public int[] getLastWeekThroughput() {
@@ -981,5 +1001,52 @@ public class Plant implements Department, Steppable, InventoryListener {
     {
 
         return blueprint.getInputs().keySet();
+    }
+
+
+    /**
+     * return the latest price observed
+     */
+    public Double getLatestObservation(PlantDataType type) {
+        return dataStorage.getLatestObservation(type);
+    }
+
+    /**
+     * returns a copy of all the observed last prices so far!
+     */
+    public double[] getAllRecordedObservations(PlantDataType type) {
+        return dataStorage.getAllRecordedObservations(type);
+    }
+
+    /**
+     * utility method to analyze only specific days
+     */
+    public double[] getObservationsRecordedTheseDays(PlantDataType type, @Nonnull int[] days) {
+        return dataStorage.getObservationsRecordedTheseDays(type, days);
+    }
+
+    /**
+     * utility method to analyze only specific days
+     */
+    public double[] getObservationsRecordedTheseDays(PlantDataType type, int beginningDay, int lastDay) {
+        return dataStorage.getObservationsRecordedTheseDays(type, beginningDay, lastDay);
+    }
+
+    /**
+     * utility method to analyze only  a specific day
+     */
+    public double getObservationRecordedThisDay(PlantDataType type, int day) {
+        return dataStorage.getObservationRecordedThisDay(type, day);
+    }
+
+    public int getLastObservedDay() {
+        return dataStorage.getLastObservedDay();
+    }
+
+    /**
+     * how many days worth of observations are here?
+     */
+    public int numberOfObservations() {
+        return dataStorage.numberOfObservations();
     }
 }

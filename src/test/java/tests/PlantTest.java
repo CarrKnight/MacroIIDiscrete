@@ -108,11 +108,11 @@ public class PlantTest {
     @Test
     public void testWorkerSize() throws Exception {
 
-        assertEquals(crs.workerSize(), 2);
+        assertEquals(crs.getNumberOfWorkers(), 2);
         Person w = crs.removeLastWorker();
-        assertEquals(crs.workerSize(), 1);
+        assertEquals(crs.getNumberOfWorkers(), 1);
         crs.addWorker(w);
-        assertEquals(crs.workerSize(), 2);
+        assertEquals(crs.getNumberOfWorkers(), 2);
     }
 
     @Test

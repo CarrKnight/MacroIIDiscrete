@@ -11,7 +11,7 @@ import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
+import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalAndPIDMaximizer;
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.LinearConstantMachinery;
@@ -209,8 +209,8 @@ public class MarginalMaximizerPIDTuning {
                                 control.setTargeter(new PIDTargeter(hr,control));
                                 MarginalAndPIDMaximizer algorithm = new MarginalAndPIDMaximizer(hr,control,plant,plant.getOwner(),
                                         proportional,integrative,derivative,model.getRandom());
-                                WeeklyWorkforceMaximizer<MarginalAndPIDMaximizer> maximizer =
-                                        new WeeklyWorkforceMaximizer<>
+                                SetTargetThenTryAgainMaximizer<MarginalAndPIDMaximizer> maximizer =
+                                        new SetTargetThenTryAgainMaximizer<>
                                                 (hr,control,algorithm);
 
                                 maximizer.getMaximizationAlgorithm().setGains(proportional,integrative,derivative);

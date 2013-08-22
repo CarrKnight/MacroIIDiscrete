@@ -38,7 +38,7 @@ public class SalesControlWithInventoryAndPIDTest {
         SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
         Firm firm = mock(Firm.class); when(department.getFirm()).thenReturn(firm);  when(firm.isActive()).thenReturn(true);
         when(firm.getModel()).thenReturn(new MacroII(1l));
-        Market market= mock(Market.class); when(department.getMarket()).thenReturn(market);
+        Market market= mock(Market.class); when(department.getMarket()).thenReturn(market); when(department.getModel()).thenReturn(new MacroII(1l));
 
 
         SalesControlWithFixedInventoryAndPID pid = new SalesControlWithFixedInventoryAndPID(department);
@@ -68,7 +68,7 @@ public class SalesControlWithInventoryAndPIDTest {
         SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
         Firm firm = mock(Firm.class); when(department.getFirm()).thenReturn(firm); when(firm.isActive()).thenReturn(true);
         when(firm.getModel()).thenReturn(new MacroII(1l));
-        Market market= mock(Market.class); when(department.getMarket()).thenReturn(market);
+        Market market= mock(Market.class); when(department.getMarket()).thenReturn(market); when(department.getModel()).thenReturn(new MacroII(1l));
 
 
 

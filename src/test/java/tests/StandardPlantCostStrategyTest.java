@@ -49,7 +49,7 @@ public class StandardPlantCostStrategyTest {
 
         List<Person> fakeRoster = new LinkedList<>();
         when(p.getWorkers()).thenReturn(fakeRoster);
-        when(p.workerSize()).thenReturn(fakeRoster.size());
+        when(p.getNumberOfWorkers()).thenReturn(fakeRoster.size());
         when(p.getBlueprint()).thenReturn(b);
         when(p.getOutputMultiplier(any(GoodType.class))).thenReturn(1f);
 
@@ -124,7 +124,7 @@ public class StandardPlantCostStrategyTest {
         when(hr.getWagesPaid()).then(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                return p.workerSize() * 3f;
+                return p.getNumberOfWorkers() * 3f;
 
             }
         });

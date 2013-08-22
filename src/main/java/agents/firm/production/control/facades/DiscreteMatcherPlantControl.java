@@ -11,7 +11,7 @@ import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.decorators.MatchBestControlDecorator;
-import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
+import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.hillClimbers.AlwaysMovingHillClimber;
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.Machinery;
@@ -50,7 +50,7 @@ public class DiscreteMatcherPlantControl  implements PlantControl
     public DiscreteMatcherPlantControl(@Nonnull HumanResources hr) {
         //instantiate the real control
         control = TargetAndMaximizePlantControl.PlantControlFactory(hr,
-                PIDTargeter.class, WeeklyWorkforceMaximizer.class,
+                PIDTargeter.class, SetTargetThenTryAgainMaximizer.class,
                 AlwaysMovingHillClimber.class, MatchBestControlDecorator.class);
 
     }

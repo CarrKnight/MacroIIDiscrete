@@ -67,7 +67,7 @@ public class PIDHillClimber extends HillClimberMaximizer
     public PIDHillClimber(HumanResources hr,float proportional, float integrative, float derivative) {
 
         this(hr.getPlant().weeklyFixedCosts(),hr.getPlant().minimumWorkersNeeded(),hr.getPlant().maximumWorkersPossible(),
-                hr.getPlant().workerSize(),hr.getRandom(),proportional,integrative,derivative);
+                hr.getPlant().getNumberOfWorkers(),hr.getRandom(),proportional,integrative,derivative);
 
 
 

@@ -11,7 +11,7 @@ import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
+import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPID;
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.LinearConstantMachinery;
@@ -208,9 +208,9 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
                                 TargetAndMaximizePlantControl control = TargetAndMaximizePlantControl.emptyTargetAndMaximizePlantControl(hr);
                                 control.setTargeter(new PIDTargeter(hr,control));
                                 MarginalMaximizerWithUnitPID algorithm = new MarginalMaximizerWithUnitPID(hr,control,plant,plant.getOwner(),
-                                        model.random, hr.getPlant().workerSize());
-                                WeeklyWorkforceMaximizer<MarginalMaximizerWithUnitPID> maximizer =
-                                        new WeeklyWorkforceMaximizer<>
+                                        model.random, hr.getPlant().getNumberOfWorkers());
+                                SetTargetThenTryAgainMaximizer<MarginalMaximizerWithUnitPID> maximizer =
+                                        new SetTargetThenTryAgainMaximizer<>
                                                 (hr,control,algorithm);
 
                                 maximizer.getMaximizationAlgorithm().setSigmoid(true);

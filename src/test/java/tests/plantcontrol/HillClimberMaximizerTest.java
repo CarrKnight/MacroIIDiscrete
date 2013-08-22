@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
 public class HillClimberMaximizerTest {
 
     /**
-     * Profits are workerSize^2
+     * Profits are getNumberOfWorkers^2
      */
     @Test
     public void scenario1Test()
@@ -78,7 +78,7 @@ public class HillClimberMaximizerTest {
     }
 
     /**
-     * Profits are workerSize^2 for x<10 and 0 otherwise!
+     * Profits are getNumberOfWorkers^2 for x<10 and 0 otherwise!
      */
     @Test
     public void scenario2Test()
@@ -128,7 +128,7 @@ public class HillClimberMaximizerTest {
     }
 
     /**
-     * Profits are workerSize^2 for x<10 and 0 otherwise for the first 100 steps and just x^2 afterwards
+     * Profits are getNumberOfWorkers^2 for x<10 and 0 otherwise for the first 100 steps and just x^2 afterwards
      */
     @Test
     public void scenario3Test()

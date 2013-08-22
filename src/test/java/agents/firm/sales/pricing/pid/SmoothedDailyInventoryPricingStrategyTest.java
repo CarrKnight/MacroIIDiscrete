@@ -2,13 +2,14 @@ package agents.firm.sales.pricing.pid;
 
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
-import static org.junit.Assert.*;
-
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.scheduler.PhaseScheduler;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 /**
@@ -38,8 +39,10 @@ public class SmoothedDailyInventoryPricingStrategyTest {
         //I assume initially target is 0
         SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
         Firm firm = mock(Firm.class); when(department.getFirm()).thenReturn(firm);
-        MacroII model = mock(MacroII.class); when(firm.getModel()).thenReturn(model);
-        when(model.getCurrentPhase()).thenReturn(ActionOrder.PREPARE_TO_TRADE);
+        MacroII model = new MacroII(1l); when(firm.getModel()).thenReturn(model); when(department.getModel()).thenReturn(model);
+        PhaseScheduler scheduler = mock(PhaseScheduler.class);
+        model.setPhaseScheduler(scheduler);
+        when(scheduler.getCurrentPhase()).thenReturn(ActionOrder.PREPARE_TO_TRADE);
 
 
 

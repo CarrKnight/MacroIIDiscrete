@@ -54,7 +54,7 @@ public class HumanResources extends PurchasesDepartment {
     /**
      * The plant to manage.
      */
-    private Plant plant;
+    final private Plant plant;
 
     /**
      * The wages paid by the hr last weekEnd
@@ -248,6 +248,16 @@ public class HumanResources extends PurchasesDepartment {
 
 
     /**
+     * Adds to the purchase departmen start the start of the plant
+     */
+    @Override
+    public void start() {
+        super.start();
+        plant.start();
+
+    }
+
+    /**
      * Max price is overriden to immediately call the inventory control rather than playing with the market visibility and budget.
      * This is because we are forced to keep a single wage at the end of the day.
      *
@@ -337,10 +347,10 @@ public class HumanResources extends PurchasesDepartment {
      */
     public long hypotheticalWageAtThisLevel(int workerTarget)
     {
-        assert workerTarget <= plant.workerSize();
+        assert workerTarget <= plant.getNumberOfWorkers();
         assert workerTarget >= plant.minimumWorkersNeeded();
 
-        int currentWorkers = plant.workerSize();
+        int currentWorkers = plant.getNumberOfWorkers();
 
         List<Person> workers = new ArrayList<>(getPlant().getWorkers());
         //sort them by their minimum wage
@@ -387,7 +397,7 @@ public class HumanResources extends PurchasesDepartment {
     public void fireEveryoneAskingMoreThan(long newWage, int workerTarget)
     {
         Preconditions.checkArgument(workerTarget>=0, "worker target can't be negative");
-        Preconditions.checkArgument(workerTarget<plant.workerSize(), "you are not actually asking to fire anyone");
+        Preconditions.checkArgument(workerTarget<plant.getNumberOfWorkers(), "you are not actually asking to fire anyone");
         Preconditions.checkArgument(newWage>=0,"what do I do with negative wages?");
 
 
@@ -409,7 +419,7 @@ public class HumanResources extends PurchasesDepartment {
             //fired!
             p.fired(getFirm());     //todo test that the worker will actually apply for a job again!
         }
-        assert workerTarget == plant.workerSize();
+        assert workerTarget == plant.getNumberOfWorkers();
     }
 
 
@@ -452,7 +462,7 @@ public class HumanResources extends PurchasesDepartment {
      * How many workers are in the plant?
      */
     public int getNumberOfWorkers() {
-        return plant.workerSize();
+        return plant.getNumberOfWorkers();
     }
 
 

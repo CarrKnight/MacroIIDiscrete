@@ -168,14 +168,14 @@ public class FixWagesPlantControlTest {
         //check before start
         assertEquals(steppableList.size(),0);
         assertTrue(!steppableList.contains(control));
-        assertTrue(p.workerSize()==0);
+        assertTrue(p.getNumberOfWorkers()==0);
 
         //start the human resources
         humanResources.start();
         //some stuff might have happened, but surely the control should have called "schedule in"
         assertEquals(steppableList.size(),2);     //should be 2: both the profit check and the pid adjust
 //        assertTrue(steppableList.contains(control));
-//        assertTrue(p.workerSize() > 0);
+//        assertTrue(p.getNumberOfWorkers() > 0);
 
 
         //now "adjust" 100 times
@@ -195,7 +195,7 @@ public class FixWagesPlantControlTest {
                 s.step(model);
 
             long newWage = humanResources.maxPrice(GoodType.LABOR,market);
-            System.out.println("old wage:" + oldWage +" , new wage: " + newWage + " , worker size: " + p.workerSize() + ", old target: " + oldTarget + ", new target: " + control.getTarget());
+            System.out.println("old wage:" + oldWage +" , new wage: " + newWage + " , worker size: " + p.getNumberOfWorkers() + ", old target: " + oldTarget + ", new target: " + control.getTarget());
 
 
      //       assertTrue(steppableList.contains(control));
@@ -203,16 +203,16 @@ public class FixWagesPlantControlTest {
 
 
             //make sure it is adjusting in the right direction
-            /*       assertTrue((p.workerSize() <= oldTarget && newWage >= oldWage) ||       // this controller is very imprecise
-(p.workerSize() >= oldTarget && newWage <= oldWage) ||
-(p.workerSize() == oldTarget && newWage == oldWage) || i<10);
+            /*       assertTrue((p.getNumberOfWorkers() <= oldTarget && newWage >= oldWage) ||       // this controller is very imprecise
+(p.getNumberOfWorkers() >= oldTarget && newWage <= oldWage) ||
+(p.getNumberOfWorkers() == oldTarget && newWage == oldWage) || i<10);
             */
 
 
         }
         System.out.println("--------------------------------------------------------------------------------------");
 
-        assertTrue(p.workerSize() == 100);
+        assertTrue(p.getNumberOfWorkers() == 100);
 
 
 
@@ -319,14 +319,14 @@ public class FixWagesPlantControlTest {
         //check before start
         assertEquals(steppableList.size(),0);
         assertTrue(!steppableList.contains(control));
-        assertTrue(p.workerSize()==0);
+        assertTrue(p.getNumberOfWorkers()==0);
 
         //start the human resources
         humanResources.start();
         //some stuff might have happened, but surely the control should have called "schedule in"
         assertEquals(steppableList.size(),2);     //should be 2: both the profit check and the pid adjust
 //        assertTrue(steppableList.contains(control));
-        assertTrue(p.workerSize() > 0);
+        assertTrue(p.getNumberOfWorkers() > 0);
 
 
         //now "adjust" 100 times
@@ -344,7 +344,7 @@ public class FixWagesPlantControlTest {
                 s.step(model);
 
             long newWage = humanResources.maxPrice(GoodType.LABOR,market);
-            System.out.println("old wage:" + oldWage +" , new wage: " + newWage + " , worker size: " + p.workerSize() + ", old target: " + oldTarget + ", new target: " + control.getTarget());
+            System.out.println("old wage:" + oldWage +" , new wage: " + newWage + " , worker size: " + p.getNumberOfWorkers() + ", old target: " + oldTarget + ", new target: " + control.getTarget());
 
 
    //         assertTrue(steppableList.contains(control));
@@ -352,16 +352,16 @@ public class FixWagesPlantControlTest {
 
 
             //make sure it is adjusting in the right direction
-            /*       assertTrue((p.workerSize() <= oldTarget && newWage >= oldWage) ||       // this controller is very imprecise
-(p.workerSize() >= oldTarget && newWage <= oldWage) ||
-(p.workerSize() == oldTarget && newWage == oldWage) || i<10);
+            /*       assertTrue((p.getNumberOfWorkers() <= oldTarget && newWage >= oldWage) ||       // this controller is very imprecise
+(p.getNumberOfWorkers() >= oldTarget && newWage <= oldWage) ||
+(p.getNumberOfWorkers() == oldTarget && newWage == oldWage) || i<10);
             */
 
         }
 
         System.out.println("--------------------------------------------------------------------------------------");
 
-        assertTrue(p.workerSize() == 100);
+        assertTrue(p.getNumberOfWorkers() == 100);
 
 
 

@@ -15,9 +15,7 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.pid.Controller;
-import model.utilities.pid.ControllerFactory;
-import model.utilities.pid.PIDController;
+import model.utilities.pid.*;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -70,11 +68,16 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
         super(purchasesDepartment);
         controller = ControllerFactory.buildController(controllerType, macroII);
 
+        //if you have a pid controller, play a bit with it
+        if(controllerType.equals(CascadePIDController.class))
+            ((CascadePIDController)controller).setupAsInventoryCascade(macroII);
+
+
     }
 
 
     public PurchasesWeeklyPID(@Nonnull PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
-                             float derivativeGain) {
+                              float derivativeGain) {
         super(purchasesDepartment);
         controller = new PIDController(proportionalGain,integralGain,derivativeGain,purchasesDepartment.getRandom()); //instantiate the controller
 
@@ -89,7 +92,8 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
     public void step(SimState simState) {
 
         long oldprice = maxPrice(getGoodTypeToControl());
-        controller.adjust(getControllerInput(getWeeklyNeeds()), isActive(),(MacroII) simState, this, ActionOrder.PREPARE_TO_TRADE);
+        ControllerInput controllerInput = getControllerInput(getWeeklyNeeds());
+        controller.adjust(controllerInput, isActive(),(MacroII) simState, this, ActionOrder.PREPARE_TO_TRADE);
         long newprice = maxPrice(getGoodTypeToControl());
 
         //log the change in policy

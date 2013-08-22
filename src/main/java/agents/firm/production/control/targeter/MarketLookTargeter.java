@@ -95,7 +95,7 @@ public class MarketLookTargeter implements WorkforceTargeter {
         if(!active)
             return;
 
-        if(target <= hr.getPlant().workerSize()){
+        if(target <= hr.getPlant().getNumberOfWorkers()){
             //we are on target, stop
             control.setCanBuy(false);
             return;
@@ -165,9 +165,9 @@ public class MarketLookTargeter implements WorkforceTargeter {
     public void setTarget(int workerSizeTargeted) {
         this.target = workerSizeTargeted;
         //if target is above what we have: buy!
-        if(target > hr.getPlant().workerSize())
+        if(target > hr.getPlant().getNumberOfWorkers())
             hire();
-        else if(target < hr.getPlant().workerSize())
+        else if(target < hr.getPlant().getNumberOfWorkers())
             fire();
 
     }
@@ -182,7 +182,7 @@ public class MarketLookTargeter implements WorkforceTargeter {
         //if we have to fire EVERYONE:
         if(target == 0)
         {
-            while(hr.getPlant().workerSize() > 0)
+            while(hr.getPlant().getNumberOfWorkers() > 0)
             {
                 hr.getPlant().removeLastWorker();
                 hr.getFirm().logEvent(hr,
@@ -204,7 +204,7 @@ public class MarketLookTargeter implements WorkforceTargeter {
         });
 
         assert workers.size() >0;
-        int workersToFire = hr.getPlant().workerSize() - target;
+        int workersToFire = hr.getPlant().getNumberOfWorkers() - target;
         assert workersToFire <= workers.size(): workersToFire + "---" + workers.size();
 
 
@@ -279,9 +279,9 @@ public class MarketLookTargeter implements WorkforceTargeter {
     @Override
     public void changeInMachineryEvent(Plant p, Machinery machinery) {
         //if target is above what we have: buy!
-        if(target > hr.getPlant().workerSize())
+        if(target > hr.getPlant().getNumberOfWorkers())
             hire();
-        else if(target <hr.getPlant().workerSize())
+        else if(target <hr.getPlant().getNumberOfWorkers())
             fire();
     }
 

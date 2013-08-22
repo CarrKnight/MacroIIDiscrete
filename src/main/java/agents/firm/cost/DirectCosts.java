@@ -116,7 +116,7 @@ public class DirectCosts implements PlantCostStrategy, PlantListener {
         long totalWages = plant.getHr().getWagesPaid();
 
         //divide the wages by expected production runs
-        wageCostsPerUnit =  Math.round((float)totalWages / plant.hypotheticalTotalThroughput(plant.workerSize()) );
+        wageCostsPerUnit =  Math.round((float)totalWages / plant.hypotheticalTotalThroughput(plant.getNumberOfWorkers()) );
 
         assert  totalProductionPerRun >= 0;
         assert wageCostsPerUnit >= 0;

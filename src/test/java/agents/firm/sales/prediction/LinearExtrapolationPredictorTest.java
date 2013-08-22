@@ -65,7 +65,7 @@ public class LinearExtrapolationPredictorTest {
 
         LinearExtrapolationPredictor predictor = new LinearExtrapolationPredictor(dept,macroII);
 
-        when(p.workerSize()).thenReturn(1);
+        when(p.getNumberOfWorkers()).thenReturn(1);
         when(dept.getLastClosingPrice()).thenReturn(15l);
 
         //let it learn
@@ -76,7 +76,7 @@ public class LinearExtrapolationPredictorTest {
         Assert.assertEquals(predictor.getLowWorkersPrice(),15f,.001f); //float because it's rounding
 
         //decrease price by 5!
-        when(p.workerSize()).thenReturn(2);
+        when(p.getNumberOfWorkers()).thenReturn(2);
         when(dept.getLastClosingPrice()).thenReturn(10l);
         predictor.step(macroII);  //learn again
         predictor.step(macroII);
@@ -105,7 +105,7 @@ public class LinearExtrapolationPredictorTest {
         for(int workers = 1; workers <= 10; workers++)
         {
             long price = 100 - 2 * workers;
-            when(p.workerSize()).thenReturn(workers);
+            when(p.getNumberOfWorkers()).thenReturn(workers);
             when(dept.getLastClosingPrice()).thenReturn(price);
             predictor.step(macroII);
             predictor.step(macroII);
@@ -115,7 +115,7 @@ public class LinearExtrapolationPredictorTest {
 
 
         //now drop the workers to 5!
-        when(p.workerSize()).thenReturn(5);
+        when(p.getNumberOfWorkers()).thenReturn(5);
         when(dept.getLastClosingPrice()).thenReturn(100l-2l*5);
         predictor.step(macroII);
         predictor.step(macroII);
@@ -145,7 +145,7 @@ public class LinearExtrapolationPredictorTest {
 
         LinearExtrapolationPredictor predictor = new LinearExtrapolationPredictor(dept,macroII);
 
-        when(p.workerSize()).thenReturn(0);
+        when(p.getNumberOfWorkers()).thenReturn(0);
         when(dept.getLastClosingPrice()).thenReturn(15l);
 
         //let it learn
@@ -156,7 +156,7 @@ public class LinearExtrapolationPredictorTest {
         Assert.assertEquals(predictor.getLowWorkersPrice(),15f,.001f); //float because it's rounding
 
         //decrease price by 5!
-        when(p.workerSize()).thenReturn(1);
+        when(p.getNumberOfWorkers()).thenReturn(1);
         when(dept.getLastClosingPrice()).thenReturn(10l);
         predictor.step(macroII);  //learn again
         predictor.step(macroII);
@@ -193,7 +193,7 @@ public class LinearExtrapolationPredictorTest {
         for(int workers = 1; workers <= 10; workers++)
         {
             long price = 100 - 2 * workers;
-            when(p.workerSize()).thenReturn(workers);
+            when(p.getNumberOfWorkers()).thenReturn(workers);
             when(dept.getLastClosingPrice()).thenReturn(price);
             predictor.step(macroII);
             verify(macroII,times(++timesRescheduled)).scheduleTomorrow(ActionOrder.THINK, predictor);

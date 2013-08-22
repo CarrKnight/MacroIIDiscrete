@@ -1024,7 +1024,7 @@ public class Firm extends EconomicAgent {
     {
         int totalWorkers = 0;
         for(Plant p : plants)
-            totalWorkers += p.workerSize();
+            totalWorkers += p.getNumberOfWorkers();
         return totalWorkers;
     }
 
@@ -1084,7 +1084,7 @@ public class Firm extends EconomicAgent {
         for(Plant p : plants){
             Integer outputProduced = p.getBlueprint().getOutputs().get(goodType);
             if(outputProduced != null && outputProduced > 0)
-                totalWorkers += p.workerSize();
+                totalWorkers += p.getNumberOfWorkers();
         }
         return totalWorkers;
 
@@ -1103,7 +1103,7 @@ public class Firm extends EconomicAgent {
         for(Plant p : plants){
             Integer inputProduced = p.getBlueprint().getInputs().get(goodType);
             if(inputProduced != null && inputProduced > 0)
-                totalWorkers += p.workerSize();
+                totalWorkers += p.getNumberOfWorkers();
         }
         return totalWorkers;
 

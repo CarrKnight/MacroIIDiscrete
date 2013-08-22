@@ -215,7 +215,7 @@ public abstract class AbstractPlantControl implements  PlantControl{
      */
     @Override
     public boolean canBuy() {
-        return canBuy && plant.workerSize() < plant.maximumWorkersPossible();
+        return canBuy && plant.getNumberOfWorkers() < plant.maximumWorkersPossible();
     }
 
     /**

@@ -31,7 +31,7 @@ import java.util.ArrayList;
  * @version 2013-08-15
  * @see
  */
-public class MarketData extends DataGatherer<MarketDataType>
+public class MarketData extends DataStorage<MarketDataType>
 {
 
 

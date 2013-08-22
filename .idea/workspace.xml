@@ -14,37 +14,95 @@
     <bookmark url="file://$PROJECT_DIR$/src/main/java/model/experiments/SimpleSellerDelayStickyPrices.java" line="37" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b2f2be4b-01ab-4023-8729-b370a266331e" name="Default" comment="a bit more data gathering. STill not very">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/AveragePurchasePriceCounter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/purchases/AveragePurchasePriceCounterTest.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/PurchaseDepartmentData.java" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/PurchasesDepartmentData.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/test/java/model/utilities/stats/collectors/PurchaseDepartmentDataTest.java" afterPath="$PROJECT_DIR$/src/test/java/model/utilities/stats/collectors/PurchasesDepartmentDataTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/agents/firm/purchases/pricing/CheaterPricingTest.java" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/purchases/pricing/CheaterPricingTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/DataGatherer.java" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/DataGatherer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/FixedIncreasePurchasesPredictor.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/FixedIncreasePurchasesPredictor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/InflowOutflowCounter.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/InflowOutflowCounter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/agents/firm/purchases/InflowOutflowCounterTest.java" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/purchases/InflowOutflowCounterTest.java" />
+    <list default="true" id="b2f2be4b-01ab-4023-8729-b370a266331e" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/EveryWeekMaximizer.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/enums/PlantData.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/java/model/utilities/stats/collectors/enums/PlantDataTest.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/enums/PlantDataType.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/WeeklyWorkforceMaximizer.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/SetTargetThenTryAgainMaximizer.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/DataGatherer.java" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/DataStorage.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/inventoryControl/AbstractInventoryControl.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/inventoryControl/AbstractInventoryControl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/AbstractPlantControl.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/AbstractPlantControl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/AnnealingMaximizerTest.java" afterPath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/AnnealingMaximizerTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/AnnealingReactingMaximizerTest.java" afterPath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/AnnealingReactingMaximizerTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/utilities/pid/CascadePIDController.java" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/pid/CascadePIDController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/cost/DirectCosts.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/cost/DirectCosts.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/DiscreteMatcherPlantControl.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/DiscreteMatcherPlantControl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/DiscreteSlowPlantControl.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/DiscreteSlowPlantControl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/DiscreteSlowPlantControlTest.java" afterPath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/DiscreteSlowPlantControlTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/DumbClimberControl.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/DumbClimberControl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/technology/ExponentialMachinery.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/technology/ExponentialMachinery.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/Firm.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/Firm.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/FixWagesPlantControl.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/FixWagesPlantControl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/FixWagesPlantControlTest.java" afterPath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/FixWagesPlantControlTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/decorators/FixedWageDecorator.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/decorators/FixedWageDecorator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/utilities/pid/FlowAndStockController.java" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/pid/FlowAndStockController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/GradientMaximizerTest.java" afterPath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/GradientMaximizerTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/HillClimberMaximizerTest.java" afterPath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/HillClimberMaximizerTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/personell/HumanResources.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/personell/HumanResources.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/technology/LinearConstantMachinery.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/technology/LinearConstantMachinery.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/LinearExtrapolationPredictor.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/LinearExtrapolationPredictor.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/agents/firm/sales/prediction/LinearExtrapolationPredictorTest.java" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/sales/prediction/LinearExtrapolationPredictorTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/LinearExtrapolatorPurchasePredictor.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/LinearExtrapolatorPurchasePredictor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/LinearExtrapolatorPurchasePredictorTest.java" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/LinearExtrapolatorPurchasePredictorTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/scenario/MonopolistWithInputScenario.java" afterPath="$PROJECT_DIR$/src/main/java/model/scenario/MonopolistWithInputScenario.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/enums/PurchasesDataType.java" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/enums/PurchasesDataType.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/LookAheadAnnealingControl.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/LookAheadAnnealingControl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/MacroII.java" afterPath="$PROJECT_DIR$/src/main/java/model/MacroII.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalAndPIDMaximizer.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalAndPIDMaximizer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/MarginalMaximizerPIDTuning.java" afterPath="$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/MarginalMaximizerPIDTuning.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStatics.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStatics.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStaticsTest.java" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStaticsTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/MarginalMaximizerTest.java" afterPath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/MarginalMaximizerTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerWithUnitPID.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerWithUnitPID.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerWithUnitPIDCascadeEfficencyTest.java" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerWithUnitPIDCascadeEfficencyTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/MarginalMaximizerWithUnitPIDTuning.java" afterPath="$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/MarginalMaximizerWithUnitPIDTuning.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/MarginalMaximizerWithUnitPIDTuningMultiThreaded.java" afterPath="$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/MarginalMaximizerWithUnitPIDTuningMultiThreaded.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/MarginalPlantControl.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/MarginalPlantControl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/MarginalPlantControlWithPIDUnit.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/MarginalPlantControlWithPIDUnit.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/MarketData.java" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/MarketData.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/targeter/MarketLookTargeter.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/targeter/MarketLookTargeter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/MaxCapacityControlTest.java" afterPath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/MaxCapacityControlTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java" afterPath="$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java" afterPath="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist.java" afterPath="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/model/scenario/OneLinkSupplyChainScenarioRegressionTest.java" afterPath="$PROJECT_DIR$/src/test/java/model/scenario/OneLinkSupplyChainScenarioRegressionTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/hillClimbers/PIDHillClimber.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/hillClimbers/PIDHillClimber.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/targeter/PIDTargeter.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/targeter/PIDTargeter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/ParticleControl.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/ParticleControl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/hillClimbers/ParticleMaximizer.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/hillClimbers/ParticleMaximizer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/hillClimbers/ParticleMaximizerTest.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/hillClimbers/ParticleMaximizerTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/Plant.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/Plant.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/tests/PlantTest.java" afterPath="$PROJECT_DIR$/src/test/java/tests/PlantTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/ProfitCheckPlantControl.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/ProfitCheckPlantControl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/ProfitCheckPlantControlTest.java" afterPath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/ProfitCheckPlantControlTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/PurchasesDepartment.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/PurchasesDepartment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/tests/purchase/PurchasesDepartmentTest.java" afterPath="$PROJECT_DIR$/src/test/java/tests/purchase/PurchasesDepartmentTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/PurchasesDepartmentData.java" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/PurchasesDepartmentData.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pid/PurchasesFixedPID.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pid/PurchasesFixedPID.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pid/PurchasesSimplePID.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pid/PurchasesSimplePID.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pid/PurchasesWeeklyPID.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pid/PurchasesWeeklyPID.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SalesControlWithFixedInventoryAndPID.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SalesControlWithFixedInventoryAndPID.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/agents/firm/sales/pricing/pid/SalesControlWithInventoryAndPIDTest.java" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/sales/pricing/pid/SalesControlWithInventoryAndPIDTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/model/scenario/SimpleBuyerScenarioTest.java" afterPath="$PROJECT_DIR$/src/test/java/model/scenario/SimpleBuyerScenarioTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/model/scenario/SimpleSellerScenarioTest.java" afterPath="$PROJECT_DIR$/src/test/java/model/scenario/SimpleSellerScenarioTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SmoothedDailyInventoryPricingStrategy.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SmoothedDailyInventoryPricingStrategy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/agents/firm/sales/pricing/pid/SmoothedDailyInventoryPricingStrategyTest.java" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/sales/pricing/pid/SmoothedDailyInventoryPricingStrategyTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/tests/StandardPlantCostStrategyTest.java" afterPath="$PROJECT_DIR$/src/test/java/tests/StandardPlantCostStrategyTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/WeeklyProfitReport.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/WeeklyProfitReport.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/WorkerMaximizationAlgorithmFactory.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/WorkerMaximizationAlgorithmFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/weeklyWorkforceMaximizerTest.java" afterPath="$PROJECT_DIR$/src/test/java/tests/plantcontrol/weeklyWorkforceMaximizerTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="MacroIIDiscrete.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/fragment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377086810248" ignored="false" />
-    <file path="/Dummy.txt" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377087898403" ignored="false" />
+    <file path="/fragment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377175424267" ignored="false" />
+    <file path="/Dummy.txt" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377158095317" ignored="false" />
     <file path="/MacroII.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376899328438" ignored="false" />
     <file path="/PhaseScheduler.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373272148129" ignored="false" />
-    <file path="/PurchasesDepartment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377081164984" ignored="false" />
-    <file path="/HumanResources.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1375882368764" ignored="false" />
+    <file path="/PurchasesDepartment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377178811322" ignored="false" />
+    <file path="/HumanResources.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377165264963" ignored="false" />
     <file path="/SalesDepartment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376562946535" ignored="false" />
     <file path="/Person.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376485815264" ignored="false" />
     <file path="/EconomicAgent.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376485580452" ignored="false" />
-    <file path="/Plant.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1375782606177" ignored="false" />
+    <file path="/Plant.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377164397274" ignored="false" />
     <file path="/PlantTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1375782660328" ignored="false" />
     <file path="/SalesDepartmentTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1365367718789" ignored="false" />
     <file path="/SalesDepartmentTest2.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376476709243" ignored="false" />
@@ -53,11 +111,11 @@
     <file path="/*.regexp" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1361833716917" ignored="false" />
     <file path="/PIDTargeter.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1365457448152" ignored="false" />
     <file path="$PROJECT_DIR$/../MacroIIDaily/src/model/utilities/PhaseScheduler.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1357123230967" ignored="false" />
-    <file path="/PIDController.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1365445992841" ignored="false" />
+    <file path="/PIDController.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377171983656" ignored="false" />
     <file path="/Controller.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1359986627778" ignored="false" />
     <file path="/ActionOrder.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376906805410" ignored="false" />
     <file path="/ControllerDecorator.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1357124870677" ignored="false" />
-    <file path="/CascadePIDController.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1365618566232" ignored="false" />
+    <file path="/CascadePIDController.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377175812675" ignored="false" />
     <file path="/ExponentialFilterInputDecorator.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1357125198915" ignored="false" />
     <file path="/ExponentialFilterOutputDecorator.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1357125220382" ignored="false" />
     <file path="/ExponentialFilterTargetDecorator.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1357125243828" ignored="false" />
@@ -66,8 +124,8 @@
     <file path="/ControllerFactoryTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1365275038580" ignored="false" />
     <file path="/weeklyWorkforceMaximizer.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1363127174894" ignored="false" />
     <file path="/PurchasesSimplePID.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1364307994056" ignored="false" />
-    <file path="/PurchasesFixedPID.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376480846969" ignored="false" />
-    <file path="/PurchasesWeeklyPID.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1364308008539" ignored="false" />
+    <file path="/PurchasesFixedPID.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377176111739" ignored="false" />
+    <file path="/PurchasesWeeklyPID.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377175804776" ignored="false" />
     <file path="/SimpleFlowSellerPID.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376485279118" ignored="false" />
     <file path="/FlowAndStockFixedPID.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376480351911" ignored="false" />
     <file path="/SimpleBuyerScenario.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376482313107" ignored="false" />
@@ -94,7 +152,7 @@
     <file path="/DummyBuyer.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376487745174" ignored="false" />
     <file path="/TripolistScenario.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1372932474693" ignored="false" />
     <file path="/TestScenario.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376487026003" ignored="false" />
-    <file path="/SimpleSellerScenario.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376997800245" ignored="false" />
+    <file path="/SimpleSellerScenario.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377166419530" ignored="false" />
     <file path="/BuyerSetPricePolicy.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1357226216061" ignored="false" />
     <file path="/MultiProduction.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376486876742" ignored="false" />
     <file path="/MultiProductionMonopolist.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376486960294" ignored="false" />
@@ -118,7 +176,7 @@
     <file path="/NonGUIRunner.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1357893821604" ignored="false" />
     <file path="/MarketLookTargeter.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376475970633" ignored="false" />
     <file path="/MonopolistScenarioTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376222819549" ignored="false" />
-    <file path="/MonopolistWithInputScenarioTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373008690737" ignored="false" />
+    <file path="/MonopolistWithInputScenarioTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377174515784" ignored="false" />
     <file path="/WeeklyInventoryControl.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376472925807" ignored="false" />
     <file path="/DailyStatCollector.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377002249887" ignored="false" />
     <file path="/PIDTestSimple.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1359831043817" ignored="false" />
@@ -128,11 +186,11 @@
     <file path="/MarginalMaximizerTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376227086384" ignored="false" />
     <file path="/MarginalPlantControlWithPID.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1362700314407" ignored="false" />
     <file path="/SalesControlWithInventoryAndPID.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1360184513550" ignored="false" />
-    <file path="/SalesControlWithInventoryAndPIDTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1362600627440" ignored="false" />
-    <file path="/SalesControlWithFixedInventoryAndPID.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376485127509" ignored="false" />
-    <file path="/SimpleSellerScenarioTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377085442953" ignored="false" />
-    <file path="/SmoothedDailyInventoryPricingStrategy.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1365619486490" ignored="false" />
-    <file path="/SmoothedDailyInventoryPricingStrategyTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1360633525275" ignored="false" />
+    <file path="/SalesControlWithInventoryAndPIDTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377173326919" ignored="false" />
+    <file path="/SalesControlWithFixedInventoryAndPID.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377176061743" ignored="false" />
+    <file path="/SimpleSellerScenarioTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377166497595" ignored="false" />
+    <file path="/SmoothedDailyInventoryPricingStrategy.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377173101445" ignored="false" />
+    <file path="/SmoothedDailyInventoryPricingStrategyTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377177132421" ignored="false" />
     <file path="/RandomQueue.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373277215401" ignored="false" />
     <file path="/RandomQueueTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373280851522" ignored="false" />
     <file path="/weeklyWorkforceMaximizerTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1363128270169" ignored="false" />
@@ -2320,7 +2378,7 @@
     <file path="$PROJECT_DIR$/../TheGateMapper/src/reader/HTMLReader.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1366311166033" ignored="false" />
     <file path="/HTMLReader.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1366311143008" ignored="false" />
     <file path="/MarginalMaximizerStaticsTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376221767638" ignored="false" />
-    <file path="/SimpleBuyerScenarioTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376998439523" ignored="false" />
+    <file path="/SimpleBuyerScenarioTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377176174397" ignored="false" />
     <file path="/FixedInventoryControl.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376469545924" ignored="false" />
     <file path="/DummyBuyerWithDelay.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1376486980907" ignored="false" />
     <file path="/DummyBuyerWithDelayTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1366833380515" ignored="false" />
@@ -2437,6 +2495,13 @@
     <file path="/AveragePurchasePriceCounte.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377080260670" ignored="false" />
     <file path="/AveragePurchasePriceCounter.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377079835965" ignored="false" />
     <file path="/AveragePurchasePriceCounterTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377080269738" ignored="false" />
+    <file path="/SeTargetThenTryAgainMaximizer.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377161466735" ignored="false" />
+    <file path="/EveryWeekMaximizer.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377162665984" ignored="false" />
+    <file path="/FirmDataType.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377163375180" ignored="false" />
+    <file path="/FirmData.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377163922201" ignored="false" />
+    <file path="/PlantData.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377165530020" ignored="false" />
+    <file path="/WeeklyProfitReport.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377164553001" ignored="false" />
+    <file path="/PlantDataTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1377166098480" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -2456,7 +2521,6 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
-    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="false" />
@@ -2569,7 +2633,113 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/SetTargetThenTryAgainMaximizer.java" line="213" class="agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer" package="agents.firm.production.control.maximizer">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/EveryWeekMaximizer.java" line="137" class="agents.firm.production.control.maximizer.EveryWeekMaximizer" package="agents.firm.production.control.maximizer">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/SetTargetThenTryAgainMaximizer.java" line="130" class="agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer" package="agents.firm.production.control.maximizer">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/test/java/model/scenario/SimpleSellerScenarioTest.java" line="389" class="model.scenario.SimpleSellerScenarioTest" package="model.scenario">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="macroII.schedule.getTime()==3000&#13;&#13;JAVA" />
+        <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SalesControlWithFixedInventoryAndPID.java" line="156" class="agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID" package="agents.firm.sales.pricing.pid">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/pid/PurchasesWeeklyPID.java" line="94" class="agents.firm.purchases.pid.PurchasesWeeklyPID" package="agents.firm.purchases.pid">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="getWeeklyNeeds()&gt;0&#13;&#13;JAVA" />
+        <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/pid/PurchasesFixedPID.java" line="147" class="agents.firm.purchases.pid.PurchasesFixedPID" package="agents.firm.purchases.pid">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
     </line_breakpoints>
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_rules />
     <ui_properties />
   </component>
@@ -2582,16 +2752,8 @@
       <file leaf-file-name="OneLinkSupplyChainScenarioRegressionTest.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/OneLinkSupplyChainScenarioRegressionTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="294" column="39" selection-start="12055" selection-end="12099" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="method#testBeefMonopolistFixedProductionWithSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="true" />
-                <element signature="method#alreadyLearnedBeefMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="true" />
-                <element signature="method#alreadyLearnedBeefMonopolistStickyPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="true" />
-                <element signature="method#learningBeefMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="true" />
-                <element signature="method#learningBeefMonopolistStickyPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="true" />
-                <element signature="method#testFoodMonopolistWithStickyPricesAndFixedQuantity#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="true" />
-                <element signature="method#learningFoodMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="true" />
-              </folding>
+            <state line="1242" column="5" selection-start="51411" selection-end="51411" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -2599,34 +2761,137 @@
       <file leaf-file-name="MonopolistWithInputScenarioTest.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="164" column="0" selection-start="5394" selection-end="5394" vertical-scroll-proportion="0.0">
+            <state line="134" column="66" selection-start="4206" selection-end="4206" vertical-scroll-proportion="0.0">
               <folding>
+                <element signature="imports" expanded="true" />
                 <element signature="method#rightPriceAndQuantityTestAsHillClimber#0;class#MonopolistWithInputScenarioTest#0" expanded="true" />
                 <element signature="method#rightPriceAndQuantityTestAsMarginal#0;class#MonopolistWithInputScenarioTest#0" expanded="true" />
-                <element signature="method#rightPriceAndQuantityTestAsMarginalWithPIDUnit#0;class#MonopolistWithInputScenarioTest#0" expanded="true" />
+                <element signature="method#rightPriceAndQuantityTestAsMarginalWithSalesControlFlowPIDWithFixedInventory#0;class#MonopolistWithInputScenarioTest#0" expanded="true" />
                 <element signature="method#rightPriceAndQuantityTestAsMarginalWithPIDWithSalesControlFlowPIDUnitWithFixedInventory#0;class#MonopolistWithInputScenarioTest#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LinearExtrapolatorPurchasePredictor.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/LinearExtrapolatorPurchasePredictor.java">
+      <file leaf-file-name="SimpleSellerScenario.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/SimpleSellerScenario.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="93" column="51" selection-start="2496" selection-end="2496" vertical-scroll-proportion="0.7809524">
+            <state line="409" column="92" selection-start="12237" selection-end="12237" vertical-scroll-proportion="-9.16">
               <folding>
+                <element signature="e#0#13888#0" expanded="true" />
                 <element signature="imports" expanded="true" />
-                <element signature="method#LinearExtrapolatorPurchasePredictor#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-                <element signature="method#LinearExtrapolatorPurchasePredictor#1;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-                <element signature="method#predictPurchasePriceWhenIncreasingProduction#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-                <element signature="method#updateModelIfNeeded#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-                <element signature="method#computeAfterShockPrice#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-                <element signature="method#computeBeforeShockPrice#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-                <element signature="method#checkTheObservationsAreCorrect#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-                <element signature="method#computeLowerBound#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-                <element signature="method#computeUpperBound#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-                <element signature="method#turnOff#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-                <element signature="method#getCurrentSlope#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
+                <element signature="method#buildSeller#0;class#SimpleSellerScenario#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CascadePIDController.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/pid/CascadePIDController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="113" column="80" selection-start="4041" selection-end="4041" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="method#CascadePIDController#0;class#CascadePIDController#0" expanded="true" />
+                <element signature="method#adjust#0;class#CascadePIDController#0" expanded="true" />
+                <element signature="method#adjust#1;class#CascadePIDController#0" expanded="true" />
+                <element signature="method#getCurrentMV#0;class#CascadePIDController#0" expanded="true" />
+                <element signature="method#getMasterDerivativeGain#0;class#CascadePIDController#0" expanded="true" />
+                <element signature="method#getSlaveProportionalGain#0;class#CascadePIDController#0" expanded="true" />
+                <element signature="method#getSlaveIntegralGain#0;class#CascadePIDController#0" expanded="true" />
+                <element signature="method#getSlaveDerivativeGain#0;class#CascadePIDController#0" expanded="true" />
+                <element signature="method#setGainsMasterPID#0;class#CascadePIDController#0" expanded="true" />
+                <element signature="method#setMasterCanGoNegative#0;class#CascadePIDController#0" expanded="true" />
+                <element signature="method#isMasterCanGoNegative#0;class#CascadePIDController#0" expanded="true" />
+                <element signature="method#setMasterWindupStop#0;class#CascadePIDController#0" expanded="true" />
+                <element signature="method#isMasterWindupStop#0;class#CascadePIDController#0" expanded="true" />
+                <element signature="method#setSlaveCanGoNegative#0;class#CascadePIDController#0" expanded="true" />
+                <element signature="method#isSlaveCanGoNegative#0;class#CascadePIDController#0" expanded="true" />
+                <element signature="method#setSlaveWindupStop#0;class#CascadePIDController#0" expanded="true" />
+                <element signature="method#isSlaveWindupStop#0;class#CascadePIDController#0" expanded="true" />
+                <element signature="method#setupAsInventoryCascade#0;class#CascadePIDController#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ControllerFactory.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/pid/ControllerFactory.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="50" column="50" selection-start="1404" selection-end="1404" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PurchasesDepartment.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/PurchasesDepartment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="61" column="47" selection-start="2642" selection-end="2642" vertical-scroll-proportion="0.76939654">
+              <folding>
+                <element signature="e#0#48067#0" expanded="true" />
+                <element signature="method#PurchasesDepartment#0;class#PurchasesDepartment#0" expanded="true" />
+                <element signature="method#getPurchasesDepartmentIntegrated#0;class#PurchasesDepartment#0" expanded="true" />
+                <element signature="method#reactToFilledQuote#0;class#PurchasesDepartment#0" expanded="true" />
+                <element signature="method#buy#0;class#PurchasesDepartment#0" expanded="true" />
+                <element signature="method#setControl#0;class#PurchasesDepartment#0" expanded="true" />
+                <element signature="method#setPricingStrategy#0;class#PurchasesDepartment#0" expanded="true" />
+                <element signature="method#setPricingStrategy#1;class#PurchasesDepartment#0" expanded="true" />
+                <element signature="method#setOpponentSearch#0;class#PurchasesDepartment#0" expanded="true" />
+                <element signature="method#setSupplierSearch#0;class#PurchasesDepartment#0" expanded="true" />
+                <element signature="method#turnOff#0;class#PurchasesDepartment#0" expanded="true" />
+                <element signature="method#start#0;class#PurchasesDepartment#0" expanded="true" />
+                <element signature="method#setPredictor#0;class#PurchasesDepartment#0" expanded="true" />
+                <element signature="method#getObservationRecordedThisDay#0;class#PurchasesDepartment#0" expanded="true" />
+                <element signature="method#getObservationsRecordedTheseDays#0;class#PurchasesDepartment#0" expanded="true" />
+                <element signature="method#getTodayAverageClosingPrice#0;class#PurchasesDepartment#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SalesControlWithFixedInventoryAndPID.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SalesControlWithFixedInventoryAndPID.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="102" column="0" selection-start="3560" selection-end="3560" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="method#SalesControlWithFixedInventoryAndPID#0;class#SalesControlWithFixedInventoryAndPID#0" expanded="true" />
+                <element signature="method#SalesControlWithFixedInventoryAndPID#1;class#SalesControlWithFixedInventoryAndPID#0" expanded="true" />
+                <element signature="docComment;method#SalesControlWithFixedInventoryAndPID#2;class#SalesControlWithFixedInventoryAndPID#0" expanded="false" />
+                <element signature="method#SalesControlWithFixedInventoryAndPID#2;class#SalesControlWithFixedInventoryAndPID#0" expanded="true" />
+                <element signature="method#price#0;class#SalesControlWithFixedInventoryAndPID#0" expanded="true" />
+                <element signature="method#step#0;class#SalesControlWithFixedInventoryAndPID#0" expanded="true" />
+                <element signature="method#getControllerInput#0;class#SalesControlWithFixedInventoryAndPID#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SmoothedDailyInventoryPricingStrategyTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/sales/pricing/pid/SmoothedDailyInventoryPricingStrategyTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="43" column="42" selection-start="1224" selection-end="1224" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ControllerFactoryTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/model/utilities/pid/ControllerFactoryTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="65" column="73" selection-start="1658" selection-end="1658" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SimpleBuyerScenarioTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/SimpleBuyerScenarioTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="43" column="48" selection-start="948" selection-end="960" vertical-scroll-proportion="-6.28">
+              <folding>
+                <element signature="e#0#4674#0" expanded="true" />
+                <element signature="method#rightPriceAndQuantityTestWithCascadeControllerFixed#0;class#SimpleBuyerScenarioTest#0" expanded="true" />
+                <element signature="method#rightPriceAndQuantityTestWithFlowControllerFixed#0;class#SimpleBuyerScenarioTest#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -2662,22 +2927,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/test/java/agents/firm/purchases/pricing/CheaterPricingTest.java" />
-        <option value="$PROJECT_DIR$/src/test/java/tests/purchase/PurchasesDepartmentTest.java" />
-        <option value="$PROJECT_DIR$/src/test/java/model/utilities/stats/collectors/PurchaseDepartmentDataTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/enums/PurchasesDataType.java" />
-        <option value="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/PurchaseDepartmentData.java" />
-        <option value="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/PurchasesDepartmentData.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/InflowOutflowCounter.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/AveragePurchasePriceCounte.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/AveragePurchasePriceCounter.java" />
-        <option value="$PROJECT_DIR$/src/test/java/agents/firm/purchases/AveragePurchasePriceCounterTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/PurchasesDepartment.java" />
-        <option value="$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/LinearExtrapolatorPurchasePredictorTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/FixedIncreasePurchasesPredictor.java" />
-        <option value="$PROJECT_DIR$/src/test/java/model/scenario/SimpleSellerScenarioTest.java" />
-        <option value="$PROJECT_DIR$/src/test/java/model/scenario/OneLinkSupplyChainScenarioRegressionTest.java" />
+        <option value="$PROJECT_DIR$/src/test/java/agents/firm/sales/pricing/pid/SalesControlWithInventoryAndPIDTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/LinearExtrapolatorPurchasePredictor.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/scenario/MonopolistWithInputScenario.java" />
+        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pid/PurchasesWeeklyPID.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/utilities/pid/CascadePIDController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SalesControlWithFixedInventoryAndPID.java" />
+        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pid/PurchasesFixedPID.java" />
+        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pid/PurchasesSimplePID.java" />
+        <option value="$PROJECT_DIR$/src/test/java/model/scenario/SimpleBuyerScenarioTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/inventoryControl/AbstractInventoryControl.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/utilities/pid/FlowAndStockController.java" />
+        <option value="$PROJECT_DIR$/src/test/java/model/scenario/OneLinkSupplyChainScenarioRegressionTest.java" />
+        <option value="$PROJECT_DIR$/src/test/java/agents/firm/sales/pricing/pid/SmoothedDailyInventoryPricingStrategyTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/utilities/pid/ControllerFactory.java" />
+        <option value="$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/PurchasesDepartment.java" />
       </list>
     </option>
   </component>
@@ -2753,7 +3018,7 @@
     <option name="STATE" value="0" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
+    <navigator currentView="PackagesPane" proportions="" version="1" splitterProportion="0.5">
       <flattenPackages ProjectPane="true" />
       <showMembers />
       <showModules />
@@ -2765,27 +3030,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="MacroIIDiscrete" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="MacroIIDiscrete" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="MacroIIDiscrete" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane">
         <subPane>
           <PATH>
@@ -2862,7 +3106,49 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="agents" />
+              <option name="myItemId" value="model" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="utilities" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="stats" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="collectors" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="model" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="utilities" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="stats" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="collectors" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="enums" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -2879,31 +3165,62 @@
               <option name="myItemId" value="agents" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
             </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="firm" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="MacroIIDiscrete" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="MacroIIDiscrete" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="agents" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="firm" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="purchases" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+              <option name="myItemId" value="MacroIIDiscrete" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -2924,13 +3241,13 @@
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth2" value="265" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth1" value="261" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="Downloaded.Files.Path" value="$PROJECT_DIR$/lib/commons-math" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="Downloaded.Files.Path" value="$PROJECT_DIR$/lib/commons-math" />
     <property name="GoToFile.includeJavaFiles" value="false" />
-    <property name="options.lastSelected" value="preferences.pluginManager" />
     <property name="ChangesBrowser.SHOW_FLATTEN" value="false" />
-    <property name="project.structure.side.proportion" value="0.43060958" />
+    <property name="options.lastSelected" value="preferences.pluginManager" />
     <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
+    <property name="project.structure.side.proportion" value="0.43060958" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.includeInheritedMembers" value="false" />
     <property name="TODO_SCOPE" value="Project Files" />
@@ -2959,19 +3276,19 @@
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder2" value="2" />
     <property name="restartRequiresConfirmation" value="true" />
     <property name="GenerateAntBuildDialog.backupFiles" value="true" />
-    <property name="options.searchVisible" value="true" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="CreateTestDialog.Recents.Supers">
-      <recent name="" />
-    </key>
     <key name="CreateTestDialog.RecentsKey">
+      <recent name="model.utilities.stats.collectors.enums" />
       <recent name="agents.firm.purchases" />
       <recent name="agents.firm.purchases.prediction" />
       <recent name="model.utilities.stats.collectors" />
       <recent name="model.utilities.stats" />
-      <recent name="model.scenario" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="model.utilities" />
@@ -2985,11 +3302,11 @@
       <recent name="agents.firm.production.control.maximizer.marginalMaximizers.MarginalMaximizerStatics" />
     </key>
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="agents.firm.production.control.maximizer" />
       <recent name="agents.firm.purchases.prediction" />
       <recent name="agents.firm" />
       <recent name="agents.firm.sales.prediction" />
       <recent name="model.utilities.stats.regression" />
-      <recent name="model.scenario" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="model.utilities.stats" />
@@ -2999,87 +3316,15 @@
       <recent name="agents.firm" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.All tests">
-    <configuration default="false" name="AveragePurchasePriceCounterTest" type="JUnit" factoryName="JUnit" temporary="true">
-      <module name="MacroIIDiscrete" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="agents.firm.purchases" />
-      <option name="MAIN_CLASS_NAME" value="agents.firm.purchases.AveragePurchasePriceCounterTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <patterns />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
-    <configuration default="false" name="LinearExtrapolatorPurchasePredictorTest" type="JUnit" factoryName="JUnit" temporary="true">
-      <module name="MacroIIDiscrete" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="agents.firm.purchases.prediction" />
-      <option name="MAIN_CLASS_NAME" value="agents.firm.purchases.prediction.LinearExtrapolatorPurchasePredictorTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <patterns />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
-    <configuration default="false" name="LinearExtrapolatorPurchasePredictorTest.simpleTest" type="JUnit" factoryName="JUnit" temporary="true">
-      <module name="MacroIIDiscrete" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="agents.firm.purchases.prediction" />
-      <option name="MAIN_CLASS_NAME" value="agents.firm.purchases.prediction.LinearExtrapolatorPurchasePredictorTest" />
-      <option name="METHOD_NAME" value="simpleTest" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <patterns />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
-    <configuration default="false" name="OneLinkSupplyChainScenarioRegressionTest.testBeefMonopolistFixedProductionWithSlowPID" type="JUnit" factoryName="JUnit" temporary="true">
+  <component name="RunManager" selected="JUnit.MonopolistWithInputScenarioTest">
+    <configuration default="false" name="SimpleSellerScenarioTest" type="JUnit" factoryName="JUnit" temporary="true">
       <module name="MacroIIDiscrete" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
       <option name="PACKAGE_NAME" value="model.scenario" />
-      <option name="MAIN_CLASS_NAME" value="model.scenario.OneLinkSupplyChainScenarioRegressionTest" />
-      <option name="METHOD_NAME" value="testBeefMonopolistFixedProductionWithSlowPID" />
-      <option name="TEST_OBJECT" value="method" />
+      <option name="MAIN_CLASS_NAME" value="model.scenario.SimpleSellerScenarioTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
@@ -3119,6 +3364,78 @@
       <envs />
       <dir value="$PROJECT_DIR$/src/test/java" />
       <patterns />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="false" name="MonopolistWithInputScenarioTest.rightPriceAndQuantityTestAsMarginalWithPIDWithSalesControlFlowPIDUnitWithFixedInventory" type="JUnit" factoryName="JUnit" temporary="true">
+      <module name="MacroIIDiscrete" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="PACKAGE_NAME" value="model.scenario" />
+      <option name="MAIN_CLASS_NAME" value="model.scenario.MonopolistWithInputScenarioTest" />
+      <option name="METHOD_NAME" value="rightPriceAndQuantityTestAsMarginalWithPIDWithSalesControlFlowPIDUnitWithFixedInventory" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <envs />
+      <patterns />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="false" name="SimpleBuyerScenarioTest" type="JUnit" factoryName="JUnit" temporary="true">
+      <module name="MacroIIDiscrete" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="PACKAGE_NAME" value="model.scenario" />
+      <option name="MAIN_CLASS_NAME" value="model.scenario.SimpleBuyerScenarioTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <envs />
+      <patterns />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="false" name="MonopolistWithInputScenario" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="model.scenario.MonopolistWithInputScenario" />
+      <option name="VM_PARAMETERS" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="MacroIIDiscrete" />
+      <envs />
       <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
@@ -3135,6 +3452,19 @@
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
@@ -3162,19 +3492,6 @@
       <envs />
       <properties />
       <listeners />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -3225,6 +3542,34 @@
       <option name="NETWORK_SPEED" value="full" />
       <option name="NETWORK_LATENCY" value="none" />
       <option name="CLEAR_LOGCAT" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="SimpleSellerScenarioTest.rightPriceAndQuantityShiftWithSalesControlFlowPIDWithFixedInventoryOneAtATime" type="JUnit" factoryName="JUnit">
+      <module name="MacroIIDiscrete" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="PACKAGE_NAME" value="model.scenario" />
+      <option name="MAIN_CLASS_NAME" value="model.scenario.SimpleSellerScenarioTest" />
+      <option name="METHOD_NAME" value="rightPriceAndQuantityShiftWithSalesControlFlowPIDWithFixedInventoryOneAtATime" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <envs />
+      <patterns />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
     <configuration default="false" name="Unnamed" type="AndroidRunConfigurationType" factoryName="Android Application">
@@ -3316,23 +3661,24 @@
       <ConfigurationWrapper RunnerId="Run with VisualVM" />
       <method />
     </configuration>
-    <list size="8">
-      <item index="0" class="java.lang.String" itemvalue="Android Application.Unnamed" />
-      <item index="1" class="java.lang.String" itemvalue="Application.MacroIIGUI" />
-      <item index="2" class="java.lang.String" itemvalue="JUnit.All tests" />
-      <item index="3" class="java.lang.String" itemvalue="JUnit.AveragePurchasePriceCounterTest" />
-      <item index="4" class="java.lang.String" itemvalue="JUnit.LinearExtrapolatorPurchasePredictorTest" />
-      <item index="5" class="java.lang.String" itemvalue="JUnit.LinearExtrapolatorPurchasePredictorTest.simpleTest" />
-      <item index="6" class="java.lang.String" itemvalue="JUnit.OneLinkSupplyChainScenarioRegressionTest.testBeefMonopolistFixedProductionWithSlowPID" />
-      <item index="7" class="java.lang.String" itemvalue="JUnit.MonopolistWithInputScenarioTest" />
+    <list size="9">
+      <item index="0" class="java.lang.String" itemvalue="JUnit.SimpleSellerScenarioTest.rightPriceAndQuantityShiftWithSalesControlFlowPIDWithFixedInventoryOneAtATime" />
+      <item index="1" class="java.lang.String" itemvalue="Android Application.Unnamed" />
+      <item index="2" class="java.lang.String" itemvalue="Application.MacroIIGUI" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.All tests" />
+      <item index="4" class="java.lang.String" itemvalue="JUnit.SimpleSellerScenarioTest" />
+      <item index="5" class="java.lang.String" itemvalue="JUnit.MonopolistWithInputScenarioTest" />
+      <item index="6" class="java.lang.String" itemvalue="JUnit.MonopolistWithInputScenarioTest.rightPriceAndQuantityTestAsMarginalWithPIDWithSalesControlFlowPIDUnitWithFixedInventory" />
+      <item index="7" class="java.lang.String" itemvalue="JUnit.SimpleBuyerScenarioTest" />
+      <item index="8" class="java.lang.String" itemvalue="Application.MonopolistWithInputScenario" />
     </list>
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="JUnit.MonopolistWithInputScenarioTest" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.OneLinkSupplyChainScenarioRegressionTest.testBeefMonopolistFixedProductionWithSlowPID" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.LinearExtrapolatorPurchasePredictorTest.simpleTest" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.LinearExtrapolatorPurchasePredictorTest" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.AveragePurchasePriceCounterTest" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.SimpleBuyerScenarioTest" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.SimpleSellerScenarioTest" />
+        <item index="3" class="java.lang.String" itemvalue="Application.MonopolistWithInputScenario" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.MonopolistWithInputScenarioTest.rightPriceAndQuantityTestAsMarginalWithPIDWithSalesControlFlowPIDUnitWithFixedInventory" />
       </list>
     </recent_temporary>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
@@ -3678,7 +4024,11 @@
       <created>1377006314241</created>
       <updated>1377006314241</updated>
     </task>
-    <option name="localTasksCounter" value="78" />
+    <task id="LOCAL-00078" summary="a bit more data gathering. Still prettyu bad at predicting">
+      <created>1377089770214</created>
+      <updated>1377089770214</updated>
+    </task>
+    <option name="localTasksCounter" value="79" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -3720,8 +4070,8 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977587" sideWeight="0.6552106" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39967984" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="JProfiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292683" sideWeight="0.49786553" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24919957" sideWeight="0.62527716" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.37472284" sideWeight="0.47435898" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.5090715" sideWeight="0.6042129" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39578715" sideWeight="0.47435898" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32959402" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="654" y="139" width="761" height="854" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -3773,7 +4123,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Created a linear extrapolator for purchases. Sucks. I don't know if it's the learning or the competition that is at fault here" />
+    <option name="LAST_COMMIT_MESSAGE" value="a bit more data gathering. Still prettyu bad at predicting" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -3787,7 +4137,6 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="Added a lookahead (cheater) bid pricer. It works like a charm, as hown in the one link supply chain. Yay to me!" />
     <MESSAGE value="added a simple fix pricing sales predictor to test the tripolist scenario and see how important predicting elasticity really is" />
     <MESSAGE value="Set the simple flow seller to be by default with no cost override. Also refactored the monopolist a bit so that I don't have to duplicate the firm building code when using the tripolist scenario. As of now competition works fairly well with Unit PID and no demand elasticity prediction" />
     <MESSAGE value="changed the monopolist scenario so that now demand and labor supply can be sloped at random. Need to look into the marginal PID having a bit of problem with labor productivity above 1" />
@@ -3812,6 +4161,7 @@
     <MESSAGE value="wrote competitive tests (the always climbing is a bit iffy) and then finished the learning increase/decrease. Unfortunately they don't seem to work well in competitive settings (everybody is a monopolist there, which is funny but wrong). Also the supply chain tests simply take too long. I am moving back to LinearExtrapolator, but maybe I can combine the two. Priority should be given in having small regressions, and not too often!" />
     <MESSAGE value="rearranged the way markets store data. That was just a lot of pain for no gain" />
     <MESSAGE value="Created a linear extrapolator for purchases. Sucks. I don't know if it's the learning or the competition that is at fault here" />
+    <MESSAGE value="a bit more data gathering. Still prettyu bad at predicting" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -3825,71 +4175,169 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/enums/PurchasesDataType.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/pid/ControllerInput.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="19" selection-start="522" selection-end="522" vertical-scroll-proportion="0.0">
+        <state line="85" column="0" selection-start="2747" selection-end="2747" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="method#getTarget#0;class#ControllerInput#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/pid/PIDController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="198" column="0" selection-start="6024" selection-end="6024" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="method#adjust#1;class#PIDController#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/pid/PurchasesWeeklyPID.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="70" column="79" selection-start="2822" selection-end="2822" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="method#PurchasesWeeklyPID#2;class#PurchasesWeeklyPID#0" expanded="true" />
+            <element signature="method#step#0;class#PurchasesWeeklyPID#0" expanded="true" />
+            <element signature="method#turnOff#0;class#PurchasesWeeklyPID#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/pid/PurchasesFixedPID.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="144" column="43" selection-start="6623" selection-end="6623" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="method#PurchasesFixedPID#2;class#PurchasesFixedPID#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/inventoryControl/AbstractInventoryControl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="236" column="59" selection-start="8217" selection-end="8217" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/InflowOutflowCounter.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/pid/FlowAndStockController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="36" selection-start="1323" selection-end="1323" vertical-scroll-proportion="0.0">
+        <state line="174" column="62" selection-start="5916" selection-end="5916" vertical-scroll-proportion="0.0">
           <folding>
-            <element signature="method#restartAtDawn#0;class#InflowOutflowCounter#0" expanded="true" />
-            <element signature="method#step#0;class#InflowOutflowCounter#0" expanded="true" />
-            <element signature="method#inventoryIncreaseEvent#0;class#InflowOutflowCounter#0" expanded="true" />
-            <element signature="method#inventoryDecreaseEvent#0;class#InflowOutflowCounter#0" expanded="true" />
-            <element signature="method#failedToConsumeEvent#0;class#InflowOutflowCounter#0" expanded="true" />
+            <element signature="method#adjust#1;class#FlowAndStockController#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/AveragePurchasePriceCounter.java">
+    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/OneLinkSupplyChainScenarioRegressionTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="101" column="23" selection-start="2323" selection-end="2323" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#AveragePurchasePriceCounter#0;class#AveragePurchasePriceCounter#0" expanded="true" />
-            <element signature="method#start#0;class#AveragePurchasePriceCounter#0" expanded="true" />
-            <element signature="method#step#0;class#AveragePurchasePriceCounter#0" expanded="true" />
-            <element signature="method#getNotifiedOfFilledQuote#0;class#AveragePurchasePriceCounter#0" expanded="true" />
-            <element signature="method#getTodayAverageClosingPrice#0;class#AveragePurchasePriceCounter#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/PurchasesDepartmentData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="121" column="45" selection-start="3653" selection-end="3653" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/filters/ExponentialFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="0" selection-start="1077" selection-end="1077" vertical-scroll-proportion="0.0">
+        <state line="1242" column="5" selection-start="51411" selection-end="51411" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/purchases/AveragePurchasePriceCounterTest.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/SimpleSellerScenario.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="80" column="29" selection-start="1976" selection-end="1976" vertical-scroll-proportion="0.0">
+        <state line="409" column="92" selection-start="12237" selection-end="12237" vertical-scroll-proportion="-9.16">
+          <folding>
+            <element signature="e#0#13888#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="method#buildSeller#0;class#SimpleSellerScenario#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/SimpleBuyerScenarioTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="43" column="48" selection-start="948" selection-end="960" vertical-scroll-proportion="-6.28">
+          <folding>
+            <element signature="e#0#4674#0" expanded="true" />
+            <element signature="method#rightPriceAndQuantityTestWithCascadeControllerFixed#0;class#SimpleBuyerScenarioTest#0" expanded="true" />
+            <element signature="method#rightPriceAndQuantityTestWithFlowControllerFixed#0;class#SimpleBuyerScenarioTest#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/pid/SalesControlWithFixedInventoryAndPID.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="102" column="0" selection-start="3560" selection-end="3560" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="method#SalesControlWithFixedInventoryAndPID#0;class#SalesControlWithFixedInventoryAndPID#0" expanded="true" />
+            <element signature="method#SalesControlWithFixedInventoryAndPID#1;class#SalesControlWithFixedInventoryAndPID#0" expanded="true" />
+            <element signature="docComment;method#SalesControlWithFixedInventoryAndPID#2;class#SalesControlWithFixedInventoryAndPID#0" expanded="false" />
+            <element signature="method#SalesControlWithFixedInventoryAndPID#2;class#SalesControlWithFixedInventoryAndPID#0" expanded="true" />
+            <element signature="method#price#0;class#SalesControlWithFixedInventoryAndPID#0" expanded="true" />
+            <element signature="method#step#0;class#SalesControlWithFixedInventoryAndPID#0" expanded="true" />
+            <element signature="method#getControllerInput#0;class#SalesControlWithFixedInventoryAndPID#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/sales/pricing/pid/SmoothedDailyInventoryPricingStrategyTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="43" column="42" selection-start="1224" selection-end="1224" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/model/utilities/pid/ControllerFactoryTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="65" column="73" selection-start="1658" selection-end="1658" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/pid/CascadePIDController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="113" column="80" selection-start="4041" selection-end="4041" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="method#CascadePIDController#0;class#CascadePIDController#0" expanded="true" />
+            <element signature="method#adjust#0;class#CascadePIDController#0" expanded="true" />
+            <element signature="method#adjust#1;class#CascadePIDController#0" expanded="true" />
+            <element signature="method#getCurrentMV#0;class#CascadePIDController#0" expanded="true" />
+            <element signature="method#getMasterDerivativeGain#0;class#CascadePIDController#0" expanded="true" />
+            <element signature="method#getSlaveProportionalGain#0;class#CascadePIDController#0" expanded="true" />
+            <element signature="method#getSlaveIntegralGain#0;class#CascadePIDController#0" expanded="true" />
+            <element signature="method#getSlaveDerivativeGain#0;class#CascadePIDController#0" expanded="true" />
+            <element signature="method#setGainsMasterPID#0;class#CascadePIDController#0" expanded="true" />
+            <element signature="method#setMasterCanGoNegative#0;class#CascadePIDController#0" expanded="true" />
+            <element signature="method#isMasterCanGoNegative#0;class#CascadePIDController#0" expanded="true" />
+            <element signature="method#setMasterWindupStop#0;class#CascadePIDController#0" expanded="true" />
+            <element signature="method#isMasterWindupStop#0;class#CascadePIDController#0" expanded="true" />
+            <element signature="method#setSlaveCanGoNegative#0;class#CascadePIDController#0" expanded="true" />
+            <element signature="method#isSlaveCanGoNegative#0;class#CascadePIDController#0" expanded="true" />
+            <element signature="method#setSlaveWindupStop#0;class#CascadePIDController#0" expanded="true" />
+            <element signature="method#isSlaveWindupStop#0;class#CascadePIDController#0" expanded="true" />
+            <element signature="method#setupAsInventoryCascade#0;class#CascadePIDController#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/pid/ControllerFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="50" column="50" selection-start="1404" selection-end="1404" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="134" column="66" selection-start="4206" selection-end="4206" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#countingTest#0;class#AveragePurchasePriceCounterTest#0" expanded="true" />
+            <element signature="method#rightPriceAndQuantityTestAsHillClimber#0;class#MonopolistWithInputScenarioTest#0" expanded="true" />
+            <element signature="method#rightPriceAndQuantityTestAsMarginal#0;class#MonopolistWithInputScenarioTest#0" expanded="true" />
+            <element signature="method#rightPriceAndQuantityTestAsMarginalWithSalesControlFlowPIDWithFixedInventory#0;class#MonopolistWithInputScenarioTest#0" expanded="true" />
+            <element signature="method#rightPriceAndQuantityTestAsMarginalWithPIDWithSalesControlFlowPIDUnitWithFixedInventory#0;class#MonopolistWithInputScenarioTest#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/PurchasesDepartment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="207" column="6" selection-start="6625" selection-end="6627" vertical-scroll-proportion="-11.04">
+        <state line="61" column="47" selection-start="2642" selection-end="2642" vertical-scroll-proportion="0.76939654">
           <folding>
-            <element signature="e#0#48065#0" expanded="true" />
+            <element signature="e#0#48067#0" expanded="true" />
             <element signature="method#PurchasesDepartment#0;class#PurchasesDepartment#0" expanded="true" />
             <element signature="method#getPurchasesDepartmentIntegrated#0;class#PurchasesDepartment#0" expanded="true" />
             <element signature="method#reactToFilledQuote#0;class#PurchasesDepartment#0" expanded="true" />
@@ -3905,100 +4353,6 @@
             <element signature="method#getObservationRecordedThisDay#0;class#PurchasesDepartment#0" expanded="true" />
             <element signature="method#getObservationsRecordedTheseDays#0;class#PurchasesDepartment#0" expanded="true" />
             <element signature="method#getTodayAverageClosingPrice#0;class#PurchasesDepartment#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/FixedIncreasePurchasesPredictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="88" column="97" selection-start="2429" selection-end="2429" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/SimpleSellerScenarioTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="389" column="0" selection-start="14314" selection-end="14314" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/SimpleBuyerScenarioTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="62" column="0" selection-start="1878" selection-end="1878" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/LinearExtrapolationPredictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="13" selection-start="948" selection-end="948" vertical-scroll-proportion="0.21004567">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/LinearExtrapolatorPurchasePredictorTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="204" column="0" selection-start="7561" selection-end="7561" vertical-scroll-proportion="0.60370797">
-          <folding>
-            <element signature="e#0#8191#0" expanded="true" />
-            <element signature="method#nodataTest#0;class#LinearExtrapolatorPurchasePredictorTest#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/Firm.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="520" column="0" selection-start="16328" selection-end="16328" vertical-scroll-proportion="0.5426357">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/OneLinkSupplyChainScenarioRegressionTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="294" column="39" selection-start="12055" selection-end="12099" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="method#testBeefMonopolistFixedProductionWithSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="true" />
-            <element signature="method#alreadyLearnedBeefMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="true" />
-            <element signature="method#alreadyLearnedBeefMonopolistStickyPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="true" />
-            <element signature="method#learningBeefMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="true" />
-            <element signature="method#learningBeefMonopolistStickyPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="true" />
-            <element signature="method#testFoodMonopolistWithStickyPricesAndFixedQuantity#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="true" />
-            <element signature="method#learningFoodMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="164" column="0" selection-start="5394" selection-end="5394" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="method#rightPriceAndQuantityTestAsHillClimber#0;class#MonopolistWithInputScenarioTest#0" expanded="true" />
-            <element signature="method#rightPriceAndQuantityTestAsMarginal#0;class#MonopolistWithInputScenarioTest#0" expanded="true" />
-            <element signature="method#rightPriceAndQuantityTestAsMarginalWithPIDUnit#0;class#MonopolistWithInputScenarioTest#0" expanded="true" />
-            <element signature="method#rightPriceAndQuantityTestAsMarginalWithPIDWithSalesControlFlowPIDUnitWithFixedInventory#0;class#MonopolistWithInputScenarioTest#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/LinearExtrapolatorPurchasePredictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="93" column="51" selection-start="2496" selection-end="2496" vertical-scroll-proportion="0.7809524">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#LinearExtrapolatorPurchasePredictor#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-            <element signature="method#LinearExtrapolatorPurchasePredictor#1;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-            <element signature="method#predictPurchasePriceWhenIncreasingProduction#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-            <element signature="method#updateModelIfNeeded#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-            <element signature="method#computeAfterShockPrice#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-            <element signature="method#computeBeforeShockPrice#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-            <element signature="method#checkTheObservationsAreCorrect#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-            <element signature="method#computeLowerBound#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-            <element signature="method#computeUpperBound#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-            <element signature="method#turnOff#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
-            <element signature="method#getCurrentSlope#0;class#LinearExtrapolatorPurchasePredictor#0" expanded="true" />
           </folding>
         </state>
       </provider>

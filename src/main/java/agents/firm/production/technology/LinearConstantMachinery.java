@@ -95,7 +95,7 @@ public class LinearConstantMachinery extends Machinery {
         Integer blueprintProduction = plant.getBlueprint().getOutputs().get(outputType);
         if(blueprintProduction == null ||  blueprintProduction <= 0)
             throw new IllegalArgumentException("asked marginal product on a good we don't completeProductionRunNow");
-        if(plant.workerSize() <=0)
+        if(plant.getNumberOfWorkers() <=0)
             throw new IllegalStateException("Can't completeProductionRunNow with no workers!");
 
         return expectedWeeklyProductionRuns() * blueprintProduction.floatValue();
@@ -169,7 +169,7 @@ public class LinearConstantMachinery extends Machinery {
      */
     @Override
     public float marginalProductionRuns() {
-        return hypotheticalWeeklyProductionRuns(plant.workerSize() + 1) - hypotheticalWeeklyProductionRuns(plant.workerSize());
+        return hypotheticalWeeklyProductionRuns(plant.getNumberOfWorkers() + 1) - hypotheticalWeeklyProductionRuns(plant.getNumberOfWorkers());
 
     }
 

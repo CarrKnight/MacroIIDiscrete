@@ -48,7 +48,7 @@ public final class MarginalMaximizerStatics {
     public static float computeMarginalProfits(Firm owner, Plant p, HumanResources hr, PlantControl control,
                                                MarginalMaximizer.RandomizationPolicy policy, int currentWorkers, int targetWorkers) throws DelayException {
         Preconditions.checkArgument(targetWorkers != currentWorkers, "marginal from here to here is stupid");
-        assert currentWorkers == p.workerSize(); //I can't think of a use where this isn't true
+        assert currentWorkers == p.getNumberOfWorkers(); //I can't think of a use where this isn't true
 
         //this function smells a bit because it keeps branching according to whether we are hiring or firing. But I really wanted a generic function.
 

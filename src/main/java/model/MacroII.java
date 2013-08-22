@@ -711,7 +711,7 @@ public class MacroII extends SimState{
             try{
             if( a instanceof Firm && ((Firm) a).hasPlants())
             {
-                int workers =  ((Firm) a).getRandomPlantProducingThis(GoodType.GENERIC).workerSize();
+                int workers =  ((Firm) a).getRandomPlantProducingThis(GoodType.GENERIC).getNumberOfWorkers();
                 sum += workers;
                 builder.append( Integer.toString(workers)).append(",");
 

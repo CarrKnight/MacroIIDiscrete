@@ -125,7 +125,7 @@ public class PIDTargeter implements WorkforceTargeter, Steppable {
 
 
         //if firing: go into quickfiring mode:
-        if(workerTarget < hr.getPlant().workerSize())
+        if(workerTarget < hr.getPlant().getNumberOfWorkers())
         {
             if(workerTarget != 0)
                 quickfire();
@@ -134,7 +134,7 @@ public class PIDTargeter implements WorkforceTargeter, Steppable {
                 //set wages to 0
                 setInitialWage(0); //set price to 0
                 //fire directly everyone
-                while(hr.getPlant().workerSize() > 0){
+                while(hr.getPlant().getNumberOfWorkers() > 0){
                     Person workerFired = hr.getPlant().removeLastWorker();
                     workerFired.fired(hr.getFirm());
                 }
@@ -142,7 +142,7 @@ public class PIDTargeter implements WorkforceTargeter, Steppable {
         }
 
         //run the controller (it will reschedule us)
-        pid.adjust(workerTarget, hr.getPlant().workerSize(), active, hr.getPlant().getModel(), this, ActionOrder.ADJUST_PRICES);
+        pid.adjust(workerTarget, hr.getPlant().getNumberOfWorkers(), active, hr.getPlant().getModel(), this, ActionOrder.ADJUST_PRICES);
 
         //todo document rounding
         //initially round
@@ -163,7 +163,7 @@ public class PIDTargeter implements WorkforceTargeter, Steppable {
             hr.getFirm().logEvent(hr,
                     MarketEvents.CHANGE_IN_POLICY,
                     hr.getFirm().getModel().getCurrentSimulationTimeInMillis(),
-                    "target: " + workerTarget + ", #workers:" + hr.getPlant().workerSize() +
+                    "target: " + workerTarget + ", #workers:" + hr.getPlant().getNumberOfWorkers() +
                             "; oldwage:" + oldWage + ", newWage:" + newWage);
 
         }
@@ -197,7 +197,7 @@ public class PIDTargeter implements WorkforceTargeter, Steppable {
         });
 
         assert workers.size() >0;
-        int workersToFire = hr.getPlant().workerSize() - workerTarget;
+        int workersToFire = hr.getPlant().getNumberOfWorkers() - workerTarget;
         assert workersToFire <= workers.size(): workersToFire + "---" + workers.size();
         assert workersToFire > 0;
 
@@ -226,10 +226,10 @@ public class PIDTargeter implements WorkforceTargeter, Steppable {
             }
 
             //on very rare occasions you lower wages enough to kick some people out but more people come in. When that happens, run it again
-            if(hr.getPlant().workerSize() > workerTarget)
+            if(hr.getPlant().getNumberOfWorkers() > workerTarget)
                 quickfire();
 
-            assert hr.getPlant().workerSize() == workerTarget : "workers: " + hr.getPlant().workerSize() + ", workerTarget: " + workerTarget;
+            assert hr.getPlant().getNumberOfWorkers() == workerTarget : "workers: " + hr.getPlant().getNumberOfWorkers() + ", workerTarget: " + workerTarget;
         }
 
     }
@@ -276,7 +276,7 @@ public class PIDTargeter implements WorkforceTargeter, Steppable {
     @Override
     public void changeInMachineryEvent(Plant p, Machinery machinery) {
         assert p == hr.getPlant();
-        if(p.workerSize() < p.maximumWorkersPossible() && plantControl.canBuy())
+        if(p.getNumberOfWorkers() < p.maximumWorkersPossible() && plantControl.canBuy())
             hr.buy();
     }
 

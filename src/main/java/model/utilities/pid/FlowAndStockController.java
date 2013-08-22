@@ -172,7 +172,7 @@ public class FlowAndStockController implements Controller{
     @Override
     public void adjust(ControllerInput input,  boolean isActive, MacroII simState, Steppable user,ActionOrder phase) {
 
-        adjust((int)input.getInput(1),(int)input.getTarget(1),input.getInput(0),input.getTarget(0),
+        adjust((int)input.getTarget(1),(int)input.getInput(1),input.getInput(0),input.getTarget(0),
                 input.getTarget(2)==0,isActive,simState,user,phase);
 
 

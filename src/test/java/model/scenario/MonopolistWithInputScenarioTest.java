@@ -33,7 +33,7 @@ public class MonopolistWithInputScenarioTest {
     {
 
         //run the test 5 times
-        for(int i=0; i<5; i++)
+        for(int i=0; i<15; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -67,7 +67,7 @@ public class MonopolistWithInputScenarioTest {
     @Test
     public void rightPriceAndQuantityTestAsMarginal()
     {
-        for(int i=0; i<5; i++)
+        for(int i=0; i<15; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -105,7 +105,7 @@ public class MonopolistWithInputScenarioTest {
     @Test
     public void rightPriceAndQuantityTestAsMarginalWithPIDUnit()
     {
-        for(int i=0; i<5; i++)
+        for(int i=0; i<15; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -142,7 +142,7 @@ public class MonopolistWithInputScenarioTest {
     @Test
     public void rightPriceAndQuantityTestAsMarginalWithSalesControlFlowPIDWithFixedInventory()
     {
-        for(int i=0; i<5; i++)
+        for(int i=0; i<15; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -181,7 +181,7 @@ public class MonopolistWithInputScenarioTest {
     @Test
     public void rightPriceAndQuantityTestAsMarginalWithPIDWithSalesControlFlowPIDUnitWithFixedInventory()
     {
-        for(int i=0; i<5; i++)
+        for(int i=0; i<15; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -198,11 +198,14 @@ public class MonopolistWithInputScenarioTest {
 
             macroII.start();
             while(macroII.schedule.getTime()<3500)
+            {
                 macroII.schedule.step(macroII);
-
-
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
+                System.out.println(macroII.getMarket(GoodType.GENERIC).getLastPrice() +  " - "
+                + scenario1.monopolist.getTotalWorkers());
+            }
+            System.out.println(macroII.getMarket(GoodType.GENERIC).getLastPrice());
             assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
 
 
 

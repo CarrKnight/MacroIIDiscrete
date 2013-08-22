@@ -57,7 +57,7 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficencyTest
 
         //create the maximizer
         MarginalMaximizerWithUnitPIDCascadeEfficency maximizer = new MarginalMaximizerWithUnitPIDCascadeEfficency(
-                hr,control,hr.getPlant(),hr.getFirm(),hr.getRandom(),hr.getPlant().workerSize());
+                hr,control,hr.getPlant(),hr.getFirm(),hr.getRandom(),hr.getPlant().getNumberOfWorkers());
         //make sure before the setup they are not instantiated
         ChangeLookupMAMarket changeLookup = (ChangeLookupMAMarket) PowerMockito.field(MarginalMaximizerWithUnitPIDCascadeEfficency.class,
                 "changeLookup").get(maximizer);
@@ -136,7 +136,7 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficencyTest
 
         //create the maximizer
         MarginalMaximizerWithUnitPIDCascadeEfficency maximizer = new MarginalMaximizerWithUnitPIDCascadeEfficency(
-                hr,control,hr.getPlant(),hr.getFirm(),hr.getRandom(),hr.getPlant().workerSize());
+                hr,control,hr.getPlant(),hr.getFirm(),hr.getRandom(),hr.getPlant().getNumberOfWorkers());
         //make sure before the setup they are not instantiated
         ChangeLookupMAMarket changeLookup = (ChangeLookupMAMarket) PowerMockito.field(MarginalMaximizerWithUnitPIDCascadeEfficency.class,
                 "changeLookup").get(maximizer);
@@ -212,7 +212,7 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficencyTest
 
         //create the maximizer
         MarginalMaximizerWithUnitPIDCascadeEfficency maximizer = new MarginalMaximizerWithUnitPIDCascadeEfficency(
-                hr,control,hr.getPlant(),hr.getFirm(),hr.getRandom(),hr.getPlant().workerSize());
+                hr,control,hr.getPlant(),hr.getFirm(),hr.getRandom(),hr.getPlant().getNumberOfWorkers());
         //make sure before the setup they are not instantiated
         ChangeLookupMAMarket changeLookup = (ChangeLookupMAMarket) PowerMockito.field(MarginalMaximizerWithUnitPIDCascadeEfficency.class,
                 "changeLookup").get(maximizer);

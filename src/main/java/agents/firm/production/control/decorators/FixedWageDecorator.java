@@ -58,7 +58,7 @@ public class FixedWageDecorator extends PlantControlDecorator {
             lastWageWasACut = true;
 
             //ignore the wage cut, rather layoff what's needed
-            if(toDecorate.getHr().getPlant().workerSize() >  getTarget())
+            if(toDecorate.getHr().getPlant().getNumberOfWorkers() >  getTarget())
             {
                 //keep removing workers till you are done
                 toDecorate.getHr().getPlant().removeLastWorker();

@@ -49,7 +49,7 @@ public class MarginalMaximizerTest {
         Plant p = mock(Plant.class);
         Blueprint b = new Blueprint.Builder().output(GoodType.GENERIC,1).build(); //just one output
         Firm owner = mock(Firm.class); when(p.getOwner()).thenReturn(owner); when(hr.getPlant()).thenReturn(p); when(hr.getFirm()).thenReturn(owner);
-        when(owner.getModel()).thenReturn(new MacroII(1l));  when(p.workerSize()).thenReturn(10);
+        when(owner.getModel()).thenReturn(new MacroII(1l));  when(p.getNumberOfWorkers()).thenReturn(10);
         when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(-1l); //tell the hr to fail at predicting
         PlantControl control = mock(PlantControl.class);
         //it should immediately fail
@@ -76,7 +76,7 @@ public class MarginalMaximizerTest {
         when(p.getBlueprint()).thenReturn(b);
         when(p.getOutputs()).thenReturn(b.getOutputs().keySet());
         Firm owner = mock(Firm.class); when(p.getOwner()).thenReturn(owner); when(hr.getPlant()).thenReturn(p); when(hr.getFirm()).thenReturn(owner);
-        when(owner.getModel()).thenReturn(new MacroII(1l));  when(p.workerSize()).thenReturn(10);
+        when(owner.getModel()).thenReturn(new MacroII(1l));  when(p.getNumberOfWorkers()).thenReturn(10);
         when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(-1l); //tell the hr to fail at predicting
         SalesDepartment sales = mock(SalesDepartmentAllAtOnce.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(sales);
@@ -130,7 +130,7 @@ public class MarginalMaximizerTest {
             Integer newtarget = (Integer) chooseTarget.invoke(maximizer,10,10000,-1,-1,-1,-1,11,1000000);
             assertEquals(11, newtarget.intValue());
             //same should happen at target 100
-            when(p.workerSize()).thenReturn(100);  when(hr.getWagesPaid()).thenReturn(50*100l);
+            when(p.getNumberOfWorkers()).thenReturn(100);  when(hr.getWagesPaid()).thenReturn(50*100l);
             newtarget = (Integer) chooseTarget.invoke(maximizer,100,10000,-1,-1,-1,-1,11,1000000);
             assertEquals(101, newtarget.intValue());
 

@@ -12,7 +12,7 @@ import agents.firm.personell.FactoryProducedHumanResourcesWithMaximizerAndTarget
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
-import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
+import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPID;
 import agents.firm.production.control.maximizer.algorithms.otherMaximizers.FixedTargetMaximizationAlgorithm;
 import agents.firm.production.control.targeter.PIDTargeter;
@@ -92,10 +92,10 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
             firm.addPlant(plant);
             FactoryProducedHumanResourcesWithMaximizerAndTargeter produced =
                     HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, firm,
-                            laborMarket, plant, PIDTargeter.class, WeeklyWorkforceMaximizer.class,
+                            laborMarket, plant, PIDTargeter.class, SetTargetThenTryAgainMaximizer.class,
                             FixedTargetMaximizationAlgorithm.class, null, null);
 
-            ((WeeklyWorkforceMaximizer < FixedTargetMaximizationAlgorithm >) produced.getWorkforceMaximizer()).
+            ((SetTargetThenTryAgainMaximizer< FixedTargetMaximizationAlgorithm >) produced.getWorkforceMaximizer()).
                     getMaximizationAlgorithm().setWorkerTarget(beefWorkerTarget);
 
 

@@ -62,7 +62,7 @@ public class WorkerMaximizationAlgorithmFactory
                     hr.getPlant().maximumWorkersPossible(),hr.getRandom(),hr));
         if(tClass.equals(PIDHillClimber.class))
             return tClass.cast(new PIDHillClimber(hr.getPlant().weeklyFixedCosts(),hr.getPlant().minimumWorkersNeeded(),
-                    hr.getPlant().maximumWorkersPossible(),hr.getPlant().workerSize(),hr.getRandom(),
+                    hr.getPlant().maximumWorkersPossible(),hr.getPlant().getNumberOfWorkers(),hr.getRandom(),
                     hr.getPlant().getModel().drawProportionalGain(),
                     hr.getPlant().getModel().drawIntegrativeGain(), hr.getPlant().getModel().drawDerivativeGain()));
         //marginals
@@ -72,10 +72,10 @@ public class WorkerMaximizationAlgorithmFactory
             return tClass.cast(new MarginalMaximizer(hr,plantControl,hr.getPlant(),hr.getFirm()));
         if(tClass.equals(MarginalMaximizerWithUnitPID.class))
             return tClass.cast(new MarginalMaximizerWithUnitPID(hr,plantControl,hr.getPlant(),hr.getFirm(),hr.getRandom(),
-                    hr.getPlant().workerSize()));
+                    hr.getPlant().getNumberOfWorkers()));
         if(tClass.equals(MarginalMaximizerWithUnitPIDCascadeEfficency.class))
             return tClass.cast(new MarginalMaximizerWithUnitPIDCascadeEfficency(hr,plantControl,hr.getPlant(),hr.getFirm(),hr.getRandom(),
-                    hr.getPlant().workerSize()));
+                    hr.getPlant().getNumberOfWorkers()));
         if(tClass.equals(FixedTargetMaximizationAlgorithm.class))
             return tClass.cast(new FixedTargetMaximizationAlgorithm());
 

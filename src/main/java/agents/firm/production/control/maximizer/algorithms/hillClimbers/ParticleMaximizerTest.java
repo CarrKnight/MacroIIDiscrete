@@ -68,7 +68,7 @@ public class ParticleMaximizerTest {
         when(firm.getRandomPlantProducingThis(GoodType.BEEF)).thenReturn(plant);
         when(firm.getPlantProfits(plant)).thenReturn(1f);
         when(pc.getHr()).thenReturn(hr); when(plant.maximumWorkersPossible()).thenReturn(100); when(plant.minimumWorkersNeeded()).thenReturn(0);
-        when(plant.workerSize()).thenReturn(1);
+        when(plant.getNumberOfWorkers()).thenReturn(1);
 
 
 
@@ -92,14 +92,14 @@ public class ParticleMaximizerTest {
         when(random.nextFloat()).thenReturn(1f);
 
         int nextStep = maximizer.chooseWorkerTarget(1,profitFunction(1),-1,-1,-1,-1,0,profitFunction(0));
-        when(firm.getPlantProfits(plant)).thenReturn((float) profitFunction(nextStep));        when(plant.workerSize()).thenReturn(nextStep);
+        when(firm.getPlantProfits(plant)).thenReturn((float) profitFunction(nextStep));        when(plant.getNumberOfWorkers()).thenReturn(nextStep);
 
         assertEquals(nextStep,2);
         assertEquals(maximizer.getCurrentVelocity(),.75f,.001f);
 
         //once again, this time should move to three
         nextStep = maximizer.chooseWorkerTarget(2,profitFunction(2),-1,-1,-1,-1,1,profitFunction(1));
-        when(firm.getPlantProfits(plant)).thenReturn((float)profitFunction(nextStep));        when(plant.workerSize()).thenReturn(nextStep);
+        when(firm.getPlantProfits(plant)).thenReturn((float)profitFunction(nextStep));        when(plant.getNumberOfWorkers()).thenReturn(nextStep);
 
         assertEquals(nextStep,3);
         assertEquals(maximizer.getCurrentVelocity(),0.5625f,.001f);
@@ -107,26 +107,26 @@ public class ParticleMaximizerTest {
         //it's going to stay at 3 for a while now
         nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),-1,-1,-1,-1,3,profitFunction(3));
         when(firm.getPlantProfits(plant)).thenReturn((float)profitFunction(nextStep));
-        when(plant.workerSize()).thenReturn(nextStep);
+        when(plant.getNumberOfWorkers()).thenReturn(nextStep);
         assertEquals(nextStep, 3);
         assertEquals(maximizer.getCurrentVelocity(), 0.271875f, .001f);
 
         nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),-1,-1,-1,-1,3,profitFunction(3));
         when(firm.getPlantProfits(plant)).thenReturn((float)profitFunction(nextStep));
-        when(plant.workerSize()).thenReturn(nextStep);
+        when(plant.getNumberOfWorkers()).thenReturn(nextStep);
         assertEquals(nextStep,3);
         assertEquals(maximizer.getCurrentVelocity(),0.05390625f,.001f);
 
 
         nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),-1,-1,-1,-1,3,profitFunction(3));
         when(firm.getPlantProfits(plant)).thenReturn((float)profitFunction(nextStep));
-        when(plant.workerSize()).thenReturn(nextStep);
+        when(plant.getNumberOfWorkers()).thenReturn(nextStep);
         assertEquals(nextStep,3);
         assertEquals(maximizer.getCurrentVelocity(),-0.1095703125,.001f);
 
         nextStep = maximizer.chooseWorkerTarget(3,profitFunction(3),-1,-1,-1,-1,3,profitFunction(3));
         when(firm.getPlantProfits(plant)).thenReturn((float)profitFunction(nextStep));
-        when(plant.workerSize()).thenReturn(nextStep);
+        when(plant.getNumberOfWorkers()).thenReturn(nextStep);
         assertEquals(nextStep,3);
         assertEquals(maximizer.getCurrentVelocity(),-0.2321777344,.001f);
 
@@ -151,7 +151,7 @@ public class ParticleMaximizerTest {
         assertEquals(nextStep,2);
         assertEquals(maximizer.getCurrentVelocity(),-0.5127140522,.001f);
         when(firm.getPlantProfits(plant)).thenReturn((float)profitFunction(nextStep));
-        when(plant.workerSize()).thenReturn(nextStep);
+        when(plant.getNumberOfWorkers()).thenReturn(nextStep);
 
 
         nextStep = maximizer.chooseWorkerTarget(2,profitFunction(2),3,-1,-1,-1,-1,profitFunction(3));
@@ -179,10 +179,10 @@ public class ParticleMaximizerTest {
         when(firm.getRandomPlantProducingThis(GoodType.BEEF)).thenReturn(plant);
         when(firm.getPlantProfits(plant)).thenReturn(1f);
         //add 2 competitors
-        Firm competitor1 = mock(Firm.class); Plant plant1 = mock(Plant.class); when(plant1.workerSize()).thenReturn(100);
+        Firm competitor1 = mock(Firm.class); Plant plant1 = mock(Plant.class); when(plant1.getNumberOfWorkers()).thenReturn(100);
         when(competitor1.getRandomPlantProducingThis(any(GoodType.class))).thenReturn(plant1); //return whatever mock you want
         when(competitor1.getPlantProfits(plant1)).thenReturn(2f); //competitor 1 is better than you!
-        Firm competitor2 = mock(Firm.class);  Plant plant2 = mock(Plant.class); when(plant2.workerSize()).thenReturn(100);
+        Firm competitor2 = mock(Firm.class);  Plant plant2 = mock(Plant.class); when(plant2.getNumberOfWorkers()).thenReturn(100);
         when(competitor2.getRandomPlantProducingThis(any(GoodType.class))).thenReturn(plant2); //return whatever mock you want
         when(competitor2.getPlantProfits(plant2)).thenReturn(-2f); //competitor 1 is better than you!
         employers.add(competitor1); employers.add(competitor2);
@@ -191,7 +191,7 @@ public class ParticleMaximizerTest {
         when(hr.getAllEmployers()).thenReturn(employers);
         when(plant.getBlueprint()).thenReturn(Blueprint.simpleBlueprint(GoodType.GENERIC,1,GoodType.BEEF,1));
         when(pc.getHr()).thenReturn(hr); when(plant.maximumWorkersPossible()).thenReturn(100); when(plant.minimumWorkersNeeded()).thenReturn(0);
-        when(plant.workerSize()).thenReturn(1);
+        when(plant.getNumberOfWorkers()).thenReturn(1);
         when(random.nextGaussian()).thenReturn(0d);
         ParticleMaximizer maximizer = new ParticleMaximizer(plant.weeklyFixedCosts(),plant.minimumWorkersNeeded(),plant.maximumWorkersPossible()
         , random,hr);
@@ -243,10 +243,10 @@ public class ParticleMaximizerTest {
         when(firm.getRandomPlantProducingThis(GoodType.BEEF)).thenReturn(plant);
         when(firm.getPlantProfits(plant)).thenReturn(1f);
         //add 2 competitors
-        Firm competitor1 = mock(Firm.class); Plant plant1 = mock(Plant.class); when(plant1.workerSize()).thenReturn(100);
+        Firm competitor1 = mock(Firm.class); Plant plant1 = mock(Plant.class); when(plant1.getNumberOfWorkers()).thenReturn(100);
         when(competitor1.getRandomPlantProducingThis(any(GoodType.class))).thenReturn(plant1); //return whatever mock you want
         when(competitor1.getPlantProfits(plant1)).thenReturn(2f); //competitor 1 is better than you!
-        Firm competitor2 = mock(Firm.class);  Plant plant2 = mock(Plant.class); when(plant2.workerSize()).thenReturn(100);
+        Firm competitor2 = mock(Firm.class);  Plant plant2 = mock(Plant.class); when(plant2.getNumberOfWorkers()).thenReturn(100);
         when(competitor2.getRandomPlantProducingThis(any(GoodType.class))).thenReturn(plant2); //return whatever mock you want
         when(competitor2.getPlantProfits(plant2)).thenReturn(-2f); //competitor 1 is better than you!
         employers.add(competitor1); employers.add(competitor2);
@@ -255,7 +255,7 @@ public class ParticleMaximizerTest {
         when(hr.getAllEmployers()).thenReturn(employers);
         when(plant.getBlueprint()).thenReturn(Blueprint.simpleBlueprint(GoodType.GENERIC,1,GoodType.BEEF,1));
         when(pc.getHr()).thenReturn(hr); when(plant.maximumWorkersPossible()).thenReturn(100); when(plant.minimumWorkersNeeded()).thenReturn(0);
-        when(plant.workerSize()).thenReturn(1);
+        when(plant.getNumberOfWorkers()).thenReturn(1);
         when(random.nextGaussian()).thenReturn(0d);
         ParticleMaximizer maximizer = new ParticleMaximizer(plant.weeklyFixedCosts(),plant.minimumWorkersNeeded(),plant.maximumWorkersPossible()
                 , random,hr);

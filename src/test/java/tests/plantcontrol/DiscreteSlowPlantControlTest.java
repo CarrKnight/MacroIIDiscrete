@@ -11,7 +11,7 @@ import agents.firm.production.PlantListener;
 import agents.firm.production.control.AbstractPlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.facades.DiscreteSlowPlantControl;
-import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
+import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.sales.SalesDepartment;
@@ -70,7 +70,7 @@ public class DiscreteSlowPlantControlTest {
         MacroII model = new MacroII(10l);
         Firm firm = mock(Firm.class);      when(firm.getRandom()).thenReturn(new MersenneTwisterFast());
         when(firm.getModel()).thenReturn(model);
-        Plant plant = mock(Plant.class); when(plant.workerSize()).thenReturn(1); when(plant.getModel()).thenReturn(model);  when(plant.getBuildingCosts()).thenReturn(10000l);
+        Plant plant = mock(Plant.class); when(plant.getNumberOfWorkers()).thenReturn(1); when(plant.getModel()).thenReturn(model);  when(plant.getBuildingCosts()).thenReturn(10000l);
         when(plant.maximumWorkersPossible()).thenReturn(100);
         Blueprint b = Blueprint.simpleBlueprint(GoodType.GENERIC,1,GoodType.GENERIC,1);
         when(plant.getBlueprint()).thenReturn(b);
@@ -100,9 +100,9 @@ public class DiscreteSlowPlantControlTest {
         DiscreteSlowPlantControl control = new DiscreteSlowPlantControl(hr);
         //  control.setQuickFiring(false);
         hr.setControl(control);
-        when(plant.workerSize()).thenReturn(0);
+        when(plant.getNumberOfWorkers()).thenReturn(0);
         control.start();
-        when(plant.workerSize()).thenReturn(1);
+        when(plant.getNumberOfWorkers()).thenReturn(1);
 
 
         //force the control to have wage = 50;
@@ -119,7 +119,7 @@ public class DiscreteSlowPlantControlTest {
         //get the maximizer
         field = TargetAndMaximizePlantControl.class.getDeclaredField("maximizer");
         field.setAccessible(true);
-        WeeklyWorkforceMaximizer maximizer = (WeeklyWorkforceMaximizer) field.get(realControl);
+        SetTargetThenTryAgainMaximizer maximizer = (SetTargetThenTryAgainMaximizer) field.get(realControl);
 
 
 
@@ -133,7 +133,7 @@ public class DiscreteSlowPlantControlTest {
         maximizer.step(model);
         maximizer.step(model);
         assertEquals(control.getTarget(), 2);
-        when(plant.workerSize()).thenReturn(2);
+        when(plant.getNumberOfWorkers()).thenReturn(2);
 
         //adjust it again, it should switch to 3
         when(firm.getPlantProfits(any(Plant.class))).thenReturn(180f);
@@ -142,7 +142,7 @@ public class DiscreteSlowPlantControlTest {
         assertTrue(maximizer.isCheckWeek());
         maximizer.step(model);
         assertEquals(control.getTarget(), 3);
-        when(plant.workerSize()).thenReturn(3);
+        when(plant.getNumberOfWorkers()).thenReturn(3);
 
 
         //adjust it again, it should switch to 4
@@ -152,7 +152,7 @@ public class DiscreteSlowPlantControlTest {
         assertTrue(maximizer.isCheckWeek());
         maximizer.step(model);
         assertEquals(control.getTarget(), 4);
-        when(plant.workerSize()).thenReturn(4);
+        when(plant.getNumberOfWorkers()).thenReturn(4);
 
 
         //adjust it again, it should switch back to 3
@@ -161,7 +161,7 @@ public class DiscreteSlowPlantControlTest {
         maximizer.step(model);
         assertTrue(maximizer.isCheckWeek());
         maximizer.step(model);        assertEquals(control.getTarget(), 3);
-        when(plant.workerSize()).thenReturn(3);
+        when(plant.getNumberOfWorkers()).thenReturn(3);
 
 
         //adjust it again, it should stay at 3
@@ -170,7 +170,7 @@ public class DiscreteSlowPlantControlTest {
         maximizer.step(model);
         assertTrue(maximizer.isCheckWeek());
         maximizer.step(model);        assertEquals(control.getTarget(), 3);
-        when(plant.workerSize()).thenReturn(3);
+        when(plant.getNumberOfWorkers()).thenReturn(3);
 
 
         //adjust it again, it should stay at 3
@@ -179,7 +179,7 @@ public class DiscreteSlowPlantControlTest {
         maximizer.step(model);
         assertTrue(maximizer.isCheckWeek());
         maximizer.step(model);        assertEquals(control.getTarget(), 3);
-        when(plant.workerSize()).thenReturn(3);
+        when(plant.getNumberOfWorkers()).thenReturn(3);
 
 
         //adjust it again, it should stay at 3
@@ -189,7 +189,7 @@ public class DiscreteSlowPlantControlTest {
         assertTrue(maximizer.isCheckWeek());
         maximizer.step(model);
         assertEquals(control.getTarget(), 3);
-        when(plant.workerSize()).thenReturn(3);
+        when(plant.getNumberOfWorkers()).thenReturn(3);
 
 
         //adjust it again, now it'll switch to 4!
@@ -199,7 +199,7 @@ public class DiscreteSlowPlantControlTest {
         assertTrue(maximizer.isCheckWeek());
         maximizer.step(model);
         assertEquals(control.getTarget(), 4);
-        when(plant.workerSize()).thenReturn(4);
+        when(plant.getNumberOfWorkers()).thenReturn(4);
 
 
         //adjust it again, now it'll switch to 3!
@@ -209,7 +209,7 @@ public class DiscreteSlowPlantControlTest {
         assertTrue(maximizer.isCheckWeek());
         maximizer.step(model);
         assertEquals(control.getTarget(), 3);
-        when(plant.workerSize()).thenReturn(3);
+        when(plant.getNumberOfWorkers()).thenReturn(3);
 
 
         //adjust it again, now it'll switch to 2!
@@ -219,7 +219,7 @@ public class DiscreteSlowPlantControlTest {
         assertTrue(maximizer.isCheckWeek());
         maximizer.step(model);
         assertEquals(control.getTarget(), 2);
-        when(plant.workerSize()).thenReturn(2);
+        when(plant.getNumberOfWorkers()).thenReturn(2);
 
 
 
@@ -299,14 +299,14 @@ public class DiscreteSlowPlantControlTest {
         do{
             if (!model.schedule.step(model)) break;
             System.out.println("the time is " + model.schedule.getTime() +
-                    "the sales department is selling at: " + strategy.getTargetPrice() + "plant has this many workers: " + plant.workerSize() + " offering wage: " + hr.maxPrice(GoodType.GENERIC,labor));
-            System.out.println(model.schedule.getTime()+","+strategy.getTargetPrice() +","+ pid.getCurrentMV() +","+plant.workerSize()  + "," + hr.maxPrice(GoodType.LABOR,labor) + "," + market.getBestBuyPrice());
+                    "the sales department is selling at: " + strategy.getTargetPrice() + "plant has this many workers: " + plant.getNumberOfWorkers() + " offering wage: " + hr.maxPrice(GoodType.GENERIC,labor));
+            System.out.println(model.schedule.getTime()+","+strategy.getTargetPrice() +","+ pid.getCurrentMV() +","+plant.getNumberOfWorkers()  + "," + hr.maxPrice(GoodType.LABOR,labor) + "," + market.getBestBuyPrice());
             if(model.schedule.getSteps() > 50)
                 System.out.println("market best bid: " + market.getBestBuyPrice() + ", profits: " + firm.getPlantProfits(plant));
         }
         while(model.schedule.getSteps() < 6000);
 
-        assertEquals(plant.workerSize(), 2);
+        assertEquals(plant.getNumberOfWorkers(), 2);
         System.out.println("---------------------------------------------------------------------------------------------------------------------------------------");
 
 
@@ -408,14 +408,14 @@ public class DiscreteSlowPlantControlTest {
             if (!model.schedule.step(model)) break;
 
             System.out.println("FIRST FIRM : the time is " + model.schedule.getTime() +
-                    "the sales department is selling at: " + strategy.getTargetPrice() + "plant has this many workers: " + plant.workerSize() + " offering wage: " + hr.maxPrice(GoodType.GENERIC,labor));
+                    "the sales department is selling at: " + strategy.getTargetPrice() + "plant has this many workers: " + plant.getNumberOfWorkers() + " offering wage: " + hr.maxPrice(GoodType.GENERIC,labor));
             System.out.println("SECOND FIRM: the time is " + model.schedule.getTime() +
-                    "the sales department is selling at: " + strategy2.getTargetPrice() + "plant has this many workers: " + plant2.workerSize() + " offering wage: " + hr2.maxPrice(GoodType.GENERIC,labor));
+                    "the sales department is selling at: " + strategy2.getTargetPrice() + "plant has this many workers: " + plant2.getNumberOfWorkers() + " offering wage: " + hr2.maxPrice(GoodType.GENERIC,labor));
 
         }
         while(model.schedule.getSteps() < 6000);
 
-        assertEquals(plant.workerSize() + plant2.workerSize(), 4);
+        assertEquals(plant.getNumberOfWorkers() + plant2.getNumberOfWorkers(), 4);
         System.out.println("---------------------------------------------------------------------------------------------------------------------------------------");
 
 
@@ -543,21 +543,21 @@ public class DiscreteSlowPlantControlTest {
         do{
             if (!model.schedule.step(model)) break;
             //   System.out.println("FIRST FIRM : the time is " + model.schedule.getTime() +
-            //           "the sales department is selling at: " + strategy.getTargetPrice() + "plant has this many workers: " + plant.workerSize() + " offering wage: " + hr.maxPrice(GoodType.GENERIC,labor));
+            //           "the sales department is selling at: " + strategy.getTargetPrice() + "plant has this many workers: " + plant.getNumberOfWorkers() + " offering wage: " + hr.maxPrice(GoodType.GENERIC,labor));
             //   System.out.println("SECOND FIRM: the time is " + model.schedule.getTime() +
-            //           "the sales department is selling at: " + strategy2.getTargetPrice() + "plant has this many workers: " + plant2.workerSize() + " offering wage: " + hr2.maxPrice(GoodType.GENERIC,labor));
-            System.out.println(plant.workerSize() + " <>" + dept.getLastClosingPrice() + "<>" + hr.maxPrice(GoodType.GENERIC,labor) + "<>" + firm.getPlantProfits(plant) +
+            //           "the sales department is selling at: " + strategy2.getTargetPrice() + "plant has this many workers: " + plant2.getNumberOfWorkers() + " offering wage: " + hr2.maxPrice(GoodType.GENERIC,labor));
+            System.out.println(plant.getNumberOfWorkers() + " <>" + dept.getLastClosingPrice() + "<>" + hr.maxPrice(GoodType.GENERIC,labor) + "<>" + firm.getPlantProfits(plant) +
                     " , "
-                    + plant2.workerSize() + " <>" + dept2.getLastClosingPrice() + "<>" + hr2.maxPrice(GoodType.GENERIC, labor) + "<>" +firm2.getPlantProfits(plant2) +
+                    + plant2.getNumberOfWorkers() + " <>" + dept2.getLastClosingPrice() + "<>" + hr2.maxPrice(GoodType.GENERIC, labor) + "<>" +firm2.getPlantProfits(plant2) +
                     " , "
-                    + plant3.workerSize() + " <>" + dept3.getLastClosingPrice() + "<>" + hr3.maxPrice(GoodType.GENERIC, labor) + "<>" + firm3.getPlantProfits(plant3) +
+                    + plant3.getNumberOfWorkers() + " <>" + dept3.getLastClosingPrice() + "<>" + hr3.maxPrice(GoodType.GENERIC, labor) + "<>" + firm3.getPlantProfits(plant3) +
                     " ----- "
-                    + (plant.workerSize() + plant2.workerSize()  + plant3.workerSize()));
+                    + (plant.getNumberOfWorkers() + plant2.getNumberOfWorkers()  + plant3.getNumberOfWorkers()));
 
         }
         while(model.schedule.getSteps() < 50000);   //todo why it takes so long and why sometimes it's 4 rather than 5?
 
-        assertEquals(plant.workerSize() + plant2.workerSize() + plant3.workerSize(), 4);
+        assertEquals(plant.getNumberOfWorkers() + plant2.getNumberOfWorkers() + plant3.getNumberOfWorkers(), 4);
         System.out.println("---------------------------------------------------------------------------------------------------------------------------------------");
 
 

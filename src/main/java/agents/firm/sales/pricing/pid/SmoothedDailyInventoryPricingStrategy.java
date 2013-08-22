@@ -13,8 +13,8 @@ import goods.Good;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.filters.MovingAverage;
+import model.utilities.pid.CascadePIDController;
 import model.utilities.pid.ControllerFactory;
-import model.utilities.pid.PIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -60,7 +60,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
     /**
      * the PID controller used by the delegate fixedInventory sales control. Useful to set gains and speed.
      */
-    private final PIDController controllerUsedByDelegate;
+    private final CascadePIDController controllerUsedByDelegate;
 
     /**
      * Creates the default SmoothedDailyInventoryPricingStrategy by creating the default SalesControlWithFixedInventoryAndPID
@@ -72,7 +72,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         this.salesDepartment = salesDepartment;
 
         //I am creating the PID controller here so that I can set the gains; I am sure it's a PID controller so I am sure the setGains() method exists
-        controllerUsedByDelegate = ControllerFactory.buildController(PIDController.class,
+        controllerUsedByDelegate = ControllerFactory.buildController(CascadePIDController.class,
                 salesDepartment.getFirm().getModel());
 
         delegate = new SalesControlWithFixedInventoryAndPID(salesDepartment,0,controllerUsedByDelegate);
@@ -189,40 +189,12 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
     }
 
 
-    public void setDerivativeGain(float derivativeGain) {
-        controllerUsedByDelegate.setDerivativeGain(derivativeGain);
-    }
-
-    public float getDerivativeGain() {
-        return controllerUsedByDelegate.getDerivativeGain();
-    }
-
-    public void setIntegralGain(float integralGain) {
-        controllerUsedByDelegate.setIntegralGain(integralGain);
-    }
-
-    public float getIntegralGain() {
-        return controllerUsedByDelegate.getIntegralGain();
-    }
-
-    public float getProportionalGain() {
-        return controllerUsedByDelegate.getProportionalGain();
-    }
-
-    public void setProportionalGain(float proportionalGain) {
-        controllerUsedByDelegate.setProportionalGain(proportionalGain);
-    }
 
     public int getSpeed() {
         return controllerUsedByDelegate.getSpeed();
     }
 
-    /**
-     * Change the gains of the PID
-     */
-    public void setGains(float proportionalGain, float integralGain, float derivativeGain) {
-        controllerUsedByDelegate.setGains(proportionalGain, integralGain, derivativeGain);
-    }
+
 
     /**
      * delegates

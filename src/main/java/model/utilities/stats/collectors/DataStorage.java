@@ -29,7 +29,7 @@ import java.util.EnumMap;
  * @version 2013-08-19
  * @see
  */
-public abstract class DataGatherer<T extends  Enum<T>> implements Steppable, Deactivatable
+public abstract class DataStorage<T extends  Enum<T>> implements Steppable, Deactivatable
 {
 
     /**
@@ -47,7 +47,7 @@ public abstract class DataGatherer<T extends  Enum<T>> implements Steppable, Dea
      */
     private int startingDay = -1;
 
-    protected DataGatherer(Class<T> enumType) {
+    protected DataStorage(Class<T> enumType) {
         data = new EnumMap<>(enumType);
         this.enumType = enumType;
 

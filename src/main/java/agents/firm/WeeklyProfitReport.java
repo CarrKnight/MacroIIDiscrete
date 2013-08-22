@@ -172,7 +172,7 @@ public class WeeklyProfitReport implements ProfitReport {
             float profits = margin;
             //add wage costs
             float wageCosts = firm.getHR(p).getWagesPaid();
-            assert wageCosts > 0 || p.workerSize() == 0 || p.getWorkers().get(0).getMinimumWageRequired() == 0: wageCosts + " --- " + p.workerSize();
+            assert wageCosts > 0 || p.getNumberOfWorkers() == 0 || p.getWorkers().get(0).getMinimumWageRequired() == 0: wageCosts + " --- " + p.getNumberOfWorkers();
 
 
             //subtract fixed costs
@@ -208,6 +208,8 @@ public class WeeklyProfitReport implements ProfitReport {
 
     @Override
     public float getPlantProfits(Plant p){
+        if(profitsPerPlant.size() == 0) //haven't actually had time to generate a single profit!
+            return -1;
         assert firm.getPlants().contains(p);
         return profitsPerPlant.get(p);
     }
@@ -249,6 +251,8 @@ public class WeeklyProfitReport implements ProfitReport {
     @Override
     public float getPlantRevenues(Plant p)
     {
+        if(revenuesPerPlant.size() == 0) //haven't actually had time to generate a single profit!
+            return -1;
        return revenuesPerPlant.get(p);
     }
 
@@ -259,6 +263,8 @@ public class WeeklyProfitReport implements ProfitReport {
      */
     @Override
     public float getPlantCosts(Plant p){
+        if(costsPerPlant.size()==0) //haven't actually had time to generate a single profit!
+            return -1;
         return costsPerPlant.get(p);
     }
 

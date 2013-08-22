@@ -11,7 +11,7 @@ import agents.firm.production.Plant;
 import agents.firm.production.PlantListener;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
+import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPIDCascadeEfficency;
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.Machinery;
@@ -61,8 +61,8 @@ public class MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment implements 
         targeter = new PIDTargeter(hr,control);
         control.setTargeter(targeter);
         maximizer = new MarginalMaximizerWithUnitPIDCascadeEfficency(hr,control,hr.getPlant(),hr.getFirm(),
-                hr.getRandom(),hr.getPlant().workerSize());
-        control.setMaximizer(new WeeklyWorkforceMaximizer<>(
+                hr.getRandom(),hr.getPlant().getNumberOfWorkers());
+        control.setMaximizer(new SetTargetThenTryAgainMaximizer<>(
                 hr,control,maximizer));
 
 

@@ -169,7 +169,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
     private AveragePurchasePriceCounter averagePriceCounter;
 
 
-    private boolean startWasCalled=false;
+    protected boolean startWasCalled=false;
 
 
     protected PurchasesDepartment(long budgetGiven,@Nonnull Firm firm,@Nonnull Market market,

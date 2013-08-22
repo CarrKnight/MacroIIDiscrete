@@ -288,7 +288,7 @@ public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
         Iterable<? extends Plant> plantsProducingGoodOfInterest =
                 department.getServicedPlants();
         for( Plant p : plantsProducingGoodOfInterest)
-            workers += p.workerSize();
+            workers += p.getNumberOfWorkers();
 
         return workers;
     }

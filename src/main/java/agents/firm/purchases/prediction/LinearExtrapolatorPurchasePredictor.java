@@ -187,7 +187,7 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
                 float deltaPrice = computeAfterShockPrice() - computeBeforeShockPrice();
                 if(!Float.isNaN(deltaPrice/deltaWorkers)) //NaN implies that there weren't enough good observations (probably because the few days before changing workers there was no production)x
                     predictor.setIncrementDelta(deltaPrice/deltaWorkers);
-                System.out.println(predictor.getIncrementDelta());
+   //             System.out.println(predictor.getIncrementDelta());
 
             }
 

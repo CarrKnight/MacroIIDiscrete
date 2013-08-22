@@ -9,7 +9,7 @@ package agents.firm.production.control.facades;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.WeeklyWorkforceMaximizer;
+import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
 import goods.GoodType;
@@ -43,7 +43,7 @@ public class DumbClimberControl implements PlantControl
 
 
     public DumbClimberControl(HumanResources hr){
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class, WeeklyWorkforceMaximizer.class,
+        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class, SetTargetThenTryAgainMaximizer.class,
                 AlwaysMovingHillClimber.class).getControl();
 
     }

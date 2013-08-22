@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
  * @version 2013-08-19
  * @see
  */
-public class PurchasesDepartmentData extends DataGatherer<PurchasesDataType> {
+public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
 
 
 
