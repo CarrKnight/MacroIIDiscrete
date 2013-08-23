@@ -9,6 +9,7 @@ package model.utilities.pid;
 import ec.util.MersenneTwisterFast;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.pid.decorator.ExponentialFilterTargetDecorator;
 import sim.engine.Steppable;
 
 import javax.annotation.Nullable;
@@ -40,7 +41,16 @@ public class CascadePIDController implements Controller{
     /**
      * The slave PID
      */
-    private PIDController pid2;
+    private PIDController pid2Root;
+
+
+      /**
+     * The slave controller
+     */
+    private Controller pid2;
+
+
+
 
     /**
      * when this is set to true, the second PID input is the second target - the original second input
@@ -53,8 +63,9 @@ public class CascadePIDController implements Controller{
         pid1 = new PIDController(proportional1,integrative1,derivative1,random);
         //    pid1.setCanGoNegative(true); pid1.setWindupStop(false);
         pid1.setCanGoNegative(false); pid1.setWindupStop(true);
-        pid2 = new PIDController(proportional2,integrative2,derivative2,pid1.getSpeed(),random);
-        pid2.setCanGoNegative(true); pid2.setWindupStop(false);
+        pid2Root = new PIDController(proportional2,integrative2,derivative2,pid1.getSpeed(),random);
+        pid2Root.setCanGoNegative(true); pid2Root.setWindupStop(false);
+        pid2=pid2Root;
 
 
     }
@@ -107,8 +118,9 @@ public class CascadePIDController implements Controller{
         pid1.adjust(firstTarget,firstInput,isActive,state,user,phase);
         //slave
         secondTarget = pid1.getCurrentMV();
-        // System.out.println(secondTarget);
-        pid2.adjust(secondTarget, secondInput, isActive, null, null, null);
+        System.out.println(secondTarget);
+        ControllerInput secondPIDInput = ControllerInput.simplePIDTarget(secondTarget,secondInput);
+        pid2.adjust(secondPIDInput, isActive, null, null, null);
 
     }
 
@@ -164,7 +176,7 @@ public class CascadePIDController implements Controller{
      * Change the gains of the second PID
      */
     public void setGainsSlavePID(float proportionalGain, float integralGain, float derivativeGain) {
-        pid2.setGains(proportionalGain, integralGain, derivativeGain);
+        pid2Root.setGains(proportionalGain, integralGain, derivativeGain);
     }
 
     /**
@@ -196,7 +208,7 @@ public class CascadePIDController implements Controller{
      * @return the proportional gain of the second PID
      */
     public float getSlaveProportionalGain() {
-        return pid2.getProportionalGain();
+        return pid2Root.getProportionalGain();
     }
 
     /**
@@ -204,7 +216,7 @@ public class CascadePIDController implements Controller{
      * @return the integral gain of the second PID
      */
     public float getSlaveIntegralGain() {
-        return pid2.getIntegralGain();
+        return pid2Root.getIntegralGain();
     }
 
     /**
@@ -212,7 +224,7 @@ public class CascadePIDController implements Controller{
      * @return the derivative gain of the second PID
      */
     public float getSlaveDerivativeGain() {
-        return pid2.getDerivativeGain();
+        return pid2Root.getDerivativeGain();
     }
 
     public void setGainsMasterPID(float proportionalGain, float integralGain, float derivativeGain) {
@@ -235,19 +247,19 @@ public class CascadePIDController implements Controller{
         return pid1.isWindupStop();
     }
     public void setSlaveCanGoNegative(boolean canGoNegative) {
-        pid2.setCanGoNegative(canGoNegative);
+        pid2Root.setCanGoNegative(canGoNegative);
     }
 
     public boolean isSlaveCanGoNegative() {
-        return pid2.isCanGoNegative();
+        return pid2Root.isCanGoNegative();
     }
 
     public void setSlaveWindupStop(boolean windupStop) {
-        pid2.setWindupStop(windupStop);
+        pid2Root.setWindupStop(windupStop);
     }
 
     public boolean isSlaveWindupStop() {
-        return pid2.isWindupStop();
+        return pid2Root.isWindupStop();
     }
 
 
@@ -263,16 +275,19 @@ public class CascadePIDController implements Controller{
         //careful how you set up your controller!
         //somewhat counterintuitively we let the Master PID be a P only. Because our slave will have as input---> (Inflow-Outflow)
         //which should nicely be 0 at inventory.
-        setGainsMasterPID(model.drawProportionalGain(),
+        float proportionalGain = model.drawProportionalGain();
+        setGainsMasterPID(proportionalGain,
                 0,
                 0);
 
         setGainsSlavePID(model.drawProportionalGain(),
                 model.drawIntegrativeGain(),
-                model.drawProportionalGain());
+                model.drawDerivativeGain());
 
         setMasterCanGoNegative(true); setMasterWindupStop(false);
         setSlaveCanGoNegative(false); setSlaveWindupStop(true);
+
+        pid2 = new ExponentialFilterTargetDecorator(pid2,.8f);
 
         inventoryCascadeMode=true;
     }

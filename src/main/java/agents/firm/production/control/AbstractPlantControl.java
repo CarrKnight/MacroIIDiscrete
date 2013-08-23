@@ -176,10 +176,11 @@ public abstract class AbstractPlantControl implements  PlantControl{
      * Check if you want to hire more
      *
      * @param p          the plant that made the change
-     * @param workerSize the new number of workers
+     * @param workerSizeNow the new number of workers
+     * @param workerSizeBefore
      */
     @Override
-    public abstract void changeInWorkforceEvent(Plant p, int workerSize);
+    public abstract void changeInWorkforceEvent(Plant p, int workerSizeNow, int workerSizeBefore);
 
     /**
      * This is called whenever a plant has been shut down or just went obsolete

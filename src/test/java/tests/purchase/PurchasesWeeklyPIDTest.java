@@ -92,7 +92,7 @@ public class PurchasesWeeklyPIDTest {
 
         for(int i=0; i < 100; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
-            model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE,control);
+            model.scheduleSoon(ActionOrder.ADJUST_PRICES,control);
             model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
@@ -150,7 +150,7 @@ public class PurchasesWeeklyPIDTest {
 
         for(int i=0; i < 100; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
-            model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE,control);
+            model.scheduleSoon(ActionOrder.ADJUST_PRICES,control);
             model.getPhaseScheduler().step(model);
             long oldPrice = pidPrice;
             pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
@@ -204,7 +204,7 @@ public class PurchasesWeeklyPIDTest {
         p.addWorker(new Person(model));
         assertEquals(control.getWeeklyNeeds(), 6f, 0.0001f);
 
-        model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE,control);
+        model.scheduleSoon(ActionOrder.ADJUST_PRICES,control);
 
         for(int i=0; i < 100; i++){
             when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy

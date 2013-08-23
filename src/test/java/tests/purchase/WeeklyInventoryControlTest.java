@@ -250,7 +250,7 @@ public class WeeklyInventoryControlTest {
         Field field = PurchasesDepartment.class.getDeclaredField("control");
         field.setAccessible(true);
         WeeklyInventoryControl control = (WeeklyInventoryControl) field.get(dept);
-        control.changeInWorkforceEvent(p,100);  //the number of workers is ignored anyway!
+        control.changeInWorkforceEvent(p,100, 99);  //the number of workers is ignored anyway!
 
 
         when(f.hasHowMany(GoodType.GENERIC)).thenReturn(1);

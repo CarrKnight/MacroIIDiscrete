@@ -11,7 +11,7 @@ import agents.firm.production.Plant;
 import agents.firm.production.PlantListener;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
+import agents.firm.production.control.maximizer.EveryWeekMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.Machinery;
@@ -45,7 +45,7 @@ public class MarginalPlantControl implements PlantControl, PlantListener {
 
     public MarginalPlantControl(@Nonnull HumanResources hr)
     {
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class,SetTargetThenTryAgainMaximizer.class,
+        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class,EveryWeekMaximizer.class,
                 MarginalMaximizer.class).getControl();
 
     }
@@ -84,11 +84,12 @@ public class MarginalPlantControl implements PlantControl, PlantListener {
      * pass the message down
      *
      * @param p          the plant that made the change
-     * @param workerSize the new number of workers
+     * @param workerSizeNow the new number of workers
+     * @param workerSizeBefore
      */
     @Override
-    public void changeInWorkforceEvent(Plant p, int workerSize) {
-        control.changeInWorkforceEvent(p, workerSize);
+    public void changeInWorkforceEvent(Plant p, int workerSizeNow, int workerSizeBefore) {
+        control.changeInWorkforceEvent(p, workerSizeNow, workerSizeBefore);
     }
 
     /**

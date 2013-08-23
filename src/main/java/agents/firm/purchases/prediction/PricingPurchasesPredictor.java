@@ -35,12 +35,12 @@ public class PricingPurchasesPredictor implements PurchasesPredictor {
      */
     @Override
     public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
-        return dept.maxPrice(dept.getGoodType(),dept.getMarket());
+        return dept.getLastOfferedPrice();
     }
 
     @Override
     public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
-        return dept.maxPrice(dept.getGoodType(),dept.getMarket());
+        return dept.getLastClosingPrice();
     }
 
     /**

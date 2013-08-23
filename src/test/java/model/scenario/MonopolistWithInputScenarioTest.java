@@ -82,8 +82,14 @@ public class MonopolistWithInputScenarioTest {
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
             macroII.start();
+            System.err.println(macroII.seed());
             while(macroII.schedule.getTime()<3500)
+            {
+         /*       System.out.println(scenario1.getMonopolist().getPurchaseDepartment(GoodType.LEATHER).getLastOfferedPrice() + " - " +
+                scenario1.getMonopolist().getPurchaseDepartment(GoodType.LEATHER).maxPrice(GoodType.LEATHER,scenario1.getMonopolist().getPurchaseDepartment(GoodType.LEATHER).getMarket()));
+                */
                 macroII.schedule.step(macroII);
+            }
 
 
             assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);

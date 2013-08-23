@@ -119,10 +119,11 @@ public class InputCostStrategy implements PlantCostStrategy, PlantListener{
      * This is called whenever a plant has changed the number of workers
      *
      * @param p          the plant that made the change
-     * @param workerSize the new number of workers
+     * @param workerSizeNow the new number of workers
+     * @param workerSizeBefore
      */
     @Override
-    public void changeInWorkforceEvent(Plant p, int workerSize) {
+    public void changeInWorkforceEvent(Plant p, int workerSizeNow, int workerSizeBefore) {
     }
 
     /**

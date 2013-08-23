@@ -14,8 +14,8 @@ import model.utilities.Control;
 
 /**
  * <h4>Description</h4>
- * <p/> This is the interface is the rule the plant follows to set its production rythm: basically how many workers it will try to hire.
- * <p/> In priciple this problem is not different from inventory control,that's why they share the same interface. The main differences regard pricing. All plant controls
+ * <p/> This is the interface is the rule the plant follows to set its production rhythm: basically how many workers it will try to hire.
+ * <p/> In principle this problem is not different from inventory control,that's why they share the same interface. The main differences regard pricing. All plant controls
  * are integrated (both Control and Pricing) because the wage is the variable to control.
  * <h4>Notes</h4>
  * Created with IntelliJ

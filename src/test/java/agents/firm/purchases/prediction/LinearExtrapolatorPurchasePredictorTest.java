@@ -8,8 +8,6 @@ package agents.firm.purchases.prediction;
 
 import agents.firm.purchases.PurchasesDepartment;
 import au.com.bytecode.opencsv.CSVReader;
-import financial.market.Market;
-import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.PurchasesDepartmentData;
@@ -115,7 +113,7 @@ public class LinearExtrapolatorPurchasePredictorTest
 
         //p2=32.5904 p1=32
         //delta workers -1!
-        when(department.maxPrice(any(GoodType.class), any(Market.class))).thenReturn(100l);
+        when(department.getLastOfferedPrice()).thenReturn(100l);
         Assert.assertEquals(100,predictor.predictPurchasePriceWhenIncreasingProduction(department)); //this is the reverse of what we expect when estimating supply shocks, but that's because the data is pure bogus
         Assert.assertEquals(100, predictor.predictPurchasePriceWhenDecreasingProduction(department)); //this is the reverse of what we expect when estimating supply shocks, but that's because the data is pure bogus
 
@@ -201,7 +199,7 @@ public class LinearExtrapolatorPurchasePredictorTest
 
         //p2=32.5904 p1=32
         //delta workers -1!
-        when(department.maxPrice(any(GoodType.class), any(Market.class))).thenReturn(100l);
+        when(department.getLastOfferedPrice()).thenReturn(100l);
         Assert.assertEquals(100,predictor.predictPurchasePriceWhenIncreasingProduction(department)); //this is the reverse of what we expect when estimating supply shocks, but that's because the data is pure bogus
         Assert.assertEquals(100, predictor.predictPurchasePriceWhenDecreasingProduction(department)); //this is the reverse of what we expect when estimating supply shocks, but that's because the data is pure bogus
 

@@ -30,9 +30,10 @@ public interface PlantListener {
     /**
      * This is called whenever a plant has changed the number of workers
      * @param p the plant that made the change
-     * @param workerSize the new number of workers
+     * @param workerSizeNow the new number of workers
+     * @param workerSizeBefore
      */
-    public void changeInWorkforceEvent(Plant p, int workerSize);
+    public void changeInWorkforceEvent(Plant p, int workerSizeNow, int workerSizeBefore);
 
     /**
      * This is called whenever a plant has changed the wage it pays to workers

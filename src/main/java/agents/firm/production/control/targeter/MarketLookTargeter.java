@@ -239,14 +239,15 @@ public class MarketLookTargeter implements WorkforceTargeter {
      * This is called whenever a plant has changed the number of workers
      *
      * @param p          the plant that made the change
-     * @param workerSize the new number of workers
+     * @param workerSizeNow the new number of workers
+     * @param workerSizeBefore
      */
     @Override
-    public void changeInWorkforceEvent(Plant p, int workerSize) {
+    public void changeInWorkforceEvent(Plant p, int workerSizeNow, int workerSizeBefore) {
         //if target is above what we have: buy!
-        if(target > workerSize)
+        if(target > workerSizeNow)
             hire();
-        else if(target <workerSize)
+        else if(target < workerSizeNow)
             fire();
     }
 

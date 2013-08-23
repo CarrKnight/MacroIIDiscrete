@@ -89,12 +89,12 @@ public class StandardPlantCostStrategyTest {
         assertEquals(strategy.getWageCostsPerUnit(), 0); //there is no worker
         when(hr.getWagesPaid()).thenReturn(3l * fakeRoster.size());
         when(p.hypotheticalTotalThroughput(anyInt())).thenReturn(4f);
-        strategy.changeInWorkforceEvent(p,3);
+        strategy.changeInWorkforceEvent(p,3, 2);
         //get wages paid
         assertEquals(strategy.getWageCostsPerUnit(), Math.round(3f * 3f / 4f)); // 3 workers paid 3, divided by 4 (weekly production rate)
 
         when(p.hypotheticalTotalThroughput(anyInt())).thenReturn(8f);
-        strategy.changeInWorkforceEvent(p,3);
+        strategy.changeInWorkforceEvent(p,3,2 );
         assertEquals(strategy.getWageCostsPerUnit(), Math.round(3f * 3f / 8f)); // 3 workers paid 3, divided by 8 (weekly production rate)
 
 
@@ -170,7 +170,7 @@ public class StandardPlantCostStrategyTest {
 
         //this isn't automatically listened because I am fudging the state manually
         when(machinery.hypotheticalTotalThroughput(anyInt())).thenReturn(8f);
-        strategy.changeInWorkforceEvent(p,3);
+        strategy.changeInWorkforceEvent(p,3, 2);
         assertEquals(strategy.getWageCostsPerUnit(), Math.round(3f * 3f / 8f)); // 3 workers paid 3, divided by 4 (weekly production rate)
 
 

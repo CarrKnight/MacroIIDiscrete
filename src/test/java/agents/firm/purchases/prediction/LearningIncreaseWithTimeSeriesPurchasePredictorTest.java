@@ -9,8 +9,6 @@ package agents.firm.purchases.prediction;
 import agents.firm.purchases.PurchasesDepartment;
 import au.com.bytecode.opencsv.CSVReader;
 import com.google.common.primitives.Doubles;
-import financial.market.Market;
-import goods.GoodType;
 import model.utilities.stats.collectors.PeriodicMarketObserver;
 import org.junit.Assert;
 import org.junit.Test;
@@ -78,7 +76,7 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictorTest {
         Assert.assertEquals(-6.596947,predictor.extractInterceptOfDemandFromRegression(),.5);
 
         PurchasesDepartment department = mock(PurchasesDepartment.class);
-        when(department.maxPrice(any(GoodType.class),any(Market.class))).thenReturn(100l);
+        when(department.getLastOfferedPrice()).thenReturn(100l);
         Assert.assertEquals(Math.round(100+1d/0.8527228),predictor.predictPurchasePriceWhenIncreasingProduction(department));
         Assert.assertEquals(Math.round(100-1d/0.8527228),predictor.predictPurchasePriceWhenDecreasingProduction(department));
 
@@ -132,7 +130,7 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictorTest {
         Assert.assertEquals(101,predictor.extractInterceptOfDemandFromRegression(),.01);
 
         PurchasesDepartment department = mock(PurchasesDepartment.class);
-        when(department.maxPrice(any(GoodType.class),any(Market.class))).thenReturn(100l);
+        when(department.getLastOfferedPrice()).thenReturn(100l);
         Assert.assertEquals(99,predictor.predictPurchasePriceWhenIncreasingProduction(department));
         Assert.assertEquals(101,predictor.predictPurchasePriceWhenDecreasingProduction(department));
 

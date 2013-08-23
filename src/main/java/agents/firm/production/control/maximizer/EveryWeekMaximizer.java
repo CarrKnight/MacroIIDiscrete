@@ -11,10 +11,13 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
+import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithmFactory;
 import agents.firm.production.technology.Machinery;
 import com.google.common.base.Preconditions;
+import financial.MarketEvents;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.stats.collectors.enums.PlantDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -77,11 +80,36 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
     private int howManyDaysBeforeEachCheck = 7;
 
 
+
+    /**
+     * Creates an EveryWeekMaximizer with a pre-made algorithm
+     * @param hr the human resources
+     * @param control the plant control
+     * @param algorithm the pre-made algorithm
+     */
+    public EveryWeekMaximizer(HumanResources hr, PlantControl control, ALG algorithm) {
+        this(hr.getModel(),hr.getFirm(),hr,hr.getPlant(),control,algorithm);
+
+    }
+
+    /**
+     * Creates a weekly workforce maximizer with the type of algorithm to build
+     * @param hr the human resources
+     * @param control the plant control
+     * @param algorithmClass the type of algorithm to make!
+     */
+    public EveryWeekMaximizer(HumanResources hr, PlantControl control, Class<ALG> algorithmClass) {
+        this(hr,control, WorkerMaximizationAlgorithmFactory.buildMaximizationAlgorithm(hr, control, algorithmClass));
+
+    }
+
     public EveryWeekMaximizer(MacroII model, Firm owner, HumanResources hr, Plant plant, PlantControl control, ALG workerMaximizationAlgorithm) {
         this.model = model;
         this.owner = owner;
         this.hr = hr;
         this.plant = plant;
+
+
         this.control = control;
         this.workerMaximizationAlgorithm = workerMaximizationAlgorithm;
     }
@@ -91,9 +119,9 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
      */
     @Override
     public void start() {
+        control.setTarget(1);
         Preconditions.checkState(isActive,"Can't start a turnedOff() maximizer");
-        model.scheduleAnotherDay(ActionOrder.THINK,this,howManyDaysBeforeEachCheck);
-
+        model.scheduleAnotherDay(ActionOrder.THINK, this, howManyDaysBeforeEachCheck);
 
     }
 
@@ -101,14 +129,16 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
     public void turnOff() {
         Preconditions.checkState(isActive,"Can't turn off a maximizer twice!");
         isActive = false;
+        plant.removeListener(this);
 
     }
 
     /**
-     * ignored
+     * remembers it as the last day there was a change in workforce!
      */
     @Override
-    public void changeInWorkforceEvent(Plant p, int workerSize) {
+    public void changeInWorkforceEvent(Plant p, int workerSizeNow, int workerSizeBefore) {
+
     }
 
     /**
@@ -138,60 +168,85 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
             return;
 
 
+        float newProfits = owner.getPlantProfits(plant);
+        float newRevenues = owner.getPlantRevenues(plant);
+        float newCosts = owner.getPlantCosts(plant);
 
-       /*
+        float oldProfits;
+        float oldRevenue;
+        float oldCosts;
 
+        //now for the past, if we never saw a change before then old and new profits are all just -1
+        int lastWorkerChangeDay = plant.getLastDayAMeaningfulChangeInWorkforceOccurred();
+        int lastWorkerTarget;
+        if(lastWorkerChangeDay == -1){
+            oldProfits = 0;
+            oldRevenue=0;
+            oldCosts=0;
+            lastWorkerTarget=0;
+        }
+        else
+        {
+            assert lastWorkerChangeDay > 0 : "last worker change day shouldn't be negative";
+            //make sure that the last worker change day was the day when we actually moved to this new number of workers!
+   /*         assert model.getMainScheduleTime() == lastWorkerChangeDay  || //make an exception if the change was today, because that day wouldn't be stored just yet
+                    plant.getObservationRecordedThisDay(PlantDataType.TOTAL_WORKERS,lastWorkerChangeDay)== plant.getNumberOfWorkers();
 
+            assert  plant.getObservationRecordedThisDay(PlantDataType.TOTAL_WORKERS,lastWorkerChangeDay-1) != plant.getNumberOfWorkers(); //should have been a meaningful change!
+        */
+            int dayToCheck= lastWorkerChangeDay-1;
+            oldProfits = (float) plant.getObservationRecordedThisDay(PlantDataType.PROFITS_THAT_WEEK,dayToCheck);
+            oldRevenue = (float) plant.getObservationRecordedThisDay(PlantDataType.REVENUES_THAT_WEEK,dayToCheck);
+            oldCosts = (float) plant.getObservationRecordedThisDay(PlantDataType.COSTS_THAT_WEEK,dayToCheck);
+            lastWorkerTarget = (int) plant.getObservationRecordedThisDay(PlantDataType.TOTAL_WORKERS,lastWorkerChangeDay-1);
+        }
 
         //what's the future target?
-        int futureTarget = workerMaximizationAlgorithm.chooseWorkerTarget(control.getTarget(),newProfits,newRevenues , newCosts,
-                oldRevenue,oldCosts, oldWorkerTarget, oldProfits);
 
 
+        int futureTarget = workerMaximizationAlgorithm.chooseWorkerTarget(plant.getNumberOfWorkers(),newProfits,newRevenues , newCosts,
+                oldRevenue,oldCosts, lastWorkerTarget, oldProfits);
         //if the future target is negative, do it again next week (the subclass wants more info)
         if(futureTarget < 0){
-            //System.out.println("delay");
-            reschedule(nextCheck + weeksToMakeObservation*7);
-
         }
         else {
-
-
             //log it
-            hr.getFirm().logEvent(hr,
+            owner.logEvent(hr,
                     MarketEvents.CHANGE_IN_TARGET,
-                    hr.getFirm().getModel().getCurrentSimulationTimeInMillis(),
+                    model.getCurrentSimulationTimeInMillis(),
                     "old Profits: " + oldProfits + ", new profits: " + newProfits +
-                            "; old workerTarget:" + oldWorkerTarget + ", new target:" + futureTarget);
-
-            //remember
-            oldProfits = newProfits;
-            oldRevenue = newRevenues;
-            oldCosts = newCosts;
-            oldWorkerTarget = control.getTarget();
+                            "; old workerTarget:" + lastWorkerTarget + ", new target:" + futureTarget);
 
 
             //tell control/targeter about new target
             control.setTarget(futureTarget);
-
-            //if we did change targets, next week is not observation week
-            checkWeek = false; //set it to false
-
-
-
-
-            //try again!
-            reschedule(nextCheck);
-
-
-
         }
 
 
 
-        throw new RuntimeException("not implemented yet!");
 
         model.scheduleAnotherDay(ActionOrder.THINK,this,howManyDaysBeforeEachCheck);
-         */
+
+
     }
+
+
+    /**
+     * Gets How many days must pass between asking the WorkerMaximizationAlgorithm.
+     *
+     * @return Value of How many days must pass between asking the WorkerMaximizationAlgorithm.
+     */
+    public int getHowManyDaysBeforeEachCheck() {
+        return howManyDaysBeforeEachCheck;
+    }
+
+    /**
+     * Sets new How many days must pass between asking the WorkerMaximizationAlgorithm.
+     * @param howManyDaysBeforeEachCheck New value of How many days must pass between asking the WorkerMaximizationAlgorithm.
+     */
+    public void setHowManyDaysBeforeEachCheck(int howManyDaysBeforeEachCheck) {
+        this.howManyDaysBeforeEachCheck = howManyDaysBeforeEachCheck;
+    }
+
+
 }

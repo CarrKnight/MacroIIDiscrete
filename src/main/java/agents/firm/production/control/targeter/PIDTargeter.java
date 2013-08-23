@@ -249,10 +249,10 @@ public class PIDTargeter implements WorkforceTargeter, Steppable {
      * always try to buy.
      */
     @Override
-    public void changeInWorkforceEvent(Plant p, int workerSize) {
+    public void changeInWorkforceEvent(Plant p, int workerSizeNow, int workerSizeBefore) {
         assert p == hr.getPlant();
 
-        if(workerSize < p.maximumWorkersPossible() && plantControl.canBuy())
+        if(workerSizeNow < p.maximumWorkersPossible() && plantControl.canBuy())
             hr.buy();
     }
 

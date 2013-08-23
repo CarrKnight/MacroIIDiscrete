@@ -7,12 +7,10 @@
 package agents.firm.purchases.prediction;
 
 import agents.firm.purchases.PurchasesDepartment;
-import financial.market.Market;
 import goods.GoodType;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 /**
@@ -37,7 +35,7 @@ public class FixedIncreasePurchasesPredictorTest
     public void testPredictSalePrice() throws Exception {
 
         PurchasesDepartment department = mock(PurchasesDepartment.class);
-        when(department.maxPrice(any(GoodType.class),any(Market.class))).thenReturn(100l); //current department pricing 100$!
+        when(department.getLastOfferedPrice()).thenReturn(100l); //current department pricing 100$!
         when(department.getGoodType()).thenReturn(GoodType.GENERIC); //type of good produced
 
 

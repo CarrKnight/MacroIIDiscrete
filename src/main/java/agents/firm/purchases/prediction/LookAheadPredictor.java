@@ -61,7 +61,7 @@ public class LookAheadPredictor implements PurchasesPredictor {
     public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         if(defaultTo == null)
             defaultTo = new PricingPurchasesPredictor();
-        return defaultTo.predictPurchasePriceWhenIncreasingProduction(dept);
+        return defaultTo.predictPurchasePriceWhenDecreasingProduction(dept);
 
     }
 

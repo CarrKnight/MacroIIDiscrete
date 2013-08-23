@@ -136,7 +136,7 @@ public class SetTargetThenTryAgainMaximizer<ALG extends WorkerMaximizationAlgori
      * ignored
      */
     @Override
-    public void changeInWorkforceEvent(Plant p, int workerSize) {
+    public void changeInWorkforceEvent(Plant p, int workerSizeNow, int workerSizeBefore) {
     }
 
     /**
@@ -382,6 +382,7 @@ public class SetTargetThenTryAgainMaximizer<ALG extends WorkerMaximizationAlgori
 
         this.maximizationAlgorithm = maximizationAlgorithm;
     }
+
 
 
 

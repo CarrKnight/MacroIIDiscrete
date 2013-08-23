@@ -12,7 +12,7 @@ import agents.firm.Department;
 import agents.firm.Firm;
 import agents.firm.purchases.inventoryControl.InventoryControl;
 import agents.firm.purchases.inventoryControl.Level;
-import agents.firm.purchases.prediction.LinearExtrapolatorPurchasePredictor;
+import agents.firm.purchases.prediction.LookAheadPredictor;
 import agents.firm.purchases.prediction.PurchasesPredictor;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.purchases.pricing.decorators.MaximumBidPriceDecorator;
@@ -59,7 +59,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
 
     public static Class<? extends PurchasesPredictor> defaultPurchasePredictor =
-            LinearExtrapolatorPurchasePredictor.class;
+            LookAheadPredictor.class;
     /**
      * The weekly budget given by the firm to this purchase department to carry out its tasks
      */
@@ -144,6 +144,12 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * What price was paid for the last good bought?
      */
     private long lastClosingPrice = -1;
+
+    /**
+     * when you placed your last bid, what was your offer price. I think it is more informative than querying maxPrice() because
+     * it takes some time between maxPrice being updated and then update moving in the quotes
+     */
+    private long lastOfferedPrice = -1;
 
 
     private final PurchasesDepartmentData purchasesData;
@@ -682,8 +688,11 @@ public class PurchasesDepartment implements Deactivatable, Department {
                     return;
                 }
 
+                lastOfferedPrice =maxPrice(type,market);
+                Quote q = market.submitBuyQuote(firm,lastOfferedPrice,PurchasesDepartment.this); //submit the quote!
 
-                Quote q = market.submitBuyQuote(firm,maxPrice(type,market),PurchasesDepartment.this); //submit the quote!
+
+
 
                 if(q.getPriceQuoted() == -1) //if the quote is null
                 {
@@ -811,8 +820,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
         {
             //call straight the buy algorithm
             final boolean queued =  cancelQuote();
-            //TODO is ASAP a good thing?
-            //schedule ASAP
+            //schedule ASAP: the quote itself will only be placed on TRADE though, so that's okay!
             model.scheduleASAP(new Steppable() {
                 @Override
                 public void step(SimState state) {
@@ -1113,7 +1121,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     public int getCurrentInventory()
     {
-          return getFirm().hasHowMany(getGoodType());
+        return getFirm().hasHowMany(getGoodType());
     }
     /**
      * Answers how many days, at the current rate, will it take for all the inventories to be gone
@@ -1228,5 +1236,17 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     public float getTodayAverageClosingPrice() {
         return averagePriceCounter.getTodayAverageClosingPrice();
+    }
+
+
+    /**
+     * Gets when you placed your last bid, what was your offer price. I think it is more informative than querying maxPrice because
+     * it takes some time between maxPrice being updated and then update moving in the quotes.
+     *
+     * @return Value of when you placed your last bid, what was your offer price. I think it is more informative than querying maxPrice because
+     *         it takes some time between maxPrice being updated and then update moving in the quotes.
+     */
+    public long getLastOfferedPrice() {
+        return lastOfferedPrice;
     }
 }

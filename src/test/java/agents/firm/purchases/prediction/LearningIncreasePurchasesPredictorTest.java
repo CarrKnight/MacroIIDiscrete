@@ -8,12 +8,11 @@ package agents.firm.purchases.prediction;
 
 import agents.firm.purchases.PurchasesDepartment;
 import financial.market.Market;
-import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
-import model.utilities.stats.collectors.enums.MarketDataType;
 import model.utilities.stats.collectors.PeriodicMarketObserver;
+import model.utilities.stats.collectors.enums.MarketDataType;
 import org.junit.Assert;
 import org.junit.Test;
 import sim.engine.Steppable;
@@ -75,7 +74,7 @@ public class LearningIncreasePurchasesPredictorTest
         //now Q doesn't matter anymore, only previous Price
 
         PurchasesDepartment department = mock(PurchasesDepartment.class);
-        when(department.maxPrice(any(GoodType.class),any(Market.class))).thenReturn(200l);
+        when(department.getLastOfferedPrice()).thenReturn(200l);
         //the sales predictor will be predict for 9 (yesterdayVolume + 1)
         Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 203l); //200+2.6 (rounded)
 
@@ -125,7 +124,7 @@ public class LearningIncreasePurchasesPredictorTest
 
 
         LearningIncreasePurchasesPredictor predictor = new LearningIncreasePurchasesPredictor(market,model );
-        when(department.maxPrice(any(GoodType.class),any(Market.class))).thenReturn(50l);
+        when(department.getLastOfferedPrice()).thenReturn(50l);
         Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50l);
 
         //with one observation, it still returns whatever the sales department says

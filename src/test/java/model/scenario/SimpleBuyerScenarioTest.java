@@ -38,7 +38,7 @@ public class SimpleBuyerScenarioTest
     @Test
     public void rightPriceAndQuantityTestWithPIDControllerFixed()
     {
-        for(int i=0; i<50; i++)
+        for(int i=0; i<200; i++)
         {
             //to sell 4 you need to price them between 60 and 51 everytime
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -53,8 +53,10 @@ public class SimpleBuyerScenarioTest
             macroII.setScenario(scenario);
             macroII.start();
             while(macroII.schedule.getTime()<3500)
+            {
                 macroII.schedule.step(macroII);
-
+                System.out.println(scenario.getDepartment().getLastOfferedPrice());
+            }
 
             //price should be any between 60 and 51
             assertTrue(String.valueOf(macroII.getMarket(GoodType.GENERIC).getLastPrice()),macroII.getMarket(GoodType.GENERIC).getLastPrice() < 140);
@@ -71,7 +73,7 @@ public class SimpleBuyerScenarioTest
     @Test
     public void rightPriceAndQuantityTestWithCascadeControllerFixed()
     {
-        for(int i=0; i<50; i++)
+        for(int i=0; i<200; i++)
         {
             //to sell 4 you need to price them between 60 and 51 everytime
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -105,7 +107,7 @@ public class SimpleBuyerScenarioTest
     @Test
     public void rightPriceAndQuantityTestWithFlowControllerFixed()
     {
-        for(int i=0; i<5; i++)
+        for(int i=0; i<200; i++)
         {
             //to sell 4 you need to price them between 60 and 51 everytime
             final MacroII macroII = new MacroII(System.currentTimeMillis());

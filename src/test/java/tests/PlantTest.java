@@ -172,7 +172,7 @@ public class PlantTest {
         assertEquals(crs.getWorkers().size(), 4);
         assertTrue(crs.getWorkers().contains(worker1));
         assertTrue(crs.getWorkers().contains(worker2));
-        Mockito.verify(fakeListener,times(1)).changeInWorkforceEvent(any(Plant.class),any(Integer.class)); //make sure it was called just once!!! That's the all point of this method
+        Mockito.verify(fakeListener,times(1)).changeInWorkforceEvent(any(Plant.class),any(Integer.class),any(Integer.class) ); //make sure it was called just once!!! That's the all point of this method
 
 
 

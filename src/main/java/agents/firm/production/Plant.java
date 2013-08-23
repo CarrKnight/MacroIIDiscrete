@@ -522,13 +522,16 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         if(getNumberOfWorkers() <=0)
             throw new IllegalStateException("Trying to fire a worker from an empty plant!");
 
+        int originalNumberOfWorkers = getNumberOfWorkers();
+
+
         //did I remove him successfully?
         boolean succeeded = workers.remove(w);
         if(succeeded){
 
             //notify the listeners
             for(PlantListener l : listeners)
-                l.changeInWorkforceEvent(this, getNumberOfWorkers());
+                l.changeInWorkforceEvent(this, getNumberOfWorkers(),originalNumberOfWorkers );
 
             //log it
             getOwner().logEvent(this, MarketEvents.LOST_WORKER, getOwner().getModel().getCurrentSimulationTimeInMillis(),
@@ -565,6 +568,9 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
      */
     public void addWorkers(Person... newHires)
     {
+
+        int originalNumberOfWorkers = getNumberOfWorkers();
+
         if(getNumberOfWorkers() + newHires.length > maxWorkers)
             throw new IllegalStateException("Trying to too many workers to the firm " + getNumberOfWorkers() + newHires.length);
 
@@ -579,9 +585,9 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         //now fire the listeners
         //tell the listener
         for(PlantListener l : listeners)
-            l.changeInWorkforceEvent(this, getNumberOfWorkers());
+            l.changeInWorkforceEvent(this, getNumberOfWorkers(), originalNumberOfWorkers);
         //tell the gui, if needed
-        getOwner().logEvent(this, MarketEvents.HIRED_WORKER, getOwner().getModel().getCurrentSimulationTimeInMillis(),
+        getOwner().logEvent(this, MarketEvents.HIRED_WORKER,getModel().getCurrentSimulationTimeInMillis(),
                 "Hired " + newHires.length + ", new total: " + getNumberOfWorkers());
 
 
@@ -1048,5 +1054,9 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
      */
     public int numberOfObservations() {
         return dataStorage.numberOfObservations();
+    }
+
+    public int getLastDayAMeaningfulChangeInWorkforceOccurred() {
+        return dataStorage.getLastDayAMeaningfulChangeInWorkforceOccurred();
     }
 }

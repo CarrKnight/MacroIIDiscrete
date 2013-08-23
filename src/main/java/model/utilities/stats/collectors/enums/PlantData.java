@@ -46,6 +46,11 @@ public class PlantData extends DataStorage<PlantDataType> {
     private Firm plantOwner = null;
 
     /**
+     * this says when was the last meaningful change of workforce (sometimes we hire and fire a guy the same day, but this wouldn't show up in the data here)
+     */
+    private int lastDayAMeaningfulChangeInWorkforceOccurred = -1;
+
+    /**
      * the firm owning the plant we are documenting
      */
     private Plant plant = null;
@@ -106,7 +111,12 @@ public class PlantData extends DataStorage<PlantDataType> {
         data.get(PlantDataType.PROFITS_THAT_WEEK).add(Double.valueOf(plantOwner.getPlantProfits(plant)));
         data.get(PlantDataType.REVENUES_THAT_WEEK).add(Double.valueOf(plantOwner.getPlantRevenues(plant)));
         data.get(PlantDataType.COSTS_THAT_WEEK).add(Double.valueOf(plantOwner.getPlantCosts(plant)));
-        data.get(PlantDataType.TOTAL_WORKERS).add(Double.valueOf(plant.getNumberOfWorkers()));
+        int numberOfWorkers = plant.getNumberOfWorkers();
+        //before adding it, check if it's different!
+        if(data.get(PlantDataType.TOTAL_WORKERS).size()>0
+                && ((int)Math.round(data.get(PlantDataType.TOTAL_WORKERS).getLastObservation())) != numberOfWorkers)
+            lastDayAMeaningfulChangeInWorkforceOccurred = (int)model.getMainScheduleTime();
+        data.get(PlantDataType.TOTAL_WORKERS).add(Double.valueOf(numberOfWorkers));
 
 
         //reschedule
@@ -128,5 +138,7 @@ public class PlantData extends DataStorage<PlantDataType> {
         active = false;
     }
 
-
+    public int getLastDayAMeaningfulChangeInWorkforceOccurred() {
+        return lastDayAMeaningfulChangeInWorkforceOccurred;
+    }
 }

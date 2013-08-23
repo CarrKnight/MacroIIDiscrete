@@ -230,4 +230,10 @@ public class DailyObservations implements Iterable<Double> {
     public int getStartingDay() {
         return startingDay;
     }
+
+
+    public Double getLastObservation()
+    {
+        return observations.get(observations.size()-1);
+    }
 }

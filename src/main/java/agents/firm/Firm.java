@@ -440,7 +440,7 @@ public class Firm extends EconomicAgent {
         assert department != null;
 
         //ask the department how much you are willing to pay for that!
-        return department.maxPrice(g,department.getMarket());
+        return department.getLastOfferedPrice();
     }
 
 
