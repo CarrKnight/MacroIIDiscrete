@@ -12,7 +12,7 @@ import agents.firm.Department;
 import agents.firm.Firm;
 import agents.firm.purchases.inventoryControl.InventoryControl;
 import agents.firm.purchases.inventoryControl.Level;
-import agents.firm.purchases.prediction.LookAheadPredictor;
+import agents.firm.purchases.prediction.AroundShockLinearRegressionPurchasePredictor;
 import agents.firm.purchases.prediction.PurchasesPredictor;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.purchases.pricing.decorators.MaximumBidPriceDecorator;
@@ -59,7 +59,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
 
     public static Class<? extends PurchasesPredictor> defaultPurchasePredictor =
-            LookAheadPredictor.class;
+            AroundShockLinearRegressionPurchasePredictor.class;
     /**
      * The weekly budget given by the firm to this purchase department to carry out its tasks
      */

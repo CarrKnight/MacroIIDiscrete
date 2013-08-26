@@ -115,20 +115,20 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
             {
 
                 //if profits decrease in both direction, stay where you are
-     //           System.out.println(currentWorkerTarget);
+
                 return currentWorkerTarget;
 
             }
             else
             if(profitsIfWeIncrease >= profitsIfWeDecrease){ //if we increase profits going up, let's do that
                 assert profitsIfWeIncrease >= 0;
-    //            System.out.println(currentWorkerTarget + 1);
+
                 return currentWorkerTarget+1;
             }
             else
             {
                 assert profitsIfWeDecrease >=0;
-  //              System.out.println(currentWorkerTarget -1);
+
 
                 return currentWorkerTarget-1;
 

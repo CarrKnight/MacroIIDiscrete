@@ -145,7 +145,7 @@ public interface PurchasesPredictor
                 if(rule.equals(LearningIncreasePurchasesPredictor.class) || rule.equals(LearningIncreaseWithTimeSeriesPurchasePredictor.class))
                     return rule.getConstructor(Market.class, MacroII.class).
                             newInstance(department.getMarket(), department.getModel());
-                else if(rule.equals(LinearExtrapolatorPurchasePredictor.class))
+                else if(rule.equals(LinearExtrapolatorPurchasePredictor.class) || rule.equals(AroundShockLinearRegressionPurchasePredictor.class))
                     return rule.getConstructor(PurchasesDepartment.class).newInstance(department);
                 else
                     return rule.newInstance();

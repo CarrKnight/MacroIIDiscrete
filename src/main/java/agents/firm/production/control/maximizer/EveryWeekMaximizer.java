@@ -77,7 +77,7 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
     /**
      * How many days must pass between asking the WorkerMaximizationAlgorithm
      */
-    private int howManyDaysBeforeEachCheck = 7;
+    private int howManyDaysBeforeEachCheck = 14;
 
 
 
