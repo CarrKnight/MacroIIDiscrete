@@ -19,7 +19,7 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
-import model.utilities.stats.collectors.enums.PlantData;
+import model.utilities.stats.collectors.PlantData;
 import model.utilities.stats.collectors.enums.PlantDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;

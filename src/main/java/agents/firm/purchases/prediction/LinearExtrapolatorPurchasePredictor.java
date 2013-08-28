@@ -96,7 +96,12 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
     /**
      * the exponential weight used
      */
-    private float weight = .7f ;
+    private float weight = .9f ;
+
+    /**
+     * the new slope we compute is usually averaged over the previous ones through anotherEMA
+     */
+    private float slopeAverageWeight = 1f;
 
     /**
      * builds and schedule the extrapolator to step every day
@@ -183,13 +188,12 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
                 lowerBoundObservation = newLowBound;
                 higherBoundObservation = newUpperBound;
 
-                float deltaWorkers =  computeAfterShockQuantity() - computeBeforeShockQuantity();
+                float deltaWorkers =  newestNumberOfWorkersObserved - olderNumberOfWorkersObserved;
                 assert deltaWorkers!=0;
                 float deltaPrice = computeAfterShockPrice() - computeBeforeShockPrice();
                 if(!Float.isNaN(deltaPrice/deltaWorkers)) //NaN implies that there weren't enough good observations (probably because the few days before changing workers there was no production)x
                 {
-                    float oldSlope = predictor.getIncrementDelta();
-                    float newslope = deltaPrice/deltaWorkers;
+
                     predictor.setIncrementDelta(deltaPrice/deltaWorkers);
                 }
    //             System.out.println(predictor.getIncrementDelta());
@@ -236,39 +240,6 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
     /**
      * the slope is going to be:
      * (p2-p1)/(w2-w1)
-     * This method computes p2
-     * @return
-     */
-    protected float computeAfterShockQuantity()
-    {
-        Preconditions.checkState(higherBoundObservation > lastWorkerShockDay, "not ready!");
-        Preconditions.checkState(higherBoundObservation != -1, "not ready!");
-        Preconditions.checkState(lastWorkerShockDay != -1,"not ready!");
-
-        //make sure the dates are right!
-        assert checkTheObservationsAreCorrect();
-
-        //take the EMA
-        ExponentialFilter<Double> afterShockPrice = new ExponentialFilter<>(weight);
-        double[] observations = department.getObservationsRecordedTheseDays(PurchasesDataType.OUTFLOW,lastWorkerShockDay,higherBoundObservation);
-        assert observations.length > 0;
-        float sum = 0;
-        for(double observation : observations)
-        {
-            if(observation >= 0)
-                afterShockPrice.addObservation(observation);
-            sum += observation;
-        }
-        //return it!
-        // return sum/observations.length;
-        return afterShockPrice.getSmoothedObservation();
-
-    }
-
-
-    /**
-     * the slope is going to be:
-     * (p2-p1)/(w2-w1)
      * This method computes p1
      * @return
      */
@@ -284,42 +255,6 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
         //take the EMA
         ExponentialFilter<Double> beforeShockPrice = new ExponentialFilter<>(weight);
         double[] observations = department.getObservationsRecordedTheseDays(PurchasesDataType.AVERAGE_CLOSING_PRICES,
-                lowerBoundObservation,lastWorkerShockDay-1);
-        assert observations.length > 0;
-        float sum = 0;
-        for(double observation : observations)
-        {
-            if(observation >= 0)
-
-                beforeShockPrice.addObservation(observation);
-            sum += observation;
-        }
-        //return it!
-        return beforeShockPrice.getSmoothedObservation();
-        //return sum/observations.length;
-
-
-    }
-
-
-    /**
-     * the slope is going to be:
-     * (p2-p1)/(w2-w1)
-     * This method computes p1
-     * @return
-     */
-    protected float computeBeforeShockQuantity()
-    {
-        Preconditions.checkState(lowerBoundObservation <= lastWorkerShockDay, "not ready!");
-        Preconditions.checkState(lowerBoundObservation != -1, "not ready!");
-        Preconditions.checkState(lastWorkerShockDay > 1,"not ready!");
-
-        //make sure the dates are right!
-        assert checkTheObservationsAreCorrect();
-
-        //take the EMA
-        ExponentialFilter<Double> beforeShockPrice = new ExponentialFilter<>(weight);
-        double[] observations = department.getObservationsRecordedTheseDays(PurchasesDataType.OUTFLOW,
                 lowerBoundObservation,lastWorkerShockDay-1);
         assert observations.length > 0;
         float sum = 0;
@@ -386,6 +321,7 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
     @Override
     public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         updateModelIfNeeded();
+        System.out.println("slope: " + predictor.getIncrementDelta());
         return predictor.predictPurchasePriceWhenDecreasingProduction(dept);
     }
 

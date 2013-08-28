@@ -493,13 +493,23 @@ public class Firm extends EconomicAgent {
     /**
      * This is called to addSalesDepartmentListener a sales department as part of this firm. Makes sure there is only one for each market
      */
-    public void registerSaleDepartment(SalesDepartment newSales, GoodType type){
+    public void registerSaleDepartment(final SalesDepartment newSales, GoodType type){
         assert !salesDepartments.containsKey(type);
         //log it
         addAgentToLog(newSales);
         //add it
         salesDepartments.put(type,newSales);
 
+        //if start was already called, you need to start this too next dawn
+        if(startWasCalled)
+        {
+            model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
+                @Override
+                public void step(SimState state) {
+                    newSales.start();
+                }
+            });
+        }
 
 
     }
@@ -674,6 +684,8 @@ public class Firm extends EconomicAgent {
             dept.start();
         for(HumanResources hr : humanResources.values())
             hr.start();
+        for(SalesDepartment sales : salesDepartments.values())
+            sales.start();
 
     }
 

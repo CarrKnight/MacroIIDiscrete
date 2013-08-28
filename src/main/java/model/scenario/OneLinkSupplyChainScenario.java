@@ -15,9 +15,10 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
+import agents.firm.production.control.maximizer.EveryWeekMaximizer;
+import agents.firm.production.control.maximizer.WorkforceMaximizer;
 import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
-import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPID;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
@@ -92,6 +93,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
      * the sampling speed of the BEEF selling pid
      */
     public int beefPricingSpeed = 100;
+    private Class< ? extends WorkforceMaximizer> maximizerType =  EveryWeekMaximizer.class;
 
     public OneLinkSupplyChainScenario(MacroII model) {
         super(model);
@@ -102,7 +104,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
     /**
      * The type of integrated control that is used by human resources in firms to choose production
      */
-    private Class<? extends WorkerMaximizationAlgorithm> controlType = MarginalMaximizerWithUnitPID.class;
+    private Class<? extends WorkerMaximizationAlgorithm> controlType = MarginalMaximizer.class;
 
     /**
      * the type of sales department firms use
@@ -306,16 +308,16 @@ public class OneLinkSupplyChainScenario extends Scenario {
         plant.setCostStrategy(new InputCostStrategy(plant));
         firm.addPlant(plant);
         FactoryProducedHumanResourcesWithMaximizerAndTargeter<TargetAndMaximizePlantControl,BuyerSearchAlgorithm,
-                SellerSearchAlgorithm,PIDTargeter,SetTargetThenTryAgainMaximizer<WorkerMaximizationAlgorithm>,WorkerMaximizationAlgorithm>
+                SellerSearchAlgorithm,PIDTargeter,WorkforceMaximizer<WorkerMaximizationAlgorithm>,WorkerMaximizationAlgorithm>
                 produced =
                 HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE,firm,laborMarket,plant,
-                PIDTargeter.class,SetTargetThenTryAgainMaximizer.class,controlType,null,null);
+                PIDTargeter.class, maximizerType,controlType,null,null);
 
-        if(blueprint.getOutputs().containsKey(GoodType.BEEF))
+    /*    if(blueprint.getOutputs().containsKey(GoodType.BEEF))
             produced.getWorkforceMaximizer().setWeeksToMakeObservation(weeksToMakeObservationBeef);
         else
             produced.getWorkforceMaximizer().setWeeksToMakeObservation(weeksToMakeObservationFood);
-
+      */
 
 
         HumanResources hr = produced.getDepartment();
@@ -516,7 +518,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
         final MacroII macroII = new MacroII(0);
         final OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
-        scenario1.setControlType(MarginalMaximizerWithUnitPID.class);
+        scenario1.setControlType(MarginalMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
         scenario1.setNumberOfBeefProducers(1);
@@ -738,5 +740,14 @@ public class OneLinkSupplyChainScenario extends Scenario {
      */
     public int getWeeksToMakeObservationBeef() {
         return weeksToMakeObservationBeef;
+    }
+
+
+    public Class<? extends WorkforceMaximizer> getMaximizerType() {
+        return maximizerType;
+    }
+
+    public void setMaximizerType(Class<? extends WorkforceMaximizer> maximizerType) {
+        this.maximizerType = maximizerType;
     }
 }

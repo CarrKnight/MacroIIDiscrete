@@ -224,7 +224,6 @@ public class SetTargetThenTryAgainMaximizer<ALG extends WorkerMaximizationAlgori
 
         //if the future target is negative, do it again next week (the subclass wants more info)
         if(futureTarget < 0){
-            //System.out.println("delay");
             reschedule(nextCheck + weeksToMakeObservation*7);
 
         }
@@ -272,9 +271,7 @@ public class SetTargetThenTryAgainMaximizer<ALG extends WorkerMaximizationAlgori
      */
     private void reschedule(int daysAway) {
 
-     /*   System.out.println("rescheduling: " + daysAway + ", goodtype: " +
-                getHr().getPlant().getBlueprint().getOutputs().keySet().iterator().next());
-       */
+
         if(randomspeed)
         {
             float probability = 1f/(float)daysAway;

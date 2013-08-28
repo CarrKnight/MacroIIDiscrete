@@ -215,9 +215,7 @@ public final class MarginalMaximizerStatics {
 
                 //if prediction is not available, react to it!
                 pricePerUnit = pricePerUnit < 0 ? policy.replaceUnknownPrediction(owner.getSalesDepartment(output).getMarket(), p.getRandom()) : pricePerUnit;
-                System.out.println("future price: " + pricePerUnit);
 
-                //          System.out.println("predicted price unit: " + pricePerUnit + ", current price: " + oldPrice);
 
                 //GAINS: new sales at the new price
                 marginalRevenue += pricePerUnit * marginalProduction;
@@ -242,7 +240,6 @@ public final class MarginalMaximizerStatics {
                         p.hypotheticalUnitOutputCost(output, totalFutureCosts, targetWorkers, totalFutureWageCosts),Math.round(-marginalProduction/7f) );
                 //if prediction is not available, react to it!
                 pricePerUnit = pricePerUnit < 0 ? policy.replaceUnknownPrediction(owner.getSalesDepartment(output).getMarket(), p.getRandom()) : pricePerUnit;
-                System.out.println("future price: " + pricePerUnit);
 
 
                 //LOSSES: lower production at old price
@@ -289,13 +286,11 @@ public final class MarginalMaximizerStatics {
             //if there is no prediction, react to it
             costPerInput = costPerInput < 0 ? policy.replaceUnknownPrediction(owner.getPurchaseDepartment(input).getMarket(), p.getRandom()) : costPerInput;
 
-             System.out.println(costPerInput);
             //count the costs!
             //if we are increasing production:
             if(targetWorkers>currentWorkers)
             {
                 assert  marginalInputCosts>=0;
-                totalInputCosts += costPerInput * totalInputNeeded;
                 //you need to buy the new stuff
                 marginalInputCosts += costPerInput * marginalInputNeeded;
                 //but you also need to pay more for the old stuff

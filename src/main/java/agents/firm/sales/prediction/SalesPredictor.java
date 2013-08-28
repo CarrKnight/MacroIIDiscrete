@@ -151,7 +151,7 @@ public interface SalesPredictor {
             try {
                 //we don't need a big switch here, they are mostly without constructor
 
-                if(rule.equals(LinearExtrapolationPredictor.class))
+                if(rule.equals(LinearExtrapolationPredictor.class) || rule.equals(AroundShockLinearRegressionSalesPredictor.class))
                     return rule.getConstructor(SalesDepartment.class).newInstance(department);
                 else if(rule.equals(RegressionSalePredictor.class) || rule.equals(RegressionWeightedSalePredictor.class)
                         || rule.equals(LearningDecreaseSalesPredictor.class) || rule.equals(LearningFixedElasticitySalesPredictor.class)

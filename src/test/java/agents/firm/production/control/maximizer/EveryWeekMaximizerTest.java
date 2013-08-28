@@ -41,10 +41,13 @@ public class EveryWeekMaximizerTest {
     {
         MacroII model = mock(MacroII.class);
         MarginalMaximizer algorithm = mock(MarginalMaximizer.class);
+        when(model.getMainScheduleTime()).thenReturn(1d);
 
+        Plant plant = mock(Plant.class);
+        when(plant.getLastDayAMeaningfulChangeInWorkforceOccurred()).thenReturn(1);
         EveryWeekMaximizer <MarginalMaximizer> maximizer = new EveryWeekMaximizer<MarginalMaximizer>(
                 model,mock(Firm.class),
-                mock(HumanResources.class),mock(Plant.class),
+                mock(HumanResources.class), plant,
                 mock(PlantControl.class),algorithm
         );
         //not scheduled before start!

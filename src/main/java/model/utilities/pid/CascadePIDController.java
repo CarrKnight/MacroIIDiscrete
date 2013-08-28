@@ -118,7 +118,6 @@ public class CascadePIDController implements Controller{
         pid1.adjust(firstTarget,firstInput,isActive,state,user,phase);
         //slave
         secondTarget = pid1.getCurrentMV();
-        System.out.println(secondTarget);
         ControllerInput secondPIDInput = ControllerInput.simplePIDTarget(secondTarget,secondInput);
         pid2.adjust(secondPIDInput, isActive, null, null, null);
 

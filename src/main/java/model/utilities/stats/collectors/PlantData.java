@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package model.utilities.stats.collectors.enums;
+package model.utilities.stats.collectors;
 
 import agents.firm.Firm;
 import agents.firm.production.Plant;
@@ -13,6 +13,7 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.DailyObservations;
 import model.utilities.stats.collectors.DataStorage;
+import model.utilities.stats.collectors.enums.PlantDataType;
 import sim.engine.SimState;
 
 import javax.annotation.Nonnull;

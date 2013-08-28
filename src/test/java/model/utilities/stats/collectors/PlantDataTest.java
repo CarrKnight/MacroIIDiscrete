@@ -4,12 +4,14 @@
  * See the file "LICENSE" for more information
  */
 
-package model.utilities.stats.collectors.enums;
+package model.utilities.stats.collectors;
 
 import agents.firm.Firm;
 import agents.firm.production.Plant;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.stats.collectors.PlantData;
+import model.utilities.stats.collectors.enums.PlantDataType;
 import org.junit.Assert;
 import org.junit.Test;
 

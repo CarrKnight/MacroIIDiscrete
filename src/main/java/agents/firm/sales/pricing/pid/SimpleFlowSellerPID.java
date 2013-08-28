@@ -148,7 +148,25 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         //start with a random price!
         price = sales.getFirm().getRandom().nextInt(100);
         controller.setOffset(price);
+        //schedule yourself to change prices
         sales.getFirm().getModel().scheduleSoon(ActionOrder.ADJUST_PRICES, this);
+        //schedule yourself also to annoy reset stockflow
+        sales.getFirm().getModel().scheduleSoon(ActionOrder.DAWN,new Steppable() {
+            @Override
+            public void step(SimState state) {
+                if(!active)
+                    return;
+
+                //reset counters
+                goodsSold =0;
+                goodsToSell = sales.getHowManyToSell();
+                initialInventory = goodsToSell;
+
+                //reschedule automatically
+                sales.getFirm().getModel().scheduleTomorrow(ActionOrder.DAWN,this);
+
+            }
+        });
 
 
 
@@ -230,6 +248,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         long oldPrice = price;
 
         //make the PID adjust, please
+
         if(flowTargeting)
             controller.adjust(0, (float) ((goodsToSell - initialInventory) - ((float) goodsSold + (float) stockOuts.getStockouts())),    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
                     active, (MacroII) simState, this, ActionOrder.ADJUST_PRICES);
@@ -248,18 +267,19 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
 
 
 
-        //we are being restepped by the controller so just wait.
-        sales.updateQuotes();
-
-        //reset stockouts (you have to do this AFTER you set the price!)
+        //we changed the prices, need to update the stockout counter
         stockOuts.newPIDStep(market);
 
 
+        //we are being restepped by the controller so just wait.
+        sales.updateQuotes();
 
-        //reset counters
-        goodsSold =0;
-        goodsToSell = sales.getHowManyToSell();
-        initialInventory = goodsToSell;
+
+
+
+
+
+
 
 
 
@@ -379,7 +399,11 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
      */
     @Override
     public int estimateSupplyGap() {
-        return sales.getHowManyToSell();
+
+        if(flowTargeting)
+           return  ((goodsToSell - initialInventory) - ( goodsSold + stockOuts.getStockouts()));
+        else
+            return goodsToSell - ( goodsSold +  stockOuts.getStockouts());
     }
 
     /**

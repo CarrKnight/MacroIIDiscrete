@@ -57,7 +57,8 @@ public class SimpleFlowSellerPIDTest {
 
         //register sale department
         firm.registerSaleDepartment(dept,GoodType.GENERIC);
-
+        dept.start();
+        model.start();
 
 
 
@@ -86,7 +87,7 @@ public class SimpleFlowSellerPIDTest {
             }
 
             model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy);
-            model.getPhaseScheduler().step(model);
+            model.schedule.step(model);
             System.out.println("seller price :" + strategy.getTargetPrice());
             for(Quote q : quotes)
                 try{
@@ -125,6 +126,8 @@ public class SimpleFlowSellerPIDTest {
 
 
         firm.registerSaleDepartment(dept,GoodType.GENERIC);
+        dept.start();
+        model.start();
 
         List<Quote> quotes =new LinkedList<>();
 
@@ -151,7 +154,7 @@ public class SimpleFlowSellerPIDTest {
             }
 
             model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy);
-            model.getPhaseScheduler().step(model);
+            model.schedule.step(model);
             System.out.println("seller price :" + strategy.getTargetPrice());
             for(Quote q : quotes)
                 try{
@@ -192,6 +195,7 @@ public class SimpleFlowSellerPIDTest {
             SimpleFlowSellerPID strategy1 = new SimpleFlowSellerPID(dept1);
             dept1.setAskPricingStrategy(strategy1);
             firm1.registerSaleDepartment(dept1,GoodType.GENERIC);
+            dept1.start();
 
 
             Firm firm2 = new Firm(model);
@@ -199,6 +203,8 @@ public class SimpleFlowSellerPIDTest {
             SimpleFlowSellerPID strategy2 = new SimpleFlowSellerPID(dept2);
             dept2.setAskPricingStrategy(strategy2);
             firm2.registerSaleDepartment(dept2,GoodType.GENERIC);
+            dept2.start();
+            model.start();
 
 
 
@@ -237,7 +243,7 @@ public class SimpleFlowSellerPIDTest {
                 //          model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy1);
                 //         model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy2);
 
-                model.getPhaseScheduler().step(model);
+                model.schedule.step(model);
 
                 System.out.println("At time: " +j +" seller1 price :" + strategy1.getTargetPrice() + " ---  seller2 price :" + strategy2.getTargetPrice());
                 if(j<99)
@@ -282,6 +288,8 @@ public class SimpleFlowSellerPIDTest {
         SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept);
         strategy.setProductionCostOverride(true);
         dept.setAskPricingStrategy(strategy);
+        dept.start();
+        model.start();
 
         strategy.setInitialPrice(150l);
 
@@ -315,7 +323,7 @@ public class SimpleFlowSellerPIDTest {
             }
 
             model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy);
-            model.getPhaseScheduler().step(model);
+            model.schedule.step(model);
 
             System.out.println("seller price :" + price);
             for(Quote q : quotes)

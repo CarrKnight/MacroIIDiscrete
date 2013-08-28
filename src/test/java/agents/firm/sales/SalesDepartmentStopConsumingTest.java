@@ -56,10 +56,12 @@ public class SalesDepartmentStopConsumingTest {
                 newSalesDepartment(firm, orderBookMarket, null, null, MarkupFollower.class, null, SalesDepartmentAllAtOnce.class);
         SalesDepartment department = factoryMade.getSalesDepartment();
 
-
-
         //give three goods to the firm
         Good[] produced = new Good[3];
+        department.start();
+        macroII.start();
+
+
         for(int i=0; i <3 ; i++)
         {
             produced[i] = new Good(GoodType.GENERIC,firm,1l);
@@ -67,7 +69,8 @@ public class SalesDepartmentStopConsumingTest {
             firm.reactToPlantProduction(produced[i]);
         }
         //step the model so that the orders are placed
-        macroII.getPhaseScheduler().step(macroII);
+
+        macroII.schedule.step(macroII);
 
 
         //they should all be quoted in the market
@@ -129,6 +132,9 @@ public class SalesDepartmentStopConsumingTest {
                 newSalesDepartment(firm,orderBookMarket,null,null,MarkupFollower.class,null,SalesDepartmentOneAtATime.class).getSalesDepartment();
 
 
+        department.start();
+        macroII.start();
+
         //give three goods to the firm
         Good[] produced = new Good[3];
         for(int i=0; i <3 ; i++)
@@ -138,7 +144,7 @@ public class SalesDepartmentStopConsumingTest {
             firm.reactToPlantProduction(produced[i]);
         }
         //step the model so that the orders are placed
-        macroII.getPhaseScheduler().step(macroII);
+        macroII.schedule.step(macroII);
 
 
         //only one of them should be quoted in the market

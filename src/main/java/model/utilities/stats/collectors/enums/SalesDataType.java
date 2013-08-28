@@ -18,26 +18,24 @@ package model.utilities.stats.collectors.enums;
  * <h4>References</h4>
  *
  * @author carrknight
- * @version 2013-08-19
+ * @version 2013-08-27
  * @see
  */
-public enum PurchasesDataType {
+public enum  SalesDataType {
 
     INFLOW,
 
     OUTFLOW,
 
-    FAILURES_TO_CONSUME,
-
     CLOSING_PRICES,
 
     AVERAGE_CLOSING_PRICES,
 
-    INVENTORY,
+    HOW_MANY_TO_SELL,
 
-    DEMAND_GAP,
-    WORKERS_CONSUMING_THIS_GOOD
+    WORKERS_PRODUCING_THIS_GOOD,
 
+    SUPPLY_GAP
 
 
 }

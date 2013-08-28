@@ -6,18 +6,18 @@
 
 package model.utilities.stats.collectors;
 
-import agents.firm.purchases.PurchasesDepartment;
+import agents.firm.sales.SalesDepartment;
 import com.google.common.base.Preconditions;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.stats.collectors.enums.PurchasesDataType;
+import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.engine.SimState;
 
 import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
- * <p/> Similar to MarketData, but storing flows in and out of the department + last closing prices
+ * <p/>
  * <p/>
  * <p/>
  * <h4>Notes</h4>
@@ -27,10 +27,10 @@ import javax.annotation.Nonnull;
  * <h4>References</h4>
  *
  * @author carrknight
- * @version 2013-08-19
+ * @version 2013-08-27
  * @see
  */
-public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
+public class SalesData extends DataStorage<SalesDataType> {
 
 
 
@@ -42,14 +42,14 @@ public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
     /**
      * the department we are documenting
      */
-    private PurchasesDepartment departmentToFollow = null;
+    private SalesDepartment departmentToFollow = null;
 
 
     /**
      * creates an empty purchase department data gatherer. It starts collecting at start!
      */
-    public PurchasesDepartmentData() {
-        super(PurchasesDataType.class);
+    public SalesData() {
+        super(SalesDataType.class);
     }
 
 
@@ -57,7 +57,7 @@ public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
     /**
      * called when the data gathering is supposed to start. It schedules itself to start at next CLEANUP phase
      */
-    public void start(@Nonnull MacroII state, @Nonnull PurchasesDepartment departmentToFollow) {
+    public void start(@Nonnull MacroII state, @Nonnull SalesDepartment departmentToFollow) {
         if(!active)
             return;
 
@@ -92,14 +92,13 @@ public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
 
 
         //memorize
-        data.get(PurchasesDataType.INFLOW).add(Double.valueOf(departmentToFollow.getTodayInflow()));
-        data.get(PurchasesDataType.OUTFLOW).add(Double.valueOf(departmentToFollow.getTodayOutflow()));
-        data.get(PurchasesDataType.CLOSING_PRICES).add(Double.valueOf(departmentToFollow.getLastClosingPrice()));
-        data.get(PurchasesDataType.INVENTORY).add(Double.valueOf(departmentToFollow.getCurrentInventory()));
-        data.get(PurchasesDataType.FAILURES_TO_CONSUME).add(Double.valueOf(departmentToFollow.getTodayFailuresToConsume()));
-        data.get(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD).add(Double.valueOf(departmentToFollow.getNumberOfWorkersWhoConsumeWhatWePurchase()));
-        data.get(PurchasesDataType.AVERAGE_CLOSING_PRICES).add(Double.valueOf(departmentToFollow.getTodayAverageClosingPrice()));
-        data.get(PurchasesDataType.DEMAND_GAP).add(Double.valueOf(departmentToFollow.estimateDemandGap()));
+        data.get(SalesDataType.INFLOW).add(Double.valueOf(departmentToFollow.getTodayInflow()));
+        data.get(SalesDataType.OUTFLOW).add(Double.valueOf(departmentToFollow.getTodayOutflow()));
+        data.get(SalesDataType.CLOSING_PRICES).add(Double.valueOf(departmentToFollow.getLastClosingPrice()));
+        data.get(SalesDataType.HOW_MANY_TO_SELL).add(Double.valueOf(departmentToFollow.getHowManyToSell()));
+        data.get(SalesDataType.WORKERS_PRODUCING_THIS_GOOD).add(Double.valueOf(departmentToFollow.getTotalWorkersWhoProduceThisGood()));
+        data.get(SalesDataType.AVERAGE_CLOSING_PRICES).add(Double.valueOf(departmentToFollow.getAverageClosingPrice()));
+        data.get(SalesDataType.SUPPLY_GAP).add(Double.valueOf(departmentToFollow.estimateSupplyGap()));
 
         //reschedule
         model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
@@ -119,4 +118,6 @@ public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
     public void turnOff() {
         active = false;
     }
+
+
 }

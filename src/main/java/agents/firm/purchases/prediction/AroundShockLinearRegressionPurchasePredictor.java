@@ -44,6 +44,13 @@ public class AroundShockLinearRegressionPurchasePredictor implements PurchasesPr
 
     final private MacroII model;
 
+    private int lastUsedLowerBound=-1;
+
+    private int lastUsedUpperBound=-1;
+
+
+    private int minimumNumberOfDaysToLookAhead=30;
+
     /**
      * builds the predictor
      */
@@ -73,7 +80,7 @@ public class AroundShockLinearRegressionPurchasePredictor implements PurchasesPr
     /**
      * how many days after the shock can you look into?
      */
-    private int maximumNumberOfDaysToLookAhead = 30;
+    private int maximumNumberOfDaysToLookAhead = 60;
 
     /**
      * Predicts the future price of the next good to buy
@@ -99,15 +106,64 @@ public class AroundShockLinearRegressionPurchasePredictor implements PurchasesPr
             assert lowestBound<shockDay;
             int upperBound = Math.min((int)model.getMainScheduleTime()-1,shockDay+maximumNumberOfDaysToLookAhead );
             assert upperBound>=lowestBound;
-            if(upperBound > shockDay) //if we have at least one observation POST shock day
+            if(upperBound >= shockDay + minimumNumberOfDaysToLookAhead
+                    &&
+                    wereWorkersAlwaysPresent(dept, shockDay) &&
+                    lowestBound != lastUsedLowerBound && lastUsedUpperBound != upperBound)
             {
                 assert upperBound>lowestBound;
-                regression.estimateModel(dept.getObservationsRecordedTheseDays(PurchasesDataType.INFLOW,lowestBound,upperBound),
-                        dept.getObservationsRecordedTheseDays(PurchasesDataType.AVERAGE_CLOSING_PRICES,lowestBound,upperBound),
-                        null);
-                predictor.setIncrementDelta((float) regression.getSlope());
+
+                double[] quantity = dept.getObservationsRecordedTheseDays(PurchasesDataType.INFLOW, lowestBound, upperBound);
+                double[] price = dept.getObservationsRecordedTheseDays(PurchasesDataType.AVERAGE_CLOSING_PRICES, lowestBound, upperBound);
+
+                //build weights
+                double[] weights = new double[quantity.length];
+                double[] gaps =  dept.getObservationsRecordedTheseDays(PurchasesDataType.DEMAND_GAP, lowestBound, upperBound);
+                for(int i=0; i<weights.length; i++)
+                {
+                    double gap = gaps[i];
+                    if(quantity[i]==0 || price[i]==-1) //if there was nothing traded that day, ignore the observation entirely
+                        weights[i]=0;
+                    else {
+                        double weight = 1d / (1d + Math.exp(Math.abs(gap)));
+                        weights[i] = weight;
+                    }
+                }
+
+
+
+                regression.estimateModel(quantity,
+                        price,
+                        weights);
+
+                if(lastUsedLowerBound == -1) //if this is the first regression
+                {
+                    predictor.setIncrementDelta((float) regression.getSlope());
+                }
+                else
+                {
+                    //combine old and new slope (minuses abound, but that's because I coded the decrementDelta weirdly)
+                    float weightedAverage = (float) (regression.getSlope() * .5f + predictor.getIncrementDelta() * .5f);
+                    System.out.println("slope: " + weightedAverage);
+                    predictor.setIncrementDelta(weightedAverage);
+                }
+
+
+
+                //memorize the new bounds
+                lastUsedLowerBound = lowestBound;
+                lastUsedUpperBound = upperBound;
+
             }
         }
+    }
+
+    private boolean wereWorkersAlwaysPresent(PurchasesDepartment dept, int shockDay) {
+
+        return dept.getObservationRecordedThisDay(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD, shockDay - 1) > 0
+                &&
+                dept.getObservationRecordedThisDay(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD, shockDay + 1) > 0;
+
     }
 
 
@@ -144,6 +200,8 @@ public class AroundShockLinearRegressionPurchasePredictor implements PurchasesPr
      */
     @Override
     public void turnOff() {
+        predictor.turnOff();
+
     }
 
     public int getHowManyDaysBackShallILook() {

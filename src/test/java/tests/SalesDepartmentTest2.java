@@ -165,6 +165,8 @@ public class SalesDepartmentTest2 {
     public void testSellThis() throws Exception {
 
         Market.TESTING_MODE = true;
+        dept1.start();
+        dept2.start();
         market.setPricePolicy(new AveragePricePolicy());
 
         assertEquals(dept1.getMarket().getBestBuyPrice(), 100l); //the best offer is visible
@@ -174,7 +176,9 @@ public class SalesDepartmentTest2 {
         Good good = new Good(GoodType.GENERIC,dept1.getFirm(),10);
         dept1.getFirm().receive(good,null);
         dept1.sellThis(good); //sell this, now!
-        model.getPhaseScheduler().step(model);
+        model.start();
+
+        model.schedule.step(model);
 
 
         assertEquals(dept1.getMarket().getLastPrice(), 56l);
@@ -348,11 +352,13 @@ public class SalesDepartmentTest2 {
 
         //make sure it throws errors when it's not set up correctly
         Good toQuote = new Good(GoodType.GENERIC,dept1.getFirm(),10);
+        dept1.start();
         dept1.getFirm().receive(toQuote,null);
         //force it in the toSell list
         dept1.setAskPricingStrategy(new PriceFollower(dept1));
         dept1.sellThis(toQuote);
-        model.getPhaseScheduler().step(model);
+        model.start();
+        model.schedule.step(model);
 
 
 

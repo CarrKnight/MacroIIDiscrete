@@ -21,10 +21,10 @@ import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
-import sim.engine.Schedule;
+import model.utilities.ActionOrder;
+import model.utilities.dummies.DummyBuyer;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import model.utilities.dummies.DummyBuyer;
 
 /**
  * <h4>Description</h4>
@@ -68,24 +68,20 @@ public class SimpleDecentralizedSellerScenario extends Scenario
         //only one seller
         final Firm seller = new Firm(getModel());
         //give it a seller department at time 1
-        getModel().schedule.scheduleOnce(Schedule.EPOCH_PLUS_EPSILON+.01f,new Steppable() {
-            @Override
-            public void step(SimState simState) {
-                SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(seller, market, new SimpleBuyerSearch(market, seller), new SimpleSellerSearch(market, seller),
-                        SalesDepartmentAllAtOnce.class);
-                seller.registerSaleDepartment(dept,GoodType.GENERIC);
+        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(seller, market, new SimpleBuyerSearch(market, seller), new SimpleSellerSearch(market, seller),
+                SalesDepartmentAllAtOnce.class);
+        seller.registerSaleDepartment(dept,GoodType.GENERIC);
 
-                //create a seller PID with the right speed
-                SimpleFlowSellerPID sellerPID = new SimpleFlowSellerPID(dept,model.drawProportionalGain(),model.drawIntegrativeGain(),model.drawDerivativeGain(),period);
-                dept.setAskPricingStrategy(sellerPID);
+        //create a seller PID with the right speed
+        SimpleFlowSellerPID sellerPID = new SimpleFlowSellerPID(dept,model.drawProportionalGain(),model.drawIntegrativeGain(),model.drawDerivativeGain(),period);
+        dept.setAskPricingStrategy(sellerPID);
 
-                dept.setCanPeddle(false);
-                getAgents().add(seller);
-            }
-        });
+        dept.setCanPeddle(false);
+        getAgents().add(seller);
+
 
         //arrange for goods to drop periodically in the firm
-        getModel().schedule.scheduleRepeating(5f + getModel().random.nextGaussian(),new Steppable() {
+        getModel().scheduleSoon(ActionOrder.PRODUCTION,new Steppable() {
             @Override
             public void step(SimState simState) {
                 //sell 4 goods!
@@ -95,8 +91,9 @@ public class SimpleDecentralizedSellerScenario extends Scenario
                     seller.reactToPlantProduction(good);
                 }
 
+                getModel().scheduleTomorrow(ActionOrder.PRODUCTION,this);
             }
-        },period );
+        });
 
         //create 10 buyers
         for(int i=0;i<10;i++){

@@ -204,7 +204,7 @@ public class MonopolistScenario extends Scenario {
 
             //make it adjust once to register and submit the first quote
 
-            getModel().scheduleSoon(ActionOrder.DAWN, new Steppable() {
+            getModel().scheduleSoon(ActionOrder.TRADE, new Steppable() {
                 @Override
                 public void step(SimState simState) {
                     goodMarket.registerBuyer(buyer);

@@ -140,14 +140,16 @@ public class SalesDepartmentTest {
 
 
         assertEquals(dept.getMarket().getBestBuyPrice(), 100l); //all the others should have been taken
-
+        dept.start();
 
         for(int i=0; i<10; i++){
             Good good = new Good(GoodType.GENERIC,dept.getFirm(),30);
             dept.getFirm().receive(good,null);
             dept.sellThis(good); //sell this, now!
         }
-        model.getPhaseScheduler().step(model);
+        model.start();
+
+        model.schedule.step(model);
 
 
         //when the dust settles...
@@ -240,8 +242,10 @@ public class SalesDepartmentTest {
         dept.getFirm().receive(toQuote,null);
         //force it in the toSell list
         dept.setAskPricingStrategy(new PriceFollower(dept));
+        dept.start();
         dept.sellThis(toQuote);
-        model.getPhaseScheduler().step(model);
+        model.start();
+        model.schedule.step(model);
 
 
 
@@ -360,9 +364,10 @@ public class SalesDepartmentTest {
 
         Good g =new Good(GoodType.GENERIC,dept.getFirm(),200);
         dept.getFirm().receive(g,null);
-
+        dept.start();
         dept.sellThis(g);
-        model.getPhaseScheduler().step(model);
+        model.start();
+        model.schedule.step(model);
 
         //should lay unsold
         assertEquals(dept.getMarket().getBestSellPrice(), 200l);

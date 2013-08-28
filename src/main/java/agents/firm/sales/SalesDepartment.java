@@ -12,15 +12,15 @@ import agents.firm.Firm;
 import agents.firm.production.Plant;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
-import agents.firm.sales.prediction.LinearExtrapolationPredictor;
+import agents.firm.sales.prediction.AroundShockLinearRegressionSalesPredictor;
 import agents.firm.sales.prediction.RegressionSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.decorators.AskReservationPriceDecorator;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
-import financial.market.Market;
 import financial.MarketEvents;
+import financial.market.Market;
 import financial.utilities.ActionsAllowed;
 import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
@@ -28,6 +28,8 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.stats.collectors.SalesData;
+import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -102,7 +104,7 @@ public abstract class  SalesDepartment  implements Department {
     protected BuyerSearchAlgorithm buyerSearchAlgorithm;
     protected SellerSearchAlgorithm sellerSearchAlgorithm;
 
-    public static Class<? extends  SalesPredictor> defaultPredictorStrategy = LinearExtrapolationPredictor.class;
+    public static Class<? extends  SalesPredictor> defaultPredictorStrategy = AroundShockLinearRegressionSalesPredictor.class;
 
     /**
      * This is the strategy to predict future sale prices when the order book is not visible.
@@ -151,6 +153,10 @@ public abstract class  SalesDepartment  implements Department {
      */
     private long lastClosingCost = -1;
     /**
+     * the sum of all the daily closing prices, 0 if there is no trade
+     */
+    private float sumClosingPrice = 0;
+    /**
      * When this is true, the sales department peddles its goods around when it can't make a quote.
      * If this is false and the sales department can't quote, it just passively wait for buyers
      */
@@ -158,7 +164,10 @@ public abstract class  SalesDepartment  implements Department {
 
     private boolean aboutToUpdateQuotes = false;
 
+    final private SalesData data;
+
     public SalesDepartment(SellerSearchAlgorithm sellerSearchAlgorithm, Market market, @Nonnull MacroII model, Firm firm, BuyerSearchAlgorithm buyerSearchAlgorithm) {
+        data = new SalesData();
         cogs = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
         salesResults = new HashMap<>();
         this.sellerSearchAlgorithm = sellerSearchAlgorithm;
@@ -312,7 +321,7 @@ public abstract class  SalesDepartment  implements Department {
      * first good we have to sell, schedule daily a beginningOfTheDayStatistics() call
      */
     private void logInflow(Good g) {
-
+         assert started;
 
         //tell the listeners about it
         for(SalesDepartmentListener listener : salesDepartmentListeners)
@@ -326,18 +335,23 @@ public abstract class  SalesDepartment  implements Department {
 
 
 
-        //if this is the first time we get to sell, start also resetting data
-        if(!started)
-        {
-            started = true;
-            model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
-                @Override
-                public void step(SimState state) {
-                    beginningOfTheDayStatistics();
 
-                }
-            });
-        }
+
+
+    }
+
+
+    public void start()
+    {
+        started = true;
+        data.start(model,this);
+        model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
+            @Override
+            public void step(SimState state) {
+                beginningOfTheDayStatistics();
+
+            }
+        });
 
 
     }
@@ -365,6 +379,7 @@ public abstract class  SalesDepartment  implements Department {
         //reset
         todayInflow = 0;
         todayOutflow = 0;
+        sumClosingPrice = 0;
 
 
         model.scheduleTomorrow(ActionOrder.DAWN,new Steppable() {
@@ -578,7 +593,7 @@ public abstract class  SalesDepartment  implements Department {
     /**
      * This is called automatically whenever a quote we made was filled
      * @param g the good sold
-     * @param price the price for which it sold, the price must be positive or 0
+     * @param price the price for which it sold, the price must be positive or 0. If it's negative it is assumed that the good was consumed rather than sold.
      */
     public void reactToFilledQuote(Good g, long price, EconomicAgent buyer){
 
@@ -639,6 +654,7 @@ public abstract class  SalesDepartment  implements Department {
         salesResults.put(g, newResult); //put it in!
         lastClosingPrice = price;
         lastClosingCost = newResult.getPreviousCost();
+        sumClosingPrice += lastClosingPrice;
 
         //tell the listeners!
         fireGoodSoldEvent(newResult);
@@ -714,6 +730,7 @@ public abstract class  SalesDepartment  implements Department {
                 SaleResult saleResult = SaleResult.sold(finalPrice, cost);
                 salesResults.put(g,saleResult ); //record the sale
                 lastClosingPrice = finalPrice;
+                sumClosingPrice += lastClosingPrice;
                 buyerSearchAlgorithm.reactToSuccess(buyer,result); //tell the search algorithm
                 //tell the listeners!
                 fireGoodSoldEvent(saleResult);
@@ -1071,6 +1088,7 @@ public abstract class  SalesDepartment  implements Department {
      * This method turns off all sub-components and clears all data structures
      */
     public void turnOff(){
+        data.turnOff();
         askPricingStrategy.turnOff(); askPricingStrategy = null;
         buyerSearchAlgorithm.turnOff(); buyerSearchAlgorithm = null;
         sellerSearchAlgorithm.turnOff(); sellerSearchAlgorithm = null;
@@ -1268,11 +1286,77 @@ public abstract class  SalesDepartment  implements Department {
 
     /**
      * This is somewhat similar to rate current level. It estimates the excess (or shortage)of goods sold. It is basically
-     * getCurrentInventory-AcceptableInventory
+     * getCurrentInventory-AcceptableInventory or getCurrentFlow-acceptableFlow if that's what the seller is targeting.
      * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
      */
     public int estimateSupplyGap() {
         return askPricingStrategy.estimateSupplyGap();
+    }
+
+    /**
+     * returns today's average closing price or -1 if there were no trade
+     * @return
+     */
+    public float getAverageClosingPrice()
+    {
+        if(lastClosingPrice == -1)
+        {
+            assert todayOutflow ==0; //-1 happens when there hasn't been a trade, ever!
+            return -1;
+        }
+        else
+
+        if(todayOutflow==0)
+        {
+            return -1;
+        }
+        else
+            return sumClosingPrice/todayOutflow;
+
+    }
+
+    /**
+     * Count all the workers at plants that produce a specific output
+     * @return the total number of workers
+     */
+    public int getTotalWorkersWhoProduceThisGood() {
+        return firm.getTotalWorkersWhoProduceThisGood(getGoodType());
+    }
+
+
+    /**
+     * returns a copy of all the observed last prices so far!
+     */
+    public double[] getAllRecordedObservations(SalesDataType type) {
+        return data.getAllRecordedObservations(type);
+    }
+
+    /**
+     * utility method to analyze only specific days
+     */
+    public double[] getObservationsRecordedTheseDays(SalesDataType type, @Nonnull int[] days) {
+        return data.getObservationsRecordedTheseDays(type, days);
+    }
+
+    /**
+     * utility method to analyze only specific days
+     */
+    public double[] getObservationsRecordedTheseDays(SalesDataType type, int beginningDay, int lastDay) {
+        return data.getObservationsRecordedTheseDays(type, beginningDay, lastDay);
+    }
+
+    /**
+     * utility method to analyze only  a specific day
+     */
+    public double getObservationRecordedThisDay(SalesDataType type, int day) {
+        return data.getObservationRecordedThisDay(type, day);
+    }
+
+    /**
+     * return the latest price observed
+     */
+    public Double getLatestObservation(SalesDataType type) {
+        return data.getLatestObservation(type);
     }
 }
 
