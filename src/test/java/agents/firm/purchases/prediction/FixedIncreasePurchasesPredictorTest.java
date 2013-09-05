@@ -35,7 +35,7 @@ public class FixedIncreasePurchasesPredictorTest
     public void testPredictSalePrice() throws Exception {
 
         PurchasesDepartment department = mock(PurchasesDepartment.class);
-        when(department.getLastOfferedPrice()).thenReturn(100l); //current department pricing 100$!
+        when(department.getLastClosingPrice()).thenReturn(100l); //current department pricing 100$!
         when(department.getGoodType()).thenReturn(GoodType.GENERIC); //type of good produced
 
 

@@ -13,7 +13,7 @@ import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPID;
-import agents.firm.production.control.targeter.PIDTargeter;
+import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
@@ -206,7 +206,7 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
                                 //set up!
                                 hr = HumanResources.getEmptyHumanResources(10000000000l, built, laborMarket, plant);
                                 TargetAndMaximizePlantControl control = TargetAndMaximizePlantControl.emptyTargetAndMaximizePlantControl(hr);
-                                control.setTargeter(new PIDTargeter(hr,control));
+                                control.setTargeter(new PIDTargeterWithQuickFiring(hr,control));
                                 MarginalMaximizerWithUnitPID algorithm = new MarginalMaximizerWithUnitPID(hr,control,plant,plant.getOwner(),
                                         model.random, hr.getPlant().getNumberOfWorkers());
                                 SetTargetThenTryAgainMaximizer<MarginalMaximizerWithUnitPID> maximizer =

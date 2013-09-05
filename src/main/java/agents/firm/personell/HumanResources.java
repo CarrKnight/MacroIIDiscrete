@@ -25,8 +25,8 @@ import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
-import financial.market.Market;
 import financial.MarketEvents;
+import financial.market.Market;
 import goods.Good;
 import goods.GoodType;
 
@@ -83,6 +83,7 @@ public class HumanResources extends PurchasesDepartment {
             setPredictor(PurchasesPredictor.Factory.newPurchasesPredictor(LookAheadPredictor.class,this));
         else
             setPredictor(PurchasesPredictor.Factory.newPurchasesPredictor(MarketPurchasesPredictor.class,this));
+
     }
 
     /**
@@ -365,7 +366,7 @@ public class HumanResources extends PurchasesDepartment {
         assert workers.size() >0;
         int workersToFire = currentWorkers - workerTarget;
         assert workersToFire <= currentWorkers: workersToFire + "---" + currentWorkers;
-        assert workersToFire > 0;
+        assert workersToFire >= 0;
         //find out at what wage you can keep this many workers
         return workers.get(workers.size() - workersToFire -1).getMinimumWageRequired();
 
@@ -486,6 +487,9 @@ public class HumanResources extends PurchasesDepartment {
     public void logEvent(Object agent, MarketEvents action, long time) {
         getFirm().logEvent(agent, action, time);
     }
+
+
+
 }
 
 

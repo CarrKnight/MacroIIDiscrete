@@ -18,6 +18,7 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -58,6 +59,9 @@ public class Person extends EconomicAgent {
      * The person keeps searching for better work if he can whenver this is active
      */
     private boolean searchForBetterOffers = false;
+
+
+    private boolean precario = false;
 
 
     private BuyerSearchAlgorithm employerSearch;
@@ -275,7 +279,7 @@ public class Person extends EconomicAgent {
                     //if we can't quote we have to peddle
                     throw new RuntimeException("Ernesto lazily didn't implement peddling.");
                 }            }
-        });
+        }, Priority.AFTER_STANDARD);
 
 
 
@@ -416,6 +420,44 @@ public class Person extends EconomicAgent {
 
             }
         });
+
+
+    }
+
+
+    /**
+     * when this is set to true the person fires himself every day after production. Needs to be rehired everyday
+     * @param isPrecarioNow
+     */
+    public void setPrecario(boolean isPrecarioNow)
+    {
+
+        boolean oldPrecario = this.precario;
+        this.precario = isPrecarioNow;
+
+        if(this.precario == true && oldPrecario == false)
+        {
+
+            //you will act every day at "PREPARE_TO_TRADE" to fire yourself
+            getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE,new Steppable() {
+                @Override
+                public void step(SimState state) {
+                    if(!isActive() || !precario)
+                        return;
+                    //if you have a job, quit!
+                    if(employer!=null)
+                        quitWork();
+
+                    //reschedule
+                    assert precario;
+                    getModel().scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE,this);
+
+                }
+            });
+
+
+        }
+
 
 
     }

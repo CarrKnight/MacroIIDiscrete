@@ -10,7 +10,7 @@ import agents.firm.sales.SalesDepartment;
 
 /**
  * <h4>Description</h4>
- * <p/> This prediction strategy makes it so that, whenever asked, the prediction is just the last price the department managed to sell its good for.
+ * <p/> This prediction strategy makes it so that, whenever asked, the prediction is just the average last price the department managed to sell its good for.
  * <p/>
  * <p/>
  * <h4>Notes</h4>
@@ -37,8 +37,12 @@ public class MemorySalesPredictor implements SalesPredictor {
      */
     @Override
     public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
-        long lastPrice = dept.getLastClosingPrice();       //get the last closing price
-         //do we not have anything in memory or did we screw up so badly
+        return memorylookup(dept);
+    }
+
+    private long memorylookup(SalesDepartment dept) {
+        long lastPrice = Math.round(dept.getAveragedLastPrice());  //get the last closing price
+        //do we not have anything in memory or did we screw up so badly
         //in the past term that we didn't sell a single item?
         if(lastPrice == -1)
             return -1;
@@ -63,19 +67,22 @@ public class MemorySalesPredictor implements SalesPredictor {
      */
     @Override
     public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
-        long lastPrice = dept.getLastClosingPrice();       //get the last closing price
-        //do we not have anything in memory or did we screw up so badly
-        //in the past term that we didn't sell a single item?
-        if(lastPrice == -1)
-            return -1;
-        else
-        {
-            //return your memory.
-            assert lastPrice >= 0 : lastPrice;
+        return memorylookup(dept);
 
-            return lastPrice;
+    }
 
-        }
+    /**
+     * This is a little bit weird to predict, but basically you want to know what will be "tomorrow" price if you don't change production.
+     * Most predictors simply return today closing price, because maybe this will be useful in some cases. It's used by Marginal Maximizer Statics
+     *
+     * @param dept the sales department
+     * @return predicted price
+     */
+    @Override
+    public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
+        return memorylookup(dept);
+
+
     }
 
     /**

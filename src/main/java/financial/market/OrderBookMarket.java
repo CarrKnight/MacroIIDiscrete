@@ -19,6 +19,7 @@ import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import sim.portrayal.Inspector;
 import sim.portrayal.inspector.TabbedInspector;
 import sim.util.media.chart.HistogramGenerator;
@@ -137,6 +138,9 @@ public class OrderBookMarket extends Market {
     public Quote submitSellQuote(@Nonnull EconomicAgent seller, long price, @Nonnull Good good, @Nullable Department department) {
 
         assert getSellers().contains(seller);  //you should be registered if you are here
+        if(MacroII.SAFE_MODE) //double check the good isn't already on sale
+            Preconditions.checkState(seller.getModel().getCurrentPhase().equals(ActionOrder.TRADE));
+
         Preconditions.checkArgument(price>=0);
 
         if(MacroII.SAFE_MODE) //double check the good isn't already on sale
@@ -153,8 +157,8 @@ public class OrderBookMarket extends Market {
         //tell the GUI!
         if(MacroII.hasGUI())
         {
-          getRecords().event(seller, MarketEvents.SUBMIT_SELL_QUOTE, seller.getModel().getCurrentSimulationTimeInMillis()
-                  ,"price: " + q.getPriceQuoted());
+            getRecords().event(seller, MarketEvents.SUBMIT_SELL_QUOTE, seller.getModel().getCurrentSimulationTimeInMillis()
+                    ,"price: " + q.getPriceQuoted());
         }
 
 
@@ -216,6 +220,8 @@ public class OrderBookMarket extends Market {
     @Override
     public Quote submitBuyQuote(@Nonnull EconomicAgent buyer, long price, @Nullable Department department) {
         assert getBuyers().contains(buyer) : buyer + " ---- " + getBuyers() + " ---- " + this.getGoodType();  //you should be registered if you are here
+        if(MacroII.SAFE_MODE) //double check the good isn't already on sale
+            Preconditions.checkState(buyer.getModel().getCurrentPhase().equals(ActionOrder.TRADE));
 
         Quote q = Quote.newBuyerQuote(buyer, price, goodType);
         if(department != null)
@@ -468,7 +474,7 @@ public class OrderBookMarket extends Market {
             @Override
             public void updateInspector() {
                 histogramGenerator.update();
-          //      this.repaint();
+                //      this.repaint();
             }
         };
 

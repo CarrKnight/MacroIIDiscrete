@@ -49,7 +49,7 @@ public class AroundShockLinearRegressionPurchasePredictor implements PurchasesPr
     private int lastUsedUpperBound=-1;
 
 
-    private int minimumNumberOfDaysToLookAhead=30;
+    private int minimumNumberOfDaysToLookAhead=14;
 
     /**
      * builds the predictor

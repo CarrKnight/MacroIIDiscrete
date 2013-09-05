@@ -60,6 +60,15 @@ public interface SalesPredictor {
      */
     public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep);
 
+
+    /**
+     * This is a little bit weird to predict, but basically you want to know what will be "tomorrow" price if you don't change production.
+     * Most predictors simply return today closing price, because maybe this will be useful in some cases. It's used by Marginal Maximizer Statics
+     * @param dept the sales department
+     * @return predicted price
+     */
+    public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept);
+
     /**
      * Call this to kill the predictor
      */

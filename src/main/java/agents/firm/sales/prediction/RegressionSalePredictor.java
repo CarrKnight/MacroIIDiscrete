@@ -303,4 +303,36 @@ public class RegressionSalePredictor implements SalesPredictor{
     public String toString() {
         return regression.toString();
     }
+
+    /**
+     * This is a little bit weird to predict, but basically you want to know what will be "tomorrow" price if you don't change production.
+     * Most predictors simply return today closing price, because maybe this will be useful in some cases. It's used by Marginal Maximizer Statics
+     *
+     * @param dept the sales department
+     * @return predicted price
+     */
+    @Override
+    public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
+        //regress and return
+        updateModel();
+
+        if(Double.isNaN(regression.getIntercept())) //if we couldn't do a regression, just return today's pricing
+            return dept.hypotheticalSalePrice();
+        else
+        {
+            //if you are producing more than what's sold, use production to predict tomorrow's quantity
+            double x = Math.max(observer.getLastUntrasformedQuantityTraded(),dept.getTodayInflow());
+            if(observer.getQuantityTransformer() != null)
+                x = observer.getQuantityTransformer().transform(x);
+            double y =  regression.predict(x);
+            if(observer.getPriceTransformer() != null)
+            {
+                assert observer.getPriceInverseTransformer() != null ;
+                y = observer.getPriceInverseTransformer().transform(y);
+            }
+
+            return Math.round(y);
+        }
+
+    }
 }

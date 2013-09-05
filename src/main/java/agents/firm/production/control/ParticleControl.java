@@ -10,7 +10,7 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.hillClimbers.ParticleMaximizer;
-import agents.firm.production.control.targeter.PIDTargeter;
+import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.Machinery;
 import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
@@ -42,7 +42,7 @@ public class ParticleControl implements PlantControl
     public ParticleControl(HumanResources humanResources) {
 
         control = TargetAndMaximizePlantControl.PlantControlFactory(humanResources,
-                PIDTargeter.class, SetTargetThenTryAgainMaximizer.class,ParticleMaximizer.class).getControl();
+                PIDTargeterWithQuickFiring.class, SetTargetThenTryAgainMaximizer.class,ParticleMaximizer.class).getControl();
 
     }
 

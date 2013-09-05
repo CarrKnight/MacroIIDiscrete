@@ -44,7 +44,7 @@ public class TripolistScenario extends MonopolistScenario{
 
 
 
-    int additionalCompetitors = 2;
+    int additionalCompetitors = 4;
 
     /**
      * A linked list of all competiors, so that we can query them in constant ordering

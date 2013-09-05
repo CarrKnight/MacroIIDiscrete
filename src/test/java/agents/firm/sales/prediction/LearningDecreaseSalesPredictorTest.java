@@ -11,15 +11,14 @@ import financial.market.Market;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
-import model.utilities.stats.collectors.enums.MarketDataType;
 import model.utilities.stats.collectors.PeriodicMarketObserver;
+import model.utilities.stats.collectors.enums.MarketDataType;
 import org.junit.Assert;
 import org.junit.Test;
 import sim.engine.Steppable;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
 
 /**
@@ -71,7 +70,7 @@ public class LearningDecreaseSalesPredictorTest
         //now Q doesn't matter anymore, only previous Price
 
         SalesDepartment department = mock(SalesDepartment.class);
-        when(department.hypotheticalSalePrice(anyLong())).thenReturn(200l);
+        when(department.getAveragedLastPrice()).thenReturn(200d);
         //the sales predictor will be predict for 9 (yesterdayVolume + 1)
         Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 100l, 1), 197l); //200-2.6 (rounded)
 
@@ -124,7 +123,7 @@ public class LearningDecreaseSalesPredictorTest
 
 
         LearningDecreaseSalesPredictor predictor = new LearningDecreaseSalesPredictor(market,model );
-        when(department.hypotheticalSalePrice(anyLong())).thenReturn(50l);
+        when(department.getAveragedLastPrice()).thenReturn(50d); //current department pricing 100$
         Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000l, 1),50l);
 
         //with one observation, it still returns whatever the sales department says

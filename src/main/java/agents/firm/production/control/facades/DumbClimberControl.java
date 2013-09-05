@@ -15,7 +15,7 @@ import goods.Good;
 import goods.GoodType;
 import agents.firm.production.Plant;
 import agents.firm.production.control.maximizer.algorithms.hillClimbers.AlwaysMovingHillClimber;
-import agents.firm.production.control.targeter.PIDTargeter;
+import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.Machinery;
 
 import javax.annotation.Nullable;
@@ -43,7 +43,7 @@ public class DumbClimberControl implements PlantControl
 
 
     public DumbClimberControl(HumanResources hr){
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class, SetTargetThenTryAgainMaximizer.class,
+        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeterWithQuickFiring.class, SetTargetThenTryAgainMaximizer.class,
                 AlwaysMovingHillClimber.class).getControl();
 
     }

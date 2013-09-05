@@ -44,8 +44,9 @@ public class SalesControlWithInventoryAndPIDTest {
         SalesControlWithFixedInventoryAndPID pid = new SalesControlWithFixedInventoryAndPID(department);
         pid.setInitialPrice(100); //set initial price at 100
 
-        assertEquals(pid.getTargetInventory(),5); //assume target is 5
-        when(department.getHowManyToSell()).thenReturn(20); //you still have 10 to sell
+        int defaultTargetInventory = SalesControlWithFixedInventoryAndPID.defaultTargetInventory;
+        assertEquals(pid.getTargetInventory(),defaultTargetInventory); //assume target is 5
+        when(department.getHowManyToSell()).thenReturn(defaultTargetInventory+10); //you still have 10 to sell
         //step it
         MacroII model = mock(MacroII.class); when(model.getCurrentPhase()).thenReturn(ActionOrder.ADJUST_PRICES);
         pid.step(model);
@@ -75,8 +76,9 @@ public class SalesControlWithInventoryAndPIDTest {
         SalesControlWithFixedInventoryAndPID pid = new SalesControlWithFixedInventoryAndPID(department);
         pid.setInitialPrice(100); //set initial price at 100
 
-        assertEquals(pid.getTargetInventory(),5); //assume target is 5
-        when(department.getHowManyToSell()).thenReturn(0); //you have none to sell
+        int defaultTargetInventory = SalesControlWithFixedInventoryAndPID.defaultTargetInventory;
+        assertEquals(pid.getTargetInventory(),defaultTargetInventory); //assume target is 5
+        when(department.getHowManyToSell()).thenReturn(0); //you still have 10 to sell
         //step it
         MacroII model = mock(MacroII.class); when(model.getCurrentPhase()).thenReturn(ActionOrder.ADJUST_PRICES);
         pid.step(model);
@@ -87,8 +89,8 @@ public class SalesControlWithInventoryAndPIDTest {
 
         //now also test that it goes down
         long newPrice =   pid.price(mock(Good.class));
-        assertEquals(pid.getTargetInventory(),5); //your target should still be 5
-        when(department.getHowManyToSell()).thenReturn(10); //you have too many
+        assertEquals(pid.getTargetInventory(),defaultTargetInventory); //your target should still be 5
+        when(department.getHowManyToSell()).thenReturn(defaultTargetInventory+10); //you have too many
         pid.step(model);
         assertTrue(pid.price(mock(Good.class)) < newPrice ); // price should have gone down
 

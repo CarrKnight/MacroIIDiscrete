@@ -67,7 +67,7 @@ public class AroundShockLinearRegressionSalesPredictor implements SalesPredictor
     /**
      * how many days before the shock can you look into?
      */
-    private int howManyDaysBackShallILook  = 15;
+    private int howManyDaysBackShallILook  = 60;
 
     /**
      * how many days after the shock can you look into?
@@ -78,7 +78,7 @@ public class AroundShockLinearRegressionSalesPredictor implements SalesPredictor
     /**
      * how many days MUST have passed before we even try to regress
      */
-    private int minimumNumberOfDaysToLookAhead = 30;
+    private int minimumNumberOfDaysToLookAhead = 5;  //a little bit less than 2 weeks.
 
     /**
      * we memorize the bound so that we don't run the regression multiple times if there is no new data
@@ -200,6 +200,17 @@ public class AroundShockLinearRegressionSalesPredictor implements SalesPredictor
     }
 
 
+    /**
+     * This is a little bit weird to predict, but basically you want to know what will be "tomorrow" price if you don't change production.
+     * Most predictors simply return today closing price, because maybe this will be useful in some cases. It's used by Marginal Maximizer Statics
+     *
+     * @param dept the sales department
+     * @return predicted price
+     */
+    @Override
+    public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
+        return predictor.predictSalePriceWhenNotChangingPoduction(dept);
+    }
 
     public int getHowManyDaysBackShallILook() {
         return howManyDaysBackShallILook;
@@ -226,5 +237,23 @@ public class AroundShockLinearRegressionSalesPredictor implements SalesPredictor
     @Override
     public void turnOff() {
         predictor.turnOff();
+    }
+
+    /**
+     * Sets new how many days MUST have passed before we even try to regress.
+     *
+     * @param minimumNumberOfDaysToLookAhead New value of how many days MUST have passed before we even try to regress.
+     */
+    public void setMinimumNumberOfDaysToLookAhead(int minimumNumberOfDaysToLookAhead) {
+        this.minimumNumberOfDaysToLookAhead = minimumNumberOfDaysToLookAhead;
+    }
+
+    /**
+     * Gets how many days MUST have passed before we even try to regress.
+     *
+     * @return Value of how many days MUST have passed before we even try to regress.
+     */
+    public int getMinimumNumberOfDaysToLookAhead() {
+        return minimumNumberOfDaysToLookAhead;
     }
 }

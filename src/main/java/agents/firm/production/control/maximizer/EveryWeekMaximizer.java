@@ -79,7 +79,15 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
      */
     private int howManyDaysBeforeEachCheck = 14;
 
+    /**
+     * when this is true, the day the check is actually made varies
+     */
+    private boolean randomizeDays = true;
 
+    /**
+     * when we set the last worker target, what was it?
+     */
+    private int lastWorkerTarget = 0;
 
     /**
      * Creates an EveryWeekMaximizer with a pre-made algorithm
@@ -121,8 +129,16 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
     public void start() {
         control.setTarget(1);
         Preconditions.checkState(isActive,"Can't start a turnedOff() maximizer");
-        model.scheduleAnotherDay(ActionOrder.THINK, this, howManyDaysBeforeEachCheck);
+        reschedule();
 
+
+    }
+
+    private void reschedule() {
+        if(randomizeDays)
+            model.scheduleAnotherDayWithFixedProbability(ActionOrder.THINK, this, 1f / (float) howManyDaysBeforeEachCheck);
+        else
+            model.scheduleAnotherDay(ActionOrder.THINK, this, howManyDaysBeforeEachCheck);
     }
 
     @Override
@@ -166,6 +182,12 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
     public void step(SimState state) {
         if(!isActive)
             return;
+        //if you are not on target, decide tomorrow
+        if(control.getTarget() != plant.getNumberOfWorkers())
+        {
+            model.scheduleTomorrow(ActionOrder.THINK, this);
+            return;
+        }
 
 
         float newProfits = owner.getPlantProfits(plant);
@@ -178,12 +200,10 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
 
         //now for the past, if we never saw a change before then old and new profits are all just -1
         int lastWorkerChangeDay = plant.getLastDayAMeaningfulChangeInWorkforceOccurred();
-        int lastWorkerTarget;
         if(lastWorkerChangeDay == -1){
             oldProfits = 0;
             oldRevenue=0;
             oldCosts=0;
-            lastWorkerTarget=0;
         }
         else
         {
@@ -191,20 +211,17 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
             //make sure that the last worker change day was the day when we actually moved to this new number of workers!
    /*         assert model.getMainScheduleTime() == lastWorkerChangeDay  || //make an exception if the change was today, because that day wouldn't be stored just yet
                     plant.getObservationRecordedThisDay(PlantDataType.TOTAL_WORKERS,lastWorkerChangeDay)== plant.getNumberOfWorkers();
-
             assert  plant.getObservationRecordedThisDay(PlantDataType.TOTAL_WORKERS,lastWorkerChangeDay-1) != plant.getNumberOfWorkers(); //should have been a meaningful change!
         */
             int dayToCheck= lastWorkerChangeDay-1;
             oldProfits = (float) plant.getObservationRecordedThisDay(PlantDataType.PROFITS_THAT_WEEK,dayToCheck);
             oldRevenue = (float) plant.getObservationRecordedThisDay(PlantDataType.REVENUES_THAT_WEEK,dayToCheck);
             oldCosts = (float) plant.getObservationRecordedThisDay(PlantDataType.COSTS_THAT_WEEK,dayToCheck);
-            lastWorkerTarget = (int) plant.getObservationRecordedThisDay(PlantDataType.TOTAL_WORKERS,lastWorkerChangeDay-1);
         }
 
         //what's the future target?
 
-
-        int futureTarget = workerMaximizationAlgorithm.chooseWorkerTarget(plant.getNumberOfWorkers(),newProfits,newRevenues , newCosts,
+        int futureTarget = workerMaximizationAlgorithm.chooseWorkerTarget(control.getTarget(),newProfits,newRevenues , newCosts,
                 oldRevenue,oldCosts, lastWorkerTarget, oldProfits);
         //if the future target is negative, do it again next week (the subclass wants more info)
         if(futureTarget < 0){
@@ -222,10 +239,10 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
             control.setTarget(futureTarget);
         }
 
+        lastWorkerTarget = futureTarget;
 
 
-
-        model.scheduleAnotherDay(ActionOrder.THINK,this,howManyDaysBeforeEachCheck);
+        reschedule();
 
 
     }

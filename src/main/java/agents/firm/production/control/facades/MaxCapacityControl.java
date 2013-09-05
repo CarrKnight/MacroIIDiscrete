@@ -13,7 +13,7 @@ import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.maximizer.FullCapacityMaximizer;
 import agents.firm.production.control.maximizer.algorithms.hillClimbers.HillClimberMaximizer;
-import agents.firm.production.control.targeter.PIDTargeter;
+import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.Machinery;
 import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
  * <h4>Description</h4>
  * <p/> This now is just a facade, after I updated the plant control interface. Basically it creates a specific Target And Maximize PlantContol instance
  * and just delegates to it
- * <p/>  The TargetAndMaximizePlantControl it delegates has PIDTargeter and FullCapacityMaximizer
+ * <p/>  The TargetAndMaximizePlantControl it delegates has PIDTargeterWithQuickFiring and FullCapacityMaximizer
  * <p/>
  * <h4>Notes</h4>
  * Created with IntelliJ
@@ -48,12 +48,12 @@ public class MaxCapacityControl implements PlantControl, PlantListener {
 
 
     /**
-     * Creates a TargetAndMaximizePlantControl with PIDTargeter and GradientMaximizer
+     * Creates a TargetAndMaximizePlantControl with PIDTargeterWithQuickFiring and GradientMaximizer
      * @param hr human resources
      */
     public MaxCapacityControl(@Nonnull HumanResources hr) {
         //instantiate the real control
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeter.class,
+        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeterWithQuickFiring.class,
                 FullCapacityMaximizer.class, HillClimberMaximizer.class).getControl();
 
     }

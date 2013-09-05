@@ -36,7 +36,7 @@ public enum ActionOrder
     PRODUCTION,
 
     /**
-     * Set up prices and what can/can't be sold
+     * Set up prices and what can/can't be sold; basically anything between production and trade
      */
     PREPARE_TO_TRADE,
 

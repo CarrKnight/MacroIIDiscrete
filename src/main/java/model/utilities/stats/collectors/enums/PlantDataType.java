@@ -30,6 +30,8 @@ public enum PlantDataType
 
     COSTS_THAT_WEEK,
 
-    TOTAL_WORKERS
+    TOTAL_WORKERS,
+
+    WAGES_PAID_THAT_WEEK
 
 }

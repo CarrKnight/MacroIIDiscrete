@@ -13,7 +13,7 @@ import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPIDCascadeEfficency;
-import agents.firm.production.control.targeter.PIDTargeter;
+import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.Machinery;
 import agents.firm.purchases.inventoryControl.Level;
 import financial.market.Market;
@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
- * <p/> facade of PIDTargeter + MarginalMaximizerWithUnitPIDCascadeEfficency
+ * <p/> facade of PIDTargeterWithQuickFiring + MarginalMaximizerWithUnitPIDCascadeEfficency
  * <p/> It delegates all the methods of the control plus the setup comand for the MarginalMaximizerWithUnitPIDCascadeEfficency
  * <p/>
  * <h4>Notes</h4>
@@ -46,7 +46,7 @@ public class MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment implements 
      */
     private TargetAndMaximizePlantControl control;
 
-    private final PIDTargeter targeter;
+    private final PIDTargeterWithQuickFiring targeter;
 
     private final MarginalMaximizerWithUnitPIDCascadeEfficency maximizer;
 
@@ -58,7 +58,7 @@ public class MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment implements 
     public MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment(@Nonnull HumanResources hr)
     {
         control = TargetAndMaximizePlantControl.emptyTargetAndMaximizePlantControl(hr);
-        targeter = new PIDTargeter(hr,control);
+        targeter = new PIDTargeterWithQuickFiring(hr,control);
         control.setTargeter(targeter);
         maximizer = new MarginalMaximizerWithUnitPIDCascadeEfficency(hr,control,hr.getPlant(),hr.getFirm(),
                 hr.getRandom(),hr.getPlant().getNumberOfWorkers());

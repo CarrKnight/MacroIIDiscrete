@@ -39,7 +39,7 @@ public class MarketSalesPredictor implements SalesPredictor {
         if(lastPrice == -1 )
             return -1;
         else
-            return lastPrice;
+            return Math.round(dept.getMarket().getTodayAveragePrice());
     }
 
     /**
@@ -53,8 +53,11 @@ public class MarketSalesPredictor implements SalesPredictor {
      */
     @Override
     public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
-        return dept.getLastClosingPrice();
-
+        long lastPrice = dept.getMarket().getLastPrice();
+        if(lastPrice == -1 )
+            return -1;
+        else
+            return Math.round(dept.getMarket().getTodayAveragePrice());
     }
 
 
@@ -63,5 +66,21 @@ public class MarketSalesPredictor implements SalesPredictor {
      */
     @Override
     public void turnOff() {
+    }
+
+    /**
+     * This is a little bit weird to predict, but basically you want to know what will be "tomorrow" price if you don't change production.
+     * Most predictors simply return today closing price, because maybe this will be useful in some cases. It's used by Marginal Maximizer Statics
+     *
+     * @param dept the sales department
+     * @return predicted price
+     */
+    @Override
+    public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
+        long lastPrice = dept.getMarket().getLastPrice();
+        if(lastPrice == -1 )
+            return -1;
+        else
+            return Math.round(dept.getMarket().getTodayAveragePrice());
     }
 }

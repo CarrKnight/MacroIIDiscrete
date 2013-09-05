@@ -9,6 +9,7 @@ package model.utilities.pid;
 import ec.util.MersenneTwisterFast;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.scheduler.Priority;
 import sim.engine.Steppable;
 
 import javax.annotation.Nullable;
@@ -155,7 +156,7 @@ public class PIDController implements Controller{
      * @param phase at which phase should this controller be rescheduled
      */
     public void adjust(float residual, boolean isActive,
-                       @Nullable MacroII simState, @Nullable Steppable user,ActionOrder phase )
+                       @Nullable MacroII simState, @Nullable Steppable user,ActionOrder phase, Priority priority)
     {
         //delegate the PID itself to adjustOnce, and worry about refactoring
         if (!adjustOnce(residual, isActive))
@@ -169,11 +170,11 @@ public class PIDController implements Controller{
 
         if(simState != null && user != null){
             if(speed == 0)
-                simState.scheduleTomorrow(phase, user);
+                simState.scheduleTomorrow(phase, user,priority);
             else
             {
                 assert speed > 0;
-                simState.scheduleAnotherDay(phase,user,speed+1);
+                simState.scheduleAnotherDay(phase,user,speed+1,priority);
             }
         }
 
@@ -192,9 +193,28 @@ public class PIDController implements Controller{
      */
     public void adjust(float target, float current, boolean isActive,
                        @Nullable MacroII simState, @Nullable Steppable user,ActionOrder phase) {
+
+        adjust(target, current, isActive, simState, user, phase,Priority.STANDARD);
+
+    }
+
+
+    /**
+     * The adjust is the main part of the PID controller. It checks the new error and set the MV (which is the price, really)
+     *
+     * @param target the inventory we want to target this adjust
+     * @param current the inventory we have
+     * @param isActive are we active?
+     * @param simState a link to the model (to adjust yourself) [can be null]
+     * @param user the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself) [can be null]
+     * @param phase at which phase should this controller be rescheduled
+     *
+     */
+    public void adjust(float target, float current, boolean isActive,
+                       @Nullable MacroII simState, @Nullable Steppable user,ActionOrder phase, Priority priority) {
         //get the residual and delegate to the residual method
         float residual = target - current;
-        adjust(residual,isActive,simState,user,phase);
+        adjust(residual,isActive,simState,user,phase,priority);
 
     }
 

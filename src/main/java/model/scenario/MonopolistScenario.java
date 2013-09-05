@@ -22,7 +22,6 @@ import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.PurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
-import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
@@ -39,6 +38,7 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.dummies.DummyBuyer;
+import model.utilities.scheduler.Priority;
 import model.utilities.stats.collectors.DailyStatCollector;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -88,6 +88,11 @@ public class MonopolistScenario extends Scenario {
     private int dailyWageSlope = 1;
 
     /**
+     * should you rehire workers every day? To have an effect it has to be set BEFORE start is called!
+     */
+    private boolean workersToBeRehiredEveryDay = true;
+
+    /**
      * The blueprint that the monopolist will use
      */
     protected Blueprint blueprint= new Blueprint.Builder().output(GoodType.GENERIC, laborProductivity).build();
@@ -108,7 +113,7 @@ public class MonopolistScenario extends Scenario {
      * this is somewhat of an ugly trick to get the gui to be able to select the kind of class
      * the human resource should use. Mason GUI knows how to deal with enums
      */
-    private MonopolistScenarioIntegratedControlEnum controlType = MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID;
+    private MonopolistScenarioIntegratedControlEnum controlType = MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL;
 
     /**
      * Do agents go around look for better offers all the time?
@@ -132,7 +137,7 @@ public class MonopolistScenario extends Scenario {
     /**
      * The kind of sales department to use
      */
-    protected Class<? extends SalesDepartment> salesDepartmentType = SalesDepartmentAllAtOnce.class;
+    protected Class<? extends SalesDepartment> salesDepartmentType = SalesDepartmentOneAtATime.class;
 
 
     /**
@@ -195,7 +200,7 @@ public class MonopolistScenario extends Scenario {
                             goodMarket.submitBuyQuote(reference, getFixedPrice());
 
                         }
-                    });
+                    }, Priority.AFTER_STANDARD);
 
                 }
             };
@@ -212,7 +217,7 @@ public class MonopolistScenario extends Scenario {
                     //make the buyer submit a quote soon.
                     goodMarket.submitBuyQuote(buyer, buyer.getFixedPrice());
                 }
-            });
+            },Priority.AFTER_STANDARD);
 
 
 
@@ -241,6 +246,8 @@ public class MonopolistScenario extends Scenario {
             int dailyWage = dailyWageIntercept + dailyWageSlope * i;
             //dummy worker, really
             final Person p = new Person(getModel(),0l,(dailyWage)*7,laborMarket);
+            p.setPrecario(workersToBeRehiredEveryDay);
+
 
             p.setSearchForBetterOffers(lookForBetterOffers);
 
@@ -642,4 +649,21 @@ public class MonopolistScenario extends Scenario {
     }
 
 
+    /**
+     * Sets new should you rehire workers every day? To have an effect it has to be set BEFORE start is called!.
+     *
+     * @param workersToBeRehiredEveryDay New value of should you rehire workers every day? To have an effect it has to be set BEFORE start is called!.
+     */
+    public void setWorkersToBeRehiredEveryDay(boolean workersToBeRehiredEveryDay) {
+        this.workersToBeRehiredEveryDay = workersToBeRehiredEveryDay;
+    }
+
+    /**
+     * Gets should you rehire workers every day? To have an effect it has to be set BEFORE start is called!.
+     *
+     * @return Value of should you rehire workers every day? To have an effect it has to be set BEFORE start is called!.
+     */
+    public boolean isWorkersToBeRehiredEveryDay() {
+        return workersToBeRehiredEveryDay;
+    }
 }

@@ -14,7 +14,7 @@ import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPID;
-import agents.firm.production.control.targeter.PIDTargeter;
+import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.Machinery;
 import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
@@ -46,7 +46,7 @@ public class MarginalPlantControlWithPIDUnit implements PlantControl, PlantListe
      */
     private final TargetAndMaximizePlantControl control;
 
-    private final  FactoryProducedTargetAndMaximizePlantControl<PIDTargeter,
+    private final  FactoryProducedTargetAndMaximizePlantControl<PIDTargeterWithQuickFiring,
             SetTargetThenTryAgainMaximizer<MarginalMaximizerWithUnitPID>>
             generatedControl;
 
@@ -59,7 +59,7 @@ public class MarginalPlantControlWithPIDUnit implements PlantControl, PlantListe
     {
 
         generatedControl = TargetAndMaximizePlantControl.PlantControlFactory(hr,
-                PIDTargeter.class,
+                PIDTargeterWithQuickFiring.class,
                 //the next argument is why the java generics guys really needed drug screening when they were thinking this
                 //of course I couldn't figure this out, it's from here: http://stackoverflow.com/questions/1079279/class-object-of-generic-class-java
                 (Class<SetTargetThenTryAgainMaximizer<MarginalMaximizerWithUnitPID>>)(Class<?>) SetTargetThenTryAgainMaximizer.class,
@@ -92,7 +92,7 @@ public class MarginalPlantControlWithPIDUnit implements PlantControl, PlantListe
      * A link to the object build, so we can change its parameters
      * @return
      */
-    public FactoryProducedTargetAndMaximizePlantControl<PIDTargeter,
+    public FactoryProducedTargetAndMaximizePlantControl<PIDTargeterWithQuickFiring,
             SetTargetThenTryAgainMaximizer<MarginalMaximizerWithUnitPID>> getGeneratedControl() {
         return generatedControl;
     }

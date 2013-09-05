@@ -41,7 +41,7 @@ public class LookAheadAnnealingControl implements PlantControl
     private  final TargetAndMaximizePlantControl control;
 
     /**
-     * Creates a TargetAndMaximizePlantControl with PIDTargeter and HillClimber
+     * Creates a TargetAndMaximizePlantControl with PIDTargeterWithQuickFiring and HillClimber
      * @param hr
      */
     public LookAheadAnnealingControl(@Nonnull HumanResources hr) {

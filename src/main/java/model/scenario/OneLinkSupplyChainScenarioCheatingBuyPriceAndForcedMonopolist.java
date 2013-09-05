@@ -16,7 +16,7 @@ import agents.firm.production.control.maximizer.EveryWeekMaximizer;
 import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.production.control.maximizer.algorithms.otherMaximizers.FixedTargetMaximizationAlgorithm;
-import agents.firm.production.control.targeter.PIDTargeter;
+import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import au.com.bytecode.opencsv.CSVWriter;
@@ -93,7 +93,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
             firm.addPlant(plant);
             FactoryProducedHumanResourcesWithMaximizerAndTargeter produced =
                     HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, firm,
-                            laborMarket, plant, PIDTargeter.class, SetTargetThenTryAgainMaximizer.class,
+                            laborMarket, plant, PIDTargeterWithQuickFiring.class, SetTargetThenTryAgainMaximizer.class,
                             FixedTargetMaximizationAlgorithm.class, null, null);
 
             ((SetTargetThenTryAgainMaximizer< FixedTargetMaximizationAlgorithm >) produced.getWorkforceMaximizer()).

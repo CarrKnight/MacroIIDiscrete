@@ -13,7 +13,7 @@ import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.decorators.MatchBestControlDecorator;
 import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.hillClimbers.AlwaysMovingHillClimber;
-import agents.firm.production.control.targeter.PIDTargeter;
+import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.Machinery;
 import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
@@ -44,13 +44,13 @@ public class DiscreteMatcherPlantControl  implements PlantControl
     private  final PlantControl control;
 
     /**
-     * Creates a TargetAndMaximizePlantControl with PIDTargeter and HillClimber
+     * Creates a TargetAndMaximizePlantControl with PIDTargeterWithQuickFiring and HillClimber
      * @param hr
      */
     public DiscreteMatcherPlantControl(@Nonnull HumanResources hr) {
         //instantiate the real control
         control = TargetAndMaximizePlantControl.PlantControlFactory(hr,
-                PIDTargeter.class, SetTargetThenTryAgainMaximizer.class,
+                PIDTargeterWithQuickFiring.class, SetTargetThenTryAgainMaximizer.class,
                 AlwaysMovingHillClimber.class, MatchBestControlDecorator.class);
 
     }

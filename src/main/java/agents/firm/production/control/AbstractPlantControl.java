@@ -141,7 +141,7 @@ public abstract class AbstractPlantControl implements  PlantControl{
             hr.updateEmployeeWages();
 
 
-            //if you can, buy
+            //if you can, buy at the next TRADE
             if(canBuy())
                 hr.buy();
 

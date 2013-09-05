@@ -148,6 +148,8 @@ public abstract class  SalesDepartment  implements Department {
      * This is the price of the last good the sales department managed to sell
      */
     private long lastClosingPrice = -1;
+
+
     /**
      * This is the cost of the last good the sales department managed to sell
      */
@@ -321,7 +323,7 @@ public abstract class  SalesDepartment  implements Department {
      * first good we have to sell, schedule daily a beginningOfTheDayStatistics() call
      */
     private void logInflow(Good g) {
-         assert started;
+        assert started;
 
         //tell the listeners about it
         for(SalesDepartmentListener listener : salesDepartmentListeners)
@@ -653,6 +655,7 @@ public abstract class  SalesDepartment  implements Department {
         //       newResult.setPriceSold(price); //record the price of sale
         salesResults.put(g, newResult); //put it in!
         lastClosingPrice = price;
+
         lastClosingCost = newResult.getPreviousCost();
         sumClosingPrice += lastClosingPrice;
 
@@ -730,6 +733,7 @@ public abstract class  SalesDepartment  implements Department {
                 SaleResult saleResult = SaleResult.sold(finalPrice, cost);
                 salesResults.put(g,saleResult ); //record the sale
                 lastClosingPrice = finalPrice;
+
                 sumClosingPrice += lastClosingPrice;
                 buyerSearchAlgorithm.reactToSuccess(buyer,result); //tell the search algorithm
                 //tell the listeners!
@@ -1357,6 +1361,51 @@ public abstract class  SalesDepartment  implements Department {
      */
     public Double getLatestObservation(SalesDataType type) {
         return data.getLatestObservation(type);
+    }
+
+    /**
+     * basically this is an average of the latest observations of last closing price. As long as we are selling a lot of goods, it shouldn't matter.
+     * The idea is that sometimes price goes very high to increase inventory but then there is only one sale or so, which isn't useful to know what the last price is
+     * @return
+     */
+    public double getAveragedLastPrice(){
+        if(lastClosingPrice == -1)
+            return -1;
+        else
+        {
+            int lowerbound = Math.max(data.getStartingDay(),data.getLastObservedDay()-7);
+            double[] priceObservations = data.getObservationsRecordedTheseDays(SalesDataType.AVERAGE_CLOSING_PRICES,
+                    lowerbound,data.getLastObservedDay()-1);
+            double[] quantityTraded = data.getObservationsRecordedTheseDays(SalesDataType.OUTFLOW,
+                    lowerbound,data.getLastObservedDay()-1);
+            double sum = 0; double totalQuantity=0;
+            for(int i=0; i< priceObservations.length; i++)
+            {
+                assert priceObservations[i] >= 0 || quantityTraded[i] == 0;
+                if(priceObservations[i] >=0){
+                    sum += priceObservations[i] * quantityTraded[i];
+                    totalQuantity += quantityTraded[i];
+                }
+
+            }
+            if(totalQuantity == 0)
+                return -1;
+            else
+                return sum/totalQuantity;
+
+
+        }
+
+    }
+
+
+    /**
+     * This is a little bit weird to predict, but basically you want to know what will be "tomorrow" price if you don't change production.
+     * Most predictors simply return today closing price, because maybe this will be useful in some cases. It's used by Marginal Maximizer Statics
+     * @return predicted price
+     */
+    public long predictSalePriceWhenNotChangingPoduction() {
+        return predictorStrategy.predictSalePriceWhenNotChangingPoduction(this);
     }
 }
 

@@ -16,7 +16,7 @@ import goods.GoodType;
 import agents.firm.production.Plant;
 import agents.firm.production.control.decorators.FixedWageDecorator;
 import agents.firm.production.control.maximizer.algorithms.hillClimbers.HillClimberMaximizer;
-import agents.firm.production.control.targeter.PIDTargeter;
+import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.Machinery;
 
 import javax.annotation.Nonnull;
@@ -43,13 +43,13 @@ public class FixWagesPlantControl implements PlantControl {
     private  final PlantControl control;
 
     /**
-     * Creates a TargetAndMaximizePlantControl with PIDTargeter and HillClimber
+     * Creates a TargetAndMaximizePlantControl with PIDTargeterWithQuickFiring and HillClimber
      * @param hr
      */
     public FixWagesPlantControl(@Nonnull HumanResources hr) {
         //instantiate the real control
         control = TargetAndMaximizePlantControl.
-                PlantControlFactory(hr, PIDTargeter.class,SetTargetThenTryAgainMaximizer.class,
+                PlantControlFactory(hr, PIDTargeterWithQuickFiring.class,SetTargetThenTryAgainMaximizer.class,
                         HillClimberMaximizer.class, FixedWageDecorator.class);
 
     }

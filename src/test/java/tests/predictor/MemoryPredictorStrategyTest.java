@@ -12,12 +12,9 @@ import financial.market.OrderBookMarket;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
-import org.junit.Test;
 import model.utilities.dummies.DummyBuyer;
 import model.utilities.dummies.DummySeller;
-
-import java.lang.reflect.Field;
-import java.util.Set;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -187,57 +184,7 @@ public class MemoryPredictorStrategyTest {
 
     }
 
-    //like scenario 2 but the trade is carried out by us rather than a bystander
-    @Test
-    public void scenario5() throws Exception {
-
-        Market.TESTING_MODE = true;
 
 
-
-        model = new MacroII(100l);
-        market = new OrderBookMarket(GoodType.GENERIC);
-        f = new Firm(model);
-        department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
-        f.registerSaleDepartment(department,GoodType.GENERIC);
-
-
-
-        strategy = new MemorySalesPredictor();
-        department.setPredictorStrategy(strategy);
-
-
-
-
-
-        DummyBuyer buyer1 = new DummyBuyer(model,100l,market); market.registerBuyer(buyer1);
-        market.submitBuyQuote(buyer1,100l);
-        DummyBuyer buyer2 = new DummyBuyer(model,200l,market); market.registerBuyer(buyer2);
-        market.submitBuyQuote(buyer2,200l);
-        DummySeller seller = new DummySeller(model, 300l); market.registerSeller(seller);
-        market.submitSellQuote(seller,300l,new Good(GoodType.GENERIC,seller,300l));
-
-
-        Good sold = new Good(GoodType.GENERIC,seller,200l);
-        DummyBuyer buyer3 = new DummyBuyer(model,250,market); market.registerBuyer(buyer3);   buyer3.earn(300);
-        market.submitBuyQuote(buyer3, 250l);
-         //market.registerSeller(department.getFirm()); Automatically registered when you create the sales department
-        department.getFirm().receive(sold,null);
-        //hack to simulate sellThis without actually calling it
-        Field field = SalesDepartment.class.getDeclaredField("toSell");
-        field.setAccessible(true);
-        Set<Good> toSell = (Set<Good>) field.get (department);
-        toSell.add(sold);
-
-        market.submitSellQuote(department.getFirm(),250l,sold);
-
-        assertTrue(buyer3.has(sold));
-        assertTrue(!f.has(sold));
-        assertEquals(50, buyer3.getCash());
-        assertEquals(250, f.getCash());
-
-        assertEquals(250, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //copy YOUR last closing price
-
-    }
 
 }

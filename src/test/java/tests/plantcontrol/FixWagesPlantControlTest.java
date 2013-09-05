@@ -9,7 +9,7 @@ import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.decorators.FixedWageDecorator;
 import agents.firm.production.control.decorators.PlantControlDecorator;
 import agents.firm.production.control.facades.FixWagesPlantControl;
-import agents.firm.production.control.targeter.PIDTargeter;
+import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.IRSExponentialMachinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.sales.SalesDepartment;
@@ -297,7 +297,7 @@ public class FixWagesPlantControlTest {
         TargetAndMaximizePlantControl innerControl = (TargetAndMaximizePlantControl)field.get(decoratedControl);
 
         field = TargetAndMaximizePlantControl.class.getDeclaredField("targeter"); field.setAccessible(true);
-        PIDTargeter targeter = (PIDTargeter) field.get(innerControl);
+        PIDTargeterWithQuickFiring targeter = (PIDTargeterWithQuickFiring) field.get(innerControl);
         targeter.setInitialWage(200);
 
 

@@ -10,13 +10,13 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
+import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
 import goods.GoodType;
 import agents.firm.production.Plant;
 import agents.firm.production.PlantListener;
 import agents.firm.production.control.maximizer.algorithms.hillClimbers.HillClimberMaximizer;
-import agents.firm.production.control.targeter.PIDTargeter;
 import agents.firm.production.technology.Machinery;
 
 import javax.annotation.Nonnull;
@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
  * <h4>Description</h4>
  * <p/> This now is just a facade. After I updated the plant control interface. Basically it creates a specific Target And Maximize PlantContol instance
  * and just delegates to it
- * <p/>  The TargetAndMaximizePlantControl it delegates has PIDTargeter and HillClimber
+ * <p/>  The TargetAndMaximizePlantControl it delegates has PIDTargeterWithQuickFiring and HillClimber
 
  * <h4>Notes</h4>
  * Created with IntelliJ
@@ -43,13 +43,13 @@ public class DiscreteSlowPlantControl  implements PlantControl, PlantListener {
     private  final TargetAndMaximizePlantControl control;
 
     /**
-     * Creates a TargetAndMaximizePlantControl with PIDTargeter and HillClimber
+     * Creates a TargetAndMaximizePlantControl with PIDTargeterWithQuickFiring and HillClimber
      * @param hr
      */
     public DiscreteSlowPlantControl(@Nonnull HumanResources hr) {
         //instantiate the real control
         control = TargetAndMaximizePlantControl.PlantControlFactory(hr,
-                PIDTargeter.class,SetTargetThenTryAgainMaximizer.class,
+                PIDTargeterWithQuickFiring.class,SetTargetThenTryAgainMaximizer.class,
                 HillClimberMaximizer.class).getControl();
 
     }

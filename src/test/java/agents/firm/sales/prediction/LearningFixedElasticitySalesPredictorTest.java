@@ -11,14 +11,13 @@ import financial.market.Market;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
-import model.utilities.stats.collectors.enums.MarketDataType;
 import model.utilities.stats.collectors.PeriodicMarketObserver;
+import model.utilities.stats.collectors.enums.MarketDataType;
 import org.junit.Assert;
 import org.junit.Test;
 import sim.engine.Steppable;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
 
 /**
@@ -70,7 +69,7 @@ public class LearningFixedElasticitySalesPredictorTest {
         //now Q doesn't matter anymore, only previous Price
 
         SalesDepartment department = mock(SalesDepartment.class);
-        when(department.hypotheticalSalePrice(anyLong())).thenReturn(200l);
+        when(department.getAveragedLastPrice()).thenReturn(200d);
         when(market.getObservationRecordedThisDay(MarketDataType.CLOSING_PRICE,2)).thenReturn(81d);
         when(market.getObservationRecordedThisDay(MarketDataType.VOLUME_CONSUMED,2)).thenReturn(8d);
         //the sales predictor will be predicting for 9 (yesterdayVolume + 1)
@@ -125,7 +124,7 @@ public class LearningFixedElasticitySalesPredictorTest {
 
 
         LearningFixedElasticitySalesPredictor predictor = new LearningFixedElasticitySalesPredictor(market,model );
-        when(department.hypotheticalSalePrice(anyLong())).thenReturn(50l);
+        when(department.getAveragedLastPrice()).thenReturn(50d);
         Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000l, 1),50l);
 
         //with one observation, it still returns whatever the sales department says

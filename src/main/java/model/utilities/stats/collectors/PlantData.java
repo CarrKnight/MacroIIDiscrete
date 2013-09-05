@@ -11,8 +11,6 @@ import agents.firm.production.Plant;
 import com.google.common.base.Preconditions;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.stats.collectors.DailyObservations;
-import model.utilities.stats.collectors.DataStorage;
 import model.utilities.stats.collectors.enums.PlantDataType;
 import sim.engine.SimState;
 
@@ -118,6 +116,7 @@ public class PlantData extends DataStorage<PlantDataType> {
                 && ((int)Math.round(data.get(PlantDataType.TOTAL_WORKERS).getLastObservation())) != numberOfWorkers)
             lastDayAMeaningfulChangeInWorkforceOccurred = (int)model.getMainScheduleTime();
         data.get(PlantDataType.TOTAL_WORKERS).add(Double.valueOf(numberOfWorkers));
+        data.get(PlantDataType.WAGES_PAID_THAT_WEEK).add(Double.valueOf(plant.getWagesPaid()));
 
 
         //reschedule
@@ -142,4 +141,6 @@ public class PlantData extends DataStorage<PlantDataType> {
     public int getLastDayAMeaningfulChangeInWorkforceOccurred() {
         return lastDayAMeaningfulChangeInWorkforceOccurred;
     }
+
+
 }

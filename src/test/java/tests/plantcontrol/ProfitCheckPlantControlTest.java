@@ -9,7 +9,7 @@ import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.facades.ProfitCheckPlantControl;
-import agents.firm.production.control.targeter.PIDTargeter;
+import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.IRSExponentialMachinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.sales.SalesDepartment;
@@ -218,7 +218,7 @@ public class ProfitCheckPlantControlTest {
         TargetAndMaximizePlantControl innerControl = (TargetAndMaximizePlantControl)field.get(control);
 
         field = TargetAndMaximizePlantControl.class.getDeclaredField("targeter"); field.setAccessible(true);
-        PIDTargeter targeter = (PIDTargeter) field.get(innerControl);
+        PIDTargeterWithQuickFiring targeter = (PIDTargeterWithQuickFiring) field.get(innerControl);
         targeter.setInitialWage(200);
 
 

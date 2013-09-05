@@ -41,7 +41,10 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     /**
      * how much inventory is correct to have. Any number below this should trigger the PID to raise prices, any number above this to lower them
      */
-    private int targetInventory = 15;
+    private int targetInventory = defaultTargetInventory;
+
+
+    public static int defaultTargetInventory =  25;
 
     /**
      * A controller to change prices as inventory changes. By default it's a cascade control
@@ -56,7 +59,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
 
     public SalesControlWithFixedInventoryAndPID(SalesDepartment department) {
 
-        this(department,5); //default to 5 units of inventory
+        this(department,defaultTargetInventory); //default to 5 units of inventory
     }
 
     /**

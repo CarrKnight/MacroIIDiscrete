@@ -92,7 +92,8 @@ public class MarginalMaximizerTest {
         //say that wages are always 50, sell prices are always 100
         when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(50l); when(hr.hypotheticalWageAtThisLevel(anyInt())).thenReturn(50l);
         when(hr.getWagesPaid()).thenReturn(10*50l);
-        when(sales.predictSalePriceAfterIncreasingProduction(anyLong(), anyInt())).thenReturn(100l); when(sales.getLastClosingPrice()).thenReturn(100l);
+        when(sales.predictSalePriceAfterIncreasingProduction(anyLong(), anyInt())).thenReturn(100l);
+        when(sales.getAveragedLastPrice()).thenReturn(100d);
         when(sales.predictSalePriceAfterDecreasingProduction(anyLong(), anyInt())).thenReturn(100l);
 
 

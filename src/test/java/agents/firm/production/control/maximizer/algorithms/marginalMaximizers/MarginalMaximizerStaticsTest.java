@@ -69,7 +69,7 @@ public class MarginalMaximizerStaticsTest
         Firm owner = mock(Firm.class);
         SalesDepartment department = mock(SalesDepartment.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.getLastClosingPrice()).thenReturn(60l);
+        when(department.getAveragedLastPrice()).thenReturn(60d);
         when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59l);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
@@ -99,7 +99,7 @@ public class MarginalMaximizerStaticsTest
         Firm owner = mock(Firm.class);
         SalesDepartment department = mock(SalesDepartment.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.getLastClosingPrice()).thenReturn(60l);
+        when(department.getAveragedLastPrice()).thenReturn(60d);
         when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59l);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
@@ -125,7 +125,7 @@ public class MarginalMaximizerStaticsTest
         Firm owner = mock(Firm.class);
         SalesDepartment department = mock(SalesDepartment.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.getLastClosingPrice()).thenReturn(60l);
+        when(department.getAveragedLastPrice()).thenReturn(60d);
         when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(70l);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
@@ -152,7 +152,7 @@ public class MarginalMaximizerStaticsTest
         Firm owner = mock(Firm.class);
         SalesDepartment department = mock(SalesDepartment.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.getLastClosingPrice()).thenReturn(60l);
+        when(department.getAveragedLastPrice()).thenReturn(60d);
         when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59l);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
@@ -185,7 +185,7 @@ public class MarginalMaximizerStaticsTest
         SalesDepartment department = mock(SalesDepartment.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
         when(owner.getSalesDepartment(GoodType.BEEF)).thenReturn(department);
-        when(department.getLastClosingPrice()).thenReturn(60l);
+        when(department.getAveragedLastPrice()).thenReturn(60d);
         when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59l);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
@@ -214,7 +214,9 @@ public class MarginalMaximizerStaticsTest
         when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
         when(hr.isFixedPayStructure()).thenReturn(true);
         PlantControl control = mock(PlantControl.class);
-        when(control.getCurrentWage()).thenReturn(5l);
+
+        when(hr.hypotheticalWageAtThisLevel(1)).thenReturn(5l);
+
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeWageCosts(hr, control, 1, 2, MarginalMaximizer.RandomizationPolicy.MORE_TIME);
@@ -233,7 +235,7 @@ public class MarginalMaximizerStaticsTest
         when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
         when(hr.isFixedPayStructure()).thenReturn(true);
         PlantControl control = mock(PlantControl.class);
-        when(control.getCurrentWage()).thenReturn(5l);
+        when(hr.hypotheticalWageAtThisLevel(1)).thenReturn(5l);
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeWageCosts(hr, control, 1, 3, MarginalMaximizer.RandomizationPolicy.MORE_TIME);
@@ -253,7 +255,8 @@ public class MarginalMaximizerStaticsTest
         when(hr.isFixedPayStructure()).thenReturn(true);
         when(hr.hypotheticalWageAtThisLevel(1)).thenReturn(5l);
         PlantControl control = mock(PlantControl.class);
-        when(control.getCurrentWage()).thenReturn(10l);
+        when(hr.hypotheticalWageAtThisLevel(2)).thenReturn(10l);
+
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeWageCosts(hr, control, 2, 1, MarginalMaximizer.RandomizationPolicy.MORE_TIME);
@@ -272,7 +275,8 @@ public class MarginalMaximizerStaticsTest
         when(hr.isFixedPayStructure()).thenReturn(true);
         when(hr.hypotheticalWageAtThisLevel(1)).thenReturn(5l);
         PlantControl control = mock(PlantControl.class);
-        when(control.getCurrentWage()).thenReturn(10l);
+        when(hr.hypotheticalWageAtThisLevel(3)).thenReturn(10l);
+
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeWageCosts(hr, control, 3, 1, MarginalMaximizer.RandomizationPolicy.MORE_TIME);

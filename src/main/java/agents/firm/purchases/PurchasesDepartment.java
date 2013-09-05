@@ -616,6 +616,8 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
     }
 
+
+
     /**
      * This is the method used by whoever controls the purchase department to order it to go ahead and buy
      */

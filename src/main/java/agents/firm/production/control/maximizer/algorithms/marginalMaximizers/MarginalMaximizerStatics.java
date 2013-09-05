@@ -14,6 +14,7 @@ import agents.firm.purchases.PurchasesDepartment;
 import com.google.common.base.Preconditions;
 import goods.GoodType;
 import model.utilities.DelayException;
+import model.utilities.stats.collectors.enums.PlantDataType;
 
 import java.util.Set;
 
@@ -78,15 +79,16 @@ public final class MarginalMaximizerStatics {
         float marginalRevenue = computeMarginalRevenue(owner, p, policy, currentWorkers, targetWorkers, inputCosts.getTotalCost(), wageCosts.getTotalCost());
 
 
-    /*    if(targetWorkers > currentWorkers)
-        {
-     */
-            System.out.println("total input: " + inputCosts.getTotalCost() + ", total wage costs: " + wageCosts.getTotalCost() + ", targetWorkers: " + targetWorkers);
-            System.out.println("marginal input: " + inputCosts.getMarginalCost() + ", marginal wages:" + wageCosts.getMarginalCost() + ", revenue: " +
-                    marginalRevenue + " ----- workers: " + currentWorkers);
-            System.out.println("--------------------------------------------------------------------------------------------------------------------------------------");
-/*        }
-*/
+
+
+        System.out.println("total input: " + inputCosts.getTotalCost() + ", total wage costs: " + wageCosts.getTotalCost() + ", targetWorkers: " + targetWorkers);
+        System.out.println("marginal input: " + inputCosts.getMarginalCost() + ", marginal wages:" + wageCosts.getMarginalCost() + ", revenue: " +
+                marginalRevenue + " ----- workers: " + currentWorkers);
+        System.out.println( "old wage costs: " + p.getLatestObservation(PlantDataType.WAGES_PAID_THAT_WEEK) + ", today wages: " + control.getCurrentWage());
+
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------");
+
+
 
         //FINALLY return
         return marginalRevenue - totalMarginalCosts;
@@ -149,34 +151,28 @@ public final class MarginalMaximizerStatics {
                                                 int targetWorkers, MarginalMaximizer.RandomizationPolicy policy) throws DelayException {
         long marginalWageCosts; long futureWage;
 
-        if(targetWorkers > currentWorkers)  //if we are going to hire somebody
+        if(targetWorkers > currentWorkers)
         {
-            //wages!
-            futureWage = hr.predictPurchasePriceWhenIncreasingProduction();
-
-            //if there is no prediction react to it
-            futureWage = futureWage < 0 ? policy.replaceUnknownPrediction(hr.getMarket(), hr.getRandom()) : futureWage;
-            //remember that you'll have to raise everybody's wages if you hire somebody new at a higher cost
-            if(futureWage > control.getCurrentWage() && hr.isFixedPayStructure())  //if you have to raise your wages to hire somebody
-            {
-                //your total costs then are the new wage + the adjustment you'll have to make to pay everybody that wage
-                marginalWageCosts = ( (futureWage- control.getCurrentWage()) * currentWorkers) + futureWage * (targetWorkers-currentWorkers);
-                assert marginalWageCosts > 0 || futureWage == 0;
-            }
-            else{
-                marginalWageCosts = futureWage * (targetWorkers-currentWorkers); //otherwise you just need to hire the new guy
-            }
+            futureWage = hr.predictPurchasePriceWhenIncreasingProduction() ;
+            //but it should never be below the minimum to keep our currentworkers
+            if(currentWorkers>0 && futureWage > 0) //do this only if you aren't asking for a delay and you have at least one worker
+                futureWage = Math.max(futureWage,hr.hypotheticalWageAtThisLevel(currentWorkers));
         }
-        else{
-            //we are firing people, what wage would ensue then?
-            futureWage = hr.hypotheticalWageAtThisLevel(targetWorkers);
-            assert futureWage <= control.getCurrentWage() : "firing people will result in higher wage, that's weird";
-            //make a list of workers
-
-            marginalWageCosts = futureWage * targetWorkers -  control.getCurrentWage() * currentWorkers; //get marginal cost!
-            assert marginalWageCosts <=0;    //cost should be negative! we are saving!
+        else
+        {
+            futureWage=hr.hypotheticalWageAtThisLevel(targetWorkers);
         }
+        futureWage = futureWage < 0 ? policy.replaceUnknownPrediction(hr.getMarket(), hr.getRandom()) : futureWage;
+
+        long oldWage = currentWorkers == 0 ? 0 : hr.hypotheticalWageAtThisLevel(currentWorkers);
+        System.out.println("wage costs: " + futureWage + " , old wages: " + oldWage);
+
+
         long totalFutureWageCosts = futureWage * targetWorkers;
+
+        marginalWageCosts = totalFutureWageCosts - currentWorkers * oldWage;
+
+
 
         return new CostEstimate(marginalWageCosts,totalFutureWageCosts);
 
@@ -203,56 +199,24 @@ public final class MarginalMaximizerStatics {
             float marginalProduction = p.hypotheticalThroughput(targetWorkers, output) - p.hypotheticalThroughput(currentWorkers, output);
             assert (marginalProduction >= 0 && targetWorkers >= currentWorkers) ^  (marginalProduction <= 0 && targetWorkers < currentWorkers) :
                     "this method was thought for monotonic production functions.";
-            long oldPrice = owner.getSalesDepartment(output).getLastClosingPrice();
+            long oldPrice = owner.getSalesDepartment(output).predictSalePriceWhenNotChangingPoduction();
             //are we increasing or decreasing production?
-            if(targetWorkers>currentWorkers)
-            {
-                //increasing production
-                long pricePerUnit =
-                        owner.getSalesDepartment(output).predictSalePriceAfterIncreasingProduction(
-                                p.hypotheticalUnitOutputCost(output, totalFutureCosts, targetWorkers, totalFutureWageCosts
-                                ), Math.round(marginalProduction/7f));
-
-                //if prediction is not available, react to it!
-                pricePerUnit = pricePerUnit < 0 ? policy.replaceUnknownPrediction(owner.getSalesDepartment(output).getMarket(), p.getRandom()) : pricePerUnit;
+            long pricePerUnit =  targetWorkers>currentWorkers ?
+                    owner.getSalesDepartment(output).predictSalePriceAfterIncreasingProduction(
+                            p.hypotheticalUnitOutputCost(output, totalFutureCosts, targetWorkers, totalFutureWageCosts
+                            ), Math.round(marginalProduction/7f)) :
+                    owner.getSalesDepartment(output).predictSalePriceAfterDecreasingProduction(
+                            p.hypotheticalUnitOutputCost(output, totalFutureCosts, targetWorkers, totalFutureWageCosts),Math.round(-marginalProduction/7f) );
 
 
-                //GAINS: new sales at the new price
-                marginalRevenue += pricePerUnit * marginalProduction;
-                //LOSSES: lower revenue from previous sales if you lowered the total sale price
-                //if you sold anything today (if you haven't and you use very old "closing price" then your estimates are very wrong
-                if(owner.getSalesDepartment(output).getTodayOutflow() > 0
-                        &&
-                        oldPrice != pricePerUnit )
-                {
-
-                    marginalRevenue -= (oldPrice -
-                            pricePerUnit) * p.hypotheticalThroughput(currentWorkers, output);
-                }
-            }
-            else
-            {
-                //decreasing production!
-                assert targetWorkers < currentWorkers;
-                assert marginalProduction <=0;
-                //predict new price!
-                long pricePerUnit = owner.getSalesDepartment(output).predictSalePriceAfterDecreasingProduction(
-                        p.hypotheticalUnitOutputCost(output, totalFutureCosts, targetWorkers, totalFutureWageCosts),Math.round(-marginalProduction/7f) );
-                //if prediction is not available, react to it!
-                pricePerUnit = pricePerUnit < 0 ? policy.replaceUnknownPrediction(owner.getSalesDepartment(output).getMarket(), p.getRandom()) : pricePerUnit;
+            pricePerUnit = pricePerUnit < 0 ? policy.replaceUnknownPrediction(owner.getSalesDepartment(output).getMarket(), p.getRandom()) : pricePerUnit;
+            System.out.println("predicted price: " + pricePerUnit + ", averaged price: " + owner.getSalesDepartment(output).getAveragedLastPrice() +
+            ",.market average:" + owner.getSalesDepartment(output).getMarket().getTodayAveragePrice() + ", old price:" + oldPrice);
 
 
-                //LOSSES: lower production at old price
-                float losses = oldPrice * marginalProduction; //marginal production should be 0 or lower
-                assert losses<=0;
-                //GAINS: remaining sales should sell at higher prices!
-                float gains = p.hypotheticalThroughput(targetWorkers, output) * (pricePerUnit- oldPrice);
-                assert gains >=0 ^ pricePerUnit< oldPrice;
+            marginalRevenue += p.hypotheticalThroughput(targetWorkers, output) * pricePerUnit -
+                    p.hypotheticalThroughput(currentWorkers, output) * oldPrice;
 
-                marginalRevenue += gains + losses; //losses are already negative!
-
-            }
-            //if you are increasing production, predict future price. Otherwise get last price
 
 
         }
@@ -283,41 +247,17 @@ public final class MarginalMaximizerStatics {
             long costPerInput = targetWorkers > currentWorkers ?
                     dept.predictPurchasePriceWhenIncreasingProduction() :
                     dept.predictPurchasePriceWhenDecreasingProduction();
+            long oldCosts = dept.getLastClosingPrice();
             //if there is no prediction, react to it
             costPerInput = costPerInput < 0 ? policy.replaceUnknownPrediction(owner.getPurchaseDepartment(input).getMarket(), p.getRandom()) : costPerInput;
 
             //count the costs!
-            //if we are increasing production:
-            if(targetWorkers>currentWorkers)
-            {
-                assert  marginalInputCosts>=0;
-                //you need to buy the new stuff
-                marginalInputCosts += costPerInput * marginalInputNeeded;
-                //but you also need to pay more for the old stuff
-                marginalInputCosts += (costPerInput-dept.getLastClosingPrice()) * oldNeeds;
-
-            }
-            else
-            {
-                assert  targetWorkers < currentWorkers;
-                //you need to buy less stuff!
-                assert  marginalInputNeeded<=0;
-                marginalInputCosts += costPerInput * marginalInputNeeded;
-                //but if you changed price, that matters
-                marginalInputCosts += (costPerInput-dept.getLastClosingPrice()) * oldNeeds;
-
-
-            }
-
-      /*      marginalInputCosts+= (costPerInput * totalInputNeeded) - dept.getLastClosingPrice() *
-                    p.hypotheticalWeeklyInputNeeds(input, currentWorkers) ;
-                    */
             totalInputCosts +=  costPerInput*totalInputNeeded;
-
+            marginalInputCosts += costPerInput*totalInputNeeded - oldNeeds *oldCosts;
 
 
             //marginal costs are negative (marginal savings) if we are reducing production
-     //       assert (marginalInputCosts >= 0 && targetWorkers > currentWorkers) ^   (marginalInputCosts <= 0 && targetWorkers < currentWorkers);
+            //       assert (marginalInputCosts >= 0 && targetWorkers > currentWorkers) ^   (marginalInputCosts <= 0 && targetWorkers < currentWorkers);
             assert totalInputCosts >= 0;
         }
 

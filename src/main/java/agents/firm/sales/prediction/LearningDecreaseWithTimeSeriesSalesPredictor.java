@@ -317,4 +317,16 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
     public void setCorrectingWithDeltaPrice(boolean correctingWithDeltaPrice) {
         this.correctingWithDeltaPrice = correctingWithDeltaPrice;
     }
+
+    /**
+     * This is a little bit weird to predict, but basically you want to know what will be "tomorrow" price if you don't change production.
+     * Most predictors simply return today closing price, because maybe this will be useful in some cases. It's used by Marginal Maximizer Statics
+     *
+     * @param dept the sales department
+     * @return predicted price
+     */
+    @Override
+    public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
+        return predictor.predictSalePriceWhenNotChangingPoduction(dept);
+    }
 }

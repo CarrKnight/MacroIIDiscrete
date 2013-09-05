@@ -1059,4 +1059,11 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
     public int getLastDayAMeaningfulChangeInWorkforceOccurred() {
         return dataStorage.getLastDayAMeaningfulChangeInWorkforceOccurred();
     }
+
+    /**
+     * Get the wages paid by the HR object last weekend
+     */
+    public long getWagesPaid() {
+        return getHr().getWagesPaid();
+    }
 }

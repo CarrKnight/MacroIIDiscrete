@@ -35,7 +35,7 @@ public class FixedDecreaseSalesPredictor implements SalesPredictor {
     /**
      * the delegate object we use to get the department price
      */
-    private final PricingSalesPredictor delegate;
+    private final MemorySalesPredictor delegate;
 
 
     public FixedDecreaseSalesPredictor() {
@@ -45,7 +45,7 @@ public class FixedDecreaseSalesPredictor implements SalesPredictor {
 
     public FixedDecreaseSalesPredictor(float decrementDelta) {
         this.decrementDelta = decrementDelta;
-        delegate = new PricingSalesPredictor();
+        delegate = new MemorySalesPredictor();
 
     }
 
@@ -57,8 +57,12 @@ public class FixedDecreaseSalesPredictor implements SalesPredictor {
     public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
         Preconditions.checkArgument(increaseStep >= 0);
 
-        return Math.max(0,Math.round(delegate.predictSalePriceAfterIncreasingProduction(dept, expectedProductionCost,increaseStep )
-                -decrementDelta* (float)increaseStep));
+        long beforeImpactPrice = delegate.predictSalePriceAfterIncreasingProduction(dept, expectedProductionCost, increaseStep);
+
+        if(beforeImpactPrice == -1)
+            return -1;
+
+        return Math.max(0,Math.round(beforeImpactPrice -decrementDelta* (float)increaseStep));
     }
 
     /**
@@ -69,8 +73,11 @@ public class FixedDecreaseSalesPredictor implements SalesPredictor {
     public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
         Preconditions.checkArgument(decreaseStep >= 0);
 
-        return Math.max(0,Math.round(delegate.predictSalePriceAfterDecreasingProduction(dept, expectedProductionCost, decreaseStep)
-                + decrementDelta * (float) decreaseStep));
+        long beforeImpactPrice = delegate.predictSalePriceAfterDecreasingProduction(dept, expectedProductionCost, decreaseStep);
+        if(beforeImpactPrice == -1)
+            return -1;
+
+        return Math.max(0,Math.round(beforeImpactPrice + decrementDelta * (float) decreaseStep));
     }
 
     /**
@@ -98,5 +105,17 @@ public class FixedDecreaseSalesPredictor implements SalesPredictor {
      */
     public void setDecrementDelta(float decrementDelta) {
         this.decrementDelta = decrementDelta;
+    }
+
+    /**
+     * This is a little bit weird to predict, but basically you want to know what will be "tomorrow" price if you don't change production.
+     * Most predictors simply return today closing price, because maybe this will be useful in some cases. It's used by Marginal Maximizer Statics
+     *
+     * @param dept the sales department
+     * @return predicted price
+     */
+    @Override
+    public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
+        return delegate.predictSalePriceWhenNotChangingPoduction(dept);
     }
 }
