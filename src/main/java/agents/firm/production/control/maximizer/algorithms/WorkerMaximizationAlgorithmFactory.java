@@ -9,10 +9,7 @@ package agents.firm.production.control.maximizer.algorithms;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.maximizer.algorithms.hillClimbers.*;
-import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalAndPIDMaximizer;
-import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
-import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPID;
-import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPIDCascadeEfficency;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.*;
 import agents.firm.production.control.maximizer.algorithms.otherMaximizers.FixedTargetMaximizationAlgorithm;
 
 import javax.annotation.Nonnull;
@@ -70,6 +67,8 @@ public class WorkerMaximizationAlgorithmFactory
             return tClass.cast(new MarginalAndPIDMaximizer(hr,plantControl,hr.getPlant(),hr.getFirm(),hr.getPlant().getModel()));
         if(tClass.equals(MarginalMaximizer.class))
             return tClass.cast(new MarginalMaximizer(hr,plantControl,hr.getPlant(),hr.getFirm()));
+        if(tClass.equals(RobustMarginalMaximizer.class))
+            return tClass.cast(new RobustMarginalMaximizer(hr,plantControl,hr.getPlant(),hr.getFirm()));
         if(tClass.equals(MarginalMaximizerWithUnitPID.class))
             return tClass.cast(new MarginalMaximizerWithUnitPID(hr,plantControl,hr.getPlant(),hr.getFirm(),hr.getRandom(),
                     hr.getPlant().getNumberOfWorkers()));

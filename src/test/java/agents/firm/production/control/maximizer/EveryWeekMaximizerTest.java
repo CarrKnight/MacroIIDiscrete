@@ -50,6 +50,8 @@ public class EveryWeekMaximizerTest {
                 mock(HumanResources.class), plant,
                 mock(PlantControl.class),algorithm
         );
+        maximizer.setRandomizeDays(false);
+
         //not scheduled before start!
         verify(model,never()).scheduleAnotherDay(ActionOrder.THINK,maximizer,maximizer.getHowManyDaysBeforeEachCheck());
 

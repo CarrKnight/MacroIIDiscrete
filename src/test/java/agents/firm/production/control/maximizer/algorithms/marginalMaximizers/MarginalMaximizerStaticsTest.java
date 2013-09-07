@@ -69,7 +69,7 @@ public class MarginalMaximizerStaticsTest
         Firm owner = mock(Firm.class);
         SalesDepartment department = mock(SalesDepartment.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.getAveragedLastPrice()).thenReturn(60d);
+        when(department.predictSalePriceWhenNotChangingPoduction()).thenReturn(60l);
         when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59l);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
@@ -99,7 +99,7 @@ public class MarginalMaximizerStaticsTest
         Firm owner = mock(Firm.class);
         SalesDepartment department = mock(SalesDepartment.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.getAveragedLastPrice()).thenReturn(60d);
+        when(department.predictSalePriceWhenNotChangingPoduction()).thenReturn(60l);
         when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59l);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
@@ -125,7 +125,7 @@ public class MarginalMaximizerStaticsTest
         Firm owner = mock(Firm.class);
         SalesDepartment department = mock(SalesDepartment.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.getAveragedLastPrice()).thenReturn(60d);
+        when(department.predictSalePriceWhenNotChangingPoduction()).thenReturn(60l);
         when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(70l);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
@@ -152,7 +152,7 @@ public class MarginalMaximizerStaticsTest
         Firm owner = mock(Firm.class);
         SalesDepartment department = mock(SalesDepartment.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.getAveragedLastPrice()).thenReturn(60d);
+        when(department.predictSalePriceWhenNotChangingPoduction()).thenReturn(60l);
         when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59l);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
@@ -185,7 +185,7 @@ public class MarginalMaximizerStaticsTest
         SalesDepartment department = mock(SalesDepartment.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
         when(owner.getSalesDepartment(GoodType.BEEF)).thenReturn(department);
-        when(department.getAveragedLastPrice()).thenReturn(60d);
+        when(department.predictSalePriceWhenNotChangingPoduction()).thenReturn(60l);
         when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59l);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 

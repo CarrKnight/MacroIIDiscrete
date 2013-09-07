@@ -9,7 +9,6 @@ package model.scenario;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.prediction.MarketSalesPredictor;
-import agents.firm.sales.prediction.PricingSalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import goods.GoodType;
@@ -50,10 +49,11 @@ public class CompetitiveScenarioTest {
             scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
             scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_ALWAYS_MOVING);
-            scenario1.setAdditionalCompetitors(4);
+            scenario1.setAdditionalCompetitors(3);
+            scenario1.setWorkersToBeRehiredEveryDay(false);
 
             // scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
-            scenario1.setSalesPricePreditorStrategy(PricingSalesPredictor.class);
+            scenario1.setSalesPricePreditorStrategy(MarketSalesPredictor.class);
             //   scenario1.setPurchasesPricePreditorStrategy(PricingPurchasesPredictor.class);
 
 
@@ -90,54 +90,6 @@ public class CompetitiveScenarioTest {
     }
 
 
-    @Test
-    public void rightPriceAndQuantityMarginalPIDUnit()
-    {
-
-        for(int i=0; i<10; i++)
-        {
-            final MacroII macroII = new MacroII(System.currentTimeMillis());
-            final TripolistScenario scenario1 = new TripolistScenario(macroII);
-            scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-            scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
-            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID);
-            scenario1.setAdditionalCompetitors(macroII.random.nextInt(5)+2);
-
-            // scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
-            scenario1.setSalesPricePreditorStrategy(PricingSalesPredictor.class);
-            //   scenario1.setPurchasesPricePreditorStrategy(PricingPurchasesPredictor.class);
-
-
-
-            //assign scenario
-            macroII.setScenario(scenario1);
-
-            macroII.start();
-
-            while(macroII.schedule.getTime()<5000)
-                macroII.schedule.step(macroII);
-
-            float averagePrice = 0;
-            float averageQ = 0;
-            for(int j=0; j<500; j++)
-            {
-                macroII.schedule.step(macroII);
-                averagePrice += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
-                averageQ += macroII.getMarket(GoodType.GENERIC).getYesterdayVolume();
-
-            }
-            averagePrice = averagePrice/500f;
-            averageQ = averageQ/500f;
-            System.out.println(averagePrice + " - " + averageQ );
-
-
-
-
-            assertEquals(averagePrice, 72,5);
-            assertEquals(averageQ, 29,5);
-        }
-
-    }
 
     @Test
     public void rightPriceAndQuantityMarginalNoPID()
@@ -187,60 +139,6 @@ public class CompetitiveScenarioTest {
     }
 
 
-    @Test
-    public void rightPriceAndQuantityTestAsMarginalPIDAlreadyLearned()
-    {
-
-        for(int i=0; i<10; i++)
-        {
-            final MacroII macroII = new MacroII(System.currentTimeMillis());
-            final TripolistScenario scenario1 = new TripolistScenario(macroII);
-            scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-            scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
-            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID);
-            scenario1.setAdditionalCompetitors(macroII.random.nextInt(5)+2);
-
-            scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
-            FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
-            //scenario1.setSalesPricePreditorStrategy(PricingSalesPredictor.class);
-            //   scenario1.setPurchasesPricePreditorStrategy(PricingPurchasesPredictor.class);
-
-
-
-            //assign scenario
-            macroII.setScenario(scenario1);
-
-            macroII.start();
-
-            while(macroII.schedule.getTime()<5000)
-                macroII.schedule.step(macroII);
-
-            float averagePrice = 0;
-            float averageQ = 0;
-            for(int j=0; j<500; j++)
-            {
-                macroII.schedule.step(macroII);
-                averagePrice += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
-                averageQ += macroII.getMarket(GoodType.GENERIC).getYesterdayVolume();
-
-            }
-            averagePrice = averagePrice/500f;
-            averageQ = averageQ/500f;
-            System.out.println(averagePrice + " - " + averageQ );
-
-
-
-
-            assertEquals(averagePrice, 72,5);
-            assertEquals(averageQ, 29,5);
-            FixedDecreaseSalesPredictor.defaultDecrementDelta=1;
-
-        }
-
-
-
-
-    }
 
 
     @Test

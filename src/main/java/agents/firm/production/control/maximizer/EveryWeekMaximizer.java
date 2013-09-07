@@ -183,7 +183,7 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
         if(!isActive)
             return;
         //if you are not on target, decide tomorrow
-        if(control.getTarget() != plant.getNumberOfWorkers())
+        if(control.getTarget() != plant.getNumberOfWorkers() && plant.getNumberOfWorkers()==0)
         {
             model.scheduleTomorrow(ActionOrder.THINK, this);
             return;
@@ -266,4 +266,21 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
     }
 
 
+    /**
+     * Sets new when this is true, the day the check is actually made varies.
+     *
+     * @param randomizeDays New value of when this is true, the day the check is actually made varies.
+     */
+    public void setRandomizeDays(boolean randomizeDays) {
+        this.randomizeDays = randomizeDays;
+    }
+
+    /**
+     * Gets when this is true, the day the check is actually made varies.
+     *
+     * @return Value of when this is true, the day the check is actually made varies.
+     */
+    public boolean isRandomizeDays() {
+        return randomizeDays;
+    }
 }
