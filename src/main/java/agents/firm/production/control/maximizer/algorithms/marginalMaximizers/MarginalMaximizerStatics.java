@@ -14,6 +14,7 @@ import agents.firm.purchases.PurchasesDepartment;
 import com.google.common.base.Preconditions;
 import goods.GoodType;
 import model.utilities.DelayException;
+import model.utilities.stats.collectors.enums.PlantDataType;
 
 import java.util.Set;
 
@@ -51,6 +52,7 @@ public final class MarginalMaximizerStatics {
        // assert currentWorkers == p.getNumberOfWorkers(); //I can't think of a use where this isn't true
 
         //this function smells a bit because it keeps branching according to whether we are hiring or firing. But I really wanted a generic function.
+     //   System.out.println("--------------------------------------------------------------------------------------------------------------------------------------");
 
 
         /**********************************************
@@ -68,7 +70,6 @@ public final class MarginalMaximizerStatics {
          *********************************************/
         //sum up everything
         long totalMarginalCosts = wageCosts.getMarginalCost()+ inputCosts.getMarginalCost();
-        assert(totalMarginalCosts >= 0 && targetWorkers > currentWorkers) ^   (totalMarginalCosts <= 0 && targetWorkers < currentWorkers);
         //we are going to need the total costs to predict our future sales price
         assert  inputCosts.getTotalCost() >=0;
 
@@ -79,14 +80,17 @@ public final class MarginalMaximizerStatics {
 
 
 
-    /*
+
         System.out.println("total input: " + inputCosts.getTotalCost() + ", total wage costs: " + wageCosts.getTotalCost() + ", targetWorkers: " + targetWorkers);
         System.out.println("marginal input: " + inputCosts.getMarginalCost() + ", marginal wages:" + wageCosts.getMarginalCost() + ", revenue: " +
                 marginalRevenue + " ----- workers: " + currentWorkers);
         System.out.println( "old wage costs: " + p.getLatestObservation(PlantDataType.WAGES_PAID_THAT_WEEK) + ", today wages: " + control.getCurrentWage());
 
         System.out.println("--------------------------------------------------------------------------------------------------------------------------------------");
-      */
+
+
+        assert(totalMarginalCosts >= 0 && targetWorkers > currentWorkers) ^   (totalMarginalCosts <= 0 && targetWorkers < currentWorkers);
+
 
 
         //FINALLY return
@@ -159,12 +163,12 @@ public final class MarginalMaximizerStatics {
         }
         else
         {
-            futureWage=hr.hypotheticalWageAtThisLevel(targetWorkers);
+            futureWage=hr.predictPurchasePriceWhenDecreasingProduction();
         }
         futureWage = futureWage < 0 ? policy.replaceUnknownPrediction(hr.getMarket(), hr.getRandom()) : futureWage;
 
-        long oldWage = currentWorkers == 0 ? 0 : hr.hypotheticalWageAtThisLevel(currentWorkers);
-      //  System.out.println("wage costs: " + futureWage + " , old wages: " + oldWage);
+        long oldWage = currentWorkers == 0 ? 0 : control.getCurrentWage();
+        System.out.println("predicte wages: " + futureWage + ", current wage: " +  oldWage );
 
 
         long totalFutureWageCosts = futureWage * targetWorkers;
@@ -209,9 +213,8 @@ public final class MarginalMaximizerStatics {
 
 
             pricePerUnit = pricePerUnit < 0 ? policy.replaceUnknownPrediction(owner.getSalesDepartment(output).getMarket(), p.getRandom()) : pricePerUnit;
-/*            System.out.println("predicted price: " + pricePerUnit + ", averaged price: " + owner.getSalesDepartment(output).getAveragedLastPrice() +
-            ",.market average:" + owner.getSalesDepartment(output).getMarket().getTodayAveragePrice() + ", old price:" + oldPrice);
-  */
+           System.out.println("predicted price: " + pricePerUnit + ", old price:" + oldPrice);
+
 
             marginalRevenue += p.hypotheticalThroughput(targetWorkers, output) * pricePerUnit -
                     p.hypotheticalThroughput(currentWorkers, output) * oldPrice;

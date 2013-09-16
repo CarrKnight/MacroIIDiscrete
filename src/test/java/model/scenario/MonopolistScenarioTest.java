@@ -2,7 +2,7 @@ package model.scenario;
 
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
+import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
 import goods.GoodType;
@@ -100,7 +100,7 @@ public class MonopolistScenarioTest {
             macroII.setScenario(scenario1);
             //choose a control at random, but avoid always moving
 
-            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID);
+            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
 
             //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
             scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
@@ -166,14 +166,11 @@ public class MonopolistScenarioTest {
             //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
             macroII.setScenario(scenario1);
             //choose a control at random, but avoid always moving
-            do{
-                int controlChoices =  MonopolistScenario.MonopolistScenarioIntegratedControlEnum.values().length;
-                scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.values()[macroII.random.nextInt(controlChoices)]);
-            }
-            while (scenario1.getControlType().equals(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_ALWAYS_MOVING));
+            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
+
             //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
             if(macroII.random.nextBoolean() && scenario1.getControlType() != MonopolistScenario.MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_SIMPLE)
-                scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventory.class);
+                scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
             else
                 scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
 
@@ -205,6 +202,8 @@ public class MonopolistScenarioTest {
             System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 + "," + a);
             System.err.println(macroII.seed());
             System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
+            System.out.flush();
+
             assertEquals(scenario1.monopolist.getTotalWorkers(), profitMaximizingLaborForce,2);
 
         }
@@ -246,7 +245,7 @@ public class MonopolistScenarioTest {
             //    scenario1.setAlwaysMoving(true);
             macroII.setScenario(scenario1);
             //choose a control at random, but avoid always moving
-            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID);
+            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
 
             //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
             scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
@@ -264,6 +263,7 @@ public class MonopolistScenarioTest {
             System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
             System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType());
             System.out.println(macroII.seed());
+            System.out.flush();
 
             //you must be at most wrong by two (not well tuned and anyway sometimes it's hard!)
             assertEquals(scenario1.monopolist.getTotalWorkers(),20,2);
@@ -312,7 +312,7 @@ public class MonopolistScenarioTest {
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
             //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
             if(macroII.random.nextBoolean())
-                scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventory.class);
+                scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
             else
                 scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
 
@@ -434,7 +434,7 @@ public class MonopolistScenarioTest {
 
 
 
-    //all these use SalesControlFlowPIDWithFixedInventory
+    //all these use SalesControlWithFixedInventoryAndPID
 
 
 
@@ -451,7 +451,7 @@ public class MonopolistScenarioTest {
             //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
             macroII.setScenario(scenario1);
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
-            scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventory.class);
+            scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
 
             if(macroII.random.nextBoolean())
                 scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
@@ -507,7 +507,7 @@ public class MonopolistScenarioTest {
             //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
             macroII.setScenario(scenario1);
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID);
-            scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventory.class);
+            scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
             if(macroII.random.nextBoolean())
                 scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
             else

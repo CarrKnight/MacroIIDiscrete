@@ -200,7 +200,7 @@ public class MonopolistScenario extends Scenario {
                             goodMarket.submitBuyQuote(reference, getFixedPrice());
 
                         }
-                    }, Priority.AFTER_STANDARD);
+                    }, Priority.STANDARD);
 
                 }
             };

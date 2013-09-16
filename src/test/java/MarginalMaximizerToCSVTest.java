@@ -7,7 +7,7 @@
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.LearningDecreaseWithTimeSeriesSalesPredictor;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
+import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
 import goods.GoodType;
@@ -112,7 +112,7 @@ public class MarginalMaximizerToCSVTest {
         scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID);
 
         //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
-        //        scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventory.class);
+        //        scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
         scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
 
         //     scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
@@ -181,7 +181,7 @@ public class MarginalMaximizerToCSVTest {
         while (scenario1.getControlType().equals(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_ALWAYS_MOVING));
         //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
         if(macroII.random.nextBoolean() && scenario1.getControlType() != MonopolistScenario.MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_SIMPLE)
-            scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventory.class);
+            scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
         else
             scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
 
@@ -315,7 +315,7 @@ public class MarginalMaximizerToCSVTest {
         //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
         macroII.setScenario(scenario1);
         scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
-        scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventory.class);
+        scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
         if(macroII.random.nextBoolean())
@@ -337,8 +337,8 @@ public class MarginalMaximizerToCSVTest {
         while(macroII.schedule.getTime()<10000)
             macroII.schedule.step(macroII);
 
-     //   MARGINAL_PLANT_CONTROL,class agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory,class agents.firm.sales.SalesDepartmentAllAtOnce -- 1376124166923
-     //   MARGINAL_PLANT_CONTROL,class agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory,class agents.firm.sales.SalesDepartmentOneAtATime -- 1376125667329
+     //   MARGINAL_PLANT_CONTROL,class agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly,class agents.firm.sales.SalesDepartmentAllAtOnce -- 1376124166923
+     //   MARGINAL_PLANT_CONTROL,class agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly,class agents.firm.sales.SalesDepartmentOneAtATime -- 1376125667329
 
 
         System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
@@ -372,7 +372,7 @@ public class MarginalMaximizerToCSVTest {
         scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
 
         //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
-        scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventory.class);
+        scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
         //        scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
 
         //     scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);

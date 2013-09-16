@@ -45,9 +45,10 @@ public class RobustMarginalMaximizerTest {
         //now imagine our old target used to be 6, then even though we have 10 workers, we really want our new target to be 7, not 11
         Assert.assertEquals(robust.chooseWorkerTarget(6,0,0,0,0,0,0,0),7);
 
-        //likewise if the new target is 9, the real new target should be 5
+        //notice instead that when our target was 6 but we find ourselves with 10 workers, the order to reduce the number of workers is useless
+        //so we ignore it and stay at 6
         when(maximizer.chooseWorkerTarget(10, 0, 0, 0, 0, 0, 0, 0)).thenReturn(9);
-        Assert.assertEquals(robust.chooseWorkerTarget(6, 0, 0, 0, 0, 0, 0, 0), 5);
+        Assert.assertEquals(robust.chooseWorkerTarget(6, 0, 0, 0, 0, 0, 0, 0), 6);
 
 
 

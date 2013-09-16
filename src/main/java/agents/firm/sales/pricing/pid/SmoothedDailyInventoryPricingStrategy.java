@@ -80,7 +80,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
 
         movingAverage = new MovingAverage<>(10);
         for(int i=0; i< movingAverage.getMovingAverageSize(); i++)
-            movingAverage.addObservation(0);
+            movingAverage.addObservation(SalesControlWithFixedInventoryAndPID.defaultTargetInventory);
 
 
         //step yourself
@@ -91,6 +91,14 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
 
     }
 
+
+    public SmoothedDailyInventoryPricingStrategy(SalesDepartment salesDepartment, float proportionalGain,
+                                                 float integrativeGain, float derivativeGain)
+    {
+        this(salesDepartment);
+        controllerUsedByDelegate.setGainsSlavePID(proportionalGain,integrativeGain,derivativeGain);
+
+    }
 
     /**
      * Reads in the daily inflow, computes the new average and sets it for the delegate.
@@ -104,9 +112,10 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         assert ((MacroII)state).getCurrentPhase().equals(ActionOrder.PREPARE_TO_TRADE);
         Preconditions.checkState(salesDepartment.getTodayInflow() >=0, "Negative inflow is weird");
 
-        movingAverage.addObservation(salesDepartment.getTodayInflow());
+        movingAverage.addObservation(salesDepartment.getTodayInflow()*7);
 
         delegate.setTargetInventory((int) movingAverage.getSmoothedObservation());
+   //     System.out.println("target inventory: " + getTargetInventory() + ", actual inventory: " + salesDepartment.getHowManyToSell());
 
         ((MacroII)state).scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE,this);
 

@@ -19,6 +19,7 @@ import agents.firm.production.control.maximizer.EveryWeekMaximizer;
 import agents.firm.production.control.maximizer.WorkforceMaximizer;
 import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.RobustMarginalMaximizer;
 import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
@@ -30,7 +31,7 @@ import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
+import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.annotations.VisibleForTesting;
@@ -47,6 +48,7 @@ import model.utilities.dummies.DummyBuyer;
 import model.utilities.filters.ExponentialFilter;
 import model.utilities.pid.PIDController;
 import model.utilities.stats.collectors.DailyStatCollector;
+import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -94,6 +96,10 @@ public class OneLinkSupplyChainScenario extends Scenario {
      */
     public int beefPricingSpeed = 100;
     private Class< ? extends WorkforceMaximizer> maximizerType =  EveryWeekMaximizer.class;
+    /**
+     * should workers act like a flow rather than a stock?
+     */
+    private boolean workersToBeRehiredEveryDay = true;
 
     public OneLinkSupplyChainScenario(MacroII model) {
         super(model);
@@ -104,7 +110,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
     /**
      * The type of integrated control that is used by human resources in firms to choose production
      */
-    private Class<? extends WorkerMaximizationAlgorithm> controlType = MarginalMaximizer.class;
+    private Class<? extends WorkerMaximizationAlgorithm> controlType = RobustMarginalMaximizer.class;
 
     /**
      * the type of sales department firms use
@@ -145,7 +151,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
     //this is public only so that I can log it!
     @VisibleForTesting
-    public SalesControlFlowPIDWithFixedInventory strategy2;
+    public SmoothedDailyInventoryPricingStrategy strategy2;
 
 
     /**
@@ -245,15 +251,15 @@ public class OneLinkSupplyChainScenario extends Scenario {
         if(!goodmarket.getGoodType().equals(GoodType.FOOD))
         {
 
-            strategy2 = new SalesControlFlowPIDWithFixedInventory(dept,5,50,model,
+            strategy2 = new SmoothedDailyInventoryPricingStrategy(dept,
                     model.drawProportionalGain()/ divideProportionalGainByThis,
                     model.drawIntegrativeGain()/ divideIntegrativeGainByThis,
-                    model.drawDerivativeGain(),
-                   model.random);
+                    model.drawDerivativeGain());
             strategy2.setInitialPrice(50);
             //if you can, filter it!
-            if(strategy2 instanceof  SalesControlFlowPIDWithFixedInventory && beefPriceFilterer != null)
+          /*  if(strategy2 instanceof SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly && beefPriceFilterer != null)
                 strategy2.attachFilter(beefPriceFilterer);
+                */
             strategy2.setSpeed(beefPricingSpeed);
             dept.setAskPricingStrategy(strategy2);
 
@@ -264,8 +270,9 @@ public class OneLinkSupplyChainScenario extends Scenario {
         }
         else
         {
-            SmoothedDailyInventoryPricingStrategy strategy;
-            strategy = new SmoothedDailyInventoryPricingStrategy(dept);
+            SalesControlWithFixedInventoryAndPID strategy;
+            strategy = new SalesControlWithFixedInventoryAndPID(dept);
+            strategy.setTargetInventory(100);
             strategy.setInitialPrice(model.random.nextInt(30)+70);
             // strategy.setProductionCostOverride(false);
             dept.setAskPricingStrategy(strategy); //set strategy to PID
@@ -420,6 +427,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         {
             //dummy worker, really
             final Person p = new Person(getModel(),0l,i,laborMarket);
+            p.setPrecario(workersToBeRehiredEveryDay);
 
             p.setSearchForBetterOffers(false);
 
@@ -553,8 +561,8 @@ public class OneLinkSupplyChainScenario extends Scenario {
                     try {
                         writer2.writeNext(new String[]{String.valueOf(
                                 macroII.getMarket(GoodType.BEEF).getBestBuyPrice()),
-                                String.valueOf(scenario1.strategy2.getTarget()),
-                                String.valueOf(scenario1.strategy2.getFilteredOutflow())});
+                                String.valueOf(scenario1.strategy2.getTargetInventory()),
+                                String.valueOf(scenario1.strategy2.getDepartment().getLatestObservation(SalesDataType.HOW_MANY_TO_SELL))});
                         writer2.flush();
                         ((MacroII) state).scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
                     } catch (IllegalAccessException | IOException e) {
@@ -749,5 +757,23 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
     public void setMaximizerType(Class<? extends WorkforceMaximizer> maximizerType) {
         this.maximizerType = maximizerType;
+    }
+
+    /**
+     * Sets new should workers act like a flow rather than a stock?.
+     *
+     * @param workersToBeRehiredEveryDay New value of should workers act like a flow rather than a stock?.
+     */
+    public void setWorkersToBeRehiredEveryDay(boolean workersToBeRehiredEveryDay) {
+        this.workersToBeRehiredEveryDay = workersToBeRehiredEveryDay;
+    }
+
+    /**
+     * Gets should workers act like a flow rather than a stock?.
+     *
+     * @return Value of should workers act like a flow rather than a stock?.
+     */
+    public boolean isWorkersToBeRehiredEveryDay() {
+        return workersToBeRehiredEveryDay;
     }
 }

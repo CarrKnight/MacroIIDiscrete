@@ -1066,4 +1066,9 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
     public long getWagesPaid() {
         return getHr().getWagesPaid();
     }
+
+    @Override
+    public int getStartingDay() {
+        return dataStorage.getStartingDay();
+    }
 }

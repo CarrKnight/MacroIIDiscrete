@@ -92,8 +92,15 @@ public class CascadePIDController implements Controller{
     public void adjust(ControllerInput input, boolean isActive, @Nullable MacroII simState, @Nullable Steppable user,
                        ActionOrder phase){
         if(inventoryCascadeMode)
-            this.adjust(input.getTarget(0),input.getInput(0),input.getTarget(1)-input.getInput(1),isActive,simState,user, phase);
+        {
+            float targetInventory = input.getTarget(0);
+            float currentInventory = input.getInput(0);
+   //         System.out.println(targetInventory + " , " + currentInventory );
 
+
+
+            this.adjust(targetInventory,currentInventory,input.getTarget(1)-input.getInput(1),isActive,simState,user, phase);
+        }
         else
             this.adjust(input.getTarget(0),input.getInput(0),input.getInput(1),isActive,simState,user, phase);
 
@@ -118,8 +125,12 @@ public class CascadePIDController implements Controller{
         pid1.adjust(firstTarget,firstInput,isActive,state,user,phase);
         //slave
         secondTarget = pid1.getCurrentMV();
+       //
+
+        float oldMV = pid2.getCurrentMV();
         ControllerInput secondPIDInput = ControllerInput.simplePIDTarget(secondTarget,secondInput);
         pid2.adjust(secondPIDInput, isActive, null, null, null);
+      //  System.out.println("targ additional inflow " + secondTarget + ", price: " + pid2.getCurrentMV() + ", old price: " + oldMV);
 
     }
 
@@ -275,7 +286,7 @@ public class CascadePIDController implements Controller{
         //somewhat counterintuitively we let the Master PID be a P only. Because our slave will have as input---> (Inflow-Outflow)
         //which should nicely be 0 at inventory.
         float proportionalGain = model.drawProportionalGain();
-        setGainsMasterPID(proportionalGain,
+        setGainsMasterPID(model.drawProportionalGain()/5f,
                 0,
                 0);
 

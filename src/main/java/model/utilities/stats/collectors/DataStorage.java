@@ -100,7 +100,7 @@ public abstract class DataStorage<T extends  Enum<T>> implements Steppable, Deac
     public int getLastObservedDay()
     {
 
-        return numberOfObservations()+getStartingDay();
+        return numberOfObservations()-1+getStartingDay();
 
     }
 

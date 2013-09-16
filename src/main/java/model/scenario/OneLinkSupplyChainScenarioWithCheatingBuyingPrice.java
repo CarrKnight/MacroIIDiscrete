@@ -16,6 +16,7 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.ProducersStatCollector;
+import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -127,8 +128,8 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
                     try {
                         writer2.writeNext(new String[]{String.valueOf(
                                 macroII.getMarket(GoodType.BEEF).getBestBuyPrice()),
-                                String.valueOf(scenario1.strategy2.getTarget()),
-                                String.valueOf(scenario1.strategy2.getFilteredOutflow())});
+                                String.valueOf(scenario1.strategy2.getTargetInventory()),
+                                String.valueOf(scenario1.strategy2.getDepartment().getLatestObservation(SalesDataType.HOW_MANY_TO_SELL))});
                         writer2.flush();
                         ((MacroII) state).scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
                     } catch (IllegalAccessException | IOException e) {

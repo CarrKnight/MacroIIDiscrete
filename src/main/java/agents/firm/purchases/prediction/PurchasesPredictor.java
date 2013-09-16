@@ -145,7 +145,10 @@ public interface PurchasesPredictor
                 if(rule.equals(LearningIncreasePurchasesPredictor.class) || rule.equals(LearningIncreaseWithTimeSeriesPurchasePredictor.class))
                     return rule.getConstructor(Market.class, MacroII.class).
                             newInstance(department.getMarket(), department.getModel());
-                else if(rule.equals(LinearExtrapolatorPurchasePredictor.class) || rule.equals(AroundShockLinearRegressionPurchasePredictor.class))
+                if(rule.equals(SamplingLearningIncreasePurchasePredictor.class))
+                    return rule.getConstructor(MacroII.class).newInstance(department.getModel());
+
+                if(rule.equals(LinearExtrapolatorPurchasePredictor.class) || rule.equals(AroundShockLinearRegressionPurchasePredictor.class))
                     return rule.getConstructor(PurchasesDepartment.class).newInstance(department);
                 else
                     return rule.newInstance();
@@ -153,7 +156,7 @@ public interface PurchasesPredictor
 
             } catch (SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException |
                     NoSuchMethodException |InvocationTargetException  ex  ) {
-                throw new RuntimeException("failed to instantiate BuyerSearchAlgorithm " + ex.getMessage());
+                throw new RuntimeException("failed to instantiate " + ex.getMessage());
             }
 
         }

@@ -98,6 +98,11 @@ public class MovingAverage<T extends Number> implements Filter<T>{
     public boolean isReady() {
         return !lastElements.isEmpty();
     }
+
+
+    public String toString() {
+        return String.valueOf(getSmoothedObservation());
+    }
 }
 
 

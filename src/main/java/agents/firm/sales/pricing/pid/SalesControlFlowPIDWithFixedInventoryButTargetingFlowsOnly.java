@@ -39,7 +39,7 @@ import sim.engine.Steppable;
  * @version 2013-03-19
  * @see
  */
-public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy, Steppable {
+public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly implements AskPricingStrategy, Steppable {
 
     private final SalesDepartment department;
 
@@ -82,7 +82,7 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
      * Build a simple inventory and flow pid with preset inventory levels
      * @param department the sales department to inform
      */
-    public SalesControlFlowPIDWithFixedInventory(SalesDepartment department) {
+    public SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(SalesDepartment department) {
         this(department,10,50,department.getFirm().getModel(),
                 department.getFirm().getModel().drawProportionalGain()/1.5f,
                 department.getFirm().getModel().drawIntegrativeGain()/1.5f,
@@ -101,9 +101,9 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
      * @param derivativeGain  the D of the PID
      * @param random the randomizer
      */
-    public SalesControlFlowPIDWithFixedInventory(SalesDepartment department, int minimumInventory, int acceptableInventory,
-                                                 MacroII state, float proportionalGain, float integrativeGain, float derivativeGain,
-                                                 MersenneTwisterFast random) {
+    public SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(SalesDepartment department, int minimumInventory, int acceptableInventory,
+                                                                      MacroII state, float proportionalGain, float integrativeGain, float derivativeGain,
+                                                                      MersenneTwisterFast random) {
         this.department = department;
         this.minimumInventory = minimumInventory;
         this.acceptableInventory = acceptableInventory;
@@ -250,6 +250,12 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
         this.minimumInventory = minimumInventory;
     }
 
+
+    public int getTargetInventory()
+    {
+        return getTarget();
+    }
+
     public int getTarget() {
 
         if(phase.equals(SimpleInventoryAndFlowPIDPhase.BUILDUP))
@@ -374,7 +380,7 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
         department.getFirm().getModel().scheduleSoon(ActionOrder.THINK,new Steppable() {
             @Override
             public void step(SimState state) {
-                if(SalesControlFlowPIDWithFixedInventory.this.outflowFilter != outflowFilter) //stop if you changed filter
+                if(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.this.outflowFilter != outflowFilter) //stop if you changed filter
                     return;
 
                 //add observation
@@ -389,5 +395,9 @@ public class SalesControlFlowPIDWithFixedInventory implements AskPricingStrategy
 
         );
 
+    }
+
+    public SalesDepartment getDepartment() {
+        return department;
     }
 }

@@ -196,12 +196,12 @@ public class Firm extends EconomicAgent {
         //if start was already called, you need to start this too next dawn
         if(startWasCalled)
         {
-             model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
-                 @Override
-                 public void step(SimState state) {
-                     hr.start();
-                 }
-             });
+            model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
+                @Override
+                public void step(SimState state) {
+                    hr.start();
+                }
+            });
         }
 
 
@@ -277,9 +277,18 @@ public class Firm extends EconomicAgent {
             List<Plant> toReturn = new LinkedList<>();
             for(Plant p : plants)
             {
-                Integer i = p.getBlueprint().getInputs().get(type);
-                if(i != null && i > 0)
-                    toReturn.add(p);
+                if(!type.isLabor())
+                {
+                    Integer i = p.getBlueprint().getInputs().get(type);
+                    if(i != null && i > 0)
+                        toReturn.add(p);
+                }
+                else
+                {
+                    if(p.getHr().getMarket().getGoodType().equals(type))
+                        toReturn.add(p);
+                }
+
             }
 
 
@@ -1113,9 +1122,18 @@ public class Firm extends EconomicAgent {
     {
         int totalWorkers = 0;
         for(Plant p : plants){
-            Integer inputProduced = p.getBlueprint().getInputs().get(goodType);
-            if(inputProduced != null && inputProduced > 0)
-                totalWorkers += p.getNumberOfWorkers();
+            if(!goodType.isLabor())
+            {
+                Integer inputProduced = p.getBlueprint().getInputs().get(goodType);
+                if(inputProduced != null && inputProduced > 0)
+                    totalWorkers += p.getNumberOfWorkers();
+            }
+            else
+            {
+                if(p.getHr().getMarket().getGoodType().equals(goodType))
+                    totalWorkers += p.getNumberOfWorkers();
+
+            }
         }
         return totalWorkers;
 
@@ -1162,5 +1180,13 @@ public class Firm extends EconomicAgent {
             return 0;
         else
             return department.estimateSupplyGap();
+    }
+
+    /**
+     * get a view of all the hrs in the firm
+     */
+    public Set<HumanResources> getHRs()
+    {
+        return humanResources.values();
     }
 }

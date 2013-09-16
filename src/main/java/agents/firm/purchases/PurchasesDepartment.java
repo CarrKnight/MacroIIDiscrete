@@ -12,8 +12,8 @@ import agents.firm.Department;
 import agents.firm.Firm;
 import agents.firm.purchases.inventoryControl.InventoryControl;
 import agents.firm.purchases.inventoryControl.Level;
-import agents.firm.purchases.prediction.AroundShockLinearRegressionPurchasePredictor;
 import agents.firm.purchases.prediction.PurchasesPredictor;
+import agents.firm.purchases.prediction.SamplingLearningIncreasePurchasePredictor;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.purchases.pricing.decorators.MaximumBidPriceDecorator;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
@@ -59,7 +59,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
 
     public static Class<? extends PurchasesPredictor> defaultPurchasePredictor =
-            AroundShockLinearRegressionPurchasePredictor.class;
+            SamplingLearningIncreasePurchasePredictor.class;
     /**
      * The weekly budget given by the firm to this purchase department to carry out its tasks
      */
@@ -167,7 +167,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
     /**
      * a counter to check daily inflows and outflows. Created at constructor, started and turned off. Steps itself independetly
      */
-    private InflowOutflowCounter counter;
+    protected InflowOutflowCounter counter;
 
     /**
      * a counter to compute the daily average closing price from filled quotes. Resets itself at DAWN every day
@@ -1250,5 +1250,9 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     public long getLastOfferedPrice() {
         return lastOfferedPrice;
+    }
+
+    public int getStartingDay() {
+        return purchasesData.getStartingDay();
     }
 }

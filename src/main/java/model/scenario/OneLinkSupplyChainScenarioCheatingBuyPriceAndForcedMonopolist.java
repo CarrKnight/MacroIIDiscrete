@@ -15,10 +15,14 @@ import agents.firm.production.Plant;
 import agents.firm.production.control.maximizer.EveryWeekMaximizer;
 import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.RobustMarginalMaximizer;
 import agents.firm.production.control.maximizer.algorithms.otherMaximizers.FixedTargetMaximizationAlgorithm;
 import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.LinearConstantMachinery;
+import agents.firm.purchases.PurchasesDepartment;
+import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartmentOneAtATime;
+import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import au.com.bytecode.opencsv.CSVWriter;
 import financial.market.Market;
 import goods.GoodType;
@@ -26,6 +30,7 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.ProducersStatCollector;
+import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -120,7 +125,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
      * Runs the supply chain with no GUI and writes a big CSV file
      * @param args
      */
-    public static void main(String[] args)
+    public static void main2(String[] args)
     {
 
 
@@ -167,8 +172,105 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
                     try {
                         writer2.writeNext(new String[]{String.valueOf(
                                 macroII.getMarket(GoodType.BEEF).getBestBuyPrice()),
-                                String.valueOf(scenario1.strategy2.getTarget()),
-                                String.valueOf(scenario1.strategy2.getFilteredOutflow())});
+                                String.valueOf(scenario1.strategy2.getTargetInventory()),
+                                String.valueOf(scenario1.strategy2.getDepartment().getLatestObservation(SalesDataType.HOW_MANY_TO_SELL))});
+                        writer2.flush();
+                        ((MacroII) state).scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
+                    } catch (IllegalAccessException | IOException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+
+                }
+            });
+
+        } catch (IOException e) {
+            System.err.println("failed to create the file!");
+        }
+
+
+
+
+        while(macroII.schedule.getTime()<15000)
+        {
+            macroII.schedule.step(macroII);
+            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+        }
+
+
+    }
+
+    /**
+     * Runs the supply chain with no GUI and writes a big CSV file
+     * @param args
+     */
+    public static void main(String[] args)
+    {
+
+
+
+        final MacroII macroII = new MacroII(System.currentTimeMillis());
+        final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 = new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.BEEF)
+        {
+            @Override
+            public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
+                department.setPredictor(new FixedIncreasePurchasesPredictor(0));
+            }
+
+            @Override
+            protected void createSalesDepartment(Firm firm, Market goodmarket) {
+                super.createSalesDepartment(firm, goodmarket);
+                if(goodmarket.getGoodType().equals(GoodType.FOOD))
+                    firm.getSalesDepartment(GoodType.FOOD).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+            }
+        };
+        scenario1.setControlType(RobustMarginalMaximizer.class);
+        scenario1.setMaximizerType(EveryWeekMaximizer.class);
+        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        //divide standard PID parameters by 100
+        scenario1.setDivideProportionalGainByThis(100f);
+        scenario1.setDivideIntegrativeGainByThis(100f);
+        //no delay
+        scenario1.setBeefPricingSpeed(0);
+        //no real need of filter at this slow speed
+        scenario1.setBeefPriceFilterer(null);
+        scenario1.setWorkersToBeRehiredEveryDay(true);
+
+        scenario1.setNumberOfBeefProducers(1);
+        scenario1.setNumberOfFoodProducers(1);
+
+
+        macroII.setScenario(scenario1);
+        macroII.start();
+
+
+
+        //create the CSVWriter
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/forcedmonopolistTest.csv"));
+            DailyStatCollector collector = new DailyStatCollector(macroII,writer);
+            collector.start();
+
+            final CSVWriter prices = new CSVWriter(new FileWriter("runs/supplychai/forcedmonopolistTestprices.csv"));
+            final CSVWriter quantities = new CSVWriter(new FileWriter("runs/supplychai/forcedmonopolistTestQuantities.csv"));
+            ProducersStatCollector collector2 = new ProducersStatCollector(macroII,GoodType.BEEF,prices,quantities);
+            collector2.start();
+        } catch (IOException e) {
+            System.err.println("failed to create the file!");
+        }
+
+
+        //create the CSVWriter  for purchases prices
+        try {
+            final CSVWriter writer2 = new CSVWriter(new FileWriter("runs/supplychai/forcedmonopolistTestOfferPricesWithCompetition.csv"));
+            writer2.writeNext(new String[]{"buyer offer price","target","filtered Outflow"});
+            macroII.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING, new Steppable() {
+                @Override
+                public void step(SimState state) {
+                    try {
+                        writer2.writeNext(new String[]{String.valueOf(
+                                macroII.getMarket(GoodType.BEEF).getBestBuyPrice()),
+                                String.valueOf(scenario1.strategy2.getTargetInventory()),
+                                String.valueOf(scenario1.strategy2.getDepartment().getLatestObservation(SalesDataType.HOW_MANY_TO_SELL))});
                         writer2.flush();
                         ((MacroII) state).scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
                     } catch (IllegalAccessException | IOException e) {

@@ -215,7 +215,7 @@ public class MarginalMaximizerStaticsTest
         when(hr.isFixedPayStructure()).thenReturn(true);
         PlantControl control = mock(PlantControl.class);
 
-        when(hr.hypotheticalWageAtThisLevel(1)).thenReturn(5l);
+        when(control.getCurrentWage()).thenReturn(5l);
 
 
         CostEstimate estimate = MarginalMaximizerStatics.
@@ -235,7 +235,7 @@ public class MarginalMaximizerStaticsTest
         when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
         when(hr.isFixedPayStructure()).thenReturn(true);
         PlantControl control = mock(PlantControl.class);
-        when(hr.hypotheticalWageAtThisLevel(1)).thenReturn(5l);
+        when(control.getCurrentWage()).thenReturn(5l);
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeWageCosts(hr, control, 1, 3, MarginalMaximizer.RandomizationPolicy.MORE_TIME);
@@ -253,9 +253,9 @@ public class MarginalMaximizerStaticsTest
 
         HumanResources hr = mock(HumanResources.class);
         when(hr.isFixedPayStructure()).thenReturn(true);
-        when(hr.hypotheticalWageAtThisLevel(1)).thenReturn(5l);
+        when(hr.predictPurchasePriceWhenDecreasingProduction()).thenReturn(5l);
         PlantControl control = mock(PlantControl.class);
-        when(hr.hypotheticalWageAtThisLevel(2)).thenReturn(10l);
+        when(control.getCurrentWage()).thenReturn(10l);
 
 
         CostEstimate estimate = MarginalMaximizerStatics.
@@ -273,9 +273,9 @@ public class MarginalMaximizerStaticsTest
 
         HumanResources hr = mock(HumanResources.class);
         when(hr.isFixedPayStructure()).thenReturn(true);
-        when(hr.hypotheticalWageAtThisLevel(1)).thenReturn(5l);
+        when(hr.predictPurchasePriceWhenDecreasingProduction()).thenReturn(5l);
         PlantControl control = mock(PlantControl.class);
-        when(hr.hypotheticalWageAtThisLevel(3)).thenReturn(10l);
+        when(control.getCurrentWage()).thenReturn(10l);
 
 
         CostEstimate estimate = MarginalMaximizerStatics.

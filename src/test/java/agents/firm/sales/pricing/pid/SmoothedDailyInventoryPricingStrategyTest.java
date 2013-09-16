@@ -53,18 +53,18 @@ public class SmoothedDailyInventoryPricingStrategyTest {
 
         assertEquals(strategy.getTargetInventory(),0);
         //from now on inflow is 100
-        when(department.getTodayInflow()).thenReturn(100);
+        when(department.getTodayInflow()).thenReturn(100); //
         strategy.step(model);
         //should be somewhere between 0 and 100 but neither of the two extremes
         assertTrue(strategy.getTargetInventory() > 0);
-        assertTrue(strategy.getTargetInventory() < 100);
+        assertTrue(strategy.getTargetInventory() < 100*7);
 
         for(int i=0; i<9;i++)
         {
             strategy.step(model);
         }
 
-        assertEquals(strategy.getTargetInventory(),100); //now it should be exactly 100
+        assertEquals(strategy.getTargetInventory(),700); //now it should be exactly 100*7
 
 
 

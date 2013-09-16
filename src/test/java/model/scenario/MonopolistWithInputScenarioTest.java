@@ -2,7 +2,7 @@ package model.scenario;
 
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
+import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import goods.GoodType;
 import model.MacroII;
 import org.junit.Test;
@@ -144,7 +144,7 @@ public class MonopolistWithInputScenarioTest {
     }
 
 
-    //SalesControlFlowPIDWithFixedInventory
+    //SalesControlWithFixedInventoryAndPID
     @Test
     public void rightPriceAndQuantityTestAsMarginalWithSalesControlFlowPIDWithFixedInventory()
     {
@@ -157,7 +157,7 @@ public class MonopolistWithInputScenarioTest {
             //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
             macroII.setScenario(scenario1);
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
-            scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventory.class);
+            scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
             if(macroII.random.nextBoolean())
                 scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
             else
@@ -196,7 +196,7 @@ public class MonopolistWithInputScenarioTest {
             //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
             macroII.setScenario(scenario1);
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID);
-            scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventory.class);
+            scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
             if(macroII.random.nextBoolean())
                 scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
             else

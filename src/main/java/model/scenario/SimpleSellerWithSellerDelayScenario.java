@@ -12,7 +12,7 @@ import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.AskPricingStrategy;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventory;
+import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import com.google.common.base.Preconditions;
 import financial.market.OrderBookMarket;
 import goods.GoodType;
@@ -23,7 +23,7 @@ import sim.engine.Steppable;
 
 /**
  * <h4>Description</h4>
- * <p/> This is basically the simple seller except that we force the ask strategy to be SalesControlFlowPIDWithFixedInventory.class and we
+ * <p/> This is basically the simple seller except that we force the ask strategy to be SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class and we
  * allow to set the sampling speed. This is used to test how delays can help.
  * <p/> Also the demand for production is a little bit weird in the sense that it is step-linear 10-20-30-40-50-50+x-70-80-90; where x is the acceptable range of prices that are equilibria.
  * <p/>
@@ -117,7 +117,7 @@ public class SimpleSellerWithSellerDelayScenario extends SimpleSellerScenario {
                         new SimpleSellerSearch(market, seller), salesDepartmentType);
                 seller.registerSaleDepartment(dept, GoodType.GENERIC);
 
-                SalesControlFlowPIDWithFixedInventory strategy = AskPricingStrategy.Factory.newAskPricingStrategy(SalesControlFlowPIDWithFixedInventory.class,dept);
+                SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly strategy = AskPricingStrategy.Factory.newAskPricingStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class,dept);
                 if(sellerDelay > 0 )
                     strategy.setSpeed(sellerDelay);
 

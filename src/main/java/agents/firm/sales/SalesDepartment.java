@@ -12,9 +12,9 @@ import agents.firm.Firm;
 import agents.firm.production.Plant;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
-import agents.firm.sales.prediction.AroundShockLinearRegressionSalesPredictor;
 import agents.firm.sales.prediction.RegressionSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
+import agents.firm.sales.prediction.SamplingLearningDecreaseSalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.decorators.AskReservationPriceDecorator;
 import com.google.common.base.Preconditions;
@@ -104,7 +104,7 @@ public abstract class  SalesDepartment  implements Department {
     protected BuyerSearchAlgorithm buyerSearchAlgorithm;
     protected SellerSearchAlgorithm sellerSearchAlgorithm;
 
-    public static Class<? extends  SalesPredictor> defaultPredictorStrategy = AroundShockLinearRegressionSalesPredictor.class;
+    public static Class<? extends  SalesPredictor> defaultPredictorStrategy = SamplingLearningDecreaseSalesPredictor.class;
 
     /**
      * This is the strategy to predict future sale prices when the order book is not visible.
@@ -1406,6 +1406,16 @@ public abstract class  SalesDepartment  implements Department {
      */
     public long predictSalePriceWhenNotChangingPoduction() {
         return predictorStrategy.predictSalePriceWhenNotChangingPoduction(this);
+    }
+
+    @Override
+    public int getStartingDay() {
+        return data.getStartingDay();
+    }
+
+    @Override
+    public int getLastObservedDay() {
+        return data.getLastObservedDay();
     }
 }
 

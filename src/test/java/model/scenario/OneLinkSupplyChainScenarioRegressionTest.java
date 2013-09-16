@@ -1,6 +1,9 @@
 package model.scenario;
 
+import agents.firm.Firm;
+import agents.firm.production.control.maximizer.EveryWeekMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPID;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.RobustMarginalMaximizer;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
@@ -8,12 +11,14 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import ec.util.MersenneTwisterFast;
+import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.filters.ExponentialFilter;
 import model.utilities.filters.MovingAverage;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.concurrent.*;
@@ -376,6 +381,218 @@ public class OneLinkSupplyChainScenarioRegressionTest
         return new OneLinkSupplyChainResult(averageBeefPrice.getSmoothedObservation(),
                 averageFoodPrice.getSmoothedObservation(),averageBeefTraded.getSmoothedObservation());
     }
+
+    //here the food is actually a monopolist "acting competitive"
+    @Test
+    public void testBeefMonopolistFixedProductionWithSlowPIDFakeFoodCompetitive() throws ExecutionException, InterruptedException {
+        //this will take a looong time
+        final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
+        ExecutorService testRunner = Executors.newFixedThreadPool(5);
+        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+
+        //run the test 5 times!
+        for(int i=0; i <1; i++)
+        {
+            //run the test, add it as a future so I can check the results!
+            Future<OneLinkSupplyChainResult> testReceipt =
+                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
+                        /**
+                         * Computes a result, or throws an exception if unable to do so.
+                         *
+                         * @return computed result
+                         * @throws Exception if unable to compute a result
+                         */
+                        @Override
+                        public OneLinkSupplyChainResult call() throws Exception {
+                            return             testBeefMonopolistFixedProductionWithSlowPIDFakeFoodCompetitiveOneRun(random.nextLong());
+                        }
+                    });
+
+            testResults.add(testReceipt);
+
+        }
+
+        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        {
+            OneLinkSupplyChainResult result = receipt.get();
+            Assert.assertEquals(result.getBeefPrice(), 62l, 6l);
+            Assert.assertEquals(result.getFoodPrice(),85l,6l );
+        }
+
+
+    }
+
+    private OneLinkSupplyChainResult testBeefMonopolistFixedProductionWithSlowPIDFakeFoodCompetitiveOneRun(long seed) {
+        final MacroII macroII = new MacroII(seed);
+        final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 = new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.BEEF)
+        {
+            @Override
+            public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
+                department.setPredictor(new FixedIncreasePurchasesPredictor(0));
+            }
+
+            @Override
+            protected void createSalesDepartment(Firm firm, Market goodmarket) {
+                super.createSalesDepartment(firm, goodmarket);
+                if(goodmarket.getGoodType().equals(GoodType.FOOD))
+                    firm.getSalesDepartment(GoodType.FOOD).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+            }
+        };
+        scenario1.setControlType(RobustMarginalMaximizer.class);
+        scenario1.setMaximizerType(EveryWeekMaximizer.class);
+        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        //divide standard PID parameters by 100
+        scenario1.setDivideProportionalGainByThis(100f);
+        scenario1.setDivideIntegrativeGainByThis(100f);
+        //no delay
+        scenario1.setBeefPricingSpeed(0);
+        //no real need of filter at this slow speed
+        scenario1.setBeefPriceFilterer(null);
+        scenario1.setWorkersToBeRehiredEveryDay(true);
+
+        scenario1.setNumberOfBeefProducers(1);
+        scenario1.setNumberOfFoodProducers(1);
+
+
+        macroII.setScenario(scenario1);
+        macroII.start();
+
+
+        MovingAverage<Double> averageFoodPrice = new MovingAverage<>(500);
+        MovingAverage<Double> averageBeefPrice = new MovingAverage<>(500);
+        MovingAverage<Integer> averageBeefTraded = new MovingAverage<>(500);
+
+        while(macroII.schedule.getTime()<15000)
+        {
+            macroII.schedule.step(macroII);
+            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+            if(macroII.schedule.getTime() >= 14500)
+            {
+                averageFoodPrice.addObservation(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+                averageBeefPrice.addObservation(macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+                averageBeefTraded.addObservation(macroII.getMarket(GoodType.BEEF).getYesterdayVolume());
+
+            }
+
+        }
+
+
+
+
+
+
+        System.out.println("beef price: " +averageBeefPrice +
+                ", food price: " + averageFoodPrice + ", quantity: " + averageBeefTraded );
+        System.out.println();
+
+        return new OneLinkSupplyChainResult(averageBeefPrice.getSmoothedObservation(),
+                averageFoodPrice.getSmoothedObservation(),averageBeefTraded.getSmoothedObservation());
+    }
+
+
+    //@Test
+    public void testBeefMonopolistFixedProductionWithStickyPricesFakeFoodCompetitive() throws ExecutionException, InterruptedException {
+        //this will take a looong time
+        final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
+        ExecutorService testRunner = Executors.newFixedThreadPool(5);
+        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+
+        //run the test 5 times!
+        for(int i=0; i <5; i++)
+        {
+            //run the test, add it as a future so I can check the results!
+            Future<OneLinkSupplyChainResult> testReceipt =
+                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
+                        /**
+                         * Computes a result, or throws an exception if unable to do so.
+                         *
+                         * @return computed result
+                         * @throws Exception if unable to compute a result
+                         */
+                        @Override
+                        public OneLinkSupplyChainResult call() throws Exception {
+                            return beefMonopolistFixedProductionWithStickyPricesFakeFoodCompetitiveOneRun(random.nextLong());
+                        }
+                    });
+
+            testResults.add(testReceipt);
+
+        }
+
+        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        {
+            OneLinkSupplyChainResult result = receipt.get();
+            Assert.assertEquals(result.getBeefPrice(), 62l, 6l);
+            Assert.assertEquals(result.getFoodPrice(),85l,6l );
+        }
+
+
+
+
+
+    }
+
+    private OneLinkSupplyChainResult beefMonopolistFixedProductionWithStickyPricesFakeFoodCompetitiveOneRun(long seed) {
+        final MacroII macroII = new MacroII(seed);
+        final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 = new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.BEEF){
+            @Override
+            public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
+                department.setPredictor(new FixedIncreasePurchasesPredictor(0));
+            }
+
+            @Override
+            protected void createSalesDepartment(Firm firm, Market goodmarket) {
+                super.createSalesDepartment(firm, goodmarket);
+                if(goodmarket.getGoodType().equals(GoodType.FOOD))
+                    firm.getSalesDepartment(GoodType.FOOD).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+            }
+        };
+        scenario1.setControlType(RobustMarginalMaximizer.class);
+        scenario1.setMaximizerType(EveryWeekMaximizer.class);
+        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        //use standard PID parameters
+        scenario1.setDivideProportionalGainByThis(1f);
+        scenario1.setDivideIntegrativeGainByThis(1f);
+        //100 days delay
+        scenario1.setBeefPricingSpeed(100);
+        //no need for filter with the cheating price
+        scenario1.setBeefPriceFilterer(null);
+        scenario1.setWorkersToBeRehiredEveryDay(true);
+
+        scenario1.setNumberOfBeefProducers(1);
+        scenario1.setNumberOfFoodProducers(1);
+
+
+        macroII.setScenario(scenario1);
+        macroII.start();
+
+
+        MovingAverage<Double> averageFoodPrice = new MovingAverage<>(500);
+        MovingAverage<Double> averageBeefPrice = new MovingAverage<>(500);
+        MovingAverage<Integer> averageBeefTraded = new MovingAverage<>(500);
+        while(macroII.schedule.getTime()<15000)
+        {
+            macroII.schedule.step(macroII);
+            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+            if(macroII.schedule.getTime() >= 14500)
+            {
+                averageFoodPrice.addObservation(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+                averageBeefPrice.addObservation(macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+                averageBeefTraded.addObservation(macroII.getMarket(GoodType.BEEF).getYesterdayVolume());
+
+            }
+        }
+
+        System.out.println("beef price: " +averageBeefPrice +
+                ", food price: " + averageFoodPrice + ", quantity: " + averageBeefTraded );
+        System.out.println();
+        //the beef price is in the ballpark
+
+
+        return new OneLinkSupplyChainResult(averageBeefPrice.getSmoothedObservation(),
+                averageFoodPrice.getSmoothedObservation(),averageBeefTraded.getSmoothedObservation());
+    }
+
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////////

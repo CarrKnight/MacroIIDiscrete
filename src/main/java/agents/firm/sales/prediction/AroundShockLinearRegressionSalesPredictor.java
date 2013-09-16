@@ -9,10 +9,12 @@ package agents.firm.sales.prediction;
 import agents.firm.Firm;
 import agents.firm.production.Plant;
 import agents.firm.sales.SalesDepartment;
+import com.google.common.primitives.Doubles;
 import model.MacroII;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import model.utilities.stats.regression.LinearRegression;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,15 +35,15 @@ import java.util.List;
 public class AroundShockLinearRegressionSalesPredictor implements SalesPredictor {
 
 
-    final private FixedDecreaseSalesPredictor predictor = new FixedDecreaseSalesPredictor();
+    final protected FixedDecreaseSalesPredictor predictor = new FixedDecreaseSalesPredictor();
 
-    final private LinearRegression regression = new LinearRegression();
+    final protected LinearRegression regression = new LinearRegression();
 
-    final private SalesDepartment department;
+    final protected SalesDepartment department;
 
-    final private Firm owner;
+    final protected Firm owner;
 
-    final private MacroII model;
+    final protected MacroII model;
 
     /**
      * builds the predictor
@@ -72,13 +74,13 @@ public class AroundShockLinearRegressionSalesPredictor implements SalesPredictor
     /**
      * how many days after the shock can you look into?
      */
-    private int maximumNumberOfDaysToLookAhead = 60;
+    private int maximumNumberOfDaysToLookAhead = 50;
 
 
     /**
      * how many days MUST have passed before we even try to regress
      */
-    private int minimumNumberOfDaysToLookAhead = 5;  //a little bit less than 2 weeks.
+    private int minimumNumberOfDaysToLookAhead = 5;  //a little bit less than a week.
 
     /**
      * we memorize the bound so that we don't run the regression multiple times if there is no new data
@@ -101,13 +103,17 @@ public class AroundShockLinearRegressionSalesPredictor implements SalesPredictor
     public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
 
         updateModelIfPossible(dept);
-        System.out.println("slope: " + predictor.getDecrementDelta() + ", day: " + findLatestShockDay());
+        System.out.println("sales slope: " + predictor.getDecrementDelta() + ", day: " + findLatestShockDay());
         return predictor.predictSalePriceAfterIncreasingProduction(dept, expectedProductionCost, increaseStep);
 
 
     }
 
-    private void updateModelIfPossible(SalesDepartment dept) {
+    /**
+     * do any regression you see fit in changing the slope of the predictor!
+     * @param dept
+     */
+    protected void updateModelIfPossible(SalesDepartment dept) {
         int shockDay = findLatestShockDay();
         if(shockDay>=1){
             int lowestBound=Math.max(0,shockDay-howManyDaysBackShallILook);
@@ -115,28 +121,55 @@ public class AroundShockLinearRegressionSalesPredictor implements SalesPredictor
             int now = (int) model.getMainScheduleTime();
             int upperBound = Math.min(now -1,shockDay+maximumNumberOfDaysToLookAhead );
             assert upperBound>=lowestBound;
+            if(upperBound < shockDay + minimumNumberOfDaysToLookAhead) //if we don't have enough observation for today's shockday, just look at the most recent data!
+            {
+                upperBound = now-1;
+                lowestBound = Math.max(1,upperBound - maximumNumberOfDaysToLookAhead - howManyDaysBackShallILook);
+            }
             //if we have enough observations post shock day AND more than one worker both before and after, then do the regression!
-            if(upperBound >= shockDay + minimumNumberOfDaysToLookAhead
-                    &&
+            if(
                     lowestBound != lastUsedLowerBound && lastUsedUpperBound != upperBound)
             {
                 assert upperBound>lowestBound;
 
-                double[] quantity = dept.getObservationsRecordedTheseDays(SalesDataType.OUTFLOW, lowestBound, upperBound);
-                double[] price = dept.getObservationsRecordedTheseDays(SalesDataType.AVERAGE_CLOSING_PRICES, lowestBound, upperBound);
+
+                List<Double> quantities = new ArrayList<>(Doubles.asList(dept.getObservationsRecordedTheseDays(SalesDataType.OUTFLOW, lowestBound, upperBound)));
+                List<Double> prices = new ArrayList<>(Doubles.asList(dept.getObservationsRecordedTheseDays(SalesDataType.AVERAGE_CLOSING_PRICES, lowestBound, upperBound)));
+                List<Double> gaps = new ArrayList<>(Doubles.asList(dept.getObservationsRecordedTheseDays(SalesDataType.SUPPLY_GAP, lowestBound, upperBound)));
+
+                int indexToRemove;
+
+                while((indexToRemove =prices.indexOf(-1d))!=-1)     //remove all days with no price (no sales)
+                {
+                    prices.remove(indexToRemove);
+                    quantities.remove(indexToRemove);
+                    gaps.remove(indexToRemove);
+                }
+
+
+                double[] quantity = Doubles.toArray(quantities);
+                double[] price = Doubles.toArray(prices);
+                double[] gap =  Doubles.toArray(gaps);
+
+                if(price.length < minimumNumberOfDaysToLookAhead + 1)
+                    return;
+
+                for(double thatDayPrice : price) //we don't want negative prices
+                        if(thatDayPrice == -1)
+                            return;
+
 
 
 
                 //build weights
                 double[] weights = new double[quantity.length];
-                double[] gaps =  dept.getObservationsRecordedTheseDays(SalesDataType.SUPPLY_GAP, lowestBound, upperBound);
                 for(int i=0; i<weights.length; i++)
                 {
-                    double gap = gaps[i];
+                    double thisGap = gap[i];
                     if(quantity[i]==0 || price[i]==-1) //if there was nothing traded that day, ignore the observation entirely
                         weights[i]=0;
                     else {
-                        double weight = 1d / (1d + Math.exp(Math.abs(gap)));
+                        double weight = 1d / (1d + Math.exp(Math.abs(thisGap)));
                         weights[i] = weight;
                     }
                 }
@@ -156,7 +189,7 @@ public class AroundShockLinearRegressionSalesPredictor implements SalesPredictor
                     predictor.setDecrementDelta(weightedAverage);
                 }
 
-                System.out.println("slope: " + predictor.getDecrementDelta() +", workers: " + department.getLatestObservation(SalesDataType.WORKERS_PRODUCING_THIS_GOOD));
+             //   System.out.println("slope: " + predictor.getDecrementDelta() +", workers: " + department.getLatestObservation(SalesDataType.WORKERS_PRODUCING_THIS_GOOD));
 
                 //memorize the new bounds
                 lastUsedLowerBound = lowestBound;

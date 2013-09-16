@@ -24,4 +24,15 @@ package agents.firm;
  * @see
  */
 public interface Department {
+
+    /**
+     * what is the most recent day this department has memory of
+     */
+    public int getLastObservedDay();
+
+    /**
+     * what is the first day this department has memory of
+     */
+    public int getStartingDay();
+
 }

@@ -79,19 +79,36 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
         int currentWorkerNumber = maximizer.getHr().getNumberOfWorkers();
         int futureTarget = maximizer.chooseWorkerTarget(currentWorkerNumber, newProfits, newRevenues, newCosts, oldRevenues, oldCosts, oldWorkerTarget, oldProfits);    //To change body of overridden methods use File | Settings | File Templates.
 
+
+
+
         if(futureTarget == currentWorkerNumber)
+        {
+
             return currentWorkerTarget;
-        else if(futureTarget == currentWorkerNumber + 1)
-            return currentWorkerTarget+1;
-        else
+
+
+        }
+        if(futureTarget == currentWorkerNumber + 1)
+        {
+            if(futureTarget>currentWorkerTarget)
+                return currentWorkerTarget+1;
+            else
+                return currentWorkerTarget;
+        }
         if(futureTarget== currentWorkerNumber -1)
-            return currentWorkerTarget-1;
-        else
+        {
+
+            if(currentWorkerNumber<currentWorkerTarget)
+                return currentWorkerTarget-1;
+            else
+                return currentWorkerTarget;
+        }
         if(futureTarget == -1)
             return -1; //delay exception!
-        else
-            throw new RuntimeException("the marginal maximizer didn't return anything I expected, # of workers: " +
-                    currentWorkerNumber + ", target: " + currentWorkerTarget + ", futureTarget: " + futureTarget);
+
+        throw new RuntimeException("the marginal maximizer didn't return anything I expected, # of workers: " +
+                currentWorkerNumber + ", target: " + currentWorkerTarget + ", futureTarget: " + futureTarget);
 
     }
 

@@ -49,7 +49,7 @@ public class AroundShockLinearRegressionPurchasePredictor implements PurchasesPr
     private int lastUsedUpperBound=-1;
 
 
-    private int minimumNumberOfDaysToLookAhead=14;
+    private int minimumNumberOfDaysToLookAhead=2;
 
     /**
      * builds the predictor
@@ -75,7 +75,7 @@ public class AroundShockLinearRegressionPurchasePredictor implements PurchasesPr
     /**
      * how many days before the shock can you look into?
      */
-    private int howManyDaysBackShallILook  = 15;
+    private int howManyDaysBackShallILook  = 40;
 
     /**
      * how many days after the shock can you look into?
@@ -93,7 +93,7 @@ public class AroundShockLinearRegressionPurchasePredictor implements PurchasesPr
 
         updateModelIfPossible(dept);
 
-        System.out.println(predictor.getIncrementDelta());
+     //   System.out.println(predictor.getIncrementDelta());
         return predictor.predictPurchasePriceWhenIncreasingProduction(dept);
 
 
@@ -113,8 +113,8 @@ public class AroundShockLinearRegressionPurchasePredictor implements PurchasesPr
             {
                 assert upperBound>lowestBound;
 
-                double[] quantity = dept.getObservationsRecordedTheseDays(PurchasesDataType.INFLOW, lowestBound, upperBound);
-                double[] price = dept.getObservationsRecordedTheseDays(PurchasesDataType.AVERAGE_CLOSING_PRICES, lowestBound, upperBound);
+                double[] quantity = dept.getObservationsRecordedTheseDays(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD, lowestBound, upperBound);
+                double[] price = dept.getObservationsRecordedTheseDays(PurchasesDataType.CLOSING_PRICES, lowestBound, upperBound);
 
                 //build weights
                 double[] weights = new double[quantity.length];
@@ -125,7 +125,7 @@ public class AroundShockLinearRegressionPurchasePredictor implements PurchasesPr
                     if(quantity[i]==0 || price[i]==-1) //if there was nothing traded that day, ignore the observation entirely
                         weights[i]=0;
                     else {
-                        double weight = 1d / (1d + Math.exp(Math.abs(gap)));
+                        double weight = 2d / (1d + Math.exp(Math.abs(gap)));
                         weights[i] = weight;
                     }
                 }
@@ -144,7 +144,7 @@ public class AroundShockLinearRegressionPurchasePredictor implements PurchasesPr
                 {
                     //combine old and new slope (minuses abound, but that's because I coded the decrementDelta weirdly)
                     float weightedAverage = (float) (regression.getSlope() * .5f + predictor.getIncrementDelta() * .5f);
-                    System.out.println("slope: " + weightedAverage);
+              //      System.out.println("slope: " + weightedAverage);
                     predictor.setIncrementDelta(weightedAverage);
                 }
 
@@ -189,7 +189,7 @@ public class AroundShockLinearRegressionPurchasePredictor implements PurchasesPr
     @Override
     public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         updateModelIfPossible(dept);
-        System.out.println("slope: " + predictor.getIncrementDelta());
+    //    System.out.println("slope: " + predictor.getIncrementDelta());
 
         return predictor.predictPurchasePriceWhenDecreasingProduction(dept);
 

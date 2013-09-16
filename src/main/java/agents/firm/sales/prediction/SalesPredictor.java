@@ -162,7 +162,9 @@ public interface SalesPredictor {
 
                 if(rule.equals(LinearExtrapolationPredictor.class) || rule.equals(AroundShockLinearRegressionSalesPredictor.class))
                     return rule.getConstructor(SalesDepartment.class).newInstance(department);
-                else if(rule.equals(RegressionSalePredictor.class) || rule.equals(RegressionWeightedSalePredictor.class)
+                if(rule.equals(SamplingLearningDecreaseSalesPredictor.class))
+                    return rule.getConstructor(MacroII.class).newInstance(department.getModel());
+                if(rule.equals(RegressionSalePredictor.class) || rule.equals(RegressionWeightedSalePredictor.class)
                         || rule.equals(LearningDecreaseSalesPredictor.class) || rule.equals(LearningFixedElasticitySalesPredictor.class)
                         || rule.equals(LearningDecreaseWithTimeSeriesSalesPredictor.class))
                     return rule.getConstructor(Market.class, MacroII.class).

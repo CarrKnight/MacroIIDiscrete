@@ -44,7 +44,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     private int targetInventory = defaultTargetInventory;
 
 
-    public static int defaultTargetInventory =  25;
+    public static int defaultTargetInventory =  100;
 
     /**
      * A controller to change prices as inventory changes. By default it's a cascade control
@@ -104,6 +104,22 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
 
         //careful how you set up your controller!
         controller.setupAsInventoryCascade(department.getModel());
+
+
+    }
+
+
+    /**
+     * The full constructor with Sales department  and an instantiated controller
+     * @param department the sales department to link to
+     * @param targetInventory the target inventory of this control
+     *
+     */
+    public SalesControlWithFixedInventoryAndPID(SalesDepartment department, int targetInventory,
+                                                float proportionalGain,float integrativeGain, float derivativeGain) {
+        //use default constructor
+        this(department,targetInventory,ControllerFactory.buildController(CascadePIDController.class,department.getFirm().getModel()));
+        controller.setGainsSlavePID(proportionalGain,integrativeGain,derivativeGain);
 
 
     }

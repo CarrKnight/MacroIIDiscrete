@@ -17,9 +17,6 @@ import agents.firm.production.control.maximizer.WorkforceMaximizer;
 import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
 import agents.firm.production.control.targeter.WorkforceTargeter;
 import agents.firm.purchases.PurchasesDepartment;
-import agents.firm.purchases.prediction.LookAheadPredictor;
-import agents.firm.purchases.prediction.MarketPurchasesPredictor;
-import agents.firm.purchases.prediction.PurchasesPredictor;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
@@ -66,7 +63,6 @@ public class HumanResources extends PurchasesDepartment {
      */
     private boolean fixedPayStructure = true;
 
-
     /**
      * This is the empty constructor for purchase department. We need to implement factories
      * @param budgetGiven the amount of money give to the department
@@ -79,10 +75,6 @@ public class HumanResources extends PurchasesDepartment {
         assert market.getGoodType().isLabor(); //must be a labor market!
         this.plant = plant; //record the plant to supply.
 
-        if(market.isBestSalePriceVisible())
-            setPredictor(PurchasesPredictor.Factory.newPurchasesPredictor(LookAheadPredictor.class,this));
-        else
-            setPredictor(PurchasesPredictor.Factory.newPurchasesPredictor(MarketPurchasesPredictor.class,this));
 
     }
 
@@ -115,9 +107,9 @@ public class HumanResources extends PurchasesDepartment {
     public static <PC extends PlantControl, BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm>
     FactoryProducedHumanResources<PC,BS,SS> getHumanResourcesIntegrated(long budgetGiven, @Nonnull Firm firm,
                                                                         @Nonnull Market market, @Nonnull Plant plant,
-                                                             @Nullable Class<PC> integratedControl,
-                                                             @Nullable Class<BS> buyerSearchAlgorithmType,
-                                                             @Nullable Class<SS> sellerSearchAlgorithmType )
+                                                                        @Nullable Class<PC> integratedControl,
+                                                                        @Nullable Class<BS> buyerSearchAlgorithmType,
+                                                                        @Nullable Class<SS> sellerSearchAlgorithmType )
     {
 
         //create the new human resources
@@ -186,11 +178,11 @@ public class HumanResources extends PurchasesDepartment {
             WM extends WorkforceMaximizer<ALG>, ALG extends WorkerMaximizationAlgorithm>
     FactoryProducedHumanResourcesWithMaximizerAndTargeter getHumanResourcesIntegrated(long budgetGiven, @Nonnull Firm firm,
                                                                                       @Nonnull Market market, @Nonnull Plant plant,
-                                                             @Nullable Class<WT> targeter,
-                                                             @Nullable Class<WM> maximizer,
-                                                             @Nullable Class<ALG> maximizationAlgorithm,
-                                                             @Nullable Class<BS> buyerSearchAlgorithmType,
-                                                             @Nullable Class<SS> sellerSearchAlgorithmType )
+                                                                                      @Nullable Class<WT> targeter,
+                                                                                      @Nullable Class<WM> maximizer,
+                                                                                      @Nullable Class<ALG> maximizationAlgorithm,
+                                                                                      @Nullable Class<BS> buyerSearchAlgorithmType,
+                                                                                      @Nullable Class<SS> sellerSearchAlgorithmType )
     {
 
         //create the new human resources
@@ -249,7 +241,7 @@ public class HumanResources extends PurchasesDepartment {
 
 
     /**
-     * Adds to the purchase departmen start the start of the plant
+     * Adds to the purchase department start the start of the plant
      */
     @Override
     public void start() {
@@ -330,6 +322,7 @@ public class HumanResources extends PurchasesDepartment {
     @Override
     public void reactToFilledQuote(Good g, long price, @Nonnull EconomicAgent seller) {
         assert seller instanceof Person && plant.getWorkers().contains(seller);
+        counter.inventoryIncreaseEvent(getFirm(),getGoodType(),1); //call the counter yourself because workers aren't really an inventory item
         super.reactToFilledQuote(g, price, seller);
     }
 
@@ -489,7 +482,32 @@ public class HumanResources extends PurchasesDepartment {
     }
 
 
+    /**
+     * The last price the purchases department got for its goods
+     *
+     * @return
+     */
+    @Override
+    public long getLastClosingPrice() {
+        if(getNumberOfWorkers() > 0)
+            return ((PlantControl)super.getPricingStrategy()).getCurrentWage();
+        else
+            return 0;
 
+    }
+
+
+    /**
+     * This is somewhat similar to rate current level. It estimates the excess (or shortage)of goods purchased. It is basically
+     * (getCurrentInventory-AcceptableInventory)
+     *
+     * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
+     */
+    @Override
+    public int estimateDemandGap() {
+        return getNumberOfWorkers() - ((PlantControl)super.getPricingStrategy()).getTarget();
+
+    }
 }
 
 

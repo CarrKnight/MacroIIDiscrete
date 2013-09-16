@@ -115,7 +115,6 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
             {
 
                 //if profits decrease in both direction, stay where you are
-                System.out.println(p.getOwner() +"--->didn't change production");
 
                 return currentWorkerTarget;
 
@@ -123,14 +122,12 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
             else
             if(profitsIfWeIncrease >= profitsIfWeDecrease){ //if we increase profits going up, let's do that
                 assert profitsIfWeIncrease >= 0;
-                System.out.println(p.getOwner() + "--->decided to increase production");
                 return currentWorkerTarget+1;
             }
             else
             {
                 assert profitsIfWeDecrease >=0;
 
-                System.out.println(p.getOwner() + "--->decided to decrease production");
 
                 return currentWorkerTarget-1;
 

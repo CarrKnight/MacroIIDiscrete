@@ -35,6 +35,7 @@ public class PricingPurchasesPredictor implements PurchasesPredictor {
      */
     @Override
     public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
+
         return dept.getLastClosingPrice();
     }
 
