@@ -255,6 +255,13 @@ public class OneLinkSupplyChainScenario extends Scenario {
                     model.drawProportionalGain()/ divideProportionalGainByThis,
                     model.drawIntegrativeGain()/ divideIntegrativeGainByThis,
                     model.drawDerivativeGain());
+
+      /*      strategy2 =
+                    new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(dept,10,100,model,
+                            model.drawProportionalGain()/ divideProportionalGainByThis,
+                            model.drawIntegrativeGain()/ divideIntegrativeGainByThis,
+                            model.drawDerivativeGain(),model.getRandom());
+                            */
             strategy2.setInitialPrice(50);
             //if you can, filter it!
           /*  if(strategy2 instanceof SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly && beefPriceFilterer != null)

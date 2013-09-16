@@ -984,7 +984,9 @@ public abstract class Market{
     /**
      * how many days worth of observations are here?
      */
-    public int numberOfObservations() {
+    public int getNumberOfObservations() {
+        if(marketData == null)
+            return 0;
         return marketData.numberOfObservations();
     }
 
@@ -1042,4 +1044,5 @@ public abstract class Market{
     public int getLastObservedDay() {
         return marketData.getLastObservedDay()-1;
     }
+
 }

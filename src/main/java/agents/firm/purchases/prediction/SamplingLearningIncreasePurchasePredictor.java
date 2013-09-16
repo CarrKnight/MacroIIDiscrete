@@ -59,6 +59,8 @@ public class SamplingLearningIncreasePurchasePredictor extends  AbstractWorkerLe
         for(int i=0; i<weights.length; i++)
         {
             double gap = gaps[i];
+            if(department.getGoodType().isLabor())
+                gap = gap;
             if(x[i]==0 || y[i]==-1) //if there was nothing traded that day, ignore the observation entirely
                 weights[i]=0;
             else {

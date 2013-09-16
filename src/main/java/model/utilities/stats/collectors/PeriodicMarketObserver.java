@@ -250,6 +250,9 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
     }
 
     private boolean isLastDayAcceptable() {
+        if(market.getNumberOfObservations() ==0)
+            return false;
+
         return acceptor.acceptDay(
                 market.getLatestObservation(MarketDataType.CLOSING_PRICE),
                 market.getLatestObservation(MarketDataType.VOLUME_TRADED),

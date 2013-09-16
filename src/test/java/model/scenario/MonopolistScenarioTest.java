@@ -352,10 +352,13 @@ public class MonopolistScenarioTest {
     @Test
     public void rightPriceAndQuantityTestAsMarginal()
     {
-        for(int i=0; i<5; i++)
+        for(int i=0; i<25; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
-            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            final MacroII macroII = new MacroII(1379366085057l);
+            System.out.println("----------------------------------------------------------");
+            System.out.println(macroII.seed());
+            System.out.println("----------------------------------------------------------");
             MonopolistScenario scenario1 = new MonopolistScenario(macroII);
             //    scenario1.setAlwaysMoving(true);
             //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
@@ -380,6 +383,7 @@ public class MonopolistScenarioTest {
 
             assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79,1);
             assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
+
 
 
 

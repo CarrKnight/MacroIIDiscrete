@@ -228,8 +228,8 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
         scenario1.setMaximizerType(EveryWeekMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         //divide standard PID parameters by 100
-        scenario1.setDivideProportionalGainByThis(100f);
-        scenario1.setDivideIntegrativeGainByThis(100f);
+        scenario1.setDivideProportionalGainByThis(10f);
+        scenario1.setDivideIntegrativeGainByThis(10f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
         //no real need of filter at this slow speed

@@ -91,7 +91,7 @@ public class SamplingLearningDecreaseSalesPredictor extends AbstractWorkerLearni
         if(newSlope)
             predictor.setDecrementDelta((float) -regression.getSlope());
 
-        System.out.println("sales slope: " + predictor.getDecrementDelta());
+       // System.out.println("sales slope: " + predictor.getDecrementDelta());
 
         return predictor.predictSalePriceAfterIncreasingProduction(dept, expectedProductionCost, 1); //we increase step only by 1 because we are focusing on workers, not outflow
     }
@@ -113,7 +113,7 @@ public class SamplingLearningDecreaseSalesPredictor extends AbstractWorkerLearni
         if(newSlope)
             predictor.setDecrementDelta((float) -regression.getSlope());
 
-        return predictor.predictSalePriceAfterIncreasingProduction(dept, expectedProductionCost, 1); //we increase step only by 1 because we are focusing on workers, not outflow
+        return predictor.predictSalePriceAfterDecreasingProduction(dept, expectedProductionCost, 1); //we increase step only by 1 because we are focusing on workers, not outflow
 
     }
 

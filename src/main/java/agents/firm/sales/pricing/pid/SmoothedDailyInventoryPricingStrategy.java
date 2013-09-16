@@ -76,6 +76,10 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
                 salesDepartment.getFirm().getModel());
 
         delegate = new SalesControlWithFixedInventoryAndPID(salesDepartment,0,controllerUsedByDelegate);
+        assert delegate.getController().equals(controllerUsedByDelegate);
+        assert controllerUsedByDelegate.getMasterProportionalGain() > 0;
+        assert controllerUsedByDelegate.getMasterIntegralGain() ==0;
+        assert controllerUsedByDelegate.getMasterDerivativeGain() == 0;
 
 
         movingAverage = new MovingAverage<>(10);
@@ -91,12 +95,27 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
 
     }
 
-
+    /**
+     * the gains refer to the SLAVE (velocity) PID
+     */
     public SmoothedDailyInventoryPricingStrategy(SalesDepartment salesDepartment, float proportionalGain,
                                                  float integrativeGain, float derivativeGain)
     {
         this(salesDepartment);
+        //scale the master proportional too
+        float originalScale = controllerUsedByDelegate.getMasterProportionalGain()/controllerUsedByDelegate.getSlaveProportionalGain();
+
+
+
         controllerUsedByDelegate.setGainsSlavePID(proportionalGain,integrativeGain,derivativeGain);
+
+        assert controllerUsedByDelegate.getMasterProportionalGain() > 0;
+        assert controllerUsedByDelegate.getMasterIntegralGain() ==0;
+        assert controllerUsedByDelegate.getMasterDerivativeGain() == 0;
+
+        controllerUsedByDelegate.setGainsMasterPID(proportionalGain * originalScale, 0,0 );
+
+
 
     }
 
@@ -118,7 +137,6 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
    //     System.out.println("target inventory: " + getTargetInventory() + ", actual inventory: " + salesDepartment.getHowManyToSell());
 
         ((MacroII)state).scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE,this);
-
 
 
 

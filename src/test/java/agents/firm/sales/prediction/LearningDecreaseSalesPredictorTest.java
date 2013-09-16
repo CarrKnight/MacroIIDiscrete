@@ -50,6 +50,7 @@ public class LearningDecreaseSalesPredictorTest
         LearningDecreaseSalesPredictor predictor = new LearningDecreaseSalesPredictor(market,model );
 
         //observation 1
+        when(market.getNumberOfObservations()).thenReturn(1,2,3);
         when(market.getLastObservedDay()).thenReturn(0,1,2);
         when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(86d, 84d, 81d);
         //these are the data you were looking for:

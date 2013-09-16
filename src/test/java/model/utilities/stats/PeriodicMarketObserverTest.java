@@ -53,6 +53,7 @@ public class PeriodicMarketObserverTest {
         when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(1d);
         for(int i=0; i<3; i++)
         {
+            when(market.getNumberOfObservations()).thenReturn(i+1);
             when(market.getLastObservedDay()).thenReturn(i);
             model.getPhaseScheduler().step(model);
         }
@@ -118,6 +119,7 @@ public class PeriodicMarketObserverTest {
         PeriodicMarketObserver observer = new PeriodicMarketObserver(market,model );
         Assert.assertEquals(observer.getNumberOfObservations(),0);
 
+        when(market.getNumberOfObservations()).thenReturn(1,2,3);
 
 
 

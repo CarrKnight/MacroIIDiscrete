@@ -96,7 +96,7 @@ public class CompetitiveScenarioTest {
     public void rightPriceAndQuantityTestAsMarginalNoPID()
     {
 
-        for(int competitors=1;competitors<=7;competitors++)
+        for(int competitors=2;competitors<=7;competitors++)
         {
             System.out.println("FORCED COMPETITIVE FIRMS: " + (competitors+1));
             float averageResultingPrice = 0;

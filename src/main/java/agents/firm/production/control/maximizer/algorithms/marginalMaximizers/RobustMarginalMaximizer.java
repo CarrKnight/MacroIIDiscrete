@@ -92,17 +92,27 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
         if(futureTarget == currentWorkerNumber + 1)
         {
             if(futureTarget>currentWorkerTarget)
+            {
+
                 return currentWorkerTarget+1;
+            }
             else
+            {
+
                 return currentWorkerTarget;
+            }
         }
         if(futureTarget== currentWorkerNumber -1)
         {
 
-            if(currentWorkerNumber<currentWorkerTarget)
+            if(futureTarget<currentWorkerTarget)
+            {
                 return currentWorkerTarget-1;
+            }
             else
+            {
                 return currentWorkerTarget;
+            }
         }
         if(futureTarget == -1)
             return -1; //delay exception!

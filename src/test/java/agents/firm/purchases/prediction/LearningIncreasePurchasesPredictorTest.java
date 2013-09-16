@@ -48,12 +48,14 @@ public class LearningIncreasePurchasesPredictorTest
 
 
         Market market = mock(Market.class);
+
         when(market.getYesterdayVolume()).thenReturn(1);
         MacroII model = new MacroII(System.currentTimeMillis());
         LearningIncreasePurchasesPredictor predictor = new LearningIncreasePurchasesPredictor(market,model );
         predictor.setUsingWeights(true);
 
         //observation 1
+        when(market.getNumberOfObservations()).thenReturn(1,2,3);
         when(market.getLastObservedDay()).thenReturn(0,1,2);
         when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(86d,84d,81d);
         //these are the data you were looking for:

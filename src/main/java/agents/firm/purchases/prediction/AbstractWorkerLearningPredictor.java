@@ -42,12 +42,12 @@ public abstract class AbstractWorkerLearningPredictor {
     private final MacroII model;
 
 
-    private int howManyDaysOnAverageToSample = 2;
+    private int howManyDaysOnAverageToSample = 3;
 
     /**
      * maximum number of days BEHIND THE LAST SHOCK DAY to examine
      */
-    private int maximumDaysToLookBack = 200;
+    private int maximumDaysToLookBack = 300;
 
 
     /**
