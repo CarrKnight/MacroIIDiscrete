@@ -209,7 +209,8 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
 
 
         final MacroII macroII = new MacroII(System.currentTimeMillis());
-        final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 = new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.BEEF)
+        final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 =
+                new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.BEEF)
         {
             @Override
             public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
@@ -267,10 +268,13 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
                 @Override
                 public void step(SimState state) {
                     try {
+                        Double inventory = scenario1.strategy2.getDepartment().getLastObservedDay() > 0 ?
+                                scenario1.strategy2.getDepartment().getLatestObservation(SalesDataType.HOW_MANY_TO_SELL) : 0
+                                ;
                         writer2.writeNext(new String[]{String.valueOf(
                                 macroII.getMarket(GoodType.BEEF).getBestBuyPrice()),
                                 String.valueOf(scenario1.strategy2.getTargetInventory()),
-                                String.valueOf(scenario1.strategy2.getDepartment().getLatestObservation(SalesDataType.HOW_MANY_TO_SELL))});
+                                String.valueOf(inventory)});
                         writer2.flush();
                         ((MacroII) state).scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
                     } catch (IllegalAccessException | IOException e) {

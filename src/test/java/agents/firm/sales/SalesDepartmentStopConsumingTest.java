@@ -3,7 +3,7 @@ package agents.firm.sales;
 import agents.firm.Firm;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
-import agents.firm.sales.prediction.SalesPredictor;
+import agents.firm.sales.prediction.LinearExtrapolationPredictor;
 import agents.firm.sales.pricing.MarkupFollower;
 import financial.market.OrderBookMarket;
 import goods.Good;
@@ -52,8 +52,10 @@ public class SalesDepartmentStopConsumingTest {
         Firm firm = new Firm(macroII);
         //now create the sales department
         FactoryProducedSalesDepartment
-                <BuyerSearchAlgorithm,SellerSearchAlgorithm,MarkupFollower,SalesPredictor> factoryMade = SalesDepartmentFactory.
-                newSalesDepartment(firm, orderBookMarket, null, null, MarkupFollower.class, null, SalesDepartmentAllAtOnce.class);
+                <BuyerSearchAlgorithm,SellerSearchAlgorithm,MarkupFollower,LinearExtrapolationPredictor> factoryMade =
+                SalesDepartmentFactory.
+                newSalesDepartment(firm, orderBookMarket, null, null, MarkupFollower.class, LinearExtrapolationPredictor.class,
+                        SalesDepartmentAllAtOnce.class);
         SalesDepartment department = factoryMade.getSalesDepartment();
 
         //give three goods to the firm

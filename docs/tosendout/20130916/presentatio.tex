@@ -1,0 +1,149 @@
+\documentclass[a4paper,12pt,english]{beamer}
+\usepackage{graphicx}
+% Additional Options
+\usepackage{natbib}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{float}
+
+\AtBeginSection[]
+{
+ \begin{frame}<beamer>
+ \frametitle{Plan}
+ \tableofcontents[currentsection]
+ \end{frame}
+}
+
+% Additional Options
+\begin{document}
+\title{Summer Summary}
+\author{Ernesto Carrella}
+
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}
+	\frametitle{Summer wrapup}
+	\begin{enumerate}
+		\item  Waiting for JASSS review
+		\pause
+		\item Learning Marginal Costs/Benefits
+		\pause
+		\item Inventory Control + Price Determination				
+	\end{enumerate}
+	
+\end{frame}
+
+
+\section{JASSS Review}
+
+\begin{frame}
+\frametitle{JASSS Article}
+\begin{itemize}
+\item I submitted the old PID article to JASSS on June 5th
+\pause
+\item Haven't heard back yet
+\pause
+\item When I do, I might have to stop what else I am doing to revise and resubmit.
+\end{itemize}
+\end{frame}
+
+\section{Learning Marginal Costs/Benefits}
+
+\begin{frame}
+\frametitle{Why Learning?}
+\begin{itemize}
+\item Firms used to use only an hill-climber algorithm to choose how much to produce
+\pause
+\item Hill-climber is too limited, doesn't work with supply chains.
+\pause
+\item Switched to periodically checking marginal benefits versus marginal costs of hiring a new worker.
+\pause
+\item Current prices and wages are a poor indicator of the real marginal benefit and marginal costs, so the firm needs to learn them separately
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Learning Solution so far}
+\pause
+\begin{itemize}
+\item The tricky part is that in classical economics knowing marginal costs/benefits is what separates monopolist from competitive. 
+\pause
+\begin{itemize}
+\item The profit of a competitive firm is:
+\[ \Pi = p q - w l \]
+\item The profit of a monopolist firm is:
+\[ \Pi = p(q) q - w(l) l \]
+\end{itemize}
+The competitor takes prices as given, the monopolist as dependent on its own production.
+\pause
+\item I didn't want to code two separate behaviors, so instead I wanted a learning behavior that would predict fixed prices for competitive firms and variable prices for the monopolist
+\pause
+\item Each firm a (simple) econometrician.
+\end{itemize}
+\end{frame}
+
+
+\section{Inventory Control}
+
+\begin{frame}
+\frametitle{Inventory Control + Price Determination}
+\begin{itemize}
+\item Currently firms use PID to set prices, using the difference
+\[ \text{ Items on Sale } - \text{ Number of Customers} \]
+as feedback
+\pause
+\item What if the number of customers is not visible? PID still works using
+\[ \text{ Today's Inventory } - \text{ Yesterday's inventory} \]
+\pause
+\item Focus only on $\Delta$ of the inventory, not its stock
+\pause
+\item What if the firm wants to target a specific level of inventory while at the same time find the right price?
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Best solution so far}
+\pause
+\begin{itemize}
+\item It is possible to achieve the two targets at the same time.
+\pause
+\item The idea is that the PID selecting price uses as feedback:
+\[ \text{ Today's Inventory } - \text{ Yesterday's inventory} + \text{ Adjustment} \]
+\pause
+\item The adjustment is 0 when inventory is at the right level, otherwise it's a proportion of how distant we are from target inventory.
+\pause
+\item This way the PID automatically finds a price that generates an inflow when we need to increase our inventory and viceversa.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{The problem with inventory}
+\begin{itemize}
+\item Inventory work really well when there is only one sector
+\pause
+\item As soon as we move to supply chains, inventories just cause over-production and then crashes
+\end{itemize}
+\end{frame}
+
+\section{This Week}
+
+\begin{frame}
+\frametitle{this week plan}
+\begin{itemize}
+\item Literature review: inventories and cycles
+\pause
+\item Sensitivity analysis: does inventory size matter in supply-chains fluctuations?
+\end{itemize}
+\end{frame}
+
+
+
+
+
+\end{document}

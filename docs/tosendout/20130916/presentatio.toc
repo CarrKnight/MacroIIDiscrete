@@ -1,0 +1,6 @@
+\beamer@endinputifotherversion {3.27pt}
+\beamer@sectionintoc {1}{Introduction}{2}{0}{1}
+\beamer@sectionintoc {2}{JASSS Review}{6}{0}{2}
+\beamer@sectionintoc {3}{Learning Marginal Costs/Benefits}{10}{0}{3}
+\beamer@sectionintoc {4}{Inventory Control}{20}{0}{4}
+\beamer@sectionintoc {5}{This Week}{32}{0}{5}
