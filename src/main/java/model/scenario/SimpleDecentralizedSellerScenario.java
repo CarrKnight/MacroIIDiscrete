@@ -13,7 +13,7 @@ import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
-import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
+import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import ec.util.MersenneTwisterFast;
 import financial.market.DecentralizedMarket;
 import financial.market.Market;
@@ -73,12 +73,11 @@ public class SimpleDecentralizedSellerScenario extends Scenario
         seller.registerSaleDepartment(dept,GoodType.GENERIC);
 
         //create a seller PID with the right speed
-        SimpleFlowSellerPID sellerPID = new SimpleFlowSellerPID(dept,model.drawProportionalGain(),model.drawIntegrativeGain(),model.drawDerivativeGain(),period);
+        SmoothedDailyInventoryPricingStrategy sellerPID = new SmoothedDailyInventoryPricingStrategy(dept);
         dept.setAskPricingStrategy(sellerPID);
 
         dept.setCanPeddle(false);
         getAgents().add(seller);
-
 
         //arrange for goods to drop periodically in the firm
         getModel().scheduleSoon(ActionOrder.PRODUCTION,new Steppable() {
@@ -123,18 +122,17 @@ public class SimpleDecentralizedSellerScenario extends Scenario
          */
         final DummyBuyer buyer = new DummyBuyer(getModel(),price,market);  market.registerBuyer(buyer); buyer.earn(1000000l);
 
-        //Make it shop 10 times a week for one good only!
-        getModel().schedule.scheduleRepeating(time + getModel().random.nextGaussian(),
+        //Make it shop once a day for one good only!
+        getModel().scheduleSoon(ActionOrder.TRADE,
                 new Steppable() {
                     @Override
                     public void step(SimState simState) {
 
 
                         DummyBuyer.goShopping(buyer,seller,GoodType.GENERIC);
-
+                        getModel().scheduleTomorrow(ActionOrder.TRADE,this);
                     }
-                },   period
-
+                }
         );
 
 

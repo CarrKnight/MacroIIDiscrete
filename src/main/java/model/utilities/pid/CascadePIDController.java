@@ -95,7 +95,6 @@ public class CascadePIDController implements Controller{
         {
             float targetInventory = input.getTarget(0);
             float currentInventory = input.getInput(0);
-   //         System.out.println(targetInventory + " , " + currentInventory );
 
 
 

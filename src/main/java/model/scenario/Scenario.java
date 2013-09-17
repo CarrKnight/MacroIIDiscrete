@@ -135,10 +135,13 @@ public abstract class Scenario {
 
 
         ArrayList<Class<? extends Scenario>> sortedScenarios = new ArrayList<>(scenarios);
+        System.out.println(sortedScenarios);
         Collections.sort(sortedScenarios,new Comparator<Class<? extends Scenario>>() {
             @Override
             public int compare(Class<? extends Scenario> o1, Class<? extends Scenario> o2) {
-                return o1.getCanonicalName().compareToIgnoreCase(o2.getName());
+                System.out.println(o1);
+                System.out.println(o2);
+                return o1.getName().compareToIgnoreCase(o2.getName());
 
             }
         });

@@ -196,6 +196,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
         );
 
 
+
         if(oldPrice != (long)Math.round(controller.getCurrentMV()))
             department.updateQuotes();
 

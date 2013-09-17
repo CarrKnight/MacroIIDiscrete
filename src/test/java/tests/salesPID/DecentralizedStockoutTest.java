@@ -19,13 +19,13 @@ import goods.GoodType;
 import model.MacroII;
 import model.scenario.SimpleDecentralizedSellerScenario;
 import model.utilities.ActionOrder;
+import model.utilities.dummies.DummyBuyer;
+import model.utilities.dummies.DummySeller;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import sim.engine.Schedule;
 import sim.engine.Steppable;
-import model.utilities.dummies.DummyBuyer;
-import model.utilities.dummies.DummySeller;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -377,10 +377,14 @@ public class DecentralizedStockoutTest {
 
             macroII.start();
             while(macroII.schedule.getTime()<4000)
+            {
                 macroII.schedule.step(macroII);
+                System.out.println(macroII.getMarket(GoodType.GENERIC).getLastPrice());
 
+            }
             long finalPrice = sellerScenario1.getMarkets().get(GoodType.GENERIC).getLastPrice();
             assertTrue("finalPrice: " + finalPrice, finalPrice >= 51 && finalPrice <= 60);
+            System.out.println("--------------------------------------------------------------");
 
         }
 

@@ -9,6 +9,7 @@ package agents.firm.purchases.prediction;
 import agents.firm.Firm;
 import agents.firm.purchases.PurchasesDepartment;
 import financial.market.Market;
+import goods.GoodType;
 import model.MacroII;
 import model.utilities.stats.collectors.PeriodicMarketObserver;
 import model.utilities.stats.collectors.enums.MarketDataType;
@@ -51,9 +52,10 @@ public class SamplingLearningIncreasePurchasePredictorTest
         //observation 1
         when(department.getLastObservedDay()).thenReturn(2);
         when(department.getStartingDay()).thenReturn(0);
+        when(department.getGoodType()).thenReturn(GoodType.GENERIC);
 
         //these are the data you were looking for:
-        when(department.getObservationsRecordedTheseDays(PurchasesDataType.CLOSING_PRICES,new int[]{0,1,2})).thenReturn(
+        when(department.getObservationsRecordedTheseDays(PurchasesDataType.CLOSING_PRICES, new int[]{0, 1, 2})).thenReturn(
                 new double[]{
                         86, 84, 81
                 });

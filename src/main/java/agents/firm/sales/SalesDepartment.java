@@ -711,7 +711,7 @@ public abstract class  SalesDepartment  implements Department {
         if(priceAsked <= priceBuyer )
         {
             //price is somewhere in the middle
-            long finalPrice = (long)Math.round(((double) (priceAsked + priceBuyer)) / 2d);
+            long finalPrice = market.getPricePolicy().price(priceAsked ,priceBuyer);
             assert finalPrice>=priceAsked;
             assert finalPrice<=priceBuyer;
 
@@ -736,8 +736,10 @@ public abstract class  SalesDepartment  implements Department {
 
                 sumClosingPrice += lastClosingPrice;
                 buyerSearchAlgorithm.reactToSuccess(buyer,result); //tell the search algorithm
+
                 //tell the listeners!
                 fireGoodSoldEvent(saleResult);
+                logOutflow(g,finalPrice);
 
                 return true;
 
