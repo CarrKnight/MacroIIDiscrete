@@ -2,7 +2,7 @@ package model.scenario;
 
 import agents.firm.Firm;
 import agents.firm.production.Blueprint;
-import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerWithUnitPID;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.RobustMarginalMaximizer;
 import agents.firm.purchases.FactoryProducedPurchaseDepartment;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.inventoryControl.FixedInventoryControl;
@@ -16,7 +16,6 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.ProducersStatCollector;
-import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -81,8 +80,9 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
 
 
         final MacroII macroII = new MacroII(0);
-        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
-        scenario1.setControlType(MarginalMaximizerWithUnitPID.class);
+        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 =
+                new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
+        scenario1.setControlType(RobustMarginalMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
@@ -91,8 +91,8 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
         scenario1.setNumberOfFoodProducers(5);
         //scenario1.setWeeksToMakeObservationBeef(5);
 
-        scenario1.setDivideProportionalGainByThis(100f);
-        scenario1.setDivideIntegrativeGainByThis(100f);
+        scenario1.setDivideProportionalGainByThis(50f);
+        scenario1.setDivideIntegrativeGainByThis(50f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
 
@@ -129,7 +129,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
                         writer2.writeNext(new String[]{String.valueOf(
                                 macroII.getMarket(GoodType.BEEF).getBestBuyPrice()),
                                 String.valueOf(scenario1.strategy2.getTargetInventory()),
-                                String.valueOf(scenario1.strategy2.getDepartment().getLatestObservation(SalesDataType.HOW_MANY_TO_SELL))});
+                                String.valueOf(scenario1.strategy2.getDepartment().getHowManyToSell())});
                         writer2.flush();
                         ((MacroII) state).scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
                     } catch (IllegalAccessException | IOException e) {

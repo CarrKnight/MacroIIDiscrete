@@ -14,6 +14,8 @@ import agents.firm.production.control.maximizer.WorkforceMaximizer;
 import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.util.logging.*;
 
 /**
  * <h4>Description</h4>
@@ -38,6 +40,29 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
      * this is the original maximizer that checks MB and MC to increase/decrease worker targets by 1
      */
     MarginalMaximizer maximizer;
+
+
+    private int numberOfChoices = 0;
+
+
+    public final static Logger LOGGER = Logger.getLogger(MarginalMaximizerStatics.class.getName());
+
+    private static FileHandler fh = null;
+
+    static
+    {
+
+        LOGGER.setUseParentHandlers(false);
+
+        try{
+        fh = new FileHandler("maximizationLog.log",false);
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        fh.setFormatter(new XMLFormatter());
+        LOGGER.addHandler(fh);
+        LOGGER.setLevel(Level.ALL);
+    }
 
 
     /**
@@ -76,29 +101,33 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
      * @param oldProfits          what were the profits back then   @return the new worker targets. Any negative number means to check again!
      */
     public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
+        LOGGER.log(Level.INFO,"-----------------------------------------" + this);
+        numberOfChoices++;
+
+
         int currentWorkerNumber = maximizer.getHr().getNumberOfWorkers();
         int futureTarget = maximizer.chooseWorkerTarget(currentWorkerNumber, newProfits, newRevenues, newCosts, oldRevenues, oldCosts, oldWorkerTarget, oldProfits);    //To change body of overridden methods use File | Settings | File Templates.
 
 
 
+        LOGGER.log(Level.INFO,"worker number: " + currentWorkerNumber + ", actual target: " + currentWorkerTarget + ", future target: " + futureTarget);
 
         if(futureTarget == currentWorkerNumber)
         {
-
+            LOGGER.log(Level.INFO, "----> unchanged at: " +currentWorkerTarget);
             return currentWorkerTarget;
-
 
         }
         if(futureTarget == currentWorkerNumber + 1)
         {
             if(futureTarget>currentWorkerTarget)
             {
-
+                LOGGER.log(Level.INFO, "----> increased at at: " +(currentWorkerTarget+1));
                 return currentWorkerTarget+1;
             }
             else
             {
-
+                LOGGER.log(Level.INFO, "----> unchanged at: " +currentWorkerTarget);
                 return currentWorkerTarget;
             }
         }
@@ -107,10 +136,15 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
 
             if(futureTarget<currentWorkerTarget)
             {
-                return currentWorkerTarget-1;
+                LOGGER.log(Level.INFO, "----> decreased at at: " +(currentWorkerTarget-1));
+                if(numberOfChoices < 20)
+                    return Math.max(currentWorkerTarget-1,1);
+                else
+                    return currentWorkerTarget-1;
             }
             else
             {
+                LOGGER.log(Level.INFO, "----> unchanged at: " +currentWorkerTarget);
                 return currentWorkerTarget;
             }
         }

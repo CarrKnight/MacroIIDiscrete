@@ -27,6 +27,10 @@ public enum MarketDataType {
 
     AVERAGE_CLOSING_PRICE,
 
+    SELLERS_INVENTORY,
+
+    BUYERS_INVENTORY,
+
     VOLUME_TRADED,
 
     VOLUME_CONSUMED,

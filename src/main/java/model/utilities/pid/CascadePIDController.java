@@ -284,8 +284,7 @@ public class CascadePIDController implements Controller{
         //careful how you set up your controller!
         //somewhat counterintuitively we let the Master PID be a P only. Because our slave will have as input---> (Inflow-Outflow)
         //which should nicely be 0 at inventory.
-        float proportionalGain = model.drawProportionalGain();
-        setGainsMasterPID(model.drawProportionalGain()/5f,
+        setGainsMasterPID(1f/30f,
                 0,
                 0);
 
@@ -296,8 +295,14 @@ public class CascadePIDController implements Controller{
         setMasterCanGoNegative(true); setMasterWindupStop(false);
         setSlaveCanGoNegative(false); setSlaveWindupStop(true);
 
-        pid2 = new ExponentialFilterTargetDecorator(pid2,.8f);
+       pid2 = new ExponentialFilterTargetDecorator(pid2,.8f);
 
         inventoryCascadeMode=true;
     }
+
+    public float getMasterMV()
+    {
+        return pid1.getCurrentMV();
+    }
+
 }

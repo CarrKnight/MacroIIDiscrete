@@ -45,7 +45,7 @@ public class MemorySalesPredictor implements SalesPredictor {
         //do we not have anything in memory or did we screw up so badly
         //in the past term that we didn't sell a single item?
         if(lastPrice == -1)
-            return -1;
+            return dept.getMarket().getLastPrice();
         else
         {
             //return your memory.

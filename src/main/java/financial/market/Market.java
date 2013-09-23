@@ -923,6 +923,31 @@ public abstract class Market{
      * utility method for summing up all production by all sellers
      * @return
      */
+    public int countTodayInventoryByRegisteredSellers()
+    {
+        int sum = 0;
+        for(EconomicAgent a : sellers)
+            sum += a.hasHowMany(goodType);
+        return sum;
+    }
+
+    /**
+     * utility method for summing up all production by all sellers
+     * @return
+     */
+    public int countTodayInventoryByRegisteredBuyers()
+    {
+        int sum = 0;
+        for(EconomicAgent a : buyers)
+            sum += a.hasHowMany(goodType);
+        return sum;
+    }
+
+
+    /**
+     * utility method for summing up all production by all sellers
+     * @return
+     */
     public int countTodayProductionByRegisteredSellers()
     {
         int sum = 0;
@@ -930,7 +955,6 @@ public abstract class Market{
             sum += a.getTodayProduction(getGoodType());
         return sum;
     }
-
 
     /**
      * utility method for summing up all consumption by all buyers

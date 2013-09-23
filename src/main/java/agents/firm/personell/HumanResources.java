@@ -492,7 +492,7 @@ public class HumanResources extends PurchasesDepartment {
         if(getNumberOfWorkers() > 0)
             return ((PlantControl)super.getPricingStrategy()).getCurrentWage();
         else
-            return 0;
+            return getMarket().getLastPrice();
 
     }
 
@@ -506,6 +506,12 @@ public class HumanResources extends PurchasesDepartment {
     @Override
     public int estimateDemandGap() {
         return getNumberOfWorkers() - ((PlantControl)super.getPricingStrategy()).getTarget();
+
+    }
+
+    public int getWorkerTarget()
+    {
+        return ((PlantControl)getPricingStrategy()).getTarget();
 
     }
 }

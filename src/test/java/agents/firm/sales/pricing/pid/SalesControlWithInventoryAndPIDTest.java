@@ -44,15 +44,16 @@ public class SalesControlWithInventoryAndPIDTest {
         SalesControlWithFixedInventoryAndPID pid = new SalesControlWithFixedInventoryAndPID(department);
         pid.setInitialPrice(100); //set initial price at 100
 
-        int defaultTargetInventory = SalesControlWithFixedInventoryAndPID.defaultTargetInventory;
-        assertEquals(pid.getTargetInventory(),defaultTargetInventory); //assume target is 5
-        when(department.getHowManyToSell()).thenReturn(defaultTargetInventory+10); //you still have 10 to sell
+        int targetInventory = 5;
+        pid.setTargetInventory(5);
+        assertEquals(pid.getTargetInventory(),targetInventory); //assume target is 5
+        when(department.getHowManyToSell()).thenReturn(targetInventory+100); //you still have 10 to sell
         //step it
         MacroII model = mock(MacroII.class); when(model.getCurrentPhase()).thenReturn(ActionOrder.ADJUST_PRICES);
         pid.step(model);
         //now price should be BELOW 100
-        assertTrue(pid.price(mock(Good.class)) < 100l);
         System.out.println("new price is:" + pid.price(mock(Good.class) ));
+        assertTrue(pid.price(mock(Good.class)) < 100l);
 
 
 

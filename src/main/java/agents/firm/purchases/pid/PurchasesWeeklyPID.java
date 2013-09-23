@@ -49,9 +49,11 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
      * @param purchasesDepartment the department controlled by this strategy
      */
     public PurchasesWeeklyPID(@Nonnull PurchasesDepartment purchasesDepartment) {
-        this(purchasesDepartment, (float) (.5f + purchasesDepartment.getRandom().nextGaussian()*.01f),
-                (float) (2f + purchasesDepartment.getRandom().nextGaussian() * .05f),
-                (float) (.05f + purchasesDepartment.getRandom().nextGaussian() * .005f));
+        super(purchasesDepartment);
+        controller = ControllerFactory.buildController(CascadePIDController.class,purchasesDepartment.getModel());
+        //if you have a pid controller, play a bit with it
+        ((CascadePIDController)controller).setupAsInventoryCascade(purchasesDepartment.getModel());
+
 
     }
 

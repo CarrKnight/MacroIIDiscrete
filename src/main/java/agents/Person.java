@@ -279,7 +279,7 @@ public class Person extends EconomicAgent {
                     //if we can't quote we have to peddle
                     throw new RuntimeException("Ernesto lazily didn't implement peddling.");
                 }            }
-        }, Priority.STANDARD);
+        }, Priority.BEFORE_STANDARD);
 
 
 

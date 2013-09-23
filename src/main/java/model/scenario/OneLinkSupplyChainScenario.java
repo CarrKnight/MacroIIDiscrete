@@ -239,7 +239,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         return firm;
     }
 
-    protected void createSalesDepartment(Firm firm, Market goodmarket) {
+    protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
         SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, goodmarket,
                 new SimpleBuyerSearch(goodmarket, firm), new SimpleSellerSearch(goodmarket, firm),
                 salesDepartmentType);
@@ -284,6 +284,8 @@ public class OneLinkSupplyChainScenario extends Scenario {
             // strategy.setProductionCostOverride(false);
             dept.setAskPricingStrategy(strategy); //set strategy to PID
         }
+
+        return dept;
     }
 
     protected void buildBeefSalesPredictor(SalesDepartment dept) {
@@ -316,7 +318,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
 
 
-    protected void createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
+    protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
         Plant plant = new Plant(blueprint, firm);
         plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
         plant.setCostStrategy(new InputCostStrategy(plant));
@@ -336,6 +338,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
         HumanResources hr = produced.getDepartment();
         hr.setFixedPayStructure(true);
+        return hr;
     }
 
     /**

@@ -273,11 +273,9 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     @Override
     public int estimateSupplyGap()
     {
-        int inventory = department.getHowManyToSell();
-        if(isInventoryAcceptable(inventory))
-            return 0;
-        else
-            return inventory - targetInventory;
+
+
+        return Math.round(controller.getMasterMV() + department.getTodayInflow() - department.getTodayOutflow());
 
     }
 

@@ -11,10 +11,13 @@ import agents.firm.personell.HumanResources;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
+import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
+import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.stats.collectors.enums.MarketDataType;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -162,7 +165,6 @@ public class CompetitiveScenarioTest {
             }
 
 
-            System.out.println(averageResultingPrice/5f + " --- " + averageResultingQuantity/5f);
         }
 
 
@@ -171,16 +173,18 @@ public class CompetitiveScenarioTest {
     }
 
 
+
+
     @Test
     public void rightPriceAndQuantityTestAsMarginalNoPIDAlreadyLearned()
     {
 
-        for(int competitors=0;competitors<=7;competitors++)
+        for(int competitors=0;competitors<=1;competitors++)
         {
             System.out.println("FORCED COMPETITIVE FIRMS: " + (competitors+1));
             float averageResultingPrice = 0;
             float averageResultingQuantity = 0;
-            for(int i=0; i<5; i++)
+            for(int i=0; i<1; i++)
             {
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
 
@@ -257,14 +261,13 @@ public class CompetitiveScenarioTest {
 
 
     @Test
-    public void rightPriceAndQuantityTestAsMarginalNoPIDAlreadyLearnedFlowsOnly()
+    public void rightPriceAndQuantityTestAsMarginalNoPIDAlreadyLearnedFlows()
     {
 
         for(int competitors=0;competitors<=7;competitors++)
         {
-            System.out.println("FORCED COMPETITIVE FIRMS: " + (competitors+1));
-            float averageResultingPrice = 0;
-            float averageResultingQuantity = 0;
+            //  System.out.println("FORCED COMPETITIVE FIRMS: " + (competitors+1));
+
             for(int i=0; i<5; i++)
             {
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
@@ -294,6 +297,8 @@ public class CompetitiveScenarioTest {
                 {
                     for(HumanResources hr : firm.getHRs())
                         hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
+
+                    firm.getSalesDepartment(GoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
                 }
 
 
@@ -307,32 +312,40 @@ public class CompetitiveScenarioTest {
 
                 float averagePrice = 0;
                 float averageQ = 0;
+                float averageInventory = 0;
+                float workers = 0;
+
                 for(int j=0; j<500; j++)
                 {
                     macroII.schedule.step(macroII);
+                    for(Firm f : scenario1.getCompetitors() )
+                        workers += f.getHRs().iterator().next().getWorkerTarget();
                     assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
                     averagePrice += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
-                    averageQ += macroII.getMarket(GoodType.GENERIC).getYesterdayVolume();
+                    averageQ += macroII.getMarket(GoodType.GENERIC).getLatestObservation(MarketDataType.VOLUME_TRADED);
+                    averageInventory += macroII.getMarket(GoodType.GENERIC).getLatestObservation(MarketDataType.SELLERS_INVENTORY);
 
 
                 }
                 averagePrice = averagePrice/500f;
+                workers /=500f;
                 averageQ = averageQ/500f;
-                System.out.println(averagePrice + " - " + averageQ );
+                averageInventory = averageInventory/500f;
+                averageInventory = averageInventory/(competitors+1);
+                System.out.println(averagePrice + "," + averageQ );
+            /*    System.out.println((competitors+1) +","+averagePrice + "," + averageQ + "," + averageInventory + "," + workers);
+                for(Firm f : scenario1.getCompetitors())
+                    System.out.print(f.getHRs().iterator().next().getWorkerTarget() + ","); */
 
-                averageResultingPrice += averagePrice;
-                averageResultingQuantity += averageQ;
 
 
 
-
-                assertEquals(averagePrice, 58,5);
+                assertEquals(averagePrice, 58, 5);
                 assertEquals(averageQ, 44,5);
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=1;
             }
 
 
-            System.out.println(averageResultingPrice/5f + " --- " + averageResultingQuantity/5f);
         }
 
 
@@ -340,6 +353,106 @@ public class CompetitiveScenarioTest {
     }
 
 
+    @Test
+    public void tooManyLearnedCompetitors()
+    {
+
+        int competitors = 80;
+
+        //  System.out.println("FORCED COMPETITIVE FIRMS: " + (competitors+1));
+        Class<? extends AskPricingStrategy> strategies[] = new Class[3];
+        strategies[0] = SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class;
+        strategies[1] = SmoothedDailyInventoryPricingStrategy.class;
+        strategies[2] = SalesControlWithFixedInventoryAndPID.class;
+
+
+        for(Class<? extends AskPricingStrategy> strategy : strategies)
+        {
+            for(int i=0; i<5; i++)
+            {
+                FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
+
+                final MacroII macroII = new MacroII(System.currentTimeMillis());
+                final TripolistScenario scenario1 = new TripolistScenario(macroII);
+                scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+                scenario1.setAskPricingStrategy(strategy);
+                scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
+                scenario1.setAdditionalCompetitors(competitors);
+
+                FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
+                scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
+                //scenario1.setSalesPricePreditorStrategy(MarketSalesPredictor.class);
+                //scenario1.setSalesPricePreditorStrategy(PricingSalesPredictor.class);
+                //   scenario1.setPurchasesPricePreditorStrategy(PricingPurchasesPredictor.class);
+
+
+
+                //assign scenario
+                macroII.setScenario(scenario1);
+
+                macroII.start();
+
+                macroII.schedule.step(macroII);
+                for(Firm firm : scenario1.getCompetitors())
+                {
+                    for(HumanResources hr : firm.getHRs())
+                        hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
+
+                    firm.getSalesDepartment(GoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+                }
+
+
+                while(macroII.schedule.getTime()<5000)
+                {
+                    macroII.schedule.step(macroII);
+
+
+
+                }
+
+                float averagePrice = 0;
+                float averageQ = 0;
+                float averageInventory = 0;
+                float workers = 0;
+
+                for(int j=0; j<500; j++)
+                {
+                    macroII.schedule.step(macroII);
+                    for(Firm f : scenario1.getCompetitors() )
+                        workers += f.getHRs().iterator().next().getWorkerTarget();
+                    assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
+                    averagePrice += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
+                    averageQ += macroII.getMarket(GoodType.GENERIC).getLatestObservation(MarketDataType.VOLUME_TRADED);
+                    averageInventory += macroII.getMarket(GoodType.GENERIC).getLatestObservation(MarketDataType.SELLERS_INVENTORY);
+
+
+                }
+                averagePrice = averagePrice/500f;
+                workers /=500f;
+                averageQ = averageQ/500f;
+                averageInventory = averageInventory/500f;
+                averageInventory = averageInventory/(competitors+1);
+                System.out.println(averagePrice + "," + averageQ );
+            /*    System.out.println((competitors+1) +","+averagePrice + "," + averageQ + "," + averageInventory + "," + workers);
+                for(Firm f : scenario1.getCompetitors())
+                    System.out.print(f.getHRs().iterator().next().getWorkerTarget() + ","); */
+                System.out.println();
+
+
+
+
+                assertEquals(averagePrice, 58, 5);
+                assertEquals(averageQ, 44,5);
+                FixedDecreaseSalesPredictor.defaultDecrementDelta=1;
+            }
+        }
+
+
+
+
+
+
+    }
 
 
 

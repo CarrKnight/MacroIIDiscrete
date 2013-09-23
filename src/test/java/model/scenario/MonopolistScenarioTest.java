@@ -3,6 +3,7 @@ package model.scenario;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
+import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
 import goods.GoodType;
@@ -170,7 +171,7 @@ public class MonopolistScenarioTest {
 
             //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
             if(macroII.random.nextBoolean() && scenario1.getControlType() != MonopolistScenario.MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_SIMPLE)
-                scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
+                scenario1.setAskPricingStrategy(SmoothedDailyInventoryPricingStrategy.class);
             else
                 scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
 
@@ -221,7 +222,7 @@ public class MonopolistScenarioTest {
         //run the test 15 times
         for(int i=0; i<15; i++)
         {
-            final MacroII macroII = new MacroII(1376050709303l);
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
 
 
 
@@ -281,11 +282,10 @@ public class MonopolistScenarioTest {
     {
 
 
-        long seed = System.currentTimeMillis();
         //run the test 15 times
         for(int i=0; i<150; i++)
         {
-            final MacroII macroII = new MacroII(1378215164240l);
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
 
 
 
@@ -312,7 +312,7 @@ public class MonopolistScenarioTest {
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
             //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
             if(macroII.random.nextBoolean())
-                scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
+                scenario1.setAskPricingStrategy(SmoothedDailyInventoryPricingStrategy.class);
             else
                 scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
 
@@ -335,7 +335,6 @@ public class MonopolistScenarioTest {
 
             System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
             System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
-            System.out.println(seed + " ---- " + i);
 
             //you must be at most wrong by two (not well tuned and anyway sometimes it's hard!)
             assertEquals(scenario1.monopolist.getTotalWorkers(), profitMaximizingLaborForce,2);
@@ -355,7 +354,7 @@ public class MonopolistScenarioTest {
         for(int i=0; i<25; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
-            final MacroII macroII = new MacroII(1379366085057l);
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
             System.out.println("----------------------------------------------------------");
             System.out.println(macroII.seed());
             System.out.println("----------------------------------------------------------");
@@ -401,7 +400,7 @@ public class MonopolistScenarioTest {
 
 
 
-    //all these use SalesControlWithFixedInventoryAndPID
+    //all these use SmoothedDailyInventoryPricingStrategy
 
 
 
@@ -412,7 +411,7 @@ public class MonopolistScenarioTest {
         for(int i=0; i<50; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
-            final MacroII macroII = new MacroII(1376210079086l);
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
             MonopolistScenario scenario1 = new MonopolistScenario(macroII);
             //    scenario1.setAlwaysMoving(true);
             //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);

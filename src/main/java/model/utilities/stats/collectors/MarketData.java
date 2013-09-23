@@ -71,6 +71,8 @@ public class MarketData extends DataStorage<MarketDataType>
         data.get(MarketDataType.CLOSING_PRICE).add((double) marketToFollow.getLastPrice());
         data.get(MarketDataType.VOLUME_TRADED).add((double) marketToFollow.getTodayVolume());
         data.get(MarketDataType.VOLUME_CONSUMED).add((double) marketToFollow.countTodayConsumptionByRegisteredBuyers());
+        data.get(MarketDataType.SELLERS_INVENTORY).add((double) marketToFollow.countTodayInventoryByRegisteredSellers());
+        data.get(MarketDataType.BUYERS_INVENTORY).add((double) marketToFollow.countTodayInventoryByRegisteredBuyers());
         data.get(MarketDataType.VOLUME_PRODUCED).add((double) marketToFollow.countTodayProductionByRegisteredSellers());
         data.get(MarketDataType.DEMAND_GAP).add((double)marketToFollow.sumDemandGaps());
         data.get(MarketDataType.SUPPLY_GAP).add((double) marketToFollow.sumSupplyGaps());

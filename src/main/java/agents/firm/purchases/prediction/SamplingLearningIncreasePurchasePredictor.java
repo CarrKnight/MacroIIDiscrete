@@ -100,7 +100,7 @@ public class SamplingLearningIncreasePurchasePredictor extends  AbstractWorkerLe
         if(newSlope)
             predictor.setIncrementDelta((float) regression.getSlope());
 
-        System.out.println("purchases slope: " + predictor.getIncrementDelta());
+     //   System.out.println("purchases slope: " + predictor.getIncrementDelta());
 
         return predictor.predictPurchasePriceWhenIncreasingProduction(dept);
     }

@@ -200,7 +200,7 @@ public class MonopolistScenario extends Scenario {
                             goodMarket.submitBuyQuote(reference, getFixedPrice());
 
                         }
-                    }, Priority.STANDARD);
+                    }, Priority.AFTER_STANDARD);
 
                 }
             };
@@ -278,7 +278,9 @@ public class MonopolistScenario extends Scenario {
                         salesDepartmentType);
                 dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(salesPricePreditorStrategy,dept));
                 built.registerSaleDepartment(dept, GoodType.GENERIC);
-                dept.setAskPricingStrategy(AskPricingStrategy.Factory.newAskPricingStrategy(askPricingStrategy,dept)); //set strategy to PID
+                AskPricingStrategy askPricingStrategy = AskPricingStrategy.Factory.newAskPricingStrategy(MonopolistScenario.this.askPricingStrategy, dept);
+                dept.setAskPricingStrategy(askPricingStrategy); //set strategy to PID
+
                 //add the plant
                 Plant plant = new Plant(blueprint, built);
                 plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));

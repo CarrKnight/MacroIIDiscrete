@@ -98,7 +98,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
     /**
      * At what priority does the purchase department act when trading. It can be changed by its strategies.
      */
-    private Priority tradePriority = Priority.STANDARD;
+    private Priority tradePriority = Priority.AFTER_STANDARD;
 
 
     /**
