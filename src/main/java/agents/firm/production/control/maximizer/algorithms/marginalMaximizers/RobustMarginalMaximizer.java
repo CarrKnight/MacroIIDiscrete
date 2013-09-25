@@ -55,7 +55,7 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
         LOGGER.setUseParentHandlers(false);
 
         try{
-        fh = new FileHandler("maximizationLog.log",false);
+        fh = new FileHandler("/mnt/0EA6C8BFA6C8A913/maximizationLog.log",false);
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -101,7 +101,7 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
      * @param oldProfits          what were the profits back then   @return the new worker targets. Any negative number means to check again!
      */
     public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
-        LOGGER.log(Level.INFO,"-----------------------------------------" + this);
+        LOGGER.log(Level.INFO,"-----------------------------------------" + maximizer.getHr().getFirm());
         numberOfChoices++;
 
 
@@ -137,7 +137,7 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
             if(futureTarget<currentWorkerTarget)
             {
                 LOGGER.log(Level.INFO, "----> decreased at at: " +(currentWorkerTarget-1));
-                if(numberOfChoices < 20)
+                if(numberOfChoices < 50)
                     return Math.max(currentWorkerTarget-1,1);
                 else
                     return currentWorkerTarget-1;

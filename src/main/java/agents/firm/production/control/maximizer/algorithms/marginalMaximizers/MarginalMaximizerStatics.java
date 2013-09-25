@@ -36,7 +36,7 @@ import java.util.logging.Level;
  */
 public final class MarginalMaximizerStatics {
 
-    public static boolean printOutDiagnostics = false;
+    public static boolean printOutDiagnostics = true;
 
 
     private MarginalMaximizerStatics(){}
@@ -95,7 +95,7 @@ public final class MarginalMaximizerStatics {
 
 
 
-        assert(totalMarginalCosts >= 0 && targetWorkers > currentWorkers) ^   (totalMarginalCosts <= 0 && targetWorkers < currentWorkers);
+    //    assert(totalMarginalCosts >= 0 && targetWorkers > currentWorkers) ^   (totalMarginalCosts <= 0 && targetWorkers < currentWorkers);
 
 
 

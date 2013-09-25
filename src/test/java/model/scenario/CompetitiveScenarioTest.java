@@ -13,7 +13,6 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
-import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import goods.GoodType;
 import model.MacroII;
@@ -114,11 +113,6 @@ public class CompetitiveScenarioTest {
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
                 scenario1.setAdditionalCompetitors(competitors);
 
-                //scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
-                //scenario1.setSalesPricePreditorStrategy(MarketSalesPredictor.class);
-                //scenario1.setSalesPricePreditorStrategy(PricingSalesPredictor.class);
-                //   scenario1.setPurchasesPricePreditorStrategy(PricingPurchasesPredictor.class);
-
 
 
                 //assign scenario
@@ -179,12 +173,12 @@ public class CompetitiveScenarioTest {
     public void rightPriceAndQuantityTestAsMarginalNoPIDAlreadyLearned()
     {
 
-        for(int competitors=0;competitors<=1;competitors++)
+        for(int competitors=0;competitors<=7;competitors++)
         {
             System.out.println("FORCED COMPETITIVE FIRMS: " + (competitors+1));
             float averageResultingPrice = 0;
             float averageResultingQuantity = 0;
-            for(int i=0; i<1; i++)
+            for(int i=0; i<5; i++)
             {
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
 
@@ -360,14 +354,15 @@ public class CompetitiveScenarioTest {
         int competitors = 80;
 
         //  System.out.println("FORCED COMPETITIVE FIRMS: " + (competitors+1));
-        Class<? extends AskPricingStrategy> strategies[] = new Class[3];
+        Class<? extends AskPricingStrategy> strategies[] = new Class[2];
         strategies[0] = SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class;
         strategies[1] = SmoothedDailyInventoryPricingStrategy.class;
-        strategies[2] = SalesControlWithFixedInventoryAndPID.class;
+    //    strategies[2] = SalesControlWithFixedInventoryAndPID.class;
 
 
         for(Class<? extends AskPricingStrategy> strategy : strategies)
         {
+            System.out.println(strategy.getSimpleName());
             for(int i=0; i<5; i++)
             {
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
@@ -402,7 +397,7 @@ public class CompetitiveScenarioTest {
                 }
 
 
-                while(macroII.schedule.getTime()<5000)
+                while(macroII.schedule.getTime()<15000)
                 {
                     macroII.schedule.step(macroII);
 
@@ -433,15 +428,15 @@ public class CompetitiveScenarioTest {
                 averageInventory = averageInventory/500f;
                 averageInventory = averageInventory/(competitors+1);
                 System.out.println(averagePrice + "," + averageQ );
-            /*    System.out.println((competitors+1) +","+averagePrice + "," + averageQ + "," + averageInventory + "," + workers);
+                System.out.println((competitors+1) +","+averagePrice + "," + averageQ + "," + averageInventory + "," + workers);
                 for(Firm f : scenario1.getCompetitors())
-                    System.out.print(f.getHRs().iterator().next().getWorkerTarget() + ","); */
+                    System.out.print(f.getHRs().iterator().next().getWorkerTarget() + ",");
                 System.out.println();
 
 
 
 
-                assertEquals(averagePrice, 58, 5);
+                assertEquals(averagePrice, 57, 5);
                 assertEquals(averageQ, 44,5);
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=1;
             }

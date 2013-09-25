@@ -31,7 +31,6 @@ import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
-import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.annotations.VisibleForTesting;
@@ -256,17 +255,8 @@ public class OneLinkSupplyChainScenario extends Scenario {
                     model.drawIntegrativeGain()/ divideIntegrativeGainByThis,
                     model.drawDerivativeGain());
 
-      /*      strategy2 =
-                    new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(dept,10,100,model,
-                            model.drawProportionalGain()/ divideProportionalGainByThis,
-                            model.drawIntegrativeGain()/ divideIntegrativeGainByThis,
-                            model.drawDerivativeGain(),model.getRandom());
-                            */
             strategy2.setInitialPrice(50);
             //if you can, filter it!
-          /*  if(strategy2 instanceof SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly && beefPriceFilterer != null)
-                strategy2.attachFilter(beefPriceFilterer);
-                */
             strategy2.setSpeed(beefPricingSpeed);
             dept.setAskPricingStrategy(strategy2);
 
@@ -277,9 +267,8 @@ public class OneLinkSupplyChainScenario extends Scenario {
         }
         else
         {
-            SalesControlWithFixedInventoryAndPID strategy;
-            strategy = new SalesControlWithFixedInventoryAndPID(dept);
-            strategy.setTargetInventory(100);
+            SmoothedDailyInventoryPricingStrategy strategy;
+            strategy = new SmoothedDailyInventoryPricingStrategy(dept);
             strategy.setInitialPrice(model.random.nextInt(30)+70);
             // strategy.setProductionCostOverride(false);
             dept.setAskPricingStrategy(strategy); //set strategy to PID

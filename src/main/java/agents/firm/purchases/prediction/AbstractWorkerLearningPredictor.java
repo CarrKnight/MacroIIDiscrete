@@ -113,7 +113,8 @@ public abstract class AbstractWorkerLearningPredictor {
 
         int now = department.getLastObservedDay();
         lastRegressionDay = now;
-        float probability = 1f / howManyDaysOnAverageToSample;
+        int unsampledDays = 0;
+ //       float probability = 1f / howManyDaysOnAverageToSample;
         ArrayList<Integer> daysToObserve = new ArrayList<>();
 
         int lowerlimit = 0;
@@ -124,9 +125,12 @@ public abstract class AbstractWorkerLearningPredictor {
         }
 
         for(int i=now; i>=Math.max(department.getStartingDay(), lowerlimit); i--) {
-            if(model.random.nextBoolean(probability))
+            unsampledDays++;
+            if(howManyDaysOnAverageToSample < unsampledDays)
+            {
                 daysToObserve.add(i);
-
+                unsampledDays =0;
+            }
         }
         Collections.reverse(daysToObserve);
 

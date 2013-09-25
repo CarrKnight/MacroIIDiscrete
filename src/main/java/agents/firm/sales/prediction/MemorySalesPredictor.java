@@ -7,6 +7,7 @@
 package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
+import model.utilities.stats.collectors.enums.MarketDataType;
 
 /**
  * <h4>Description</h4>
@@ -45,7 +46,10 @@ public class MemorySalesPredictor implements SalesPredictor {
         //do we not have anything in memory or did we screw up so badly
         //in the past term that we didn't sell a single item?
         if(lastPrice == -1)
-            return dept.getMarket().getLastPrice();
+            if(dept.getTotalWorkersWhoProduceThisGood() == 0) //if you have no price to lookup and no production you are in a vicious circle, just lookup the market then
+                return Math.round(dept.getMarket().getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+            else
+                return -1;
         else
         {
             //return your memory.

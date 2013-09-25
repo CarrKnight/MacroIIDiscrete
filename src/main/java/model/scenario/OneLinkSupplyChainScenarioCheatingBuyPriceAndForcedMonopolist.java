@@ -32,7 +32,6 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.ProducersStatCollector;
-import model.utilities.stats.collectors.enums.MarketDataType;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -72,12 +71,12 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
         {
             //make beef a monopolist
             setNumberOfBeefProducers(1);
-            setNumberOfFoodProducers(10);
+            setNumberOfFoodProducers(5);
         }
         else
         {
             assert monopolistGood.equals(GoodType.FOOD);
-            setNumberOfBeefProducers(10);
+            setNumberOfBeefProducers(5);
             setNumberOfFoodProducers(1);
 
         }
@@ -251,19 +250,21 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
                             hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
                         return hr;
                     }
-                };
+
+                }  ;
         scenario1.setControlType(RobustMarginalMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
         //competition!
         scenario1.setNumberOfBeefProducers(1);
-        scenario1.setNumberOfFoodProducers(15);
+        scenario1.setNumberOfFoodProducers(5);
 
         scenario1.setDivideProportionalGainByThis(15f);
         scenario1.setDivideIntegrativeGainByThis(15f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
+        scenario1.setBeefPriceFilterer(null);
 
 
         macroII.setScenario(scenario1);
@@ -321,12 +322,10 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
         while(macroII.schedule.getTime()<15000)
         {
             macroII.schedule.step(macroII);
-            System.out.println(macroII.getMarket(GoodType.LABOR_FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE) + " - "
-            + macroII.getMarket(GoodType.LABOR_FOOD).getLatestObservation(MarketDataType.VOLUME_TRADED));
             printProgressBar(15001, (int) macroII.schedule.getSteps(), 100);
         }
 
-
+         System.out.println("done");
     }
     /**
      * Runs the supply chain with no GUI and writes a big CSV file
