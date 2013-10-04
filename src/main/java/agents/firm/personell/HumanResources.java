@@ -74,6 +74,7 @@ public class HumanResources extends PurchasesDepartment {
         super(budgetGiven, firm, market);
         assert market.getGoodType().isLabor(); //must be a labor market!
         this.plant = plant; //record the plant to supply.
+     //   setTradePriority(Priority.BEFORE_STANDARD);
 
 
     }

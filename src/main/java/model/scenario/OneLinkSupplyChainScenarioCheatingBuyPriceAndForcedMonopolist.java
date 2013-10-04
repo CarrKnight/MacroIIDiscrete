@@ -236,6 +236,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
                     @Override
                     protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
                         SalesDepartment department = super.createSalesDepartment(firm, goodmarket);    //To change body of overridden methods use File | Settings | File Templates.
+                      //  department.setAskPricingStrategy(new SalesControlWithFixedInventoryAndPID(department,150));
                         if(goodmarket.getGoodType().equals(GoodType.FOOD))
                             department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
                         return department;
@@ -260,8 +261,8 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
         scenario1.setNumberOfBeefProducers(1);
         scenario1.setNumberOfFoodProducers(5);
 
-        scenario1.setDivideProportionalGainByThis(15f);
-        scenario1.setDivideIntegrativeGainByThis(15f);
+        scenario1.setDivideProportionalGainByThis(50f);
+        scenario1.setDivideIntegrativeGainByThis(50f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
         scenario1.setBeefPriceFilterer(null);

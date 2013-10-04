@@ -91,6 +91,16 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         salesDepartment.getFirm().getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE,this);
 
 
+        //parameters found through genetic algorithm
+        setGainsMasterPID(0.035f + ((float)salesDepartment.getRandom().nextGaussian()) / 100f,
+                0,
+                0);
+
+        setGainsSlavePID(0.04954876f  + ((float)salesDepartment.getRandom().nextGaussian()) / 100f,
+                0.15825003f  + ((float)salesDepartment.getRandom().nextGaussian()) / 100f,
+                0.000708338f+ ((float)salesDepartment.getRandom().nextGaussian()/10000f));
+
+
 
 
     }
@@ -231,4 +241,15 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         return delegate.isInventoryAcceptable(inventorySize);
     }
 
+
+    /**
+     * Change the gains of the second PID
+     */
+    public void setGainsSlavePID(float proportionalGain, float integralGain, float derivativeGain) {
+        controllerUsedByDelegate.setGainsSlavePID(proportionalGain, integralGain, derivativeGain);
+    }
+
+    public void setGainsMasterPID(float proportionalGain, float integralGain, float derivativeGain) {
+        controllerUsedByDelegate.setGainsMasterPID(proportionalGain, integralGain, derivativeGain);
+    }
 }

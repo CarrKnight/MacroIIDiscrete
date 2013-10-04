@@ -137,7 +137,7 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
             if(futureTarget<currentWorkerTarget)
             {
                 LOGGER.log(Level.INFO, "----> decreased at at: " +(currentWorkerTarget-1));
-                if(numberOfChoices < 50)
+                if(numberOfChoices < 150)
                     return Math.max(currentWorkerTarget-1,1);
                 else
                     return currentWorkerTarget-1;

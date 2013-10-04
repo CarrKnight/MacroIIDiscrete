@@ -152,4 +152,14 @@ public class SamplingLearningDecreaseSalesPredictor extends AbstractWorkerLearni
             latestShockDay = Math.max(latestShockDay,p.getLastDayAMeaningfulChangeInWorkforceOccurred());
         }
         return latestShockDay;    }
+
+
+    /**
+     * Gets by how much we decrease the price predicted in respect to current departmental price.
+     *
+     * @return Value of by how much we increase/decrease the price predicted in respect to current departmental price.
+     */
+    public float getDecrementDelta() {
+        return predictor.getDecrementDelta();
+    }
 }

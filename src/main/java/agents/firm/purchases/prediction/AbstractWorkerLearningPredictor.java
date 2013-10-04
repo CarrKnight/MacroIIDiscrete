@@ -42,12 +42,14 @@ public abstract class AbstractWorkerLearningPredictor {
     private final MacroII model;
 
 
-    private int howManyDaysOnAverageToSample = 3;
+    private int howManyDaysOnAverageToSample = 17;
 
     /**
      * maximum number of days BEHIND THE LAST SHOCK DAY to examine
      */
-    private int maximumDaysToLookBack = 300;
+    private int maximumDaysToLookBack = 623;
+
+    private int maximumDaysToLookForward= 330;
 
 
     /**
@@ -124,9 +126,11 @@ public abstract class AbstractWorkerLearningPredictor {
             lowerlimit = latestShockDay - maximumDaysToLookBack;
         }
 
-        for(int i=now; i>=Math.max(department.getStartingDay(), lowerlimit); i--) {
+        int upperLimit = Math.min(now,latestShockDay+maximumDaysToLookForward);
+
+        for(int i=upperLimit; i>=Math.max(department.getStartingDay(), lowerlimit); i--) {
             unsampledDays++;
-            if(howManyDaysOnAverageToSample < unsampledDays)
+            if(howManyDaysOnAverageToSample <= unsampledDays)
             {
                 daysToObserve.add(i);
                 unsampledDays =0;
@@ -185,5 +189,14 @@ public abstract class AbstractWorkerLearningPredictor {
      */
     public void setMaximumDaysToLookBack(int maximumDaysToLookBack) {
         this.maximumDaysToLookBack = maximumDaysToLookBack;
+    }
+
+
+    public int getMaximumDaysToLookForward() {
+        return maximumDaysToLookForward;
+    }
+
+    public void setMaximumDaysToLookForward(int maximumDaysToLookForward) {
+        this.maximumDaysToLookForward = maximumDaysToLookForward;
     }
 }

@@ -2,6 +2,7 @@ package model.scenario;
 
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
+import agents.firm.sales.prediction.AroundShockLinearRegressionSalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
@@ -346,6 +347,10 @@ public class MonopolistScenarioTest {
 
 
     }
+
+
+
+
 
     @Test
     public void problematicScenario5()

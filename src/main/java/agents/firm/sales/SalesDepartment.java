@@ -1419,5 +1419,7 @@ public abstract class  SalesDepartment  implements Department {
     public int getLastObservedDay() {
         return data.getLastObservedDay();
     }
+
+
 }
 
