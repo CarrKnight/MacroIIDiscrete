@@ -122,7 +122,7 @@ public class PersonellRuleFactory {
                 IllegalArgumentException | InvocationTargetException ex)
         {
             ex.printStackTrace();
-            throw new RuntimeException(" failed to instantiate InventoryControl ----- " + ex.getMessage());
+            throw new RuntimeException(" failed to instantiate InventoryControl ----- " + rule  + ex.getMessage());
         }
 
 

@@ -2,10 +2,9 @@ package model.scenario;
 
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
-import agents.firm.sales.prediction.AroundShockLinearRegressionSalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
-import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
+import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import au.com.bytecode.opencsv.CSVWriter;
 import goods.GoodType;
 import model.MacroII;
@@ -284,7 +283,7 @@ public class MonopolistScenarioTest {
 
 
         //run the test 15 times
-        for(int i=0; i<150; i++)
+        for(int i=0; i<15; i++)
         {
             final MacroII macroII = new MacroII(System.currentTimeMillis());
 

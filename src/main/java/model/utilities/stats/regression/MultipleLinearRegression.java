@@ -36,6 +36,9 @@ public class MultipleLinearRegression implements MultivariateRegression {
     public MultipleLinearRegression() {
     }
 
+
+
+
     /**
      * Do the regression/estimation. The arrays must be of the same size
      *
@@ -46,12 +49,14 @@ public class MultipleLinearRegression implements MultivariateRegression {
     @Override
     public void estimateModel(double[] y, @Nullable double[] weights, double[]... x) throws LinearRegression.CollinearityException {
 
-     //   Preconditions.checkArgument(x.length==numberOfRegressorsBesidesIntercept);
+        //   Preconditions.checkArgument(x.length==numberOfRegressorsBesidesIntercept);
         if(y.length > x.length + 2)
         {
 
             double[] weightClone = weights == null ? null :  weights.clone();
-            resultMatrix = LinearRegression.regress(y.clone(), weightClone,x.clone());
+            for(int i=0; i < x.length; i++)
+                x[i] = x[i].clone();
+            resultMatrix = LinearRegression.regress(y.clone(), weightClone,x);
 
 
         }

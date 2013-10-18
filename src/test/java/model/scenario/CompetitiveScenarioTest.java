@@ -154,6 +154,7 @@ public class CompetitiveScenarioTest {
 
 
 
+
                 assertEquals(averagePrice, 58,5);
                 assertEquals(averageQ, 44,5);
             }

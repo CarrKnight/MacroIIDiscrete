@@ -174,7 +174,7 @@ public class DailyStatCollector implements Steppable{
 
 
                 //sum up workers
-                workers += ((Firm) seller).getTotalWorkersWhoProduceThisGood(output);
+                workers += ((Firm) seller).getNumberOfWorkersWhoProduceThisGood(output);
                 assert workers >=0;
 
                 //sum up inventory

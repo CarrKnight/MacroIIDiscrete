@@ -443,7 +443,8 @@ public class SamplingSalesLearningGeneticAlgorithm {
          * goes through the list of seeds to use, and make the individual predict on all of them, then return the total error
          */
         @Override
-        public double getFitness(SamplingSalesLearningIndividual candidate, List<? extends SamplingSalesLearningIndividual> population) {
+        public double getFitness(SamplingSalesLearningIndividual candidate,
+                                 List<? extends SamplingSalesLearningIndividual> population) {
             candidate.clear();
             assert seedsToUse.size()>0;
             for(Long seed : seedsToUse)
@@ -567,7 +568,7 @@ public class SamplingSalesLearningGeneticAlgorithm {
          *******************************/
         List<EvolutionaryOperator<SamplingSalesLearningIndividual>> operators = new LinkedList<>();
         operators.add(new CrossoverIndividual());
-        operators.add(new RandomMutation(.02f));
+        operators.add(new RandomMutation(.15f));
 
         EvolutionaryOperator<SamplingSalesLearningIndividual> pipeline = new EvolutionPipeline<>(operators);
 
@@ -669,7 +670,7 @@ public class SamplingSalesLearningGeneticAlgorithm {
 
         List<EvaluatedCandidate<SamplingSalesLearningIndividual>> populationEvaluated;
         List<EvaluatedCandidate<Long>> problemsEvaluated;
-        for(int i=0; i<570; i++)
+        for(int i=0; i<50; i++)
         {
             //exchange hostages
             seedEvaluator.setSolverPopulation(new LinkedList<>(population));

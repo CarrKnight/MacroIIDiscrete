@@ -36,6 +36,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Macro II, still have no clue what this is about.
@@ -184,13 +185,13 @@ public class MacroII extends SimState{
     public void registerInventoryDelivery(HasInventory sender, HasInventory economicAgent, GoodType type) {
     }
 
-    public static int counter = 0;
+    public static AtomicLong counter = new AtomicLong();
 
     /**
      * @return the value for the field counter.
      */
-    public synchronized static int getCounter() {
-        return counter++;
+    public static long getCounter() {
+        return counter.incrementAndGet();
     }
 
 
@@ -215,7 +216,6 @@ public class MacroII extends SimState{
         hasStarted=true;
         //make sure counters are at 0
         weeksPassed = 0;
-        counter = 0;
 
         //if there is no scenario, create one!
         assert scenario != null;

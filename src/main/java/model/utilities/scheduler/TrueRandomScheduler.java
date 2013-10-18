@@ -253,7 +253,7 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
     @Override
     public void scheduleTomorrow(ActionOrder phase, Steppable action, Priority priority) {
 
-        Preconditions.checkArgument(phase.equals(currentPhase));
+        assert phase.equals(currentPhase);
         //put it among the steppables of that phase
         tomorrowSamePhase.add(new PrioritySteppablePair(action,priority));
 

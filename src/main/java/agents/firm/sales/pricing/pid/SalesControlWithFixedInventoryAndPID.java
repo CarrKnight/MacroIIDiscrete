@@ -44,6 +44,8 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     private int targetInventory = defaultTargetInventory;
 
 
+    private long roundedPrice;
+
     public static int defaultTargetInventory =  100;
 
     /**
@@ -105,6 +107,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
         //careful how you set up your controller!
         controller.setupAsInventoryCascade(department.getModel());
 
+        roundedPrice = Math.round(controller.getCurrentMV());
 
     }
 
@@ -142,7 +145,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
      *
      */
     public long price(){
-        return (long)Math.round(controller.getCurrentMV());
+        return roundedPrice;
 
     }
 
@@ -196,9 +199,10 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
         );
 
 
-
-        if(oldPrice != (long)Math.round(controller.getCurrentMV()))
+        roundedPrice = (long)Math.round(controller.getCurrentMV());
+        if(oldPrice != roundedPrice )
             department.updateQuotes();
+
 
     }
 
@@ -229,6 +233,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     public void setInitialPrice(long price) {
         Preconditions.checkArgument(price >= 0);
         controller.setOffset(price);
+        roundedPrice = Math.round(controller.getCurrentMV());
     }
 
 
@@ -274,8 +279,9 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     public int estimateSupplyGap()
     {
 
-
-        return Math.round(controller.getMasterMV() + department.getTodayInflow() - department.getTodayOutflow());
+        //return department.getHowManyToSell() - targetInventory;
+        return Math.round(controller.getMasterMV()*10);
+        //return Math.round(controller.getMasterMV() + department.getTodayInflow() - department.getTodayOutflow());
 
     }
 

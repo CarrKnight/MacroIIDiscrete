@@ -55,12 +55,12 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
         LOGGER.setUseParentHandlers(false);
 
         try{
-        fh = new FileHandler("/mnt/0EA6C8BFA6C8A913/maximizationLog.log",false);
+            fh = new FileHandler("/mnt/0EA6C8BFA6C8A913/maximization2.log",false);
+            fh.setFormatter(new XMLFormatter());
+            LOGGER.addHandler(fh);
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        fh.setFormatter(new XMLFormatter());
-        LOGGER.addHandler(fh);
         LOGGER.setLevel(Level.ALL);
     }
 
@@ -137,7 +137,7 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
             if(futureTarget<currentWorkerTarget)
             {
                 LOGGER.log(Level.INFO, "----> decreased at at: " +(currentWorkerTarget-1));
-                if(numberOfChoices < 150)
+                if(numberOfChoices < 1000)
                     return Math.max(currentWorkerTarget-1,1);
                 else
                     return currentWorkerTarget-1;

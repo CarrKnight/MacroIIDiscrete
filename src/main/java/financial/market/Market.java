@@ -403,16 +403,6 @@ public abstract class Market{
             weeklyVolume++;
             todayVolume++;
 
-
-            try{
-                Hour timeOfTrade = new Hour(new Date(buyer.getModel().getCurrentSimulationTimeInMillis()));
-                prices.addOrUpdate(timeOfTrade, price);  //addSalesDepartmentListener it to the time series!
-                markups.addOrUpdate(timeOfTrade, (price - sellerCost) / sellerCost); //addSalesDepartmentListener it to the markups
-            }catch (Exception e){
-                if(!TESTING_MODE)  //might not be an issue if we are testing stuff.
-                    throw e;
-            }
-
             //tell the listeners!
             for(TradeListener tl : tradeListeners)
                 tl.tradeEvent(buyer,seller,good,price,sellerQuote,buyerQuote);

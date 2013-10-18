@@ -6,19 +6,11 @@
 
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
-import agents.firm.sales.prediction.LearningDecreaseWithTimeSeriesSalesPredictor;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
-import goods.GoodType;
 import model.MacroII;
 import model.scenario.MonopolistScenario;
-import model.utilities.ActionOrder;
-import model.utilities.scheduler.Priority;
 import model.utilities.stats.collectors.DailyStatCollector;
-import model.utilities.stats.collectors.PeriodicMarketObserver;
-import sim.engine.SimState;
-import sim.engine.Steppable;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -152,7 +144,7 @@ public class MarginalMaximizerToCSVTest {
 
     public static void main(String[] args)
     {
-
+/*
         final MacroII macroII = new MacroII(1376214006782l);
 
 

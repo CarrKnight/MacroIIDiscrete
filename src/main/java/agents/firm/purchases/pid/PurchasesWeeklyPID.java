@@ -42,7 +42,7 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
     /**
      * The controller used to choose prices
      */
-    private Controller controller;
+    private CascadePIDController controller;
 
     /**
      * This is the standard constructor needed to generate at random this strategy.
@@ -52,36 +52,21 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
         super(purchasesDepartment);
         controller = ControllerFactory.buildController(CascadePIDController.class,purchasesDepartment.getModel());
         //if you have a pid controller, play a bit with it
-        ((CascadePIDController)controller).setupAsInventoryCascade(purchasesDepartment.getModel());
+        controller.setupAsInventoryCascade(purchasesDepartment.getModel());
 
 
     }
 
-    /**
-     * This constructor allows the controller to use a control unit of a specific kind (say, cascade)
-     * @param purchasesDepartment the purchase department to control
-     * @param controllerType the type of controller to use
-     * @param macroII a link to the model (so we can randomize)
-     */
-    public PurchasesWeeklyPID(@Nonnull PurchasesDepartment purchasesDepartment,
-                              @Nonnull Class<? extends Controller > controllerType,
-                              MacroII macroII)
-    {
-        super(purchasesDepartment);
-        controller = ControllerFactory.buildController(controllerType, macroII);
 
-        //if you have a pid controller, play a bit with it
-        if(controllerType.equals(CascadePIDController.class))
-            ((CascadePIDController)controller).setupAsInventoryCascade(macroII);
-
-
-    }
 
 
     public PurchasesWeeklyPID(@Nonnull PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
                               float derivativeGain) {
         super(purchasesDepartment);
-        controller = new PIDController(proportionalGain,integralGain,derivativeGain,purchasesDepartment.getRandom()); //instantiate the controller
+        controller = ControllerFactory.buildController(CascadePIDController.class,purchasesDepartment.getModel());
+        //if you have a pid controller, play a bit with it
+        controller.setupAsInventoryCascade(purchasesDepartment.getModel());
+        controller.setGainsSlavePID(proportionalGain, integralGain, derivativeGain);
 
     }
 

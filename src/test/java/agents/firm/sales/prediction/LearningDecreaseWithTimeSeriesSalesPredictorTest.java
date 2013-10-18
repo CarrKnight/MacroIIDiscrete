@@ -6,20 +6,6 @@
 
 package agents.firm.sales.prediction;
 
-import agents.firm.sales.SalesDepartment;
-import au.com.bytecode.opencsv.CSVReader;
-import com.google.common.primitives.Doubles;
-import model.utilities.stats.collectors.PeriodicMarketObserver;
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-
-import static org.mockito.Mockito.*;
-
 /**
  * <h4>Description</h4>
  * <p/>
@@ -39,6 +25,7 @@ public class LearningDecreaseWithTimeSeriesSalesPredictorTest {
 
 
     //read from csv and solve, please.
+    /*
     @Test
     public void testing() throws IOException {
 
@@ -135,5 +122,5 @@ public class LearningDecreaseWithTimeSeriesSalesPredictorTest {
 
     }
 
-
+      */
 }

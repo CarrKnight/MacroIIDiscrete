@@ -121,7 +121,7 @@ public class CascadePIDController implements Controller{
                        @Nullable MacroII state, @Nullable Steppable user,  ActionOrder phase)
     {
         //master
-        pid1.adjust(firstTarget,firstInput,isActive,state,user,phase);
+        pid1.adjust(firstTarget,Math.min(firstInput,firstTarget*2),isActive,state,user,phase); //to avoid exxaggerating in disinvesting, the recorded inventory is never more than twice the target
         //slave
         secondTarget = pid1.getCurrentMV();
        //

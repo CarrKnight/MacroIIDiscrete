@@ -94,6 +94,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
      * the sampling speed of the BEEF selling pid
      */
     public int beefPricingSpeed = 100;
+
     private Class< ? extends WorkforceMaximizer> maximizerType =  EveryWeekMaximizer.class;
     /**
      * should workers act like a flow rather than a stock?
@@ -282,17 +283,17 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
     }
 
-    protected void createPurchaseDepartment(Blueprint blueprint, Firm firm) {
+    protected PurchasesDepartment createPurchaseDepartment(Blueprint blueprint, Firm firm) {
+        PurchasesDepartment department = null;
+
         for(GoodType input : blueprint.getInputs().keySet()){
-            PurchasesDepartment department = PurchasesDepartment.getEmptyPurchasesDepartment(Long.MAX_VALUE, firm,
+            department = PurchasesDepartment.getEmptyPurchasesDepartment(Long.MAX_VALUE, firm,
                     getMarkets().get(input));
-            float proportionalGain = model.drawProportionalGain();
-            float integralGain = model.drawIntegrativeGain();
-            float derivativeGain = model.drawDerivativeGain();
             Market market = model.getMarket(input);
 
             department.setOpponentSearch(new SimpleBuyerSearch(market, firm));
             department.setSupplierSearch(new SimpleSellerSearch(market, firm));
+
 
             PurchasesFixedPID control = new PurchasesFixedPID(department,200, PIDController.class,model);
 
@@ -301,10 +302,17 @@ public class OneLinkSupplyChainScenario extends Scenario {
             firm.registerPurchasesDepartment(department, input);
 
 
+            if(input.equals(GoodType.BEEF))
+                buildFoodPurchasesPredictor(department);
+
 
         }
+        return department;
+
     }
 
+    public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
+    }
 
 
     protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {

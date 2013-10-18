@@ -9,7 +9,8 @@ package model.utilities.stats.regression;
 import Jama.Matrix;
 import com.google.common.base.Preconditions;
 import com.sun.istack.internal.Nullable;
-import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
+
+import java.util.Arrays;
 
 /**
  * <h4>Description</h4>
@@ -38,6 +39,8 @@ public class LinearRegression implements UnivariateRegression
      * the slope of the estimated model
      */
     private double slope = Double.NaN;
+
+    public static boolean shortcut = false;
 
 
     /**
@@ -145,7 +148,7 @@ public class LinearRegression implements UnivariateRegression
         return sum;
     }
 
-    public static Matrix regress(double[] y, double[] weights, double[]... regressors) throws CollinearityException {
+    public static Matrix regressOld(double[] y, double[] weights, double[]... regressors) throws CollinearityException {
         //build weights
 
         Preconditions.checkArgument(regressors.length > 0);
@@ -213,11 +216,20 @@ public class LinearRegression implements UnivariateRegression
         return result;
     }
 
-    public static Matrix regress2(double[] y, double[] weights, double[]... regressors) {
-        //build weights
-        double[] intercept = new double[regressors[0].length];
+    public static Matrix regress(double[] y, double[] weights, double[]... regressors) throws CollinearityException
+    {
+        return regress(y,weights,true,regressors);
+    }
 
+    public static Matrix regress(double[] y, double[] weights,  boolean withIntercept,double[]... regressors) throws CollinearityException {
+        Preconditions.checkArgument(regressors.length > 0);
 
+        //build the X matrix
+        Matrix xMatrix= new Matrix(regressors[0].length,regressors.length+1);
+
+        double[] intercept = null;
+        if(withIntercept)
+            intercept = new double[regressors[0].length];
         //if there are weights, do this:
         if(weights!=null)
         {
@@ -225,7 +237,8 @@ public class LinearRegression implements UnivariateRegression
             for(int i=0; i< weights.length; i++)
             {
                 double w = Math.sqrt(weights[i]);
-                intercept[i] = w;
+                if(withIntercept)
+                    intercept[i] = w;
                 //reweight x
                 for(double[] x : regressors)
                     x[i] = x[i] * w;
@@ -237,32 +250,72 @@ public class LinearRegression implements UnivariateRegression
         //otherwise all intercept is one
         else
         {
-            for(int i=0; i<intercept.length; i++)
-                intercept[i]=1;
+            if(withIntercept)
+                Arrays.fill(intercept,1);
         }
 
-        double observations[][] = new double[intercept.length][];
-        for(int i=0; i<observations.length; i++)
+        if(withIntercept)
         {
-            observations[i] = new double[regressors.length+1];
-            observations[i][0] = intercept[i];
-            for(int j=0; j<regressors.length; j++)
+            //add intercept to regressors
+            double[][] newRegressors =new double[regressors.length+1][];
+            newRegressors[0]=intercept;
+            for(int i=0; i< regressors.length; i++)
+                newRegressors[i+1]=regressors[i];
+            regressors=newRegressors;
+        }
+
+
+        //build the XTX matrix and XTY matrix
+        double[][] xtxArray = new double[regressors.length][regressors.length];
+        double[] xtyArray = new double[regressors.length]; Arrays.fill(xtyArray,Double.NaN);
+        for(int firstParameter = 0; firstParameter < regressors.length; firstParameter++)
+            for(int secondParameter = firstParameter; secondParameter < regressors.length; secondParameter++)
             {
-                observations[i][j+1]=regressors[j][i];
+                double squaredSumX = 0; //this goes into X'X
+                double sumXY = 0; //this goes into X'Y
+                boolean xtyNeedsFilling = Double.isNaN(xtyArray[firstParameter]); //if this is true, we fill the X'Y vector too
+                for( int i=0; i < y.length; i++) //get the sum squared
+                {
+                    squaredSumX += regressors[firstParameter][i] * regressors[secondParameter][i];
+                    if(xtyNeedsFilling)
+                        sumXY += regressors[firstParameter][i] * y[i];
+                }
+                //fill the matrices
+                xtxArray[firstParameter][secondParameter] = squaredSumX;
+                if(firstParameter != secondParameter) //the two triangles are symmetric in X'X
+                    xtxArray[secondParameter][firstParameter] = squaredSumX;
+
+                if(xtyNeedsFilling)
+                    xtyArray[firstParameter] = sumXY;
+
+
+
             }
 
+
+        //now we have a small matrix and a vector, should be much quicker to invert!
+
+        //the usual formula is (X'X)^-1 X'y
+        Matrix xtx = new Matrix(xtxArray);
+        //(X'X)^-1:
+        try{
+            xtx = xtx.inverse();
+        }catch (RuntimeException e)
+        {
+            //if we fail here, the xtx is singular, which means collinearity
+            throw new CollinearityException();
         }
+        //(X'Y):
+        Matrix xty = new Matrix(xtyArray,xtyArray.length);
+        //result:
+        Matrix result = xtx.times(xty);
 
-
-
-        OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
-        regression.setNoIntercept(true);
-
-        regression.newSampleData(y,observations);
-
-        Matrix resultingMatrix = new Matrix(regression.estimateRegressionParameters(), regressors.length+1);
-        return resultingMatrix;
+        assert result.getRowDimension()==regressors.length;
+        assert result.getColumnDimension()==1;
+        return result;
     }
+
+
 
 
 

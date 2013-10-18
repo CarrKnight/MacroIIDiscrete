@@ -32,6 +32,8 @@ public enum PlantDataType
 
     TOTAL_WORKERS,
 
+    WORKER_TARGET,
+
     WAGES_PAID_THAT_WEEK
 
 }

@@ -767,8 +767,9 @@ public class OneLinkSupplyChainScenarioRegressionTest
         ExecutorService testRunner = Executors.newFixedThreadPool(5);
         ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
 
+
         //run the test 5 times!
-        for(int i=0; i <1; i++)
+        for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
@@ -840,8 +841,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setNumberOfBeefProducers(1);
         scenario1.setNumberOfFoodProducers(5);
 
-        scenario1.setDivideProportionalGainByThis(50f);
-        scenario1.setDivideIntegrativeGainByThis(50f);
+        scenario1.setDivideProportionalGainByThis(15f);
+        scenario1.setDivideIntegrativeGainByThis(15f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
 
@@ -873,7 +874,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         System.out.println("beef price: " +averageBeefPrice/1000f );
         System.out.println("food price: " +averageFoodPrice/1000f );
         System.out.println("produced: " +averageBeefProduced/1000f );
-        System.out.println();
+        System.out.println(); System.out.flush();
 
         return new OneLinkSupplyChainResult(averageBeefPrice/1000f,
                 averageFoodPrice/1000f,averageBeefProduced/1000f );

@@ -36,11 +36,10 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.dummies.DummyBuyer;
 import model.utilities.stats.collectors.DailyStatCollector;
-import model.utilities.pid.CascadePIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import model.utilities.dummies.DummyBuyer;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -228,7 +227,7 @@ public class SupplyChainScenario extends Scenario
                     department.setOpponentSearch(new SimpleBuyerSearch(market, firm));
                     department.setSupplierSearch(new SimpleSellerSearch(market, firm));
 
-                    PurchasesWeeklyPID control = new PurchasesWeeklyPID(department, CascadePIDController.class,model);
+                    PurchasesWeeklyPID control = new PurchasesWeeklyPID(department);
 
                     department.setControl(control);
                     department.setPricingStrategy(control);

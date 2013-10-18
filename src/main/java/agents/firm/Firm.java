@@ -30,6 +30,7 @@ import lifelines.data.DataManager;
 import lifelines.data.GlobalEventData;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.stats.collectors.enums.PlantDataType;
 import sim.display.GUIState;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -1099,13 +1100,31 @@ public class Firm extends EconomicAgent {
      * @param goodType the type of output
      * @return the total number of workers
      */
-    public int getTotalWorkersWhoProduceThisGood(GoodType goodType)
+    public int getNumberOfWorkersWhoProduceThisGood(GoodType goodType)
     {
         int totalWorkers = 0;
         for(Plant p : plants){
             Integer outputProduced = p.getBlueprint().getOutputs().get(goodType);
             if(outputProduced != null && outputProduced > 0)
                 totalWorkers += p.getNumberOfWorkers();
+        }
+        return totalWorkers;
+
+
+    }
+
+    /**
+     * Count all the workers at plants that produce a specific output
+     * @param goodType the type of output
+     * @return the total number of workers
+     */
+    public int getNumberOfWorkersWhoProducedThisGoodThatDay(GoodType goodType, int day)
+    {
+        int totalWorkers = 0;
+        for(Plant p : plants){
+            Integer outputProduced = p.getBlueprint().getOutputs().get(goodType);
+            if(outputProduced != null && outputProduced > 0)
+                totalWorkers += p.getObservationRecordedThisDay(PlantDataType.TOTAL_WORKERS,day);
         }
         return totalWorkers;
 
@@ -1139,6 +1158,34 @@ public class Firm extends EconomicAgent {
 
 
     }
+
+    /**
+    * Count all the workers at plants that consume (as input) a specific output
+    * @param goodType the type of output
+    * @return the total number of workers
+    */
+    public int getNumberOfWorkersWhoConsumedThisGoodThatDay(GoodType goodType, int day)
+    {
+        int totalWorkers = 0;
+        for(Plant p : plants){
+            if(!goodType.isLabor())
+            {
+                Integer inputProduced = p.getBlueprint().getInputs().get(goodType);
+                if(inputProduced != null && inputProduced > 0)
+                    totalWorkers += p.getObservationRecordedThisDay(PlantDataType.TOTAL_WORKERS,day);
+            }
+            else
+            {
+                if(p.getHr().getMarket().getGoodType().equals(goodType))
+                    totalWorkers += p.getObservationRecordedThisDay(PlantDataType.TOTAL_WORKERS, day);
+
+            }
+        }
+        return totalWorkers;
+
+
+    }
+
 
     /**
      * Checks if at least one plant that was producing a specific good had its production halted today because of missing inputs
@@ -1189,4 +1236,81 @@ public class Firm extends EconomicAgent {
     {
         return humanResources.values();
     }
+
+    /**
+     * when was the last time a meaningful change in workers occurred
+     *
+     * @return the day or -1 if there are none
+     */
+    public int getLatestDayWithMeaningfulWorkforceChangeInProducingThisGood(GoodType goodType)
+    {
+        List<Plant> plants = getListOfPlantsProducingSpecificOutput(goodType);
+        int latestShockDay = -1;
+        for(Plant p : plants)
+        {
+            latestShockDay = Math.max(latestShockDay,p.getLastDayAMeaningfulChangeInWorkforceOccurred());
+        }
+        return latestShockDay;
+    }
+
+
+
+    /**
+     * when was the last time a meaningful change in workers occurred
+     *
+     * @return the day or -1 if there are none
+     */
+    public int getLatestDayWithMeaningfulWorkforceChangeInConsumingThisGood(GoodType goodType)
+    {
+
+        List<Plant> plants = getListOfPlantsUsingSpecificInput(goodType);
+        int latestShockDay = -1;
+        for(Plant p : plants)
+        {
+            latestShockDay = Math.max(latestShockDay,p.getLastDayAMeaningfulChangeInWorkforceOccurred());
+        }
+        return latestShockDay;
+    }
+
+    /**
+     * get all the days, sorted, of when each plant had meaningful changes in workers
+     *
+     * @return the day or -1 if there are none
+     */
+    public List<Integer> getAllDayWithMeaningfulWorkforceChangeInProducingThisGood(GoodType goodType)
+    {
+        Set<Integer> days = new HashSet<>();
+        List<Plant> plants = getListOfPlantsProducingSpecificOutput(goodType);
+        for(Plant p : plants)
+        {
+            days.addAll(p.getShockDays());
+        }
+        //now put it in a list and sort it
+        List<Integer> sortedDays = new ArrayList<>(days);
+        Collections.sort(sortedDays);
+
+        return sortedDays;
+    }
+
+    /**
+     * get all the days, sorted, of when each plant had meaningful changes in workers
+     *
+     * @return the day or -1 if there are none
+     */
+    public List<Integer> getAllDayWithMeaningfulWorkforceChangeInConsumingThisGood(GoodType goodType)
+    {
+        Set<Integer> days = new HashSet<>();
+        List<Plant> plants = getListOfPlantsUsingSpecificInput(goodType);
+        for(Plant p : plants)
+        {
+            days.addAll(p.getShockDays());
+        }
+        //now put it in a list and sort it
+        List<Integer> sortedDays = new ArrayList<>(days);
+        Collections.sort(sortedDays);
+
+        return sortedDays;
+    }
+
+
 }

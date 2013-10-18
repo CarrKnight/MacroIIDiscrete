@@ -3,6 +3,7 @@ package agents.firm.sales.pricing.pid;
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
+import ec.util.MersenneTwisterFast;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.PhaseScheduler;
@@ -38,6 +39,7 @@ public class SmoothedDailyInventoryPricingStrategyTest {
 
         //I assume initially target is 0
         SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
+        when(department.getRandom()).thenReturn(new MersenneTwisterFast());
         Firm firm = mock(Firm.class); when(department.getFirm()).thenReturn(firm);
         MacroII model = new MacroII(1l); when(firm.getModel()).thenReturn(model); when(department.getModel()).thenReturn(model);
         PhaseScheduler scheduler = mock(PhaseScheduler.class);

@@ -266,7 +266,7 @@ public class MonopolistScenario extends Scenario {
     public Firm buildFirm() {
         //only one seller
         final Firm built= new Firm(getModel());
-        built.earn(1000000000l);
+        built.earn(5000000000l);
        // built.setName("monopolist");
         //set up the firm at time 1
         getModel().scheduleSoon(ActionOrder.DAWN, new Steppable() {

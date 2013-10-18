@@ -61,7 +61,7 @@ public abstract class  SalesDepartment  implements Department {
     /**
      * the list of goods that the firm has decided to let the sales department sell
      */
-    protected final Set<Good> toSell;
+    protected final List<Good> toSell;
     /**
      * a map associating to each good to sell the quote submitted for it at a centralized market
      */
@@ -70,7 +70,7 @@ public abstract class  SalesDepartment  implements Department {
      * This is the memory associated with the weekly results of selling. It records whether any good was sold, quoted or failed to sell.
      * A good that remained quoted at the end of the week without being sold is unsold
      */
-    protected final Map<Good,SaleResult> salesResults;
+    protected final HashMap<Good,SaleResult> salesResults;
     /**
      * The firm where the sales department belongs
      */
@@ -166,20 +166,20 @@ public abstract class  SalesDepartment  implements Department {
 
     private boolean aboutToUpdateQuotes = false;
 
-    final private SalesData data;
+    private SalesData data;
 
     public SalesDepartment(SellerSearchAlgorithm sellerSearchAlgorithm, Market market, @Nonnull MacroII model, Firm firm, BuyerSearchAlgorithm buyerSearchAlgorithm) {
         data = new SalesData();
-        cogs = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
+        cogs = new ArrayDeque<>(model.getSalesMemoryLength());
         salesResults = new HashMap<>();
         this.sellerSearchAlgorithm = sellerSearchAlgorithm;
-        totalSales = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
+        totalSales = new ArrayDeque<>(model.getSalesMemoryLength());
         this.market = market;
-        toSell = new LinkedHashSet<>();
+        toSell = new LinkedList<>();
         goodsQuotedOnTheMarket = new HashMap<>();
-        grossMargin = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
+        grossMargin = new ArrayDeque<>(model.getSalesMemoryLength());
         this.model = model;
-        totalUnsold = new ArrayDeque<>(firm.getModel().getSalesMemoryLength());
+        totalUnsold = new ArrayDeque<>(model.getSalesMemoryLength());
         this.firm = firm;
         predictorStrategy = RegressionSalePredictor.Factory.newSalesPredictor(defaultPredictorStrategy,this);
         this.buyerSearchAlgorithm = buyerSearchAlgorithm;
@@ -547,7 +547,9 @@ public abstract class  SalesDepartment  implements Department {
         /********************************************************************
          * Record information
          *******************************************************************/
+        assert toSell.contains(g);
         toSell.remove(g);
+        assert !toSell.contains(g);
         logOutflow(g, finalPrice);
         PurchaseResult toReturn =  PurchaseResult.SUCCESS;
         toReturn.setPriceTrade(finalPrice);
@@ -639,6 +641,7 @@ public abstract class  SalesDepartment  implements Department {
     private void removeFromToSellMasterlist(Good g) {
         assert !firm.has(g); //we should have sold
         boolean removedCorrectly = toSell.remove(g);  //remove it from the list of tosell
+        assert !toSell.contains(g);
         Preconditions.checkState(removedCorrectly,"Removed a good I didn't have!");
     }
 
@@ -726,6 +729,7 @@ public abstract class  SalesDepartment  implements Department {
                 //we made it!
                 assert !firm.has(g);  //we sold it, right?
                 toSell.remove(g);
+                assert !toSell.contains(g);
                 Quote q = goodsQuotedOnTheMarket.remove(g); //if you had a quote, remove it
                 //remove it from the market too, if needed
                 if(q!=null)
@@ -827,8 +831,7 @@ public abstract class  SalesDepartment  implements Department {
         assert soldPercentage >=0 || goodsToSellLastWeek == 0;
 
         //remove all keys
-        for(Good g : recordsToRemove)
-            salesResults.remove(g); //remove them all!
+        salesResults.keySet().removeAll(recordsToRemove); //remove them all!
 
         if(MacroII.SAFE_MODE) //if safe mode is on
         {
@@ -1326,7 +1329,7 @@ public abstract class  SalesDepartment  implements Department {
      * @return the total number of workers
      */
     public int getTotalWorkersWhoProduceThisGood() {
-        return firm.getTotalWorkersWhoProduceThisGood(getGoodType());
+        return firm.getNumberOfWorkersWhoProduceThisGood(getGoodType());
     }
 
 
@@ -1421,5 +1424,18 @@ public abstract class  SalesDepartment  implements Department {
     }
 
 
+    /**
+     * how many days worth of observations are here?
+     */
+    public int numberOfObservations() {
+        return data.numberOfObservations();
+    }
+
+    /**
+     * give this sales department a new memory object
+     */
+    public void setData(SalesData data) {
+        this.data = data;
+    }
 }
 

@@ -42,14 +42,26 @@ public abstract class AbstractWorkerLearningPredictor {
     private final MacroII model;
 
 
-    private int howManyDaysOnAverageToSample = 17;
+    static public int defaultHowManyDaysOnAverageToSample = 17;
 
+    private int howManyDaysOnAverageToSample = defaultHowManyDaysOnAverageToSample;
+
+    static public int defaultMaximumDaysToLookBack = 623;
     /**
      * maximum number of days BEHIND THE LAST SHOCK DAY to examine
      */
-    private int maximumDaysToLookBack = 623;
+    private int maximumDaysToLookBack = defaultMaximumDaysToLookBack;
 
-    private int maximumDaysToLookForward= 330;
+    static public int  defaultMaximumDaysToLookForward = 330;
+
+    private int maximumDaysToLookForward= defaultMaximumDaysToLookForward;
+
+
+
+    private final int defaultHowManyShockDaysBackToLookFor = 10;
+
+    private int howManyShockDaysBackToLookFor = defaultHowManyShockDaysBackToLookFor;
+
 
 
     /**
@@ -120,13 +132,13 @@ public abstract class AbstractWorkerLearningPredictor {
         ArrayList<Integer> daysToObserve = new ArrayList<>();
 
         int lowerlimit = 0;
-        int latestShockDay = findLatestShockDay();
+        int oldestShockDay = findOldestShockDay();
 
         if(now-department.getStartingDay() > maximumDaysToLookBack) {
-            lowerlimit = latestShockDay - maximumDaysToLookBack;
+            lowerlimit = oldestShockDay - maximumDaysToLookBack;
         }
 
-        int upperLimit = Math.min(now,latestShockDay+maximumDaysToLookForward);
+        int upperLimit = Math.min(now,findLatestShockDay()+maximumDaysToLookForward);
 
         for(int i=upperLimit; i>=Math.max(department.getStartingDay(), lowerlimit); i--) {
             unsampledDays++;
@@ -154,6 +166,12 @@ public abstract class AbstractWorkerLearningPredictor {
      */
     abstract protected int findLatestShockDay();
 
+    /**
+     * this checks finds not the latest shockday but the most remote we are to look for, so for example 5 shockdays ago
+     * if HowManyShockDaysBackToLookFor is set to 5!
+     * @return
+     */
+    abstract protected int findOldestShockDay();
 
     /**
      * Gets maximum number of days BEHIND THE LAST SHOCK DAY to examine.
@@ -198,5 +216,13 @@ public abstract class AbstractWorkerLearningPredictor {
 
     public void setMaximumDaysToLookForward(int maximumDaysToLookForward) {
         this.maximumDaysToLookForward = maximumDaysToLookForward;
+    }
+
+    public int getHowManyShockDaysBackToLookFor() {
+        return howManyShockDaysBackToLookFor;
+    }
+
+    public void setHowManyShockDaysBackToLookFor(int howManyShockDaysBackToLookFor) {
+        this.howManyShockDaysBackToLookFor = howManyShockDaysBackToLookFor;
     }
 }

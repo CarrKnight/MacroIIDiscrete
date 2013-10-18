@@ -20,7 +20,6 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.dummies.DummySeller;
-import model.utilities.pid.CascadePIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -83,8 +82,7 @@ public class MonopolistWithInputScenario extends MonopolistScenario {
         department.setSupplierSearch(new SimpleSellerSearch(market, monopolist));
 
       //  PurchasesFixedPID control = new PurchasesFixedPID(department,4, CascadePIDController.class,model);
-        PurchasesWeeklyPID control = new PurchasesWeeklyPID(department,CascadePIDController.class,
-                model);
+        PurchasesWeeklyPID control = new PurchasesWeeklyPID(department);
 
         department.setControl(control);
         department.setPricingStrategy(control);

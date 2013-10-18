@@ -8,12 +8,15 @@ package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
 import com.google.common.base.Preconditions;
-import financial.market.Market;
-import model.MacroII;
+import com.google.common.primitives.Ints;
 import model.utilities.filters.MovingAverage;
-import model.utilities.stats.collectors.PeriodicMarketObserver;
+import model.utilities.stats.collectors.enums.SalesDataType;
 import model.utilities.stats.regression.LinearRegression;
 import model.utilities.stats.regression.MultipleLinearRegression;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * <h4>Description</h4>
@@ -33,15 +36,15 @@ import model.utilities.stats.regression.MultipleLinearRegression;
 public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredictor {
 
 
+    //{usingWeights=false, correctingWithDeltaPrice=false, regressingOnWorkers=true,
+    // howManyDaysForwardToLook=223, howManyDaysBackToLook=1409, oneObservationEveryHowManyDays=1,
+    // howManyShockDaysBackToLookFor=16, dead time=109}
+
     /**
      * The object running the regression
      */
     private final MultipleLinearRegression regression;
 
-    /**
-     * the object observing and memorizing
-     */
-    private final PeriodicMarketObserver observer;
 
     /**
      * the object we are going to feed with "learned" slope to make a prediction
@@ -50,7 +53,7 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
     /**
      * whether it is going to be a WLS regression
      */
-    private boolean usingWeights = true;
+    private boolean usingWeights = false;
 
     /**
      * adds DeltaP as a regressor
@@ -58,31 +61,68 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
     private boolean correctingWithDeltaPrice = false;
 
     /**
-     * The constructor that creates the linear regression, market observer and predictor
-     * @param market the market we want to observe to learn from and eventually predict
-     * @param macroII the model object, needed to schedule the days we are going to make observations
+     * the quantity is usually outflow, unless this is set to true
      */
-    public LearningDecreaseWithTimeSeriesSalesPredictor(Market market, MacroII macroII)
-    {
-        this(new PeriodicMarketObserver(market,macroII));
-    }
+    private boolean regressingOnWorkersRatherThanSales = true;
+
+    private int howManyDaysForwardToLook = 223;
+
+    private int howManyDaysBackToLook = 1400;
+
+    private int oneObservationEveryHowManyDays = 1;
+
+    private int howManyShockDaysBackToLookFor = 16;
+
+    /**
+     * how far back should we look?
+     */
+    private int deadTime = 109;
+
+    private int lastRegressionDay = -1;
+
+    /**
+     * flag that is set to true when the last linear regression was collinear and an exception was thrown
+     */
+    private boolean wasCollinear = false;
+
+    /**
+     * when this is set to true, the regression inertia was 1 so we needed to run a simple y~x
+     */
+    private boolean correctedRegression = false;
+
+
+
+    public static int defaultInitialDecrementDelta = 0;
+
+
 
     /**
      * The constructor that gets the observer from "outside". Notice that the turnOff will close the periodicMarketObserver just the same
-     * @param observer the observer object
      */
-    public LearningDecreaseWithTimeSeriesSalesPredictor(PeriodicMarketObserver observer)
+    public LearningDecreaseWithTimeSeriesSalesPredictor()
     {
-        this.observer = observer;
-        observer.setExact(true);
 
 
         regression = new MultipleLinearRegression();
         predictor = new FixedDecreaseSalesPredictor();
-        predictor.setDecrementDelta(0); //initially stay flat
+        predictor.setDecrementDelta(defaultInitialDecrementDelta); //initially stay flat
 
     }
 
+
+
+    public LearningDecreaseWithTimeSeriesSalesPredictor(boolean usingWeights, boolean correctingWithDeltaPrice, boolean regressingOnWorkersRatherThanSales,
+                                                        int howManyDaysForwardToLook, int howManyDaysBackToLook, int oneObservationEveryHowManyDays,
+                                                        int howManyShockDaysBackToLookFor) {
+        this();
+        this.usingWeights = usingWeights;
+        this.correctingWithDeltaPrice = correctingWithDeltaPrice;
+        this.regressingOnWorkersRatherThanSales = regressingOnWorkersRatherThanSales;
+        this.howManyDaysForwardToLook = howManyDaysForwardToLook;
+        this.howManyDaysBackToLook = howManyDaysBackToLook;
+        this.oneObservationEveryHowManyDays = oneObservationEveryHowManyDays;
+        this.howManyShockDaysBackToLookFor = howManyShockDaysBackToLookFor;
+    }
 
     /**
      * This is called by the firm when it wants to predict the price they can sell to
@@ -98,21 +138,27 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
     public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
         Preconditions.checkArgument(increaseStep >= 0);
 
-        if(observer.getNumberOfObservations() > 50)
-        {
-            updateModel();
+        if(dept.numberOfObservations() > 200 &&
+                dept.getFirm().getLatestDayWithMeaningfulWorkforceChangeInProducingThisGood(dept.getGoodType()) > 0 )
+            try {
+                updateModel(dept);
 
-            double intercept = - extractInterceptOfDemandFromRegression() / extractSlopeOfDemandFromRegression();
-            double slope = 1d/ extractSlopeOfDemandFromRegression();
-            System.out.println("q= " + extractInterceptOfDemandFromRegression() + " + p * " + extractSlopeOfDemandFromRegression());
-            System.out.println("p= " + intercept + " + q * " + slope);
-            predictor.setDecrementDelta((float) -slope);
-
-            //return Math.round(intercept + slope * (dept.getMarket().getYesterdayVolume()+1));
-
-        }
+                if(regression.getResultMatrix() != null)
+                {
+                    double slope =  extractSlopeOfDemandFromRegression();
+                    //      System.out.println("q= " + extractInterceptOfDemandFromRegression() + " + p * " + extractSlopeOfDemandFromRegression());
+                    //     System.out.println("p= " + intercept + " + q * " + slope);
+                    predictor.setDecrementDelta((float) -slope);
+                }
 
 
+            } catch (LinearRegression.CollinearityException e) {
+                wasCollinear = true;
+
+            }
+
+        if(regressingOnWorkersRatherThanSales)
+            increaseStep = 1;
         return predictor.predictSalePriceAfterIncreasingProduction(dept, expectedProductionCost, increaseStep);
     }
 
@@ -130,21 +176,27 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
     {
         Preconditions.checkArgument(decreaseStep >= 0);
 
-        if(observer.getNumberOfObservations() > 200)
-        {
-            updateModel();
+        if(dept.numberOfObservations() > 200 &&
+                dept.getFirm().getLatestDayWithMeaningfulWorkforceChangeInProducingThisGood(dept.getGoodType()) > 0)
+            try{
+                updateModel(dept);
+                if(regression.getResultMatrix() != null)
+                {
+                    double slope = extractSlopeOfDemandFromRegression();
+          //           System.out.println("p= " + extractInterceptOfDemandFromRegression() + " + q * " + slope);
+                    //     System.out.println("p= " + intercept + " + q * " + slope);
+                    predictor.setDecrementDelta((float) -slope);
+                }
 
-            double intercept = - extractInterceptOfDemandFromRegression() / extractSlopeOfDemandFromRegression();
-            double slope = 1d/ extractSlopeOfDemandFromRegression();
-            System.out.println("q= " + extractInterceptOfDemandFromRegression() + " + p * " + extractSlopeOfDemandFromRegression());
-            System.out.println("p= " + intercept + " + q * " + slope);
-            predictor.setDecrementDelta((float) -slope);
+            } catch (LinearRegression.CollinearityException e)
+            {
+                wasCollinear = true;
 
-            return Math.round(intercept + slope * (dept.getMarket().getYesterdayVolume()-1));
-
-        }
+            }
 
 
+        if(regressingOnWorkersRatherThanSales)
+            decreaseStep = 1;
         return predictor.predictSalePriceAfterDecreasingProduction(dept, expectedProductionCost, decreaseStep);
     }
 
@@ -154,7 +206,6 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
     @Override
     public void turnOff() {
         predictor.turnOff();
-        observer.turnOff();
     }
 
     /**
@@ -163,15 +214,22 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
      */
     public double extractSlopeOfDemandFromRegression()
     {
+        if(!correctedRegression)
+        {
         double[] coefficients = regression.getResultMatrix();
 //        assert coefficients.length == 4;
         double alpha = coefficients[1];
-        double gamma = coefficients[2];
+        double beta = coefficients[2];
 
-        if(alpha != 0 && gamma != 0)
-            return - gamma/alpha;
+        if(alpha != 0 && beta != 0)
+            return - beta/alpha;
         else
             return 0;
+        }
+        else
+        {
+            return regression.getResultMatrix()[1];
+        }
     }
 
     /**
@@ -193,88 +251,208 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
     }
 
 
-    private void updateModel() {
+    /**
+     * which days to observe!
+     * @param department  the department to observe
+     * @return an array containing days to observe
+     */
+    private int[] daysToSample(SalesDepartment department)
+    {
+
+        int now = department.getLastObservedDay();
+
+
+        int unsampledDays = 0;
+        //       float probability = 1f / howManyDaysOnAverageToSample;
+        ArrayList<Integer> daysToObserve = new ArrayList<>();
+
+        int lowerLimit = 0;
+        int shockDay = findTheRightShockDay(department);
+
+        if(now-department.getStartingDay() > howManyDaysBackToLook) {
+            lowerLimit = shockDay - howManyDaysBackToLook;
+        }
+
+        int upperLimit = Math.min(now,findLatestShockDay(department)+howManyDaysForwardToLook);
+
+        for(int i=upperLimit; i>=Math.max(department.getStartingDay(), lowerLimit); i--) {
+            unsampledDays++;
+            if(oneObservationEveryHowManyDays <= unsampledDays)
+            {
+                daysToObserve.add(i);
+                unsampledDays =0;
+            }
+        }
+        Collections.reverse(daysToObserve);
+
+
+        return Ints.toArray(daysToObserve);
+
+
+    }
+
+    protected int findLatestShockDay(SalesDepartment department) {
+
+        return department.getFirm().
+                getLatestDayWithMeaningfulWorkforceChangeInProducingThisGood(department.getGoodType());
+    }
+
+    private int findTheRightShockDay(SalesDepartment department) {
+
+        //get all shock days from firm
+        List<Integer> shockDays =
+                department.getFirm().getAllDayWithMeaningfulWorkforceChangeInProducingThisGood(department.getGoodType());
+        Collections.sort(shockDays);
+        Preconditions.checkState(shockDays.size() <=1 || shockDays.get(0) < shockDays.get(shockDays.size()-1));
+        Preconditions.checkState(shockDays.size() > 0);
+
+        if(shockDays.size() <= howManyShockDaysBackToLookFor)
+            return shockDays.get(0);
+        else
+            return shockDays.get(shockDays.size()-howManyShockDaysBackToLookFor);
+
+
+    }
+
+
+    private void updateModel(SalesDepartment department) throws LinearRegression.CollinearityException {
+
+        //we have run this regression already!
+        if(lastRegressionDay == department.getLastObservedDay())
+        {
+            if(wasCollinear)
+                throw new LinearRegression.CollinearityException();
+            else
+                return;
+        }
+
+        int days[] = daysToSample(department);
+        if(days.length <40+deadTime)
+            if(wasCollinear)
+                throw new LinearRegression.CollinearityException();
+            else
+                return;
 
 
 
         //grab the consumption
-        double[] consumption = observer.getQuantitiesConsumedObservedAsArray();
+        double[] independentVariable;
+        if(regressingOnWorkersRatherThanSales)
+            independentVariable = department.getObservationsRecordedTheseDays(SalesDataType.WORKERS_PRODUCING_THIS_GOOD,days);
+        else
+            independentVariable = department.getObservationsRecordedTheseDays(SalesDataType.OUTFLOW,days);
         //grab production
-        double[] supplyGaps = observer.getSupplyGapsAsArray();
-        double[] demandGaps = observer.getDemandGapsAsArray();
-        Preconditions.checkArgument(consumption != null && consumption.length >= 3); //there needs to be enough observations to do this!
+        Preconditions.checkArgument(independentVariable != null && independentVariable.length >= 3); //there needs to be enough observations to do this!
 
         //create delta consumption and lagged consumption
-        double[] laggedConsumption = new double[consumption.length-1];
-        double[] deltaConsumption = new double[consumption.length-1];
-        for(int i=1; i < consumption.length; i++)
+        int lag = deadTime;
+        double[] laggedIndependentVariable = new double[independentVariable.length- lag];
+        double[] todayIndependentVariable = new double[independentVariable.length-1];
+        double[] deltaIndepentendVariable = new double[independentVariable.length- lag];
+        for(int i= lag; i < independentVariable.length; i++)
         {
-            laggedConsumption[i-1] = consumption[i-1];
-            deltaConsumption[i-1] = consumption[i] - consumption[i-1];
+            todayIndependentVariable[i-1]=independentVariable[i];
+            laggedIndependentVariable[i- lag] = independentVariable[i- lag];
+            deltaIndepentendVariable[i- lag] = independentVariable[i] - independentVariable[i- lag];
 
         }
         //reality check
-        assert laggedConsumption[0] == consumption[0]; //same starting point
+  //      assert laggedIndependentVariable[0] == independentVariable[0]; //same starting point
 
         //now create price by lopping off the first element
-        double[] todayPrice = new double[consumption.length-1];
-        double[] price = observer.getPricesObservedAsArray();
-        double[] deltaPrice = new double[consumption.length-1];
-        for(int i=1; i<todayPrice.length+1; i++)
+        double[] todayPrice = new double[independentVariable.length-1];
+        double[] price = department.getObservationsRecordedTheseDays(SalesDataType.AVERAGE_CLOSING_PRICES, days);
+        double[] laggedPrice = new double[independentVariable.length- lag];
+        double[] deltaPrice = new double[independentVariable.length- lag];
+        for(int i= lag; i<laggedPrice.length+ lag; i++)
         {
             todayPrice[i-1]=price[i];
-            deltaPrice[i-1] = price[i] - price[i-1];
+            deltaPrice[i- lag] = price[i] - price[i- lag];
+            laggedPrice[i- lag] = price[i- lag];
+
         }
-        assert todayPrice.length == laggedConsumption.length;
+        laggedPrice[0] = price[0];
+
+        assert laggedPrice.length == todayIndependentVariable.length;
 
         //build weights
         double[] weights=null;
         if(usingWeights)
         {
-            weights = new double[laggedConsumption.length];
+            double[] supplyGap = department.getObservationsRecordedTheseDays(SalesDataType.SUPPLY_GAP,days);
+
+            weights = new double[todayIndependentVariable.length];
             MovingAverage<Double> ma = new MovingAverage<>(5);
             for(int i=0; i < weights.length; i++)
             {
-                ma.addObservation(Math.abs(demandGaps[i])+Math.abs(supplyGaps[i]));
-                weights[i] = 1/(1 + Math.exp(Math.abs(demandGaps[i])+Math.abs(supplyGaps[i])));
+                ma.addObservation(Math.abs(supplyGap[i]));
+                if(price[i]<=0)
+                    weights[i]=0;
+                else
+                    weights[i] = 1d/(1d + Math.exp(Math.abs(ma.getSmoothedObservation())));
             }
             weights[0]=weights[4];
             weights[1]=weights[4];
             weights[2]=weights[4];
             weights[3]=weights[4];
+
+            //now go through all the weights, make sure at least some are non 0
+            int nonZeroWeights = 0;
+            for(double weight: weights)
+                if(Math.abs(weight)>.01d)
+                    nonZeroWeights++;
+            if(nonZeroWeights<40+lag)
+                throw new LinearRegression.CollinearityException();
+
+
         }
         //done with that torture, just regress!
 
         //should I use deltaPrice?
 
+        lastRegressionDay = department.getLastObservedDay();
+
+
 
         double[] clonedWeights = weights == null ? null : weights.clone();
 
         try{
-        if(correctingWithDeltaPrice)
-            regression.estimateModel(deltaConsumption.clone(),clonedWeights,laggedConsumption.clone(),todayPrice.clone(),deltaPrice.clone());
-        else
-            regression.estimateModel(deltaConsumption.clone(),clonedWeights,laggedConsumption.clone(),todayPrice.clone());
+            if(correctingWithDeltaPrice)
+            {
+                regression.estimateModel(deltaPrice,clonedWeights,laggedPrice,laggedIndependentVariable,deltaIndepentendVariable);
+                wasCollinear = false;
+                correctedRegression=false;
+
+            }
+            else{
+                regression.estimateModel(deltaPrice,clonedWeights,laggedPrice,laggedIndependentVariable);
+                wasCollinear = false;
+                correctedRegression=false;
+
+
+            }
         }
         catch (LinearRegression.CollinearityException e)
         {
-            //it must be that the deltaPrice were collinear, try again!
             try{
-                clonedWeights = weights == null ? null : weights.clone();
-                regression.estimateModel(deltaConsumption.clone(),clonedWeights,laggedConsumption.clone(),todayPrice.clone());
+                //it might be collinear because inertia is 1, so try:
+                regression.estimateModel(laggedPrice,null,laggedIndependentVariable);
+                wasCollinear = false;
+                correctedRegression=true;
+
+
             }
             catch (LinearRegression.CollinearityException ex)
             {
-                //again collinear, that's impossiburu!
-                throw new RuntimeException("Too many collinearities, I can't deal with this!");
+                throw  ex;
             }
+
         }
 
 
 
 
-        if(extractSlopeOfDemandFromRegression() == 0)
-            System.err.println("nuuuu");
+
 
 
 
@@ -329,4 +507,67 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
     public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
         return predictor.predictSalePriceWhenNotChangingPoduction(dept);
     }
+
+    public int getLastRegressionDay() {
+        return lastRegressionDay;
+    }
+
+    public void setLastRegressionDay(int lastRegressionDay) {
+        this.lastRegressionDay = lastRegressionDay;
+    }
+
+    public int getHowManyDaysForwardToLook() {
+        return howManyDaysForwardToLook;
+    }
+
+    public void setHowManyDaysForwardToLook(int howManyDaysForwardToLook) {
+        this.howManyDaysForwardToLook = howManyDaysForwardToLook;
+    }
+
+    public int getHowManyDaysBackToLook() {
+        return howManyDaysBackToLook;
+    }
+
+    public void setHowManyDaysBackToLook(int howManyDaysBackToLook) {
+        this.howManyDaysBackToLook = howManyDaysBackToLook;
+    }
+
+    public int getOneObservationEveryHowManyDays() {
+        return oneObservationEveryHowManyDays;
+    }
+
+    public void setOneObservationEveryHowManyDays(int oneObservationEveryHowManyDays) {
+        this.oneObservationEveryHowManyDays = oneObservationEveryHowManyDays;
+    }
+
+    public int getHowManyShockDaysBackToLookFor() {
+        return howManyShockDaysBackToLookFor;
+    }
+
+    public void setHowManyShockDaysBackToLookFor(int howManyShockDaysBackToLookFor) {
+        this.howManyShockDaysBackToLookFor = howManyShockDaysBackToLookFor;
+    }
+
+    /**
+     * Gets by how much we decrease the price predicted in respect to current departmental price.
+     *
+     * @return Value of by how much we increase/decrease the price predicted in respect to current departmental price.
+     */
+    public float getDecrementDelta() {
+        return predictor.getDecrementDelta();
+    }
+
+    public boolean isRegressingOnWorkersRatherThanSales() {
+        return regressingOnWorkersRatherThanSales;
+    }
+
+    public int getDeadTime() {
+        return deadTime;
+    }
+
+    public void setDeadTime(int deadTime) {
+        this.deadTime = deadTime;
+    }
+
+
 }

@@ -84,8 +84,9 @@ public class AbstractWorkerLearningPredictorTest {
                 macroII.schedule.step(macroII);
 
 
-            System.out.println(predictor.getDecrementDelta() + " - " + p1 * a);
-            assertEquals(predictor.getDecrementDelta(),p1 * a ,.5d);
+            System.out.println(predictor.getDecrementDelta() + " - " + p1 * a + " - " +macroII.seed());
+            assertEquals(predictor.getDecrementDelta(),p1*a ,.5d);
+
 
         }
 

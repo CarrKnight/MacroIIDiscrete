@@ -73,6 +73,7 @@ public class PurchasesWeeklyPIDTest {
 
         when(dept.getFirm()).thenReturn(firm);
         when(dept.getRandom()).thenReturn(model.random);
+        when(dept.getModel()).thenReturn(model);
         when(dept.getGoodType()).thenReturn(GoodType.GENERIC);
         model.schedule = mock(Schedule.class);
 
@@ -124,6 +125,7 @@ public class PurchasesWeeklyPIDTest {
         when(firm.getListOfPlantsUsingSpecificInput(GoodType.GENERIC)).thenReturn(plants);
 
         when(dept.getFirm()).thenReturn(firm);
+        when(dept.getModel()).thenReturn(model);
         when(dept.getRandom()).thenReturn(model.random);
         when(firm.getModel()).thenReturn(model);
         when(dept.getGoodType()).thenReturn(GoodType.GENERIC);
@@ -187,6 +189,8 @@ public class PurchasesWeeklyPIDTest {
         when(dept.getRandom()).thenReturn(model.random);
         when(firm.getModel()).thenReturn(model);
         when(dept.getGoodType()).thenReturn(GoodType.GENERIC);
+        when(dept.getModel()).thenReturn(model);
+
         model.schedule = mock(Schedule.class);
 
         Machinery machinery = mock(Machinery.class);         //stub machinery, makes it easy to control production speed.

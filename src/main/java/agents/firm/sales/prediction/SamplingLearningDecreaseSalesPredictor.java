@@ -6,12 +6,14 @@
 
 package agents.firm.sales.prediction;
 
-import agents.firm.production.Plant;
+import agents.firm.Firm;
 import agents.firm.purchases.prediction.AbstractWorkerLearningPredictor;
 import agents.firm.sales.SalesDepartment;
+import goods.GoodType;
 import model.MacroII;
 import model.utilities.stats.collectors.enums.SalesDataType;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -91,7 +93,7 @@ public class SamplingLearningDecreaseSalesPredictor extends AbstractWorkerLearni
         if(newSlope)
             predictor.setDecrementDelta((float) -regression.getSlope());
 
-       // System.out.println("sales slope: " + predictor.getDecrementDelta());
+        // System.out.println("sales slope: " + predictor.getDecrementDelta());
 
         return predictor.predictSalePriceAfterIncreasingProduction(dept, expectedProductionCost, 1); //we increase step only by 1 because we are focusing on workers, not outflow
     }
@@ -145,13 +147,52 @@ public class SamplingLearningDecreaseSalesPredictor extends AbstractWorkerLearni
      */
     @Override
     protected int findLatestShockDay() {
-        List<Plant> plants = department.getFirm().getListOfPlantsProducingSpecificOutput(department.getGoodType());
-        int latestShockDay = -1;
-        for(Plant p : plants)
+
+        return department.getFirm().getLatestDayWithMeaningfulWorkforceChangeInProducingThisGood(department.getGoodType());
+    }
+
+
+
+    //look for the oldest shock day to examine
+    @Override
+    protected int findOldestShockDay(){
+        //get all shock days from firm
+        Firm owner = department.getFirm();
+        GoodType goodType = department.getGoodType();
+        //get all the shock days
+        List<Integer> shockDays =
+                owner.getAllDayWithMeaningfulWorkforceChangeInProducingThisGood(goodType);
+        Collections.sort(shockDays);
+        assert shockDays.size() <= 1 || shockDays.get(0) < shockDays.get(shockDays.size() - 1);
+
+        if(shockDays.size() == 0)
+            return -1;
+        if(shockDays.size() <= getHowManyShockDaysBackToLookFor())
+            return shockDays.get(0);
+
+
+        //choose it so that the range of workers (x) is at least 5
+        int todayWorkers = owner.getNumberOfWorkersWhoProduceThisGood(goodType);
+        int i;  int minX = todayWorkers; int maxX = todayWorkers;
+        for(i=shockDays.size()-1; i>0;i--)
         {
-            latestShockDay = Math.max(latestShockDay,p.getLastDayAMeaningfulChangeInWorkforceOccurred());
+            //if there are at least 5 workers differnce between then and now
+            int thatDayWorkers = owner.getNumberOfWorkersWhoProducedThisGoodThatDay(goodType, shockDays.get(i));
+            if(thatDayWorkers < minX)
+                minX = thatDayWorkers;
+            if(thatDayWorkers>maxX)
+                maxX = thatDayWorkers;
+            assert maxX>= minX;
+            if(
+                    maxX - minX >= 3 &&
+                    shockDays.size()-i >= getHowManyShockDaysBackToLookFor() )
+                break;
         }
-        return latestShockDay;    }
+
+ //      System.out.println(shockDays.size()-getHowManyShockDaysBackToLookFor() +"---" + i + "----" + shockDays.size());
+
+        return shockDays.get(i);
+    }
 
 
     /**

@@ -1072,5 +1072,16 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         return dataStorage.getStartingDay();
     }
 
+    public List<Integer> getShockDays() {
+        return dataStorage.getShockDays();
+    }
 
+    public int howManyShockDays() {
+        return dataStorage.howManyShockDays();
+    }
+
+    public int getWorkerTarget()
+    {
+        return getHr().getWorkerTarget();
+    }
 }

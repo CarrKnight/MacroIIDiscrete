@@ -6,11 +6,14 @@
 
 package agents.firm.purchases.prediction;
 
-import agents.firm.production.Plant;
+import agents.firm.Firm;
 import agents.firm.purchases.PurchasesDepartment;
+import com.google.common.base.Preconditions;
+import goods.GoodType;
 import model.MacroII;
 import model.utilities.stats.collectors.enums.PurchasesDataType;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -135,15 +138,51 @@ public class SamplingLearningIncreasePurchasePredictor extends  AbstractWorkerLe
 
     public int findLatestShockDay()
     {
-        List<Plant> plants = department.getFirm().getListOfPlantsUsingSpecificInput(department.getGoodType());
-        int latestShockDay = -1;
-        for(Plant p : plants)
-        {
-            latestShockDay = Math.max(latestShockDay,p.getLastDayAMeaningfulChangeInWorkforceOccurred());
-        }
-        return latestShockDay;
+        return department.getFirm().getLatestDayWithMeaningfulWorkforceChangeInConsumingThisGood(department.getGoodType());
 
 
     }
 
+    /**
+     * this checks finds not the latest shockday but the most remote we are to look for, so for example 5 shockdays ago
+     * if HowManyShockDaysBackToLookFor is set to 5!
+     *
+     * @return
+     */
+    @Override
+    protected int findOldestShockDay() {
+        //get all shock days from firm
+        Firm owner = department.getFirm();
+        GoodType goodType = department.getGoodType();
+        List<Integer> shockDays =
+                owner.getAllDayWithMeaningfulWorkforceChangeInConsumingThisGood(goodType);
+        Collections.sort(shockDays);
+        Preconditions.checkState(shockDays.size() <= 1 || shockDays.get(0) < shockDays.get(shockDays.size() - 1));
+        if(shockDays.size() == 0)
+            return -1;
+
+        if(shockDays.size() <= getHowManyShockDaysBackToLookFor())
+            return shockDays.get(0);
+
+
+
+        //choose it so that the range of workers (x) is at least 5
+        int todayWorkers = owner.getNumberOfWorkersWhoConsumeThisGood(goodType);
+        int i;  int minX = todayWorkers; int maxX = todayWorkers;
+        for(i=shockDays.size()-1; i>0;i--)
+        {
+            //if there are at least 5 workers difference between then and now
+            int thatDayWorkers = owner.getNumberOfWorkersWhoConsumedThisGoodThatDay(goodType, shockDays.get(i));
+            if(thatDayWorkers < minX)
+                minX = thatDayWorkers;
+            if(thatDayWorkers>maxX)
+                maxX = thatDayWorkers;
+            assert maxX>= minX;
+            if(
+                    maxX - minX >= 3 &&
+                            shockDays.size()-i >= getHowManyShockDaysBackToLookFor() )
+                break;
+        }
+        return shockDays.get(i);
+    }
 }

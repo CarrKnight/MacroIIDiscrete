@@ -104,7 +104,7 @@ public class WeeklyInventoryControl extends AbstractInventoryControl implements 
 
 
         //if this is an update whereas we moved from targeting 0 to targeting something else, buy
-        if(oldNeeds ==0 && weeklyNeeds > 0)
+        if(oldNeeds ==0 && weeklyNeeds > 0 && canBuy())
             getPurchasesDepartment().buy();
 
     }
@@ -157,7 +157,6 @@ public class WeeklyInventoryControl extends AbstractInventoryControl implements 
 
         int dangerLevel = (int) Math.min(singleProductionRunNeed, weeklyNeeds);
 
-
         if(currentLevel < dangerLevel)
             return Level.DANGER;
         else if(currentLevel < weeklyNeeds)
@@ -196,6 +195,7 @@ public class WeeklyInventoryControl extends AbstractInventoryControl implements 
      */
     @Override
     protected boolean shouldIBuy(HasInventory source, GoodType type, int quantity) {
+
         return rateInventory(quantity).compareTo(Level.ACCEPTABLE) <= 0; //keep buying as long as it is not at acceptable levels
     }
 

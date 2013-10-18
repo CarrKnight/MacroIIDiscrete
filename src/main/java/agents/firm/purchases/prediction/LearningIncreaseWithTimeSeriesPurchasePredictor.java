@@ -176,14 +176,14 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
         //done with that torture, just regress!
         double[] clonedWeights = weights == null ? null : weights.clone();
         try{
-            regression.estimateModel(deltaProduction.clone(),clonedWeights,laggedProduction.clone(),todayPrice.clone(),deltaPrice.clone());
+            regression.estimateModel(deltaProduction,clonedWeights,laggedProduction,todayPrice,deltaPrice);
         }
         catch (LinearRegression.CollinearityException collinearit)
         {
             //it must be that the deltaPrice were collinear, try again!
             try{
 
-            regression.estimateModel(deltaProduction.clone(),clonedWeights,laggedProduction.clone(),todayPrice.clone());
+            regression.estimateModel(deltaProduction,clonedWeights,laggedProduction,todayPrice);
             }
             catch (LinearRegression.CollinearityException ex)
             {
@@ -197,7 +197,7 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
                     weights[i] = 1/(1 + (Math.abs(demandGaps[i])+Math.abs(supplyGaps[i])));
                 }
                 try {
-                    regression.estimateModel(deltaProduction.clone(),weights,laggedProduction.clone(),todayPrice.clone());
+                    regression.estimateModel(deltaProduction,weights,laggedProduction,todayPrice);
                 } catch (LinearRegression.CollinearityException e) {
                     throw new RuntimeException("Too many collinearities, I can't deal with this!");
 

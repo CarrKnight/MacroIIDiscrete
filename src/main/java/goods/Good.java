@@ -26,7 +26,7 @@ public class Good implements Comparable<Good>{
     
     private long costOfProduction;
 
-    private int id;
+    private final long id;
 
 
     /**
@@ -87,7 +87,7 @@ public class Good implements Comparable<Good>{
         if(comparison != 0)
             return  comparison;
         else{
-            comparison=  Integer.compare(id,o.id);
+            comparison=  Long.compare(id,o.id);
             assert comparison != 0; //id should all be different
             return comparison;
         }
