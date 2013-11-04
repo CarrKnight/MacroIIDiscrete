@@ -4,8 +4,9 @@
  * See the file "LICENSE" for more information
  */
 
-package agents.firm;
+package agents.firm.utilities;
 
+import agents.firm.Firm;
 import agents.firm.production.Plant;
 import agents.firm.sales.SalesDepartment;
 import financial.MarketEvents;
@@ -239,7 +240,7 @@ public class WeeklyProfitReport implements ProfitReport {
     @Override
     public float getNetProfitRatio(Plant p)
     {
-        return revenuesPerPlant.get(p)/revenuesPerPlant.get(p);
+        return profitsPerPlant.get(p)/revenuesPerPlant.get(p);
 
     }
 

@@ -55,7 +55,7 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
     /**
      * the maximum number of simulation days
      */
-    private final int simulationDays;
+    private int simulationDays;
 
     /**
      * which phase are we in?
@@ -344,4 +344,7 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
     }
 
 
+    public void setSimulationDays(int simulationDays) {
+        this.simulationDays = simulationDays;
+    }
 }

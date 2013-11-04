@@ -2,7 +2,7 @@ package tests.plantcontrol;
 
 import agents.Person;
 import agents.firm.Firm;
-import agents.firm.WeeklyProfitReport;
+import agents.firm.utilities.WeeklyProfitReport;
 import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;

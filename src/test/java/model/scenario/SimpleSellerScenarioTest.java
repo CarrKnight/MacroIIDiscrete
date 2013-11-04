@@ -496,7 +496,7 @@ public class SimpleSellerScenarioTest {
     @Test
     public void rightPriceAndQuantityTestWithSmoothedInventoryShiftOneAtATime()
     {
-        for(int i=0; i<50; i++)
+        for(int i=0; i<5000; i++)
         {
             //to sell 4 you need to price them between 60 and 51 everytime, even when you stock up some inventory initially
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -509,15 +509,20 @@ public class SimpleSellerScenarioTest {
             macroII.setScenario(scenario);
             macroII.start();
             while(macroII.schedule.getTime()<3500)
+            {
                 macroII.schedule.step(macroII);
+            }
 
 
             //price should be any between 60 and 51
+            System.out.println(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
             assertTrue(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice() <= 160);
             assertTrue(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice() >= 151);
             assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(), 4 * 7); //every day 4 goods should have been traded
 
         }
+
+
 
 
     }

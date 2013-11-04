@@ -60,7 +60,8 @@ public class MarkupFollowerTest {
         other = new Firm(model);
 
         market = new OrderBookMarket(GoodType.GENERIC);
-        dept = SalesDepartmentFactory.incompleteSalesDepartment(producer, market, null, null, agents.firm.sales.SalesDepartmentAllAtOnce.class); //useless null is useless
+        dept = SalesDepartmentFactory.incompleteSalesDepartment(producer, market, null, null,
+                agents.firm.sales.SalesDepartmentAllAtOnce.class); //useless null is useless
         producer.registerSaleDepartment(dept,GoodType.GENERIC);
 
  //       dept.getFirm().getSalesDepartments().put(GoodType.GENERIC,dept);

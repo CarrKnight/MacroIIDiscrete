@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package agents.firm;
+package agents.firm.utilities;
 
 import agents.firm.production.Plant;
 import goods.GoodType;

@@ -305,4 +305,15 @@ public class CascadePIDController implements Controller{
         return pid1.getCurrentMV();
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("CascadePIDController{");
+        sb.append("secondTarget=").append(secondTarget);
+        sb.append("\n pid1=").append(pid1);
+        sb.append("\n pid2Root=").append(pid2Root);
+        sb.append("\n pid2=").append(pid2);
+        sb.append("\n inventoryCascadeMode=").append(inventoryCascadeMode);
+        sb.append('}');
+        return sb.toString();
+    }
 }

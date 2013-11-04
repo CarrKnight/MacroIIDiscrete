@@ -3,7 +3,7 @@ package tests.purchase;
 import agents.EconomicAgent;
 import agents.Inventory;
 import agents.firm.Firm;
-import agents.firm.NumberOfPlantsListener;
+import agents.firm.utilities.NumberOfPlantsListener;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.PlantListener;

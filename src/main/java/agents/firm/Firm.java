@@ -15,6 +15,10 @@ import agents.firm.production.Plant;
 import agents.firm.production.PlantStatus;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.utilities.DailyProfitReport;
+import agents.firm.utilities.NumberOfPlantsListener;
+import agents.firm.utilities.ProfitReport;
+import agents.firm.utilities.WeeklyProfitReport;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -126,7 +130,7 @@ public class Firm extends EconomicAgent {
         purchaseDepartments = new EnumMap<>(GoodType.class);
         humanResources = HashBiMap.create(1); //factory method for this
         numberOfPlantsListeners = new HashSet<>(); //prepare for listeners
-        profitReport = new WeeklyProfitReport(this);
+        profitReport = new DailyProfitReport(this);
         //create the timeline manager
 
         if(MacroII.hasGUI()){

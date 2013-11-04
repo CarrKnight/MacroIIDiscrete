@@ -56,7 +56,12 @@ public enum GoodType {
     /**
      * Toil and sweat.
      */
-    LABOR_BEEF(false,true);
+    LABOR_BEEF(false,true),
+
+    /**
+     * runs cars
+     */
+    OIL(false,false);
 
 
     /**

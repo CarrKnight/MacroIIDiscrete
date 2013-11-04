@@ -23,9 +23,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -94,7 +94,7 @@ public class SalesDepartmentTest {
         //force it in the toSell list
         Field field = SalesDepartment.class.getDeclaredField("toSell");
         field.setAccessible(true);
-        Set<Good> toSell = (Set<Good>) field.get (dept);
+        LinkedList<Good> toSell = (LinkedList<Good>) field.get (dept);
         toSell.add(toQuote);
 
         try{
@@ -163,7 +163,7 @@ public class SalesDepartmentTest {
 
         Field field = SalesDepartment.class.getDeclaredField("toSell");
         field.setAccessible(true);
-        Set<Good> toSell = (Set<Good>) field.get (dept);
+        LinkedList<Good> toSell = (LinkedList<Good>) field.get (dept);
         assertEquals(2, toSell.size()); //2 things left to sell
 
         field = SalesDepartment.class.getDeclaredField("salesResults");
@@ -273,7 +273,7 @@ public class SalesDepartmentTest {
 
         Field field = SalesDepartment.class.getDeclaredField("toSell");
         field.setAccessible(true);
-        Set<Good> toSell = (Set<Good>) field.get (dept);
+        LinkedList<Good> toSell = (LinkedList<Good>) field.get (dept);
 
 
         for(int i=0; i<10; i++){

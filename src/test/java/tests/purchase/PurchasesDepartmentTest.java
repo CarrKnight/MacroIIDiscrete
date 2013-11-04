@@ -4,7 +4,7 @@ import agents.EconomicAgent;
 import agents.Inventory;
 import agents.InventoryListener;
 import agents.firm.Firm;
-import agents.firm.NumberOfPlantsListener;
+import agents.firm.utilities.NumberOfPlantsListener;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.inventoryControl.FixedInventoryControl;
 import agents.firm.purchases.inventoryControl.InventoryControl;

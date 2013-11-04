@@ -9,6 +9,7 @@ package model.scenario;
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
+import agents.firm.sales.prediction.MarketSalesPredictor;
 import agents.firm.sales.prediction.PricingSalesPredictor;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
@@ -44,7 +45,7 @@ public class TripolistScenario extends MonopolistScenario{
 
 
 
-    int additionalCompetitors = 4;
+    int additionalCompetitors = 2;
 
     /**
      * A linked list of all competiors, so that we can query them in constant ordering
@@ -53,6 +54,9 @@ public class TripolistScenario extends MonopolistScenario{
 
     public TripolistScenario(MacroII macroII) {
         super(macroII);
+        //make default maximizer as always climbing so reviewers can replicate the paper!
+        super.setControlType(MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_ALWAYS_MOVING);
+
 
         //instantiate the list
         competitors = new LinkedList<>();
@@ -89,6 +93,9 @@ public class TripolistScenario extends MonopolistScenario{
     }
 
 
+
+
+
     public int getAdditionalCompetitors() {
         return additionalCompetitors;
     }
@@ -100,17 +107,76 @@ public class TripolistScenario extends MonopolistScenario{
 
     public static void main(String[] args)
     {
+
+        try{
+
+        CSVWriter writer = new CSVWriter(new FileWriter("competitiveMultipleRuns2.cvs"));
+
+        //run the test 5 times
+        for(int i=0; i<5000; i++)
+        {
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            final TripolistScenario scenario1 = new TripolistScenario(macroII);
+            scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+            scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
+            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_ALWAYS_MOVING);
+            scenario1.setAdditionalCompetitors(3);
+            scenario1.setWorkersToBeRehiredEveryDay(false);
+
+            // scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
+            scenario1.setSalesPricePreditorStrategy(MarketSalesPredictor.class);
+            //   scenario1.setPurchasesPricePreditorStrategy(PricingPurchasesPredictor.class);
+
+
+
+            //assign scenario
+            macroII.setScenario(scenario1);
+
+            macroII.start();
+
+            while(macroII.schedule.getTime()<4500)
+                macroII.schedule.step(macroII);
+
+            float averagePrice = 0;
+            float averageQ = 0;
+            for(int j=0; j<500; j++)
+            {
+                macroII.schedule.step(macroII);
+                averagePrice += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
+                averageQ += macroII.getMarket(GoodType.GENERIC).getYesterdayVolume();
+
+            }
+            averagePrice = averagePrice/500f;
+            averageQ = averageQ/500f;
+
+            writer.writeNext(new String[]{Double.toString(averagePrice),Double.toString(averageQ)});
+            System.out.println(averagePrice + "," + averageQ );
+            //assertEquals(averagePrice, 72,5);
+            //assertEquals(averageQ, 29,5);
+        }
+
+
+        }catch (Exception e){}
+
+
+    }
+
+
+    public static void main2(String[] args)
+    {
         //set up
-        final MacroII macroII = new MacroII(System.currentTimeMillis());
+        final MacroII macroII = new MacroII(0l);
         final TripolistScenario scenario1 = new TripolistScenario(macroII);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
-        scenario1.setControlType(MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID);
-        scenario1.setAdditionalCompetitors(4);
+        scenario1.setControlType(MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_ALWAYS_MOVING);
+        scenario1.setAdditionalCompetitors(2);
+        scenario1.setWorkersToBeRehiredEveryDay(false);
 
         // scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
         scenario1.setSalesPricePreditorStrategy(PricingSalesPredictor.class);
      //   scenario1.setPurchasesPricePreditorStrategy(PricingPurchasesPredictor.class);
+
 
 
 
@@ -123,7 +189,7 @@ public class TripolistScenario extends MonopolistScenario{
 
         //CSV writer set up
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("runs/monopolist/"+"tripolist_withoutElasticityPrediction"+".csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter("runs/monopolist/"+"tripolist0"+".csv"));
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
 
@@ -187,10 +253,10 @@ public class TripolistScenario extends MonopolistScenario{
 
 
         //run!
-        while(macroII.schedule.getTime()<15000)
+        while(macroII.schedule.getTime()<150000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+            printProgressBar(150001,(int)macroII.schedule.getSteps(),100);
         }
 
 

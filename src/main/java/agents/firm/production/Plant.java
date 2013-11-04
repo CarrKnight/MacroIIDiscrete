@@ -19,7 +19,9 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
+import model.utilities.stats.collectors.ConsumptionData;
 import model.utilities.stats.collectors.PlantData;
+import model.utilities.stats.collectors.ProductionData;
 import model.utilities.stats.collectors.enums.PlantDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -45,6 +47,8 @@ import java.util.*;
 public class Plant implements Department, Steppable, Deactivatable, InventoryListener {
 
 
+    private final PlantProductionAndConsumptionCounter counter;
+
     /**
      * Minimal constructor
      */
@@ -64,11 +68,15 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         this.listeners = new LinkedHashSet<>();
         this.model = owner.getModel();
         this.dataStorage = new PlantData();
+        this.productionData = new ProductionData();
+        this.consumptionData = new ConsumptionData();
 
         //add yourself as an inventory listener AND log
         owner.addInventoryListener(this);
         owner.addAgentToLog(this);
 
+
+        counter = new PlantProductionAndConsumptionCounter(this);
 
 
     }
@@ -160,16 +168,15 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
      */
     private PlantData dataStorage;
 
+    /**
+     * the production data object
+     */
+    private ProductionData productionData;
 
     /**
-     * Production counter
+     * the consumption data object
      */
-    private int thisWeekProductionRate[] = new int[GoodType.values().length];
-
-    /**
-     * Last week production counter
-     */
-    private int lastWeekProductionRate[] = new int[GoodType.values().length];
+    private ConsumptionData consumptionData;
 
     /**
      * Get the simulation randomizer from the owner.
@@ -203,6 +210,9 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
      */
     public void start()
     {
+        counter.start(getModel());
+        productionData.start(getModel(),this);
+        consumptionData.start(getModel(),this);
         dataStorage.start(getModel(),this);
     }
 
@@ -279,6 +289,7 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
             {
                 Good consumed = owner.consume(input.getKey()); //consume it!
                 totalCostOfInputs += consumed.getLastValidPrice(); //the price for which the input was bought is added to the sum of costs
+                counter.newConsumption(consumed.getType());
             }
 
         }
@@ -296,12 +307,13 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
             {
 
                 Good newProduct = new Good(output.getKey(),owner,costStrategy.unitOutputCost(output.getKey(), totalCostOfInputs));  //BUILD!
-                thisWeekProductionRate[output.getKey().ordinal()]++;
                 owner.receive(newProduct, null);
                 owner.reactToPlantProduction(newProduct); //tell the owner!
+                counter.newProduction(newProduct.getType());//tell the counter
             }
             //tell the firm it is a new production!
             if(totalOutput > 0)
+                //this goes to the FIRM's total production counter, rather than the local plant one
                 owner.countNewProduction(output.getKey(),totalOutput);
 
         }
@@ -603,6 +615,8 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
      */
     public void weekEnd(double time) {
         age++;
+        counter.weekEnd(); //tell the production counter weekend arrived.
+
         if(age == usefulLife)
         {//if the plant is too old
             status = PlantStatus.OBSOLETE; //the plant stops
@@ -613,13 +627,12 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
 
         }
         //reset counters!
-        lastWeekProductionRate = thisWeekProductionRate;
-        thisWeekProductionRate = new int[GoodType.values().length];
         lastWeekInputCosts = thisWeekInputCosts;
         thisWeekInputCosts = 0;
 
         //make sure it stays obsolete
         assert age < usefulLife || status == PlantStatus.OBSOLETE;
+        assert consumptionData.numberOfObservations() == productionData.numberOfObservations();
     }
 
     /**
@@ -803,6 +816,9 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
 
         //turn off the data storage
         dataStorage.turnOff();
+        productionData.turnOff();
+        consumptionData.turnOff();
+        counter.turnOff();
 
     }
 
@@ -834,12 +850,26 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
     }
 
     public int[] getLastWeekThroughput() {
-        return lastWeekProductionRate;
+        return counter.getProducedLastWeek();
     }
 
     public int[] getThisWeekThroughput() {
-        return thisWeekProductionRate;
+        return counter.getProducedThisWeek();
     }
+
+    public int[] getProducedYesterday() {
+        return counter.getProducedYesterday();
+    }
+
+    public int[] getProducedToday() {
+        return counter.getProducedToday();
+    }
+
+
+    public int getProducedToday(GoodType produced) {
+        return counter.getProducedToday()[produced.ordinal()];
+    }
+
 
     /**
      * Get the human resources object associated with the plant (it asks the firm about it)
@@ -1056,6 +1086,103 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         return dataStorage.numberOfObservations();
     }
 
+
+    /**
+     * return the latest price observed
+     */
+    public Double getLatestProductionObservation(GoodType type) {
+        return productionData.getLatestObservation(type);
+    }
+
+    /**
+     * returns a copy of all the observed last prices so far!
+     */
+    public double[] getAllRecordedProductionObservations(GoodType type) {
+        return productionData.getAllRecordedObservations(type);
+    }
+
+    /**
+     * utility method to analyze only specific days
+     */
+    public double[] getProductionObservationsRecordedTheseDays(GoodType type, @Nonnull int[] days) {
+        return productionData.getObservationsRecordedTheseDays(type, days);
+    }
+
+    /**
+     * utility method to analyze only specific days
+     */
+    public double[] getProductionObservationsRecordedTheseDays(GoodType type, int beginningDay, int lastDay) {
+        return productionData.getObservationsRecordedTheseDays(type, beginningDay, lastDay);
+    }
+
+    /**
+     * utility method to analyze only  a specific day
+     */
+    public double getProductionObservationRecordedThisDay(GoodType type, int day) {
+        return productionData.getObservationRecordedThisDay(type, day);
+    }
+
+    public int getLastProductionObservedDay() {
+        return productionData.getLastObservedDay();
+    }
+
+    /**
+     * how many days worth of observations are here?
+     */
+    public int numberOfProductionObservations() {
+        return productionData.numberOfObservations();
+    }
+
+
+
+    /**
+     * return the latest price observed
+     */
+    public Double getLatestConsumptionObservation(GoodType type) {
+        return consumptionData.getLatestObservation(type);
+    }
+
+
+    /**
+     * returns a copy of all the observed last prices so far!
+     */
+    public double[] getAllRecordedConsumptionObservations(GoodType type) {
+        return consumptionData.getAllRecordedObservations(type);
+    }
+
+    /**
+     * utility method to analyze only specific days
+     */
+    public double[] getConsumptionObservationsRecordedTheseDays(GoodType type, @Nonnull int[] days) {
+        return consumptionData.getObservationsRecordedTheseDays(type, days);
+    }
+
+    /**
+     * utility method to analyze only specific days
+     */
+    public double[] getConsumptionObservationsRecordedTheseDays(GoodType type, int beginningDay, int lastDay) {
+        return consumptionData.getObservationsRecordedTheseDays(type, beginningDay, lastDay);
+    }
+
+    /**
+     * utility method to analyze only  a specific day
+     */
+    public double getConsumptionObservationRecordedThisDay(GoodType type, int day) {
+        return consumptionData.getObservationRecordedThisDay(type, day);
+    }
+
+    public int getLastConsumptionObservedDay() {
+        return consumptionData.getLastObservedDay();
+    }
+
+    /**
+     * how many days worth of observations are here?
+     */
+    public int numberOfConsumptionObservations() {
+        return consumptionData.numberOfObservations();
+    }
+
+
     public int getLastDayAMeaningfulChangeInWorkforceOccurred() {
         return dataStorage.getLastDayAMeaningfulChangeInWorkforceOccurred();
     }
@@ -1083,5 +1210,24 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
     public int getWorkerTarget()
     {
         return getHr().getWorkerTarget();
+    }
+
+    public int[] getConsumedLastWeek() {
+        return counter.getConsumedLastWeek();
+    }
+
+    public int[] getConsumedThisWeek() {
+        return counter.getConsumedThisWeek();
+    }
+
+    public int[] getConsumedYesterday() {
+        return counter.getConsumedYesterday();
+    }
+
+    public int[] getConsumedToday() {
+        return counter.getConsumedToday();
+    }
+    public int getConsumedToday(GoodType type) {
+        return counter.getConsumedToday()[type.ordinal()];
     }
 }

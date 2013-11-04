@@ -7,7 +7,7 @@
 package model.utilities.dummies;
 
 import agents.EconomicAgent;
-import agents.firm.DummyProfitReport;
+import agents.firm.utilities.DummyProfitReport;
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
 import financial.market.Market;

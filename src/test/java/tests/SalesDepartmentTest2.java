@@ -27,13 +27,13 @@ import org.junit.Test;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 /**
  * <h4>Description</h4>
@@ -113,7 +113,7 @@ public class SalesDepartmentTest2 {
         //force it in the toSell list
         Field field = SalesDepartment.class.getDeclaredField("toSell");
         field.setAccessible(true);
-        Set<Good> toSell = (Set<Good>) field.get (dept1);
+        LinkedList<Good> toSell = (LinkedList<Good>) field.get (dept1);
         toSell.add(toQuote);
 
         try{
@@ -268,7 +268,7 @@ public class SalesDepartmentTest2 {
 
         Field field = SalesDepartment.class.getDeclaredField("toSell");
         field.setAccessible(true);
-        Set<Good> toSell = (Set<Good>) field.get (dept1);
+        LinkedList<Good> toSell = (LinkedList<Good>) field.get (dept1);
         assertEquals(1, toSell.size()); //2 things left to sell
 
         field = SalesDepartment.class.getDeclaredField("salesResults");

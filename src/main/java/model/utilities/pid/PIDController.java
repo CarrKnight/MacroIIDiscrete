@@ -366,4 +366,15 @@ public class PIDController implements Controller{
     public float getIntegral() {
         return integral;
     }
+
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("PIDController{");
+        sb.append("proportionalGain=").append(proportionalGain);
+        sb.append(", integralGain=").append(integralGain);
+        sb.append(", derivativeGain=").append(derivativeGain);
+        sb.append('}');
+        return sb.toString();
+    }
 }

@@ -1,7 +1,7 @@
 package tests;
 
 import agents.firm.Firm;
-import agents.firm.WeeklyProfitReport;
+import agents.firm.utilities.WeeklyProfitReport;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;

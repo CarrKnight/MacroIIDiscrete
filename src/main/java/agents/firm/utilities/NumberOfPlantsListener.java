@@ -4,8 +4,9 @@
  * See the file "LICENSE" for more information
  */
 
-package agents.firm;
+package agents.firm.utilities;
 
+import agents.firm.Firm;
 import agents.firm.production.Plant;
 
 /**

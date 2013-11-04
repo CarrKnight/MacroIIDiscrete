@@ -16,6 +16,7 @@ import lifelines.LifelinesPanel;
 import lifelines.data.DataManager;
 import lifelines.data.GlobalEventData;
 import model.MacroII;
+import model.utilities.Deactivatable;
 import model.utilities.ExchangeNetwork;
 import model.utilities.stats.collectors.MarketData;
 import model.utilities.stats.collectors.enums.MarketDataType;
@@ -41,7 +42,7 @@ import java.util.List;
  * Time: 10:50 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class Market{
+public abstract class Market implements Deactivatable{
 
     /**
      * The array holding all the trade listeners.
@@ -389,7 +390,7 @@ public abstract class Market{
 
 
         PurchaseResult result = policy.trade(buyer,seller,good,price,buyerQuote,sellerQuote,this);
-        //  prices.setMaximumItemCount(100);
+        prices.setMaximumItemCount(100);
         markups.setMaximumItemCount(3);
 
         if(result == PurchaseResult.SUCCESS)
@@ -397,6 +398,8 @@ public abstract class Market{
 
             //record
             lastPrice = price;
+            if(good.getLastValidPrice() != 0)
+                markups.addOrUpdate(buyer.getModel().getCurrentSimulationDay(),price/good.getLastValidPrice());
             todaySumOfClosingPrices +=price;
             lastFilledAsk = sellerQuote.getPriceQuoted();
             lastFilledBid = buyerQuote.getPriceQuoted();
@@ -413,9 +416,9 @@ public abstract class Market{
                 //record it on the timeline
                 long time = buyer.getModel().getCurrentSimulationTimeInMillis();
                 records.event(buyer,MarketEvents.BOUGHT,time,"price: " + price + ", seller: " +seller );
-                records.event(seller,MarketEvents.SOLD,time,"price: " + price + ", buyer: " +buyer);
+                records.event(seller, MarketEvents.SOLD, time, "price: " + price + ", buyer: " + buyer);
                 //register it on the network!
-                registerTradeOnNetwork(seller,buyer,good.getType(),1);
+                registerTradeOnNetwork(seller, buyer, good.getType(), 1);
             }
 
 
@@ -432,7 +435,6 @@ public abstract class Market{
      */
     public void weekEnd(MacroII model){
         lastWeekVolume = weeklyVolume;
-        volume.add(new Week(model.getCurrentSimulationTime()),weeklyVolume,"volume");
         //       if(!getGoodType().isLabor())
         //  volume.add(new Week(model.getWeeksPassed(), (int) (model.getWeeksPassed() / model.getWeekLength())),weeklyVolume); //addSalesDepartmentListener it to the weeks
         weeklyVolume = 0;
@@ -1059,4 +1061,8 @@ public abstract class Market{
         return marketData.getLastObservedDay()-1;
     }
 
+
+    public TimeSeries getPricesTimeSeriesGUI() {
+        return prices;
+    }
 }

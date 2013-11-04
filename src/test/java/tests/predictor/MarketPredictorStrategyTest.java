@@ -12,12 +12,12 @@ import financial.market.OrderBookMarket;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
-import org.junit.Test;
 import model.utilities.dummies.DummyBuyer;
 import model.utilities.dummies.DummySeller;
+import org.junit.Test;
 
 import java.lang.reflect.Field;
-import java.util.Set;
+import java.util.LinkedList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -227,7 +227,7 @@ public class MarketPredictorStrategyTest {
         //hack to simulate sellThis without actually calling it
         Field field = SalesDepartment.class.getDeclaredField("toSell");
         field.setAccessible(true);
-        Set<Good> toSell = (Set<Good>) field.get (department);
+        LinkedList<Good> toSell = (LinkedList<Good>) field.get (department);
         toSell.add(sold);
 
         market.submitSellQuote(department.getFirm(),250l,sold);

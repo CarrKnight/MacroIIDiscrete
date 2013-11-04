@@ -8,7 +8,7 @@ package agents.firm.purchases.inventoryControl;
 
 import agents.HasInventory;
 import agents.firm.Firm;
-import agents.firm.NumberOfPlantsListener;
+import agents.firm.utilities.NumberOfPlantsListener;
 import agents.firm.purchases.PurchasesDepartment;
 import goods.GoodType;
 import agents.firm.production.Plant;

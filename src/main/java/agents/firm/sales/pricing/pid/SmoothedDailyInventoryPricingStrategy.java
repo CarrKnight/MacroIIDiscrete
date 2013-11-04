@@ -92,7 +92,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
 
 
         //parameters found through genetic algorithm
-        setGainsMasterPID(0.035f + ((float)salesDepartment.getRandom().nextGaussian()) / 100f,
+        setGainsMasterPID(0.035f,
                 0,
                 0);
 
@@ -251,5 +251,13 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
 
     public void setGainsMasterPID(float proportionalGain, float integralGain, float derivativeGain) {
         controllerUsedByDelegate.setGainsMasterPID(proportionalGain, integralGain, derivativeGain);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("SmoothedDailyInventoryPricingStrategy{");
+        sb.append("controllerUsedByDelegate=").append(controllerUsedByDelegate);
+        sb.append('}');
+        return sb.toString();
     }
 }

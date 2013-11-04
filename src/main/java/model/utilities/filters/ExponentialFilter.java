@@ -83,4 +83,6 @@ public class ExponentialFilter<T extends Number> implements Filter<T>
         return !Float.isNaN(smoothedValue);
 
     }
+
+
 }

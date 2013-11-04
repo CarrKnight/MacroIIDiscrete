@@ -7,7 +7,7 @@
 package agents;
 
 
-import agents.firm.DailyProductionAndConsumptionCounter;
+import agents.firm.utilities.DailyProductionAndConsumptionCounter;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.Bankruptcy;
@@ -319,8 +319,11 @@ public abstract class EconomicAgent implements Agent, HasInventory{
     @Override
     public void consumeAll() {
         for(GoodType g : GoodType.values())
-            countNewConsumption(g,getInventory().hasHowMany(g));
+            if(hasHowMany(g) > 0){
+                countNewConsumption(g,getInventory().hasHowMany(g));
+            }
         getInventory().consumeAll();
+
     }
 
     /**

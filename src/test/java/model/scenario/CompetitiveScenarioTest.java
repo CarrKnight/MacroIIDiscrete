@@ -11,8 +11,10 @@ import agents.firm.personell.HumanResources;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
+import agents.firm.sales.prediction.MarketSalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
+import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import goods.GoodType;
 import model.MacroII;
@@ -39,7 +41,7 @@ import static org.junit.Assert.assertEquals;
 public class CompetitiveScenarioTest {
 
 
-    /*
+
     @Test
     public void rightPriceAndQuantityTestAsHillClimber()
     {
@@ -91,7 +93,7 @@ public class CompetitiveScenarioTest {
 
 
     }
-    */
+
 
 
     @Test

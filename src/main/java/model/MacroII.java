@@ -23,6 +23,7 @@ import model.utilities.Deactivatable;
 import model.utilities.scheduler.PhaseScheduler;
 import model.utilities.scheduler.Priority;
 import model.utilities.scheduler.TrueRandomScheduler;
+import org.jfree.data.time.Day;
 import sim.display.GUIState;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -75,7 +76,7 @@ public class MacroII extends SimState{
     /**
      * This is just how many milliseconds are there in a week
      */
-    private static long MILLISECONDS_IN_A_WEEK = 604800000l;
+    private final static long MILLISECONDS_IN_A_WEEK = 604800000l;
 
 
     /**
@@ -355,31 +356,36 @@ public class MacroII extends SimState{
 
     }
 
+
+    /**
+     * Translate the "time" of the schedule into a Date object
+     */
+    public Day getCurrentSimulationDay(){
+
+
+        return new Day(getCurrentSimulationTime());
+
+
+
+    }
+
     /**
      * Translate the "time" of the schedule into a Date object
      */
     public long getCurrentSimulationTimeInMillis(){
 
 
-        long time = (long) schedule.getTime(); //get the time
+        double time =  getMainScheduleTime();
 
 
         if(time <= 0 && Market.TESTING_MODE ) //in tests if schedule is not initiated it will be <0, so floor it
             time = 1;
 //        assert time >= 0: time;
 
-        long weeks = (long) (time / (float)weekLength); //get how many weeks have passed
-        assert weeks == weeksPassed || Market.TESTING_MODE :
-                weeks + "," + time + " , " + weeksPassed;
-
-        float remainder =  (time % weekLength);
-//        assert remainder>=0;
-        long remainderInMilliseconds = (long) (((remainder)/weekLength) *   MILLISECONDS_IN_A_WEEK);
-        assert remainderInMilliseconds <= MILLISECONDS_IN_A_WEEK;
-//        assert remainderInMilliseconds >= 0;
 
 
-        return  weeks * MILLISECONDS_IN_A_WEEK + remainderInMilliseconds;
+
+        return  Math.round(time * (1000*60*60*24d));
 
     }
 
@@ -405,14 +411,6 @@ public class MacroII extends SimState{
             }
         }, 7);
     }
-
-    /**
-     * How many weeks have passed in the model?
-     */
-    public int getWeeksPassed() {
-        return weeksPassed;
-    }
-
     /**
      * @return the value for the field minSuccessRate.
      */
@@ -519,6 +517,11 @@ public class MacroII extends SimState{
     public void registerGUI(MacroIIGUI gui){
         MacroII.gui = gui;
         hasGUI = true;
+
+        //this is temporary so that the reviewers can duplicate correctly my results with GUI without compiling the code on their own
+        //and calling all the various scattered mains
+        if(phaseScheduler instanceof TrueRandomScheduler)
+            ((TrueRandomScheduler)phaseScheduler).setSimulationDays(5000);
     }
 
     /**

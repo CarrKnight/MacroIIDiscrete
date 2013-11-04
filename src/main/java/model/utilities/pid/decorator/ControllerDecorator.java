@@ -76,4 +76,12 @@ public abstract class ControllerDecorator implements Controller
     public float getOffset() {
         return toDecorate.getOffset();
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("ControllerDecorator{");
+        sb.append("decorated=").append(toDecorate);
+        sb.append('}');
+        return sb.toString();
+    }
 }

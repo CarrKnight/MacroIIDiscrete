@@ -4,10 +4,11 @@
  * See the file "LICENSE" for more information
  */
 
-package agents.firm;
+package agents.firm.utilities;
 
 import agents.EconomicAgent;
 import agents.Person;
+import agents.firm.Firm;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;

@@ -26,6 +26,10 @@ import financial.MarketEvents;
 import financial.market.Market;
 import goods.Good;
 import goods.GoodType;
+import model.utilities.ActionOrder;
+import model.utilities.scheduler.Priority;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,6 +61,13 @@ public class HumanResources extends PurchasesDepartment {
      * The wages paid by the hr last weekEnd
      */
     private long wagesPaid = 0;
+
+    /**
+     * updated in its own little steppable. Done at production because that's really where the workers surely are present
+     */
+    private long wagesPaidLastProductionPhase = 0;
+
+    private boolean turnOffCalled = false;
 
     /**
      * When the pay structure is true, there is one single wage over all the firm. Otherwise each agent works for the wage he is hired for
@@ -249,6 +260,23 @@ public class HumanResources extends PurchasesDepartment {
         super.start();
         plant.start();
 
+
+        getModel().scheduleSoon(ActionOrder.PRODUCTION,new Steppable() {
+            @Override
+            public void step(SimState state) {
+
+                if(turnOffCalled)
+                    return;
+
+                wagesPaidLastProductionPhase = 0;
+                //go through all the workers
+                for(Person p : plant.getWorkers())
+                    wagesPaidLastProductionPhase+=p.getWage();
+
+                getModel().scheduleTomorrow(ActionOrder.PRODUCTION,this,Priority.AFTER_STANDARD);
+            }
+        }, Priority.AFTER_STANDARD);
+
     }
 
     /**
@@ -282,12 +310,15 @@ public class HumanResources extends PurchasesDepartment {
                 assert maxPrice(getGoodType(),getMarket()) == newWage;
                 //change the wage to the worker
                 p.changeInWage(newWage,getFirm());
+
             }
 
         //tell the plant to tell the others
         getPlant().fireWageEvent(newWage);
 
     }
+
+
 
     /**
      * In addition to checking the budget, hr also pays everybody's wages.
@@ -497,6 +528,12 @@ public class HumanResources extends PurchasesDepartment {
 
     }
 
+    @Override
+    public void turnOff()
+    {
+        super.turnOff();
+        turnOffCalled = true;
+    }
 
     /**
      * This is somewhat similar to rate current level. It estimates the excess (or shortage)of goods purchased. It is basically
@@ -514,6 +551,10 @@ public class HumanResources extends PurchasesDepartment {
     {
         return ((PlantControl)getPricingStrategy()).getTarget();
 
+    }
+
+    public long getWeeklyWagesPaidLastProductionPhase() {
+        return wagesPaidLastProductionPhase;
     }
 }
 

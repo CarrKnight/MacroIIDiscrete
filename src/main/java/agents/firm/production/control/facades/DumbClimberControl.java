@@ -7,16 +7,17 @@
 package agents.firm.production.control.facades;
 
 import agents.firm.personell.HumanResources;
+import agents.firm.production.Plant;
+import agents.firm.production.control.FactoryProducedTargetAndMaximizePlantControl;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
-import agents.firm.purchases.inventoryControl.Level;
-import goods.Good;
-import goods.GoodType;
-import agents.firm.production.Plant;
 import agents.firm.production.control.maximizer.algorithms.hillClimbers.AlwaysMovingHillClimber;
 import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.Machinery;
+import agents.firm.purchases.inventoryControl.Level;
+import goods.Good;
+import goods.GoodType;
 
 import javax.annotation.Nullable;
 
@@ -42,9 +43,18 @@ public class DumbClimberControl implements PlantControl
     final private PlantControl control;
 
 
-    public DumbClimberControl(HumanResources hr){
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeterWithQuickFiring.class, SetTargetThenTryAgainMaximizer.class,
-                AlwaysMovingHillClimber.class).getControl();
+    public DumbClimberControl(HumanResources hr)
+    {
+        FactoryProducedTargetAndMaximizePlantControl
+                controlBundle = TargetAndMaximizePlantControl.PlantControlFactory(hr,
+                PIDTargeterWithQuickFiring.class,
+                SetTargetThenTryAgainMaximizer.class,
+                AlwaysMovingHillClimber.class);
+        SetTargetThenTryAgainMaximizer workforceMaximizer = (SetTargetThenTryAgainMaximizer) controlBundle.getWorkforceMaximizer();
+        workforceMaximizer.setWeeksToMakeObservation(1);
+        workforceMaximizer.setRandomspeed(true);
+        control = controlBundle.getControl();
+
 
     }
 

@@ -90,7 +90,7 @@ public class MonopolistScenario extends Scenario {
     /**
      * should you rehire workers every day? To have an effect it has to be set BEFORE start is called!
      */
-    private boolean workersToBeRehiredEveryDay = true;
+    private boolean workersToBeRehiredEveryDay = false;
 
     /**
      * The blueprint that the monopolist will use
@@ -113,7 +113,7 @@ public class MonopolistScenario extends Scenario {
      * this is somewhat of an ugly trick to get the gui to be able to select the kind of class
      * the human resource should use. Mason GUI knows how to deal with enums
      */
-    private MonopolistScenarioIntegratedControlEnum controlType = MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL;
+    private MonopolistScenarioIntegratedControlEnum controlType = MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_SIMPLE;
 
     /**
      * Do agents go around look for better offers all the time?

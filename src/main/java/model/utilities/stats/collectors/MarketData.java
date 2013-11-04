@@ -11,6 +11,7 @@ import financial.market.Market;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.enums.MarketDataType;
+import org.jfree.data.time.TimeSeries;
 import sim.engine.SimState;
 
 import javax.annotation.Nonnull;
@@ -76,10 +77,19 @@ public class MarketData extends DataStorage<MarketDataType>
         data.get(MarketDataType.VOLUME_PRODUCED).add((double) marketToFollow.countTodayProductionByRegisteredSellers());
         data.get(MarketDataType.DEMAND_GAP).add((double)marketToFollow.sumDemandGaps());
         data.get(MarketDataType.SUPPLY_GAP).add((double) marketToFollow.sumSupplyGaps());
-        data.get(MarketDataType.AVERAGE_CLOSING_PRICE).add((double) marketToFollow.getTodayAveragePrice());
+        float todayAveragePrice = marketToFollow.getTodayAveragePrice();
+        data.get(MarketDataType.AVERAGE_CLOSING_PRICE).add((double) todayAveragePrice);
+
+
+        //if needed, update GUI
+        TimeSeries pricesTimeSeriesGUI = marketToFollow.getPricesTimeSeriesGUI();
+        if(pricesTimeSeriesGUI!=null)
+            pricesTimeSeriesGUI.addOrUpdate(model.getCurrentSimulationDay(),todayAveragePrice);
 
         //reschedule
         model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING,this);
+
+
 
 
 

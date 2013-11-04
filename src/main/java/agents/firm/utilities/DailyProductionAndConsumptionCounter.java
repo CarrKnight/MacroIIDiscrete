@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package agents.firm;
+package agents.firm.utilities;
 
 import com.google.common.base.Preconditions;
 import goods.GoodType;

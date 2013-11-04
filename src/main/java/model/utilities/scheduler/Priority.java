@@ -40,7 +40,12 @@ public enum Priority
     /**
      * with this priority the step will take place AFTER the steps that don't specify their priority
      */
-    AFTER_STANDARD
+    AFTER_STANDARD,
+
+    /**
+     * should be the very last one!
+     */
+    FINAL
 
 
 
