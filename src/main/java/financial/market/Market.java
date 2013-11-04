@@ -1065,4 +1065,8 @@ public abstract class Market implements Deactivatable{
     public TimeSeries getPricesTimeSeriesGUI() {
         return prices;
     }
+
+    public TimeTableXYDataset getVolumeTimeSeriesGUI() {
+        return volume;
+    }
 }

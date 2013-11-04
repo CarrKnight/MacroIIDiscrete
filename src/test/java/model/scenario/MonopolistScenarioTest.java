@@ -310,6 +310,7 @@ public class MonopolistScenarioTest {
             }
             while (scenario1.getControlType().equals(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_ALWAYS_MOVING));*/
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
+            scenario1.setWorkersToBeRehiredEveryDay(true);
             //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
             if(macroII.random.nextBoolean())
                 scenario1.setAskPricingStrategy(SmoothedDailyInventoryPricingStrategy.class);

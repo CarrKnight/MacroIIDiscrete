@@ -70,7 +70,8 @@ public class MarketData extends DataStorage<MarketDataType>
 
         //memorize
         data.get(MarketDataType.CLOSING_PRICE).add((double) marketToFollow.getLastPrice());
-        data.get(MarketDataType.VOLUME_TRADED).add((double) marketToFollow.getTodayVolume());
+        int todayVolume = marketToFollow.getTodayVolume();
+        data.get(MarketDataType.VOLUME_TRADED).add((double) todayVolume);
         data.get(MarketDataType.VOLUME_CONSUMED).add((double) marketToFollow.countTodayConsumptionByRegisteredBuyers());
         data.get(MarketDataType.SELLERS_INVENTORY).add((double) marketToFollow.countTodayInventoryByRegisteredSellers());
         data.get(MarketDataType.BUYERS_INVENTORY).add((double) marketToFollow.countTodayInventoryByRegisteredBuyers());
@@ -84,8 +85,11 @@ public class MarketData extends DataStorage<MarketDataType>
         //if needed, update GUI
         TimeSeries pricesTimeSeriesGUI = marketToFollow.getPricesTimeSeriesGUI();
         if(pricesTimeSeriesGUI!=null)
+        {
             pricesTimeSeriesGUI.addOrUpdate(model.getCurrentSimulationDay(),todayAveragePrice);
+            marketToFollow.getVolumeTimeSeriesGUI().add(model.getCurrentSimulationDay(),todayVolume,"Volume");
 
+        }
         //reschedule
         model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING,this);
 
