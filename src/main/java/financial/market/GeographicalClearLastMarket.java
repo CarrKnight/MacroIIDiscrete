@@ -10,7 +10,8 @@ import agents.EconomicAgent;
 import agents.firm.Department;
 import agents.firm.GeographicalFirm;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.base.Supplier;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import financial.Bankruptcy;
 import financial.utilities.ActionsAllowed;
@@ -18,6 +19,9 @@ import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
+import javafx.collections.ObservableSet;
 import model.MacroII;
 import model.scenario.oil.OilCustomer;
 import model.utilities.ActionOrder;
@@ -27,9 +31,7 @@ import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * <h4>Description</h4>
@@ -51,13 +53,6 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
 
     private boolean isActive = true;
 
-    protected GeographicalClearLastMarket(GoodType goodType) {
-        super(goodType);
-
-       //you'll schedule yourself in the start
-
-    }
-
 
     /**
      * call the super method and then schedule itself (also registers among the deactivables)
@@ -78,13 +73,33 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
      * here we store both all the firms that made a quote and their quotes if multiples. It's handy because
      * it keeps the iteration order steady
      */
-    private final LinkedHashMultimap<GeographicalFirm,Quote> sellersWhoPlacedAQuote = LinkedHashMultimap.create();
+    private final Multimap<GeographicalFirm,Quote> sellersWhoPlacedAQuote;
+
+    /**
+     * the multimap "buyersWhoPlacedAQuote" uses this map as the workhorse. I am keeping it as a separate field that is observable
+     * so that it takes care of all the listeners blah blah
+     *
+     */
+    private final ObservableMap<OilCustomer,Collection<Quote>> buyerBackerMap;
+
+    /**
+     * We are going to use this set for buyers instead of the one created by the abstract class because we need it observable!
+     * I am creating checks so that only OilCustomers can be put in here. It's ugly but hopefully I'll change this later
+     */
+    private ObservableSet<EconomicAgent> buyers;
+
+    /**
+     * We are going to use this set for sellers instead of the one created by the abstract class because we need it observable!
+     * I am creating checks so that only GeographicalFirm can be put in here. It's ugly but hopefully I'll change this later
+     */
+    private ObservableSet<EconomicAgent> sellers;
+
 
     /**
      * here we store both all the firms that made a quote and their quotes if multiples. It's handy because
      * it keeps the iteration order steady                     -
      */
-    private final LinkedHashMultimap<OilCustomer,Quote> buyersWhoPlacedAQuote = LinkedHashMultimap.create();
+    private final Multimap<OilCustomer,Quote> buyersWhoPlacedAQuote;
 
     /**
      * this is set to false when we are going through the quotes to clear them, and set to true whenever
@@ -96,6 +111,95 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
      */
     private int indexToLoopTo = 0;
 
+
+    public GeographicalClearLastMarket(GoodType goodType) {
+        super(goodType);
+
+        //the buyers quote are kept in a priority queue from the highest to the lowest
+        //but because these are oilCustomers only, I can "cheat" and order the keys too by
+        TreeMap<OilCustomer, Collection<Quote>> backingBuyerTreeMapPOJO = new TreeMap<>(new Comparator<OilCustomer>() {
+            @Override
+            public int compare(OilCustomer o1, OilCustomer o2) {
+                return -Long.compare(o1.getMaxPrice(), o2.getMaxPrice());
+
+            }
+        });
+        //now we are going to encase the treemap in an observable property so that I don't have to write a million listeners there
+        buyerBackerMap = FXCollections.observableMap(backingBuyerTreeMapPOJO);
+
+        buyersWhoPlacedAQuote = Multimaps.newMultimap(
+                buyerBackerMap,
+                new Supplier<PriorityQueue<Quote>>() {
+                    @Override
+                    public PriorityQueue<Quote> get() {
+                        return new PriorityQueue<>(1,new Comparator<Quote>() {
+                            @Override
+                            public int compare(Quote o1, Quote o2) {
+                                return -Long.compare(o1.getPriceQuoted(),o2.getPriceQuoted());
+
+
+                            }
+
+                        });
+                    }
+                });
+
+
+
+        //sellers quote are sorted from lowest to highest
+        sellersWhoPlacedAQuote = Multimaps.newMultimap(
+                new LinkedHashMap<GeographicalFirm, Collection<Quote>>(),
+                new Supplier<PriorityQueue<Quote>>() {
+                    @Override
+                    public PriorityQueue<Quote> get() {
+                        return new PriorityQueue<>(1,new Comparator<Quote>() {
+                            @Override
+                            public int compare(Quote o1, Quote o2) {
+                                return Long.compare(o1.getPriceQuoted(),o2.getPriceQuoted());
+
+
+                            }
+
+                        });
+                    }
+                });
+
+
+        //make sure the buyers and sellers were initialized
+        assert buyers != null;
+        assert sellers!=null;
+
+        //you'll schedule yourself in the start
+
+
+    }
+
+    /**
+     * this just creates a new hashset, but can be overriden by subclasses if they need a special set where to keep the buyers
+     *
+     * @return just an empty hashset
+     */
+    @Override
+    protected Set<EconomicAgent> buildSellerSet() {
+        //create an observable set
+        buyers = FXCollections.observableSet(new HashSet<EconomicAgent>());
+        //let the rest of the market use the observable set to register/deregister buyers
+        return buyers;
+
+    }
+
+    /**
+     * this just creates a new hashset, but can be overriden by subclasses if they need a special set where to keep the buyers
+     *
+     * @return just an empty hashset
+     */
+    @Override
+    protected Set<EconomicAgent> buildBuyerSet() {
+        //create the observable set
+        sellers = FXCollections.observableSet(new HashSet<EconomicAgent>());
+        //feed the observable set into the market, good good.
+        return sellers;
+    }
 
     /**
      * Only accept hasLocation buyers!
@@ -171,6 +275,8 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
         if(MacroII.SAFE_MODE) //double check the good isn't already on sale
             Preconditions.checkState(seller.getModel().getCurrentPhase().equals(ActionOrder.TRADE));
         Preconditions.checkArgument(price>=0);
+
+
 
 
 
@@ -283,6 +389,27 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
         changedMap = true;
     }
 
+
+    /**
+     * Remove all these quotes by the buyer
+     *
+     *
+     * @param buyer the buyer whose quotes we want to clear
+     * @return the set of quotes removed
+     */
+    @Override
+    public Collection<Quote> removeAllBuyQuoteByBuyer(EconomicAgent buyer) {
+
+        if(buyersWhoPlacedAQuote.containsKey(buyer))
+        {
+            changedMap = true;
+            return  buyersWhoPlacedAQuote.removeAll(buyer);
+
+        }
+        else
+            return new HashSet<>();
+    }
+
     /**
      * asks the market if users are allowed to see the best price for a good on sale
      */
@@ -364,7 +491,7 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
      *
      * @return the best price or -1 if there are none
      * @throws IllegalAccessException thrown by markets that do not allow such information.
-+     */
+    +     */
     @Override
     public long getBestBuyPrice() throws IllegalAccessException {
 
@@ -463,8 +590,8 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
             assert buyerIterator.hasNext();   //should never fail, because we have been here before!
             buyerIterator.next(); //already processed
         }
-        //if there are no more buyers, we are done!
-        if(!buyerIterator.hasNext())
+        //if there are no more buyers or sellers, we are done!
+        if(!buyerIterator.hasNext() || sellersWhoPlacedAQuote.isEmpty())
         {
             //restart this tomorrow
             indexToLoopTo = 0;

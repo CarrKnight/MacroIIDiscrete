@@ -1,11 +1,13 @@
 package model.scenario.oil;
 
 import agents.EconomicAgent;
+import agents.HasInventory;
 import agents.firm.GeographicalFirm;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
 import com.sun.istack.internal.Nullable;
 import ec.util.MersenneTwisterFast;
+import financial.market.GeographicalClearLastMarket;
 import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;
@@ -20,6 +22,7 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -65,19 +68,21 @@ public class OilCustomer extends EconomicAgent implements HasLocation{
      * the firm that supplied you the last unit of oil; as a JavaFX property so that I don't have to implement listeners
      */
     private final SimpleObjectProperty<GeographicalFirm> lastSupplier = new SimpleObjectProperty<>();
+
     private GoodType goodTypeBought = GoodType.OIL;
 
 
-    public OilCustomer(@Nonnull MacroII model, long maxPrice, double x, double y) {
+    public OilCustomer(@Nonnull MacroII model, long maxPrice, double x, double y, GeographicalClearLastMarket market) {
         super(model, 100000);
         Preconditions.checkArgument(maxPrice>0);
         this.maxPrice = maxPrice;
         this.location = new Location(x,y);
-        startSteppables();
+        market.registerBuyer(this);
+        startSteppables(market);
     }
 
 
-    private void startSteppables()
+    private void startSteppables(final GeographicalClearLastMarket market)
     {
         //every day, at "production" eat all the oil and start over (also make sure your cash remains the same)
         model.scheduleSoon(ActionOrder.PRODUCTION, new Steppable() {
@@ -93,7 +98,7 @@ public class OilCustomer extends EconomicAgent implements HasLocation{
         model.scheduleSoon(ActionOrder.TRADE, new Steppable() {
             @Override
             public void step(SimState state) {
-                buyIfNeeded();
+                buyIfNeeded(market);
                 //reschedule yourself
                 model.scheduleTomorrow(ActionOrder.TRADE,this);
 
@@ -174,8 +179,23 @@ public class OilCustomer extends EconomicAgent implements HasLocation{
         return distance;
     }
 
+    public long getMaxPrice() {
+        return maxPrice;
+    }
 
-    private void buyIfNeeded() {
+    public void setMaxPrice(long maxPrice) {
+        this.maxPrice = maxPrice;
+    }
+
+    private void buyIfNeeded(GeographicalClearLastMarket market)
+    {
+        //cancel all previous quotes
+        Collection<Quote> oldQuotes = market.removeAllBuyQuoteByBuyer(this);
+        //place all the orders you need
+        for(int i=0; i<dailyDemand-hasHowMany(goodTypeBought); i++)
+            market.submitBuyQuote(this,maxPrice);
+
+
 
 
 
@@ -214,17 +234,17 @@ public class OilCustomer extends EconomicAgent implements HasLocation{
 
     @Override
     public MersenneTwisterFast getRandom() {
-        throw new RuntimeException("not implemented yet!");
+        return model.getRandom();
     }
 
     @Override
     public void reactToFilledAskedQuote(Good g, long price, EconomicAgent buyer) {
-        throw new RuntimeException("not implemented yet!");
+        //nothing happens. We placed all our quotes already
     }
 
     @Override
     public void reactToFilledBidQuote(Good g, long price, EconomicAgent seller) {
-        throw new RuntimeException("not implemented yet!");
+        //nothing happens. We placed all our quotes already
     }
 
     /**
@@ -235,7 +255,8 @@ public class OilCustomer extends EconomicAgent implements HasLocation{
      */
     @Override
     public long maximumOffer(Good g) {
-        throw new RuntimeException("not implemented yet!");
+        //do not peddle
+        return -1;
     }
 
     /**
@@ -246,7 +267,7 @@ public class OilCustomer extends EconomicAgent implements HasLocation{
      */
     @Override
     public long askedForABuyOffer(GoodType t) {
-        throw new RuntimeException("not implemented yet!");
+        return -1;
     }
 
     /**
@@ -257,7 +278,7 @@ public class OilCustomer extends EconomicAgent implements HasLocation{
      */
     @Override
     public Quote askedForASaleQuote(EconomicAgent buyer, GoodType type) {
-        throw new RuntimeException("not implemented yet!");
+        return null;
     }
 
     /**
@@ -270,7 +291,8 @@ public class OilCustomer extends EconomicAgent implements HasLocation{
     @Nonnull
     @Override
     public PurchaseResult shopHere(@Nonnull Quote buyerQuote, @Nonnull Quote sellerQuote) {
-        throw new RuntimeException("not implemented yet!");
+        return PurchaseResult.NO_MATCH_AVAILABLE;
+
     }
 
     /**
@@ -328,5 +350,16 @@ public class OilCustomer extends EconomicAgent implements HasLocation{
         return resetCashTo;
     }
 
-
+    /**
+     * This method is called when inventory has to increase by 1. The reference to the sender is for accounting purpose only
+     *
+     * @param g      what good is delivered?
+     * @param sender who sent it?
+     */
+    @Override
+    public void receive(Good g, @javax.annotation.Nullable HasInventory sender) {
+        super.receive(g, sender);
+        if(sender!=null && g.getType().equals(goodTypeBought) && sender instanceof GeographicalFirm)
+            lastSupplier.setValue((GeographicalFirm) sender);
+    }
 }

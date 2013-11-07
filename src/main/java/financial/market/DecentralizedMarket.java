@@ -15,6 +15,7 @@ import goods.GoodType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Iterator;
 
 /**
@@ -103,6 +104,17 @@ public class DecentralizedMarket extends Market {
      */
     @Override
     public void removeBuyQuote(Quote q) {
+        throw new IllegalStateException("Decentralized markets take no quotes!");
+    }
+
+    /**
+     * Remove all these quotes by the buyer
+     *
+     * @param buyer the buyer whose quotes we want to clear
+     * @return the set of quotes removed
+     */
+    @Override
+    public Collection<Quote> removeAllBuyQuoteByBuyer(EconomicAgent buyer) {
         throw new IllegalStateException("Decentralized markets take no quotes!");
     }
 

@@ -1,14 +1,19 @@
 package model.scenario.oil;
 
+import agents.EconomicAgent;
 import agents.firm.GeographicalFirm;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import financial.market.GeographicalClearLastMarket;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import org.junit.Assert;
 import org.junit.Test;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 
 import static org.mockito.Mockito.*;
 
@@ -36,7 +41,7 @@ public class OilCustomerTest {
         //create the model
         MacroII macroII = new MacroII(1l);
         //create the customer
-        OilCustomer customer = new OilCustomer(macroII,10,2,2);
+        OilCustomer customer = new OilCustomer(macroII,10,2,2,mock(GeographicalClearLastMarket.class));
         //give it two units of oil
         customer.receive(new Good(GoodType.OIL,null,0),null);
         customer.receive(new Good(GoodType.OIL,null,0),null);
@@ -61,7 +66,7 @@ public class OilCustomerTest {
         //create the model
         MacroII macroII = new MacroII(1l);
         //create the customer
-        OilCustomer customer = new OilCustomer(macroII,10,2,2);
+        OilCustomer customer = new OilCustomer(macroII,10,2,2,mock(GeographicalClearLastMarket.class));
         long targetCash = customer.getResetCashTo() + 100;
         customer.setResetCashTo(targetCash);
         Assert.assertFalse(targetCash == customer.getCash());
@@ -76,7 +81,7 @@ public class OilCustomerTest {
         //target lower than what you have
         macroII = new MacroII(1l);
         //create the customer
-        customer = new OilCustomer(macroII,10,2,2);
+        customer = new OilCustomer(macroII,10,2,2,mock(GeographicalClearLastMarket.class));
         targetCash = customer.getResetCashTo() -1;
         customer.setResetCashTo(targetCash);
         Assert.assertFalse(targetCash == customer.getCash());
@@ -93,7 +98,7 @@ public class OilCustomerTest {
     @Test
     public void testChoosingSuppliersByPrice(){
 
-        OilCustomer customer = new OilCustomer(mock(MacroII.class),100,0,0);
+        OilCustomer customer = new OilCustomer(mock(MacroII.class),100,0,0,mock(GeographicalClearLastMarket.class));
 
         //firm 1, location 1,1 price 10
         GeographicalFirm firm1 = mock(GeographicalFirm.class);
@@ -118,7 +123,7 @@ public class OilCustomerTest {
     @Test
     public void testChoosingSuppliersByLocation(){
 
-        OilCustomer customer = new OilCustomer(mock(MacroII.class),100,0,0);
+        OilCustomer customer = new OilCustomer(mock(MacroII.class),100,0,0,mock(GeographicalClearLastMarket.class));
 
         //firm 1, location 1,1 price 10
         GeographicalFirm firm1 = mock(GeographicalFirm.class);
@@ -141,7 +146,7 @@ public class OilCustomerTest {
     @Test
     public void testChoosingSuppliersByChoosingNone(){
 
-        OilCustomer customer = new OilCustomer(mock(MacroII.class),100,0,0);
+        OilCustomer customer = new OilCustomer(mock(MacroII.class),100,0,0,mock(GeographicalClearLastMarket.class));
         Multimap<GeographicalFirm,Quote> firms = HashMultimap.create();
 
         //firm 1, location 1,1 price 1000
@@ -163,6 +168,49 @@ public class OilCustomerTest {
 
     }
 
+    @Test
+    public void placingQuotes()
+    {
+        //daily demand 2, with empty inventory that's 0
+        GeographicalClearLastMarket geographicalClearLastMarket = mock(GeographicalClearLastMarket.class);
+        MacroII model = new MacroII(1l);
+        final OilCustomer customer = new OilCustomer(model,100,0,0, geographicalClearLastMarket);
+        customer.setDailyDemand(2);
+        customer.start(model);
+        model.start();
+        model.schedule.step(model);
+
+        //should have placed two quotes
+        verify(geographicalClearLastMarket,times(2)).submitBuyQuote(customer,100);
+        //should have called the clear all too
+        verify(geographicalClearLastMarket,times(1)).removeAllBuyQuoteByBuyer(customer);
+
+
+        //step again
+        model.schedule.step(model);
+        //two more quotes, total 4
+        verify(geographicalClearLastMarket,times(4)).submitBuyQuote(customer,100);
+        //and should have removed the quotes twice
+        verify(geographicalClearLastMarket,times(2)).removeAllBuyQuoteByBuyer(customer);
+
+        //now give the customer one unit of good between trade and production
+        model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
+            @Override
+            public void step(SimState state) {
+                customer.receive(new Good(GoodType.OIL,mock(EconomicAgent.class),100l),null);
+
+            }
+        });
+
+        //now it should only add one more quote!
+        model.schedule.step(model);
+        //two more quotes, total 4
+        verify(geographicalClearLastMarket,times(5)).submitBuyQuote(customer,100);
+        //and should have removed the quotes twice
+        verify(geographicalClearLastMarket,times(3)).removeAllBuyQuoteByBuyer(customer);
+
+
+    }
 
 
 }

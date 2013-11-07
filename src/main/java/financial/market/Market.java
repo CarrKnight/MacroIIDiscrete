@@ -24,7 +24,9 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.time.*;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.time.TimeTableXYDataset;
 import sim.portrayal.Inspector;
 import sim.portrayal.inspector.TabbedInspector;
 
@@ -43,6 +45,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class Market implements Deactivatable{
+
 
     /**
      * The array holding all the trade listeners.
@@ -153,6 +156,8 @@ public abstract class Market implements Deactivatable{
         else
             policy = SimpleGoodTradePolicy.getInstance();
 
+        buyers = buildBuyerSet();
+        sellers = buildSellerSet();
 
 
         //build the gui inspector
@@ -175,6 +180,22 @@ public abstract class Market implements Deactivatable{
         }
     }
 
+    /**
+     * this just creates a new hashset, but can be overriden by subclasses if they need a special set where to keep the buyers
+     * @return just an empty hashset
+     */
+    protected Set<EconomicAgent> buildSellerSet() {
+        return new HashSet<>();
+
+    }
+
+    /**
+     * this just creates a new hashset, but can be overriden by subclasses if they need a special set where to keep the buyers
+     * @return just an empty hashset
+     */
+    protected Set<EconomicAgent> buildBuyerSet() {
+        return new HashSet<>();
+    }
 
 
     /**
@@ -191,7 +212,7 @@ public abstract class Market implements Deactivatable{
     abstract public ActionsAllowed getBuyerRole();
 
 
-    private final Set<EconomicAgent> buyers = new HashSet<>();
+    private final Set<EconomicAgent> buyers;
 
     /**
      * Get all agents that belong in the market as buyers
@@ -256,7 +277,7 @@ public abstract class Market implements Deactivatable{
     /**
      * The registry containing all the sellers in the market
      */
-    private final Set<EconomicAgent> sellers = new HashSet<>();
+    private final Set<EconomicAgent> sellers;
 
 
 
@@ -373,6 +394,14 @@ public abstract class Market implements Deactivatable{
      */
     abstract public void removeBuyQuote(Quote q);
 
+    /**
+     * Remove all these quotes by the buyer
+     *
+     * @param buyer the buyer whose quotes we want to clear
+     * @return the set of quotes removed
+     */
+    abstract public Collection<Quote> removeAllBuyQuoteByBuyer(EconomicAgent buyer);
+
 
     /**
      * This method is called whenever two agents agree on an exchange. It can be called by the market or the agents themselves.
@@ -398,7 +427,7 @@ public abstract class Market implements Deactivatable{
 
             //record
             lastPrice = price;
-            if(good.getLastValidPrice() != 0)
+            if(good.getLastValidPrice() != 0 && MacroII.hasGUI())
                 markups.addOrUpdate(buyer.getModel().getCurrentSimulationDay(),price/good.getLastValidPrice());
             todaySumOfClosingPrices +=price;
             lastFilledAsk = sellerQuote.getPriceQuoted();

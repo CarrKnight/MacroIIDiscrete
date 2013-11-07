@@ -27,10 +27,7 @@ import sim.util.media.chart.HistogramGenerator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * A simple order book market. Everybody can only quote.
@@ -284,7 +281,12 @@ public class OrderBookMarket extends Market {
         boolean removedSuccessfully = bids.remove(q); //remove it from the asks!
         if(!removedSuccessfully)
             throw new IllegalArgumentException("Removed a quote we didn't have. Error");
+        notifyListenersAndGUIQuoteHasBeenRemoved(q);
 
+
+    }
+
+    private void notifyListenersAndGUIQuoteHasBeenRemoved(Quote q) {
         //notify the listeners (if the order book is visible)
         if(isBestBuyPriceVisible())
             for(BidListener listener : bidListeners)
@@ -293,12 +295,42 @@ public class OrderBookMarket extends Market {
 
         //tell the GUI
         if(MacroII.hasGUI()){
-            getRecords().event(q.getAgent(),MarketEvents.REMOVE_BUY_QUOTE,
+            getRecords().event(q.getAgent(), MarketEvents.REMOVE_BUY_QUOTE,
                     q.getAgent().getModel().getCurrentSimulationTimeInMillis()
                     ,"price: " + q.getPriceQuoted());
         }
     }
 
+
+    /**
+     * Remove all these quotes by the buyer
+     *
+     *
+     * @param buyer the buyer whose quotes we want to clear
+     * @return the set of quotes removed
+     */
+    @Override
+    public Collection<Quote> removeAllBuyQuoteByBuyer(EconomicAgent buyer) {
+        //create the set of buy quotes  to remove
+        Set<Quote> buyQuotesToRemove = new HashSet<>();
+        for(Quote q : bids)
+        {
+            if(q.getAgent().equals(buyer))
+                buyQuotesToRemove.add(q);
+        }
+        if(buyQuotesToRemove.isEmpty()) //nothing to remove!
+            return buyQuotesToRemove;
+
+        //non empty!
+        boolean b = bids.removeAll(buyQuotesToRemove);
+        assert b;
+
+        //now tell the listeners
+        for(Quote q : buyQuotesToRemove)
+            notifyListenersAndGUIQuoteHasBeenRemoved(q);
+        return buyQuotesToRemove;
+
+    }
 
     /**
      * Best bid and asks are visible.
@@ -506,5 +538,6 @@ public class OrderBookMarket extends Market {
     public int numberOfBids() {
         return bids.size();
     }
+
 
 }
