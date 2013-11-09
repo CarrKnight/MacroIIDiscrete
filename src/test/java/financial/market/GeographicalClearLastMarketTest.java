@@ -19,6 +19,8 @@ import financial.utilities.Quote;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
 import goods.GoodType;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import model.MacroII;
 import model.scenario.Scenario;
 import model.scenario.oil.OilCustomer;
@@ -31,6 +33,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import sim.engine.SimState;
 import sim.engine.Steppable;
+
+import javax.swing.*;
 
 import static org.mockito.Mockito.*;
 
@@ -410,6 +414,33 @@ public class GeographicalClearLastMarketTest
     }
 
 
+    //testing GUI
+    public static void main(String[] args)
+    {
+        JFrame jFrame = new JFrame("lame example");
+        jFrame.setSize(500,500);
+        GeographicalClearLastMarket market = new GeographicalClearLastMarket(GoodType.OIL);
+        System.out.println(market.getBuyers().size());
+        OilCustomer customer = new OilCustomer(mock(MacroII.class),10,10,10,market);
+        System.out.println(market.getBuyers().size());
+        jFrame.setContentPane(market.buildInspector());
+        jFrame.setVisible(true);
+
+        //create customer
+        System.out.println(market.getBuyers().size());
+        customer = mock(OilCustomer.class);
+        when(customer.xLocationProperty()).thenReturn(new SimpleDoubleProperty(40));
+        when(customer.yLocationProperty()).thenReturn(new SimpleDoubleProperty(40));
+        when(customer.lastSupplierProperty()).thenReturn(mock(SimpleObjectProperty.class));
+        final SimpleObjectProperty<javafx.scene.paint.Color> color = new SimpleObjectProperty<>(javafx.scene.paint.Color.BLUE);
+
+                //register the fake customer
+        market.registerBuyer(customer);
+        System.out.println(market.getBuyers().size());
+
+
+
+    }
 
 
 

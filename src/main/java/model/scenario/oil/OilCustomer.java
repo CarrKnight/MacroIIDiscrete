@@ -67,16 +67,20 @@ public class OilCustomer extends EconomicAgent implements HasLocation{
     /**
      * the firm that supplied you the last unit of oil; as a JavaFX property so that I don't have to implement listeners
      */
-    private final SimpleObjectProperty<GeographicalFirm> lastSupplier = new SimpleObjectProperty<>();
+    private final SimpleObjectProperty<GeographicalFirm> lastSupplier;
+
+
 
     private GoodType goodTypeBought = GoodType.OIL;
 
 
     public OilCustomer(@Nonnull MacroII model, long maxPrice, double x, double y, GeographicalClearLastMarket market) {
         super(model, 100000);
-        Preconditions.checkArgument(maxPrice>0);
+        Preconditions.checkArgument(maxPrice > 0);
         this.maxPrice = maxPrice;
         this.location = new Location(x,y);
+        lastSupplier = new SimpleObjectProperty<>();
+
         market.registerBuyer(this);
         startSteppables(market);
     }
@@ -361,5 +365,14 @@ public class OilCustomer extends EconomicAgent implements HasLocation{
         super.receive(g, sender);
         if(sender!=null && g.getType().equals(goodTypeBought) && sender instanceof GeographicalFirm)
             lastSupplier.setValue((GeographicalFirm) sender);
+    }
+
+
+    public GeographicalFirm getLastSupplier() {
+        return lastSupplier.get();
+    }
+
+    public SimpleObjectProperty<GeographicalFirm> lastSupplierProperty() {
+        return lastSupplier;
     }
 }

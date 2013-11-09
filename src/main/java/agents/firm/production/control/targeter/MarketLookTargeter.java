@@ -13,6 +13,7 @@ import financial.MarketEvents;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.technology.Machinery;
+import model.MacroII;
 import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -185,7 +186,9 @@ public class MarketLookTargeter implements WorkforceTargeter {
             while(hr.getPlant().getNumberOfWorkers() > 0)
             {
                 hr.getPlant().removeLastWorker();
-                hr.getFirm().logEvent(hr,
+                if(MacroII.hasGUI())
+
+                    hr.getFirm().logEvent(hr,
                         MarketEvents.LOST_WORKER, hr.getFirm().getModel().getCurrentSimulationTimeInMillis(),
                         "quickfiring");
             }

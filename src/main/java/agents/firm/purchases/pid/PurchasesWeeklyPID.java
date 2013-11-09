@@ -84,7 +84,9 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
         long newprice = maxPrice(getGoodTypeToControl());
 
         //log the change in policy
-        getPurchasesDepartment().getFirm().logEvent(getPurchasesDepartment(),
+        if(MacroII.hasGUI())
+
+            getPurchasesDepartment().getFirm().logEvent(getPurchasesDepartment(),
                 MarketEvents.CHANGE_IN_POLICY,
                 getPurchasesDepartment().getFirm().getModel().getCurrentSimulationTimeInMillis(),
                 "target: " + getWeeklyNeeds() + ", inventory:" + getPurchasesDepartment().getFirm().hasHowMany(getGoodTypeToControl()) +

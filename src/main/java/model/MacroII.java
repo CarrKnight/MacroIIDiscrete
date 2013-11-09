@@ -137,7 +137,7 @@ public class MacroII extends SimState{
     /**
      * tells the world whether there is a gui or not
      */
-    private static boolean hasGUI = false;
+    public static boolean hasGUI = false;
 
     private PhaseScheduler phaseScheduler;
 

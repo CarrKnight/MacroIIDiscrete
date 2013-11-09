@@ -148,7 +148,9 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
         controller.adjust(input, isActive(), (MacroII)simState, this, ActionOrder.ADJUST_PRICES);
         long newprice = maxPrice(getGoodTypeToControl());
         //log the change in policy
-        getPurchasesDepartment().getFirm().logEvent(getPurchasesDepartment(),
+        if(MacroII.hasGUI())
+
+            getPurchasesDepartment().getFirm().logEvent(getPurchasesDepartment(),
                 MarketEvents.CHANGE_IN_POLICY,
                 getPurchasesDepartment().getFirm().getModel().getCurrentSimulationTimeInMillis(),
                 "target: " + getInventoryTarget() + ", control :" + input.getInput(0) +

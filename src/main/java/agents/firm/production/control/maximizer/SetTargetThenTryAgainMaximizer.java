@@ -13,6 +13,7 @@ import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlg
 import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithmFactory;
 import agents.firm.production.technology.Machinery;
 import financial.MarketEvents;
+import model.MacroII;
 import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -229,13 +230,13 @@ public class SetTargetThenTryAgainMaximizer<ALG extends WorkerMaximizationAlgori
         }
         else {
 
-
-            //log it
-            hr.getFirm().logEvent(hr,
-                    MarketEvents.CHANGE_IN_TARGET,
-                    hr.getFirm().getModel().getCurrentSimulationTimeInMillis(),
-                    "old Profits: " + oldProfits + ", new profits: " + newProfits +
-                            "; old workerTarget:" + oldWorkerTarget + ", new target:" + futureTarget);
+            if(MacroII.hasGUI())
+                //log it
+                hr.getFirm().logEvent(hr,
+                        MarketEvents.CHANGE_IN_TARGET,
+                        hr.getFirm().getModel().getCurrentSimulationTimeInMillis(),
+                        "old Profits: " + oldProfits + ", new profits: " + newProfits +
+                                "; old workerTarget:" + oldWorkerTarget + ", new target:" + futureTarget);
 
             //remember
             oldProfits = newProfits;

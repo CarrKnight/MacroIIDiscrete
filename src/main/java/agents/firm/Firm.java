@@ -29,12 +29,14 @@ import financial.utilities.Quote;
 import financial.utilities.TimelineManager;
 import goods.Good;
 import goods.GoodType;
+import javafx.beans.value.ObservableDoubleValue;
 import lifelines.LifelinesPanel;
 import lifelines.data.DataManager;
 import lifelines.data.GlobalEventData;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.enums.PlantDataType;
+import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.display.GUIState;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -1164,10 +1166,10 @@ public class Firm extends EconomicAgent {
     }
 
     /**
-    * Count all the workers at plants that consume (as input) a specific output
-    * @param goodType the type of output
-    * @return the total number of workers
-    */
+     * Count all the workers at plants that consume (as input) a specific output
+     * @param goodType the type of output
+     * @return the total number of workers
+     */
     public int getNumberOfWorkersWhoConsumedThisGoodThatDay(GoodType goodType, int day)
     {
         int totalWorkers = 0;
@@ -1176,7 +1178,7 @@ public class Firm extends EconomicAgent {
             {
                 Integer inputProduced = p.getBlueprint().getInputs().get(goodType);
                 if(inputProduced != null && inputProduced > 0)
-                    totalWorkers += p.getObservationRecordedThisDay(PlantDataType.TOTAL_WORKERS,day);
+                    totalWorkers += p.getObservationRecordedThisDay(PlantDataType.TOTAL_WORKERS, day);
             }
             else
             {
@@ -1190,6 +1192,19 @@ public class Firm extends EconomicAgent {
 
     }
 
+    /**
+     * get the latest observation of a sales department datum that updates itself
+     * @param goodType the good being sold
+     * @param salesDataType the kind of datum you are looking form
+     * @return an observable (and so listeneable) object updating
+     */
+    public ObservableDoubleValue getLatestObservableObservation(@Nonnull GoodType goodType,@Nonnull SalesDataType salesDataType)
+    {
+        SalesDepartment department = getSalesDepartment(goodType);
+        Preconditions.checkState(department != null);
+        return department.getLatestObservationObservable(salesDataType);
+
+    }
 
     /**
      * Checks if at least one plant that was producing a specific good had its production halted today because of missing inputs
@@ -1317,4 +1332,12 @@ public class Firm extends EconomicAgent {
     }
 
 
+    /**
+     * checks the model for what day it is
+     * @return
+     */
+    public int getDay()
+    {
+        return (int) Math.round(model.getMainScheduleTime());
+    }
 }

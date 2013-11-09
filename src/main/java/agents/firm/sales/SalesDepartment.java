@@ -26,6 +26,7 @@ import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
+import javafx.beans.value.ObservableDoubleValue;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.SalesData;
@@ -456,8 +457,9 @@ public abstract class  SalesDepartment  implements Department {
         Preconditions.checkState(getFirm().has(g));
 
         long price = price(g);
-        getFirm().logEvent(this, MarketEvents.SUBMIT_SELL_QUOTE,getFirm().getModel().getCurrentSimulationTimeInMillis(),
-                "price:" + price);
+        if(MacroII.hasGUI())
+            getFirm().logEvent(this, MarketEvents.SUBMIT_SELL_QUOTE,getFirm().getModel().getCurrentSimulationTimeInMillis(),
+                    "price:" + price);
         Quote q = market.submitSellQuote(firm,price,g, this); //put a quote into the market
         if(q.getPriceQuoted() != -1) //if the quote is not null
         {
@@ -1366,6 +1368,13 @@ public abstract class  SalesDepartment  implements Department {
      */
     public Double getLatestObservation(SalesDataType type) {
         return data.getLatestObservation(type);
+    }
+
+    /**
+     * return an observable value that keeps updating
+     */
+    public ObservableDoubleValue getLatestObservationObservable(SalesDataType type) {
+        return data.getLatestObservationObservable(type);
     }
 
     /**

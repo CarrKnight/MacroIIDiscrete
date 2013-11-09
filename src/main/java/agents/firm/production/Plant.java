@@ -354,8 +354,10 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         if(!check) //if it failed
         {
             status = PlantStatus.WAITING_FOR_INPUT;
-            getOwner().logEvent(this, MarketEvents.PRODUCTION_HALTED, getOwner().getModel().getCurrentSimulationTimeInMillis(),
-                    "missing inputs");
+            if(MacroII.hasGUI())
+
+                getOwner().logEvent(this, MarketEvents.PRODUCTION_HALTED, getOwner().getModel().getCurrentSimulationTimeInMillis(),
+                        "missing inputs");
             return false;
         }
 
@@ -364,8 +366,10 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         if(!check) //if it failed
         {
             status = PlantStatus.WAITING_FOR_WORKERS;
-            getOwner().logEvent(this, MarketEvents.PRODUCTION_HALTED, getOwner().getModel().getCurrentSimulationTimeInMillis(),
-                    "lack of labor");
+            if(MacroII.hasGUI())
+
+                getOwner().logEvent(this, MarketEvents.PRODUCTION_HALTED, getOwner().getModel().getCurrentSimulationTimeInMillis(),
+                        "lack of labor");
             return false;
         }
 
@@ -445,12 +449,15 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
 
         }
         if(howManyProductionRunsWereSuccessful>0)
-            getOwner().logEvent(this, MarketEvents.PRODUCTION_COMPLETE, getOwner().getModel().getCurrentSimulationTimeInMillis(),
-                    " Planned productions: " + howManyProductionRunsToday + " , actual production "
-                            + howManyProductionRunsWereSuccessful + '\n' + "new inventory Output1: " +
-                            getOwner().hasHowMany(blueprint.getOutputs().keySet().iterator().next()) + " , old inventory: "+
-                            inventoryPreProductionOfOutput1);
+        {
+            if(MacroII.hasGUI())
 
+                getOwner().logEvent(this, MarketEvents.PRODUCTION_COMPLETE, getOwner().getModel().getCurrentSimulationTimeInMillis(),
+                        " Planned productions: " + howManyProductionRunsToday + " , actual production "
+                                + howManyProductionRunsWereSuccessful + '\n' + "new inventory Output1: " +
+                                getOwner().hasHowMany(blueprint.getOutputs().keySet().iterator().next()) + " , old inventory: "+
+                                inventoryPreProductionOfOutput1);
+        }
 
         model.scheduleTomorrow(ActionOrder.PRODUCTION,this);
     }
@@ -546,8 +553,9 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
                 l.changeInWorkforceEvent(this, getNumberOfWorkers(),originalNumberOfWorkers );
 
             //log it
-            getOwner().logEvent(this, MarketEvents.LOST_WORKER, getOwner().getModel().getCurrentSimulationTimeInMillis(),
-                    " Total workers: " + getNumberOfWorkers());
+            if(MacroII.hasGUI())
+                getOwner().logEvent(this, MarketEvents.LOST_WORKER, getOwner().getModel().getCurrentSimulationTimeInMillis(),
+                        " Total workers: " + getNumberOfWorkers());
             //tell the market about it
             if(MacroII.hasGUI()){
                 if(getHr() != null) //it might be null if we are turning off
@@ -599,8 +607,9 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         for(PlantListener l : listeners)
             l.changeInWorkforceEvent(this, getNumberOfWorkers(), originalNumberOfWorkers);
         //tell the gui, if needed
-        getOwner().logEvent(this, MarketEvents.HIRED_WORKER,getModel().getCurrentSimulationTimeInMillis(),
-                "Hired " + newHires.length + ", new total: " + getNumberOfWorkers());
+        if(MacroII.hasGUI())
+            getOwner().logEvent(this, MarketEvents.HIRED_WORKER,getModel().getCurrentSimulationTimeInMillis(),
+                    "Hired " + newHires.length + ", new total: " + getNumberOfWorkers());
 
 
         //if you were waiting for a worker, try again
@@ -654,7 +663,8 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
             l.changeInMachineryEvent(this,plantMachinery);
 
         //machinery has changed
-        getOwner().logEvent(this, MarketEvents.MACHINERY_CHANGE, getOwner().getModel().getCurrentSimulationTimeInMillis(), plantMachinery.toString());
+        if(MacroII.hasGUI())
+            getOwner().logEvent(this, MarketEvents.MACHINERY_CHANGE, getOwner().getModel().getCurrentSimulationTimeInMillis(), plantMachinery.toString());
     }
 
     public Firm getOwner() {
@@ -1026,7 +1036,7 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
      */
     public Set<GoodType> getOutputs()
     {
-       return blueprint.getOutputs().keySet();
+        return blueprint.getOutputs().keySet();
     }
 
     /**

@@ -496,7 +496,7 @@ public class SimpleSellerScenarioTest {
     @Test
     public void rightPriceAndQuantityTestWithSmoothedInventoryShiftOneAtATime()
     {
-        for(int i=0; i<5000; i++)
+        for(int i=0; i<50; i++)
         {
             //to sell 4 you need to price them between 60 and 51 everytime, even when you stock up some inventory initially
             final MacroII macroII = new MacroII(System.currentTimeMillis());

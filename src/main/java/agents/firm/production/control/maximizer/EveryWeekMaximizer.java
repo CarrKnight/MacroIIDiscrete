@@ -227,12 +227,14 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
         if(futureTarget < 0){
         }
         else {
-            //log it
-            owner.logEvent(hr,
-                    MarketEvents.CHANGE_IN_TARGET,
-                    model.getCurrentSimulationTimeInMillis(),
-                    "old Profits: " + oldProfits + ", new profits: " + newProfits +
-                            "; old workerTarget:" + lastWorkerTarget + ", new target:" + futureTarget);
+            if(MacroII.hasGUI())
+
+                //log it
+                owner.logEvent(hr,
+                        MarketEvents.CHANGE_IN_TARGET,
+                        model.getCurrentSimulationTimeInMillis(),
+                        "old Profits: " + oldProfits + ", new profits: " + newProfits +
+                                "; old workerTarget:" + lastWorkerTarget + ", new target:" + futureTarget);
 
 
             //tell control/targeter about new target

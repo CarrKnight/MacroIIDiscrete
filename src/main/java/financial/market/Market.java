@@ -8,10 +8,12 @@ package financial.market;
 
 import agents.EconomicAgent;
 import agents.firm.Department;
+import com.google.common.base.Preconditions;
 import financial.*;
 import financial.utilities.*;
 import goods.Good;
 import goods.GoodType;
+import javafx.beans.value.ObservableDoubleValue;
 import lifelines.LifelinesPanel;
 import lifelines.data.DataManager;
 import lifelines.data.GlobalEventData;
@@ -162,18 +164,8 @@ public abstract class Market implements Deactivatable{
 
         //build the gui inspector
         if(MacroII.hasGUI()){
-            //create the panel holding the timeline
-            GlobalEventData.getInstance().reset();
 
-            //create the panel that will hold the records
-            recordPanel = new LifelinesPanel(null,new Dimension(500,500));
-
-            records = new TimelineManager(recordPanel);
-
-
-            //create the network
-            network = new ExchangeNetwork(getGoodType());
-            buildInspector();
+            marketInspector = buildInspector();
 
 
 
@@ -645,14 +637,25 @@ public abstract class Market implements Deactivatable{
         return getClass().getSimpleName() + "-->" + getGoodType();
     }
 
-    private void buildInspector(){
+    protected TabbedInspector buildInspector(){
+        //create the panel holding the timeline
+        GlobalEventData.getInstance().reset();
+
+        //create the panel that will hold the records
+        recordPanel = new LifelinesPanel(null,new Dimension(500,500));
+
+        records = new TimelineManager(recordPanel);
+
+
+        //create the network
+        network = new ExchangeNetwork(getGoodType());
+
 
         //if there is no GUI, forget about it
-        if(!MacroII.hasGUI())
-            return;
+        Preconditions.checkState(MacroII.hasGUI()); //can't be called otherwise!
 
-        marketInspector = new TabbedInspector(true);
-        marketInspector.setName(toString() + " inspector");
+        TabbedInspector toReturn = new TabbedInspector(true);
+        toReturn.setName(toString() + " inspector");
 
         /*********************************************
          * Prices
@@ -683,7 +686,7 @@ public abstract class Market implements Deactivatable{
         closingPriceInspector.setLayout(new BorderLayout()); //this centers it
         closingPriceInspector.add(panel);
 
-        marketInspector.addInspector(closingPriceInspector,"Closing price");
+        toReturn.addInspector(closingPriceInspector, "Closing price");
 
 
         /*********************************************
@@ -707,7 +710,7 @@ public abstract class Market implements Deactivatable{
         volumePriceInspector.setLayout(new BorderLayout()); //this centers it
         volumePriceInspector.add(panel);
 
-        marketInspector.addInspector(volumePriceInspector,"Volume");
+        toReturn.addInspector(volumePriceInspector, "Volume");
 
 
         /*********************************************
@@ -745,7 +748,7 @@ public abstract class Market implements Deactivatable{
         //add the panel to the inspector
         marketRecordsInspector.add(recordPanel);
         //add it as a tab!
-        marketInspector.addInspector(marketRecordsInspector,"Timeline");
+        toReturn.addInspector(marketRecordsInspector, "Timeline");
 
         /***************************************************
          * Network
@@ -761,9 +764,10 @@ public abstract class Market implements Deactivatable{
         networkInspector.setLayout(new BorderLayout());
         //add the visualization
         networkInspector.add(network.getVisualization());
-        marketInspector.addInspector(networkInspector,"Network");
+        toReturn.addInspector(networkInspector, "Network");
 
 
+        return toReturn;
 
 
 
@@ -1075,6 +1079,13 @@ public abstract class Market implements Deactivatable{
      */
     public Double getLatestObservation(MarketDataType type) {
         return marketData.getLatestObservation(type);
+    }
+
+    /**
+     * return an observable value that keeps updating
+     */
+    public ObservableDoubleValue getLatestObservationObservable(MarketDataType type) {
+        return marketData.getLatestObservationObservable(type);
     }
 
     /**

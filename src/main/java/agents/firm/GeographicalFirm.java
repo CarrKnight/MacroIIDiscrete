@@ -1,9 +1,12 @@
 package agents.firm;
 
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.paint.*;
 import model.MacroII;
 import model.utilities.geography.HasLocation;
 import model.utilities.geography.Location;
+
 
 /**
  * <h4>Description</h4>
@@ -24,6 +27,8 @@ public class GeographicalFirm extends Firm implements HasLocation{
 
 
     private final Location location;
+
+    private final SimpleObjectProperty<Color> color = new SimpleObjectProperty<>(Color.YELLOW);
 
     /**
      * the usual constructor, checks for gui to build panel
@@ -74,5 +79,17 @@ public class GeographicalFirm extends Firm implements HasLocation{
     @Override
     public void setyLocation(double yLocation) {
         location.setyLocation(yLocation);
+    }
+
+    public Color getColor() {
+        return color.get();
+    }
+
+    public SimpleObjectProperty<Color> colorProperty() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color.set(color);
     }
 }

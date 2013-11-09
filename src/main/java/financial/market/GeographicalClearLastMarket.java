@@ -25,9 +25,11 @@ import javafx.collections.ObservableSet;
 import model.MacroII;
 import model.scenario.oil.OilCustomer;
 import model.utilities.ActionOrder;
+import model.utilities.geography.GeographicalClearLastMarketView;
 import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
+import sim.portrayal.inspector.TabbedInspector;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -182,9 +184,9 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
     @Override
     protected Set<EconomicAgent> buildSellerSet() {
         //create an observable set
-        buyers = FXCollections.observableSet(new HashSet<EconomicAgent>());
+        sellers = FXCollections.observableSet(new HashSet<EconomicAgent>());
         //let the rest of the market use the observable set to register/deregister buyers
-        return buyers;
+        return sellers;
 
     }
 
@@ -196,9 +198,9 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
     @Override
     protected Set<EconomicAgent> buildBuyerSet() {
         //create the observable set
-        sellers = FXCollections.observableSet(new HashSet<EconomicAgent>());
+        buyers = FXCollections.observableSet(new HashSet<EconomicAgent>());
         //feed the observable set into the market, good good.
-        return sellers;
+        return buyers;
     }
 
     /**
@@ -651,4 +653,16 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
         super.turnOff();
         isActive = false;
     }
+
+
+    @Override
+    public TabbedInspector buildInspector() {
+
+        return new GeographicalClearLastMarketView(this);
+
+
+
+    }
+
+
 }

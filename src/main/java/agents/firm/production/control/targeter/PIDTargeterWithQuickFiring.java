@@ -8,6 +8,7 @@ package agents.firm.production.control.targeter;
 
 import agents.Person;
 import agents.firm.personell.HumanResources;
+import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.pid.PIDController;
 import com.google.common.base.Preconditions;
@@ -185,7 +186,9 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
             }
             plantControl.setCurrentWage(newWage); //set the new wage! that'll do it!
             //log it!
-            hr.getFirm().logEvent(hr,
+            if(MacroII.hasGUI())
+
+                hr.getFirm().logEvent(hr,
                     MarketEvents.CHANGE_IN_POLICY,
                     hr.getFirm().getModel().getCurrentSimulationTimeInMillis(),
                     "target: " + workerTarget + ", #workers:" + hr.getPlant().getNumberOfWorkers() +

@@ -7,6 +7,7 @@
 package model.utilities.stats.collectors;
 
 import com.google.common.base.Preconditions;
+import javafx.beans.value.ObservableDoubleValue;
 import model.utilities.Deactivatable;
 import sim.engine.Steppable;
 
@@ -159,6 +160,16 @@ public abstract class DataStorage<T extends  Enum<T>> implements Steppable, Deac
         checkThatThereIsAtLeastOneObservation();
         return data.get(type).get(numberOfObservations()-1);
     }
+
+
+    /**
+     * return an observable value that keeps updating
+     */
+    public ObservableDoubleValue getLatestObservationObservable(T type)
+    {
+        return data.get(type).getObservableLastObservation();
+    }
+
 
 
 

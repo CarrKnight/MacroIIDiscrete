@@ -545,7 +545,9 @@ public class PurchasesDepartment implements Deactivatable, Department {
         }
 
         averagePriceCounter.getNotifiedOfFilledQuote(price);
-        getFirm().logEvent(this, MarketEvents.BOUGHT, getFirm().getModel().getCurrentSimulationTimeInMillis(), "price: " + price);
+        if(MacroII.hasGUI())
+
+            getFirm().logEvent(this, MarketEvents.BOUGHT, getFirm().getModel().getCurrentSimulationTimeInMillis(), "price: " + price);
 
     }
 
@@ -589,7 +591,9 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
                         //record info
                         budgetSpent += result.getPriceTrade(); lastClosingPrice = result.getPriceTrade(); //spent!
-                        getFirm().logEvent(this, MarketEvents.BOUGHT, getFirm().getModel().getCurrentSimulationTimeInMillis(), "price: " + finalPrice);
+                        if(MacroII.hasGUI())
+
+                            getFirm().logEvent(this, MarketEvents.BOUGHT, getFirm().getModel().getCurrentSimulationTimeInMillis(), "price: " + finalPrice);
                         status = PurchasesDepartmentStatus.IDLE; //you are done!
                         supplierSearch.reactToSuccess(seller,PurchaseResult.SUCCESS);
 

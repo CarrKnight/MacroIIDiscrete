@@ -8,6 +8,8 @@ package model.utilities.stats.collectors;
 
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Doubles;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ObservableDoubleValue;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -15,7 +17,7 @@ import java.util.*;
 /**
  * <h4>Description</h4>
  * <p/> A simple decorator to an array list to return some weird arrays when needed
- * <p/>
+ * <p/> Additionaly it has an observable double which is always the last element added. This should make charting a lot easier
  * <p/>
  * <h4>Notes</h4>
  * Created with IntelliJ
@@ -33,6 +35,8 @@ public class DailyObservations implements Iterable<Double> {
      * this is the real deal
      */
     final private List<Double> observations;
+
+    final private SimpleDoubleProperty lastObservation = new SimpleDoubleProperty();
 
     /**
      * something of an offset in case the observations were collected only after a specific day
@@ -107,7 +111,11 @@ public class DailyObservations implements Iterable<Double> {
      * @throws NullPointerException if the specified collection is null
      */
     public boolean addAll(Collection<? extends Double> c) {
-        return observations.addAll(c);
+
+        boolean toReturn = observations.addAll(c);
+        lastObservation.setValue(observations.get(observations.size() - 1));
+        return toReturn;
+
     }
 
     /**
@@ -126,7 +134,9 @@ public class DailyObservations implements Iterable<Double> {
      * @throws NullPointerException if the specified collection is null
      */
     public boolean addAll(int index, Collection<? extends Double> c) {
-        return observations.addAll(index, c);
+        boolean toReturn = observations.addAll(index,c);
+        lastObservation.setValue(observations.get(observations.size() - 1));
+        return toReturn;
     }
 
     /**
@@ -136,6 +146,7 @@ public class DailyObservations implements Iterable<Double> {
      * @return <tt>true</tt> (as specified by {@link java.util.Collection#add})
      */
     public boolean add(Double e) {
+        lastObservation.setValue(e);
         return observations.add(e);
     }
 
@@ -236,4 +247,15 @@ public class DailyObservations implements Iterable<Double> {
     {
         return observations.get(observations.size()-1);
     }
+
+    /**
+     * this returns an observableDoubleValue that updates every time a new observation is received.
+     * @return
+     */
+    public ObservableDoubleValue getObservableLastObservation()
+    {
+        return lastObservation;
+    }
+
+
 }

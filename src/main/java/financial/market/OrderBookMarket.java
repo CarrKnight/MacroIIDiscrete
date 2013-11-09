@@ -495,12 +495,11 @@ public class OrderBookMarket extends Market {
     /**
      * The order book adds the histogram viewer to the market inspector.
      */
-    private void buildInspector()
+    protected TabbedInspector  buildInspector()
     {
         assert MacroII.hasGUI();
+        TabbedInspector inspector = super.buildInspector();
 
-        //
-        TabbedInspector inspector = getMarketInspector();
 
         Inspector orderBookViewer = new Inspector() {
             @Override
@@ -513,6 +512,8 @@ public class OrderBookMarket extends Market {
         orderBookViewer.setLayout(new BorderLayout());
         orderBookViewer.add(histogramGenerator.getChartPanel());
         inspector.addInspector(orderBookViewer,"Order Book View");
+
+        return inspector;
 
     }
 
