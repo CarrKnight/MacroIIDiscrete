@@ -14,27 +14,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b2f2be4b-01ab-4023-8729-b370a266331e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/stats/regression/RecursiveLinearRegression.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/java/model/utilities/stats/regression/RecursiveLinearRegressionTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/RecursiveSalePredictor.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/sales/prediction/RecursiveSalePredictorTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/AbstractWorkerLearningPredictorTest.java" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/AbstractWorkerLearningPredictorTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/LearningDecreaseWithTimeSeriesSalesPredictor.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/LearningDecreaseWithTimeSeriesSalesPredictor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/RobustMarginalMaximizer.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/RobustMarginalMaximizer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/model/utilities/stats/collectors/SalesDataTest.java" afterPath="$PROJECT_DIR$/src/test/java/model/utilities/stats/collectors/SalesDataTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/model/scenario/CompetitiveScenarioTest.java" afterPath="$PROJECT_DIR$/src/test/java/model/scenario/CompetitiveScenarioTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/utilities/stats/regression/RecursiveLinearRegression.java" afterPath="$PROJECT_DIR$/src/main/java/model/utilities/stats/regression/RecursiveLinearRegression.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/RecursiveSalePredictor.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/RecursiveSalePredictor.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartment.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/SalesPredictor.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/SalesPredictor.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="MacroIIDiscrete.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/fragment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1384138422922" ignored="false" />
-    <file path="/Dummy.txt" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1384100290407" ignored="false" />
+    <file path="/Dummy.txt" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1384139943638" ignored="false" />
     <file path="/MacroII.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1383862361349" ignored="false" />
     <file path="/PhaseScheduler.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1373272148129" ignored="false" />
     <file path="/PurchasesDepartment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1383773793837" ignored="false" />
     <file path="/HumanResources.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1383452529118" ignored="false" />
-    <file path="/SalesDepartment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1384055230256" ignored="false" />
+    <file path="/SalesDepartment.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1384184007063" ignored="false" />
     <file path="/Person.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1380576755037" ignored="false" />
     <file path="/EconomicAgent.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1382902892238" ignored="false" />
     <file path="/Plant.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1383950552609" ignored="false" />
@@ -2504,9 +2499,9 @@
     <file path="/HasLocationPortrait.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1383890119494" ignored="false" />
     <file path="/GeographicalFirmPortrait.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1383940698787" ignored="false" />
     <file path="/SetTargetThenTryAgainMaximizer.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1383950600146" ignored="false" />
-    <file path="/RecursiveLinearRegression.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1384138881438" ignored="false" />
+    <file path="/RecursiveLinearRegression.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1384140015114" ignored="false" />
     <file path="/RecursiveLinearRegressionTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1384053769756" ignored="false" />
-    <file path="/RecursiveSalePredictor.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1384139657571" ignored="false" />
+    <file path="/RecursiveSalePredictor.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1384190740804" ignored="false" />
     <file path="/RecursiveSalePredictorTest.java" changelist="b2f2be4b-01ab-4023-8729-b370a266331e" time="1384137457834" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -3105,7 +3100,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/RecursiveSalePredictor.java" line="377" class="agents.firm.sales.prediction.RecursiveSalePredictor" package="agents.firm.sales.prediction">
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/RecursiveSalePredictor.java" line="379" class="agents.firm.sales.prediction.RecursiveSalePredictor" package="agents.firm.sales.prediction">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -3133,7 +3128,7 @@
       <file leaf-file-name="RecursiveLinearRegression.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/regression/RecursiveLinearRegression.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="40" column="41" selection-start="859" selection-end="859" vertical-scroll-proportion="0.0">
+            <state line="156" column="51" selection-start="4812" selection-end="4812" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="method#RecursiveLinearRegression#0;class#RecursiveLinearRegression#0" expanded="true" />
                 <element signature="method#RecursiveLinearRegression#1;class#RecursiveLinearRegression#0" expanded="true" />
@@ -3146,9 +3141,30 @@
       <file leaf-file-name="AbstractWorkerLearningPredictorTest.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/AbstractWorkerLearningPredictorTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="93" column="0" selection-start="3591" selection-end="3591" vertical-scroll-proportion="0.0">
+            <state line="101" column="0" selection-start="3593" selection-end="3593" vertical-scroll-proportion="0.0">
               <folding>
-                <element signature="method#recursiveIsFaster#0;class#AbstractWorkerLearningPredictorTest#0" expanded="true" />
+                <element signature="method#predictorLearnsSlope#0;class#AbstractWorkerLearningPredictorTest#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LearningIncreaseWithTimeSeriesPurchasePredictorTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/LearningIncreaseWithTimeSeriesPurchasePredictorTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="128" column="0" selection-start="4965" selection-end="4965" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CompetitiveScenarioTest.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/CompetitiveScenarioTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="23" column="115" selection-start="955" selection-end="955" vertical-scroll-proportion="0.1585903">
+              <folding>
+                <element signature="method#rightPriceAndQuantityTestAsMarginalNoPID#0;class#CompetitiveScenarioTest#0" expanded="true" />
+                <element signature="method#tooManyLearnedCompetitors#0;class#CompetitiveScenarioTest#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -3174,30 +3190,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RobustMarginalMaximizer.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/RobustMarginalMaximizer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="57" column="69" selection-start="1782" selection-end="1782" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ReflectiveCallable.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/junit-4.11-sources.jar!/org/junit/internal/runners/model/ReflectiveCallable.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="0" selection-start="417" selection-end="417" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RecursiveSalePredictor.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="RecursiveSalePredictor.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/RecursiveSalePredictor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="82" column="34" selection-start="2117" selection-end="2117" vertical-scroll-proportion="0.43555555">
+            <state line="81" column="45" selection-start="2048" selection-end="2048" vertical-scroll-proportion="-13.48">
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="method#RecursiveSalePredictor#0;class#RecursiveSalePredictor#0" expanded="true" />
                 <element signature="method#RecursiveSalePredictor#1;class#RecursiveSalePredictor#0" expanded="true" />
                 <element signature="method#RecursiveSalePredictor#2;class#RecursiveSalePredictor#0" expanded="true" />
                 <element signature="method#RecursiveSalePredictor#3;class#RecursiveSalePredictor#0" expanded="true" />
@@ -3211,6 +3210,45 @@
                 <element signature="method#turnOff#0;class#RecursiveSalePredictor#0" expanded="true" />
                 <element signature="method#containsNoNegatives#0;class#RecursiveSalePredictor#0" expanded="true" />
                 <element signature="method#getDecrementDelta#0;class#RecursiveSalePredictor#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MonopolistScenarioTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistScenarioTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="516" column="74" selection-start="19912" selection-end="19912" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="method#problematicScenario3#0;class#MonopolistScenarioTest#0" expanded="true" />
+                <element signature="method#rightPriceAndQuantityTestRandomControlRandomSlopes#0;class#MonopolistScenarioTest#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SalesDepartmentAllAtOnce.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartmentAllAtOnce.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="34" column="13" selection-start="997" selection-end="997" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SalesDepartment.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="107" column="100" selection-start="3787" selection-end="3787" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="e#0#51262#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="method#removeFromToSellMasterlist#0;class#SalesDepartment#0" expanded="true" />
+                <element signature="method#peddleNow#0;class#SalesDepartment#0" expanded="true" />
+                <element signature="method#weekEnd#0;class#SalesDepartment#0" expanded="true" />
+                <element signature="method#setPredictorStrategy#0;class#SalesDepartment#0" expanded="true" />
+                <element signature="method#turnOff#0;class#SalesDepartment#0" expanded="true" />
+                <element signature="method#predictSalePriceWhenNotChangingPoduction#0;class#SalesDepartment#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -3246,8 +3284,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/PurchasesDepartment.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pid/PurchasesFixedPID.java" />
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pid/PurchasesSimplePID.java" />
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pid/PurchasesWeeklyPID.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/utilities/scheduler/TrueRandomScheduler.java" />
@@ -3255,12 +3291,14 @@
         <option value="$PROJECT_DIR$/src/test/java/model/utilities/stats/regression/RecursiveLinearRegressionTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/SalesPredictor.java" />
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/LearningDecreaseWithTimeSeriesSalesPredictor.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartment.java" />
         <option value="$PROJECT_DIR$/src/test/java/model/utilities/stats/collectors/SalesDataTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/agents/firm/sales/prediction/RecursiveSalePredictorTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/RobustMarginalMaximizer.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/utilities/stats/regression/RecursiveLinearRegression.java" />
         <option value="$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/AbstractWorkerLearningPredictorTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartment.java" />
+        <option value="$PROJECT_DIR$/src/test/java/model/scenario/CompetitiveScenarioTest.java" />
+        <option value="$PROJECT_DIR$/src/test/java/model/scenario/MonopolistScenarioTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/RecursiveSalePredictor.java" />
       </list>
     </option>
@@ -3452,97 +3490,13 @@
       <recent name="model.utilities" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.AbstractWorkerLearningPredictorTest.predictorLearnsSlope">
-    <configuration default="false" name="RecursiveSalePredictorTest.testSimulatePriceStatic" type="JUnit" factoryName="JUnit" temporary="true">
+  <component name="RunManager" selected="JUnit.CompetitiveScenarioTest">
+    <configuration default="false" name="MonopolistScenarioTest" type="JUnit" factoryName="JUnit" temporary="true">
       <module name="MacroIIDiscrete" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="agents.firm.sales.prediction" />
-      <option name="MAIN_CLASS_NAME" value="agents.firm.sales.prediction.RecursiveSalePredictorTest" />
-      <option name="METHOD_NAME" value="testSimulatePriceStatic" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <patterns />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
-    <configuration default="false" name="RecursiveSalePredictorTest.testSimulatePrice" type="JUnit" factoryName="JUnit" temporary="true">
-      <module name="MacroIIDiscrete" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="agents.firm.sales.prediction" />
-      <option name="MAIN_CLASS_NAME" value="agents.firm.sales.prediction.RecursiveSalePredictorTest" />
-      <option name="METHOD_NAME" value="testSimulatePrice" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <patterns />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
-    <configuration default="false" name="RecursiveSalePredictorTest" type="JUnit" factoryName="JUnit" temporary="true">
-      <module name="MacroIIDiscrete" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="agents.firm.sales.prediction" />
-      <option name="MAIN_CLASS_NAME" value="agents.firm.sales.prediction.RecursiveSalePredictorTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <patterns />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
-    <configuration default="false" name="AbstractWorkerLearningPredictorTest" type="JUnit" factoryName="JUnit" temporary="true">
-      <module name="MacroIIDiscrete" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="agents.firm.purchases.prediction" />
-      <option name="MAIN_CLASS_NAME" value="agents.firm.purchases.prediction.AbstractWorkerLearningPredictorTest" />
+      <option name="PACKAGE_NAME" value="model.scenario" />
+      <option name="MAIN_CLASS_NAME" value="model.scenario.MonopolistScenarioTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-ea" />
@@ -3559,13 +3513,58 @@
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
-    <configuration default="false" name="AbstractWorkerLearningPredictorTest.predictorLearnsSlope" type="JUnit" factoryName="JUnit" temporary="true">
+    <configuration default="false" name="CompetitiveScenarioTest.rightPriceAndQuantityTestAsMarginalNoPID" type="JUnit" factoryName="JUnit" temporary="true">
       <module name="MacroIIDiscrete" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="agents.firm.purchases.prediction" />
-      <option name="MAIN_CLASS_NAME" value="agents.firm.purchases.prediction.AbstractWorkerLearningPredictorTest" />
-      <option name="METHOD_NAME" value="predictorLearnsSlope" />
+      <option name="PACKAGE_NAME" value="model.scenario" />
+      <option name="MAIN_CLASS_NAME" value="model.scenario.CompetitiveScenarioTest" />
+      <option name="METHOD_NAME" value="rightPriceAndQuantityTestAsMarginalNoPID" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <envs />
+      <dir value="$PROJECT_DIR$/src/test/java" />
+      <patterns />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="false" name="CompetitiveScenarioTest" type="JUnit" factoryName="JUnit" temporary="true">
+      <module name="MacroIIDiscrete" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="PACKAGE_NAME" value="model.scenario" />
+      <option name="MAIN_CLASS_NAME" value="model.scenario.CompetitiveScenarioTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <envs />
+      <patterns />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="false" name="MonopolistScenarioTest.rightPriceAndQuantityTestAsMarginalWithSalesControlFlowPIDWithFixedInventory" type="JUnit" factoryName="JUnit" temporary="true">
+      <module name="MacroIIDiscrete" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="PACKAGE_NAME" value="model.scenario" />
+      <option name="MAIN_CLASS_NAME" value="model.scenario.MonopolistScenarioTest" />
+      <option name="METHOD_NAME" value="rightPriceAndQuantityTestAsMarginalWithSalesControlFlowPIDWithFixedInventory" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" value="" />
@@ -3577,13 +3576,29 @@
       </option>
       <envs />
       <patterns />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
       <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="false" name="MonopolistScenarioTest.problematicScenario3" type="JUnit" factoryName="JUnit" temporary="true">
+      <module name="MacroIIDiscrete" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="PACKAGE_NAME" value="model.scenario" />
+      <option name="MAIN_CLASS_NAME" value="model.scenario.MonopolistScenarioTest" />
+      <option name="METHOD_NAME" value="problematicScenario3" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <envs />
+      <patterns />
+      <RunnerSettings RunnerId="Run" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
@@ -3871,19 +3886,19 @@
       <item index="3" class="java.lang.String" itemvalue="JUnit.SimpleSellerScenarioTest.rightPriceAndQuantityShiftWithSalesControlFlowPIDWithFixedInventoryOneAtATime" />
       <item index="4" class="java.lang.String" itemvalue="JUnit.All tests" />
       <item index="5" class="java.lang.String" itemvalue="JUnit.CompetitiveScenarioTest.rightPriceAndQuantityTestAsMarginalNoPIDAlreadyLearned" />
-      <item index="6" class="java.lang.String" itemvalue="JUnit.RecursiveSalePredictorTest.testSimulatePriceStatic" />
-      <item index="7" class="java.lang.String" itemvalue="JUnit.RecursiveSalePredictorTest.testSimulatePrice" />
-      <item index="8" class="java.lang.String" itemvalue="JUnit.RecursiveSalePredictorTest" />
-      <item index="9" class="java.lang.String" itemvalue="JUnit.AbstractWorkerLearningPredictorTest" />
-      <item index="10" class="java.lang.String" itemvalue="JUnit.AbstractWorkerLearningPredictorTest.predictorLearnsSlope" />
+      <item index="6" class="java.lang.String" itemvalue="JUnit.MonopolistScenarioTest" />
+      <item index="7" class="java.lang.String" itemvalue="JUnit.CompetitiveScenarioTest.rightPriceAndQuantityTestAsMarginalNoPID" />
+      <item index="8" class="java.lang.String" itemvalue="JUnit.CompetitiveScenarioTest" />
+      <item index="9" class="java.lang.String" itemvalue="JUnit.MonopolistScenarioTest.rightPriceAndQuantityTestAsMarginalWithSalesControlFlowPIDWithFixedInventory" />
+      <item index="10" class="java.lang.String" itemvalue="JUnit.MonopolistScenarioTest.problematicScenario3" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.AbstractWorkerLearningPredictorTest.predictorLearnsSlope" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.AbstractWorkerLearningPredictorTest" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.RecursiveSalePredictorTest.testSimulatePrice" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.RecursiveSalePredictorTest" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.RecursiveSalePredictorTest.testSimulatePriceStatic" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.CompetitiveScenarioTest" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.MonopolistScenarioTest" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.MonopolistScenarioTest.problematicScenario3" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.MonopolistScenarioTest.rightPriceAndQuantityTestAsMarginalWithSalesControlFlowPIDWithFixedInventory" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.CompetitiveScenarioTest.rightPriceAndQuantityTestAsMarginalNoPID" />
       </list>
     </recent_temporary>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
@@ -4305,7 +4320,11 @@
       <created>1383975483485</created>
       <updated>1383975483485</updated>
     </task>
-    <option name="localTasksCounter" value="97" />
+    <task id="LOCAL-00097" summary="mediocre results with recursive linear regression estimating a weird ARIMA. Need to find the right parameters, maybe?">
+      <created>1384139945709</created>
+      <updated>1384139945709</updated>
+    </task>
+    <option name="localTasksCounter" value="98" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -4400,7 +4419,7 @@
     <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Revisited a bit the GUI for GeographicalMarket, should be almost done but needs testing. Might take a break to move to Kalman filtering" />
+    <option name="LAST_COMMIT_MESSAGE" value="mediocre results with recursive linear regression estimating a weird ARIMA. Need to find the right parameters, maybe?" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -4414,7 +4433,6 @@
     <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="worked on a different predictor. Still doesn't work but maybe i need to invert something still" />
     <MESSAGE value="Did quite a lot of work on regression learning recently. Cleared up a bit the code and found quite a few bugs. Unfortunately the results aren't satisfactory yet. I think that's because I need to use &quot;supply-demand&quot; gap as a weight to observations. That will require a way to know it which is what I need to code when I come back from vienna" />
     <MESSAGE value="Started counting disequilibrium from purchase departments. Turned out there were some old weird bugs and design choices that had to be overturned to get it right. Going to start counting disequilibrium among sales departments now" />
     <MESSAGE value="wrote competitive tests (the always climbing is a bit iffy) and then finished the learning increase/decrease. Unfortunately they don't seem to work well in competitive settings (everybody is a monopolist there, which is funny but wrong). Also the supply chain tests simply take too long. I am moving back to LinearExtrapolator, but maybe I can combine the two. Priority should be given in having small regressions, and not too often!" />
@@ -4439,6 +4457,7 @@
     <MESSAGE value="1) Few modification to update the GUI looking for publication&#10;&#10;2) Modified learning so that it really requires a certain variance in the x (but still feels weird)&#10;&#10;3) Started on oil pump geographical problem. We'll see how this turns out&#10;&#10;4) Made volume show up properly in the GUI" />
     <MESSAGE value="The basics of the oil market should be done. Need to make it into JavaFX stuff" />
     <MESSAGE value="Revisited a bit the GUI for GeographicalMarket, should be almost done but needs testing. Might take a break to move to Kalman filtering" />
+    <MESSAGE value="mediocre results with recursive linear regression estimating a weird ARIMA. Need to find the right parameters, maybe?" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -4452,60 +4471,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/LearningDecreaseWithTimeSeriesSalesPredictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="226" column="31" selection-start="7950" selection-end="7962" vertical-scroll-proportion="-119.56">
-          <folding>
-            <element signature="method#LearningDecreaseWithTimeSeriesSalesPredictor#0;class#LearningDecreaseWithTimeSeriesSalesPredictor#0" expanded="true" />
-            <element signature="method#predictSalePriceAfterIncreasingProduction#0;class#LearningDecreaseWithTimeSeriesSalesPredictor#0" expanded="true" />
-            <element signature="method#predictSalePriceAfterDecreasingProduction#0;class#LearningDecreaseWithTimeSeriesSalesPredictor#0" expanded="true" />
-            <element signature="method#updateModel#0;class#LearningDecreaseWithTimeSeriesSalesPredictor#0" expanded="true" />
-            <element signature="method#predictSalePriceWhenNotChangingPoduction#0;class#LearningDecreaseWithTimeSeriesSalesPredictor#0" expanded="true" />
-            <element signature="method#getDecrementDelta#0;class#LearningDecreaseWithTimeSeriesSalesPredictor#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/mockito-all-1.9.5-sources.jar!/org/mockito/internal/creation/MethodInterceptorFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="50" column="0" selection-start="2138" selection-end="2138" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#0#51294#0" expanded="true" />
-            <element signature="imports" expanded="true" />
-            <element signature="method#removeFromToSellMasterlist#0;class#SalesDepartment#0" expanded="true" />
-            <element signature="method#peddleNow#0;class#SalesDepartment#0" expanded="true" />
-            <element signature="method#weekEnd#0;class#SalesDepartment#0" expanded="true" />
-            <element signature="method#setPredictorStrategy#0;class#SalesDepartment#0" expanded="true" />
-            <element signature="method#turnOff#0;class#SalesDepartment#0" expanded="true" />
-            <element signature="method#predictSalePriceWhenNotChangingPoduction#0;class#SalesDepartment#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/model/utilities/stats/collectors/SalesDataTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="92" column="26" selection-start="2869" selection-end="2881" vertical-scroll-proportion="0.12966602">
-          <folding>
-            <element signature="method#lastPriceTest#0;class#SalesDataTest#0" expanded="true" />
-            <element signature="method#avgPriceTest#0;class#SalesDataTest#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/guava/guava-14.0.1-sources.jar!/com/google/common/base/Preconditions.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="132" column="0" selection-start="5210" selection-end="5210" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/SalesData.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="56" column="60" selection-start="1131" selection-end="1131" vertical-scroll-proportion="0.0">
@@ -4546,20 +4511,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/WorkerMaximizationAlgorithmFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="70" column="0" selection-start="3756" selection-end="3756" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/RobustMarginalMaximizer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="69" selection-start="1782" selection-end="1782" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/sales/prediction/RecursiveSalePredictorTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="101" column="68" selection-start="3126" selection-end="3166" vertical-scroll-proportion="3.4302554">
@@ -4570,9 +4521,62 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/RobustMarginalMaximizer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="57" column="69" selection-start="1782" selection-end="1782" vertical-scroll-proportion="0.56621003">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/WorkerMaximizationAlgorithmFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="70" column="0" selection-start="3756" selection-end="3756" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/AbstractWorkerLearningPredictorTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="101" column="0" selection-start="3593" selection-end="3593" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="method#predictorLearnsSlope#0;class#AbstractWorkerLearningPredictorTest#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/LearningIncreaseWithTimeSeriesPurchasePredictorTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="128" column="0" selection-start="4965" selection-end="4965" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartmentAllAtOnce.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="34" column="13" selection-start="997" selection-end="997" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="107" column="100" selection-start="3787" selection-end="3787" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#0#51262#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="method#removeFromToSellMasterlist#0;class#SalesDepartment#0" expanded="true" />
+            <element signature="method#peddleNow#0;class#SalesDepartment#0" expanded="true" />
+            <element signature="method#weekEnd#0;class#SalesDepartment#0" expanded="true" />
+            <element signature="method#setPredictorStrategy#0;class#SalesDepartment#0" expanded="true" />
+            <element signature="method#turnOff#0;class#SalesDepartment#0" expanded="true" />
+            <element signature="method#predictSalePriceWhenNotChangingPoduction#0;class#SalesDepartment#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/regression/RecursiveLinearRegression.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="41" selection-start="859" selection-end="859" vertical-scroll-proportion="0.0">
+        <state line="156" column="51" selection-start="4812" selection-end="4812" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="method#RecursiveLinearRegression#0;class#RecursiveLinearRegression#0" expanded="true" />
             <element signature="method#RecursiveLinearRegression#1;class#RecursiveLinearRegression#0" expanded="true" />
@@ -4581,20 +4585,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/AbstractWorkerLearningPredictorTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="93" column="0" selection-start="3591" selection-end="3591" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="method#recursiveIsFaster#0;class#AbstractWorkerLearningPredictorTest#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/RecursiveSalePredictor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="82" column="34" selection-start="2117" selection-end="2117" vertical-scroll-proportion="0.43555555">
+        <state line="81" column="45" selection-start="2048" selection-end="2048" vertical-scroll-proportion="-13.48">
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="method#RecursiveSalePredictor#0;class#RecursiveSalePredictor#0" expanded="true" />
             <element signature="method#RecursiveSalePredictor#1;class#RecursiveSalePredictor#0" expanded="true" />
             <element signature="method#RecursiveSalePredictor#2;class#RecursiveSalePredictor#0" expanded="true" />
             <element signature="method#RecursiveSalePredictor#3;class#RecursiveSalePredictor#0" expanded="true" />
@@ -4608,6 +4604,26 @@
             <element signature="method#turnOff#0;class#RecursiveSalePredictor#0" expanded="true" />
             <element signature="method#containsNoNegatives#0;class#RecursiveSalePredictor#0" expanded="true" />
             <element signature="method#getDecrementDelta#0;class#RecursiveSalePredictor#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistScenarioTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="516" column="74" selection-start="19912" selection-end="19912" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="method#problematicScenario3#0;class#MonopolistScenarioTest#0" expanded="true" />
+            <element signature="method#rightPriceAndQuantityTestRandomControlRandomSlopes#0;class#MonopolistScenarioTest#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/CompetitiveScenarioTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="115" selection-start="955" selection-end="955" vertical-scroll-proportion="0.1585903">
+          <folding>
+            <element signature="method#rightPriceAndQuantityTestAsMarginalNoPID#0;class#CompetitiveScenarioTest#0" expanded="true" />
+            <element signature="method#tooManyLearnedCompetitors#0;class#CompetitiveScenarioTest#0" expanded="true" />
           </folding>
         </state>
       </provider>

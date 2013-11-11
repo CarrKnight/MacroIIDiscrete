@@ -38,7 +38,7 @@ public class RecursiveLinearRegression
      */
     final private double[] beta;
 
-    private double forgettingFactor = .95;
+    private double forgettingFactor = .98;
 
 
     /**

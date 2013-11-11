@@ -41,7 +41,7 @@ public class RecursiveSalePredictor implements SalesPredictor, Steppable {
     /**
      * whether our x is workers or outflow
      */
-    boolean regressingOnWorkers = false;
+    boolean regressingOnWorkers = true;
 
     /**
      * the linear regression object we are going to update
@@ -78,6 +78,8 @@ public class RecursiveSalePredictor implements SalesPredictor, Steppable {
     private int howFarIntoTheFutureToPredict = 100;
 
     private int numberOfValidObservations = 0;
+
+    private int initialOpenLoopLearningTime=1;
 
     public RecursiveSalePredictor(MacroII model, SalesDepartment department) {
         this(model, department,7,7);
@@ -149,7 +151,7 @@ public class RecursiveSalePredictor implements SalesPredictor, Steppable {
                             yesterday - priceLags + 1, yesterday);
                     assert laggedPrice.length == priceLags;
 
-                    double weight = 1;//2d / (1d + Math.exp(Math.abs(department.getData().getLatestObservation(SalesDataType.SUPPLY_GAP))));
+                    double weight = 2d / (1d + Math.exp(Math.abs(department.getData().getLatestObservation(SalesDataType.SUPPLY_GAP))));
 
                     if (containsNoNegatives(laggedIndependentVariable)) {
                         //observation is: Intercept, oldest y,....,newest y,oldest x,....,newest Y
@@ -178,7 +180,7 @@ public class RecursiveSalePredictor implements SalesPredictor, Steppable {
     public double predictPrice(int step, int stepsInTheFuture)
     {
         //with no valid observations, what's the point?
-        if(numberOfValidObservations < 1 || department.numberOfObservations() < 2 + Math.max(priceLags, indepedentLags + timeDelay) )
+        if(numberOfValidObservations < initialOpenLoopLearningTime || department.numberOfObservations() < 2 + Math.max(priceLags, indepedentLags + timeDelay) )
             return department.hypotheticalSalePrice();
         SalesDataType xType = regressingOnWorkers ? SalesDataType.WORKERS_PRODUCING_THIS_GOOD : SalesDataType.OUTFLOW;
 
@@ -378,4 +380,11 @@ public class RecursiveSalePredictor implements SalesPredictor, Steppable {
         return -(predictPrice(1)-predictPrice(0));
     }
 
+    public int getInitialOpenLoopLearningTime() {
+        return initialOpenLoopLearningTime;
+    }
+
+    public void setInitialOpenLoopLearningTime(int initialOpenLoopLearningTime) {
+        this.initialOpenLoopLearningTime = initialOpenLoopLearningTime;
+    }
 }
