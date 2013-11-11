@@ -104,7 +104,7 @@ public class SalesDataTest {
         data.start(model,department);
         //put in price data
         when(department.getAverageClosingPrice()).thenReturn(1f,2f,3f);
-        when(model.getMainScheduleTime()).thenReturn(0d,1d,2d);
+        when(model.getMainScheduleTime()).thenReturn(0d);
         data.step(model);
         data.step(model);
         data.step(model);

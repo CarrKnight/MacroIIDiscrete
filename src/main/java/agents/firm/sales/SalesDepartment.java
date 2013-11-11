@@ -1446,5 +1446,9 @@ public abstract class  SalesDepartment  implements Department {
     public void setData(SalesData data) {
         this.data = data;
     }
+
+    public SalesData getData() {
+        return data;
+    }
 }
 

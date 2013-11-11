@@ -55,7 +55,7 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
         LOGGER.setUseParentHandlers(false);
 
         try{
-            fh = new FileHandler("/mnt/0EA6C8BFA6C8A913/maximization2.log",false);
+            fh = new FileHandler("/mnt/0EA6C8BFA6C8A913/maximization3.log",false);
             fh.setFormatter(new XMLFormatter());
             LOGGER.addHandler(fh);
         } catch (IOException e) {

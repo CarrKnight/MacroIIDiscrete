@@ -214,6 +214,8 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
      */
     public double extractSlopeOfDemandFromRegression()
     {
+//        regression.estimateModel(deltaPrice,clonedWeights,laggedPrice,laggedIndependentVariable);
+
         if(!correctedRegression)
         {
         double[] coefficients = regression.getResultMatrix();

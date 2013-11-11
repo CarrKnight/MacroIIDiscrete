@@ -164,12 +164,15 @@ public interface SalesPredictor {
                     return rule.getConstructor(SalesDepartment.class).newInstance(department);
                 if(rule.equals(SamplingLearningDecreaseSalesPredictor.class))
                     return rule.getConstructor(MacroII.class).newInstance(department.getModel());
+                if(rule.equals(RecursiveSalePredictor.class))
+                    return rule.getConstructor(MacroII.class,SalesDepartment.class).newInstance(department.getModel(),department);
                 if(rule.equals(RegressionSalePredictor.class) || rule.equals(RegressionWeightedSalePredictor.class)
                         || rule.equals(LearningDecreaseSalesPredictor.class) || rule.equals(LearningFixedElasticitySalesPredictor.class))
                     return rule.getConstructor(Market.class, MacroII.class).
                             newInstance(department.getMarket(),department.getModel());
                 else
                     return rule.newInstance();
+
 
             } catch (SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException |
                     NoSuchMethodException | InvocationTargetException ex) {
