@@ -98,7 +98,7 @@ public class MarginalMaximizerTest {
 
 
 
-        PlantControl control = mock(PlantControl.class); when(control.getCurrentWage()).thenReturn(50l);
+        PlantControl control = mock(PlantControl.class); when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(50l);
         //no delay exception thrown this time!!!
         MarginalMaximizer maximizer = new MarginalMaximizer(hr,control,p,owner);
         boolean exceptionThrown = false;

@@ -6,12 +6,16 @@
 
 package model.utilities.stats.collectors;
 
+import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Preconditions;
 import javafx.beans.value.ObservableDoubleValue;
 import model.utilities.Deactivatable;
 import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.EnumMap;
 
 /**
@@ -170,6 +174,48 @@ public abstract class DataStorage<T extends  Enum<T>> implements Steppable, Deac
         return data.get(type).getObservableLastObservation();
     }
 
+    /**
+     * Utility method to write all the data to CSV File
+     * @param file link to the file to write to
+     */
+    public void writeToCSVFile(File file)
+    {
+        try {
+
+            CSVWriter writer = new CSVWriter(new FileWriter(file));
+
+            //header
+            String[]  header = new String[data.keySet().size()];
+            int i=0;
+            for(Enum e : data.keySet())
+            {
+                header[i] = e.toString();
+                i++;
+            }
+            writer.writeNext(header);
+            //now go through all the observations
+            for(i=0; i< numberOfObservations(); i++)
+            {
+                String[] newline = new String[header.length];
+                int j=0;
+                for(Enum e : data.keySet())
+                {
+                    newline[j] = String.valueOf(data.get(e).get(i));
+                    j++;
+                }
+                writer.writeNext(newline);
+
+            }
+
+            writer.flush();
+            writer.close();
+
+
+        } catch (IOException e) {
+            System.err.println("File could not be written");
+        }
+
+    }
 
 
 

@@ -39,6 +39,16 @@ public class MemoryPurchasesPredictor implements PurchasesPredictor {
     public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         return dept.getLastClosingPrice();
     }
+    /**
+     * Predicts the last closing price
+     *
+     * @param dept the department that needs to buy it
+     * @return the predicted price or -1 if there are no predictions.
+     */
+    @Override
+    public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+        return dept.getLastClosingPrice();
+    }
 
     /**
      * Call this to kill the predictor

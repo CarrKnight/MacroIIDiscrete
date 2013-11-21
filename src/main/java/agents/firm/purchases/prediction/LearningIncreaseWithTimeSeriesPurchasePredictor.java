@@ -123,6 +123,18 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
         return predictor.predictPurchasePriceWhenDecreasingProduction(dept);
     }
 
+
+    /**
+     * Predicts the last closing price
+     *
+     * @param dept the department that needs to buy it
+     * @return the predicted price or -1 if there are no predictions.
+     */
+    @Override
+    public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+        return predictor.predictPurchasePriceWhenNoChangeInProduction(dept);
+    }
+
     private void updateModel() {
 
         //grab the production

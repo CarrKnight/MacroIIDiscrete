@@ -71,6 +71,7 @@ public class MonopolistWithInputScenarioTest {
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(System.currentTimeMillis());
+            System.out.println(macroII.seed());
             MonopolistScenario scenario1 = new MonopolistWithInputScenario(macroII);
             //    scenario1.setAlwaysMoving(true);
             //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
@@ -90,6 +91,7 @@ public class MonopolistWithInputScenarioTest {
                 */
                 macroII.schedule.step(macroII);
             }
+            System.out.println("---------------------------------------------------------------------------------------------------------");
 
 
             assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);

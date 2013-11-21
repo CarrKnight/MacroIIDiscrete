@@ -419,7 +419,7 @@ public abstract class Market implements Deactivatable{
 
             //record
             lastPrice = price;
-            if(good.getLastValidPrice() != 0 && MacroII.hasGUI())
+            if(good.getLastValidPrice() != 0)
                 markups.addOrUpdate(buyer.getModel().getCurrentSimulationDay(),price/good.getLastValidPrice());
             todaySumOfClosingPrices +=price;
             lastFilledAsk = sellerQuote.getPriceQuoted();
@@ -1108,5 +1108,9 @@ public abstract class Market implements Deactivatable{
 
     public TimeTableXYDataset getVolumeTimeSeriesGUI() {
         return volume;
+    }
+
+    public MarketData getMarketData() {
+        return marketData;
     }
 }

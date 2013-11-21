@@ -119,6 +119,7 @@ public class GeographicalClearLastMarketTest
         for(int i=0; i<3; i++)
         {
             customers[i] = mock(OilCustomer.class);
+            when(customers[i].getModel()).thenReturn(macroII);
             //if they are ever asked to choose, choose the seller
             when(customers[i].chooseSupplier(any(Multimap.class))).thenReturn(seller);
             //make sure buyer is never bankrupt
@@ -192,6 +193,7 @@ public class GeographicalClearLastMarketTest
         for(int i=0; i<3; i++)
         {
             customers[i] = mock(OilCustomer.class);
+            when(customers[i].getModel()).thenReturn(macroII);
             //if they are ever asked to choose, choose the seller
             when(customers[i].chooseSupplier(any(Multimap.class))).thenReturn(seller);
             //make sure buyer is never bankrupt

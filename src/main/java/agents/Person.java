@@ -46,7 +46,7 @@ public class Person extends EconomicAgent {
 
 
 
-    private int minimumWageRequired;
+    private int minimumDailyWagesRequired;
 
     private Firm employer = null;
 
@@ -83,9 +83,9 @@ public class Person extends EconomicAgent {
         this(model,cash,0,null);
     }
 
-    public Person(@Nonnull MacroII model, long cash, int minimumWageRequired,@Nullable Market laborMarket) {
+    public Person(@Nonnull MacroII model, long cash, int minimumDailyWagesRequired,@Nullable Market laborMarket) {
         super(model, cash);
-        this.minimumWageRequired = minimumWageRequired;
+        this.minimumDailyWagesRequired = minimumDailyWagesRequired;
         this.laborMarket = laborMarket;
         if(laborMarket != null){
             laborMarket.registerSeller(this);
@@ -114,7 +114,7 @@ public class Person extends EconomicAgent {
 
         if(g.getType().isLabor())
         {
-            assert price >= minimumWageRequired;
+            assert price >= minimumDailyWagesRequired;
             assert buyer instanceof Firm;
             assert employer == buyer; //this guy should have hired you!
         }
@@ -177,7 +177,7 @@ public class Person extends EconomicAgent {
         assert this.employer == employer1; //make sure the one changing your wage is your owner, not somebody else (which is creepy).
         assert wage >=0;
 
-        if(newWage<minimumWageRequired) {
+        if(newWage< minimumDailyWagesRequired) {
             aboutToQuit=true;
 
             getModel().scheduleASAP(new Steppable() {
@@ -189,7 +189,7 @@ public class Person extends EconomicAgent {
                     }
 
                     //If the wage is still low I QUIT!
-                    if(wage < minimumWageRequired )
+                    if(wage < minimumDailyWagesRequired)
                         quitWork();
 
                 }
@@ -273,7 +273,7 @@ public class Person extends EconomicAgent {
                 {
                     //if we can quote: great!
                     laborMarket.submitSellQuote(Person.this,
-                            minimumWageRequired, new Good(laborMarket.getGoodType(),Person.this,minimumWageRequired));
+                            minimumDailyWagesRequired, new Good(laborMarket.getGoodType(),Person.this, minimumDailyWagesRequired));
                 }
                 else{
                     //if we can't quote we have to peddle
@@ -299,7 +299,7 @@ public class Person extends EconomicAgent {
             //make sure you are correctly employed
             assert wage >=0;
             //this is not necessarilly true: you might be in the process of quitting!
-            assert (getMinimumWageRequired() <= wage) || aboutToQuit : getMinimumWageRequired() + " ---- " + wage;
+            assert (getMinimumDailyWagesRequired() <= wage) || aboutToQuit : getMinimumDailyWagesRequired() + " ---- " + wage;
 
             if(aboutToQuit) //the quitting will take care of this!
                 return;
@@ -311,7 +311,7 @@ public class Person extends EconomicAgent {
                 try {
                     if(laborMarket.getBestBuyPrice() > wage) //notice that this also takes care of when there is no offer at all (best price then is -1)
                     {
-                        assert getMinimumWageRequired() < laborMarket.getBestBuyPrice(); //transitive property don't abandon me now!
+                        assert getMinimumDailyWagesRequired() < laborMarket.getBestBuyPrice(); //transitive property don't abandon me now!
                         quitWork(); //so long, suckers
                         //this might be false with better markets:
                         assert employer != null && wage >=0 : "I am assuming if you quit when there is an offer you are willing to accept, it must be the case that you find that job immediately!";
@@ -352,8 +352,8 @@ public class Person extends EconomicAgent {
         return employer;
     }
 
-    public int getMinimumWageRequired() {
-        return minimumWageRequired;
+    public int getMinimumDailyWagesRequired() {
+        return minimumDailyWagesRequired;
     }
 
     /**
@@ -506,5 +506,9 @@ public class Person extends EconomicAgent {
     @Override
     public int estimateSupplyGap(GoodType type) {
         return 0;
+    }
+
+    public boolean isAboutToQuit() {
+        return aboutToQuit;
     }
 }

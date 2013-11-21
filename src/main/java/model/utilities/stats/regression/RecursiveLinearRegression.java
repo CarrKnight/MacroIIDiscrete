@@ -40,6 +40,8 @@ public class RecursiveLinearRegression
 
     private double forgettingFactor = .98;
 
+    private int noiseVariance = 100;
+
 
     /**
      * Sets up an initial linear regression with betas = 0 and P = diag(1)
@@ -65,7 +67,7 @@ public class RecursiveLinearRegression
         kGains = new  double[dimensions];
         pCovariance = new  double[dimensions][dimensions];//fill as a diagonal
         for(int i =0; i<dimensions; i++)
-            pCovariance[i][i] = 10000;
+            pCovariance[i][i] = 10000 ;
 
         beta = initialBetas;
     }
@@ -99,7 +101,6 @@ public class RecursiveLinearRegression
          ***************************************************/
         updateCovarianceP(observation);
 
-
     }
 
     private void updateCovarianceP(double[] observation) {
@@ -126,7 +127,7 @@ public class RecursiveLinearRegression
             {
                 for(int i=0; i<dimensions; i++)
                 {
-                    newP[row][column] +=toMultiply[row][i] * pCovariance[i][column];
+                    newP[row][column] +=toMultiply[row][i]/forgettingFactor * pCovariance[i][column];
                 }
             }
 
@@ -161,7 +162,7 @@ public class RecursiveLinearRegression
         double denominator = 0;
         for(int i=0; i<dimensions; i++)
             denominator += observation[i] * numerator[i];
-        denominator += 1;
+        denominator += noiseVariance;
 
         //divide, that's your K gain
         for(int i=0; i< numerator.length; i++)
@@ -178,5 +179,32 @@ public class RecursiveLinearRegression
 
     public void setForgettingFactor(double forgettingFactor) {
         this.forgettingFactor = forgettingFactor;
+    }
+
+    public int getNoiseVariance() {
+        return noiseVariance;
+    }
+
+    public void setNoiseVariance(int noiseVariance) {
+        this.noiseVariance = noiseVariance;
+    }
+
+    /**
+     * increase all the diagonal of P by noise
+     */
+    public void addNoise(int noise)
+    {
+        for(int i =0; i<dimensions; i++)
+            pCovariance[i][i] += noise;
+
+    }
+
+    public int getTrace()
+    {
+       int sum = 0;
+        for(int i =0; i<dimensions; i++)
+            sum += pCovariance[i][i];
+        return sum;
+
     }
 }

@@ -7,18 +7,10 @@
 package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
-import com.google.common.base.Preconditions;
-import com.google.common.primitives.Doubles;
 import model.MacroII;
-import model.utilities.ActionOrder;
-import model.utilities.stats.collectors.SalesData;
+import model.utilities.stats.collectors.DataStorage;
+import model.utilities.stats.collectors.enums.MarketDataType;
 import model.utilities.stats.collectors.enums.SalesDataType;
-import model.utilities.stats.regression.RecursiveLinearRegression;
-import sim.engine.SimState;
-import sim.engine.Steppable;
-
-import java.util.Deque;
-import java.util.LinkedList;
 
 /**
  * <h4>Description</h4>
@@ -35,7 +27,7 @@ import java.util.LinkedList;
  * @version 2013-11-10
  * @see
  */
-public class RecursiveSalePredictor implements SalesPredictor, Steppable {
+public class RecursiveSalePredictor extends AbstractRecursivePredictor implements SalesPredictor{
 
 
     /**
@@ -43,43 +35,13 @@ public class RecursiveSalePredictor implements SalesPredictor, Steppable {
      */
     boolean regressingOnWorkers = true;
 
-    /**
-     * the linear regression object we are going to update
-     */
-    private final RecursiveLinearRegression regression;
-
-    private boolean isActive = true;
 
     /**
      * the purchase department we are predicting for
      */
     final private SalesDepartment department;
 
-    /**
-     * how many prices in the past are we going to visit?
-     */
-    private final int priceLags;
 
-    /**
-     * how many dependent lags in the past are we going to visit?
-     */
-    private final int indepedentLags;
-
-    private final MacroII model;
-
-    /**
-     * how much time it takes for the dependent variable to affect price?
-     */
-    private int timeDelay = 1;
-
-    /**
-     * we don't really have a demand slope anymore, so we just simulate through the regression what the real values are
-     */
-    private int howFarIntoTheFutureToPredict = 100;
-
-    private int numberOfValidObservations = 0;
-
-    private int initialOpenLoopLearningTime=1;
 
     public RecursiveSalePredictor(MacroII model, SalesDepartment department) {
         this(model, department,7,7);
@@ -91,196 +53,14 @@ public class RecursiveSalePredictor implements SalesPredictor, Steppable {
 
     }
 
-    public RecursiveSalePredictor(SalesDepartment department, int priceLags,
-                                  int indepedentLags, MacroII model, int timeDelay, int howFarIntoTheFutureToPredict) {
-        this(model, department,new double[indepedentLags+priceLags+1], priceLags, indepedentLags);
-        this.timeDelay = timeDelay;
-        this.howFarIntoTheFutureToPredict = howFarIntoTheFutureToPredict;
-    }
 
     public RecursiveSalePredictor(final MacroII model, final SalesDepartment department,double[] initialCoefficients,
                                   int priceLags, int indepedentLags) {
-        Preconditions.checkState(priceLags+indepedentLags+1 == initialCoefficients.length);
+        super(model,initialCoefficients,priceLags,indepedentLags);
         this.department = department;
-        this.model = model;
-        this.priceLags=priceLags;
-        this.indepedentLags=indepedentLags;
-        this.regression = new RecursiveLinearRegression(1+priceLags+indepedentLags,initialCoefficients);
-
-        //keep scheduling yourself until you aren't active anymore
-        model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE,this);
 
     }
 
-    /**
-     * if possible, add observation to the regression.
-     * @param state
-     */
-    @Override
-    public void step(SimState state) {
-        if (!isActive)
-            return;
-
-        int minimumLookBackTime = Math.max(priceLags, indepedentLags + timeDelay);
-
-        //deltaPrice,clonedWeights,laggedPrice,laggedIndependentVariable
-        //don't bother if there are not enough observations
-        if (department.getData().numberOfObservations() >minimumLookBackTime) {
-            int yesterday = (int) Math.round(model.getMainScheduleTime()) - 2;
-
-
-            //check the y
-            double price = department.getData().getLatestObservation(SalesDataType.AVERAGE_CLOSING_PRICES);
-            assert price == department.getData().getObservationRecordedThisDay(SalesDataType.AVERAGE_CLOSING_PRICES, yesterday + 1);
-            if (price > 0) {
-
-                //gather x with all the lags
-                double[] laggedIndependentVariable;
-                if (regressingOnWorkers)
-                    laggedIndependentVariable = department.getData().getObservationsRecordedTheseDays(SalesDataType.WORKERS_PRODUCING_THIS_GOOD,
-                            yesterday - timeDelay - indepedentLags + 1, yesterday - timeDelay);
-                else
-                    laggedIndependentVariable = department.getData().getObservationsRecordedTheseDays(SalesDataType.WORKERS_PRODUCING_THIS_GOOD,
-                            yesterday - timeDelay - indepedentLags + 1, yesterday - timeDelay);
-                assert laggedIndependentVariable.length == indepedentLags;
-
-                if (containsNoNegatives(laggedIndependentVariable)) {
-
-                    //gather all the y lags
-                    double[] laggedPrice = department.getData().getObservationsRecordedTheseDays(SalesDataType.AVERAGE_CLOSING_PRICES,
-                            yesterday - priceLags + 1, yesterday);
-                    assert laggedPrice.length == priceLags;
-
-                    double weight = 2d / (1d + Math.exp(Math.abs(department.getData().getLatestObservation(SalesDataType.SUPPLY_GAP))));
-
-                    if (containsNoNegatives(laggedIndependentVariable)) {
-                        //observation is: Intercept, oldest y,....,newest y,oldest x,....,newest Y
-                        double[] observation = Doubles.concat(new double[]{1}, laggedPrice, laggedIndependentVariable);
-                        //add it to the regression (DeltaP ~ 1 + laggedP + laggedX)
-                        regression.addObservation(weight, price, observation);
-
-                        numberOfValidObservations++;
-
-                    }
-                }
-            }
-            //    Preconditions.checkState(!Double.isNaN(regression.getBeta()[1]));
-
-        }
-        //reschedule!
-        model.scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE, this);
-    }
-
-    public double predictPrice(int step)
-    {
-       return predictPrice(step,howFarIntoTheFutureToPredict);
-
-    }
-
-    public double predictPrice(int step, int stepsInTheFuture)
-    {
-        //with no valid observations, what's the point?
-        if(numberOfValidObservations < initialOpenLoopLearningTime || department.numberOfObservations() < 2 + Math.max(priceLags, indepedentLags + timeDelay) )
-            return department.hypotheticalSalePrice();
-        SalesDataType xType = regressingOnWorkers ? SalesDataType.WORKERS_PRODUCING_THIS_GOOD : SalesDataType.OUTFLOW;
-
-        //the coefficients of the model
-        double[] coefficients = regression.getBeta();
-
-        //if we are regressing on workers, ignore the size of the step
-        if(regressingOnWorkers)
-            step = Integer.signum(step);
-
-        return simulateFuturePrice(department.getData(),model,priceLags,indepedentLags,timeDelay,xType,stepsInTheFuture,coefficients,step);
-
-    }
-
-    /**
-     * made static mostly for ease of testing. It just simulate a number of future steps of the time price time series
-     * @param departmentData a link to the department data, to analyze properly
-     * @param model a link to the model, to check the time only
-     * @param priceLags how many lags of Y are we examining
-     * @param indepedentLags how many lags of X are we examining
-     * @param timeDelay how much time delay for X?
-     * @param xType what kind of SalesData type is X?
-     * @param howFarIntoTheFutureToPredict how far into the future to simulate?
-     * @param coefficients what are the regression coefficients?
-     * @param step how much to increase/decrease X?
-     * @return the future price
-     */
-    public static double simulateFuturePrice(SalesData departmentData, MacroII model,int priceLags, int indepedentLags, int timeDelay,
-                                             SalesDataType xType, int howFarIntoTheFutureToPredict, double[] coefficients, int step)
-    {
-
-
-        //set up the data for simulation
-        int yesterday = (int) (Math.round(model.getMainScheduleTime()) - 1);
-        double[] pricesArray = departmentData.getObservationsRecordedTheseDays(SalesDataType.AVERAGE_CLOSING_PRICES,yesterday-priceLags+1, yesterday);      //+1 because it's inclusive
-        Deque <Double> prices = new LinkedList<>();
-        for(Double price : pricesArray)
-        {
-            prices.addLast(price);
-        }
-
-        //x is a little bit different because, due to the lag, there are still some observations between the old and the simulated ones
-        double lastX = departmentData.getLatestObservation(xType);
-        double futureX = lastX + step;
-        double[] oldXs = departmentData.getObservationsRecordedTheseDays(xType,
-                yesterday-indepedentLags- timeDelay+1, yesterday- timeDelay);     //+1 because it's inclusive
-        Deque <Double> simulatedX = new LinkedList<>();
-        for(double oldX : oldXs)
-        {
-            simulatedX.addLast(oldX);
-        }
-        Deque<Double> comingX = new LinkedList<>();
-        if(timeDelay>0)
-        {
-            double[] xToCome = departmentData.getObservationsRecordedTheseDays(xType,
-                    yesterday - timeDelay+1, yesterday);
-            assert xToCome.length == timeDelay;
-            for(double coming : xToCome)
-                comingX.addLast(coming);
-        }
-
-
-
-        //observation is: Intercept, oldest y,....,newest y,oldest x,....,newest Y
-        //compute new price
-        double newPrice=0;
-        //simulate these many time steps
-        for(int future=0; future<howFarIntoTheFutureToPredict; future++)
-        {
-            assert prices.size() + simulatedX.size() + 1 == coefficients.length;
-
-
-            //reset at intercept
-            newPrice = coefficients[0];
-
-            int i=1;
-            //price lags
-            for(Double priceLag : prices)
-            {
-                newPrice+= coefficients[i] * priceLag;
-                i++;
-            }
-
-            //now do the same for x lags
-            for(Double xLag : simulatedX)
-            {
-                newPrice += coefficients[i] * xLag;
-                i++;
-            }
-            //now update the lists
-            prices.removeFirst(); prices.addLast(newPrice);
-            if(!comingX.isEmpty())
-                simulatedX.addLast(comingX.removeFirst());
-            else
-                simulatedX.addLast(futureX);
-            simulatedX.removeFirst();
-
-        }
-        return newPrice;
-    }
 
     /**
      * This is called by the firm when it wants to predict the price they can sell to if they increase production
@@ -292,6 +72,7 @@ public class RecursiveSalePredictor implements SalesPredictor, Steppable {
      */
     @Override
     public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
+     //   System.out.println(Arrays.toString(getBeta()));
         return (long) Math.round(predictPrice(increaseStep));
 
     }
@@ -322,49 +103,6 @@ public class RecursiveSalePredictor implements SalesPredictor, Steppable {
         return (long) Math.round(predictPrice(0));
     }
 
-    /**
-     * Call this to kill the predictor
-     */
-    @Override
-    public void turnOff() {
-        isActive = false;
-    }
-
-
-
-    public static boolean containsNoNegatives(double[] array)
-    {
-
-        for(Double d : array)
-            if(d < 0)
-                return false;
-        return true;
-
-    }
-
-    public int getTimeDelay() {
-        return timeDelay;
-    }
-
-    public void setTimeDelay(int timeDelay) {
-        this.timeDelay = timeDelay;
-    }
-
-    public int getHowFarIntoTheFutureToPredict() {
-        return howFarIntoTheFutureToPredict;
-    }
-
-    public void setHowFarIntoTheFutureToPredict(int howFarIntoTheFutureToPredict) {
-        this.howFarIntoTheFutureToPredict = howFarIntoTheFutureToPredict;
-    }
-
-    public int getNumberOfValidObservations() {
-        return numberOfValidObservations;
-    }
-
-    public boolean isRegressingOnWorkers() {
-        return regressingOnWorkers;
-    }
 
     public void setRegressingOnWorkers(boolean regressingOnWorkers) {
         this.regressingOnWorkers = regressingOnWorkers;
@@ -380,11 +118,52 @@ public class RecursiveSalePredictor implements SalesPredictor, Steppable {
         return -(predictPrice(1)-predictPrice(0));
     }
 
-    public int getInitialOpenLoopLearningTime() {
-        return initialOpenLoopLearningTime;
+
+    public Enum getXVariableType() {
+        if(regressingOnWorkers)
+            return SalesDataType.WORKERS_PRODUCING_THIS_GOOD;
+        else
+            return SalesDataType.OUTFLOW;
     }
 
-    public void setInitialOpenLoopLearningTime(int initialOpenLoopLearningTime) {
-        this.initialOpenLoopLearningTime = initialOpenLoopLearningTime;
+    public Enum getYVariableType() {
+        return SalesDataType.CLOSING_PRICES;
     }
+
+    public int modifyStepIfNeeded(int step) {
+        if(regressingOnWorkers)
+            step = Integer.signum(step);
+        return step;
+    }
+
+    public double defaultPriceWithNoObservations() {
+        long lastPrice = Math.round(department.getAveragedLastPrice());  //get the last closing price
+        //do we not have anything in memory or did we screw up so badly
+        //in the past term that we didn't sell a single item?
+        if(lastPrice == -1)
+            if(department.getTotalWorkersWhoProduceThisGood() == 0 && department.getMarket().getNumberOfObservations() > 0) //if you have no price to lookup and no production you are in a vicious circle, just lookup the market then
+                return Math.round(department.getMarket().getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+            else
+                return -1;
+        else
+        {
+            //return your memory.
+            assert lastPrice >= 0 : lastPrice;
+
+            return lastPrice;
+
+        }
+    }
+
+    @Override
+    public DataStorage getData() {
+        return department.getData();
+
+    }
+
+    public SalesDataType getDisturbanceType() {
+        return SalesDataType.SUPPLY_GAP;
+    }
+
+
 }

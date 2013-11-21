@@ -245,7 +245,7 @@ public class MonopolistScenario extends Scenario {
 
             int dailyWage = dailyWageIntercept + dailyWageSlope * i;
             //dummy worker, really
-            final Person p = new Person(getModel(),0l,(dailyWage)*7,laborMarket);
+            final Person p = new Person(getModel(),0l,(dailyWage),laborMarket);
             p.setPrecario(workersToBeRehiredEveryDay);
 
 

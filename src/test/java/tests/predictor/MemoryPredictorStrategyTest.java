@@ -52,6 +52,7 @@ public class MemoryPredictorStrategyTest {
 
         model = new MacroII(100l);
         market = new OrderBookMarket(GoodType.GENERIC);
+        market.start(model);
         f = new Firm(model);
         department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new MemorySalesPredictor();
@@ -65,7 +66,7 @@ public class MemoryPredictorStrategyTest {
         DummySeller seller = new DummySeller(model, 300l); market.registerSeller(seller);
         market.submitSellQuote(seller,300l,new Good(GoodType.GENERIC,seller,300l));
 
-
+        model.schedule.step(model);
         assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //fails because there is nothing memory
 
 

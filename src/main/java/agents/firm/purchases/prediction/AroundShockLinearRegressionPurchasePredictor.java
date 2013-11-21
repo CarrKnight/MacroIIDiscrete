@@ -73,6 +73,18 @@ public class AroundShockLinearRegressionPurchasePredictor implements PurchasesPr
 
 
     /**
+     * Predicts the last closing price
+     *
+     * @param dept the department that needs to buy it
+     * @return the predicted price or -1 if there are no predictions.
+     */
+    @Override
+    public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+        return predictor.predictPurchasePriceWhenNoChangeInProduction(dept);
+    }
+
+
+    /**
      * how many days before the shock can you look into?
      */
     private int howManyDaysBackShallILook  = 40;

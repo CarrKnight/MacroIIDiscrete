@@ -12,8 +12,8 @@ import agents.firm.Department;
 import agents.firm.Firm;
 import agents.firm.purchases.inventoryControl.InventoryControl;
 import agents.firm.purchases.inventoryControl.Level;
+import agents.firm.purchases.prediction.OpenLoopRecursivePurchasesPredictor;
 import agents.firm.purchases.prediction.PurchasesPredictor;
-import agents.firm.purchases.prediction.SamplingLearningIncreasePurchasePredictor;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.purchases.pricing.decorators.MaximumBidPriceDecorator;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
@@ -59,7 +59,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
 
     public static Class<? extends PurchasesPredictor> defaultPurchasePredictor =
-            SamplingLearningIncreasePurchasePredictor.class;
+            OpenLoopRecursivePurchasesPredictor.class;
     /**
      * The weekly budget given by the firm to this purchase department to carry out its tasks
      */
@@ -1228,6 +1228,11 @@ public class PurchasesDepartment implements Deactivatable, Department {
         return purchasesData.getLastObservedDay();
     }
 
+
+    public PurchasesDepartmentData getPurchasesData() {
+        return purchasesData;
+    }
+
     /**
      * Count all the workers at plants that consume (as input) what this purchase department buys
      * @return the total number of workers
@@ -1244,6 +1249,13 @@ public class PurchasesDepartment implements Deactivatable, Department {
         return averagePriceCounter.getTodayAverageClosingPrice();
     }
 
+    /**
+     * Predicts the future price of the next good to buy
+     * @return the predicted price or -1 if there are no predictions.
+     */
+    public long predictPurchasePriceWhenNoChangeInProduction() {
+        return predictor.predictPurchasePriceWhenNoChangeInProduction(this);
+    }
 
     /**
      * Gets when you placed your last bid, what was your offer price. I think it is more informative than querying maxPrice because

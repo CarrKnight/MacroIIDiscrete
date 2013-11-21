@@ -12,7 +12,7 @@ import agents.firm.Firm;
 import agents.firm.production.Plant;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
-import agents.firm.sales.prediction.RecursiveSalePredictor;
+import agents.firm.sales.prediction.OpenLoopRecursiveSalesPredictor;
 import agents.firm.sales.prediction.RegressionSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
@@ -105,7 +105,7 @@ public abstract class  SalesDepartment  implements Department {
     protected BuyerSearchAlgorithm buyerSearchAlgorithm;
     protected SellerSearchAlgorithm sellerSearchAlgorithm;
 
-    public static Class<? extends  SalesPredictor> defaultPredictorStrategy = RecursiveSalePredictor.class;
+    public static Class<? extends  SalesPredictor> defaultPredictorStrategy = OpenLoopRecursiveSalesPredictor.class;
 
     /**
      * This is the strategy to predict future sale prices when the order book is not visible.

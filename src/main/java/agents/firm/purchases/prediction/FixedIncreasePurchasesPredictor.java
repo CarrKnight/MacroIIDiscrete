@@ -72,6 +72,16 @@ public class FixedIncreasePurchasesPredictor implements PurchasesPredictor {
     }
 
     /**
+     * Predicts the last closing price
+     *
+     * @param dept the department that needs to buy it
+     * @return the predicted price or -1 if there are no predictions.
+     */
+    @Override
+    public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+        return delegate.predictPurchasePriceWhenNoChangeInProduction(dept);
+    }
+    /**
      * Call this to kill the predictor
      */
     @Override

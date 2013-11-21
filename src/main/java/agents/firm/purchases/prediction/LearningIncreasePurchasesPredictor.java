@@ -174,4 +174,16 @@ public class LearningIncreasePurchasesPredictor implements PurchasesPredictor {
     public double getIntercept() {
         return regression.getIntercept();
     }
+
+    /**
+     * Predicts the last closing price
+     *
+     * @param dept the department that needs to buy it
+     * @return the predicted price or -1 if there are no predictions.
+     */
+    @Override
+    public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+        return predictor.predictPurchasePriceWhenNoChangeInProduction(dept);
+    }
+
 }

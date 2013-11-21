@@ -46,7 +46,7 @@ public class MemorySalesPredictor implements SalesPredictor {
         //do we not have anything in memory or did we screw up so badly
         //in the past term that we didn't sell a single item?
         if(lastPrice == -1)
-            if(dept.getTotalWorkersWhoProduceThisGood() == 0) //if you have no price to lookup and no production you are in a vicious circle, just lookup the market then
+            if(dept.getTotalWorkersWhoProduceThisGood() == 0 && dept.getMarket().getNumberOfObservations() > 0) //if you have no price to lookup and no production you are in a vicious circle, just lookup the market then
                 return Math.round(dept.getMarket().getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
             else
                 return -1;

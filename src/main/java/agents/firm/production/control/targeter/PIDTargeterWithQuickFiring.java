@@ -95,8 +95,8 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
      * @param hr the human resources the PID target works with
      */
     public PIDTargeterWithQuickFiring(HumanResources hr, PlantControl control) {
-        this(hr,new PIDController(hr.getFirm().getModel().drawProportionalGain(),hr.getFirm().getModel().drawIntegrativeGain(),
-                hr.getFirm().getModel().drawDerivativeGain(),hr.getFirm().getModel().drawplantControlSpeed(),hr.getFirm().getRandom()),control);
+        this(hr,new PIDController(hr.getFirm().getModel().drawProportionalGain()/2f,hr.getFirm().getModel().drawIntegrativeGain()/2f,
+                hr.getFirm().getModel().drawDerivativeGain()/2f,hr.getFirm().getModel().drawplantControlSpeed(),hr.getFirm().getRandom()),control);
     }
 
     /**
@@ -115,7 +115,7 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
     public PIDTargeterWithQuickFiring(HumanResources hr, PIDController controller, PlantControl control) {
         this.hr = hr;
         this.pid = controller;
-        controller.setRandomSpeed(true);
+        controller.setRandomSpeed(false);
         this.plantControl =  control;
     }
 
@@ -219,7 +219,7 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
         Collections.sort(workers, new Comparator<Person>() {
             @Override
             public int compare(Person o1, Person o2) {
-                return Long.compare(o1.getMinimumWageRequired(), o2.getMinimumWageRequired());
+                return Long.compare(o1.getMinimumDailyWagesRequired(), o2.getMinimumDailyWagesRequired());
 
             }
         });
@@ -230,8 +230,8 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
         assert workersToFire > 0;
 
         //set the wage and fire the workers
-        long newWage = workers.get(workers.size() - workersToFire -1).getMinimumWageRequired();
-        assert newWage == workers.get(workers.size() - workersToFire -1).getMinimumWageRequired();
+        long newWage = workers.get(workers.size() - workersToFire -1).getMinimumDailyWagesRequired();
+        assert newWage == workers.get(workers.size() - workersToFire -1).getMinimumDailyWagesRequired();
         plantControl.setCurrentWage(newWage ); //set new wage
         //in normal situation the new wage will be the variable newwage, but maybe there are frictions. At which point your best bet is just to be slightly below it
         //for the time being

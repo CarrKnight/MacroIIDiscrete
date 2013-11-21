@@ -63,9 +63,11 @@ public class RecursiveSalePredictorTest {
         when(model.getMainScheduleTime()).thenReturn(5d);
 
         //without time delay
-        Assert.assertEquals(42, RecursiveSalePredictor.simulateFuturePrice(data, model, 3, 3, 0, SalesDataType.OUTFLOW, 3,beta,1 ),.0001);
+        Assert.assertEquals(42, RecursiveSalePredictor.simulateFuturePrice(data, model, 3, 3, 0, SalesDataType.OUTFLOW,
+                SalesDataType.AVERAGE_CLOSING_PRICES, 3,beta,1 ),.0001);
         //with time delay
-        Assert.assertEquals(49, RecursiveSalePredictor.simulateFuturePrice(data, model, 3, 3, 1, SalesDataType.OUTFLOW, 3,beta,1 ),.0001);
+        Assert.assertEquals(49, RecursiveSalePredictor.simulateFuturePrice(data, model, 3, 3, 1, SalesDataType.OUTFLOW,
+                SalesDataType.AVERAGE_CLOSING_PRICES, 3,beta,1 ),.0001);
 
 
 
@@ -85,9 +87,10 @@ public class RecursiveSalePredictorTest {
 
         data.start(model,department);
         //put in price data
-        when(department.getAverageClosingPrice()).thenReturn(5f,4f,3f,2f,1f);
+        when(department.getLastClosingPrice()).thenReturn(5l,4l,3l,2l,1l);
         when(department.getTodayOutflow()).thenReturn(5,4,3,2,1);
         RecursiveSalePredictor predictor = new RecursiveSalePredictor(model,department,new double[]{0,1,0,0,0,0,0},3,3);
+        predictor.setTimeDelay(1);
         predictor.setRegressingOnWorkers(false);
         when(department.getData()).thenReturn(data);
         for(int i=0; i<5; i++) //should be well fed now!

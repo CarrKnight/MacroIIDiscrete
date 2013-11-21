@@ -26,6 +26,7 @@ import financial.MarketEvents;
 import financial.market.Market;
 import goods.Good;
 import goods.GoodType;
+import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
@@ -50,7 +51,7 @@ import java.util.*;
  * @version 2012-08-21
  * @see
  */
-public class HumanResources extends PurchasesDepartment {
+public class HumanResources extends PurchasesDepartment implements Steppable {
 
     /**
      * The plant to manage.
@@ -85,8 +86,12 @@ public class HumanResources extends PurchasesDepartment {
         super(budgetGiven, firm, market);
         assert market.getGoodType().isLabor(); //must be a labor market!
         this.plant = plant; //record the plant to supply.
+    //    setPredictor( PurchasesPredictor.Factory.newPurchasesPredictor(SamplingLearningIncreasePurchasePredictor.class,this));
      //   setTradePriority(Priority.BEFORE_STANDARD);
 
+
+        //step yourself at the end of production
+        firm.getModel().scheduleSoon(ActionOrder.PRODUCTION, this, Priority.FINAL);
 
     }
 
@@ -325,23 +330,6 @@ public class HumanResources extends PurchasesDepartment {
      */
     @Override
     public void weekEnd() {
-        wagesPaid = 0;
-        List<Person> roster = plant.getWorkers();
-        //make sure the employees are paid the right wage
-        updateEmployeeWages();
-
-        for(Person p : roster)
-        {
-            long wage = p.getWage(); //get the wage promised to pay
-            //either the pay is the same as what we are offering now or we aren't using a fixed pay structure.
-            //it is not XOR because it is probably true for the last employee
-            assert wage == maxPrice(getGoodType(),getMarket()) || !fixedPayStructure :
-                    "this is the wage: " + wage + " this is how much we are willing to pay: " + maxPrice(GoodType.GENERIC,getMarket());
-            getFirm().pay(wage,p,getMarket()); //pay wage to worker
-            wagesPaid += wage;
-            spendFromBudget(wage);
-            assert getAvailableBudget() >=0;
-        }
         super.weekEnd();
     }
 
@@ -383,7 +371,7 @@ public class HumanResources extends PurchasesDepartment {
         Collections.sort(workers, new Comparator<Person>() {
             @Override
             public int compare(Person o1, Person o2) {
-                return Long.compare(o1.getMinimumWageRequired(), o2.getMinimumWageRequired());
+                return Long.compare(o1.getMinimumDailyWagesRequired(), o2.getMinimumDailyWagesRequired());
 
             }
         });
@@ -393,7 +381,7 @@ public class HumanResources extends PurchasesDepartment {
         assert workersToFire <= currentWorkers: workersToFire + "---" + currentWorkers;
         assert workersToFire >= 0;
         //find out at what wage you can keep this many workers
-        return workers.get(workers.size() - workersToFire -1).getMinimumWageRequired();
+        return workers.get(workers.size() - workersToFire -1).getMinimumDailyWagesRequired();
 
     }
 
@@ -555,6 +543,32 @@ public class HumanResources extends PurchasesDepartment {
 
     public long getWeeklyWagesPaidLastProductionPhase() {
         return wagesPaidLastProductionPhase;
+    }
+
+
+    @Override
+    public void step(SimState state) {
+        wagesPaid = 0;
+        List<Person> roster = plant.getWorkers();
+        //make sure the employees are paid the right wage
+        updateEmployeeWages();
+
+        for(Person p : roster)
+        {
+            long wage = p.getWage(); //get the wage promised to pay
+            //either the pay is the same as what we are offering now or we aren't using a fixed pay structure.
+            //it is not XOR because it is probably true for the last employee
+            assert wage == maxPrice(getGoodType(),getMarket()) || !fixedPayStructure :
+                    "this is the wage: " + wage + " this is how much we are willing to pay: " + maxPrice(GoodType.GENERIC,getMarket());
+            getFirm().pay(wage,p,getMarket()); //pay wage to worker
+            wagesPaid += wage;
+            spendFromBudget(wage);
+            assert getAvailableBudget() >=0;
+        }
+
+        //reschedule tomorrow
+        ((MacroII)state).scheduleTomorrow(ActionOrder.PRODUCTION, this, Priority.FINAL);
+
     }
 }
 

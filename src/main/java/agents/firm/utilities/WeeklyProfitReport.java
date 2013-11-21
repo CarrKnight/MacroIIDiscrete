@@ -173,7 +173,7 @@ public class WeeklyProfitReport implements ProfitReport {
             float profits = margin;
             //add wage costs
             float wageCosts = firm.getHR(p).getWagesPaid();
-            assert wageCosts > 0 || p.getNumberOfWorkers() == 0 || p.getWorkers().get(0).getMinimumWageRequired() == 0: wageCosts + " --- " + p.getNumberOfWorkers();
+            assert wageCosts > 0 || p.getNumberOfWorkers() == 0 || p.getWorkers().get(0).getMinimumDailyWagesRequired() == 0: wageCosts + " --- " + p.getNumberOfWorkers();
 
 
             //subtract fixed costs

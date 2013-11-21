@@ -14,8 +14,9 @@ import agents.firm.production.control.maximizer.WorkforceMaximizer;
 import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.util.logging.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <h4>Description</h4>
@@ -52,15 +53,15 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
     static
     {
 
-        LOGGER.setUseParentHandlers(false);
+        LOGGER.setUseParentHandlers(MarginalMaximizerStatics.printOutDiagnostics);
 
-        try{
-            fh = new FileHandler("/mnt/0EA6C8BFA6C8A913/maximization3.log",false);
-            fh.setFormatter(new XMLFormatter());
-            LOGGER.addHandler(fh);
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        //try{
+        //    fh = new FileHandler("/mnt/0EA6C8BFA6C8A913/maximization3.log",false);
+        //    fh.setFormatter(new XMLFormatter());
+        //    LOGGER.addHandler(fh);
+     //   } catch (IOException e) {
+      //      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+      //  }
         LOGGER.setLevel(Level.ALL);
     }
 

@@ -6,6 +6,7 @@
 
 package model.utilities.stats.collectors;
 
+import agents.firm.personell.HumanResources;
 import agents.firm.purchases.PurchasesDepartment;
 import com.google.common.base.Preconditions;
 import model.MacroII;
@@ -100,6 +101,8 @@ public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
         data.get(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD).add(Double.valueOf(departmentToFollow.getNumberOfWorkersWhoConsumeWhatWePurchase()));
         data.get(PurchasesDataType.AVERAGE_CLOSING_PRICES).add(Double.valueOf(departmentToFollow.getTodayAverageClosingPrice()));
         data.get(PurchasesDataType.DEMAND_GAP).add(Double.valueOf(departmentToFollow.estimateDemandGap()));
+        int workersTargeted = departmentToFollow instanceof HumanResources ? ((HumanResources) departmentToFollow).getWorkerTarget() : 0;
+        data.get(PurchasesDataType.WORKERS_TARGETED).add(Double.valueOf(workersTargeted));
 
         //reschedule
         model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);

@@ -220,7 +220,12 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
      * How many workers are in the plant?
      */
     public int getNumberOfWorkers(){
-        return workers.size();
+        //count all workers that aren't about to quit
+        int workersThatWillStay = 0;
+        for(Person p : workers)
+            if(!p.isAboutToQuit())
+                workersThatWillStay++;
+        return workersThatWillStay;
     }
 
 

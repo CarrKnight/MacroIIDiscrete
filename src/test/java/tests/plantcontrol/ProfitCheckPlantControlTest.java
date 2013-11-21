@@ -2,7 +2,6 @@ package tests.plantcontrol;
 
 import agents.Person;
 import agents.firm.Firm;
-import agents.firm.utilities.WeeklyProfitReport;
 import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
@@ -12,8 +11,11 @@ import agents.firm.production.control.facades.ProfitCheckPlantControl;
 import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.IRSExponentialMachinery;
 import agents.firm.purchases.PurchasesDepartment;
+import agents.firm.purchases.prediction.PricingPurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
+import agents.firm.sales.prediction.PricingSalesPredictor;
+import agents.firm.utilities.WeeklyProfitReport;
 import financial.market.Market;
 import financial.market.OrderBookBlindMarket;
 import goods.GoodType;
@@ -80,6 +82,7 @@ public class ProfitCheckPlantControlTest {
 
         //make this always profitable
         SalesDepartment dept = mock(SalesDepartmentAllAtOnce.class);
+        dept.setPredictorStrategy(new PricingSalesPredictor());
         when(dept.getLastClosingCost()).thenReturn(1l);
         when(dept.getLastClosingPrice()).thenReturn(2l);
         when(dept.getSoldPercentage()).thenReturn(.7f);
@@ -93,6 +96,8 @@ public class ProfitCheckPlantControlTest {
         assertEquals(p.maximumWorkersPossible(),100);
         HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000,firm,market,
                 p,ProfitCheckPlantControl.class,null,null).getDepartment(); //create!!!
+
+        humanResources.setPredictor(new PricingPurchasesPredictor());
 
         Field field = PurchasesDepartment.class.getDeclaredField("control");
         field.setAccessible(true);
@@ -244,6 +249,7 @@ public class ProfitCheckPlantControlTest {
         assertTrue(p.getNumberOfWorkers()==0);
 
         //start the human resources
+        humanResources.setPredictor(new PricingPurchasesPredictor());
         humanResources.start();
         //some stuff might have happened, but surely the control should have called "schedule in"
         assertTrue(control.toString(),!steppableList.contains(control));

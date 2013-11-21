@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.*;
+import java.util.Queue;
 
 /**
  * A simple order book market. Everybody can only quote.
@@ -40,14 +41,14 @@ import java.util.*;
 public class OrderBookMarket extends Market {
 
 
-    private final Queue<Quote> asks;
+    private Queue<Quote> asks;
 
-    private final Queue<Quote> bids;
+    private Queue<Quote> bids;
 
     /**
      * This is the histogram that will be used by the inspector if the GUI is on
      */
-    private final HistogramGenerator histogramGenerator;
+    private HistogramGenerator histogramGenerator = null;
 
 
     public OrderBookMarket(GoodType t) {
@@ -56,7 +57,7 @@ public class OrderBookMarket extends Market {
         //create the two books as priority queues, we might decorate them if there is GUI
 
         //asks put the first element of the queue as the one with lowest price (best ask)
-        PriorityQueue<Quote> asks = new PriorityQueue<>(10,new Comparator<Quote>() {
+        this.asks = new PriorityQueue<>(10,new Comparator<Quote>() {
             @Override
             public int compare(Quote o1, Quote o2) {
                 return Long.compare(o1.getPriceQuoted(),o2.getPriceQuoted());
@@ -66,7 +67,7 @@ public class OrderBookMarket extends Market {
         });
 
         //bids put the first element of the queue as the one with the highest offer (best bid)
-        PriorityQueue<Quote> bids = new PriorityQueue<>(10,new Comparator<Quote>() {
+        this.bids = new PriorityQueue<>(10,new Comparator<Quote>() {
             @Override
             public int compare(Quote o1, Quote o2) {
                 return -Long.compare(o1.getPriceQuoted(),o2.getPriceQuoted());
@@ -78,22 +79,14 @@ public class OrderBookMarket extends Market {
         //if the gui is on
         if(MacroII.hasGUI())
         {
-            histogramGenerator = new HistogramGenerator();
-            //add the 2 series
-            histogramGenerator.addSeries(null,50,"bids",null);
-            histogramGenerator.addSeries(null,50,"asks",null);
-            //decorate the asks and bids
-            this.bids = new HistogramDecoratedPriorityBook(bids,histogramGenerator,0,"Bids");
-            this.asks = new HistogramDecoratedPriorityBook(asks,histogramGenerator,1,"Asks");
+
 
             buildInspector();
 
         }
         else{
-            histogramGenerator = null;
+            assert histogramGenerator == null;
             //do not decorate the bids and asks
-            this.asks = asks;
-            this.bids = bids;
         }
 
 
@@ -499,6 +492,14 @@ public class OrderBookMarket extends Market {
     {
         assert MacroII.hasGUI();
         TabbedInspector inspector = super.buildInspector();
+
+        histogramGenerator = new HistogramGenerator();
+        //add the 2 series
+        histogramGenerator.addSeries(null,50,"bids",null);
+        histogramGenerator.addSeries(null,50,"asks",null);
+        //decorate the asks and bids
+        this.bids = new HistogramDecoratedPriorityBook((PriorityQueue)bids,histogramGenerator,0,"Bids");
+        this.asks = new HistogramDecoratedPriorityBook((PriorityQueue)asks,histogramGenerator,1,"Asks");
 
 
         Inspector orderBookViewer = new Inspector() {

@@ -51,6 +51,13 @@ public interface PurchasesPredictor
      */
     public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept);
 
+    /**
+     * Predicts the future price of the next good to buy
+     * @param dept the department that needs to buy it
+     * @return the predicted price or -1 if there are no predictions.
+     */
+    public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept);
+
 
     /**
      * Call this to kill the predictor
@@ -147,7 +154,8 @@ public interface PurchasesPredictor
                             newInstance(department.getMarket(), department.getModel());
                 if(rule.equals(SamplingLearningIncreasePurchasePredictor.class))
                     return rule.getConstructor(MacroII.class).newInstance(department.getModel());
-
+                if(rule.equals(RecursivePurchasesPredictor.class) || rule.equals(OpenLoopRecursivePurchasesPredictor.class))
+                    return rule.getConstructor(MacroII.class,PurchasesDepartment.class).newInstance(department.getModel(),department);
                 if(rule.equals(LinearExtrapolatorPurchasePredictor.class) || rule.equals(AroundShockLinearRegressionPurchasePredictor.class))
                     return rule.getConstructor(PurchasesDepartment.class).newInstance(department);
                 else

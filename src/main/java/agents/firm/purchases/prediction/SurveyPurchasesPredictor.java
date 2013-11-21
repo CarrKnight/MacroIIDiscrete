@@ -35,6 +35,11 @@ public class SurveyPurchasesPredictor implements PurchasesPredictor {
     @Override
     public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
 
+        return lookupPrice(dept);
+
+    }
+
+    private long lookupPrice(PurchasesDepartment dept) {
         EconomicAgent bestSupplier = dept.getBestSupplierFound();
         if(bestSupplier == null) //if we found nobody selling, give up
             return -1;
@@ -42,18 +47,23 @@ public class SurveyPurchasesPredictor implements PurchasesPredictor {
             Quote q = bestSupplier.askedForASaleQuote(dept.getFirm(),dept.getGoodType());
             return q.getPriceQuoted();
         }
-
     }
 
     @Override
     public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
-        EconomicAgent bestSupplier = dept.getBestSupplierFound();
-        if(bestSupplier == null) //if we found nobody selling, give up
-            return -1;
-        else{
-            Quote q = bestSupplier.askedForASaleQuote(dept.getFirm(),dept.getGoodType());
-            return q.getPriceQuoted();
-        }    }
+        return lookupPrice(dept);
+    }
+
+    /**
+     * Predicts the last closing price
+     *
+     * @param dept the department that needs to buy it
+     * @return the predicted price or -1 if there are no predictions.
+     */
+    @Override
+    public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+        return lookupPrice(dept);
+    }
 
     /**
      * Call this to kill the predictor

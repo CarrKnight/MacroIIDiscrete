@@ -215,7 +215,7 @@ public class MarginalMaximizerStaticsTest
         when(hr.isFixedPayStructure()).thenReturn(true);
         PlantControl control = mock(PlantControl.class);
 
-        when(control.getCurrentWage()).thenReturn(5l);
+        when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5l);
 
 
         CostEstimate estimate = MarginalMaximizerStatics.
@@ -235,7 +235,7 @@ public class MarginalMaximizerStaticsTest
         when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
         when(hr.isFixedPayStructure()).thenReturn(true);
         PlantControl control = mock(PlantControl.class);
-        when(control.getCurrentWage()).thenReturn(5l);
+        when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5l);
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeWageCosts(hr, control, 1, 3, MarginalMaximizer.RandomizationPolicy.MORE_TIME);
@@ -255,7 +255,7 @@ public class MarginalMaximizerStaticsTest
         when(hr.isFixedPayStructure()).thenReturn(true);
         when(hr.predictPurchasePriceWhenDecreasingProduction()).thenReturn(5l);
         PlantControl control = mock(PlantControl.class);
-        when(control.getCurrentWage()).thenReturn(10l);
+        when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(10l);
 
 
         CostEstimate estimate = MarginalMaximizerStatics.
@@ -275,7 +275,7 @@ public class MarginalMaximizerStaticsTest
         when(hr.isFixedPayStructure()).thenReturn(true);
         when(hr.predictPurchasePriceWhenDecreasingProduction()).thenReturn(5l);
         PlantControl control = mock(PlantControl.class);
-        when(control.getCurrentWage()).thenReturn(10l);
+        when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(10l);
 
 
         CostEstimate estimate = MarginalMaximizerStatics.
@@ -312,7 +312,7 @@ public class MarginalMaximizerStaticsTest
         Firm owner = mock(Firm.class);
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         when(owner.getPurchaseDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.getLastClosingPrice()).thenReturn(5l);
+        when(department.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5l);
         when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
 
         CostEstimate estimate = MarginalMaximizerStatics.
@@ -346,7 +346,7 @@ public class MarginalMaximizerStaticsTest
         Firm owner = mock(Firm.class);
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         when(owner.getPurchaseDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.getLastClosingPrice()).thenReturn(5l);
+        when(department.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5l);
         when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
 
         CostEstimate estimate = MarginalMaximizerStatics.
@@ -382,7 +382,7 @@ public class MarginalMaximizerStaticsTest
         Firm owner = mock(Firm.class);
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         when(owner.getPurchaseDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.getLastClosingPrice()).thenReturn(5l);
+        when(department.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5l);
         when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(3l);
 
         CostEstimate estimate = MarginalMaximizerStatics.
@@ -417,7 +417,7 @@ public class MarginalMaximizerStaticsTest
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         when(owner.getPurchaseDepartment(GoodType.GENERIC)).thenReturn(department);
         when(department.predictPurchasePriceWhenDecreasingProduction()).thenReturn(5l);
-        when(department.getLastClosingPrice()).thenReturn(10l);
+        when(department.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(10l);
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeInputCosts(owner, plant, MarginalMaximizer.RandomizationPolicy.MORE_TIME, 2, 1);
@@ -457,7 +457,7 @@ public class MarginalMaximizerStaticsTest
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         when(owner.getPurchaseDepartment(GoodType.GENERIC)).thenReturn(department);
         when(owner.getPurchaseDepartment(GoodType.BEEF)).thenReturn(department);
-        when(department.getLastClosingPrice()).thenReturn(5l);
+        when(department.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5l);
         when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
 
         CostEstimate estimate = MarginalMaximizerStatics.

@@ -172,10 +172,13 @@ public final class MarginalMaximizerStatics {
             futureWage=hr.predictPurchasePriceWhenDecreasingProduction();
         }
         futureWage = futureWage < 0 ? policy.replaceUnknownPrediction(hr.getMarket(), hr.getRandom()) : futureWage;
-
-        long oldWage = currentWorkers == 0 ? 0 : control.getCurrentWage();
+        //todo I don't know about this
+        //long oldWage = currentWorkers == 0 ? 0 : control.getCurrentWage();
+        long oldWage = currentWorkers == 0 ? 0 : hr.predictPurchasePriceWhenNoChangeInProduction();
         if(printOutDiagnostics)
-            RobustMarginalMaximizer.LOGGER.log(Level.INFO,"predicte wages: " + futureWage + ", current wage: " +  oldWage + ", total labor: " + hr.getMarket().getYesterdayVolume() );
+           RobustMarginalMaximizer.LOGGER.log(Level.INFO,
+                    "predicte wages: " + futureWage + ", predicted current wage: " +  oldWage +
+                    ", actual old wage:" + control.getCurrentWage() + ", total labor: " + hr.getMarket().getYesterdayVolume() );
 
 
         long totalFutureWageCosts = futureWage * targetWorkers;
@@ -206,10 +209,12 @@ public final class MarginalMaximizerStatics {
         Set<GoodType> outputs = p.getOutputs();
         for(GoodType output : outputs)
         {
-            float marginalProduction = p.hypotheticalThroughput(targetWorkers, output) - p.hypotheticalThroughput(currentWorkers, output);
+            float marginalProduction = (p.hypotheticalThroughput(targetWorkers, output) - p.hypotheticalThroughput(currentWorkers, output));
             assert (marginalProduction >= 0 && targetWorkers >= currentWorkers) ^  (marginalProduction <= 0 && targetWorkers < currentWorkers) :
                     "this method was thought for monotonic production functions.";
             long oldPrice = owner.getSalesDepartment(output).predictSalePriceWhenNotChangingPoduction();
+            oldPrice = oldPrice < 0 ? policy.replaceUnknownPrediction(owner.getSalesDepartment(output).getMarket(), p.getRandom()) : oldPrice;
+
             //are we increasing or decreasing production?
             long pricePerUnit =  targetWorkers>currentWorkers ?
                     owner.getSalesDepartment(output).predictSalePriceAfterIncreasingProduction(
@@ -224,8 +229,8 @@ public final class MarginalMaximizerStatics {
                 RobustMarginalMaximizer.LOGGER.log(Level.INFO,"predicted price: " + pricePerUnit + ", old price:" + oldPrice);
 
 
-            marginalRevenue += p.hypotheticalThroughput(targetWorkers, output) * pricePerUnit -
-                    p.hypotheticalThroughput(currentWorkers, output) * oldPrice;
+            marginalRevenue += (p.hypotheticalThroughput(targetWorkers, output) * pricePerUnit -
+                    p.hypotheticalThroughput(currentWorkers, output) * oldPrice)/7f;
 
 
 
@@ -257,14 +262,17 @@ public final class MarginalMaximizerStatics {
             long costPerInput = targetWorkers > currentWorkers ?
                     dept.predictPurchasePriceWhenIncreasingProduction() :
                     dept.predictPurchasePriceWhenDecreasingProduction();
-            long oldCosts = dept.getLastClosingPrice();
+            long oldCosts = dept.predictPurchasePriceWhenNoChangeInProduction();
             //if there is no prediction, react to it
             costPerInput = costPerInput < 0 ? policy.replaceUnknownPrediction(owner.getPurchaseDepartment(input).getMarket(), p.getRandom()) : costPerInput;
 
             //count the costs!
-            totalInputCosts +=  costPerInput*totalInputNeeded;
-            marginalInputCosts += costPerInput*totalInputNeeded - oldCosts*oldNeeds;
+            totalInputCosts +=  (costPerInput*totalInputNeeded)/7f;
+            marginalInputCosts += (costPerInput*totalInputNeeded - oldCosts*oldNeeds)/7f;
 
+            if(printOutDiagnostics)
+                RobustMarginalMaximizer.LOGGER.log(Level.INFO,"predicte inputCost: " + costPerInput + ", predicted current costs: " +  oldCosts +
+                        ", actual old costs:" + dept.getLastClosingPrice()+ ", total input: " + totalInputNeeded );
 
             //marginal costs are negative (marginal savings) if we are reducing production
             //       assert (marginalInputCosts >= 0 && targetWorkers > currentWorkers) ^   (marginalInputCosts <= 0 && targetWorkers < currentWorkers);

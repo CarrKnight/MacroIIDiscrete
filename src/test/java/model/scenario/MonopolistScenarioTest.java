@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import static org.junit.Assert.assertEquals;
 
@@ -283,9 +284,10 @@ public class MonopolistScenarioTest {
 
 
         //run the test 15 times
-        for(int i=0; i<15; i++)
+        for(int i=0; i<150; i++)
         {
             final MacroII macroII = new MacroII(System.currentTimeMillis());
+
 
 
 
@@ -323,6 +325,8 @@ public class MonopolistScenarioTest {
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
 
+            System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
+            System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
 
             macroII.start();
             while(macroII.schedule.getTime()<5000)
@@ -337,8 +341,20 @@ public class MonopolistScenarioTest {
             System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
             System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
             System.out.flush();
+
+            if(i==0)
+            {
+
+                scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("lamerbuy.csv").toFile());
+                scenario1.monopolist.getSalesDepartment(GoodType.GENERIC).getData().writeToCSVFile(Paths.get("lamersell.csv").toFile());
+            }
+
             //you must be at most wrong by two (not well tuned and anyway sometimes it's hard!)
             assertEquals(scenario1.monopolist.getTotalWorkers(), profitMaximizingLaborForce,2);
+
+
+
+            System.out.println("---------------------------------------------------------------------------------------------");
 
         }
 
@@ -360,7 +376,7 @@ public class MonopolistScenarioTest {
         //run the test 5 times
         for(int i=0; i<5; i++)
         {
-            final MacroII macroII = new MacroII(1380035564985l);
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
 
 
 
@@ -456,9 +472,14 @@ public class MonopolistScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79,1);
             assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79,1);
+            if(i==0)
+            {
 
+                scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("lamerbuy.csv").toFile());
+                scenario1.monopolist.getSalesDepartment(GoodType.GENERIC).getData().writeToCSVFile(Paths.get("lamersell.csv").toFile());
+            }
 
 
 

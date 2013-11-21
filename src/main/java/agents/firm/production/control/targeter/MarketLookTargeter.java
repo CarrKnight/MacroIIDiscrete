@@ -201,7 +201,7 @@ public class MarketLookTargeter implements WorkforceTargeter {
         Collections.sort(workers, new Comparator<Person>() {
             @Override
             public int compare(Person o1, Person o2) {
-                return Long.compare(o1.getMinimumWageRequired(), o2.getMinimumWageRequired());
+                return Long.compare(o1.getMinimumDailyWagesRequired(), o2.getMinimumDailyWagesRequired());
 
             }
         });
@@ -213,7 +213,7 @@ public class MarketLookTargeter implements WorkforceTargeter {
 
 
         //set the wage and fire the workers
-        long newWage = workers.get(workers.size() - workersToFire -1).getMinimumWageRequired();
+        long newWage = workers.get(workers.size() - workersToFire -1).getMinimumDailyWagesRequired();
         control.setCurrentWage( newWage );
         //if it's not a fixed pay structure you have to remove them yourself
         if(!control.getHr().isFixedPayStructure())
