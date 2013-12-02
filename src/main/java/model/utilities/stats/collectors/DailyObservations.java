@@ -202,6 +202,8 @@ public class DailyObservations implements Iterable<Double> {
     public double[] getObservationsRecordedTheseDays(@Nonnull int beginningDay, int lastDay)
     {
         Preconditions.checkArgument(beginningDay <= lastDay);
+        if(beginningDay == lastDay)
+            return new double[]{getObservationRecordedThisDay(beginningDay)};
 
 
         //go!
@@ -216,7 +218,9 @@ public class DailyObservations implements Iterable<Double> {
      */
     public double getObservationRecordedThisDay(int day)
     {
-        return observations.get(dayToIndex(day));
+        int index = dayToIndex(day);
+
+        return observations.get(index);
     }
 
     private int dayToIndex(int day) {

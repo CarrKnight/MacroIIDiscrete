@@ -511,4 +511,13 @@ public class Person extends EconomicAgent {
     public boolean isAboutToQuit() {
         return aboutToQuit;
     }
+
+    @Override
+    public void turnOff() {
+        super.turnOff();
+        if(this.employer != null)
+            quitWork();
+        laborMarket.removeAllSellQuoteBySeller(this);
+        laborMarket.deregisterSeller(this);
+    }
 }

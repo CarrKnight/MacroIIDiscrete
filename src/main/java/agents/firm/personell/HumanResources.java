@@ -541,7 +541,7 @@ public class HumanResources extends PurchasesDepartment implements Steppable {
 
     }
 
-    public long getWeeklyWagesPaidLastProductionPhase() {
+    public long getWagesPaidLastProductionPhase() {
         return wagesPaidLastProductionPhase;
     }
 

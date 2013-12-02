@@ -214,9 +214,10 @@ public class MacroII extends SimState{
     @Override
     public void start() {
         super.start();
-        hasStarted=true;
         //make sure counters are at 0
         weeksPassed = 0;
+        agents = new ArrayList<>();
+
 
         //if there is no scenario, create one!
         assert scenario != null;
@@ -226,7 +227,7 @@ public class MacroII extends SimState{
 
         //get the agents set
         markets = scenario.getMarkets();
-        agents = scenario.getAgents();
+        agents.addAll(scenario.getAgents());
 
         //go through all the agents and call their start!
         for(Agent a : agents)
@@ -253,6 +254,7 @@ public class MacroII extends SimState{
         //get the phase scheduler to start
         schedule.scheduleOnce(0,phaseScheduler);
 
+        hasStarted=true;
 
 
     }

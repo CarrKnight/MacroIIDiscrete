@@ -6,7 +6,6 @@
 
 package model.scenario;
 
-import agents.EconomicAgent;
 import agents.Person;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
@@ -33,21 +32,20 @@ import au.com.bytecode.opencsv.CSVWriter;
 import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
 import financial.utilities.ShopSetPricePolicy;
-import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.dummies.DummyBuyer;
-import model.utilities.scheduler.Priority;
+import model.utilities.dummies.Customer;
 import model.utilities.stats.collectors.DailyStatCollector;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
-import static org.mockito.Mockito.*;
 
 /**
  * <h4>Description</h4>
@@ -92,6 +90,8 @@ public class MonopolistScenario extends Scenario {
      */
     private boolean workersToBeRehiredEveryDay = false;
 
+
+
     /**
      * The blueprint that the monopolist will use
      */
@@ -101,6 +101,8 @@ public class MonopolistScenario extends Scenario {
 
     public MonopolistScenario(MacroII macroII) {
         super(macroII);
+        workers= new LinkedList<>();
+        demand = new LinkedList<>();
     }
 
 
@@ -123,6 +125,11 @@ public class MonopolistScenario extends Scenario {
     protected  OrderBookMarket goodMarket;
 
     protected OrderBookMarket laborMarket;
+
+
+    final private List<Person> workers;
+
+    final private List<Customer> demand;
 
     /**
      * the strategy used by the sales department of the monopolist
@@ -166,65 +173,10 @@ public class MonopolistScenario extends Scenario {
 
 
 
-
-        //buyers from 100 to 41 with increments of1
-        for(int i=1; i< 100; i++)
-        {
-
-
-
-            /************************************************
-             * Add Good Buyers
-             ************************************************/
-
-            /*
-             * For this scenario we use a different kind of dummy buyer that, after "period" passed, puts a new order in the market
-             */
-            long buyerPrice = demandIntercept - demandSlope * i;
-            if(buyerPrice <= 0) //break if the price is 0 or lower, we are done drawing!
-                break;
-
-
-            final DummyBuyer buyer = new DummyBuyer(getModel(),buyerPrice,goodMarket){
-                @Override
-                public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
-                    super.reactToFilledBidQuote(g,price,b);
-                    //trick to get the steppable to recognize the anonymous me!
-                    final DummyBuyer reference = this;
-                    //schedule a new quote in period!
-                    this.getModel().scheduleTomorrow(ActionOrder.TRADE, new Steppable() {
-                        @Override
-                        public void step(SimState simState) {
-                            earn(1000l);
-                            //put another quote
-                            goodMarket.submitBuyQuote(reference, getFixedPrice());
-
-                        }
-                    }, Priority.AFTER_STANDARD);
-
-                }
-            };
-
-            buyer.setName("Dummy Buyer");
-
-            //make it adjust once to register and submit the first quote
-
-            getModel().scheduleSoon(ActionOrder.TRADE, new Steppable() {
-                @Override
-                public void step(SimState simState) {
-                    goodMarket.registerBuyer(buyer);
-                    buyer.earn(1000l);
-                    //make the buyer submit a quote soon.
-                    goodMarket.submitBuyQuote(buyer, buyer.getFixedPrice());
-                }
-            },Priority.AFTER_STANDARD);
-
-
-
-
-            getAgents().add(buyer);
-
-        }
+        /************************************************
+         * Add Good Buyers
+         ************************************************/
+        createDemand();
 
 
         /************************************************
@@ -238,7 +190,12 @@ public class MonopolistScenario extends Scenario {
         /************************************************
          * Add workers
          ************************************************/
+        createLaborSupply();
 
+
+    }
+
+    private void createLaborSupply() {
         //with minimum wage from 15 to 65
         for(int i=1; i<120; i++)
         {
@@ -251,16 +208,41 @@ public class MonopolistScenario extends Scenario {
 
             p.setSearchForBetterOffers(lookForBetterOffers);
 
-
-            getAgents().add(p);
+            workers.add(p);
+            model.addAgent(p);
 
         }
+    }
+
+    /**
+     * create a 100 dummy buyers
+     */
+    private void createDemand() {
+        for(int i=1; i< 100; i++)
+        {
 
 
 
 
+            /*
+             * For this scenario we use a different kind of dummy buyer that, after "period" passed, puts a new order in the market
+             */
+            long buyerPrice = demandIntercept - demandSlope * i;
+            if(buyerPrice <= 0) //break if the price is 0 or lower, we are done drawing!
+                break;
+
+            final Customer buyer = new Customer(model,buyerPrice,goodMarket);
+
+            //buyer.setName("Dummy Buyer");
+
+            //make it adjust once to register and submit the first quote
 
 
+
+            demand.add(buyer);
+           model.addAgent(buyer);
+
+        }
     }
 
     public Firm buildFirm() {
@@ -283,7 +265,7 @@ public class MonopolistScenario extends Scenario {
 
                 //add the plant
                 Plant plant = new Plant(blueprint, built);
-                plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
+                plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, built, 0, plant));
                 plant.setCostStrategy(new InputCostStrategy(plant));
                 built.addPlant(plant);
 
@@ -303,7 +285,7 @@ public class MonopolistScenario extends Scenario {
             }
         });
 
-        getAgents().add(built);
+        model.addAgent(built);
         return built;
     }
 
@@ -650,6 +632,44 @@ public class MonopolistScenario extends Scenario {
         this.laborProductivity = laborProductivity;
     }
 
+
+    public void resetDemand(int intercept, int slope)
+    {
+
+        //turn off all demand
+        for(Customer c : demand)
+        {
+            c.turnOff();
+        }
+        model.getAgents().removeAll(demand);
+        demand.clear();
+        setDemandSlope(slope);
+        setDemandIntercept(intercept);
+
+       createDemand();
+
+
+    }
+
+
+    public void resetLaborSupply(int intercept, int slope)
+    {
+
+        //turn off all demand
+        for(Person p : workers)
+        {
+            p.turnOff();
+        }
+        model.getAgents().removeAll(workers);
+        workers.clear();
+        setDailyWageSlope(slope);
+        setDailyWageIntercept(intercept);
+
+        createLaborSupply();
+
+
+
+    }
 
     /**
      * Sets new should you rehire workers every day? To have an effect it has to be set BEFORE start is called!.

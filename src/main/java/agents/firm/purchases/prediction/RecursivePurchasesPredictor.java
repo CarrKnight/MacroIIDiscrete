@@ -59,7 +59,9 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
         if(regressingOnWorkers)
             if(department instanceof HumanResources)
                 return PurchasesDataType.WORKERS_TARGETED;
+
             else
+
                 return PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD;
         else
             return PurchasesDataType.INFLOW;

@@ -43,7 +43,7 @@ public class OpenLoopRecursiveSalesPredictor extends AbstractOpenLoopRecursivePr
      */
     @Override
     public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
-        long slope = predictPrice(increaseStep) - predictPrice(0);
+        float slope = predictPrice(1) - predictPrice(0);
         if(slope > 0)
             slope = 0;
         decreaseSalesPredictor.setDecrementDelta(-slope);
@@ -61,7 +61,7 @@ public class OpenLoopRecursiveSalesPredictor extends AbstractOpenLoopRecursivePr
      */
     @Override
     public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
-        long slope = predictPrice(0) - predictPrice(-decreaseStep);
+        float slope = predictPrice(0) - predictPrice(-1);
         if(slope > 0)
             slope = 0;
         decreaseSalesPredictor.setDecrementDelta(-slope);
@@ -78,6 +78,19 @@ public class OpenLoopRecursiveSalesPredictor extends AbstractOpenLoopRecursivePr
      */
     @Override
     public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
+        float slope = predictPrice(1) - predictPrice(0);
+        if(slope > 0)
+            slope = 0;
+        decreaseSalesPredictor.setDecrementDelta(-slope);
         return decreaseSalesPredictor.predictSalePriceWhenNotChangingPoduction(dept);
+    }
+
+    /**
+     * Gets by how much we decrease the price predicted in respect to current departmental price.
+     *
+     * @return Value of by how much we increase/decrease the price predicted in respect to current departmental price.
+     */
+    public float getDecrementDelta() {
+        return decreaseSalesPredictor.getDecrementDelta();
     }
 }

@@ -228,7 +228,9 @@ public abstract class EconomicAgent implements Agent, HasInventory{
     }
 
 
-    abstract public MersenneTwisterFast getRandom();
+    public MersenneTwisterFast getRandom(){
+        return model.getRandom();
+    };
 
 
     abstract  public void reactToFilledAskedQuote(Good g, long price, EconomicAgent buyer);
@@ -417,6 +419,7 @@ public abstract class EconomicAgent implements Agent, HasInventory{
 
     @Override
     public void turnOff() {
+        isActive=false;
         counter.turnOff();
     }
 
@@ -514,4 +517,6 @@ public abstract class EconomicAgent implements Agent, HasInventory{
     public void countNewProduction(GoodType type) {
         counter.countNewProduction(type);
     }
+
+
 }

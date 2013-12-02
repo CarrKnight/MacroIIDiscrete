@@ -118,6 +118,18 @@ public class DecentralizedMarket extends Market {
         throw new IllegalStateException("Decentralized markets take no quotes!");
     }
 
+
+    /**
+     * Remove all these quotes by the seller
+     *
+     * @param seller the buyer whose quotes we want to clear
+     * @return the set of quotes removed
+     */
+    @Override
+    public Collection<Quote> removeAllSellQuoteBySeller(EconomicAgent seller) {
+        throw new IllegalStateException("Decentralized markets take no quotes!");
+    }
+
     /**
      * asks the market if users are allowed to see the best price for a good on sale
      */

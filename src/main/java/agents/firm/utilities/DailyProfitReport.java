@@ -39,7 +39,7 @@ public class DailyProfitReport implements ProfitReport
         double totalRevenue=0;
 
         //for all stuff that is produced
-        for(GoodType type : GoodType.values())
+        for(GoodType type : p.getOutputs())
         {
             if(p.numberOfProductionObservations()==0)
                 continue;
@@ -103,13 +103,13 @@ public class DailyProfitReport implements ProfitReport
     public float getPlantCosts(Plant p)
     {
         //wage costs
-        double wages = p.getHr().getWeeklyWagesPaidLastProductionPhase()/7f;
+        double wages = p.getHr().getWagesPaidLastProductionPhase();
 
         //input costs
         double totalCosts=0;
 
         //for all stuff that is produced
-        for(GoodType type : GoodType.values())
+        for(GoodType type : p.getInputs())
         {
             if(type.isLabor() || p.numberOfProductionObservations() == 0)
                 continue;

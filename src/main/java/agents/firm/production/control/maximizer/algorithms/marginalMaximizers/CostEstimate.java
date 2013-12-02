@@ -13,20 +13,20 @@ package agents.firm.production.control.maximizer.algorithms.marginalMaximizers;
 public class CostEstimate
 {
 
-    final private long marginalCost;
+    final private float marginalCost;
 
-    final private long totalCost;
+    final private float totalCost;
 
-    public CostEstimate(long marginalCost, long totalCost) {
+    public CostEstimate(float marginalCost, float totalCost) {
         this.marginalCost = marginalCost;
         this.totalCost = totalCost;
     }
 
-    final public long getMarginalCost() {
+    final public float getMarginalCost() {
         return marginalCost;
     }
 
-    final public long getTotalCost() {
+    final public float getTotalCost() {
         return totalCost;
     }
 

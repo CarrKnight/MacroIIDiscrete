@@ -144,7 +144,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         movingAverage.addObservation(salesDepartment.getTodayInflow()*7);
 
         delegate.setTargetInventory((int) movingAverage.getSmoothedObservation());
-   //     System.out.println("target inventory: " + getTargetInventory() + ", actual inventory: " + salesDepartment.getHowManyToSell());
+        //     System.out.println("target inventory: " + getTargetInventory() + ", actual inventory: " + salesDepartment.getHowManyToSell());
 
         ((MacroII)state).scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE,this);
 
@@ -214,7 +214,14 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
      */
     @Override
     public int estimateSupplyGap() {
-        return delegate.estimateSupplyGap();
+        //percentile distance from target inventory
+        if(delegate.getTargetInventory() != 0)
+            return (100*(delegate.getTargetInventory() - salesDepartment.getHowManyToSell()))/delegate.getTargetInventory();
+        else
+        if(salesDepartment.getHowManyToSell() == 0)
+            return  0;
+        else
+            return -100;
     }
 
     /**

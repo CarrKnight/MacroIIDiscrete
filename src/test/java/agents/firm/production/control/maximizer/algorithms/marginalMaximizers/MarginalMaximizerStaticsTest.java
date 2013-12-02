@@ -75,7 +75,7 @@ public class MarginalMaximizerStaticsTest
 
 
         Assert.assertEquals(MarginalMaximizerStatics.computeMarginalRevenue(owner,plant,
-                MarginalMaximizer.RandomizationPolicy.MORE_TIME,1,2,0,0),49f,.00001);
+                MarginalMaximizer.RandomizationPolicy.MORE_TIME,1,2,0,0),49d/7d,.00001);
 
 
 
@@ -105,7 +105,7 @@ public class MarginalMaximizerStaticsTest
 
 
         Assert.assertEquals(MarginalMaximizerStatics.computeMarginalRevenue(owner,plant,
-                MarginalMaximizer.RandomizationPolicy.MORE_TIME,1,2,0,0),   580f,.00001);
+                MarginalMaximizer.RandomizationPolicy.MORE_TIME,1,2,0,0),   580d/7d,.00001);
     }
 
     //if you predict price going up
@@ -131,7 +131,7 @@ public class MarginalMaximizerStaticsTest
 
 
         Assert.assertEquals(MarginalMaximizerStatics.computeMarginalRevenue(owner,plant,
-                MarginalMaximizer.RandomizationPolicy.MORE_TIME,1,2,0,0),   800f,.00001);
+                MarginalMaximizer.RandomizationPolicy.MORE_TIME,1,2,0,0),   800d/7d,.00001);
     }
 
     //marginal revenue with step different from 1 (numbers are the same as simple revenue test 1)
@@ -158,7 +158,7 @@ public class MarginalMaximizerStaticsTest
 
 
         Assert.assertEquals(MarginalMaximizerStatics.computeMarginalRevenue(owner,plant,
-                MarginalMaximizer.RandomizationPolicy.MORE_TIME,1,3,0,0),49f,.00001);
+                MarginalMaximizer.RandomizationPolicy.MORE_TIME,1,3,0,0),49d/7d,.00001);
 
     }
 
@@ -191,7 +191,7 @@ public class MarginalMaximizerStaticsTest
 
 
         Assert.assertEquals(MarginalMaximizerStatics.computeMarginalRevenue(owner,plant,
-                MarginalMaximizer.RandomizationPolicy.MORE_TIME,1,2,0,0),98f,.00001);
+                MarginalMaximizer.RandomizationPolicy.MORE_TIME,1,2,0,0),98d/7d,.00001);
 
 
 
@@ -221,8 +221,8 @@ public class MarginalMaximizerStaticsTest
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeWageCosts(hr, control, 1, 2, MarginalMaximizer.RandomizationPolicy.MORE_TIME);
 
-        Assert.assertEquals(estimate.getTotalCost(),20l);
-        Assert.assertEquals(estimate.getMarginalCost(),15l);
+        Assert.assertEquals(estimate.getTotalCost(),20l,.0001);
+        Assert.assertEquals(estimate.getMarginalCost(),15l,.0001);
 
 
     }
@@ -240,8 +240,8 @@ public class MarginalMaximizerStaticsTest
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeWageCosts(hr, control, 1, 3, MarginalMaximizer.RandomizationPolicy.MORE_TIME);
 
-        Assert.assertEquals(estimate.getTotalCost(),30l);
-        Assert.assertEquals(estimate.getMarginalCost(),25l);
+        Assert.assertEquals(estimate.getTotalCost(),30l,.0001);
+        Assert.assertEquals(estimate.getMarginalCost(),25l,.0001);
 
 
     }
@@ -261,8 +261,8 @@ public class MarginalMaximizerStaticsTest
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeWageCosts(hr, control, 2, 1, MarginalMaximizer.RandomizationPolicy.MORE_TIME);
 
-        Assert.assertEquals(estimate.getTotalCost(),5l);
-        Assert.assertEquals(estimate.getMarginalCost(),-15l);
+        Assert.assertEquals(estimate.getTotalCost(),5l,.0001);
+        Assert.assertEquals(estimate.getMarginalCost(),-15l,.0001);
 
 
     }
@@ -281,8 +281,8 @@ public class MarginalMaximizerStaticsTest
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeWageCosts(hr, control, 3, 1, MarginalMaximizer.RandomizationPolicy.MORE_TIME);
 
-        Assert.assertEquals(estimate.getTotalCost(),5l);
-        Assert.assertEquals(estimate.getMarginalCost(),-25l);
+        Assert.assertEquals(estimate.getTotalCost(),5l,.0001);
+        Assert.assertEquals(estimate.getMarginalCost(),-25l,.0001);
 
 
     }
@@ -319,8 +319,8 @@ public class MarginalMaximizerStaticsTest
                 computeInputCosts(owner, plant, MarginalMaximizer.RandomizationPolicy.MORE_TIME, 1, 2);
 
 
-        Assert.assertEquals(estimate.getMarginalCost(),15,.0001f);
-        Assert.assertEquals(estimate.getTotalCost(),20,.0001f);
+        Assert.assertEquals(estimate.getMarginalCost(),15d/7d,.0001f);
+        Assert.assertEquals(estimate.getTotalCost(),20d/7d,.0001f);
 
 
 
@@ -353,8 +353,8 @@ public class MarginalMaximizerStaticsTest
                 computeInputCosts(owner, plant, MarginalMaximizer.RandomizationPolicy.MORE_TIME, 1, 2);
 
 
-        Assert.assertEquals(estimate.getMarginalCost(),35,.0001f);
-        Assert.assertEquals(estimate.getTotalCost(),40,.0001f);
+        Assert.assertEquals(estimate.getMarginalCost(),35d/7d,.0001f);
+        Assert.assertEquals(estimate.getTotalCost(),40d/7d,.0001f);
 
 
 
@@ -389,8 +389,8 @@ public class MarginalMaximizerStaticsTest
                 computeInputCosts(owner, plant, MarginalMaximizer.RandomizationPolicy.MORE_TIME, 1, 2);
 
 
-        Assert.assertEquals(estimate.getMarginalCost(),1,.0001f);
-        Assert.assertEquals(estimate.getTotalCost(),6,.0001f);
+        Assert.assertEquals(estimate.getMarginalCost(),1d/7d,.0001f);
+        Assert.assertEquals(estimate.getTotalCost(),6d/7d,.0001f);
 
 
 
@@ -423,8 +423,8 @@ public class MarginalMaximizerStaticsTest
                 computeInputCosts(owner, plant, MarginalMaximizer.RandomizationPolicy.MORE_TIME, 2, 1);
 
 
-        Assert.assertEquals(estimate.getMarginalCost(),-15,.0001f);
-        Assert.assertEquals(estimate.getTotalCost(),5,.0001f);
+        Assert.assertEquals(estimate.getMarginalCost(),-15d/7d,.0001f);
+        Assert.assertEquals(estimate.getTotalCost(),5d/7d,.0001f);
 
 
 
@@ -464,8 +464,8 @@ public class MarginalMaximizerStaticsTest
                 computeInputCosts(owner, plant, MarginalMaximizer.RandomizationPolicy.MORE_TIME, 1, 2);
 
 
-        Assert.assertEquals(estimate.getMarginalCost(),30,.0001f);
-        Assert.assertEquals(estimate.getTotalCost(),40,.0001f);
+        Assert.assertEquals(estimate.getMarginalCost(),30d/7d,.0001f);
+        Assert.assertEquals(estimate.getTotalCost(),40d/7d,.0001f);
 
     }
 

@@ -1,14 +1,18 @@
-package model.scenario.oil;
+/*
+ * Copyright (c) 2013 by Ernesto Carrella
+ * Licensed under the Academic Free License version 3.0
+ * See the file "LICENSE" for more information
+ */
+
+package model.utilities.dummies;
 
 import agents.EconomicAgent;
-import agents.firm.GeographicalFirm;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import financial.market.GeographicalClearLastMarket;
-import financial.utilities.Quote;
+import financial.market.OrderBookMarket;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.scenario.oil.OilCustomer;
 import model.utilities.ActionOrder;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,11 +34,11 @@ import static org.mockito.Mockito.*;
  * <h4>References</h4>
  *
  * @author carrknight
- * @version 2013-10-27
+ * @version 2013-11-30
  * @see
  */
-public class OilCustomerTest {
-
+public class CustomerTest
+{
 
     private final GeographicalClearLastMarket market = mock(GeographicalClearLastMarket.class);
 
@@ -51,11 +55,11 @@ public class OilCustomerTest {
         //create the model
         MacroII macroII = new MacroII(1l);
         //create the customer
-        OilCustomer customer = new OilCustomer(macroII,10,2,2, market);
+        Customer customer = new Customer(macroII,10,market);
         //give it two units of oil
         customer.receive(new Good(GoodType.OIL,null,0),null);
         customer.receive(new Good(GoodType.OIL,null,0),null);
-        Assert.assertEquals(customer.hasHowMany(GoodType.OIL),2);
+        Assert.assertEquals(customer.hasHowMany(GoodType.OIL), 2);
 
         //make one day pass
         macroII.start();
@@ -76,7 +80,7 @@ public class OilCustomerTest {
         //create the model
         MacroII macroII = new MacroII(1l);
         //create the customer
-        OilCustomer customer = new OilCustomer(macroII,10,2,2, market);
+        Customer customer = new Customer(macroII,10,market);
         long targetCash = customer.getResetCashTo() + 100;
         customer.setResetCashTo(targetCash);
         Assert.assertFalse(targetCash == customer.getCash());
@@ -105,78 +109,8 @@ public class OilCustomerTest {
     }
 
 
-    @Test
-    public void testChoosingSuppliersByPrice(){
-
-        OilCustomer customer = new OilCustomer(mock(MacroII.class),100,0,0, market);
-
-        //firm 1, location 1,1 price 10
-        GeographicalFirm firm1 = mock(GeographicalFirm.class);
-        when(firm1.getxLocation()).thenReturn(1d);
-        when(firm1.getyLocation()).thenReturn(1d);
-        Quote quote1 = Quote.newSellerQuote(firm1, 10, mock(Good.class));
 
 
-        //firm 2, location -1,1 price 11
-        GeographicalFirm firm2 = mock(GeographicalFirm.class);
-        when(firm2.getxLocation()).thenReturn(1d);
-        when(firm2.getyLocation()).thenReturn(1d);
-        Quote quote2 = Quote.newSellerQuote(firm2, 11, mock(Good.class));
-
-        Multimap<GeographicalFirm,Quote> firms = HashMultimap.create(); firms.put(firm1,quote1); firms.put(firm2,quote2);
-
-        Assert.assertEquals(firm1,customer.chooseSupplier(firms));
-
-    }
-
-
-    @Test
-    public void testChoosingSuppliersByLocation(){
-
-        OilCustomer customer = new OilCustomer(mock(MacroII.class),100,0,0, market);
-
-        //firm 1, location 1,1 price 10
-        GeographicalFirm firm1 = mock(GeographicalFirm.class);
-        when(firm1.getxLocation()).thenReturn(1d);
-        when(firm1.getyLocation()).thenReturn(1d);
-        Quote quote1 = Quote.newSellerQuote(firm1, 10, mock(Good.class));
-
-        //firm 2, location 2,2 price 10
-        GeographicalFirm firm2 = mock(GeographicalFirm.class);
-        when(firm2.getxLocation()).thenReturn(2d);
-        when(firm2.getyLocation()).thenReturn(2d);
-        Quote quote2 = Quote.newSellerQuote(firm2, 10, mock(Good.class));
-
-        Multimap<GeographicalFirm,Quote> firms = HashMultimap.create(); firms.put(firm1,quote1); firms.put(firm2,quote2);
-
-        Assert.assertEquals(firm1,customer.chooseSupplier(firms));
-
-    }
-
-    @Test
-    public void testChoosingSuppliersByChoosingNone(){
-
-        OilCustomer customer = new OilCustomer(mock(MacroII.class),100,0,0, market);
-        Multimap<GeographicalFirm,Quote> firms = HashMultimap.create();
-
-        //firm 1, location 1,1 price 1000
-        GeographicalFirm firm1 = mock(GeographicalFirm.class);
-        when(firm1.getxLocation()).thenReturn(1d);
-        when(firm1.getyLocation()).thenReturn(1d);
-        Quote quote = Quote.newSellerQuote(firm1, 1000, mock(Good.class));
-        firms.put(firm1,quote);
-
-        //firm 2, location 1,1 price 1000
-        GeographicalFirm firm2 = mock(GeographicalFirm.class);
-        when(firm2.getxLocation()).thenReturn(1d);
-        when(firm2.getyLocation()).thenReturn(1d);
-        quote = Quote.newSellerQuote(firm2, 1000, mock(Good.class));
-        when(firm2.askedForASaleQuote(customer, GoodType.OIL)).thenReturn(quote);
-        firms.put(firm2,quote);
-
-        Assert.assertEquals(null,customer.chooseSupplier(firms));
-
-    }
 
     @Test
     public void placingQuotes()
@@ -184,7 +118,7 @@ public class OilCustomerTest {
         //daily demand 2, with empty inventory that's 0
         GeographicalClearLastMarket geographicalClearLastMarket = market;
         MacroII model = new MacroII(1l);
-        final OilCustomer customer = new OilCustomer(model,100,0,0, geographicalClearLastMarket);
+        final         Customer customer = new Customer(model,100,market);
         customer.setDailyDemand(2);
         customer.start(model);
         model.start();
@@ -222,5 +156,69 @@ public class OilCustomerTest {
 
     }
 
+    @Test
+    public void buyAndSell()
+    {
+        //daily demand 2, with empty inventory that's 0
+        OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
+        MacroII model = new MacroII(1l);
+        final Customer buyer = new Customer(model,100,market);
+        buyer.setDailyDemand(2);
+        buyer.start(model);
+        model.start();
+        model.schedule.step(model);
 
+        Assert.assertEquals(0,market.numberOfAsks());
+        Assert.assertEquals(2,market.numberOfBids());
+
+        //now have one unit being sold
+        DummySeller seller = new DummySeller(model,50); market.registerSeller(seller);
+        Good toSell = new Good(GoodType.GENERIC, seller, 0); seller.receive(toSell,null);
+        market.submitSellQuote(seller,50, toSell);
+
+        Assert.assertEquals(0,market.numberOfAsks());
+        Assert.assertEquals(1,market.numberOfBids());
+        Assert.assertEquals(1,buyer.hasHowMany(GoodType.GENERIC));
+
+
+        //step again
+        model.schedule.step(model);
+
+        Assert.assertEquals(0,market.numberOfAsks());
+        Assert.assertEquals(2,market.numberOfBids());
+        Assert.assertEquals(0,buyer.hasHowMany(GoodType.GENERIC));
+
+    }
+
+
+    //when we turn the buyer off, all the quotes are gone and the buyer isn't even listed anymore
+    @Test
+    public void turnOff()
+    {
+        //daily demand 2, with empty inventory that's 0
+        OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
+        MacroII model = new MacroII(1l);
+        final Customer buyer = new Customer(model,100,market);
+        buyer.setDailyDemand(2);
+        buyer.start(model);
+        model.start();
+        model.schedule.step(model);
+
+        Assert.assertEquals(1,market.getBuyers().size());
+        Assert.assertEquals(2,market.numberOfBids());
+
+        buyer.turnOff();
+
+        Assert.assertEquals(0,market.getBuyers().size());
+        Assert.assertEquals(0,market.numberOfBids());
+
+
+        //step again
+        model.schedule.step(model);
+
+        Assert.assertEquals(0,market.getBuyers().size());
+        Assert.assertEquals(0,market.numberOfBids());
+
+
+    }
 }

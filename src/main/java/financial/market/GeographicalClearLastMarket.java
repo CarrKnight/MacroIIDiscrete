@@ -413,6 +413,25 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
     }
 
     /**
+     * Remove all these quotes by the seller
+     *
+     * @param seller the seller whose quotes we want to clear
+     * @return the set of quotes removed
+     */
+    @Override
+    public Collection<Quote> removeAllSellQuoteBySeller(EconomicAgent seller) {
+        if(sellersWhoPlacedAQuote.containsKey(seller))
+        {
+            changedMap = true;
+            return  sellersWhoPlacedAQuote.removeAll(seller);
+
+        }
+        else
+            return new HashSet<>();
+
+    }
+
+    /**
      * asks the market if users are allowed to see the best price for a good on sale
      */
     @Override

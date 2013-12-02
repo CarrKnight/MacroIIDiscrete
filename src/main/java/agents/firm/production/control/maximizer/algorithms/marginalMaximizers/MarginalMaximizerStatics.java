@@ -74,7 +74,7 @@ public final class MarginalMaximizerStatics {
          * TOTAL COSTS
          *********************************************/
         //sum up everything
-        long totalMarginalCosts = wageCosts.getMarginalCost()+ inputCosts.getMarginalCost();
+        float totalMarginalCosts = wageCosts.getMarginalCost()+ inputCosts.getMarginalCost();
         //we are going to need the total costs to predict our future sales price
         assert  inputCosts.getTotalCost() >=0;
 
@@ -158,7 +158,7 @@ public final class MarginalMaximizerStatics {
      */
     public static CostEstimate computeWageCosts(HumanResources hr, PlantControl control, int currentWorkers,
                                                 int targetWorkers, MarginalMaximizer.RandomizationPolicy policy) throws DelayException {
-        long marginalWageCosts; long futureWage;
+        float marginalWageCosts; float futureWage;
 
         if(targetWorkers > currentWorkers)
         {
@@ -174,14 +174,14 @@ public final class MarginalMaximizerStatics {
         futureWage = futureWage < 0 ? policy.replaceUnknownPrediction(hr.getMarket(), hr.getRandom()) : futureWage;
         //todo I don't know about this
         //long oldWage = currentWorkers == 0 ? 0 : control.getCurrentWage();
-        long oldWage = currentWorkers == 0 ? 0 : hr.predictPurchasePriceWhenNoChangeInProduction();
+        float oldWage = currentWorkers == 0 ? 0 : hr.predictPurchasePriceWhenNoChangeInProduction();
         if(printOutDiagnostics)
            RobustMarginalMaximizer.LOGGER.log(Level.INFO,
                     "predicte wages: " + futureWage + ", predicted current wage: " +  oldWage +
                     ", actual old wage:" + control.getCurrentWage() + ", total labor: " + hr.getMarket().getYesterdayVolume() );
 
 
-        long totalFutureWageCosts = futureWage * targetWorkers;
+        float totalFutureWageCosts = futureWage * targetWorkers;
 
         marginalWageCosts = totalFutureWageCosts - currentWorkers * oldWage;
 
@@ -203,7 +203,7 @@ public final class MarginalMaximizerStatics {
      * @throws model.utilities.DelayException
      */
     public static float computeMarginalRevenue(Firm owner, Plant p, MarginalMaximizer.RandomizationPolicy policy, int currentWorkers, int
-            targetWorkers, long totalFutureCosts, long totalFutureWageCosts) throws DelayException {
+            targetWorkers, float totalFutureCosts, float totalFutureWageCosts) throws DelayException {
 
         float marginalRevenue = 0;
         Set<GoodType> outputs = p.getOutputs();
@@ -212,16 +212,16 @@ public final class MarginalMaximizerStatics {
             float marginalProduction = (p.hypotheticalThroughput(targetWorkers, output) - p.hypotheticalThroughput(currentWorkers, output));
             assert (marginalProduction >= 0 && targetWorkers >= currentWorkers) ^  (marginalProduction <= 0 && targetWorkers < currentWorkers) :
                     "this method was thought for monotonic production functions.";
-            long oldPrice = owner.getSalesDepartment(output).predictSalePriceWhenNotChangingPoduction();
+            float oldPrice = owner.getSalesDepartment(output).predictSalePriceWhenNotChangingPoduction();
             oldPrice = oldPrice < 0 ? policy.replaceUnknownPrediction(owner.getSalesDepartment(output).getMarket(), p.getRandom()) : oldPrice;
 
             //are we increasing or decreasing production?
-            long pricePerUnit =  targetWorkers>currentWorkers ?
+            float pricePerUnit =  targetWorkers>currentWorkers ?
                     owner.getSalesDepartment(output).predictSalePriceAfterIncreasingProduction(
-                            p.hypotheticalUnitOutputCost(output, totalFutureCosts, targetWorkers, totalFutureWageCosts
+                            p.hypotheticalUnitOutputCost(output, Math.round(totalFutureCosts), targetWorkers, Math.round(totalFutureWageCosts)
                             ), Math.round(marginalProduction/7f)) :
                     owner.getSalesDepartment(output).predictSalePriceAfterDecreasingProduction(
-                            p.hypotheticalUnitOutputCost(output, totalFutureCosts, targetWorkers, totalFutureWageCosts),Math.round(-marginalProduction/7f) );
+                            p.hypotheticalUnitOutputCost(output, Math.round(totalFutureCosts), targetWorkers, Math.round(totalFutureWageCosts)),Math.round(-marginalProduction/7f) );
 
 
             pricePerUnit = pricePerUnit < 0 ? policy.replaceUnknownPrediction(owner.getSalesDepartment(output).getMarket(), p.getRandom()) : pricePerUnit;
@@ -249,26 +249,26 @@ public final class MarginalMaximizerStatics {
      */
     public static CostEstimate computeInputCosts(Firm owner, Plant p, MarginalMaximizer.RandomizationPolicy policy, int currentWorkers, int targetWorkers) throws DelayException {
         Set<GoodType> inputs = p.getInputs();
-        long marginalInputCosts = 0; //here we will store the costs of increasing production
-        long totalInputCosts = 0; //here we will store the TOTAL input costs of increased production
+        float marginalInputCosts = 0; //here we will store the costs of increasing production
+        float totalInputCosts = 0; //here we will store the TOTAL input costs of increased production
         for(GoodType input : inputs)
         {
-            int totalInputNeeded =  p.hypotheticalWeeklyInputNeeds(input, targetWorkers);  //total input needed
-            int oldNeeds = p.hypotheticalWeeklyInputNeeds(input, currentWorkers) ;
-            int marginalInputNeeded = totalInputNeeded-oldNeeds;    //marginal input needs
+            float totalInputNeeded =  p.hypotheticalWeeklyInputNeeds(input, targetWorkers);  //total input needed
+            float oldNeeds = p.hypotheticalWeeklyInputNeeds(input, currentWorkers) ;
+            float marginalInputNeeded = totalInputNeeded-oldNeeds;    //marginal input needs
             assert (marginalInputNeeded>=0 && targetWorkers > currentWorkers) ^ (marginalInputNeeded<=0 && targetWorkers < currentWorkers) ; //
 
             PurchasesDepartment dept = owner.getPurchaseDepartment(input); //get the purchase department that buys this input
-            long costPerInput = targetWorkers > currentWorkers ?
+            float costPerInput = targetWorkers > currentWorkers ?
                     dept.predictPurchasePriceWhenIncreasingProduction() :
                     dept.predictPurchasePriceWhenDecreasingProduction();
-            long oldCosts = dept.predictPurchasePriceWhenNoChangeInProduction();
+            float oldCosts = dept.predictPurchasePriceWhenNoChangeInProduction();
             //if there is no prediction, react to it
             costPerInput = costPerInput < 0 ? policy.replaceUnknownPrediction(owner.getPurchaseDepartment(input).getMarket(), p.getRandom()) : costPerInput;
 
             //count the costs!
-            totalInputCosts +=  (costPerInput*totalInputNeeded)/7f;
-            marginalInputCosts += (costPerInput*totalInputNeeded - oldCosts*oldNeeds)/7f;
+            totalInputCosts +=  (costPerInput*totalInputNeeded);
+            marginalInputCosts += (costPerInput*totalInputNeeded - oldCosts*oldNeeds);
 
             if(printOutDiagnostics)
                 RobustMarginalMaximizer.LOGGER.log(Level.INFO,"predicte inputCost: " + costPerInput + ", predicted current costs: " +  oldCosts +
@@ -279,7 +279,7 @@ public final class MarginalMaximizerStatics {
             assert totalInputCosts >= 0;
         }
 
-        return new CostEstimate(marginalInputCosts,totalInputCosts);
+        return new CostEstimate(marginalInputCosts/7f,totalInputCosts/7f);
 
     }
 

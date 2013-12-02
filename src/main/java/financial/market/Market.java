@@ -394,6 +394,14 @@ public abstract class Market implements Deactivatable{
      */
     abstract public Collection<Quote> removeAllBuyQuoteByBuyer(EconomicAgent buyer);
 
+    /**
+     * Remove all these quotes by the seller
+     *
+     * @param seller the seller whose quotes we want to clear
+     * @return the set of quotes removed
+     */
+    abstract public Collection<Quote> removeAllSellQuoteBySeller(EconomicAgent seller);
+
 
     /**
      * This method is called whenever two agents agree on an exchange. It can be called by the market or the agents themselves.

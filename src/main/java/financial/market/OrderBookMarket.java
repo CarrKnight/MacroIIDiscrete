@@ -325,6 +325,36 @@ public class OrderBookMarket extends Market {
 
     }
 
+
+    /**
+     * Remove all these quotes by the seller
+     *
+     * @param seller the buyer whose quotes we want to clear
+     * @return the set of quotes removed
+     */
+    @Override
+    public Collection<Quote> removeAllSellQuoteBySeller(EconomicAgent seller) {
+        //create the set of buy quotes  to remove
+        Set<Quote> askQuotes = new HashSet<>();
+        for(Quote q : asks)
+        {
+            if(q.getAgent().equals(seller))
+                askQuotes.add(q);
+        }
+        if(askQuotes.isEmpty()) //nothing to remove!
+            return askQuotes;
+
+        //non empty!
+        boolean b = asks.removeAll(askQuotes);
+        assert b;
+
+        //now tell the listeners
+        for(Quote q : askQuotes)
+            notifyListenersAndGUIQuoteHasBeenRemoved(q);
+        return askQuotes;
+
+    }
+
     /**
      * Best bid and asks are visible.
      */

@@ -33,7 +33,7 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
     /**
      * whether our x is workers or outflow
      */
-    boolean regressingOnWorkers = true;
+    boolean regressingOnWorkers = false;
 
 
     /**
@@ -44,7 +44,7 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
 
 
     public RecursiveSalePredictor(MacroII model, SalesDepartment department) {
-        this(model, department,7,7);
+        this(model, department,AbstractRecursivePredictor.defaultPriceLags,AbstractRecursivePredictor.defaultIndepedentLags);
     }
 
     public RecursiveSalePredictor(final MacroII model, final SalesDepartment department,

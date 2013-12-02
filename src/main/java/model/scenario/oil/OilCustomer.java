@@ -1,28 +1,21 @@
 package model.scenario.oil;
 
-import agents.EconomicAgent;
 import agents.HasInventory;
 import agents.firm.GeographicalFirm;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
 import com.sun.istack.internal.Nullable;
-import ec.util.MersenneTwisterFast;
 import financial.market.GeographicalClearLastMarket;
-import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;
-import goods.GoodType;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import model.MacroII;
-import model.utilities.ActionOrder;
+import model.utilities.dummies.Customer;
 import model.utilities.geography.HasLocation;
 import model.utilities.geography.Location;
-import sim.engine.SimState;
-import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -42,26 +35,13 @@ import java.util.Comparator;
  * @version 2013-10-27
  * @see
  */
-public class OilCustomer extends EconomicAgent implements HasLocation{
+public class OilCustomer extends Customer implements HasLocation{
 
-    /**
-     * how many units do you want to buy every day?
-     */
-    private int dailyDemand = 1;
-
-    /**
-     * the maximum price the customer is willing to pay for its stuff, that is
-     * oilPrice + distanceCost * distance <= maxPrice to buy.
-     */
-    private long maxPrice;
 
 
     private final Location location;
 
     /**
-     * every day, after consuming the customer gets back the total cash to this number
-     */
-    private long resetCashTo = 100000;
 
 
     /**
@@ -71,57 +51,12 @@ public class OilCustomer extends EconomicAgent implements HasLocation{
 
 
 
-    private GoodType goodTypeBought = GoodType.OIL;
-
-
     public OilCustomer(@Nonnull MacroII model, long maxPrice, double x, double y, GeographicalClearLastMarket market) {
-        super(model, 100000);
-        Preconditions.checkArgument(maxPrice > 0);
-        this.maxPrice = maxPrice;
+        super(model, maxPrice,market);
         this.location = new Location(x,y);
         lastSupplier = new SimpleObjectProperty<>();
-
-        market.registerBuyer(this);
-        startSteppables(market);
     }
 
-
-    private void startSteppables(final GeographicalClearLastMarket market)
-    {
-        //every day, at "production" eat all the oil and start over (also make sure your cash remains the same)
-        model.scheduleSoon(ActionOrder.PRODUCTION, new Steppable() {
-            @Override
-            public void step(SimState state) {
-                eatEverythingAndResetCash();
-                //reschedule yourself
-                model.scheduleTomorrow(ActionOrder.PRODUCTION,this);
-            }
-        });
-
-        //schedule yourself to try to buy every day
-        model.scheduleSoon(ActionOrder.TRADE, new Steppable() {
-            @Override
-            public void step(SimState state) {
-                buyIfNeeded(market);
-                //reschedule yourself
-                model.scheduleTomorrow(ActionOrder.TRADE,this);
-
-            }
-        });
-
-    }
-
-    private void eatEverythingAndResetCash() {
-        //eat all!
-        consumeAll();
-        long cashDifference = resetCashTo-getCash();
-        if(cashDifference > 0)
-            earn(cashDifference);
-        else if(cashDifference < 0)
-            burnMoney(-cashDifference);
-
-        assert getCash() == resetCashTo;
-    }
 
 
     /**
@@ -156,7 +91,7 @@ public class OilCustomer extends EconomicAgent implements HasLocation{
         assert best != null;
         //is the minimum price distance okay?
         double bestPricePlusDistance = firmsToChooseFrom.get(best).iterator().next().getPriceQuoted() + distance(OilCustomer.this,best);
-        if(bestPricePlusDistance <= maxPrice)
+        if(bestPricePlusDistance <= getMaxPrice())
             return best;
         else
             return null;
@@ -183,27 +118,7 @@ public class OilCustomer extends EconomicAgent implements HasLocation{
         return distance;
     }
 
-    public long getMaxPrice() {
-        return maxPrice;
-    }
 
-    public void setMaxPrice(long maxPrice) {
-        this.maxPrice = maxPrice;
-    }
-
-    private void buyIfNeeded(GeographicalClearLastMarket market)
-    {
-        //cancel all previous quotes
-        Collection<Quote> oldQuotes = market.removeAllBuyQuoteByBuyer(this);
-        //place all the orders you need
-        for(int i=0; i<dailyDemand-hasHowMany(goodTypeBought); i++)
-            market.submitBuyQuote(this,maxPrice);
-
-
-
-
-
-    }
 
     @Override
     public double getxLocation() {
@@ -234,126 +149,6 @@ public class OilCustomer extends EconomicAgent implements HasLocation{
     public void setyLocation(double yLocation) {
         location.setyLocation(yLocation);
     }
-
-
-    @Override
-    public MersenneTwisterFast getRandom() {
-        return model.getRandom();
-    }
-
-    @Override
-    public void reactToFilledAskedQuote(Good g, long price, EconomicAgent buyer) {
-        //nothing happens. We placed all our quotes already
-    }
-
-    @Override
-    public void reactToFilledBidQuote(Good g, long price, EconomicAgent seller) {
-        //nothing happens. We placed all our quotes already
-    }
-
-    /**
-     * This is called by a peddler/survey to the agent and asks what would be the maximum he's willing to pay to buy a new good.
-     *
-     * @param g the good the peddler/survey is pushing
-     * @return the maximum price willing to pay or -1 if no price is good.
-     */
-    @Override
-    public long maximumOffer(Good g) {
-        //do not peddle
-        return -1;
-    }
-
-    /**
-     * This is called by a peddler/survey to the agent and asks what would be the maximum he's willing to pay to buy a new good.
-     *
-     * @param t the type good the peddler/survey is pushing
-     * @return the maximum price willing to pay or -1 if no price is good.
-     */
-    @Override
-    public long askedForABuyOffer(GoodType t) {
-        return -1;
-    }
-
-    /**
-     * A buyer asks the sales department for the price they are willing to sell one of their good.
-     *
-     * @param buyer the economic agent that asks you that
-     * @return a price quoted or -1 if there are no quotes
-     */
-    @Override
-    public Quote askedForASaleQuote(EconomicAgent buyer, GoodType type) {
-        return null;
-    }
-
-    /**
-     * Called by a buyer that wants to buy directly from this agent, not going through the market.
-     *
-     * @param buyerQuote  the quote (including the offer price) of the buyer
-     * @param sellerQuote the quote (including the offer price) of the seller; I expect the buyer to have achieved this through asked for an offer function
-     * @return a purchaseResult including whether the trade was succesful and if so the final price
-     */
-    @Nonnull
-    @Override
-    public PurchaseResult shopHere(@Nonnull Quote buyerQuote, @Nonnull Quote sellerQuote) {
-        return PurchaseResult.NO_MATCH_AVAILABLE;
-
-    }
-
-    /**
-     * how "far" purchases inventory are from target.
-     */
-    @Override
-    public int estimateDemandGap(GoodType type) {
-        return hasHowMany(goodTypeBought) - dailyDemand;
-    }
-
-    /**
-     * how "far" sales inventory are from target.
-     */
-    @Override
-    public int estimateSupplyGap(GoodType type) {
-            return 0;
-    }
-
-
-    /**
-     * Sets how many units you want to buy every day.
-     *
-     * @param dailyDemand needs to be positive
-     */
-    public void setDailyDemand(int dailyDemand) {
-        Preconditions.checkArgument(dailyDemand > 0);
-        this.dailyDemand = dailyDemand;
-    }
-
-    /**
-     * Gets how many units you want to buy every day.
-     *
-     */
-    public int getDailyDemand() {
-        return dailyDemand;
-    }
-
-
-    /**
-     * Sets new "every day, after consuming the customer gets back the total cash to this number".
-     *
-     * @param resetCashTo New value of every day, after consuming the customer gets back the total cash to this number.
-     */
-    public void setResetCashTo(long resetCashTo) {
-        Preconditions.checkArgument(resetCashTo >= 0);
-        this.resetCashTo = resetCashTo;
-    }
-
-    /**
-     * Gets "every day, after consuming the customer gets back the total cash to this number".
-     *
-     * @return Value of every day, after consuming the customer gets back the total cash to this number.
-     */
-    public long getResetCashTo() {
-        return resetCashTo;
-    }
-
     /**
      * This method is called when inventory has to increase by 1. The reference to the sender is for accounting purpose only
      *
@@ -363,7 +158,7 @@ public class OilCustomer extends EconomicAgent implements HasLocation{
     @Override
     public void receive(Good g, @javax.annotation.Nullable HasInventory sender) {
         super.receive(g, sender);
-        if(sender!=null && g.getType().equals(goodTypeBought) && sender instanceof GeographicalFirm)
+        if(sender!=null && g.getType().equals(getMarket().getGoodType()) && sender instanceof GeographicalFirm)
             lastSupplier.setValue((GeographicalFirm) sender);
     }
 

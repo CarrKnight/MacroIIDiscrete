@@ -72,6 +72,11 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
      * */
     private int goodsSold = 0;
 
+    /**
+     * basically the error fed in the pid
+     */
+    private float gap = 0;
+
 
     /**
      * If the price we are quoting is LOWER than the production cost, what should we do? if true we quote the production cost if lower than the PID proposed price.
@@ -203,7 +208,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         assert dept == sales;
         assert sales.getFirm() == owner;
         assert owner.has(good);
-        goodsToSell++;
+      //  goodsToSell++;
         //percolate
         stockOuts.sellThisEvent(owner,dept,good);
     }
@@ -247,15 +252,21 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         //remember the old price
         long oldPrice = price;
 
+        goodsToSell = sales.getHowManyToSell();
         //make the PID adjust, please
 
-        if(flowTargeting)
-            controller.adjust(0, (float) ((goodsToSell - initialInventory) - ((float) goodsSold + (float) stockOuts.getStockouts())),    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
+
+        if(flowTargeting) {
+            gap = (float) ((goodsToSell - initialInventory) - ((float) goodsSold + (float) stockOuts.getStockouts()));
+            controller.adjust(0, gap,    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
                     active, (MacroII) simState, this, ActionOrder.ADJUST_PRICES);
+        }
         else
+        {
+            gap =  (float) (goodsToSell - ((float) goodsSold + (float) stockOuts.getStockouts()));
             controller.adjust(0, (float) (goodsToSell - ((float) goodsSold + (float) stockOuts.getStockouts())),    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
                     active, (MacroII)simState, this,ActionOrder.ADJUST_PRICES);
-
+        }
 
 
 
@@ -400,10 +411,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
     @Override
     public int estimateSupplyGap() {
 
-        if(flowTargeting)
-           return  ((goodsToSell - initialInventory) - ( goodsSold + stockOuts.getStockouts()));
-        else
-            return goodsToSell - ( goodsSold +  stockOuts.getStockouts());
+        return Math.round(gap);
     }
 
     /**

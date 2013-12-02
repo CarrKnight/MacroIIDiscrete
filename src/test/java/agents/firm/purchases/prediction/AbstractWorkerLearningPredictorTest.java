@@ -8,7 +8,7 @@ package agents.firm.purchases.prediction;
 
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
-import agents.firm.sales.prediction.RecursiveSalePredictor;
+import agents.firm.sales.prediction.OpenLoopRecursiveSalesPredictor;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import goods.GoodType;
@@ -79,16 +79,17 @@ public class AbstractWorkerLearningPredictorTest {
 
             macroII.start();
             macroII.schedule.step(macroII);
-            RecursiveSalePredictor predictor = new RecursiveSalePredictor(macroII,scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC));
-            predictor.setRegressingOnWorkers(true);
+            OpenLoopRecursiveSalesPredictor predictor = new OpenLoopRecursiveSalesPredictor(macroII,scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC));
+           // predictor.setRegressingOnWorkers(true);
             scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC).setPredictorStrategy(predictor);
             while(macroII.schedule.getTime()<5000)
                 macroII.schedule.step(macroII);
 
 
             System.out.println(predictor.getDecrementDelta() + " - " + p1 * a + " - " +macroII.seed());
-            System.out.println(macroII.getMarket(GoodType.GENERIC).getLastPrice() + " ---- " + predictor.predictPrice(0) + " ---- " + predictor.predictPrice(1) + "\n" +
+      /*      System.out.println(macroII.getMarket(GoodType.GENERIC).getLastPrice() + " ---- " + predictor.predictPrice(0) + " ---- " + predictor.predictPrice(1) + "\n" +
                     predictor.predictPrice(1,10) +"---"+ predictor.predictPrice(1,100) +"---"+ predictor.predictPrice(1,1000)+"---"+ predictor.predictPrice(1,10000));
+                    */
             assertEquals(predictor.getDecrementDelta(),(double)(p1 * a ) ,.5d);
 
 

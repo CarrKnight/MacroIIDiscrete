@@ -1,5 +1,6 @@
 package model.utilities.stats.regression;
 
+import Jama.Matrix;
 import com.google.common.base.Preconditions;
 
 /**
@@ -38,9 +39,9 @@ public class RecursiveLinearRegression
      */
     final private double[] beta;
 
-    private double forgettingFactor = .98;
+    private double forgettingFactor = .999d;
 
-    private int noiseVariance = 100;
+    private double noiseVariance = 1;
 
 
     /**
@@ -67,7 +68,7 @@ public class RecursiveLinearRegression
         kGains = new  double[dimensions];
         pCovariance = new  double[dimensions][dimensions];//fill as a diagonal
         for(int i =0; i<dimensions; i++)
-            pCovariance[i][i] = 10000 ;
+            pCovariance[i][i] = 1000000 ;
 
         beta = initialBetas;
     }
@@ -83,15 +84,12 @@ public class RecursiveLinearRegression
     {
         Preconditions.checkState(observation.length == dimensions);
         //reweight
-        double weight = Math.sqrt(observationWeight);
-        y = y * weight;
-        for(int i=0; i< observation.length; i++)
-            observation[i] = observation[i]*weight;
+
 
         /****************************************************
          * compute K!
          ***************************************************/
-        updateKGains(observation);
+        updateKGains(observation,observationWeight);
         /****************************************************
          * Update Beta!
          ***************************************************/
@@ -113,10 +111,7 @@ public class RecursiveLinearRegression
                     toMultiply[i][j]+=1; //diagonal element needs to be summed to a diag(1)
             }
 
-        //reweight by forgetting factor
-        for(int i=0;i<dimensions; i++)
-            for(int j=0; j<dimensions; j++)
-                pCovariance[i][j] *= 1d/forgettingFactor;
+
 
 
 
@@ -127,13 +122,29 @@ public class RecursiveLinearRegression
             {
                 for(int i=0; i<dimensions; i++)
                 {
-                    newP[row][column] +=toMultiply[row][i]/forgettingFactor * pCovariance[i][column];
+                    newP[row][column] +=toMultiply[row][i] * pCovariance[i][column];
                 }
             }
 
         }
+
+        //don't change if the eigenvalue is negative
+        double[] eigenValues = new Matrix(pCovariance).eig().getRealEigenvalues();
+        for(double e : eigenValues)
+           if(e < 0)
+               return;
+
         //copy the new result into the old matrix
         pCovariance = newP;
+
+
+
+            //reweight by forgetting factor
+            for(int i=0;i<dimensions; i++)
+                for(int j=0; j<dimensions; j++)
+                    pCovariance[i][j] *= 1d/forgettingFactor;
+
+
     }
 
     private void updateBeta(double y, double[] observation) {
@@ -151,22 +162,32 @@ public class RecursiveLinearRegression
             beta[i] = beta[i] + weightedResidual[i];
     }
 
-    private void updateKGains(double[] observation) {
-        double numerator[] = new double[dimensions];
+    private void updateKGains(double[] observation, double weight) {
+
+        //compute error dispersion
+        //P*x
+        double px[] = new double[dimensions];
         for(int i=0; i<dimensions; i++)
         {
             for(int j=0; j<dimensions; j++)
-                numerator[i] += pCovariance[i][j] * observation[j];
+                px[i] += pCovariance[i][j] * observation[j];
         }
 
         double denominator = 0;
         for(int i=0; i<dimensions; i++)
-            denominator += observation[i] * numerator[i];
-        denominator += noiseVariance;
+            denominator += observation[i] * px[i];
+        denominator += forgettingFactor * noiseVariance / Math.pow(weight,2);
 
-        //divide, that's your K gain
-        for(int i=0; i< numerator.length; i++)
-            kGains[i] = numerator[i]/denominator;
+        if(denominator != 0){
+            //divide, that's your K gain
+            for(int i=0; i< px.length; i++)
+            {
+                kGains[i] = px[i]/denominator;
+      //          assert kGains[i]>=0 : Arrays.toString(kGains) + " <---> " + Arrays.toString(px)  + " ==== " + denominator;
+                assert !Double.isNaN(kGains[i]);
+                assert !Double.isInfinite(kGains[i]) : px[i] + " --- " + denominator;
+            }
+        }
     }
 
     public double[] getBeta() {
@@ -181,27 +202,51 @@ public class RecursiveLinearRegression
         this.forgettingFactor = forgettingFactor;
     }
 
-    public int getNoiseVariance() {
+    public double getNoiseVariance() {
         return noiseVariance;
     }
 
-    public void setNoiseVariance(int noiseVariance) {
+    public void setNoiseVariance(double noiseVariance) {
         this.noiseVariance = noiseVariance;
     }
 
     /**
      * increase all the diagonal of P by noise
      */
-    public void addNoise(int noise)
+    public void addNoise(double noise)
     {
+
         for(int i =0; i<dimensions; i++)
             pCovariance[i][i] += noise;
+
+
+
+    }
+
+    /**
+     * increase all the diagonal of P by noise
+     */
+    public void resetPDiagonal(int diagonal)
+    {
+        double biggestElement = Double.MAX_VALUE;
+        for(int i=0; i< dimensions; i++)
+            for(int j=0; j< dimensions; j++)
+                biggestElement = biggestElement > pCovariance[i][j] ? pCovariance[i][j] : biggestElement;
+
+        double scale = Math.abs(diagonal / biggestElement);
+
+
+        //  pCovariance = new  double[dimensions][dimensions];//fill as a diagonal
+        for(int i=0; i< dimensions; i++)
+            for(int j=0; j< dimensions; j++)
+                pCovariance[i][j] *= scale ;
+
 
     }
 
     public int getTrace()
     {
-       int sum = 0;
+        int sum = 0;
         for(int i =0; i<dimensions; i++)
             sum += pCovariance[i][i];
         return sum;

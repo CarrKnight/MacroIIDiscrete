@@ -31,26 +31,29 @@ import java.util.LinkedList;
 public abstract class AbstractRecursivePredictor  implements Steppable, Deactivatable
 {
 
+    public static int defaultPriceLags = 0;
+
+    public static int defaultIndepedentLags = 1;
 
     public AbstractRecursivePredictor(MacroII model) {
-        this(model,3,3);
+        this(model,defaultPriceLags,defaultIndepedentLags);
     }
 
     public AbstractRecursivePredictor(final MacroII model,
-                                  int priceLags, int independentLags) {
+                                      int priceLags, int independentLags) {
         this(model,new double[independentLags +priceLags+1], priceLags, independentLags);
 
     }
 
     public AbstractRecursivePredictor(int priceLags,
-                                  int independentLags, MacroII model, int timeDelay, int howFarIntoTheFutureToPredict) {
+                                      int independentLags, MacroII model, int timeDelay, int howFarIntoTheFutureToPredict) {
         this(model,new double[independentLags +priceLags+1], priceLags, independentLags);
         this.timeDelay = timeDelay;
         this.howFarIntoTheFutureToPredict = howFarIntoTheFutureToPredict;
     }
 
     public AbstractRecursivePredictor(final MacroII model,double[] initialCoefficients,
-                                  int priceLags, int independentLags) {
+                                      int priceLags, int independentLags) {
         Preconditions.checkState(priceLags + independentLags + 1 == initialCoefficients.length);
         this.model = model;
         this.priceLags=priceLags;
@@ -80,7 +83,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
 
     private int numberOfValidObservations = 0;
 
-    private int initialOpenLoopLearningTime=300;
+    private int initialOpenLoopLearningTime=200;
 
     /**
      * the first burnoutPeriod observations are just ignored
@@ -116,19 +119,20 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
         if (!isActive)
             return;
 
-        int minimumLookBackTime = Math.max(Math.max(priceLags, independentLags + timeDelay),burnoutPeriod+1);
+        int minimumLookBackTime = Math.max(Math.max(priceLags, independentLags-1 + timeDelay),burnoutPeriod+1);
 
         //deltaPrice,clonedWeights,laggedPrice,laggedIndependentVariable
         //don't bother if there are not enough observations
         DataStorage data = getData();
         if (data.numberOfObservations() >minimumLookBackTime) {
             int yesterday = (int) Math.round(model.getMainScheduleTime()) - 2;
+            int today = yesterday + 1;
 
 
             //check the y
             Enum priceVariable = getYVariableType();
             double price = data.getLatestObservation(priceVariable);
-            assert price == data.getObservationRecordedThisDay(priceVariable, yesterday + 1);
+            assert price == data.getObservationRecordedThisDay(priceVariable, today);
             if (price > 0 &&
                     (burnoutPeriod == 0 ||data.getObservationRecordedThisDay(priceVariable,yesterday+1-burnoutPeriod) > 0)) { //y has been positive for at least burnoutPeriod days
 
@@ -136,39 +140,61 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                 double[] laggedIndependentVariable;
 
                 laggedIndependentVariable = data.getObservationsRecordedTheseDays(getXVariableType(),
-                        yesterday - timeDelay - independentLags + 1, yesterday - timeDelay);
+                        today - timeDelay - independentLags + 1, today - timeDelay);
 
+                assert timeDelay > 0 || laggedIndependentVariable[laggedIndependentVariable.length-1] == data.getLatestObservation(getXVariableType());
                 assert laggedIndependentVariable.length == independentLags;
 
                 if (containsNoNegatives(laggedIndependentVariable)) {
+                    double[] laggedPrice=null;
 
-                    //gather all the y lags
-                    double[] laggedPrice = data.getObservationsRecordedTheseDays(priceVariable,
-                            yesterday - priceLags + 1, yesterday);
-                    assert laggedPrice.length == priceLags;
-
-
-                    double[] gaps =  data.getObservationsRecordedTheseDays(getDisturbanceType(),
-                            Math.max(priceLags, independentLags + timeDelay), yesterday);
+                    if(priceLags >0)
+                    {
+                        //gather all the y lags
+                        laggedPrice = data.getObservationsRecordedTheseDays(priceVariable,
+                                yesterday - priceLags + 1, yesterday);
+                        assert laggedPrice.length == priceLags;
+                    }
+                  /*  double[] gaps =  data.getObservationsRecordedTheseDays(getDisturbanceType(),
+                            today - Math.max(priceLags, independentLags + timeDelay)+1, today);
                     double sumOfGaps = 0;
                     for(double gap : gaps)
-                        sumOfGaps += Math.abs(gap);
-                    sumOfGaps = sumOfGaps/gaps.length;
-                    double weight= 100d / (Math.sqrt(1d + (Math.abs(sumOfGaps))));
+                        sumOfGaps += 1d / ((1d + Math.exp(Math.abs(gap))));*/
+                    //   sumOfGaps = sumOfGaps/gaps.length;
+                    double gap = data.getLatestObservation(getDisturbanceType());
 
-                    if (containsNoNegatives(laggedPrice)) {
+                    double weight = 2/(1+Math.exp(Math.abs(gap)));
+
+                    if ((laggedPrice == null || containsNoNegatives(laggedPrice)) ) {
                         //observation is: Intercept, oldest y,....,newest y,oldest x,....,newest Y
-                        double[] observation = Doubles.concat(new double[]{1}, laggedPrice, laggedIndependentVariable);
+
+                        double[] observation;
+                        if(laggedPrice != null)
+                            observation = Doubles.concat(new double[]{1}, laggedPrice, laggedIndependentVariable);
+                        else
+                            observation = Doubles.concat(new double[]{1},laggedIndependentVariable);
                         //add it to the regression (DeltaP ~ 1 + laggedP + laggedX)
                         regression.addObservation(weight, price, observation);
+
+
                         numberOfValidObservations++;
 
+                   /*
+                        if(numberOfValidObservations % 100 == 0)
+                            if(this instanceof  RecursiveSalePredictor)
+                                System.out.println( "sales slope: " + ( predictPrice(1) - predictPrice(0)) + " , trace: " + getRegression().getTrace());
+                            else
+                                System.out.println( "purchases slope: " + ( predictPrice(1) - predictPrice(0)) + " , trace: " + getRegression().getTrace());
+
+                     */
                     }
                 }
             }
             //    Preconditions.checkState(!Double.isNaN(regression.getBeta()[1]));
 
         }
+
+
         //reschedule!
         model.scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE, this);
     }
@@ -210,7 +236,10 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
 
     public double predictPrice(int step)
     {
-        return predictPrice(step,howFarIntoTheFutureToPredict);
+        if(priceLags == 0) //if it's not a time series don't bother simulating, just fill the x with today observation and be done with it.
+            return predictPrice(step,2);
+        else
+            return predictPrice(step,howFarIntoTheFutureToPredict);
     }
 
     /**
@@ -259,13 +288,16 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
 
         //set up the data for simulation
         int yesterday = (int) (Math.round(model.getMainScheduleTime()) - 1);
-        double[] pricesArray = departmentData.getObservationsRecordedTheseDays(yType,yesterday-priceLags+1, yesterday);      //+1 because it's inclusive
+       // int today = yesterday+1;
         Deque<Double> prices = new LinkedList<>();
-        for(Double price : pricesArray)
+        if(priceLags >0)
         {
-            prices.addLast(price);
+            double[] pricesArray = departmentData.getObservationsRecordedTheseDays(yType,yesterday-priceLags+1, yesterday);      //+1 because it's inclusive
+            for(Double price : pricesArray)
+            {
+                prices.addLast(price);
+            }
         }
-
         //x is a little bit different because, due to the lag, there are still some observations between the old and the simulated ones
         double lastX = departmentData.getLatestObservation(xType);
         double futureX = lastX + step;
@@ -315,7 +347,11 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                 i++;
             }
             //now update the lists
-            prices.removeFirst(); prices.addLast(newPrice);
+            if(!prices.isEmpty())
+            {
+                prices.removeFirst();
+                prices.addLast(newPrice);
+            }
             if(!comingX.isEmpty())
                 simulatedX.addLast(comingX.removeFirst());
             else

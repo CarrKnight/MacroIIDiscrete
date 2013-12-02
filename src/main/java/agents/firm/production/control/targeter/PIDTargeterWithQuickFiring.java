@@ -8,15 +8,17 @@ package agents.firm.production.control.targeter;
 
 import agents.Person;
 import agents.firm.personell.HumanResources;
-import model.MacroII;
-import model.utilities.ActionOrder;
-import model.utilities.pid.PIDController;
-import com.google.common.base.Preconditions;
-import financial.MarketEvents;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.technology.Machinery;
+import com.google.common.base.Preconditions;
+import financial.MarketEvents;
+import model.MacroII;
+import model.utilities.ActionOrder;
+import model.utilities.pid.ControllerInput;
+import model.utilities.pid.PIDController;
 import model.utilities.scheduler.Priority;
+import model.utilities.stats.collectors.enums.PlantDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -72,10 +74,7 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
      * of the remaining workers     */
     private boolean quickfiring = false;
 
-    /**
-     * when this flag is on, whenever # of workers = target, we ask our workers the minimum wage they need and set that as an offset to our pid
-     */
-    private boolean onTargetGoForMinimumWage = false;
+
 
     /**
      * is it activated?
@@ -95,8 +94,12 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
      * @param hr the human resources the PID target works with
      */
     public PIDTargeterWithQuickFiring(HumanResources hr, PlantControl control) {
-        this(hr,new PIDController(hr.getFirm().getModel().drawProportionalGain()/2f,hr.getFirm().getModel().drawIntegrativeGain()/2f,
-                hr.getFirm().getModel().drawDerivativeGain()/2f,hr.getFirm().getModel().drawplantControlSpeed(),hr.getFirm().getRandom()),control);
+        this(hr,new PIDController(
+                hr.getFirm().getModel().drawProportionalGain()/5,
+                hr.getFirm().getModel().drawIntegrativeGain()/5,
+                hr.getFirm().getModel().drawDerivativeGain(),
+                hr.getRandom()),
+               control);
     }
 
     /**
@@ -105,7 +108,10 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
      */
     public PIDTargeterWithQuickFiring(HumanResources hr, PlantControl control,
                                       float proportionalGain, float integrativeGain, float derivativeGain, int controlSpeed){
-        this(hr,new PIDController(proportionalGain,integrativeGain,derivativeGain,controlSpeed,hr.getRandom()),control);
+        this(hr,new PIDController(
+                proportionalGain,integrativeGain,derivativeGain,controlSpeed,hr.getRandom())
+
+                ,control);
     }
 
     /**
@@ -115,7 +121,6 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
     public PIDTargeterWithQuickFiring(HumanResources hr, PIDController controller, PlantControl control) {
         this.hr = hr;
         this.pid = controller;
-        controller.setRandomSpeed(false);
         this.plantControl =  control;
     }
 
@@ -143,7 +148,6 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
         //remember old wage
         long oldWage = plantControl.maxPrice(hr.getGoodType());
         //if you are lowering wage, double check by ceiling (makes it sluggish to wage changes)
-        boolean roundingAdjustment = false;
 
 
         //if firing: go into quickfiring mode:
@@ -164,13 +168,14 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
         }
 
         //run the controller (it will reschedule us)
-        pid.adjust(workerTarget, hr.getPlant().getNumberOfWorkers(), active, hr.getPlant().getModel(), this,
-                ActionOrder.THINK,Priority.BEFORE_STANDARD);  //i made this before standard so it acts BEFORE the maximizer
+        Double latestObservation = hr.getPlant().numberOfConsumptionObservations() > 0 ? hr.getPlant().getLatestObservation(PlantDataType.TOTAL_WORKERS) : 0;
+        ControllerInput input = ControllerInput.simplePIDTarget(workerTarget,hr.getPlant().getNumberOfWorkers());
+        pid.adjust(input
+                , active, hr.getPlant().getModel(), this,
+                ActionOrder.THINK);  //i made this before standard so it acts BEFORE the maximizer
 
-        //todo document rounding
         //initially round
         long newWage = Math.round(pid.getCurrentMV());
-
 
 
 
@@ -179,32 +184,23 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
         if(oldWage != newWage && newWage >=0) //if pid says to change prices, change prices
         {
             //if we have the ovverride flag on, this is the time
-            if(onTargetGoForMinimumWage && hr.getNumberOfWorkers() == workerTarget)
-            {
-                newWage = hr.hypotheticalWageAtThisLevel(workerTarget);
-                pid.setOffset(newWage);
-            }
+
             plantControl.setCurrentWage(newWage); //set the new wage! that'll do it!
+
             //log it!
             if(MacroII.hasGUI())
 
                 hr.getFirm().logEvent(hr,
-                    MarketEvents.CHANGE_IN_POLICY,
-                    hr.getFirm().getModel().getCurrentSimulationTimeInMillis(),
-                    "target: " + workerTarget + ", #workers:" + hr.getPlant().getNumberOfWorkers() +
-                            "; oldwage:" + oldWage + ", newWage:" + newWage);
+                        MarketEvents.CHANGE_IN_POLICY,
+                        hr.getFirm().getModel().getCurrentSimulationTimeInMillis(),
+                        "target: " + workerTarget + ", #workers:" + hr.getPlant().getNumberOfWorkers() +
+                                "; oldwage:" + oldWage + ", newWage:" + newWage);
 
         }
 
 
 
-        //TODO delete this: make it a decorator issue
-        //try having your PID stable if you have no error twice
-        if(pid.getNewError() == 0 && (pid.getOldError() ==0 || roundingAdjustment) && newWage == oldWage) //we are at the right place!
-        {
-            setInitialWage(plantControl.getCurrentWage());
 
-        }
 
     }
 
@@ -235,7 +231,7 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
         plantControl.setCurrentWage(newWage ); //set new wage
         //in normal situation the new wage will be the variable newwage, but maybe there are frictions. At which point your best bet is just to be slightly below it
         //for the time being
-  //      newWage = newWage < plantControl.getCurrentWage() ? plantControl.getCurrentWage()-1 : newWage;
+        //      newWage = newWage < plantControl.getCurrentWage() ? plantControl.getCurrentWage()-1 : newWage;
         setInitialWage(newWage);     //reset PID
 
 
@@ -359,23 +355,6 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
         this.quickfiring = quickfiring;
     }
 
-    /**
-     * Gets when this flag is on, whenever # of workers = target, we ask our workers the minimum wage they need and set that as an offset to our pid.
-     *
-     * @return Value of when this flag is on, whenever # of workers = target, we ask our workers the minimum wage they need and set that as an offset to our pid.
-     */
-    public boolean isOnTargetGoForMinimumWage() {
-        return onTargetGoForMinimumWage;
-    }
-
-    /**
-     * Sets new when this flag is on, whenever # of workers = target, we ask our workers the minimum wage they need and set that as an offset to our pid.
-     *
-     * @param onTargetGoForMinimumWage New value of when this flag is on, whenever # of workers = target, we ask our workers the minimum wage they need and set that as an offset to our pid.
-     */
-    public void setOnTargetGoForMinimumWage(boolean onTargetGoForMinimumWage) {
-        this.onTargetGoForMinimumWage = onTargetGoForMinimumWage;
-    }
 
 
     /**
