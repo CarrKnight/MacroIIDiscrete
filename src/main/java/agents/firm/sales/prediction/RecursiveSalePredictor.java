@@ -72,8 +72,9 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
      */
     @Override
     public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
-     //   System.out.println(Arrays.toString(getBeta()));
-        return (long) Math.round(predictPrice(increaseStep));
+
+        double toReturn = Math.min(predictPrice(increaseStep), predictPrice(0));
+        return (long) Math.round(toReturn);
 
     }
 
@@ -87,7 +88,8 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
      */
     @Override
     public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
-        return (long) Math.round(predictPrice(-decreaseStep));
+        double toReturn = Math.max(predictPrice(-decreaseStep), predictPrice(0));
+        return (long) Math.round(toReturn);
 
     }
 

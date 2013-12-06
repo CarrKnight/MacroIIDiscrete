@@ -27,6 +27,8 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
 
     private final AbstractRecursivePredictor delegate;
 
+    private static double forgettingFactor = .99d;
+
     private double[] currentBeta;
 
     private final MacroII model;
@@ -35,13 +37,29 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
 
     boolean isActive = true;
 
+    /**
+     * updated result of predictPrice(1)-predictPrice(0). Useful so we don't have to compute it every day
+     */
+    private float upwardSlope;
+    /**
+     * updated result of predictPrice(0)-predictPrice(-1). Useful so we don't have to compute it every day
+     */
+    private float downwardSlope;
+
     public AbstractOpenLoopRecursivePredictor(AbstractRecursivePredictor delegate, MacroII model) {
         this.delegate = delegate;
         this.model = model;
         delegate.setInitialOpenLoopLearningTime(openLoopPeriod+1);
-        delegate.getRegression().setForgettingFactor(.995);
+        delegate.getRegression().setForgettingFactor(forgettingFactor);
         delegate.setTimeDelay(0);
 
+
+        model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
+            @Override
+            public void step(SimState state) {
+                updateSlopes();
+            }
+        });
         model.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING,this);
     }
 
@@ -53,27 +71,38 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
 
         MacroII model = (MacroII) state;
 
+
+
+
         //if it's time to close the loop
         if(delegate.getNumberOfValidObservations() % openLoopPeriod == 0 && delegate.getNumberOfValidObservations() > 0)
         {
 
             //new beta!
             currentBeta = delegate.getRegression().getBeta().clone();
+            updateSlopes();
+
             if(delegate instanceof RecursivePurchasesPredictor)
             {
                 System.out.print(model.getMainScheduleTime() +", purchases ");
             }
             else
                 System.out.print(model.getMainScheduleTime() + ", sales: ");
-            System.out.println("learned slope: " + (predictPrice(1) - predictPrice(0) ) +" ================ " + (predictPrice(0) - predictPrice(-1) ) + " Trace: "  + delegate.getRegression().getTrace());
+            System.out.println("learned slope: " + (upwardSlope) +" ================ " + (downwardSlope ) + " Trace: "  + delegate.getRegression().getTrace());
 
-            //delegate.getRegression().addNoise(1000);
 
+      //      delegate.getRegression().addNoise(10000);
+         //   delegate.getRegression().resetPDiagonal(10000);
 
         }
 
         model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING,this);
 
+    }
+
+    private void updateSlopes() {
+        upwardSlope = predictPrice(1) - predictPrice(0);
+        downwardSlope = predictPrice(0) - predictPrice(-1);
     }
 
 
@@ -95,6 +124,15 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
 
     public int modifyStepIfNeeded(int step) {
         return delegate.modifyStepIfNeeded(step);
+    }
+
+    public float getUpwardSlope() {
+        return upwardSlope;
+    }
+
+
+    public float getDownwardSlope() {
+        return downwardSlope;
     }
 
 

@@ -39,7 +39,7 @@ public class RecursiveLinearRegression
      */
     final private double[] beta;
 
-    private double forgettingFactor = .999d;
+    private double forgettingFactor = .99d;
 
     private double noiseVariance = 1;
 
@@ -83,7 +83,6 @@ public class RecursiveLinearRegression
     public void addObservation(double observationWeight,double y, double... observation)
     {
         Preconditions.checkState(observation.length == dimensions);
-        //reweight
 
 
         /****************************************************
@@ -129,20 +128,26 @@ public class RecursiveLinearRegression
         }
 
         //don't change if the eigenvalue is negative
-        double[] eigenValues = new Matrix(pCovariance).eig().getRealEigenvalues();
-        for(double e : eigenValues)
-           if(e < 0)
-               return;
+        try{
+            double[] eigenValues = new Matrix(pCovariance).eig().getRealEigenvalues();
+            for(double e : eigenValues)
+                if(e < 0)
+                    return;
+        }
+        catch (ArrayIndexOutOfBoundsException e){
+            return;
+        }
+
 
         //copy the new result into the old matrix
         pCovariance = newP;
 
 
 
-            //reweight by forgetting factor
-            for(int i=0;i<dimensions; i++)
-                for(int j=0; j<dimensions; j++)
-                    pCovariance[i][j] *= 1d/forgettingFactor;
+        //reweight by forgetting factor
+        for(int i=0;i<dimensions; i++)
+            for(int j=0; j<dimensions; j++)
+                pCovariance[i][j] *= 1d/forgettingFactor;
 
 
     }
@@ -176,14 +181,14 @@ public class RecursiveLinearRegression
         double denominator = 0;
         for(int i=0; i<dimensions; i++)
             denominator += observation[i] * px[i];
-        denominator += forgettingFactor * noiseVariance / Math.pow(weight,2);
+        denominator += forgettingFactor * noiseVariance / weight;
 
         if(denominator != 0){
             //divide, that's your K gain
             for(int i=0; i< px.length; i++)
             {
                 kGains[i] = px[i]/denominator;
-      //          assert kGains[i]>=0 : Arrays.toString(kGains) + " <---> " + Arrays.toString(px)  + " ==== " + denominator;
+                //          assert kGains[i]>=0 : Arrays.toString(kGains) + " <---> " + Arrays.toString(px)  + " ==== " + denominator;
                 assert !Double.isNaN(kGains[i]);
                 assert !Double.isInfinite(kGains[i]) : px[i] + " --- " + denominator;
             }
@@ -191,8 +196,16 @@ public class RecursiveLinearRegression
     }
 
     public double[] getBeta() {
-        return beta;
+        return beta.clone();
     }
+
+    public double[] setBeta(int index, double newValue){
+        beta[index] = newValue;
+        return getBeta();
+
+    }
+
+
 
     public double getForgettingFactor() {
         return forgettingFactor;
@@ -210,41 +223,15 @@ public class RecursiveLinearRegression
         this.noiseVariance = noiseVariance;
     }
 
-    /**
-     * increase all the diagonal of P by noise
-     */
-    public void addNoise(double noise)
-    {
-
-        for(int i =0; i<dimensions; i++)
-            pCovariance[i][i] += noise;
-
-
-
+    public double[][] getpCovariance() {
+        return pCovariance;
     }
 
-    /**
-     * increase all the diagonal of P by noise
-     */
-    public void resetPDiagonal(int diagonal)
-    {
-        double biggestElement = Double.MAX_VALUE;
-        for(int i=0; i< dimensions; i++)
-            for(int j=0; j< dimensions; j++)
-                biggestElement = biggestElement > pCovariance[i][j] ? pCovariance[i][j] : biggestElement;
-
-        double scale = Math.abs(diagonal / biggestElement);
-
-
-        //  pCovariance = new  double[dimensions][dimensions];//fill as a diagonal
-        for(int i=0; i< dimensions; i++)
-            for(int j=0; j< dimensions; j++)
-                pCovariance[i][j] *= scale ;
-
-
+    public void setPCovariance(double[][] pCovariance) {
+        this.pCovariance = pCovariance;
     }
 
-    public int getTrace()
+    public double getTrace()
     {
         int sum = 0;
         for(int i =0; i<dimensions; i++)

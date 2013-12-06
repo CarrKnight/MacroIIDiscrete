@@ -12,7 +12,6 @@ import agents.firm.Firm;
 import agents.firm.production.Plant;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
-import agents.firm.sales.prediction.OpenLoopRecursiveSalesPredictor;
 import agents.firm.sales.prediction.RecursiveSalePredictor;
 import agents.firm.sales.prediction.RegressionSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
@@ -106,7 +105,7 @@ public abstract class  SalesDepartment  implements Department {
     protected BuyerSearchAlgorithm buyerSearchAlgorithm;
     protected SellerSearchAlgorithm sellerSearchAlgorithm;
 
-    public static Class<? extends  SalesPredictor> defaultPredictorStrategy = OpenLoopRecursiveSalesPredictor.class;
+    public static Class<? extends  SalesPredictor> defaultPredictorStrategy = RecursiveSalePredictor.class;
 
     /**
      * This is the strategy to predict future sale prices when the order book is not visible.
@@ -807,7 +806,7 @@ public abstract class  SalesDepartment  implements Department {
             if(saleRecord.getValue().getResult() == SaleResult.Result.SOLD) //was this good sold?
             {
                 assert !firm.has(saleRecord.getKey()); //we shouldn't own it anymore!!!
-                assert !toSell.contains(saleRecord.getKey());
+//                assert !toSell.contains(saleRecord.getKey());
                 assert saleRecord.getValue().getPriceSold() >= 0 : saleRecord.getValue().getPriceSold(); //we should have recorded the price!!
                 thisWeekSales = thisWeekSales + saleRecord.getValue().getPriceSold(); //sum up the sale
                 thisWeekCOGS = thisWeekCOGS + saleRecord.getValue().getPreviousCost(); //sum up the costs
@@ -820,7 +819,7 @@ public abstract class  SalesDepartment  implements Department {
                 //it's unsold
 //                assert saleRecord.getValue().getResult() != SaleResult.Result.BEING_UPDATED; //being updated should be a temporary state, shouldn't be still here by the end of the week
                 assert firm.has(saleRecord.getKey()); //we still own it!!!
-                assert toSell.contains(saleRecord.getKey()); //we still need to sell it
+   //             assert toSell.contains(saleRecord.getKey()); //we still need to sell it
 
 
                 if(saleRecord.getValue().getResult() == SaleResult.Result.QUOTED) //quoted are now counted as unsold

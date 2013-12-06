@@ -12,7 +12,7 @@ import com.google.common.base.Preconditions;
 import goods.Good;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.filters.MovingAverage;
+import model.utilities.filters.ExponentialFilter;
 import model.utilities.pid.CascadePIDController;
 import model.utilities.pid.ControllerFactory;
 import sim.engine.SimState;
@@ -45,7 +45,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
     /**
      * the moving average object used to smooth out inventory targets
      */
-    private final MovingAverage<Integer> movingAverage;
+    private final ExponentialFilter<Integer> movingAverage;
 
     /**
      * This is the object that does the tinkering. We simply
@@ -61,6 +61,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
      * the PID controller used by the delegate fixedInventory sales control. Useful to set gains and speed.
      */
     private final CascadePIDController controllerUsedByDelegate;
+    private int howManyTimesTheDailyInflowShouldTheInventoryBe = 7;
 
     /**
      * Creates the default SmoothedDailyInventoryPricingStrategy by creating the default SalesControlWithFixedInventoryAndPID
@@ -82,9 +83,9 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         assert controllerUsedByDelegate.getMasterDerivativeGain() == 0;
 
 
-        movingAverage = new MovingAverage<>(10);
-        for(int i=0; i< movingAverage.getMovingAverageSize(); i++)
-            movingAverage.addObservation(SalesControlWithFixedInventoryAndPID.defaultTargetInventory);
+        movingAverage = new ExponentialFilter<>(.5f);
+      //  for(int i=0; i< movingAverage.getMovingAverageSize(); i++)
+        movingAverage.addObservation(0);
 
 
         //step yourself
@@ -141,7 +142,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         assert ((MacroII)state).getCurrentPhase().equals(ActionOrder.PREPARE_TO_TRADE);
         Preconditions.checkState(salesDepartment.getTodayInflow() >=0, "Negative inflow is weird");
 
-        movingAverage.addObservation(salesDepartment.getTodayInflow()*7);
+        movingAverage.addObservation(salesDepartment.getTodayInflow()* howManyTimesTheDailyInflowShouldTheInventoryBe);
 
         delegate.setTargetInventory((int) movingAverage.getSmoothedObservation());
         //     System.out.println("target inventory: " + getTargetInventory() + ", actual inventory: " + salesDepartment.getHowManyToSell());
@@ -215,13 +216,17 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
     @Override
     public int estimateSupplyGap() {
         //percentile distance from target inventory
-        if(delegate.getTargetInventory() != 0)
+        /*if(delegate.getTargetInventory() != 0)
             return (100*(delegate.getTargetInventory() - salesDepartment.getHowManyToSell()))/delegate.getTargetInventory();
         else
         if(salesDepartment.getHowManyToSell() == 0)
             return  0;
         else
-            return -100;
+            return -100;*/
+        if(salesDepartment.getHowManyToSell() == 0)
+            return 100;
+        else
+            return 0;
     }
 
     /**
@@ -266,5 +271,13 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         sb.append("controllerUsedByDelegate=").append(controllerUsedByDelegate);
         sb.append('}');
         return sb.toString();
+    }
+
+    public int getHowManyTimesTheDailyInflowShouldTheInventoryBe() {
+        return howManyTimesTheDailyInflowShouldTheInventoryBe;
+    }
+
+    public void setHowManyTimesTheDailyInflowShouldTheInventoryBe(int howManyTimesTheDailyInflowShouldTheInventoryBe) {
+        this.howManyTimesTheDailyInflowShouldTheInventoryBe = howManyTimesTheDailyInflowShouldTheInventoryBe;
     }
 }

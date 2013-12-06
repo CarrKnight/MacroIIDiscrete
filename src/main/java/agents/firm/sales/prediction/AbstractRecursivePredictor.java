@@ -1,10 +1,12 @@
 package agents.firm.sales.prediction;
 
+import Jama.Matrix;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Doubles;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
+import model.utilities.filters.ExponentialFilter;
 import model.utilities.stats.collectors.DataStorage;
 import model.utilities.stats.regression.RecursiveLinearRegression;
 import sim.engine.SimState;
@@ -31,9 +33,12 @@ import java.util.LinkedList;
 public abstract class AbstractRecursivePredictor  implements Steppable, Deactivatable
 {
 
-    public static int defaultPriceLags = 0;
+    public static int defaultPriceLags = 3;
 
-    public static int defaultIndepedentLags = 1;
+    public static int defaultIndepedentLags = 3;
+
+
+    private boolean usingWeights =true;
 
     public AbstractRecursivePredictor(MacroII model) {
         this(model,defaultPriceLags,defaultIndepedentLags);
@@ -59,6 +64,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
         this.priceLags=priceLags;
         this.independentLags = independentLags;
         this.regression = new RecursiveLinearRegression(1+priceLags+ independentLags,initialCoefficients);
+        this.regression.setBeta(1,1); // start with a simple prior y_t = y_{t-1}
 
         //keep scheduling yourself until you aren't active anymore
         model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE,this);
@@ -83,7 +89,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
 
     private int numberOfValidObservations = 0;
 
-    private int initialOpenLoopLearningTime=200;
+    private int initialOpenLoopLearningTime=100;
 
     /**
      * the first burnoutPeriod observations are just ignored
@@ -119,7 +125,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
         if (!isActive)
             return;
 
-        int minimumLookBackTime = Math.max(Math.max(priceLags, independentLags-1 + timeDelay),burnoutPeriod+1);
+        int minimumLookBackTime = Math.max(priceLags, independentLags-1 + timeDelay);
 
         //deltaPrice,clonedWeights,laggedPrice,laggedIndependentVariable
         //don't bother if there are not enough observations
@@ -155,18 +161,27 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                                 yesterday - priceLags + 1, yesterday);
                         assert laggedPrice.length == priceLags;
                     }
-                  /*  double[] gaps =  data.getObservationsRecordedTheseDays(getDisturbanceType(),
-                            today - Math.max(priceLags, independentLags + timeDelay)+1, today);
-                    double sumOfGaps = 0;
-                    for(double gap : gaps)
-                        sumOfGaps += 1d / ((1d + Math.exp(Math.abs(gap))));*/
-                    //   sumOfGaps = sumOfGaps/gaps.length;
-                    double gap = data.getLatestObservation(getDisturbanceType());
 
-                    double weight = 2/(1+Math.exp(Math.abs(gap)));
+                    double[] gaps =  data.getObservationsRecordedTheseDays(getDisturbanceType(),
+                            today - Math.max(priceLags, independentLags + timeDelay)+1, today);
+                    ExponentialFilter<Double> ma = new ExponentialFilter<>(gaps.length);
+
+
 
                     if ((laggedPrice == null || containsNoNegatives(laggedPrice)) ) {
                         //observation is: Intercept, oldest y,....,newest y,oldest x,....,newest Y
+                        for(double gap : gaps)
+                            ma.addObservation(gap);
+                        //   sumOfGaps = sumOfGaps/gaps.length;
+                        double gap = ma.getSmoothedObservation();
+
+
+                        double weight;
+                        if(usingWeights)
+                            weight = 2/(1+Math.exp(Math.abs(gap)));
+                        else
+                            weight=1;
+
 
                         double[] observation;
                         if(laggedPrice != null)
@@ -176,17 +191,38 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                         //add it to the regression (DeltaP ~ 1 + laggedP + laggedX)
                         regression.addObservation(weight, price, observation);
 
+                        double mu = 0.0000001d;
+                        Matrix matrix = new Matrix(regression.getpCovariance());
+                        //matrix = matrix.plus(Matrix.identity(observation.length,observation.length).times(1000));
+                        matrix = matrix.times(Matrix.identity(observation.length,observation.length).plus(matrix.times(mu)).inverse());
+                        getRegression().setPCovariance(matrix.getArray());
+
+
+
+                        //            System.out.println(matrix.trace());
+                        //  matrix = matrix.minus(matrix.times(matrix).times(mu));
+//                        System.out.println(matrix.trace());
+                        //                    regression.setPCovariance(matrix.getArray());
+                        //  getRegression().multiplyPMatrixByThis(1d/(1d+mu));
+                        // getRegression().addNoise(1d/(1d+mu));
+
+                        //add noise
 
                         numberOfValidObservations++;
 
-                   /*
+
                         if(numberOfValidObservations % 100 == 0)
+                        {
                             if(this instanceof  RecursiveSalePredictor)
                                 System.out.println( "sales slope: " + ( predictPrice(1) - predictPrice(0)) + " , trace: " + getRegression().getTrace());
                             else
                                 System.out.println( "purchases slope: " + ( predictPrice(1) - predictPrice(0)) + " , trace: " + getRegression().getTrace());
 
-                     */
+                            //         matrix = matrix.plus(Matrix.identity(observation.length,observation.length).times(1000));
+                        }
+
+
+
                     }
                 }
             }
@@ -288,7 +324,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
 
         //set up the data for simulation
         int yesterday = (int) (Math.round(model.getMainScheduleTime()) - 1);
-       // int today = yesterday+1;
+        // int today = yesterday+1;
         Deque<Double> prices = new LinkedList<>();
         if(priceLags >0)
         {
@@ -415,7 +451,15 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
         return regression;
     }
 
-    public int getTrace() {
+    public double getTrace() {
         return regression.getTrace();
+    }
+
+    public boolean isUsingWeights() {
+        return usingWeights;
+    }
+
+    public void setUsingWeights(boolean usingWeights) {
+        this.usingWeights = usingWeights;
     }
 }

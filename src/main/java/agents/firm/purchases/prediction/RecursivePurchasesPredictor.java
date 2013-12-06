@@ -109,7 +109,7 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
     @Override
     public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
     //    System.err.println("slope " + (predictPrice(1)-predictPrice(0)));
-        return Math.round(predictPrice(1));
+        return Math.round(Math.max(predictPrice(1),predictPrice(0)));
 
     }
 
@@ -133,7 +133,7 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
      */
     @Override
     public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
-        return Math.round(predictPrice(-1));
+        return Math.round(Math.min(predictPrice(-1),predictPrice(0)));
     }
 
     @Override

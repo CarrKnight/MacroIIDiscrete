@@ -48,8 +48,7 @@ public class OpenLoopRecursivePurchasesPredictor extends AbstractOpenLoopRecursi
     @Override
     public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
 
-        float slope = predictPrice(1)-predictPrice(0);
-        predictor.setIncrementDelta(slope);
+        predictor.setIncrementDelta(getUpwardSlope());
         return predictor.predictPurchasePriceWhenIncreasingProduction(dept);
 
     }
@@ -62,8 +61,7 @@ public class OpenLoopRecursivePurchasesPredictor extends AbstractOpenLoopRecursi
      */
     @Override
     public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
-        float slope = predictPrice(0)-predictPrice(-1);
-        predictor.setIncrementDelta(slope);
+        predictor.setIncrementDelta(getDownwardSlope());
         return predictor.predictPurchasePriceWhenDecreasingProduction(dept);
     }
 

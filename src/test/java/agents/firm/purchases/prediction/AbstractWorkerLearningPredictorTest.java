@@ -86,11 +86,11 @@ public class AbstractWorkerLearningPredictorTest {
                 macroII.schedule.step(macroII);
 
 
-            System.out.println(predictor.getDecrementDelta() + " - " + p1 * a + " - " +macroII.seed());
+            System.out.println(predictor.getDecrementDelta() + " - " + p1+ " - " +macroII.seed());
       /*      System.out.println(macroII.getMarket(GoodType.GENERIC).getLastPrice() + " ---- " + predictor.predictPrice(0) + " ---- " + predictor.predictPrice(1) + "\n" +
                     predictor.predictPrice(1,10) +"---"+ predictor.predictPrice(1,100) +"---"+ predictor.predictPrice(1,1000)+"---"+ predictor.predictPrice(1,10000));
                     */
-            assertEquals(predictor.getDecrementDelta(),(double)(p1 * a ) ,.5d);
+            assertEquals(predictor.getDecrementDelta(),(double)(p1 ) ,.5d);
 
 
         }

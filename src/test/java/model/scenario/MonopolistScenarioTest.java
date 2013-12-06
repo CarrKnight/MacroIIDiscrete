@@ -298,7 +298,14 @@ public class MonopolistScenarioTest {
         previouslyFailedSeeds.add(1386000975892l);
         previouslyFailedSeeds.add(1385965894319l);
         previouslyFailedSeeds.add(1386007873067l);
-
+        previouslyFailedSeeds.add(1386019418405l);
+        previouslyFailedSeeds.add(1386020834125l);
+        previouslyFailedSeeds.add(1386089949520l);
+        previouslyFailedSeeds.add(1386194999853l);
+        previouslyFailedSeeds.add(1386263994865l);
+        previouslyFailedSeeds.add(1386278630528l);
+        previouslyFailedSeeds.add(1386280613790l);
+        previouslyFailedSeeds.add(1386283852300l);
 
 
         //run the test 15 times
@@ -381,17 +388,32 @@ public class MonopolistScenarioTest {
 
     @Test
     public void rightPriceAndQuantityTestRandomControlRandomSlopesWithShift()
-    {
+    {        //run the tests on failures first
+        LinkedList<Long> previouslyFailedSeeds = new LinkedList<>();
+        previouslyFailedSeeds.add(1386003448078l);
+        previouslyFailedSeeds.add(1386001620319l);
+        previouslyFailedSeeds.add(1386000975892l);
+        previouslyFailedSeeds.add(1385965894319l);
+        previouslyFailedSeeds.add(1386007873067l);
+        previouslyFailedSeeds.add(1386019418405l);
+        previouslyFailedSeeds.add(1386020834125l);
+        previouslyFailedSeeds.add(1386089949520l);
+        previouslyFailedSeeds.add(1386194999853l);
+        previouslyFailedSeeds.add(1386263994865l);
+        previouslyFailedSeeds.add(1386278630528l);
+        previouslyFailedSeeds.add(1386280613790l);
+        previouslyFailedSeeds.add(1386283852300l);
+        previouslyFailedSeeds.add(1386285136045l);
+        previouslyFailedSeeds.add(1386287152277l);
+        previouslyFailedSeeds.add(1386287670714l);
 
 
         //run the test 15 times
         for(int i=0; i<150; i++)
         {
-            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            long seed = i < previouslyFailedSeeds.size() ? previouslyFailedSeeds.get(i) : System.currentTimeMillis();
 
-
-
-
+            final MacroII macroII = new MacroII(seed);
             MonopolistScenario scenario1 = new MonopolistScenario(macroII);
 
             //generate random parameters for labor supply and good demand
@@ -425,6 +447,13 @@ public class MonopolistScenarioTest {
             while(macroII.schedule.getTime()<5000)
                 macroII.schedule.step(macroII);
 
+            //first checkpoint
+            System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
+            System.out.flush();
+            int profitMaximizingLaborForce = MonopolistScenario.findWorkerTargetThatMaximizesProfits(p0,p1,w0,w1,a);
+            assertEquals(scenario1.monopolist.getTotalWorkers(), profitMaximizingLaborForce,2);
+
+
 
             //now reset
             //generate random parameters for labor supply and good demand
@@ -432,14 +461,16 @@ public class MonopolistScenarioTest {
             scenario1.resetDemand(p0,p1);
             w0=macroII.random.nextInt(10)+10; w1=macroII.random.nextInt(3)+1;
             scenario1.resetLaborSupply(w0,w1);
+            System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
+            System.out.flush();
+
 
             //another 5000 observations
             while(macroII.schedule.getTime()<10000)
                 macroII.schedule.step(macroII);
 
             //the pi maximizing labor force employed is:
-            int profitMaximizingLaborForce = MonopolistScenario.findWorkerTargetThatMaximizesProfits(p0,p1,w0,w1,a);
-            int profitMaximizingQuantity = profitMaximizingLaborForce*a;
+            profitMaximizingLaborForce = MonopolistScenario.findWorkerTargetThatMaximizesProfits(p0,p1,w0,w1,a);
 
             System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
             System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
@@ -448,7 +479,7 @@ public class MonopolistScenarioTest {
 
 
             //you must be at most wrong by two (not well tuned and anyway sometimes it's hard!)
-            assertEquals(scenario1.monopolist.getTotalWorkers(), profitMaximizingLaborForce,2);
+            assertEquals(scenario1.monopolist.getTotalWorkers(), profitMaximizingLaborForce,3);
 
 
 

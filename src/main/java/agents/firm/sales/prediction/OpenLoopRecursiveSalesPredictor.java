@@ -43,7 +43,8 @@ public class OpenLoopRecursiveSalesPredictor extends AbstractOpenLoopRecursivePr
      */
     @Override
     public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
-        float slope = predictPrice(1) - predictPrice(0);
+
+        float slope = getUpwardSlope();
         if(slope > 0)
             slope = 0;
         decreaseSalesPredictor.setDecrementDelta(-slope);
@@ -61,7 +62,7 @@ public class OpenLoopRecursiveSalesPredictor extends AbstractOpenLoopRecursivePr
      */
     @Override
     public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
-        float slope = predictPrice(0) - predictPrice(-1);
+        float slope = getDownwardSlope();
         if(slope > 0)
             slope = 0;
         decreaseSalesPredictor.setDecrementDelta(-slope);
@@ -78,7 +79,7 @@ public class OpenLoopRecursiveSalesPredictor extends AbstractOpenLoopRecursivePr
      */
     @Override
     public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
-        float slope = predictPrice(1) - predictPrice(0);
+        float slope = getUpwardSlope();
         if(slope > 0)
             slope = 0;
         decreaseSalesPredictor.setDecrementDelta(-slope);
