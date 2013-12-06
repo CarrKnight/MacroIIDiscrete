@@ -1,6 +1,5 @@
 package agents.firm.sales.prediction;
 
-import Jama.Matrix;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Doubles;
 import model.MacroII;
@@ -8,6 +7,9 @@ import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
 import model.utilities.filters.ExponentialFilter;
 import model.utilities.stats.collectors.DataStorage;
+import model.utilities.stats.regression.ExponentialForgettingRegressionDecorator;
+import model.utilities.stats.regression.GunnarsonRegularizerDecorator;
+import model.utilities.stats.regression.KalmanRecursiveRegression;
 import model.utilities.stats.regression.RecursiveLinearRegression;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -33,15 +35,15 @@ import java.util.LinkedList;
 public abstract class AbstractRecursivePredictor  implements Steppable, Deactivatable
 {
 
-    public static int defaultPriceLags = 3;
+    public static int defaultPriceLags = 0;
 
-    public static int defaultIndepedentLags = 3;
+    public static int defaultIndependentLags = 1;
 
 
     private boolean usingWeights =true;
 
     public AbstractRecursivePredictor(MacroII model) {
-        this(model,defaultPriceLags,defaultIndepedentLags);
+        this(model,defaultPriceLags, defaultIndependentLags);
     }
 
     public AbstractRecursivePredictor(final MacroII model,
@@ -63,7 +65,9 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
         this.model = model;
         this.priceLags=priceLags;
         this.independentLags = independentLags;
-        this.regression = new RecursiveLinearRegression(1+priceLags+ independentLags,initialCoefficients);
+        this.regression = new GunnarsonRegularizerDecorator(
+                new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(1+priceLags+ independentLags,initialCoefficients),.99d ));
+        if(priceLags > 0) //if there a y lag in there
         this.regression.setBeta(1,1); // start with a simple prior y_t = y_{t-1}
 
         //keep scheduling yourself until you aren't active anymore
@@ -75,7 +79,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
     /**
      * the linear regression object we are going to update
      */
-    private final RecursiveLinearRegression regression;
+    private RecursiveLinearRegression regression;
 
     /**
      * how much time it takes for the dependent variable to affect price?
@@ -89,7 +93,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
 
     private int numberOfValidObservations = 0;
 
-    private int initialOpenLoopLearningTime=100;
+    private int initialOpenLoopLearningTime=50;
 
     /**
      * the first burnoutPeriod observations are just ignored
@@ -191,11 +195,9 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                         //add it to the regression (DeltaP ~ 1 + laggedP + laggedX)
                         regression.addObservation(weight, price, observation);
 
-                        double mu = 0.0000001d;
-                        Matrix matrix = new Matrix(regression.getpCovariance());
+
                         //matrix = matrix.plus(Matrix.identity(observation.length,observation.length).times(1000));
-                        matrix = matrix.times(Matrix.identity(observation.length,observation.length).plus(matrix.times(mu)).inverse());
-                        getRegression().setPCovariance(matrix.getArray());
+                  //      getRegression().setPCovariance(matrix.getArray());
 
 
 
@@ -211,7 +213,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                         numberOfValidObservations++;
 
 
-                        if(numberOfValidObservations % 100 == 0)
+      /*                  if(numberOfValidObservations % 100 == 0)
                         {
                             if(this instanceof  RecursiveSalePredictor)
                                 System.out.println( "sales slope: " + ( predictPrice(1) - predictPrice(0)) + " , trace: " + getRegression().getTrace());
@@ -220,6 +222,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
 
                             //         matrix = matrix.plus(Matrix.identity(observation.length,observation.length).times(1000));
                         }
+        */
 
 
 
@@ -461,5 +464,9 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
 
     public void setUsingWeights(boolean usingWeights) {
         this.usingWeights = usingWeights;
+    }
+
+    public void setRegression(RecursiveLinearRegression regression) {
+        this.regression = regression;
     }
 }

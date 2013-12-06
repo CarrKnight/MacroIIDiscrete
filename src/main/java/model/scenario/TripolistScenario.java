@@ -75,7 +75,7 @@ public class TripolistScenario extends MonopolistScenario{
         monopolist.setName("competitor0");
 
         //sanity check
-        assert !getAgents().isEmpty();
+      //  assert !getAgents().isEmpty() : getAgents();
         assert getMarkets().size()==2;
 
         //now add n more agents
@@ -265,4 +265,6 @@ public class TripolistScenario extends MonopolistScenario{
     public LinkedList<Firm> getCompetitors() {
         return competitors;
     }
+
+
 }

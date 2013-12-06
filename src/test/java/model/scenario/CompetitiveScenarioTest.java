@@ -21,6 +21,9 @@ import model.MacroII;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import org.junit.Test;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -77,7 +80,7 @@ public class CompetitiveScenarioTest {
             {
                 macroII.schedule.step(macroII);
                 averagePrice += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
-                averageQ += macroII.getMarket(GoodType.GENERIC).getYesterdayVolume();
+                averageQ += macroII.getMarket(GoodType.GENERIC).countTodayProductionByRegisteredSellers();
 
             }
             averagePrice = averagePrice/500f;
@@ -114,6 +117,7 @@ public class CompetitiveScenarioTest {
                 scenario1.setAskPricingStrategy(SmoothedDailyInventoryPricingStrategy.class);
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
                 scenario1.setAdditionalCompetitors(competitors);
+                scenario1.setWorkersToBeRehiredEveryDay(true);
 
 
 
@@ -142,7 +146,7 @@ public class CompetitiveScenarioTest {
                     macroII.schedule.step(macroII);
                     assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
                     averagePrice += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
-                    averageQ += macroII.getMarket(GoodType.GENERIC).getYesterdayVolume();
+                    averageQ += macroII.getMarket(GoodType.GENERIC).countYesterdayProductionByRegisteredSellers();
 
 
                 }
@@ -156,9 +160,11 @@ public class CompetitiveScenarioTest {
 
 
 
-
-      //          assertEquals(averagePrice, 58,5);
-//                assertEquals(averageQ, 44,5);
+                if(competitors>4)
+                {
+                    assertEquals(averagePrice, 58,5);
+                    assertEquals(averageQ, 44,5);
+                }
             }
 
 
@@ -176,9 +182,14 @@ public class CompetitiveScenarioTest {
     public void rightPriceAndQuantityTestAsMarginalNoPIDAlreadyLearned()
     {
 
-        for(int competitors=0;competitors<=7;competitors++)
+        List<Integer> competitors = new LinkedList<>();
+        for(int competitor=0;competitor<=7;competitor++)
+            competitors.add(competitor);
+        competitors.add(80);
+
+        for(Integer competitor : competitors)
         {
-            System.out.println("FORCED COMPETITIVE FIRMS: " + (competitors+1));
+            System.out.println("FORCED COMPETITIVE FIRMS: " + (competitor+1));
             float averageResultingPrice = 0;
             float averageResultingQuantity = 0;
             for(int i=0; i<5; i++)
@@ -187,10 +198,12 @@ public class CompetitiveScenarioTest {
 
                 final MacroII macroII = new MacroII(System.currentTimeMillis());
                 final TripolistScenario scenario1 = new TripolistScenario(macroII);
+
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
                 scenario1.setAskPricingStrategy(SmoothedDailyInventoryPricingStrategy.class);
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
-                scenario1.setAdditionalCompetitors(competitors);
+                scenario1.setAdditionalCompetitors( competitor);
+                scenario1.setWorkersToBeRehiredEveryDay(true);
 
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
                 scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
@@ -228,7 +241,7 @@ public class CompetitiveScenarioTest {
                     macroII.schedule.step(macroII);
                     assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
                     averagePrice += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
-                    averageQ += macroII.getMarket(GoodType.GENERIC).getYesterdayVolume();
+                    averageQ += macroII.getMarket(GoodType.GENERIC).countTodayProductionByRegisteredSellers(); //shortcut to check how much is produced rather than just traded
 
 
                 }
@@ -275,6 +288,8 @@ public class CompetitiveScenarioTest {
                 scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
                 scenario1.setAdditionalCompetitors(competitors);
+                scenario1.setWorkersToBeRehiredEveryDay(true);
+
 
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
                 scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
@@ -319,7 +334,7 @@ public class CompetitiveScenarioTest {
                         workers += f.getHRs().iterator().next().getWorkerTarget();
                     assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
                     averagePrice += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
-                    averageQ += macroII.getMarket(GoodType.GENERIC).getLatestObservation(MarketDataType.VOLUME_TRADED);
+                    averageQ += macroII.getMarket(GoodType.GENERIC).getLatestObservation(MarketDataType.VOLUME_PRODUCED);
                     averageInventory += macroII.getMarket(GoodType.GENERIC).getLatestObservation(MarketDataType.SELLERS_INVENTORY);
 
 
@@ -360,7 +375,7 @@ public class CompetitiveScenarioTest {
         Class<? extends AskPricingStrategy> strategies[] = new Class[2];
         strategies[0] = SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class;
         strategies[1] = SmoothedDailyInventoryPricingStrategy.class;
-    //    strategies[2] = SalesControlWithFixedInventoryAndPID.class;
+        //    strategies[2] = SalesControlWithFixedInventoryAndPID.class;
 
 
         for(Class<? extends AskPricingStrategy> strategy : strategies)
@@ -376,6 +391,8 @@ public class CompetitiveScenarioTest {
                 scenario1.setAskPricingStrategy(strategy);
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
                 scenario1.setAdditionalCompetitors(competitors);
+                scenario1.setWorkersToBeRehiredEveryDay(true);
+
 
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
                 scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
@@ -420,7 +437,7 @@ public class CompetitiveScenarioTest {
                         workers += f.getHRs().iterator().next().getWorkerTarget();
                     assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
                     averagePrice += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
-                    averageQ += macroII.getMarket(GoodType.GENERIC).getLatestObservation(MarketDataType.VOLUME_TRADED);
+                    averageQ += macroII.getMarket(GoodType.GENERIC).countTodayProductionByRegisteredSellers();
                     averageInventory += macroII.getMarket(GoodType.GENERIC).getLatestObservation(MarketDataType.SELLERS_INVENTORY);
 
 

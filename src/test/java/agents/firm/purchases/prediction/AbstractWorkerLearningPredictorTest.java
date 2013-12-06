@@ -8,7 +8,7 @@ package agents.firm.purchases.prediction;
 
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
-import agents.firm.sales.prediction.OpenLoopRecursiveSalesPredictor;
+import agents.firm.sales.prediction.RecursiveSalePredictor;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import goods.GoodType;
@@ -79,7 +79,7 @@ public class AbstractWorkerLearningPredictorTest {
 
             macroII.start();
             macroII.schedule.step(macroII);
-            OpenLoopRecursiveSalesPredictor predictor = new OpenLoopRecursiveSalesPredictor(macroII,scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC));
+            RecursiveSalePredictor predictor = new RecursiveSalePredictor(macroII,scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC));
            // predictor.setRegressingOnWorkers(true);
             scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC).setPredictorStrategy(predictor);
             while(macroII.schedule.getTime()<5000)

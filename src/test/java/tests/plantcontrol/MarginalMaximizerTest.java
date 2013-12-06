@@ -83,7 +83,8 @@ public class MarginalMaximizerTest {
         when(p.hypotheticalThroughput(anyInt(),any(GoodType.class))).thenAnswer(new Answer<Object>() {     //production is just number of workers
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                return invocation.getArguments()[0];
+                Integer o = (Integer) invocation.getArguments()[0];
+                return o *7;
             }
         });
 

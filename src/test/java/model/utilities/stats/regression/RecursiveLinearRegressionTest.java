@@ -65,7 +65,7 @@ public class RecursiveLinearRegressionTest {
     @Test
     public void testUnweightedRegression() throws Exception {
         //2 dimensions, x + intercept
-        RecursiveLinearRegression regression = new RecursiveLinearRegression(2);
+        RecursiveLinearRegression regression = new KalmanRecursiveRegression(2);
 
         for(int i=0; i < x.length; i++)
         {
@@ -80,7 +80,7 @@ public class RecursiveLinearRegressionTest {
     @Test
     public void testWeightedRegression() throws Exception {
         //2 dimensions, x + intercept
-        RecursiveLinearRegression regression = new RecursiveLinearRegression(2);
+        RecursiveLinearRegression regression = new KalmanRecursiveRegression(2);
 
         for(int i=0; i < x.length; i++)
         {

@@ -1,6 +1,5 @@
 package agents.firm.purchases.prediction;
 
-import agents.firm.personell.HumanResources;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.sales.prediction.AbstractRecursivePredictor;
 import model.MacroII;
@@ -24,7 +23,7 @@ import model.utilities.stats.collectors.enums.PurchasesDataType;
  */
 public class RecursivePurchasesPredictor extends AbstractRecursivePredictor implements PurchasesPredictor {
 
-    boolean regressingOnWorkers = true;
+    boolean regressingOnWorkers = false;
 
 
     private final PurchasesDepartment department;
@@ -57,11 +56,6 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
     @Override
     public Enum getXVariableType() {
         if(regressingOnWorkers)
-            if(department instanceof HumanResources)
-                return PurchasesDataType.WORKERS_TARGETED;
-
-            else
-
                 return PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD;
         else
             return PurchasesDataType.INFLOW;

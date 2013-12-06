@@ -44,7 +44,7 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
 
 
     public RecursiveSalePredictor(MacroII model, SalesDepartment department) {
-        this(model, department,AbstractRecursivePredictor.defaultPriceLags,AbstractRecursivePredictor.defaultIndepedentLags);
+        this(model, department,AbstractRecursivePredictor.defaultPriceLags,AbstractRecursivePredictor.defaultIndependentLags);
     }
 
     public RecursiveSalePredictor(final MacroII model, final SalesDepartment department,

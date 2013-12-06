@@ -27,7 +27,6 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
 
     private final AbstractRecursivePredictor delegate;
 
-    private static double forgettingFactor = .99d;
 
     private double[] currentBeta;
 
@@ -50,7 +49,6 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
         this.delegate = delegate;
         this.model = model;
         delegate.setInitialOpenLoopLearningTime(openLoopPeriod+1);
-        delegate.getRegression().setForgettingFactor(forgettingFactor);
         delegate.setTimeDelay(0);
 
 

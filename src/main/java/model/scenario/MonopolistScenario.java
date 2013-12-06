@@ -88,7 +88,7 @@ public class MonopolistScenario extends Scenario {
     /**
      * should you rehire workers every day? To have an effect it has to be set BEFORE start is called!
      */
-    private boolean workersToBeRehiredEveryDay = false;
+    private boolean workersToBeRehiredEveryDay = true;
 
 
 

@@ -306,6 +306,7 @@ public class MonopolistScenarioTest {
         previouslyFailedSeeds.add(1386278630528l);
         previouslyFailedSeeds.add(1386280613790l);
         previouslyFailedSeeds.add(1386283852300l);
+        previouslyFailedSeeds.add(1386345532821l);
 
 
         //run the test 15 times
