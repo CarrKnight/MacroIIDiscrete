@@ -73,7 +73,7 @@ public interface AskPricingStrategy extends Deactivatable {
      * getCurrentInventory-AcceptableInventory
      * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
      */
-    public int estimateSupplyGap();
+    public float estimateSupplyGap();
 
 
 

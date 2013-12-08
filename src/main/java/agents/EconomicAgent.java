@@ -432,7 +432,7 @@ public abstract class EconomicAgent implements Agent, HasInventory{
     /**
      * how "far" sales inventory are from target.
      */
-    public abstract int estimateSupplyGap(GoodType type);
+    public abstract float estimateSupplyGap(GoodType type);
 
     /**
      * get today Production

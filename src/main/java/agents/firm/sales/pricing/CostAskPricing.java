@@ -68,7 +68,7 @@ public class CostAskPricing implements AskPricingStrategy {
      * All inventory is unwanted
      */
     @Override
-    public int estimateSupplyGap() {
+    public float estimateSupplyGap() {
        return sales.getHowManyToSell();
     }
 }

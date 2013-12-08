@@ -158,7 +158,7 @@ public class UndercuttingAskPricing implements AskPricingStrategy,Steppable{
      * All inventory is unwanted
      */
     @Override
-    public int estimateSupplyGap() {
+    public float estimateSupplyGap() {
         return sales.getHowManyToSell();
     }
 }

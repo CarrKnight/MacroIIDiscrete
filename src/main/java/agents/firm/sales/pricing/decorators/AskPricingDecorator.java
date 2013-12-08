@@ -83,7 +83,7 @@ public abstract class AskPricingDecorator implements AskPricingStrategy{
      * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
      */
     @Override
-    public int estimateSupplyGap() {
+    public float estimateSupplyGap() {
         return toDecorate.estimateSupplyGap();
     }
 

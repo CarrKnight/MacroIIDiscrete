@@ -83,7 +83,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         assert controllerUsedByDelegate.getMasterDerivativeGain() == 0;
 
 
-        movingAverage = new ExponentialFilter<>(.5f);
+        movingAverage = new ExponentialFilter<>(.1f);
       //  for(int i=0; i< movingAverage.getMovingAverageSize(); i++)
         movingAverage.addObservation(0);
 
@@ -220,7 +220,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
      * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
      */
     @Override
-    public int estimateSupplyGap() {
+    public float estimateSupplyGap() {
         //percentile distance from target inventory
         /*if(delegate.getTargetInventory() != 0)
             return (100*(delegate.getTargetInventory() - salesDepartment.getHowManyToSell()))/delegate.getTargetInventory();
@@ -230,8 +230,9 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         else
             return -100;*/
         if(salesDepartment.getHowManyToSell() == 0)
-            return 100;
+            return controllerUsedByDelegate.getMasterError();
         else
+
             return (delegate.estimateSupplyGap());
     }
 
@@ -285,5 +286,53 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
 
     public void setHowManyTimesTheDailyInflowShouldTheInventoryBe(int howManyTimesTheDailyInflowShouldTheInventoryBe) {
         this.howManyTimesTheDailyInflowShouldTheInventoryBe = howManyTimesTheDailyInflowShouldTheInventoryBe;
+    }
+
+    /**
+     * Get the proportional gain of the first PID
+     * @return the proportional gain of the first PID
+     */
+    public float getMasterProportionalGain() {
+        return controllerUsedByDelegate.getMasterProportionalGain();
+    }
+
+    /**
+     * Get the integral gain of the first PID
+     * @return the integral gain of the first PID
+     */
+    public float getMasterIntegralGain() {
+        return controllerUsedByDelegate.getMasterIntegralGain();
+    }
+
+    /**
+     * Get the derivative gain of the first PID
+     * @return the derivative gain of the first PID
+     */
+    public float getMasterDerivativeGain() {
+        return controllerUsedByDelegate.getMasterDerivativeGain();
+    }
+
+    /**
+     * Get the proportional gain of the second PID
+     * @return the proportional gain of the second PID
+     */
+    public float getSlaveProportionalGain() {
+        return controllerUsedByDelegate.getSlaveProportionalGain();
+    }
+
+    /**
+     * Get the integral gain of the second PID
+     * @return the integral gain of the second PID
+     */
+    public float getSlaveIntegralGain() {
+        return controllerUsedByDelegate.getSlaveIntegralGain();
+    }
+
+    /**
+     * Get the derivative gain of the second PID
+     * @return the derivative gain of the second PID
+     */
+    public float getSlaveDerivativeGain() {
+        return controllerUsedByDelegate.getSlaveDerivativeGain();
     }
 }

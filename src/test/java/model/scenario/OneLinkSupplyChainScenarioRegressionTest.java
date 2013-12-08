@@ -860,8 +860,10 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
             @Override
             protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
-                HumanResources hr = super.createPlant(blueprint, firm, laborMarket);    //To change body of overridden methods use File | Settings | File Templates.
-                if(!blueprint.getOutputs().containsKey(GoodType.BEEF))
+                HumanResources hr = super.createPlant(blueprint, firm, laborMarket);
+                if(blueprint.getOutputs().containsKey(GoodType.BEEF))
+                    hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
+                else
                     hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
                 return hr;
             }
@@ -874,8 +876,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setNumberOfBeefProducers(1);
         scenario1.setNumberOfFoodProducers(5);
 
-        scenario1.setDivideProportionalGainByThis(15f);
-        scenario1.setDivideIntegrativeGainByThis(15f);
+        scenario1.setDivideProportionalGainByThis(20f);
+        scenario1.setDivideIntegrativeGainByThis(20f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
 

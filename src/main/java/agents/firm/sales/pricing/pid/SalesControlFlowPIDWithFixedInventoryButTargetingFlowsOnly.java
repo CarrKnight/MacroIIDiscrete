@@ -286,7 +286,7 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly implemen
      * All inventory is unwanted
      */
     @Override
-    public int estimateSupplyGap() {
+    public float estimateSupplyGap() {
         int currentInventory = department.getHowManyToSell();
         if(phase.equals(SimpleInventoryAndFlowPIDPhase.SELL))
         {

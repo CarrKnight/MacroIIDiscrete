@@ -54,7 +54,8 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
         this.model = model;
         delegate.setInitialOpenLoopLearningTime(openLoopPeriod + 1);
         delegate.setTimeDelay(0);
-        setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(2),.995d)));
+        int dimensions = delegate.getPriceLags() + delegate.getIndependentLags() + 1;
+        setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(dimensions),.995d)));
 
 
 

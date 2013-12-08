@@ -409,9 +409,9 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
      * All inventory is unwanted
      */
     @Override
-    public int estimateSupplyGap() {
+    public float estimateSupplyGap() {
 
-        return Math.round(gap);
+        return gap;
     }
 
     /**

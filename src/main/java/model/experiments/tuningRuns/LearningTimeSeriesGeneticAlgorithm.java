@@ -710,7 +710,7 @@ public class LearningTimeSeriesGeneticAlgorithm
                 when(mockedDepartment.getHowManyToSell()).thenReturn((int)dataset[SalesDataType.HOW_MANY_TO_SELL.ordinal()][day]);
                 when(mockedDepartment.getTotalWorkersWhoProduceThisGood()).thenReturn((int)dataset[SalesDataType.WORKERS_PRODUCING_THIS_GOOD.ordinal()][day]);
                 when(mockedDepartment.getAverageClosingPrice()).thenReturn((float) dataset[SalesDataType.AVERAGE_CLOSING_PRICES.ordinal()][day]);
-                when(mockedDepartment.estimateSupplyGap()).thenReturn((int) dataset[SalesDataType.SUPPLY_GAP.ordinal()][day]);
+                when(mockedDepartment.estimateSupplyGap()).thenReturn((float) dataset[SalesDataType.SUPPLY_GAP.ordinal()][day]);
                 //now step the data, so that it memorizes it
                 if(day>1)
                     data.step(macroII);

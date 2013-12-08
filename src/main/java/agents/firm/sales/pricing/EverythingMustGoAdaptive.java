@@ -103,7 +103,7 @@ public class EverythingMustGoAdaptive implements AskPricingStrategy {
      * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
      */
     @Override
-    public int estimateSupplyGap() {
+    public float estimateSupplyGap() {
         int inventorySize = department.getHowManyToSell();
         if(isInventoryAcceptable(inventorySize))
             return 0;

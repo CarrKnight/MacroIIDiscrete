@@ -1240,7 +1240,7 @@ public class Firm extends EconomicAgent {
      * how "far" sales inventory are from target.
      */
     @Override
-    public int estimateSupplyGap(GoodType type) {
+    public float estimateSupplyGap(GoodType type) {
         SalesDepartment department = salesDepartments.get(type);
         if(department == null)
             return 0;

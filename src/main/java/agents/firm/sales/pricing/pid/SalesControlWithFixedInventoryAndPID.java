@@ -276,11 +276,13 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
      * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
      */
     @Override
-    public int estimateSupplyGap()
+    public float estimateSupplyGap()
     {
 
         //return department.getHowManyToSell() - targetInventory;
-        return Math.round(controller.getSlaveError());
+       float gap = controller.getSlaveError();
+       return gap;
+
 
         //return Math.round(controller.getMasterMV() + department.getTodayInflow() - department.getTodayOutflow());
 

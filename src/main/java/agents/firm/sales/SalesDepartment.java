@@ -1300,7 +1300,7 @@ public abstract class  SalesDepartment  implements Department {
      * getCurrentInventory-AcceptableInventory or getCurrentFlow-acceptableFlow if that's what the seller is targeting.
      * @return positive if there is an excess of goods bought, negative if there is a shortage, 0 if you are right on target.
      */
-    public int estimateSupplyGap() {
+    public float estimateSupplyGap() {
         return askPricingStrategy.estimateSupplyGap();
     }
 

@@ -229,7 +229,7 @@ public class Customer extends EconomicAgent{
      * how "far" sales inventory are from target.
      */
     @Override
-    public int estimateSupplyGap(GoodType type) {
+    public float estimateSupplyGap(GoodType type) {
         return 0;
     }
 

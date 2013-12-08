@@ -177,7 +177,7 @@ public class DummySeller extends Firm {
      * how "far" sales inventory are from target.
      */
     @Override
-    public int estimateSupplyGap(GoodType type) {
+    public float estimateSupplyGap(GoodType type) {
         if(market==null)
             return 0;
         if(!soldToday && market.getLastPrice() >= saleQuote)

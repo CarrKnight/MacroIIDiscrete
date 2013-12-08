@@ -251,10 +251,9 @@ public class OneLinkSupplyChainScenario extends Scenario {
         if(!goodmarket.getGoodType().equals(GoodType.FOOD))
         {
 
-            strategy2 = new SmoothedDailyInventoryPricingStrategy(dept,
-                    model.drawProportionalGain()/ divideProportionalGainByThis,
-                    model.drawIntegrativeGain()/ divideIntegrativeGainByThis,
-                    model.drawDerivativeGain());
+            strategy2 = new SmoothedDailyInventoryPricingStrategy(dept);
+            strategy2.setGainsSlavePID(strategy2.getSlaveProportionalGain()/divideProportionalGainByThis, strategy2.getSlaveIntegralGain()/divideIntegrativeGainByThis,strategy2.getSlaveDerivativeGain());
+
 
             strategy2.setInitialPrice(50);
             //if you can, filter it!
