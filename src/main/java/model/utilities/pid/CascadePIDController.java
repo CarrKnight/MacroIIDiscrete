@@ -305,6 +305,15 @@ public class CascadePIDController implements Controller{
         return pid1.getCurrentMV();
     }
 
+
+    public float getMasterError() {
+        return pid1.getNewError();
+    }
+
+    public float getSlaveError() {
+        return pid2Root.getNewError();
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("CascadePIDController{");

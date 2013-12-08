@@ -232,7 +232,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         if(salesDepartment.getHowManyToSell() == 0)
             return 100;
         else
-            return 0;
+            return (delegate.estimateSupplyGap());
     }
 
     /**

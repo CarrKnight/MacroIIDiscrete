@@ -780,7 +780,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
         //run the test 5 times!
-        for(int i=0; i <1; i++)
+        for(int i=0; i <4; i++)
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
@@ -806,6 +806,24 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             results.add(receipt.get());
         }
+
+        //todo delete this
+        Future<OneLinkSupplyChainResult> testReceipt =
+                testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
+                    /**
+                     * Computes a result, or throws an exception if unable to do so.
+                     *
+                     * @return computed result
+                     * @throws Exception if unable to compute a result
+                     */
+                    @Override
+                    public OneLinkSupplyChainResult call() throws Exception {
+                        return             foodLearnedBeefMonopolistSlowPIDRun(random.nextLong());
+                    }
+                });
+
+      testReceipt.get();
+        //stop deleting here
 
         for(OneLinkSupplyChainResult result : results)
             checkBeefMonopolistResult(result);
@@ -856,8 +874,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setNumberOfBeefProducers(1);
         scenario1.setNumberOfFoodProducers(5);
 
-        scenario1.setDivideProportionalGainByThis(50f);
-        scenario1.setDivideIntegrativeGainByThis(50f);
+        scenario1.setDivideProportionalGainByThis(15f);
+        scenario1.setDivideIntegrativeGainByThis(15f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
 

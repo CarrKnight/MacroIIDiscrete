@@ -91,14 +91,23 @@ public class SalesData extends DataStorage<SalesDataType> {
 
 
 
+        //learn
+        Double inflow = Double.valueOf(departmentToFollow.getTodayInflow());
+        Double outflow = Double.valueOf(departmentToFollow.getTodayOutflow());
+        Double closingPrices = Double.valueOf(departmentToFollow.getLastClosingPrice());
+        Double howManyToSell = Double.valueOf(departmentToFollow.getHowManyToSell());
+        Double workersProducing = Double.valueOf(departmentToFollow.getTotalWorkersWhoProduceThisGood());
+        Double averageClosingPrice = Double.valueOf(departmentToFollow.getAverageClosingPrice());
+        Double supplyGap = Double.valueOf(departmentToFollow.estimateSupplyGap());
+
         //memorize
-        data.get(SalesDataType.INFLOW).add(Double.valueOf(departmentToFollow.getTodayInflow()));
-        data.get(SalesDataType.OUTFLOW).add(Double.valueOf(departmentToFollow.getTodayOutflow()));
-        data.get(SalesDataType.CLOSING_PRICES).add(Double.valueOf(departmentToFollow.getLastClosingPrice()));
-        data.get(SalesDataType.HOW_MANY_TO_SELL).add(Double.valueOf(departmentToFollow.getHowManyToSell()));
-        data.get(SalesDataType.WORKERS_PRODUCING_THIS_GOOD).add(Double.valueOf(departmentToFollow.getTotalWorkersWhoProduceThisGood()));
-        data.get(SalesDataType.AVERAGE_CLOSING_PRICES).add(Double.valueOf(departmentToFollow.getAverageClosingPrice()));
-        data.get(SalesDataType.SUPPLY_GAP).add(Double.valueOf(departmentToFollow.estimateSupplyGap()));
+        data.get(SalesDataType.INFLOW).add(inflow);
+        data.get(SalesDataType.OUTFLOW).add(outflow);
+        data.get(SalesDataType.CLOSING_PRICES).add(closingPrices);
+        data.get(SalesDataType.HOW_MANY_TO_SELL).add(howManyToSell);
+        data.get(SalesDataType.WORKERS_PRODUCING_THIS_GOOD).add(workersProducing);
+        data.get(SalesDataType.AVERAGE_CLOSING_PRICES).add(averageClosingPrice);
+        data.get(SalesDataType.SUPPLY_GAP).add(supplyGap);
 
         //reschedule
         model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);

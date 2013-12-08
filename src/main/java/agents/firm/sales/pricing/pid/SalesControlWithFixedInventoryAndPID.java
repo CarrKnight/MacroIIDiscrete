@@ -280,7 +280,8 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     {
 
         //return department.getHowManyToSell() - targetInventory;
-        return Math.round(controller.getMasterMV());
+        return Math.round(controller.getSlaveError());
+
         //return Math.round(controller.getMasterMV() + department.getTodayInflow() - department.getTodayOutflow());
 
     }
