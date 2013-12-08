@@ -547,7 +547,9 @@ public class MacroII extends SimState{
         markets.clear();
         markets = null;
         for(EconomicAgent a : agents)
-            a.setActive(false);
+        {
+            a.turnOff();
+        }
         agents.clear();
         agents = null;
 

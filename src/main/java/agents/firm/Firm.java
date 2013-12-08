@@ -664,7 +664,7 @@ public class Firm extends EconomicAgent {
                 break;
 
         }
-        if(!workerFound)
+        if(!workerFound && isActive())
             throw new IllegalArgumentException("Worker not found!");
     }
 

@@ -102,9 +102,18 @@ public class RecursiveSalePredictorTest {
         }
 
 
-        Assert.assertEquals(predictor.getNumberOfValidObservations(),1);
+        Assert.assertEquals(predictor.getNumberOfValidObservations(),2);
+        //forcefully put a nice beta in
+        for(int i=0; i < 7; i++)
+            predictor.getRegression().setBeta(i,1);
 
-
+        predictor.setInitialOpenLoopLearningTime(0);
+        predictor.setHowFarIntoTheFutureToPredict(3);
+        //with time delay
+        Assert.assertEquals(49,predictor.predictPrice(1),.001d);
+        //without time delay
+        predictor.setTimeDelay(0);
+        Assert.assertEquals(42,predictor.predictPrice(1),.001d);
 
 
 

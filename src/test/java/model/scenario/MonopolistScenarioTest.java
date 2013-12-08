@@ -485,7 +485,7 @@ public class MonopolistScenarioTest {
 
 
             System.out.println(i + "---------------------------------------------------------------------------------------------");
-
+            macroII.finish();
         }
 
 
@@ -695,4 +695,8 @@ public class MonopolistScenarioTest {
 
 
     }
+
+
+
+
 }

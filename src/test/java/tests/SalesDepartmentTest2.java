@@ -8,6 +8,7 @@ import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.LookupSalesPredictor;
+import agents.firm.sales.prediction.PricingSalesPredictor;
 import agents.firm.sales.prediction.SurveySalesPredictor;
 import agents.firm.sales.pricing.PriceFollower;
 import agents.firm.sales.pricing.UndercuttingAskPricing;
@@ -168,6 +169,10 @@ public class SalesDepartmentTest2 {
         dept1.start();
         dept2.start();
         market.setPricePolicy(new AveragePricePolicy());
+
+        //remove predictors, you don't need them anyway
+        dept1.setPredictorStrategy(new PricingSalesPredictor());
+        dept2.setPredictorStrategy(new PricingSalesPredictor());
 
         assertEquals(dept1.getMarket().getBestBuyPrice(), 100l); //the best offer is visible
         assertEquals(dept2.getMarket().getBestBuyPrice(), 100l); //the best offer is visible

@@ -168,7 +168,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         populateMarkets();
 
         //create consumers
-        buildFoodDemand(0,100,1,getMarkets().get(GoodType.FOOD));
+        buildFoodDemand(0,101,1,getMarkets().get(GoodType.FOOD));
 
         //create workers
         buildLaborSupplies();
@@ -178,8 +178,8 @@ public class OneLinkSupplyChainScenario extends Scenario {
     }
 
     private void buildLaborSupplies() {
-        addWorkers(getMarkets().get(GoodType.LABOR_BEEF),5,1200,5);
-        addWorkers(getMarkets().get(GoodType.LABOR_FOOD),5,1200,5);
+        addWorkers(getMarkets().get(GoodType.LABOR_BEEF),1,120,1);
+        addWorkers(getMarkets().get(GoodType.LABOR_FOOD),1,120,1);
     }
 
     private void populateMarkets() {

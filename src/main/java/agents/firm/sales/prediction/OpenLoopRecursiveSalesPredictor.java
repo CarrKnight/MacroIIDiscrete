@@ -94,4 +94,6 @@ public class OpenLoopRecursiveSalesPredictor extends AbstractOpenLoopRecursivePr
     public float getDecrementDelta() {
         return decreaseSalesPredictor.getDecrementDelta();
     }
+
+
 }

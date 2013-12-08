@@ -185,7 +185,6 @@ public class CompetitiveScenarioTest {
         List<Integer> competitors = new LinkedList<>();
         for(int competitor=0;competitor<=7;competitor++)
             competitors.add(competitor);
-        competitors.add(80);
 
         for(Integer competitor : competitors)
         {

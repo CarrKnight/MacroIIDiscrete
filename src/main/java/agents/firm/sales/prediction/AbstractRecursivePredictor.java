@@ -1,8 +1,18 @@
 package agents.firm.sales.prediction;
 
+import agents.firm.personell.HumanResources;
+import agents.firm.purchases.prediction.OpenLoopRecursivePurchasesPredictor;
+import agents.firm.purchases.prediction.SamplingLearningIncreasePurchasePredictor;
+import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
+import agents.firm.sales.SalesDepartmentOneAtATime;
+import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Doubles;
+import ec.util.MersenneTwisterFast;
+import goods.GoodType;
 import model.MacroII;
+import model.scenario.MonopolistScenario;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
 import model.utilities.filters.ExponentialFilter;
@@ -14,6 +24,7 @@ import model.utilities.stats.regression.RecursiveLinearRegression;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -66,9 +77,9 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
         this.priceLags=priceLags;
         this.independentLags = independentLags;
         this.regression = new GunnarsonRegularizerDecorator(
-                new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(1+priceLags+ independentLags,initialCoefficients),.99d ));
+                new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(1+priceLags+ independentLags,initialCoefficients),.995d ));
         if(priceLags > 0) //if there a y lag in there
-        this.regression.setBeta(1,1); // start with a simple prior y_t = y_{t-1}
+            this.regression.setBeta(1,1); // start with a simple prior y_t = y_{t-1}
 
         //keep scheduling yourself until you aren't active anymore
         model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE,this);
@@ -197,7 +208,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
 
 
                         //matrix = matrix.plus(Matrix.identity(observation.length,observation.length).times(1000));
-                  //      getRegression().setPCovariance(matrix.getArray());
+                        //      getRegression().setPCovariance(matrix.getArray());
 
 
 
@@ -213,16 +224,17 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                         numberOfValidObservations++;
 
 
-      /*                  if(numberOfValidObservations % 100 == 0)
+                        if(numberOfValidObservations % 100 == 0)
                         {
+                            /*
                             if(this instanceof  RecursiveSalePredictor)
                                 System.out.println( "sales slope: " + ( predictPrice(1) - predictPrice(0)) + " , trace: " + getRegression().getTrace());
                             else
                                 System.out.println( "purchases slope: " + ( predictPrice(1) - predictPrice(0)) + " , trace: " + getRegression().getTrace());
-
+                              */
                             //         matrix = matrix.plus(Matrix.identity(observation.length,observation.length).times(1000));
                         }
-        */
+
 
 
 
@@ -469,4 +481,211 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
     public void setRegression(RecursiveLinearRegression regression) {
         this.regression = regression;
     }
+
+
+    //test a few possible decorators to find the best one!
+   // [4.0, 3.0, 9.0, 4.0, 36.0, 4.0, 58.0, 26.0]
+   // [186.0, 535.0, 172.0, 150.0, 165.0, 288.0, 185.0, 264.0]
+
+    public static void main(String[] args)
+    {        //run the tests on failures first
+
+
+        double[] firstErrors = new double[8];
+        double[] secondErrors = new double[8];
+
+
+        //run the test  times
+        for(int i=50; i<155; i++)
+        {
+
+            for(int test=0;test<8; test++){
+
+                MersenneTwisterFast random = new MersenneTwisterFast(i);
+
+
+                final MacroII macroII = new MacroII(i);
+                MonopolistScenario scenario1 = new MonopolistScenario(macroII);
+
+                //generate random parameters for labor supply and good demand
+                int p0= random.nextInt(100)+100; int p1= random.nextInt(3)+1;
+                scenario1.setDemandIntercept(p0); scenario1.setDemandSlope(p1);
+                int w0=random.nextInt(10)+10; int w1=random.nextInt(3)+1;
+                scenario1.setDailyWageIntercept(w0); scenario1.setDailyWageSlope(w1);
+                int a=random.nextInt(3)+1;
+                scenario1.setLaborProductivity(a);
+
+
+
+                macroII.setScenario(scenario1);
+                scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
+                scenario1.setWorkersToBeRehiredEveryDay(true);
+                scenario1.setAskPricingStrategy(SmoothedDailyInventoryPricingStrategy.class);
+                if(random.nextBoolean())
+                    scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+                else
+                    scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+
+                System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
+
+                macroII.start();
+                macroII.schedule.step(macroII);
+
+                SalesDepartment department = scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC);
+                SalesPredictor predictor = null;
+                HumanResources hr = scenario1.getMonopolist().getHRs().iterator().next();
+
+
+                switch (test)
+                {
+                    //Constant trace
+                    default:
+                    case 0:
+                        System.out.println("OPENLOOP 99 regularized");
+                        OpenLoopRecursiveSalesPredictor openLoop = new OpenLoopRecursiveSalesPredictor(macroII,department);
+                        predictor = openLoop;
+                        openLoop.setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(2),.99d)));
+
+                        OpenLoopRecursivePurchasesPredictor openLoopHr = new OpenLoopRecursivePurchasesPredictor(macroII,hr);
+                        openLoopHr.setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(2),.99d)));
+                        hr.setPredictor(openLoopHr);
+
+
+                        break;
+                    //no forgetting, no regularization
+                    case 1:
+                        System.out.println("OPENLOOP 99.9");
+                        openLoop = new OpenLoopRecursiveSalesPredictor(macroII,department);
+                        predictor = openLoop;
+                        openLoop.setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(2),.999d)));
+
+                        openLoopHr = new OpenLoopRecursivePurchasesPredictor(macroII,hr);
+                        openLoopHr.setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(2),.999d)));
+                        hr.setPredictor(openLoopHr);
+
+                        break;
+                    //99% forgetting, no regularization
+                    case 2:
+                        System.out.println("OPENLOOP 98");
+                        openLoop = new OpenLoopRecursiveSalesPredictor(macroII,department);
+                        predictor = openLoop;
+                        openLoop.setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(2),.98d)));
+
+                        openLoopHr = new OpenLoopRecursivePurchasesPredictor(macroII,hr);
+                        openLoopHr.setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(2),.98d)));
+                        hr.setPredictor(openLoopHr);
+
+                        break;
+                    //99% forgetting AND regularization
+                    case 3:
+                        System.out.println("OPENLOOP 98.5");
+                        openLoop = new OpenLoopRecursiveSalesPredictor(macroII,department);
+                        predictor = openLoop;
+                        openLoop.setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(2),.985d)));
+
+                        openLoopHr = new OpenLoopRecursivePurchasesPredictor(macroII,hr);
+                        openLoopHr.setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(2),.985d)));
+                        hr.setPredictor(openLoopHr);
+
+                        break;
+                    //95% forgetting AND regularization
+                    case 4:
+                        System.out.println("OPENLOOP 97 regularized");
+                        openLoop = new OpenLoopRecursiveSalesPredictor(macroII,department);
+                        predictor = openLoop;
+                        openLoop.setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(2),.97d)));
+
+                        openLoopHr = new OpenLoopRecursivePurchasesPredictor(macroII,hr);
+                        openLoopHr.setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(2),.97d)));
+                        hr.setPredictor(openLoopHr);
+
+                        break;
+                    case 5:
+                        System.out.println("OPENLOOP 99.5 regularized");
+                        openLoop = new OpenLoopRecursiveSalesPredictor(macroII,department);
+                        predictor = openLoop;
+                        openLoop.setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(2),.995d)));
+
+                        openLoopHr = new OpenLoopRecursivePurchasesPredictor(macroII,hr);
+                        openLoopHr.setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(2),.995d)));
+                        hr.setPredictor(openLoopHr);
+
+
+                        break;
+                    case 6:
+                        System.out.println("OPENLOOP 96 regularized with time delay");
+                        openLoop = new OpenLoopRecursiveSalesPredictor(macroII,department);
+                        predictor = openLoop;
+                        openLoop.setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(2),.96d)));
+
+                        openLoopHr = new OpenLoopRecursivePurchasesPredictor(macroII,hr);
+                        openLoopHr.setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(2),.96d)));
+                        hr.setPredictor(openLoopHr);
+
+                        break;
+                    case 7:
+                        System.out.println("Ye Olde Regression");
+                        predictor = new SamplingLearningDecreaseSalesPredictor(macroII);
+
+                        hr.setPredictor(new SamplingLearningIncreasePurchasePredictor(macroII));
+                        break;
+
+
+
+
+                }
+                assert predictor != null;
+                department.setPredictorStrategy(predictor);
+
+
+                while(macroII.schedule.getTime()<5000)
+                    macroII.schedule.step(macroII);
+
+                //first checkpoint
+                int profitMaximizingLaborForce = MonopolistScenario.findWorkerTargetThatMaximizesProfits(p0,p1,w0,w1,a);
+                firstErrors[test] += Math.sqrt(Math.pow(scenario1.getMonopolist().getTotalWorkers()-profitMaximizingLaborForce,2));
+                System.out.println(firstErrors[test]);
+
+
+                //now reset
+                //generate random parameters for labor supply and good demand
+                p0= random.nextInt(100)+100; p1= random.nextInt(3)+1;
+                scenario1.resetDemand(p0,p1);
+                w0=random.nextInt(10)+10; w1=random.nextInt(3)+1;
+                scenario1.resetLaborSupply(w0,w1);
+                System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
+                System.out.flush();
+
+
+                //another 5000 observations
+                while(macroII.schedule.getTime()<10000)
+                    macroII.schedule.step(macroII);
+
+                //the pi maximizing labor force employed is:
+
+
+
+
+                profitMaximizingLaborForce = MonopolistScenario.findWorkerTargetThatMaximizesProfits(p0,p1,w0,w1,a);
+                secondErrors[test] += Math.sqrt(Math.pow(scenario1.getMonopolist().getTotalWorkers()-profitMaximizingLaborForce,2));
+                System.out.println(secondErrors[test]);
+
+
+
+                System.out.println(i + "---------------------------------------------------------------------------------------------");
+
+            }
+        }
+
+        System.out.println(Arrays.toString(firstErrors));
+        System.out.println(Arrays.toString(secondErrors));
+
+
+
+
+
+
+
+    }
+
 }

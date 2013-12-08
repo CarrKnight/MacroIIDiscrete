@@ -4,6 +4,10 @@ import agents.firm.sales.prediction.AbstractRecursivePredictor;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
+import model.utilities.stats.regression.ExponentialForgettingRegressionDecorator;
+import model.utilities.stats.regression.GunnarsonRegularizerDecorator;
+import model.utilities.stats.regression.KalmanRecursiveRegression;
+import model.utilities.stats.regression.RecursiveLinearRegression;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -48,8 +52,11 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
     public AbstractOpenLoopRecursivePredictor(AbstractRecursivePredictor delegate, MacroII model) {
         this.delegate = delegate;
         this.model = model;
-        delegate.setInitialOpenLoopLearningTime(openLoopPeriod+1);
+        delegate.setInitialOpenLoopLearningTime(openLoopPeriod + 1);
         delegate.setTimeDelay(0);
+        setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(2),.995d)));
+
+
 
 
         model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
@@ -80,17 +87,22 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
             currentBeta = delegate.getRegression().getBeta().clone();
             updateSlopes();
 
+
+            /*
             if(delegate instanceof RecursivePurchasesPredictor)
             {
-                System.out.print(model.getMainScheduleTime() +", purchases ");
+            //    System.out.print(model.getMainScheduleTime() +", purchases ");
             }
             else
+            {
                 System.out.print(model.getMainScheduleTime() + ", sales: ");
-            System.out.println("learned slope: " + (upwardSlope) +" ================ " + (downwardSlope ) + " Trace: "  + delegate.getRegression().getTrace());
+                System.out.println("learned slope: " + (upwardSlope) +" ================ " + (downwardSlope ) + " Trace: "  + delegate.getRegression().getTrace());
+            }
+            //
+            */
 
 
-      //      delegate.getRegression().addNoise(10000);
-         //   delegate.getRegression().resetPDiagonal(10000);
+
 
         }
 
@@ -117,6 +129,7 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
     @Override
     public void turnOff() {
         isActive=false;
+        delegate.turnOff();
 
     }
 
@@ -136,5 +149,17 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
 
     public double defaultPriceWithNoObservations() {
         return delegate.defaultPriceWithNoObservations();
+    }
+
+    public void setRegression(RecursiveLinearRegression regression) {
+        delegate.setRegression(regression);
+    }
+
+    public int getTimeDelay() {
+        return delegate.getTimeDelay();
+    }
+
+    public void setTimeDelay(int timeDelay) {
+        delegate.setTimeDelay(timeDelay);
     }
 }

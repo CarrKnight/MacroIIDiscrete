@@ -6,7 +6,6 @@
 
 package model.scenario;
 
-import agents.EconomicAgent;
 import agents.Person;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
@@ -32,11 +31,10 @@ import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
 import financial.utilities.ShopSetPricePolicy;
-import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.dummies.DummyBuyer;
+import model.utilities.dummies.Customer;
 import model.utilities.stats.collectors.DailyStatCollector;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -262,47 +260,15 @@ public class SupplyChainScenario extends Scenario
     }
 
     private void createFoodConsumer(final Market marketToBuyFrom, final int reservationPrice) {
-        /**
-         * For this scenario we use a different kind of dummy buyer that, after "period" passed, puts a new order in the market
-         */
-        final DummyBuyer buyer = new DummyBuyer(getModel(), reservationPrice,marketToBuyFrom){
-            @Override
-            public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
-                //trick to get the steppable to recognize the anonymous me!
-                final DummyBuyer reference = this;
-                //schedule a new quote in period!
-                this.getModel().scheduleTomorrow(ActionOrder.TRADE, new Steppable() {
-                    @Override
-                    public void step(SimState simState) {
-                        earn(Math.max(1000l - reference.getCash(),0));
-                        //put another quote
-                        marketToBuyFrom.submitBuyQuote(reference, getFixedPrice());
-
-                    }
-                });
-
-            }
-
+        final Customer buyer = new Customer(model,reservationPrice,marketToBuyFrom){
+            /**
+             * Returns the "food buyer " + price
+             */
             @Override
             public String toString() {
-                return "Food buyer, price: " + reservationPrice;
-
+                return "food buyer " + this.getMaxPrice();
             }
         };
-
-
-        //make it adjust once to register and submit the first quote
-
-        getModel().scheduleSoon(ActionOrder.DAWN, new Steppable() {
-            @Override
-            public void step(SimState simState) {
-                marketToBuyFrom.registerBuyer(buyer);
-                buyer.earn(1000l);
-                //make the buyer submit a quote soon.
-                marketToBuyFrom.submitBuyQuote(buyer, buyer.getFixedPrice());
-            }
-        });
-
         getAgents().add(buyer);
     }
 

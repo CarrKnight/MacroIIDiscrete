@@ -21,7 +21,10 @@ import model.utilities.stats.collectors.enums.MarketDataType;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.*;
 
 import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
@@ -328,12 +331,23 @@ public class OneLinkSupplyChainScenarioRegressionTest
         for(Future<OneLinkSupplyChainResult> receipt : testResults)
         {
             OneLinkSupplyChainResult result = receipt.get();
-            Assert.assertEquals(result.getQuantity(), 20.794, 2);
-            Assert.assertEquals(result.getBeefPrice(), 65.353, 5l);
-            Assert.assertEquals(result.getFoodPrice(),80.206,5l );
+            checkBeefMonopolistResult(result);
         }
 
 
+    }
+
+    /*
+    \[ q_B = 17 \]
+    \[ q_F = 17 \]
+    \[ w_B = w_F = 17 \]
+    \[p_B =68\]
+    \[p_F = 85 \]
+     */
+    private void checkBeefMonopolistResult(OneLinkSupplyChainResult result) {
+        Assert.assertEquals(result.getQuantity(), 17, 2);
+        Assert.assertEquals(result.getBeefPrice(), 68, 5l);
+        Assert.assertEquals(result.getFoodPrice(),85,5l );
     }
 
     private OneLinkSupplyChainResult testBeefMonopolistFixedProductionWithSlowPIDOneRun(long seed) {
@@ -424,9 +438,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         for(Future<OneLinkSupplyChainResult> receipt : testResults)
         {
             OneLinkSupplyChainResult result = receipt.get();
-            Assert.assertEquals(result.getQuantity(), 20.794, 2);
-            Assert.assertEquals(result.getBeefPrice(), 65.353, 5l);
-            Assert.assertEquals(result.getFoodPrice(),80.206,5l );
+            checkBeefMonopolistResult(result);
         }
 
 
@@ -434,6 +446,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     private OneLinkSupplyChainResult testBeefMonopolistFixedProductionWithSlowPIDFakeFoodCompetitiveOneRun(long seed) {
         final MacroII macroII = new MacroII(seed);
+        final SalesDepartment[] department = new SalesDepartment[1];
         final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 = new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.BEEF)
         {
 
@@ -445,17 +458,17 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
             @Override
             protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
-                SalesDepartment department = super.createSalesDepartment(firm, goodmarket);    //To change body of overridden methods use File | Settings | File Templates.
+                department[0] = super.createSalesDepartment(firm, goodmarket);    //To change body of overridden methods use File | Settings | File Templates.
                 if(goodmarket.getGoodType().equals(GoodType.FOOD))
-                    department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
-                return department;
+                    department[0].setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+                return department[0];
             }
 
             @Override
             protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
                 HumanResources hr = super.createPlant(blueprint, firm, laborMarket);    //To change body of overridden methods use File | Settings | File Templates.
                 if(blueprint.getOutputs().containsKey(GoodType.BEEF))
-                    hr.setPredictor(new FixedIncreasePurchasesPredictor(5));
+                    hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
                 else
                     hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
                 return hr;
@@ -501,6 +514,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         }
 
+    //    department[0].getData().writeToCSVFile(Paths.get("supplySales.csv").toFile());
 
 
 
@@ -547,8 +561,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         for(Future<OneLinkSupplyChainResult> receipt : testResults)
         {
             OneLinkSupplyChainResult result = receipt.get();
-            Assert.assertEquals(result.getBeefPrice(), 62l, 6l);
-            Assert.assertEquals(result.getFoodPrice(),85l,6l );
+            checkBeefMonopolistResult(result);
         }
 
 
@@ -660,9 +673,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         for(Future<OneLinkSupplyChainResult> receipt : testResults)
         {
             OneLinkSupplyChainResult result = receipt.get();
-            Assert.assertEquals(result.getQuantity(), 20.794, 2);
-            Assert.assertEquals(result.getBeefPrice(), 67, 5l);
-            Assert.assertEquals(result.getFoodPrice(),80.206,5l );
+           checkBeefMonopolistResult(result);
         }
 
 
@@ -678,7 +689,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
             @Override
             protected void buildBeefSalesPredictor(SalesDepartment dept) {
                 FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
-                predictor.setDecrementDelta(12f/7f);
+                predictor.setDecrementDelta(2);
                 dept.setPredictorStrategy(predictor);
             }
 
@@ -702,7 +713,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
             protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
                 HumanResources hr = super.createPlant(blueprint, firm, laborMarket);
                 if(blueprint.getOutputs().containsKey(GoodType.BEEF))
-                    hr.setPredictor(new FixedIncreasePurchasesPredictor(5));
+                    hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
                 else
                     hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
                 return hr;
@@ -714,7 +725,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //competition!
         scenario1.setNumberOfBeefProducers(1);
-        scenario1.setNumberOfFoodProducers(5);
+        scenario1.setNumberOfFoodProducers(1);
 
         scenario1.setDivideProportionalGainByThis(50f);
         scenario1.setDivideIntegrativeGainByThis(50f);
@@ -769,7 +780,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
         //run the test 5 times!
-        for(int i=0; i <5; i++)
+        for(int i=0; i <1; i++)
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
@@ -790,14 +801,14 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         }
 
+        List<OneLinkSupplyChainResult> results = new LinkedList<>();
         for(Future<OneLinkSupplyChainResult> receipt : testResults)
         {
-            OneLinkSupplyChainResult result = receipt.get();
-            Assert.assertEquals(result.getQuantity(), 20.794, 2);
-            Assert.assertEquals(result.getBeefPrice(), 65.353, 5l);
-            Assert.assertEquals(result.getFoodPrice(),80.206,5l );
+            results.add(receipt.get());
         }
 
+        for(OneLinkSupplyChainResult result : results)
+            checkBeefMonopolistResult(result);
 
 
     }
@@ -806,8 +817,10 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     private OneLinkSupplyChainResult foodLearnedBeefMonopolistSlowPIDRun(long random) {
         final MacroII macroII = new MacroII(random);
+        final SalesDepartment[] outerDepartment = new SalesDepartment[1];
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII)
         {
+
 
 
 
@@ -819,9 +832,11 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
             @Override
             protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
-                SalesDepartment department = super.createSalesDepartment(firm, goodmarket);    //To change body of overridden methods use File | Settings | File Templates.
+                 SalesDepartment department= super.createSalesDepartment(firm, goodmarket);    //To change body of overridden methods use File | Settings | File Templates.
                 if(goodmarket.getGoodType().equals(GoodType.FOOD))
                     department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+                else
+                    outerDepartment[0] = department;
                 return department;
             }
 
@@ -841,8 +856,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setNumberOfBeefProducers(1);
         scenario1.setNumberOfFoodProducers(5);
 
-        scenario1.setDivideProportionalGainByThis(15f);
-        scenario1.setDivideIntegrativeGainByThis(15f);
+        scenario1.setDivideProportionalGainByThis(50f);
+        scenario1.setDivideIntegrativeGainByThis(50f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
 
@@ -870,6 +885,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
             averageBeefPrice+= macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
         }
 
+
+        outerDepartment[0].getData().writeToCSVFile(Paths.get("supplySales.csv").toFile());
 
         System.out.println("beef price: " +averageBeefPrice/1000f );
         System.out.println("food price: " +averageFoodPrice/1000f );
@@ -917,9 +934,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         for(Future<OneLinkSupplyChainResult> receipt : testResults)
         {
             OneLinkSupplyChainResult result = receipt.get();
-            Assert.assertEquals(result.getQuantity(), 20.794, 2);
-            Assert.assertEquals(result.getBeefPrice(), 65.353, 5l);
-            Assert.assertEquals(result.getFoodPrice(),80.206,5l );
+            checkBeefMonopolistResult(result);
         }
 
 
@@ -934,7 +949,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
             @Override
             protected void buildBeefSalesPredictor(SalesDepartment dept) {
                 FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
-                predictor.setDecrementDelta(12f/7f);
+                predictor.setDecrementDelta(2);
                 dept.setPredictorStrategy(predictor);
             }
 
@@ -1031,9 +1046,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         for(Future<OneLinkSupplyChainResult> receipt : testResults)
         {
             OneLinkSupplyChainResult result = receipt.get();
-            Assert.assertEquals(result.getBeefPrice(), 62l, 5l);
-            Assert.assertEquals(result.getFoodPrice(),85l,5l );
-            Assert.assertEquals(result.getQuantity(), 16, 2);
+            checkBeefMonopolistResult(result);
         }
 
     }
@@ -1045,7 +1058,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
             @Override
             protected void buildBeefSalesPredictor(SalesDepartment dept) {
                 FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
-                predictor.setDecrementDelta(17f/7f);
+                predictor.setDecrementDelta(2f);
                 dept.setPredictorStrategy(predictor);
             }
 
@@ -1056,7 +1069,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //competition!
         scenario1.setNumberOfBeefProducers(1);
-        scenario1.setNumberOfFoodProducers(10);
+        scenario1.setNumberOfFoodProducers(5);
 
         scenario1.setDivideProportionalGainByThis(1f);
         scenario1.setDivideIntegrativeGainByThis(1f);
@@ -1096,7 +1109,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
-        for(int i=0; i <1; i++)
+        for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
@@ -1120,9 +1133,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         for(Future<OneLinkSupplyChainResult> receipt : testResults)
         {
             OneLinkSupplyChainResult result = receipt.get();
-            Assert.assertEquals(result.getQuantity(), 20.794, 2);
-            Assert.assertEquals(result.getBeefPrice(), 65.353, 5l);
-            Assert.assertEquals(result.getFoodPrice(),80.206,5l );
+            checkBeefMonopolistResult(result);
         }
 
 
@@ -1221,9 +1232,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         for(Future<OneLinkSupplyChainResult> receipt : testResults)
         {
             OneLinkSupplyChainResult result = receipt.get();
-            Assert.assertEquals(result.getBeefPrice(), 62l, 5l);
-            Assert.assertEquals(result.getFoodPrice(),85l,5l );
-            Assert.assertEquals(result.getQuantity(), 16, 2);
+           checkBeefMonopolistResult(result);
         }
 
 
@@ -1239,7 +1248,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //competition!
         scenario1.setNumberOfBeefProducers(1);
-        scenario1.setNumberOfFoodProducers(10);
+        scenario1.setNumberOfFoodProducers(5);
 
         scenario1.setDivideProportionalGainByThis(1f);
         scenario1.setDivideIntegrativeGainByThis(1f);
@@ -1384,9 +1393,9 @@ public class OneLinkSupplyChainScenarioRegressionTest
         //the food price is in the ballpark
         //with competition, you are better off testing an MA
 
-        Assert.assertEquals(result.getBeefPrice(),23l,4l );
+        Assert.assertEquals(result.getBeefPrice(),17,4l );
         Assert.assertEquals(result.getFoodPrice(), 85l, 5l);
-        Assert.assertEquals(result.getQuantity(),16,2);
+        Assert.assertEquals(result.getQuantity(),17,2);
     }
 
     @Test
@@ -1526,7 +1535,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
             public void buildFoodPurchasesPredictor(PurchasesDepartment dept) {
                 FixedIncreasePurchasesPredictor predictor  = FixedIncreasePurchasesPredictor.Factory.
                         newPurchasesPredictor(FixedIncreasePurchasesPredictor.class, dept);
-                predictor.setIncrementDelta(10f/7f);
+                predictor.setIncrementDelta(1);
                 dept.setPredictor(predictor);
             }
 
@@ -1538,7 +1547,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
         //competition!
-        scenario1.setNumberOfBeefProducers(10);
+        scenario1.setNumberOfBeefProducers(5);
         scenario1.setNumberOfFoodProducers(1);
 
         scenario1.setDivideProportionalGainByThis(50f);
@@ -1628,7 +1637,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
             public void buildFoodPurchasesPredictor(PurchasesDepartment dept) {
                 FixedIncreasePurchasesPredictor predictor  = FixedIncreasePurchasesPredictor.Factory.
                         newPurchasesPredictor(FixedIncreasePurchasesPredictor.class, dept);
-                predictor.setIncrementDelta(10f/7f);
+                predictor.setIncrementDelta(1);
                 dept.setPredictor(predictor);
             }
 
@@ -1640,7 +1649,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setBeefPriceFilterer(null);
 
         //competition!
-        scenario1.setNumberOfBeefProducers(10);
+        scenario1.setNumberOfBeefProducers(5);
         scenario1.setNumberOfFoodProducers(1);
 
         scenario1.setDivideProportionalGainByThis(1f);

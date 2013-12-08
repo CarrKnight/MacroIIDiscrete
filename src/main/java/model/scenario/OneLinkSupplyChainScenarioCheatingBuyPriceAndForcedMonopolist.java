@@ -59,7 +59,7 @@ import static org.mockito.Mockito.*;
  */
 public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist extends OneLinkSupplyChainScenarioWithCheatingBuyingPrice {
 
-    private final int beefWorkerTarget = 21;
+    private final int beefWorkerTarget = 17;
 
     private final GoodType monopolistGoodType;
 
