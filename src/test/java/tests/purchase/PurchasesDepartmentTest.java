@@ -9,7 +9,7 @@ import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.inventoryControl.FixedInventoryControl;
 import agents.firm.purchases.inventoryControl.InventoryControl;
 import agents.firm.purchases.inventoryControl.Level;
-import agents.firm.purchases.inventoryControl.WeeklyInventoryControl;
+import agents.firm.purchases.inventoryControl.DailyInventoryControl;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
@@ -446,7 +446,7 @@ public class PurchasesDepartmentTest {
                 (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
         for(int i=0; i <100; i++)
         {
-            InventoryControl control = new WeeklyInventoryControl(dept);
+            InventoryControl control = new DailyInventoryControl(dept);
             dept.setControl(control);
             Field field = PurchasesDepartment.class.getDeclaredField("control");
             field.setAccessible(true);
@@ -459,7 +459,7 @@ public class PurchasesDepartmentTest {
 
         Set<NumberOfPlantsListener> listenerList = (Set<NumberOfPlantsListener>) field.get(firm);
         assertTrue(listenerList.size() == 1);
-        assertTrue(listenerList.iterator().next() instanceof WeeklyInventoryControl);
+        assertTrue(listenerList.iterator().next() instanceof DailyInventoryControl);
 
         field = EconomicAgent.class.getDeclaredField("inventory");
         field.setAccessible(true);
@@ -468,7 +468,7 @@ public class PurchasesDepartmentTest {
         field.setAccessible(true);
         Set<InventoryListener> listeners = (Set<InventoryListener>) field.get(inventory);
         assertTrue(listeners.size() == 1);
-        assertTrue(listeners.iterator().next() instanceof WeeklyInventoryControl);
+        assertTrue(listeners.iterator().next() instanceof DailyInventoryControl);
 
 
 

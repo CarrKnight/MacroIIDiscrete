@@ -8,7 +8,7 @@ package agents.firm.purchases.pid;
 
 import agents.HasInventory;
 import agents.firm.purchases.PurchasesDepartment;
-import agents.firm.purchases.inventoryControl.WeeklyInventoryControl;
+import agents.firm.purchases.inventoryControl.DailyInventoryControl;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import financial.MarketEvents;
 import goods.Good;
@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
- * <p/> This is a controller class that doubles as both a pricing and an inventory control strategy for purchases department. This implementation retrofit WeeklyInventoryControl by extending it.
+ * <p/> This is a controller class that doubles as both a pricing and an inventory control strategy for purchases department. This implementation retrofit DailyInventoryControl by extending it.
  * <p/>  It steps independently until receiving a turnoff signal. In the adjust process it adjust through its controller nature
  * <p/> This particular implementation uses the standard formula in spite of the fact that the observations are discrete
  * <h4>Notes</h4>
@@ -36,7 +36,7 @@ import javax.annotation.Nonnull;
  * @version 2012-08-12
  * @see Steppable
  */
-public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPricingStrategy, Steppable {
+public class PurchasesDailyPID extends DailyInventoryControl implements BidPricingStrategy, Steppable {
 
 
     /**
@@ -48,20 +48,31 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
      * This is the standard constructor needed to generate at random this strategy.
      * @param purchasesDepartment the department controlled by this strategy
      */
-    public PurchasesWeeklyPID(@Nonnull PurchasesDepartment purchasesDepartment) {
+    public PurchasesDailyPID(@Nonnull PurchasesDepartment purchasesDepartment) {
         super(purchasesDepartment);
         controller = ControllerFactory.buildController(CascadePIDController.class,purchasesDepartment.getModel());
         //if you have a pid controller, play a bit with it
         controller.setupAsInventoryCascade(purchasesDepartment.getModel());
+        //parameters found through genetic algorithm
 
+        controller.setGainsMasterPID(0.035f,
+                0,
+                0);
+
+        float proportionalGain = 0.04954876f + ((float) purchasesDepartment.getRandom().nextGaussian()) / 100f;
+        float integralGain = 0.45825003f + ((float) purchasesDepartment.getRandom().nextGaussian()) / 100f;
+        float derivativeGain = 0.000708338f + ((float) purchasesDepartment.getRandom().nextGaussian() / 10000f);
+        controller.setGainsSlavePID(proportionalGain,
+                integralGain,
+                derivativeGain);
 
     }
 
 
 
 
-    public PurchasesWeeklyPID(@Nonnull PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
-                              float derivativeGain) {
+    public PurchasesDailyPID(@Nonnull PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
+                             float derivativeGain) {
         super(purchasesDepartment);
         controller = ControllerFactory.buildController(CascadePIDController.class,purchasesDepartment.getModel());
         //if you have a pid controller, play a bit with it
@@ -79,7 +90,7 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
     public void step(SimState simState) {
 
         long oldprice = maxPrice(getGoodTypeToControl());
-        ControllerInput controllerInput = getControllerInput(getWeeklyNeeds());
+        ControllerInput controllerInput = getControllerInput(getDailyNeeds());
         controller.adjust(controllerInput, isActive(),(MacroII) simState, this, ActionOrder.ADJUST_PRICES);
         long newprice = maxPrice(getGoodTypeToControl());
 
@@ -89,7 +100,7 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
             getPurchasesDepartment().getFirm().logEvent(getPurchasesDepartment(),
                 MarketEvents.CHANGE_IN_POLICY,
                 getPurchasesDepartment().getFirm().getModel().getCurrentSimulationTimeInMillis(),
-                "target: " + getWeeklyNeeds() + ", inventory:" + getPurchasesDepartment().getFirm().hasHowMany(getGoodTypeToControl()) +
+                "target: " + getDailyNeeds() + ", inventory:" + getPurchasesDepartment().getFirm().hasHowMany(getGoodTypeToControl()) +
                         "; oldprice:" + oldprice + ", newprice:" + newprice);
 
 
@@ -175,9 +186,9 @@ public class PurchasesWeeklyPID extends WeeklyInventoryControl implements BidPri
           /*      new Steppable() {
                     @Override
                     public void step(SimState state) {
-                        controller.adjust(getControllerInput(getWeeklyNeeds()),
+                        controller.adjust(getControllerInput(getDailyNeeds()),
                                 isActive(),
-                                getRandomPurchaseDepartment().getFirm().getModel(), PurchasesWeeklyPID.this, ActionOrder.THINK);
+                                getRandomPurchaseDepartment().getFirm().getModel(), PurchasesDailyPID.this, ActionOrder.THINK);
                     }
                 });
             */

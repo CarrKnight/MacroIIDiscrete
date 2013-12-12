@@ -35,18 +35,22 @@ import java.util.List;
  * @see PlantListener
  * @see NumberOfPlantsListener
  */
-public class WeeklyInventoryControl extends AbstractInventoryControl implements PlantListener, NumberOfPlantsListener
+//todo remember to switch name to DAILY
+public class DailyInventoryControl extends AbstractInventoryControl implements PlantListener, NumberOfPlantsListener
 {
 
     /**
      * How much we need to run for a full week
      */
-    private float weeklyNeeds = 0;
+    private float dailyNeeds = 0;
 
     /**
      * How much do you to get all your firms up and running once
      */
     private int singleProductionRunNeed;
+
+
+    private int howManyDaysOfInventoryToHold = 2;
 
 
     /**
@@ -58,7 +62,7 @@ public class WeeklyInventoryControl extends AbstractInventoryControl implements 
      * Creates the inventory control and sets up its listeners. Also, as inherited, it sets itself to adjust as soon as possible to check whether to buy or not
      * @param purchasesDepartment the purchases department
      */
-    public WeeklyInventoryControl(@Nonnull PurchasesDepartment purchasesDepartment) {
+    public DailyInventoryControl(@Nonnull PurchasesDepartment purchasesDepartment) {
         super(purchasesDepartment);
         purchasesDepartment.getFirm().addPlantCreationListener(this); //addSalesDepartmentListener yourself as a plant creation listener
         //listen to each initial plant
@@ -82,7 +86,7 @@ public class WeeklyInventoryControl extends AbstractInventoryControl implements 
 
         int oldNeeds = 0;
 
-        weeklyNeeds = 0;
+        dailyNeeds = 0;
         singleProductionRunNeed=0;
         //get the firm
         Firm f = getPurchasesDepartment().getFirm();
@@ -98,13 +102,13 @@ public class WeeklyInventoryControl extends AbstractInventoryControl implements 
             float weeklyNeedsThisPlant = (p.expectedWeeklyProductionRuns() * oneRunNeeds);
             if(weeklyNeedsThisPlant > 0)
                 singleProductionRunNeed += oneRunNeeds; //count for a single production as long as there is at least a little bit being done every day
-            weeklyNeeds += weeklyNeedsThisPlant;
+            dailyNeeds += howManyDaysOfInventoryToHold * weeklyNeedsThisPlant/7;
 
         }
 
 
         //if this is an update whereas we moved from targeting 0 to targeting something else, buy
-        if(oldNeeds ==0 && weeklyNeeds > 0 && canBuy())
+        if(oldNeeds ==0 && dailyNeeds > 0 && canBuy())
             getPurchasesDepartment().buy();
 
     }
@@ -155,17 +159,17 @@ public class WeeklyInventoryControl extends AbstractInventoryControl implements 
     @Nonnull
     private Level rateInventory(int currentLevel){
 
-        int dangerLevel = (int) Math.min(singleProductionRunNeed, weeklyNeeds);
+        int dangerLevel = (int) Math.min(singleProductionRunNeed, dailyNeeds);
 
         if(currentLevel < dangerLevel)
             return Level.DANGER;
-        else if(currentLevel < weeklyNeeds)
+        else if(currentLevel < dailyNeeds)
             return Level.BARELY;
-        else if(currentLevel < 1.5f*weeklyNeeds || weeklyNeeds == 0)
+        else if(currentLevel < 1.5f* dailyNeeds || dailyNeeds == 0)
             return Level.ACCEPTABLE;
         else
         {
-            assert currentLevel >= 1.5f*weeklyNeeds;
+            assert currentLevel >= 1.5f* dailyNeeds;
             return Level.TOOMUCH;
         }
 
@@ -182,7 +186,7 @@ public class WeeklyInventoryControl extends AbstractInventoryControl implements 
      */
     @Override
     public boolean canBuy() {
-        return weeklyNeeds > 0 && rateInventory().compareTo(Level.ACCEPTABLE) <= 0; //keep buying as long as it is not at acceptable levels
+        return dailyNeeds > 0 && rateInventory().compareTo(Level.ACCEPTABLE) <= 0; //keep buying as long as it is not at acceptable levels
 
     }
 
@@ -253,8 +257,8 @@ public class WeeklyInventoryControl extends AbstractInventoryControl implements 
      * How much control thinks it needs to keep functioning for a week
      * @return weekly needs
      */
-    public float getWeeklyNeeds() {
-        return weeklyNeeds;
+    public float getDailyNeeds() {
+        return dailyNeeds;
     }
 
     /**
@@ -280,13 +284,22 @@ public class WeeklyInventoryControl extends AbstractInventoryControl implements 
         else
         {
             int currentInventory = getPurchasesDepartment().getCurrentInventory();
-            if(currentInventory<3 * weeklyNeeds)
+            if(currentInventory<3 * dailyNeeds)
             {
-                return Math.round(currentInventory - weeklyNeeds);
+                return Math.round(currentInventory - dailyNeeds);
             }
             else
-                return Math.round(currentInventory - 1.5f*weeklyNeeds);
+                return Math.round(currentInventory - 1.5f* dailyNeeds);
         }
 
+    }
+
+    public int getHowManyDaysOfInventoryToHold() {
+        return howManyDaysOfInventoryToHold;
+    }
+
+    public void setHowManyDaysOfInventoryToHold(int howManyDaysOfInventoryToHold) {
+        this.howManyDaysOfInventoryToHold = howManyDaysOfInventoryToHold;
+        updateWeeklyNeeds();
     }
 }

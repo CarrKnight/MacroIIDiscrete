@@ -33,7 +33,7 @@ public class MonopolistWithInputScenarioTest {
     {
 
         //run the test 5 times
-        for(int i=0; i<15; i++)
+        for(int i=0; i<25; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(System.currentTimeMillis());

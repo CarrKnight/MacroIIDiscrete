@@ -9,7 +9,7 @@ package model.scenario;
 import agents.EconomicAgent;
 import agents.firm.production.Blueprint;
 import agents.firm.purchases.PurchasesDepartment;
-import agents.firm.purchases.pid.PurchasesWeeklyPID;
+import agents.firm.purchases.pid.PurchasesDailyPID;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import financial.market.Market;
@@ -82,7 +82,7 @@ public class MonopolistWithInputScenario extends MonopolistScenario {
         department.setSupplierSearch(new SimpleSellerSearch(market, monopolist));
 
       //  PurchasesFixedPID control = new PurchasesFixedPID(department,4, CascadePIDController.class,model);
-        PurchasesWeeklyPID control = new PurchasesWeeklyPID(department);
+        PurchasesDailyPID control = new PurchasesDailyPID(department);
 
         department.setControl(control);
         department.setPricingStrategy(control);

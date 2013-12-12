@@ -73,6 +73,7 @@ public class OpenLoopRecursivePurchasesPredictor extends AbstractOpenLoopRecursi
      */
     @Override
     public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+        predictor.setIncrementDelta(getUpwardSlope());
         return predictor.predictPurchasePriceWhenNoChangeInProduction(dept);
 
     }

@@ -17,7 +17,7 @@ import agents.firm.production.control.facades.MarginalPlantControl;
 import agents.firm.production.control.facades.MarginalPlantControlWithPIDUnit;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
-import agents.firm.purchases.pid.PurchasesWeeklyPID;
+import agents.firm.purchases.pid.PurchasesDailyPID;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentFactory;
@@ -225,7 +225,7 @@ public class SupplyChainScenario extends Scenario
                     department.setOpponentSearch(new SimpleBuyerSearch(market, firm));
                     department.setSupplierSearch(new SimpleSellerSearch(market, firm));
 
-                    PurchasesWeeklyPID control = new PurchasesWeeklyPID(department);
+                    PurchasesDailyPID control = new PurchasesDailyPID(department);
 
                     department.setControl(control);
                     department.setPricingStrategy(control);

@@ -168,6 +168,8 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
      */
     private PlantData dataStorage;
 
+    private int workersDuringProduction = 0;
+
     /**
      * the production data object
      */
@@ -225,9 +227,9 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
     /**
      * How many workers are in the plant?
      */
-    public int getNumberOfWorkersNow(){
+    public int getNumberOfWorkersDuringProduction(){
 
-        return workers.size();
+        return workersDuringProduction;
     }
 
 
@@ -438,6 +440,7 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         //statistics
         int  howManyProductionRunsWereSuccessful = 0;
         int inventoryPreProductionOfOutput1=  getOwner().hasHowMany(blueprint.getOutputs().keySet().iterator().next());
+        workersDuringProduction = getNumberOfWorkers();
 
 
 

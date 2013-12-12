@@ -8,7 +8,7 @@ import agents.firm.production.Plant;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.production.technology.Machinery;
 import agents.firm.purchases.PurchasesDepartment;
-import agents.firm.purchases.pid.PurchasesWeeklyPID;
+import agents.firm.purchases.pid.PurchasesDailyPID;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import financial.market.Market;
 import financial.market.OrderBookBlindMarket;
@@ -80,15 +80,17 @@ public class PurchasesWeeklyPIDTest {
 
 
 
-        PurchasesWeeklyPID control = new PurchasesWeeklyPID(dept,.5f,2f,.05f);
+        PurchasesDailyPID control = new PurchasesDailyPID(dept,.5f,2f,.05f);
+        control.setHowManyDaysOfInventoryToHold(7);
+
         long pidPrice = control.maxPrice(GoodType.GENERIC);
         assertEquals(pidPrice, 0l);
 
-        assertEquals(control.getWeeklyNeeds(), 0f, 0.0001f);
+        assertEquals(control.getDailyNeeds(), 0f, 0.0001f);
         when(machinery.expectedWeeklyProductionRuns()).thenReturn(1f);
         //although we changed the machinery, we bypassed the logEvent/listener structure. So let's addSalesDepartmentListener a useless worker for control to update its control
         p.addWorker(new Person(model));
-        assertEquals(control.getWeeklyNeeds(), 6f, 0.0001f);
+        assertEquals(control.getDailyNeeds(), 6f, 0.0001f);
 
 
         for(int i=0; i < 100; i++){
@@ -138,15 +140,16 @@ public class PurchasesWeeklyPIDTest {
 
 
 
-        PurchasesWeeklyPID control = new PurchasesWeeklyPID(dept,.5f,2f,.05f);
+        PurchasesDailyPID control = new PurchasesDailyPID(dept,.5f,2f,.05f);
+        control.setHowManyDaysOfInventoryToHold(7);
         long pidPrice = control.maxPrice(GoodType.GENERIC);
         assertEquals(pidPrice, 0l);
 
-        assertEquals(control.getWeeklyNeeds(), 0f, 0.0001f);
+        assertEquals(control.getDailyNeeds(), 0f, 0.0001f);
         when(machinery.expectedWeeklyProductionRuns()).thenReturn(1f);   //if they expect only one run, it should be relatively easy.
         //although we changed the machinery, we bypassed the logEvent/listener structure. So let's addSalesDepartmentListener a useless worker for control to update its control
         p.addWorker(new Person(model));
-        assertEquals(control.getWeeklyNeeds(), 6f, 0.0001f);
+        assertEquals(control.getDailyNeeds(), 6f, 0.0001f);
         control.setInitialPrice(100);
 
 
@@ -198,15 +201,17 @@ public class PurchasesWeeklyPIDTest {
         p.setPlantMachinery(machinery);
 
 
-        PurchasesWeeklyPID control = new PurchasesWeeklyPID(dept,.5f,2f,.05f);
+        PurchasesDailyPID control = new PurchasesDailyPID(dept,.5f,2f,.05f);
+        control.setHowManyDaysOfInventoryToHold(7);
+
         long pidPrice = control.maxPrice(GoodType.GENERIC);
         assertEquals(pidPrice, 0l);
 
-        assertEquals(control.getWeeklyNeeds(), 0f, 0.0001f);
+        assertEquals(control.getDailyNeeds(), 0f, 0.0001f);
         when(machinery.expectedWeeklyProductionRuns()).thenReturn(1f);   //if they expect only one run, it should be relatively easy.
         //although we changed the machinery, we bypassed the logEvent/listener structure. So let's addSalesDepartmentListener a useless worker for control to update its control
         p.addWorker(new Person(model));
-        assertEquals(control.getWeeklyNeeds(), 6f, 0.0001f);
+        assertEquals(control.getDailyNeeds(), 6f, 0.0001f);
 
         model.scheduleSoon(ActionOrder.ADJUST_PRICES,control);
 
@@ -276,14 +281,16 @@ public class PurchasesWeeklyPIDTest {
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartmentIntegrated(
-                10000000,f,market,PurchasesWeeklyPID.class,null,null).getDepartment();
+                10000000,f,market,PurchasesDailyPID.class,null,null).getDepartment();
         f.registerPurchasesDepartment(dept,GoodType.GENERIC);
 
         Field field = PurchasesDepartment.class.getDeclaredField("control");
         field.setAccessible(true);
-        final PurchasesWeeklyPID control = (PurchasesWeeklyPID) field.get(dept); //so we can start it!
+        final PurchasesDailyPID control = (PurchasesDailyPID) field.get(dept); //so we can start it!
+        control.setHowManyDaysOfInventoryToHold(7);
+
         //your weekly needs should be weekLength/25
-        assertEquals(control.getWeeklyNeeds(), 6 * model.getWeekLength() / 25f, .01);
+        assertEquals(control.getDailyNeeds(), 6 * model.getWeekLength() / 25f, .01);
         control.start();
 
         final ArrayList<Quote> quotes = new ArrayList<>(); //here we'll store all the seller quotes
@@ -328,7 +335,11 @@ public class PurchasesWeeklyPIDTest {
 
         market.start(model);
         do
+        {
             if (!model.schedule.step(model)) break;
+            if(model.schedule.getSteps() % 100 == 0)
+                System.out.println(model.schedule.getSteps());
+        }
         while(model.schedule.getSteps() < 5000);
 
 

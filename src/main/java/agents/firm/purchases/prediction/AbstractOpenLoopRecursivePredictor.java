@@ -92,15 +92,15 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
             /*
             if(delegate instanceof RecursivePurchasesPredictor)
             {
-            //    System.out.print(model.getMainScheduleTime() +", purchases ");
+                System.out.print(model.getMainScheduleTime() +", purchases ");
             }
             else
             {
                 System.out.print(model.getMainScheduleTime() + ", sales: ");
-                System.out.println("learned slope: " + (upwardSlope) +" ================ " + (downwardSlope ) + " Trace: "  + delegate.getRegression().getTrace());
             }
-            //
-            */
+            System.out.println("learned slope: " + (upwardSlope) +" ================ " + (downwardSlope ) + " Trace: "  + delegate.getRegression().getTrace());
+              */
+
 
 
 

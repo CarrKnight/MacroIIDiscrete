@@ -191,7 +191,7 @@ public class SetTargetThenTryAgainMaximizer<ALG extends WorkerMaximizationAlgori
 
 
         //if you haven't achieved your worker objective you can't really make a judgment so just try again in next week
-        if(isActive() && hr.getPlant().getNumberOfWorkers() != control.getTarget()){
+        if(hr.getPlant().getNumberOfWorkers() != control.getTarget()){
             reschedule(nextCheck);
             checkWeek = false; //if it was observation week and you missed on your target, start over :(
             return;
@@ -209,7 +209,7 @@ public class SetTargetThenTryAgainMaximizer<ALG extends WorkerMaximizationAlgori
         //if we are here, it's observation week!
         assert checkWeek;
         //todo this happens very rarely during messy world, should I be concerned?
-        assert hr.getPlant().getNumberOfWorkers() == control.getTarget() :  hr.getPlant().getNumberOfWorkers() + "," +  control.getTarget();
+        assert hr.getPlant().getNumberOfWorkersDuringProduction() == control.getTarget() :  hr.getPlant().getNumberOfWorkersDuringProduction() + "," +  control.getTarget();
 
         //get profits
         float newProfits = hr.getFirm().getPlantProfits(hr.getPlant());
@@ -229,6 +229,7 @@ public class SetTargetThenTryAgainMaximizer<ALG extends WorkerMaximizationAlgori
 
         }
         else {
+
 
             if(MacroII.hasGUI())
                 //log it

@@ -7,8 +7,8 @@ import agents.firm.production.Plant;
 import agents.firm.production.technology.CRSExponentialMachinery;
 import agents.firm.production.technology.Machinery;
 import agents.firm.purchases.PurchasesDepartment;
+import agents.firm.purchases.inventoryControl.DailyInventoryControl;
 import agents.firm.purchases.inventoryControl.Level;
-import agents.firm.purchases.inventoryControl.WeeklyInventoryControl;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import goods.Good;
@@ -62,7 +62,7 @@ public class WeeklyInventoryControlTest {
         when(f.getModel()).thenReturn(model);  when(f.getRandom()).thenReturn(model.random);
 
 
-        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, WeeklyInventoryControl.class,
+        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, DailyInventoryControl.class,
                 null, null, null).getDepartment();
 
         //target inventory is going to be 0 because there is no plant
@@ -90,8 +90,12 @@ public class WeeklyInventoryControlTest {
 
 
 
-        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, WeeklyInventoryControl.class,
+        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, DailyInventoryControl.class,
                 null, null, null).getDepartment();
+
+        DailyInventoryControl control = new DailyInventoryControl(dept);
+        control.setHowManyDaysOfInventoryToHold(7);
+        dept.setControl(control);
 
 
         //without workers and machinery the need is always 0
@@ -191,7 +195,7 @@ public class WeeklyInventoryControlTest {
 
 
 
-        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, WeeklyInventoryControl.class,
+        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, DailyInventoryControl.class,
                 null, null, null).getDepartment();
 
 
@@ -228,9 +232,13 @@ public class WeeklyInventoryControlTest {
         list.add(p);
         when(f.getListOfPlantsUsingSpecificInput(GoodType.GENERIC)).thenReturn(list);
 
-
-        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, WeeklyInventoryControl.class,
+        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, DailyInventoryControl.class,
                 null, null, null).getDepartment();
+
+        DailyInventoryControl control = new DailyInventoryControl(dept);
+        control.setHowManyDaysOfInventoryToHold(7);
+        dept.setControl(control);
+
 
         //unfortunately weekly production is still 0!
 
@@ -249,7 +257,7 @@ public class WeeklyInventoryControlTest {
         //now I have to update the weekly inventory control manually for this stub
         Field field = PurchasesDepartment.class.getDeclaredField("control");
         field.setAccessible(true);
-        WeeklyInventoryControl control = (WeeklyInventoryControl) field.get(dept);
+        control = (DailyInventoryControl) field.get(dept);
         control.changeInWorkforceEvent(p,100, 99);  //the number of workers is ignored anyway!
 
 
@@ -275,9 +283,12 @@ public class WeeklyInventoryControlTest {
         f.addPlant(plant);
 
 
-
-        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, WeeklyInventoryControl.class,
+        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, DailyInventoryControl.class,
                 null, null, null).getDepartment();
+
+        DailyInventoryControl control = new DailyInventoryControl(dept);
+        control.setHowManyDaysOfInventoryToHold(7);
+        dept.setControl(control);
 
 
         //without workers and machinery the need is always 0
