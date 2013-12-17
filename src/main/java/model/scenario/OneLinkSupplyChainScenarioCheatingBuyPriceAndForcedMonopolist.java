@@ -222,7 +222,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
                     @Override
                     protected void buildBeefSalesPredictor(SalesDepartment dept) {
                         FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
-                        predictor.setDecrementDelta(12f/7f);
+                        predictor.setDecrementDelta(2f);
                         dept.setPredictorStrategy(predictor);
                     }
 
@@ -246,7 +246,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
                     protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
                         HumanResources hr = super.createPlant(blueprint, firm, laborMarket);    //To change body of overridden methods use File | Settings | File Templates.
                         if(blueprint.getOutputs().containsKey(GoodType.BEEF))
-                            hr.setPredictor(new FixedIncreasePurchasesPredictor(5));
+                            hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
                         else
                             hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
                         return hr;
@@ -258,11 +258,10 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
         scenario1.setBeefPriceFilterer(null);
 
         //competition!
-        scenario1.setNumberOfBeefProducers(1);
-        scenario1.setNumberOfFoodProducers(5);
 
-        scenario1.setDivideProportionalGainByThis(50f);
-        scenario1.setDivideIntegrativeGainByThis(50f);
+
+        scenario1.setDivideProportionalGainByThis(100f);
+        scenario1.setDivideIntegrativeGainByThis(100f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
         scenario1.setBeefPriceFilterer(null);
@@ -288,34 +287,6 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
             System.err.println("failed to create the file!");
         }
 
-
-        //create the CSVWriter  for purchases prices
-        try {
-            final CSVWriter writer2 = new CSVWriter(new FileWriter("runs/supplychai/forcedmonopolistTestOfferPricesWithCompetition.csv"));
-            writer2.writeNext(new String[]{"buyer offer price","target","filtered Outflow"});
-            macroII.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING, new Steppable() {
-                @Override
-                public void step(SimState state) {
-                    try {
-                        Double inventory = scenario1.strategy2.getDepartment().getLastObservedDay() > 0 ?
-                                scenario1.strategy2.getDepartment().getLatestObservation(SalesDataType.HOW_MANY_TO_SELL) : 0
-                                ;
-                        writer2.writeNext(new String[]{String.valueOf(
-                                macroII.getMarket(GoodType.BEEF).getBestBuyPrice()),
-                                String.valueOf(scenario1.strategy2.getTargetInventory()),
-                                String.valueOf(inventory)});
-                        writer2.flush();
-                        ((MacroII) state).scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
-                    } catch (IllegalAccessException | IOException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    }
-
-                }
-            });
-
-        } catch (IOException e) {
-            System.err.println("failed to create the file!");
-        }
 
 
 

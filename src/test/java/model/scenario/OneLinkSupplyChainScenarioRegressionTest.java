@@ -180,8 +180,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setControlType(RobustMarginalMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         //divide standard PID parameters by 100
-        scenario1.setDivideProportionalGainByThis(50f);
-        scenario1.setDivideIntegrativeGainByThis(50f);
+        scenario1.setDivideProportionalGainByThis(100f);
+        scenario1.setDivideIntegrativeGainByThis(100f);
         //100 days delay
         scenario1.setBeefPricingSpeed(0);
         //no real need of filter at this slow speed
@@ -345,13 +345,13 @@ public class OneLinkSupplyChainScenarioRegressionTest
     \[p_F = 85 \]
      */
     private void checkBeefMonopolistResult(OneLinkSupplyChainResult result) {
-        Assert.assertEquals(result.getQuantity(), 17, 2);
+        Assert.assertEquals(result.getQuantity(), 17, 2.5);
         Assert.assertEquals(result.getBeefPrice(), 68, 5l);
         Assert.assertEquals(result.getFoodPrice(),85,5l );
     }
 
     private void checkCompetitiveResult(OneLinkSupplyChainResult result) {
-        Assert.assertEquals(result.getQuantity(), 34, 2);
+        Assert.assertEquals(result.getQuantity(), 34, 2.5);
         Assert.assertEquals(result.getBeefPrice(), 34, 5l);
         Assert.assertEquals(result.getFoodPrice(),68,5l );
     }
@@ -363,8 +363,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setControlType(RobustMarginalMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         //divide standard PID parameters by 100
-        scenario1.setDivideProportionalGainByThis(50f);
-        scenario1.setDivideIntegrativeGainByThis(50f);
+        scenario1.setDivideProportionalGainByThis(100f);
+        scenario1.setDivideIntegrativeGainByThis(100f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
         //no real need of filter at this slow speed
@@ -390,12 +390,14 @@ public class OneLinkSupplyChainScenarioRegressionTest
         MovingAverage<Double> averageFoodPrice = new MovingAverage<>(1000);
         MovingAverage<Double> averageBeefPrice = new MovingAverage<>(1000);
         MovingAverage<Integer> averageBeefTraded = new MovingAverage<>(1000);
+        List<Integer> volumes = new ArrayList<>(1000);
         for(int j=0; j< 1000; j++)
         {
             macroII.schedule.step(macroII);
             averageFoodPrice.addObservation(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
             averageBeefPrice.addObservation(macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
             averageBeefTraded.addObservation(macroII.getMarket(GoodType.BEEF).getYesterdayVolume());
+            volumes.add(macroII.getMarket(GoodType.BEEF).getYesterdayVolume());
         }
 
 
@@ -407,6 +409,17 @@ public class OneLinkSupplyChainScenarioRegressionTest
         System.out.println("food price: " +averageFoodPrice.getSmoothedObservation() );
         System.out.println("produced: " +averageBeefTraded.getSmoothedObservation() );
         System.out.println();
+
+        //compute volumes variance
+        double average =  averageBeefTraded.getSmoothedObservation();
+        double variance = 0;
+        for(Integer volume : volumes)
+        {
+            variance += Math.pow(volume.doubleValue()-average,2);
+        }
+        variance = Math.sqrt(variance);
+
+
 
         return new OneLinkSupplyChainResult(averageBeefPrice.getSmoothedObservation(),
                 averageFoodPrice.getSmoothedObservation(),averageBeefTraded.getSmoothedObservation());
@@ -487,8 +500,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setMaximizerType(EveryWeekMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         //divide standard PID parameters by 100
-        scenario1.setDivideProportionalGainByThis(50f);
-        scenario1.setDivideIntegrativeGainByThis(50f);
+        scenario1.setDivideProportionalGainByThis(100f);
+        scenario1.setDivideIntegrativeGainByThis(100f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
         //no real need of filter at this slow speed
@@ -734,8 +747,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setNumberOfBeefProducers(1);
         scenario1.setNumberOfFoodProducers(1);
 
-        scenario1.setDivideProportionalGainByThis(50f);
-        scenario1.setDivideIntegrativeGainByThis(50f);
+        scenario1.setDivideProportionalGainByThis(100f);
+        scenario1.setDivideIntegrativeGainByThis(100f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
 
@@ -776,6 +789,135 @@ public class OneLinkSupplyChainScenarioRegressionTest
     }
 
 
+    //here both the beef monopolist and the food competitors have given predictors.
+    @Test
+    public  void everybodyLearnedBeefMonopolistStickyPID() throws ExecutionException, InterruptedException {
+
+        //this will take a looong time
+        final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
+        ExecutorService testRunner = Executors.newFixedThreadPool(5);
+        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+
+        //run the test 5 times!
+        for(int i=0; i <5; i++)
+        {
+            //run the test, add it as a future so I can check the results!
+            Future<OneLinkSupplyChainResult> testReceipt =
+                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
+                        /**
+                         * Computes a result, or throws an exception if unable to do so.
+                         *
+                         * @return computed result
+                         * @throws Exception if unable to compute a result
+                         */
+                        @Override
+                        public OneLinkSupplyChainResult call() throws Exception {
+                            return             everybodyLearnedBeefMonopolistStickyPIDRun(random.nextLong());
+                        }
+                    });
+
+            testResults.add(testReceipt);
+
+        }
+
+        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        {
+            OneLinkSupplyChainResult result = receipt.get();
+            checkBeefMonopolistResult(result);
+        }
+
+
+
+    }
+
+
+
+    private OneLinkSupplyChainResult everybodyLearnedBeefMonopolistStickyPIDRun(long random) {
+        final MacroII macroII = new MacroII(random);
+        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
+
+            @Override
+            protected void buildBeefSalesPredictor(SalesDepartment dept) {
+                FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
+                predictor.setDecrementDelta(2);
+                dept.setPredictorStrategy(predictor);
+            }
+
+
+
+            @Override
+            public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
+                department.setPredictor(new FixedIncreasePurchasesPredictor(0));
+
+            }
+
+            @Override
+            protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
+                SalesDepartment department = super.createSalesDepartment(firm, goodmarket);
+                if(goodmarket.getGoodType().equals(GoodType.FOOD))
+                    department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+                return department;
+            }
+
+            @Override
+            protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
+                HumanResources hr = super.createPlant(blueprint, firm, laborMarket);
+                if(blueprint.getOutputs().containsKey(GoodType.BEEF))
+                    hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
+                else
+                    hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
+                return hr;
+            }
+        };
+        scenario1.setControlType(RobustMarginalMaximizer.class);
+        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setBeefPriceFilterer(null);
+
+        //competition!
+        scenario1.setNumberOfBeefProducers(1);
+        scenario1.setNumberOfFoodProducers(1);
+
+        scenario1.setDivideProportionalGainByThis(1f);
+        scenario1.setDivideIntegrativeGainByThis(1f);
+        //no delay
+        scenario1.setBeefPricingSpeed(50);
+
+
+        macroII.setScenario(scenario1);
+        macroII.start();
+
+
+        while(macroII.schedule.getTime()<14000)
+        {
+            macroII.schedule.step(macroII);
+            printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
+        }
+
+
+        float averageFoodPrice = 0;
+        float averageBeefProduced = 0;
+        float averageBeefPrice=0;
+        for(int j=0; j< 1000; j++)
+        {
+            //make the model run one more day:
+            macroII.schedule.step(macroII);
+            averageFoodPrice += macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+            averageBeefProduced+= macroII.getMarket(GoodType.BEEF).getYesterdayVolume();
+            averageBeefPrice+= macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+        }
+
+
+        System.out.println("beef price: " +averageBeefPrice/1000f );
+        System.out.println("food price: " +averageFoodPrice/1000f );
+        System.out.println("produced: " +averageBeefProduced/1000f );
+        System.out.println();
+
+        return new OneLinkSupplyChainResult(averageBeefPrice/1000f,
+                averageFoodPrice/1000f,averageBeefProduced/1000f );
+
+
+    }
+
     //here the food competitors are given good predictors
     @Test
     public  void foodLearnedBeefMonopolistSlowPID() throws ExecutionException, InterruptedException {
@@ -813,19 +955,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             results.add(receipt.get());
         }
-/*
-        Future<OneLinkSupplyChainResult> testReceipt =
-                testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
 
-                    @Override
-                    public OneLinkSupplyChainResult call() throws Exception {
-                        return             foodLearnedBeefMonopolistSlowPIDRun(random.nextLong());
-                    }
-                });
-
-      testReceipt.get();
-        //stop deleting here
-  */
 
         for(OneLinkSupplyChainResult result : results)
             checkBeefMonopolistResult(result);
@@ -886,6 +1016,143 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setDivideIntegrativeGainByThis(100f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
+
+
+        macroII.setScenario(scenario1);
+        macroII.start();
+
+
+        while(macroII.schedule.getTime()<14000)
+        {
+            macroII.schedule.step(macroII);
+            printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
+        }
+
+
+        float averageFoodPrice = 0;
+        float averageBeefProduced = 0;
+        float averageBeefPrice=0;
+        for(int j=0; j< 1000; j++)
+        {
+            //make the model run one more day:
+            macroII.schedule.step(macroII);
+            averageFoodPrice += macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+            averageBeefProduced+= macroII.getMarket(GoodType.BEEF).getYesterdayVolume();
+            averageBeefPrice+= macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+        }
+
+
+        outerDepartment[0].getData().writeToCSVFile(Paths.get("supplySales.csv").toFile());
+
+        System.out.println("beef price: " +averageBeefPrice/1000f );
+        System.out.println("food price: " +averageFoodPrice/1000f );
+        System.out.println("produced: " +averageBeefProduced/1000f );
+        System.out.println(); System.out.flush();
+
+        return new OneLinkSupplyChainResult(averageBeefPrice/1000f,
+                averageFoodPrice/1000f,averageBeefProduced/1000f );
+
+
+    }
+
+    //here the food competitors are given good predictors
+    @Test
+    public  void foodLearnedBeefMonopolistStickyPID() throws ExecutionException, InterruptedException {
+
+        //this will take a looong time
+        final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
+        ExecutorService testRunner = Executors.newFixedThreadPool(5);
+        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+
+
+        //run the test 5 times!
+        for(int i=0; i <5; i++)
+        {
+            //run the test, add it as a future so I can check the results!
+            Future<OneLinkSupplyChainResult> testReceipt =
+                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
+                        /**
+                         * Computes a result, or throws an exception if unable to do so.
+                         *
+                         * @return computed result
+                         * @throws Exception if unable to compute a result
+                         */
+                        @Override
+                        public OneLinkSupplyChainResult call() throws Exception {
+                            return             foodLearnedBeefMonopolistStickyPIDRun(random.nextLong());
+                        }
+                    });
+
+            testResults.add(testReceipt);
+
+        }
+
+        List<OneLinkSupplyChainResult> results = new LinkedList<>();
+        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        {
+            results.add(receipt.get());
+        }
+
+
+        for(OneLinkSupplyChainResult result : results)
+            checkBeefMonopolistResult(result);
+
+
+    }
+
+
+
+    private OneLinkSupplyChainResult foodLearnedBeefMonopolistStickyPIDRun(long random) {
+        final MacroII macroII = new MacroII(random);
+        final SalesDepartment[] outerDepartment = new SalesDepartment[1];
+        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII)
+        {
+
+
+
+
+            @Override
+            public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
+                department.setPredictor(new FixedIncreasePurchasesPredictor(0));
+
+            }
+
+            @Override
+            protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
+                SalesDepartment department= super.createSalesDepartment(firm, goodmarket);    //To change body of overridden methods use File | Settings | File Templates.
+                if(goodmarket.getGoodType().equals(GoodType.FOOD))
+                    department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+                else
+                {
+                    outerDepartment[0] = department;
+                }
+                return department;
+            }
+
+
+
+            @Override
+            protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
+                HumanResources hr = super.createPlant(blueprint, firm, laborMarket);
+                if(blueprint.getOutputs().containsKey(GoodType.BEEF))
+                    hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
+                else
+                    hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
+                return hr;
+            }
+        };
+        scenario1.setControlType(RobustMarginalMaximizer.class);
+        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setBeefPriceFilterer(null);
+
+        //competition!
+        scenario1.setNumberOfBeefProducers(1);
+        scenario1.setNumberOfFoodProducers(1);
+
+        scenario1.setDivideProportionalGainByThis(1f);
+        scenario1.setDivideIntegrativeGainByThis(1f);
+        //no delay
+        scenario1.setBeefPricingSpeed(50);
 
 
         macroII.setScenario(scenario1);
@@ -996,8 +1263,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setNumberOfBeefProducers(1);
         scenario1.setNumberOfFoodProducers(5);
 
-        scenario1.setDivideProportionalGainByThis(50f);
-        scenario1.setDivideIntegrativeGainByThis(50f);
+        scenario1.setDivideProportionalGainByThis(100f);
+        scenario1.setDivideIntegrativeGainByThis(100f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
 
@@ -1039,8 +1306,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
 
-    // @Test
-    public  void alreadyLearnedBeefMonopolistStickyPID() throws ExecutionException, InterruptedException {
+    @Test
+    public  void beefLearnedBeefMonopolistStickyPID() throws ExecutionException, InterruptedException {
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
@@ -1061,7 +1328,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return             alreadyLearnedBeefMonopolistStickPIDRun(random.nextLong());
+                            return             beefLearnedBeefMonopolistStickyPIDRun(random.nextLong());
                         }
                     });
 
@@ -1077,17 +1344,25 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     }
 
-    private OneLinkSupplyChainResult alreadyLearnedBeefMonopolistStickPIDRun(long random) {
+    private OneLinkSupplyChainResult beefLearnedBeefMonopolistStickyPIDRun(long random) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
 
             @Override
             protected void buildBeefSalesPredictor(SalesDepartment dept) {
                 FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
-                predictor.setDecrementDelta(2f);
+                predictor.setDecrementDelta(2);
                 dept.setPredictorStrategy(predictor);
             }
 
+
+            @Override
+            protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
+                HumanResources hr = super.createPlant(blueprint, firm, laborMarket);    //To change body of overridden methods use File | Settings | File Templates.
+                if(!blueprint.getOutputs().containsKey(GoodType.BEEF))
+                    hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
+                return hr;
+            }
         };
         scenario1.setControlType(RobustMarginalMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
@@ -1100,23 +1375,40 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setDivideProportionalGainByThis(1f);
         scenario1.setDivideIntegrativeGainByThis(1f);
         //no delay
-        scenario1.setBeefPricingSpeed(100);
+        scenario1.setBeefPricingSpeed(50);
 
 
         macroII.setScenario(scenario1);
         macroII.start();
 
 
-        while(macroII.schedule.getTime()<15000)
+        while(macroII.schedule.getTime()<14000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+            printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
         }
 
 
+        float averageFoodPrice = 0;
+        float averageBeefProduced = 0;
+        float averageBeefPrice=0;
+        for(int j=0; j< 1000; j++)
+        {
+            //make the model run one more day:
+            macroII.schedule.step(macroII);
+            averageFoodPrice += macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+            averageBeefProduced+= macroII.getMarket(GoodType.BEEF).getYesterdayVolume();
+            averageBeefPrice+= macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+        }
 
-        return new OneLinkSupplyChainResult(macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),
-                macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),macroII.getMarket(GoodType.BEEF).getYesterdayVolume());
+
+        System.out.println("beef price: " +averageBeefPrice/1000f );
+        System.out.println("food price: " +averageFoodPrice/1000f );
+        System.out.println("produced: " +averageBeefProduced/1000f );
+        System.out.println();
+
+        return new OneLinkSupplyChainResult(averageBeefPrice/1000f,
+                averageFoodPrice/1000f,averageBeefProduced/1000f );
     }
 
 
@@ -1126,7 +1418,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
     @Test
-    public  void learningCompetitiveSlowPID() throws ExecutionException, InterruptedException {
+    public  void everybodyLearningCompetitiveSlowPID() throws ExecutionException, InterruptedException {
 
 
         //this will take a looong time
@@ -1148,7 +1440,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return             learningCompetitiveSlowPIDRun(random.nextLong());
+                            return             everybodyLearningCompetitiveSlowPIDRun(random.nextLong());
                         }
                     });
 
@@ -1168,7 +1460,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     }
 
-    private OneLinkSupplyChainResult learningCompetitiveSlowPIDRun(long random) {
+    private OneLinkSupplyChainResult everybodyLearningCompetitiveSlowPIDRun(long random) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
 
@@ -1227,6 +1519,105 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
     @Test
+    public  void everybodyLearningCompetitiveStickyPID() throws ExecutionException, InterruptedException {
+
+
+        //this will take a looong time
+        final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
+        ExecutorService testRunner = Executors.newFixedThreadPool(5);
+        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+
+        //run the test 5 times!
+        for(int i=0; i <5; i++)
+        {
+            //run the test, add it as a future so I can check the results!
+            Future<OneLinkSupplyChainResult> testReceipt =
+                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
+                        /**
+                         * Computes a result, or throws an exception if unable to do so.
+                         *
+                         * @return computed result
+                         * @throws Exception if unable to compute a result
+                         */
+                        @Override
+                        public OneLinkSupplyChainResult call() throws Exception {
+                            return             everybodyLearningCompetitiveStickyPIDRun(random.nextLong());
+                        }
+                    });
+
+            testResults.add(testReceipt);
+
+        }
+
+        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        {
+            OneLinkSupplyChainResult result = receipt.get();
+            checkCompetitiveResult(result);
+        }
+
+
+
+
+
+    }
+
+    private OneLinkSupplyChainResult everybodyLearningCompetitiveStickyPIDRun(long random) {
+        final MacroII macroII = new MacroII(random);
+        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
+
+        scenario1.setControlType(RobustMarginalMaximizer.class);
+        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setBeefPriceFilterer(null);
+
+
+        //competition!
+        scenario1.setNumberOfBeefProducers(5);
+        scenario1.setNumberOfFoodProducers(5);
+
+        scenario1.setDivideProportionalGainByThis(1f);
+        scenario1.setDivideIntegrativeGainByThis(1f);
+        //no delay
+        scenario1.setBeefPricingSpeed(50);
+
+
+        macroII.setScenario(scenario1);
+        macroII.start();
+
+
+        while(macroII.schedule.getTime()<9000)
+        {
+            macroII.schedule.step(macroII);
+            printProgressBar(9001,(int)macroII.schedule.getSteps(),100);
+        }
+
+
+        //I used to assert this:
+        //Assert.assertEquals(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),85l,6l );
+        //but that's too hard because while on average the price hovers there, competition is noisy. Sometimes a lot.
+        //so what I did was to attach a daily stat collector and then check the average of the last 10 prices
+        float averageFoodPrice = 0;
+        float averageBeefProduced = 0;
+        float averageBeefPrice=0;
+        for(int j=0; j< 1000; j++)
+        {
+            //make the model run one more day:
+            macroII.schedule.step(macroII);
+            averageFoodPrice += macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+            averageBeefProduced+= macroII.getMarket(GoodType.BEEF).countTodayProductionByRegisteredSellers();
+            averageBeefPrice+= macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+        }
+
+        System.out.println("beef price: " +averageBeefPrice/1000f );
+        System.out.println("food price: " +averageFoodPrice/1000f );
+        System.out.println("produced: " +averageBeefProduced/1000f );
+        System.out.println();
+
+
+        return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f);
+
+    }
+
+    @Test
     public  void learningBeefMonopolistSlowPID() throws ExecutionException, InterruptedException {
 
 
@@ -1260,7 +1651,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         for(Future<OneLinkSupplyChainResult> receipt : testResults)
         {
             OneLinkSupplyChainResult result = receipt.get();
-            checkBeefMonopolistResult(result);
+           checkBeefMonopolistResult(result);
         }
 
 
@@ -1315,10 +1706,14 @@ public class OneLinkSupplyChainScenarioRegressionTest
             averageBeefPrice+= macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
         }
 
+     //   System.out.println(random);
         System.out.println("beef price: " +averageBeefPrice/1000f );
         System.out.println("food price: " +averageFoodPrice/1000f );
         System.out.println("produced: " +averageBeefProduced/1000f );
         System.out.println();
+
+
+        ((Firm)scenario1.getMarkets().get(GoodType.BEEF).getSellers().iterator().next()).getSalesDepartment(GoodType.BEEF).getData().writeToCSVFile(Paths.get("supplySales.csv").toFile());
 
 
         return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f);
@@ -1326,7 +1721,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     }
 
 
-   // @Test
+    @Test
     public  void learningBeefMonopolistStickyPID() throws ExecutionException, InterruptedException {
 
         //this will take a looong time
@@ -1380,7 +1775,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setDivideProportionalGainByThis(1f);
         scenario1.setDivideIntegrativeGainByThis(1f);
         //no delay
-        scenario1.setBeefPricingSpeed(100);
+        scenario1.setBeefPricingSpeed(50);
 
 
         macroII.setScenario(scenario1);
@@ -1410,6 +1805,11 @@ public class OneLinkSupplyChainScenarioRegressionTest
             averageBeefPrice+= macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
 
         }
+
+        System.out.println("beef price: " +averageBeefPrice/1000f );
+        System.out.println("food price: " +averageFoodPrice/1000f );
+        System.out.println("produced: " +averageBeefProduced/1000f );
+        System.out.println();
 
         return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f);
 
@@ -1568,8 +1968,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setControlType(RobustMarginalMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         //divide standard PID parameters by 100
-        scenario1.setDivideProportionalGainByThis(50f);
-        scenario1.setDivideIntegrativeGainByThis(50f);
+        scenario1.setDivideProportionalGainByThis(100f);
+        scenario1.setDivideIntegrativeGainByThis(100f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
         //no real need of filter at this slow speed
@@ -1601,7 +2001,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
             macroII.schedule.step(macroII);
             averageFoodPrice += macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
             averageBeefProduced+= macroII.getMarket(GoodType.BEEF).getYesterdayVolume();
-            
+
             averageBeefPrice+= macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
 
         }
@@ -1677,8 +2077,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setNumberOfBeefProducers(5);
         scenario1.setNumberOfFoodProducers(1);
 
-        scenario1.setDivideProportionalGainByThis(50f);
-        scenario1.setDivideIntegrativeGainByThis(50f);
+        scenario1.setDivideProportionalGainByThis(100f);
+        scenario1.setDivideIntegrativeGainByThis(100f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
 
@@ -1875,8 +2275,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setNumberOfBeefProducers(5);
         scenario1.setNumberOfFoodProducers(1);
 
-        scenario1.setDivideProportionalGainByThis(50f);
-        scenario1.setDivideIntegrativeGainByThis(50f);
+        scenario1.setDivideProportionalGainByThis(100f);
+        scenario1.setDivideIntegrativeGainByThis(100f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
 

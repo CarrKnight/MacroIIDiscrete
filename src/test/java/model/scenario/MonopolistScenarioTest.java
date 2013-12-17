@@ -9,6 +9,8 @@ import au.com.bytecode.opencsv.CSVWriter;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.stats.collectors.DailyStatCollector;
+import model.utilities.stats.collectors.enums.PurchasesDataType;
+import model.utilities.stats.collectors.enums.SalesDataType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -84,7 +86,7 @@ public class MonopolistScenarioTest {
     {
 
         //run the test 15 times
-        for(int i=0; i<15; i++)
+        for(int i=0; i<5; i++)
         {
             final MacroII macroII = new MacroII(System.currentTimeMillis());
 
@@ -148,7 +150,7 @@ public class MonopolistScenarioTest {
     {
 
         //run the test 15 times
-        for(int i=0; i<15; i++)
+        for(int i=0; i<5; i++)
         {
             final MacroII macroII = new MacroII(System.currentTimeMillis());
 
@@ -225,7 +227,7 @@ public class MonopolistScenarioTest {
     {
 
         //run the test 15 times
-        for(int i=0; i<15; i++)
+        for(int i=0; i<5; i++)
         {
             final MacroII macroII = new MacroII(System.currentTimeMillis());
 
@@ -572,7 +574,7 @@ public class MonopolistScenarioTest {
     @Test
     public void rightPriceAndQuantityTestAsMarginal()
     {
-        for(int i=0; i<25; i++)
+        for(int i=0; i<5; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -597,8 +599,13 @@ public class MonopolistScenarioTest {
 
 
             macroII.start();
+
             while(macroII.schedule.getTime()<5000)
+            {
                 macroII.schedule.step(macroII);
+                //make sure the labor market is functioning properly!
+                marketSanityCheck(macroII, scenario1);
+            }
 
 
             assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
@@ -621,9 +628,19 @@ public class MonopolistScenarioTest {
 
     }
 
+    private void marketSanityCheck(MacroII macroII, MonopolistScenario scenario1) {
+        double workers = scenario1.monopolist.getHRs().iterator().next().getLatestObservation(PurchasesDataType.INFLOW);
+        if(macroII.schedule.getTime()>1 && workers > 0){
+            double wagesOffered = scenario1.monopolist.getHRs().iterator().next().getLatestObservation(PurchasesDataType.CLOSING_PRICES);
+            Assert.assertEquals(14 + workers, wagesOffered, .01d);
+        }
 
-
-
+        double goods = scenario1.monopolist.getSalesDepartment(GoodType.GENERIC).getLatestObservation(SalesDataType.OUTFLOW);
+        if(macroII.schedule.getTime()>1 && goods > 0){
+            double askprice =  scenario1.monopolist.getSalesDepartment(GoodType.GENERIC).getLatestObservation(SalesDataType.CLOSING_PRICES);
+            Assert.assertEquals(101-goods,askprice,.01d);
+        }
+    }
 
 
     //all these use SmoothedDailyInventoryPricingStrategy

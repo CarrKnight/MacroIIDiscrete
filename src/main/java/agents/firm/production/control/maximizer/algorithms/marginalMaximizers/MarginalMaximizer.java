@@ -110,7 +110,7 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
                     MarginalMaximizerStatics.computeMarginalProfits(owner, p, hr, plantControl, policy, currentWorkerTarget, currentWorkerTarget - 1) :
                     Float.NEGATIVE_INFINITY;//if so check marginal profits
 
-            if(profitsIfWeDecrease < 0 && profitsIfWeIncrease < 0)
+            if(profitsIfWeDecrease <= 0 && profitsIfWeIncrease <= 0)
             {
 
                 //if profits decrease in both direction, stay where you are
@@ -120,11 +120,14 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
             }
             else
             if(profitsIfWeIncrease >= profitsIfWeDecrease){ //if we increase profits going up, let's do that
-                assert profitsIfWeIncrease >= 0;
+                System.out.println(profitsIfWeIncrease + " ++ on day: " + owner.getModel().getMainScheduleTime());
+                assert profitsIfWeIncrease > 0;
                 return currentWorkerTarget+1;
             }
             else
             {
+                System.out.println(profitsIfWeDecrease + " -- on day: " + owner.getModel().getMainScheduleTime());
+
                 assert profitsIfWeDecrease >=0;
 
 

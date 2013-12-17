@@ -18,7 +18,6 @@ import model.utilities.ActionOrder;
 import model.utilities.pid.ControllerInput;
 import model.utilities.pid.PIDController;
 import model.utilities.scheduler.Priority;
-import model.utilities.stats.collectors.enums.PlantDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -95,9 +94,9 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
      */
     public PIDTargeterWithQuickFiring(HumanResources hr, PlantControl control) {
         this(hr,new PIDController(
-                hr.getFirm().getModel().drawProportionalGain()/5,
+                hr.getFirm().getModel().drawProportionalGain()/15,
                 hr.getFirm().getModel().drawIntegrativeGain()/5,
-                hr.getFirm().getModel().drawDerivativeGain(),
+                -hr.getFirm().getModel().drawProportionalGain()/5,
                 hr.getRandom()),
                control);
     }
@@ -146,7 +145,7 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
             return;
 
         //remember old wage
-        long oldWage = plantControl.maxPrice(hr.getGoodType());
+        final long oldWage = plantControl.maxPrice(hr.getGoodType());
         //if you are lowering wage, double check by ceiling (makes it sluggish to wage changes)
 
 
@@ -168,14 +167,13 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
         }
 
         //run the controller (it will reschedule us)
-        Double latestObservation = hr.getPlant().numberOfConsumptionObservations() > 0 ? hr.getPlant().getLatestObservation(PlantDataType.TOTAL_WORKERS) : 0;
         ControllerInput input = ControllerInput.simplePIDTarget(workerTarget,hr.getPlant().getNumberOfWorkers());
         pid.adjust(input
                 , active, hr.getPlant().getModel(), this,
                 ActionOrder.THINK);  //i made this before standard so it acts BEFORE the maximizer
 
         //initially round
-        long newWage = Math.round(pid.getCurrentMV());
+        final long newWage = Math.round(pid.getCurrentMV());
 
 
 
@@ -183,18 +181,23 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
         //if there was a REAL change call setCurrentWage of the control. Otherwise don't bother.
         if(oldWage != newWage && newWage >=0) //if pid says to change prices, change prices
         {
-            //if we have the ovverride flag on, this is the time
+            ((MacroII) simState).scheduleSoon(ActionOrder.DAWN,new Steppable() {
+                @Override
+                public void step(SimState state) {
+                        //if we have the ovverride flag on, this is the time
+      //              System.out.println(" setting new wage " + newWage + ", given old wage " + oldWage + " pid mv: " + pid.getCurrentMV() + "| workers : " + hr.getPlant().getNumberOfWorkers() + ", target: " + workerTarget  );
+                    plantControl.setCurrentWage(newWage); //set the new wage! that'll do it!
 
-            plantControl.setCurrentWage(newWage); //set the new wage! that'll do it!
+                    //log it!
+                    if(MacroII.hasGUI())
 
-            //log it!
-            if(MacroII.hasGUI())
+                        hr.getFirm().logEvent(hr,
+                                MarketEvents.CHANGE_IN_POLICY,
+                                hr.getFirm().getModel().getCurrentSimulationTimeInMillis(),
+                                "target: " + workerTarget + ", #workers:" + hr.getPlant().getNumberOfWorkers() +
+                                        "; oldwage:" + oldWage + ", newWage:" + newWage);                }
+            });
 
-                hr.getFirm().logEvent(hr,
-                        MarketEvents.CHANGE_IN_POLICY,
-                        hr.getFirm().getModel().getCurrentSimulationTimeInMillis(),
-                        "target: " + workerTarget + ", #workers:" + hr.getPlant().getNumberOfWorkers() +
-                                "; oldwage:" + oldWage + ", newWage:" + newWage);
 
         }
 

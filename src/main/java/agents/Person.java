@@ -45,6 +45,8 @@ import static com.google.common.base.Preconditions.*;
 public class Person extends EconomicAgent {
 
 
+    final private String name;
+
 
     private int minimumDailyWagesRequired;
 
@@ -94,6 +96,7 @@ public class Person extends EconomicAgent {
             //if there is a labor market, you are going to be turned on by start()
             setActive(false);
         }
+        this.name = "Person " + minimumDailyWagesRequired;
     }
 
     @Override
@@ -256,6 +259,7 @@ public class Person extends EconomicAgent {
      */
     public void lookForWorkSoon(){
 
+
         model.scheduleSoon(ActionOrder.TRADE,new Steppable() {
             @Override
             public void step(SimState state) {
@@ -271,6 +275,7 @@ public class Person extends EconomicAgent {
                     return; //no luck
                 if(laborMarket.getSellerRole() == ActionsAllowed.QUOTE)
                 {
+
                     //if we can quote: great!
                     laborMarket.submitSellQuote(Person.this,
                             minimumDailyWagesRequired, new Good(laborMarket.getGoodType(),Person.this, minimumDailyWagesRequired));
@@ -295,6 +300,7 @@ public class Person extends EconomicAgent {
         try{
             if(!searchForBetterOffers || employer == null || laborMarket == null)
                 return;
+
 
             //make sure you are correctly employed
             assert wage >=0;
@@ -435,7 +441,7 @@ public class Person extends EconomicAgent {
         boolean oldPrecario = this.precario;
         this.precario = isPrecarioNow;
 
-        if(this.precario == true && oldPrecario == false)
+        if(this.precario && !oldPrecario)
         {
 
             //you will act every day at "PREPARE_TO_TRADE" to fire yourself
@@ -446,8 +452,9 @@ public class Person extends EconomicAgent {
                         return;
                     //if you have a job, quit!
                     if(employer!=null)
+                    {
                         quitWork();
-
+                    }
                     //reschedule
                     assert precario;
                     getModel().scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE,this);
@@ -519,5 +526,10 @@ public class Person extends EconomicAgent {
             quitWork();
         laborMarket.removeAllSellQuoteBySeller(this);
         laborMarket.deregisterSeller(this);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

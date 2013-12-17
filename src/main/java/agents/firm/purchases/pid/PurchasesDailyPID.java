@@ -90,7 +90,7 @@ public class PurchasesDailyPID extends DailyInventoryControl implements BidPrici
     public void step(SimState simState) {
 
         long oldprice = maxPrice(getGoodTypeToControl());
-        ControllerInput controllerInput = getControllerInput(getDailyNeeds());
+        ControllerInput controllerInput = getControllerInput(getDailyTarget());
         controller.adjust(controllerInput, isActive(),(MacroII) simState, this, ActionOrder.ADJUST_PRICES);
         long newprice = maxPrice(getGoodTypeToControl());
 
@@ -100,7 +100,7 @@ public class PurchasesDailyPID extends DailyInventoryControl implements BidPrici
             getPurchasesDepartment().getFirm().logEvent(getPurchasesDepartment(),
                 MarketEvents.CHANGE_IN_POLICY,
                 getPurchasesDepartment().getFirm().getModel().getCurrentSimulationTimeInMillis(),
-                "target: " + getDailyNeeds() + ", inventory:" + getPurchasesDepartment().getFirm().hasHowMany(getGoodTypeToControl()) +
+                "target: " + getDailyTarget() + ", inventory:" + getPurchasesDepartment().getFirm().hasHowMany(getGoodTypeToControl()) +
                         "; oldprice:" + oldprice + ", newprice:" + newprice);
 
 
@@ -186,7 +186,7 @@ public class PurchasesDailyPID extends DailyInventoryControl implements BidPrici
           /*      new Steppable() {
                     @Override
                     public void step(SimState state) {
-                        controller.adjust(getControllerInput(getDailyNeeds()),
+                        controller.adjust(getControllerInput(getDailyTarget()),
                                 isActive(),
                                 getRandomPurchaseDepartment().getFirm().getModel(), PurchasesDailyPID.this, ActionOrder.THINK);
                     }

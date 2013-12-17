@@ -50,6 +50,7 @@ public class SmoothedDailyInventoryPricingStrategyTest {
 
 
         SmoothedDailyInventoryPricingStrategy strategy = new SmoothedDailyInventoryPricingStrategy(department);
+        strategy.setHowManyTimesTheDailyInflowShouldTheInventoryBe(7);
         //force MA to be of length 10
 
 
@@ -61,7 +62,7 @@ public class SmoothedDailyInventoryPricingStrategyTest {
         assertTrue(strategy.getTargetInventory() > 0);
         assertTrue(strategy.getTargetInventory() < 100*7);
 
-        for(int i=0; i<9;i++)
+        for(int i=0; i<10;i++)
         {
             strategy.step(model);
         }

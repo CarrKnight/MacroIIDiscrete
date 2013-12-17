@@ -40,9 +40,9 @@ public class DailyInventoryControl extends AbstractInventoryControl implements P
 {
 
     /**
-     * How much we need to run for a full week
+     * How much we target to buy
      */
-    private float dailyNeeds = 0;
+    private float dailyTarget = 0;
 
     /**
      * How much do you to get all your firms up and running once
@@ -86,8 +86,9 @@ public class DailyInventoryControl extends AbstractInventoryControl implements P
 
         int oldNeeds = 0;
 
-        dailyNeeds = 0;
+        dailyTarget = 0;
         singleProductionRunNeed=0;
+        int weeklyNeeds = 0;
         //get the firm
         Firm f = getPurchasesDepartment().getFirm();
         List<Plant> importantPlants = f.getListOfPlantsUsingSpecificInput(getGoodTypeToControl());
@@ -102,13 +103,14 @@ public class DailyInventoryControl extends AbstractInventoryControl implements P
             float weeklyNeedsThisPlant = (p.expectedWeeklyProductionRuns() * oneRunNeeds);
             if(weeklyNeedsThisPlant > 0)
                 singleProductionRunNeed += oneRunNeeds; //count for a single production as long as there is at least a little bit being done every day
-            dailyNeeds += howManyDaysOfInventoryToHold * weeklyNeedsThisPlant/7;
+            weeklyNeeds +=  weeklyNeedsThisPlant;
 
         }
 
+        dailyTarget =howManyDaysOfInventoryToHold * ((float)weeklyNeeds) /7f;
 
         //if this is an update whereas we moved from targeting 0 to targeting something else, buy
-        if(oldNeeds ==0 && dailyNeeds > 0 && canBuy())
+        if(oldNeeds ==0 && dailyTarget > 0 && canBuy())
             getPurchasesDepartment().buy();
 
     }
@@ -159,17 +161,17 @@ public class DailyInventoryControl extends AbstractInventoryControl implements P
     @Nonnull
     private Level rateInventory(int currentLevel){
 
-        int dangerLevel = (int) Math.min(singleProductionRunNeed, dailyNeeds);
+        int dangerLevel = (int) Math.min(singleProductionRunNeed, dailyTarget /howManyDaysOfInventoryToHold + 1);
 
         if(currentLevel < dangerLevel)
             return Level.DANGER;
-        else if(currentLevel < dailyNeeds)
+        else if(currentLevel < dailyTarget)
             return Level.BARELY;
-        else if(currentLevel < 1.5f* dailyNeeds || dailyNeeds == 0)
+        else if(currentLevel < 1.5f* dailyTarget || dailyTarget == 0)
             return Level.ACCEPTABLE;
         else
         {
-            assert currentLevel >= 1.5f* dailyNeeds;
+            assert currentLevel >= 1.5f* dailyTarget;
             return Level.TOOMUCH;
         }
 
@@ -186,7 +188,7 @@ public class DailyInventoryControl extends AbstractInventoryControl implements P
      */
     @Override
     public boolean canBuy() {
-        return dailyNeeds > 0 && rateInventory().compareTo(Level.ACCEPTABLE) <= 0; //keep buying as long as it is not at acceptable levels
+        return dailyTarget > 0 && rateInventory().compareTo(Level.ACCEPTABLE) <= 0; //keep buying as long as it is not at acceptable levels
 
     }
 
@@ -257,8 +259,8 @@ public class DailyInventoryControl extends AbstractInventoryControl implements P
      * How much control thinks it needs to keep functioning for a week
      * @return weekly needs
      */
-    public float getDailyNeeds() {
-        return dailyNeeds;
+    public float getDailyTarget() {
+        return dailyTarget;
     }
 
     /**
@@ -284,12 +286,12 @@ public class DailyInventoryControl extends AbstractInventoryControl implements P
         else
         {
             int currentInventory = getPurchasesDepartment().getCurrentInventory();
-            if(currentInventory<3 * dailyNeeds)
+            if(currentInventory<3 * dailyTarget)
             {
-                return Math.round(currentInventory - dailyNeeds);
+                return Math.round(currentInventory - dailyTarget);
             }
             else
-                return Math.round(currentInventory - 1.5f* dailyNeeds);
+                return Math.round(currentInventory - 1.5f* dailyTarget);
         }
 
     }

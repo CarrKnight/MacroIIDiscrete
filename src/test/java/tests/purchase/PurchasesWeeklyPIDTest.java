@@ -86,11 +86,11 @@ public class PurchasesWeeklyPIDTest {
         long pidPrice = control.maxPrice(GoodType.GENERIC);
         assertEquals(pidPrice, 0l);
 
-        assertEquals(control.getDailyNeeds(), 0f, 0.0001f);
+        assertEquals(control.getDailyTarget(), 0f, 0.0001f);
         when(machinery.expectedWeeklyProductionRuns()).thenReturn(1f);
         //although we changed the machinery, we bypassed the logEvent/listener structure. So let's addSalesDepartmentListener a useless worker for control to update its control
         p.addWorker(new Person(model));
-        assertEquals(control.getDailyNeeds(), 6f, 0.0001f);
+        assertEquals(control.getDailyTarget(), 6f, 0.0001f);
 
 
         for(int i=0; i < 100; i++){
@@ -145,11 +145,11 @@ public class PurchasesWeeklyPIDTest {
         long pidPrice = control.maxPrice(GoodType.GENERIC);
         assertEquals(pidPrice, 0l);
 
-        assertEquals(control.getDailyNeeds(), 0f, 0.0001f);
+        assertEquals(control.getDailyTarget(), 0f, 0.0001f);
         when(machinery.expectedWeeklyProductionRuns()).thenReturn(1f);   //if they expect only one run, it should be relatively easy.
         //although we changed the machinery, we bypassed the logEvent/listener structure. So let's addSalesDepartmentListener a useless worker for control to update its control
         p.addWorker(new Person(model));
-        assertEquals(control.getDailyNeeds(), 6f, 0.0001f);
+        assertEquals(control.getDailyTarget(), 6f, 0.0001f);
         control.setInitialPrice(100);
 
 
@@ -207,11 +207,11 @@ public class PurchasesWeeklyPIDTest {
         long pidPrice = control.maxPrice(GoodType.GENERIC);
         assertEquals(pidPrice, 0l);
 
-        assertEquals(control.getDailyNeeds(), 0f, 0.0001f);
+        assertEquals(control.getDailyTarget(), 0f, 0.0001f);
         when(machinery.expectedWeeklyProductionRuns()).thenReturn(1f);   //if they expect only one run, it should be relatively easy.
         //although we changed the machinery, we bypassed the logEvent/listener structure. So let's addSalesDepartmentListener a useless worker for control to update its control
         p.addWorker(new Person(model));
-        assertEquals(control.getDailyNeeds(), 6f, 0.0001f);
+        assertEquals(control.getDailyTarget(), 6f, 0.0001f);
 
         model.scheduleSoon(ActionOrder.ADJUST_PRICES,control);
 
@@ -290,7 +290,7 @@ public class PurchasesWeeklyPIDTest {
         control.setHowManyDaysOfInventoryToHold(7);
 
         //your weekly needs should be weekLength/25
-        assertEquals(control.getDailyNeeds(), 6 * model.getWeekLength() / 25f, .01);
+        assertEquals(control.getDailyTarget(), 6 * model.getWeekLength() / 25f, .01);
         control.start();
 
         final ArrayList<Quote> quotes = new ArrayList<>(); //here we'll store all the seller quotes

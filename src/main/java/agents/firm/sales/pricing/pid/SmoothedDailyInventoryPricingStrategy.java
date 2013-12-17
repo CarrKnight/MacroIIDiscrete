@@ -61,7 +61,8 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
      * the PID controller used by the delegate fixedInventory sales control. Useful to set gains and speed.
      */
     private final CascadePIDController controllerUsedByDelegate;
-    private int howManyTimesTheDailyInflowShouldTheInventoryBe = 7;
+
+    private int howManyTimesTheDailyInflowShouldTheInventoryBe = 10;
 
     /**
      * Creates the default SmoothedDailyInventoryPricingStrategy by creating the default SalesControlWithFixedInventoryAndPID

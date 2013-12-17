@@ -160,7 +160,7 @@ public class DailyStatCollector implements Steppable{
         for(GoodType output : GoodType.values() ) //for each sector
         {
             final Market market = model.getMarket(output);
-            if(output.isLabor() || output.isMachinery() || market==null) //don't bother with non existing markets or non-goods
+            if(output.isMachinery() || market==null) //don't bother with non existing markets or non-goods
                 continue;
 
 

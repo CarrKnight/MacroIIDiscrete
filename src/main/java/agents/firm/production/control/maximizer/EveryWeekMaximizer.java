@@ -135,8 +135,10 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
     }
 
     private void reschedule() {
-        if(randomizeDays)
-            model.scheduleAnotherDayWithFixedProbability(ActionOrder.THINK, this, 1f / (float) howManyDaysBeforeEachCheck);
+        if(randomizeDays) {
+            float howManyDaysBeforeEachCheck1 = (float) howManyDaysBeforeEachCheck;
+            model.scheduleAnotherDayWithFixedProbability(ActionOrder.THINK, this, 1f / howManyDaysBeforeEachCheck1);
+        }
         else
             model.scheduleAnotherDay(ActionOrder.THINK, this, howManyDaysBeforeEachCheck);
     }
