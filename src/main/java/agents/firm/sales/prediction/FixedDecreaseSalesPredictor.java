@@ -35,7 +35,7 @@ public class FixedDecreaseSalesPredictor implements SalesPredictor {
     /**
      * the delegate object we use to get the department price
      */
-    private final MemorySalesPredictor delegate;
+    private final SalesPredictor delegate;
 
 
     public FixedDecreaseSalesPredictor() {

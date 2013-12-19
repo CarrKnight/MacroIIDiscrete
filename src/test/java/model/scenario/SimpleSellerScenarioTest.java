@@ -557,12 +557,12 @@ public class SimpleSellerScenarioTest {
 
         float averagePrice = 0;
         float averageQ = 0;
+        List<SalesDepartment> departments = scenario.getDepartments();
         for(int i=0; i<500; i++)
         {
             macroII.schedule.step(macroII);
             averageQ += macroII.getMarket(GoodType.GENERIC).getLatestObservation(MarketDataType.VOLUME_TRADED);
             averagePrice +=macroII.getMarket(GoodType.GENERIC).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
-            List<SalesDepartment> departments = scenario.getDepartments();
             System.out.println("------------------------------------------------------------");
             for(int k=0; k< scenario.getNumberOfSellers(); k++)
             {
@@ -578,6 +578,7 @@ public class SimpleSellerScenarioTest {
         //price should be any between 60 and 51
         assertEquals(86,averagePrice,.3d);
         assertEquals(averageQ, 16,.3d); //every day 4 goods should have been traded
+
     }
 
 
@@ -615,9 +616,20 @@ public class SimpleSellerScenarioTest {
 
             run102minusqscenario(macroII, scenario);
 
+            additionalTest(scenario);
+
         }
 
 
+    }
+
+    private void additionalTest(SimpleSellerScenario scenario) {
+        List<SalesDepartment> departments = scenario.getDepartments();
+        for(int k=0; k< scenario.getNumberOfSellers(); k++)
+        {
+            SalesDepartment department = departments.get(k);
+            assertEquals(86,department.getAveragedLastPrice(),1d);
+        }
     }
 
 
@@ -634,6 +646,7 @@ public class SimpleSellerScenarioTest {
 
 
             run102minusqscenario(macroII, scenario);
+            additionalTest(scenario);
 
         }
 
@@ -653,6 +666,7 @@ public class SimpleSellerScenarioTest {
 
 
             run102minusqscenario(macroII, scenario);
+            additionalTest(scenario);
 
         }
 

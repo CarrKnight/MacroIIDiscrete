@@ -43,7 +43,7 @@ public class PricingSalesPredictor implements SalesPredictor {
 
         //what would the pricing section do?
 
-        return dept.hypotheticalSalePrice(expectedProductionCost);
+        return dept.getLastAskedPrice();
 
 
     }
@@ -60,7 +60,7 @@ public class PricingSalesPredictor implements SalesPredictor {
     @Override
     public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
 
-        return dept.hypotheticalSalePrice(expectedProductionCost);
+        return dept.getLastAskedPrice();
 
     }
 
@@ -82,7 +82,7 @@ public class PricingSalesPredictor implements SalesPredictor {
      */
     @Override
     public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
-        return Math.round(dept.getAveragedLastPrice());
+        return dept.getLastAskedPrice();
 
     }
 }

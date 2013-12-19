@@ -21,20 +21,12 @@ import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
-import au.com.bytecode.opencsv.CSVWriter;
 import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
-import model.utilities.ActionOrder;
-import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import org.junit.Test;
-import sim.engine.SimState;
-import sim.engine.Steppable;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -74,6 +66,7 @@ public class CompetitiveScenarioTest {
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_ALWAYS_MOVING);
             scenario1.setAdditionalCompetitors(3);
             scenario1.setWorkersToBeRehiredEveryDay(false);
+            scenario1.setDemandIntercept(102);
 
             // scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
             scenario1.setSalesPricePreditorStrategy(MarketSalesPredictor.class);
@@ -133,6 +126,7 @@ public class CompetitiveScenarioTest {
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
                 scenario1.setAdditionalCompetitors(competitors);
                 scenario1.setWorkersToBeRehiredEveryDay(true);
+                scenario1.setDemandIntercept(102);
 
 
 
@@ -219,6 +213,8 @@ public class CompetitiveScenarioTest {
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
                 scenario1.setAdditionalCompetitors( competitor);
                 scenario1.setWorkersToBeRehiredEveryDay(true);
+                scenario1.setDemandIntercept(102);
+
 
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
                 scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
@@ -304,6 +300,7 @@ public class CompetitiveScenarioTest {
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
                 scenario1.setAdditionalCompetitors(competitors);
                 scenario1.setWorkersToBeRehiredEveryDay(true);
+                scenario1.setDemandIntercept(102);
 
 
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
@@ -388,8 +385,8 @@ public class CompetitiveScenarioTest {
 
         //  System.out.println("FORCED COMPETITIVE FIRMS: " + (competitors+1));
         Class<? extends AskPricingStrategy> strategies[] = new Class[2];
-        strategies[0] = SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class;
-        strategies[1] = SmoothedDailyInventoryPricingStrategy.class;
+        strategies[1] = SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class;
+        strategies[0] = SmoothedDailyInventoryPricingStrategy.class;
         //    strategies[2] = SalesControlWithFixedInventoryAndPID.class;
 
 
@@ -407,6 +404,7 @@ public class CompetitiveScenarioTest {
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
                 scenario1.setAdditionalCompetitors(competitors);
                 scenario1.setWorkersToBeRehiredEveryDay(true);
+                scenario1.setDemandIntercept(102);
 
 
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
@@ -539,12 +537,7 @@ public class CompetitiveScenarioTest {
                         {
                             askPricingStrategy.setProportionalGain(askPricingStrategy.getProportionalGain()/divideProportionalGainByThis);
                             askPricingStrategy.setIntegralGain(askPricingStrategy.getIntegralGain()/divideIntegrativeGainByThis);
-                            model.scheduleAnotherDay(ActionOrder.CLEANUP_DATA_GATHERING,new Steppable() {
-                                @Override
-                                public void step(SimState state) {
-                                    department.getData().writeToCSVFile(new File("supplySales.csv"));
-                                }
-                            },10000);
+
                         }
 
                         return department;
@@ -563,6 +556,7 @@ public class CompetitiveScenarioTest {
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
                 scenario1.setBeefPriceFilterer(null);
 
+
                 //competition!
                 scenario1.setNumberOfBeefProducers(1);
                 scenario1.setNumberOfFoodProducers(competitorNumber+1);
@@ -575,18 +569,6 @@ public class CompetitiveScenarioTest {
 
                 macroII.setScenario(scenario1);
                 macroII.start();
-
-                //create the CSVWriter
-                try {
-                    CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/newrun.csv"));
-                    DailyStatCollector collector = new DailyStatCollector(macroII,writer);
-                    collector.start();
-
-                } catch (IOException e) {
-                    System.err.println("failed to create the file!");
-                }
-
-
 
 
 

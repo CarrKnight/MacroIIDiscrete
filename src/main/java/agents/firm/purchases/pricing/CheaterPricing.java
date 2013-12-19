@@ -3,7 +3,10 @@ package agents.firm.purchases.pricing;
 import agents.firm.purchases.PurchasesDepartment;
 import goods.Good;
 import goods.GoodType;
+import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 
 /**
  * <h4>Description</h4>
@@ -39,9 +42,18 @@ public class CheaterPricing implements BidPricingStrategy {
      * creates the pricing strategy that looks at the market
      * @param department reference needed because it sets the priority of its action as "low" (trying to act after the sales departments)
      */
-    public CheaterPricing(PurchasesDepartment department) {
+    public CheaterPricing(final PurchasesDepartment department) {
         this.department = department;
         department.setTradePriority(Priority.AFTER_STANDARD);
+
+        department.getModel().scheduleSoon(ActionOrder.DAWN,new Steppable() {
+            @Override
+            public void step(SimState state) {
+                defaultOffer = 1000 + department.getRandom().nextInt(10000);
+                department.getModel().scheduleTomorrow(ActionOrder.DAWN,this);
+
+            }
+        });
     }
 
     /**

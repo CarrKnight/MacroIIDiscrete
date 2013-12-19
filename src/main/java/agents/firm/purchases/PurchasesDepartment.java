@@ -1268,4 +1268,8 @@ public class PurchasesDepartment implements Deactivatable, Department {
     public int getStartingDay() {
         return purchasesData.getStartingDay();
     }
+
+    public float getAveragedClosingPrice() {
+        return averagePriceCounter.getAveragedClosingPrice();
+    }
 }

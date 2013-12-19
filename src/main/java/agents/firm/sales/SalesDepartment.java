@@ -29,6 +29,7 @@ import goods.GoodType;
 import javafx.beans.value.ObservableDoubleValue;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.filters.WeightedMovingAverage;
 import model.utilities.stats.collectors.SalesData;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.engine.SimState;
@@ -149,6 +150,12 @@ public abstract class  SalesDepartment  implements Department {
      * This is the price of the last good the sales department managed to sell
      */
     private long lastClosingPrice = -1;
+
+    /**
+     * average last week price weihted by outflow
+     */
+    private WeightedMovingAverage<Long,Double> averagedPrice = new WeightedMovingAverage<>(7);
+
 
 
     /**
@@ -385,6 +392,9 @@ public abstract class  SalesDepartment  implements Department {
         todayInflow = 0;
         todayOutflow = 0;
         sumClosingPrice = 0;
+
+        if(data.numberOfObservations() > 1)
+            averagedPrice.addObservation(lastClosingPrice,Math.max(data.getLatestObservation(SalesDataType.OUTFLOW),1));
 
 
         model.scheduleTomorrow(ActionOrder.DAWN,new Steppable() {
@@ -1390,25 +1400,8 @@ public abstract class  SalesDepartment  implements Department {
             return -1;
         else
         {
-            int lowerbound = Math.max(data.getStartingDay(),data.getLastObservedDay()-7);
-            double[] priceObservations = data.getObservationsRecordedTheseDays(SalesDataType.AVERAGE_CLOSING_PRICES,
-                    lowerbound,data.getLastObservedDay()-1);
-            double[] quantityTraded = data.getObservationsRecordedTheseDays(SalesDataType.OUTFLOW,
-                    lowerbound,data.getLastObservedDay()-1);
-            double sum = 0; double totalQuantity=0;
-            for(int i=0; i< priceObservations.length; i++)
-            {
-                assert priceObservations[i] >= 0 || quantityTraded[i] == 0;
-                if(priceObservations[i] >=0){
-                    sum += priceObservations[i] * quantityTraded[i];
-                    totalQuantity += quantityTraded[i];
-                }
 
-            }
-            if(totalQuantity == 0)
-                return -1;
-            else
-                return sum/totalQuantity;
+            return averagedPrice.getSmoothedObservation();
 
 
         }

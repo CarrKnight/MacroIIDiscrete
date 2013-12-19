@@ -167,12 +167,14 @@ public class SimpleBuyerScenarioTest
                 macroII.schedule.step(macroII);
                 System.out.println("--------------------------------");
                 for(PurchasesDepartment department : scenario.getDepartments())
-                    System.out.println("inflow: " + department.getTodayInflow() + ", price: " + department.getLastOfferedPrice() );
+                    System.out.println("inflow: " + department.getTodayInflow() + ", price: " + department.getLastOfferedPrice() + ", averaged: " + department.getAveragedClosingPrice() );
 
             }
 
             //price should be any between 60 and 51
             assertEquals(16,macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice(),.001d);
+            for(PurchasesDepartment department : scenario.getDepartments())
+                assertEquals(16,department.getAveragedClosingPrice(),.001d);
             assertEquals(macroII.getMarket(GoodType.GENERIC).getYesterdayVolume(), 16,.0001d); //every day 4 goods should have been traded
 
 

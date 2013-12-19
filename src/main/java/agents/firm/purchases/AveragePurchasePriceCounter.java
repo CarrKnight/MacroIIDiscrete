@@ -10,6 +10,7 @@ import com.google.common.base.Preconditions;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
+import model.utilities.filters.WeightedMovingAverage;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -38,6 +39,13 @@ public class AveragePurchasePriceCounter implements Steppable, Deactivatable
 
     private boolean active=true;
 
+    /**
+     * average last week price weihted by outflow
+     */
+    private WeightedMovingAverage<Long,Integer> averagedPrice = new WeightedMovingAverage<>(7);
+
+
+
     public AveragePurchasePriceCounter() {
     }
 
@@ -59,6 +67,13 @@ public class AveragePurchasePriceCounter implements Steppable, Deactivatable
     public void step(SimState state) {
         if(!active)
             return;
+
+        if(numberOfFilledQuotes == 0)
+            averagedPrice.addObservation(0l,numberOfFilledQuotes);
+
+        else
+
+            averagedPrice.addObservation(sumOfClosingPrices/numberOfFilledQuotes,numberOfFilledQuotes);
 
         numberOfFilledQuotes = 0;
 
@@ -97,6 +112,10 @@ public class AveragePurchasePriceCounter implements Steppable, Deactivatable
         return ((float)sumOfClosingPrices/(float)numberOfFilledQuotes);
     }
 
+
+    public float getAveragedClosingPrice(){
+        return averagedPrice.getSmoothedObservation();
+    }
     @Override
     public void turnOff() {
         active = false;
