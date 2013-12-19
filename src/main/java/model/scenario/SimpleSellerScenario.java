@@ -6,7 +6,6 @@
 
 package model.scenario;
 
-import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
@@ -23,14 +22,15 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.dummies.Customer;
 import model.utilities.stats.collectors.DailyStatCollector;
-import model.utilities.dummies.DummyBuyer;
-import model.utilities.dummies.DummyBuyerWithDelay;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 
@@ -86,6 +86,12 @@ public class SimpleSellerScenario extends Scenario {
      */
     public int howManyDaysLaterShockWillOccur = 2000;
 
+    private int demandIntercept = 100;
+
+    private int demandSlope = -10;
+
+    private List<SalesDepartment> departments = new LinkedList<>();
+
     /**
      * the strategy used by the seller, after it has been instantiated
      */
@@ -97,6 +103,7 @@ public class SimpleSellerScenario extends Scenario {
      */
     @Override
     public void start() {
+        departments = new LinkedList<>();
 
         //create and record a new market!
         final OrderBookMarket market= new OrderBookMarket(GoodType.GENERIC);
@@ -105,15 +112,16 @@ public class SimpleSellerScenario extends Scenario {
         getMarkets().put(GoodType.GENERIC,market);
 
 
-        //create 10 buyers
-        for(int i=0;i<10;i++){
-            buildBuyer(market, i*10);
-
-
+        //create demand
+        int i=1;
+        while(demandIntercept + i*demandSlope>0){
+            buildBuyer(market, demandIntercept + i*demandSlope);
+            i++;
         }
 
-        //only one seller
-        for(int i=0; i < numberOfSellers; i++)
+
+        //create sellers
+        for(i=0; i < numberOfSellers; i++)
         {
             final Firm seller = buildSeller(market);
             //arrange for goods to drop periodically in the firm
@@ -123,11 +131,9 @@ public class SimpleSellerScenario extends Scenario {
         if(demandShifts)
         {
             //create 10 buyers
-            for(int i=0;i<10;i++){
-                final DummyBuyer buyer = createAdditionalBuyer(market, i);
+            for(i=0;i<10;i++){
+                createAdditionalBuyer(market, i);
 
-
-                getAgents().add(buyer);
 
 
 
@@ -144,45 +150,18 @@ public class SimpleSellerScenario extends Scenario {
 
     }
 
-    private DummyBuyer createAdditionalBuyer(final OrderBookMarket market, final int i) {
+    private void createAdditionalBuyer(final OrderBookMarket market, final int i) {
         /**
          * For this scenario we use a different kind of dummy buyer that, after "period" passed, puts a new order in the market
          */
-        final DummyBuyer buyer = new DummyBuyer(getModel(),(i+10)*10,market){
+        model.scheduleAnotherDay(ActionOrder.DAWN,new Steppable() {
             @Override
-            public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
-                //trick to get the steppable to recognize the anynimous me!
-                final DummyBuyer reference = this;
-                //schedule a new quote in period!
-                this.getModel().scheduleTomorrow(ActionOrder.TRADE, new Steppable() {
-                    @Override
-                    public void step(SimState simState) {
-                        earn(1000l);
-                        //put another quote
-
-                        market.submitBuyQuote(reference, getFixedPrice());
+            public void step(SimState state) {
+                final Customer customer = new Customer(getModel(),(i+10)*10,market);
+                model.addAgent(customer);
+        }},howManyDaysLaterShockWillOccur);
 
 
-                    }
-                });
-
-            }
-        };
-
-
-        //make it adjust once to register and submit the first quote
-
-        getModel().scheduleAnotherDay(ActionOrder.TRADE,new Steppable() {
-            @Override
-            public void step(SimState simState) {
-                market.registerBuyer(buyer);
-                buyer.earn(1000l);
-                //make the buyer submit a quote soon.
-                market.submitBuyQuote(buyer,buyer.getFixedPrice());
-
-            }
-        }, howManyDaysLaterShockWillOccur);
-        return buyer;
     }
 
     private void setupProduction(final Firm seller) {
@@ -214,78 +193,13 @@ public class SimpleSellerScenario extends Scenario {
         //strategy.setSpeed(sellerDelay);
         dept.setAskPricingStrategy(strategy); //set strategy to PID
 
+        departments.add(dept);
+
         return seller;
     }
 
     protected void buildBuyer(final OrderBookMarket market, final long price) {
-        /**
-         * For this scenario we use a different kind of dummy buyer that, after "period" passed, puts a new order in the market
-         */
-        final DummyBuyer buyer;
-        if(buyerDelay ==0)
-        {
-
-            buyer = new DummyBuyer(getModel(),price,market){
-                @Override
-                public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
-                    //trick to get the steppable to recognize the anynimous me!
-                    final DummyBuyer reference = this;
-                    //schedule a new quote in period!
-                    this.getModel().scheduleTomorrow(ActionOrder.TRADE,new Steppable() {
-                        @Override
-                        public void step(SimState simState) {
-                            earn(1000l);
-                            //put another quote
-
-                            if(reference.getFixedPrice() >=0)
-                                market.submitBuyQuote(reference,getFixedPrice());
-
-
-
-                        }
-                    });
-
-                }
-            };
-            //make it adjust once to register and submit the first quote
-
-            getModel().scheduleSoon(ActionOrder.TRADE, new Steppable() {
-                @Override
-                public void step(SimState simState) {
-                    market.registerBuyer(buyer);
-                    buyer.earn(1000l);
-                    //make the buyer submit a quote soon.
-                    market.submitBuyQuote(buyer, buyer.getFixedPrice());
-
-                }
-            });
-
-        }
-        else
-        {
-            buyer = new DummyBuyerWithDelay(getModel(),price,buyerDelay,market);
-
-            //make it adjust once to register and submit the first quote
-            market.registerBuyer(buyer);
-
-            getModel().scheduleSoon(ActionOrder.TRADE,new Steppable() {
-                @Override
-                public void step(SimState simState) {
-                    buyer.earn(1000l);
-                    //make the buyer submit a quote soon.
-                    if(buyer.getFixedPrice() >=0 && !market.containsQuotesFromThisBuyer(buyer))
-                    {
-                        market.submitBuyQuote(buyer,100);
-                    }
-
-                    getModel().scheduleTomorrow(ActionOrder.TRADE,this);
-
-
-
-                }
-            }  );
-        }
-
+        final Customer buyer = new Customer(getModel(),Math.max((price),1),market);
 
         getAgents().add(buyer);
     }
@@ -461,5 +375,26 @@ public class SimpleSellerScenario extends Scenario {
      */
     public void setHowManyDaysLaterShockWillOccur(int howManyDaysLaterShockWillOccur) {
         this.howManyDaysLaterShockWillOccur = howManyDaysLaterShockWillOccur;
+    }
+
+
+    public int getDemandIntercept() {
+        return demandIntercept;
+    }
+
+    public void setDemandIntercept(int demandIntercept) {
+        this.demandIntercept = demandIntercept;
+    }
+
+    public int getDemandSlope() {
+        return demandSlope;
+    }
+
+    public void setDemandSlope(int demandSlope) {
+        this.demandSlope = demandSlope;
+    }
+
+    public List<SalesDepartment> getDepartments() {
+        return departments;
     }
 }

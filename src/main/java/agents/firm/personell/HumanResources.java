@@ -303,23 +303,31 @@ public class HumanResources extends PurchasesDepartment implements Steppable {
      */
     public void updateEmployeeWages(){
 
+        //it won't update until next preparetotrade!
+        getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE,new Steppable() {
+            @Override
+            public void step(SimState state) {
+                //new wage!
+                long newWage = maxPrice(getGoodType(),getMarket()); //this is the new wage
 
+                //change the wage to everyone
+                if(fixedPayStructure)
+                    for(Person p : plant.getWorkers()){
+                        //max price calls should NOT change over time
+                        assert maxPrice(getGoodType(),getMarket()) == newWage;
+                        //change the wage to the worker
+                        p.changeInWage(newWage,getFirm());
 
-        //new wage!
-        long newWage = maxPrice(getGoodType(),getMarket()); //this is the new wage
+                    }
 
-        //change the wage to everyone
-        if(fixedPayStructure)
-            for(Person p : plant.getWorkers()){
-                //max price calls should NOT change over time
-                assert maxPrice(getGoodType(),getMarket()) == newWage;
-                //change the wage to the worker
-                p.changeInWage(newWage,getFirm());
+                //tell the plant to tell the others
+                getPlant().fireWageEvent(newWage);
 
             }
+        },Priority.STANDARD);
 
-        //tell the plant to tell the others
-        getPlant().fireWageEvent(newWage);
+
+
 
     }
 
@@ -502,19 +510,7 @@ public class HumanResources extends PurchasesDepartment implements Steppable {
     }
 
 
-    /**
-     * The last price the purchases department got for its goods
-     *
-     * @return
-     */
-    @Override
-    public long getLastClosingPrice() {
-        if(getNumberOfWorkers() > 0)
-            return ((PlantControl)super.getPricingStrategy()).getCurrentWage();
-        else
-            return getMarket().getLastPrice();
 
-    }
 
     @Override
     public void turnOff()
@@ -546,20 +542,18 @@ public class HumanResources extends PurchasesDepartment implements Steppable {
     }
 
 
+    /**
+     * the step pays out the contracted wage
+     * @param state
+     */
     @Override
     public void step(SimState state) {
         wagesPaid = 0;
         List<Person> roster = plant.getWorkers();
-        //make sure the employees are paid the right wage
-        updateEmployeeWages();
 
         for(Person p : roster)
         {
             long wage = p.getWage(); //get the wage promised to pay
-            //either the pay is the same as what we are offering now or we aren't using a fixed pay structure.
-            //it is not XOR because it is probably true for the last employee
-            assert wage == maxPrice(getGoodType(),getMarket()) || !fixedPayStructure :
-                    "this is the wage: " + wage + " this is how much we are willing to pay: " + maxPrice(GoodType.GENERIC,getMarket());
             getFirm().pay(wage,p,getMarket()); //pay wage to worker
             wagesPaid += wage;
             spendFromBudget(wage);

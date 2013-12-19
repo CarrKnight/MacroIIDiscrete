@@ -209,7 +209,7 @@ public class SetTargetThenTryAgainMaximizer<ALG extends WorkerMaximizationAlgori
         //if we are here, it's observation week!
         assert checkWeek;
         //todo this happens very rarely during messy world, should I be concerned?
-        assert hr.getPlant().getNumberOfWorkersDuringProduction() == control.getTarget() :  hr.getPlant().getNumberOfWorkersDuringProduction() + "," +  control.getTarget();
+//        assert hr.getPlant().getNumberOfWorkersDuringProduction() == control.getTarget() :  hr.getPlant().getNumberOfWorkersDuringProduction() + "," +  control.getTarget();
 
         //get profits
         float newProfits = hr.getFirm().getPlantProfits(hr.getPlant());

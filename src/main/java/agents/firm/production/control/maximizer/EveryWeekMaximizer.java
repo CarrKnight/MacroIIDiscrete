@@ -287,4 +287,18 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
     public boolean isRandomizeDays() {
         return randomizeDays;
     }
+
+    /**
+     * Gets The maximization algorithm that chooses the new workers given the results..
+     *
+     * @return Value of The maximization algorithm that chooses the new workers given the results.
+     */
+    public ALG getMaximizationAlgorithm() {
+        return workerMaximizationAlgorithm;
+    }
+
+
+
+
+
 }

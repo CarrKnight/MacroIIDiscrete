@@ -53,16 +53,7 @@ public class CheaterPricing implements BidPricingStrategy {
     @Override
     public long maxPrice(GoodType type) {
         //if the best sale is visible and exists, return it otherwise default
-        try {
-            if(department.getMarket().isBestSalePriceVisible() && department.getMarket().getBestSellPrice() > -1)
-                return department.getMarket().getBestSellPrice();
-            else
-                return defaultOffer;
-        } catch (IllegalAccessException e) {
-            //damn exception, making everything ugly
-            throw new IllegalStateException("I must have screwed up with short-circuit, because I thought the best sale price was visible but it wasn't!");
-
-        }
+        return defaultOffer;
     }
 
     /**

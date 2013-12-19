@@ -6,7 +6,6 @@
 
 package model.scenario;
 
-import agents.EconomicAgent;
 import agents.HasInventory;
 import agents.InventoryListener;
 import agents.firm.Firm;
@@ -14,21 +13,21 @@ import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesFixedPID;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
-import financial.market.Market;
 import financial.MarketEvents;
+import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
-import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.dummies.DummySeller;
+import model.utilities.dummies.DailyGoodTree;
+import model.utilities.pid.CascadePIDController;
 import model.utilities.pid.Controller;
-import model.utilities.pid.FlowAndStockController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
+import java.util.LinkedList;
 
 /**
  * <h4>Description</h4>
@@ -51,6 +50,11 @@ public class SimpleBuyerScenario extends Scenario {
      * How often goods are consumed and supply replenished
      */
     int period = 0;
+
+    /**
+     * number of buyers in the model
+     */
+    int numberOfBuyers = 1;
 
     /**
      * Are there additional people coming to supply after 20 weeks?
@@ -78,16 +82,24 @@ public class SimpleBuyerScenario extends Scenario {
 
     public int consumedThisWeek = 0;
 
-   // private Class<? extends Controller> controllerType = CascadePIDController.class;
-    private Class<? extends Controller> controllerType = FlowAndStockController.class;
+    // private Class<? extends Controller> controllerType = CascadePIDController.class;
+    private Class<? extends Controller> controllerType = CascadePIDController.class;
 
 
+    private int supplyIntercept = 90;
+
+    private int supplySlope = 10;
+
+    private int numberOfSuppliers = 10;
+
+    private LinkedList<PurchasesDepartment> departments;
 
 
     private float proportionalGainAVG = .5f;
     private float integralGainAVG =.5f;
     private float derivativeGainAVG =.01f;
     private PurchasesDepartment department;
+
 
 
     public SimpleBuyerScenario(MacroII model) {
@@ -106,17 +118,36 @@ public class SimpleBuyerScenario extends Scenario {
         getMarkets().put(GoodType.GENERIC,market);
         market.setPricePolicy(new BuyerSetPricePolicy());
 
+        departments = new LinkedList<>();
         //create the buyer!
-        final Firm firm = new Firm(model); firm.earn(Long.MAX_VALUE);
+        for(int i=0; i< numberOfBuyers; i++)
+        {
+            final Firm firm = createBuyer(market);
+
+            getAgents().add(firm); //add the buyer
+        }
+
+
+        for(int i=1; i <=numberOfSuppliers; i++)
+            createSeller(i*supplySlope+supplyIntercept,market,0f);
+
+
+        if(supplyShift)
+            for(int i=0; i <10; i++)
+                createSeller(i*10,market,5000f);
+
+    }
+
+    private Firm createBuyer(OrderBookMarket market) {
+        final Firm firm = new Firm(model);
+        firm.earn(Long.MAX_VALUE);
         department = PurchasesDepartment.getEmptyPurchasesDepartment(Long.MAX_VALUE, firm, market);
-        float proportionalGain = (float) (proportionalGainAVG + model.random.nextGaussian()*.01f); proportionalGain = Math.max(proportionalGain,0); //never below 0
-        float integralGain = (float) (integralGainAVG + model.random.nextGaussian()*.05f); integralGain = Math.max(integralGain,0);
-        float derivativeGain =(float) (derivativeGainAVG + model.random.nextGaussian()*.005f); derivativeGain = Math.max(derivativeGain,0);
 
         department.setOpponentSearch(new SimpleBuyerSearch(market, firm));
         department.setSupplierSearch(new SimpleSellerSearch(market, firm));
         //  final PurchasesFixedPID control = new PurchasesFixedPID(department,proportionalGain,integralGain,derivativeGain,targetInventory);
         final PurchasesFixedPID control = new PurchasesFixedPID(department,targetInventory, controllerType,model);
+        control.setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(1000f);
         control.setSpeed(pidPeriod);
         if(filtersOn){
             //filtering flows
@@ -128,34 +159,19 @@ public class SimpleBuyerScenario extends Scenario {
         department.setControl(control);
         department.setPricingStrategy(control);
 
-        firm.registerPurchasesDepartment(department,GoodType.GENERIC);
-
-        getAgents().add(firm); //add the buyer
+        firm.registerPurchasesDepartment(department, GoodType.GENERIC);
 
 
-        //set up the department to start buying soon
-   /*     getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
-            @Override
-            public void step(SimState state) {
-                department.start();
-            }
-        });
-     */
 
         if(burstConsumption)
             setUpBurstConsumption(firm, department);
         else
             setUpImmediateConsumption(firm, department);
 
-
-        for(int i=0; i <10; i++)
-            createSeller(i*10+100,market,0f);
+        departments.add(department);
 
 
-        if(supplyShift)
-            for(int i=0; i <10; i++)
-                createSeller(i*10,market,5000f);
-
+        return firm;
     }
 
     /**
@@ -169,47 +185,7 @@ public class SimpleBuyerScenario extends Scenario {
 
 
         //We modify the seller to repeatedly receive and sell a new good each unit of time!
-        final DummySeller seller = new DummySeller(getModel(),reservationPrice,market)
-
-        {
-            @Override
-            public void reactToFilledAskedQuote(Good g, long price, EconomicAgent buyer) {
-                super.reactToFilledAskedQuote(g, price, buyer);
-
-                final DummySeller reference = this;
-
-                //in "period time"
-                getModel().scheduleTomorrow(ActionOrder.TRADE,new Steppable() {
-                    @Override
-                    public void step(SimState state) {
-                        //receive a new good
-                        Good newGood = new Good(market.getGoodType(),reference,reference.saleQuote);
-                        reference.receive(newGood, null);
-                        //place it for sale!!!
-                        market.submitSellQuote(reference,reference.saleQuote,newGood);
-
-                    }
-                });
-
-
-
-
-            }
-        };
-
-        market.registerSeller(seller);
-        //at a random point in the near future we need to have the dummy seller receive its first good and quote it!
-        getModel().scheduleSoon(ActionOrder.TRADE, new Steppable() {
-            @Override
-            public void step(SimState state) {
-                //receive a new good
-                Good newGood = new Good(market.getGoodType(), seller, seller.saleQuote);
-                seller.receive(newGood, null);
-                //place it for sale!!!
-                market.submitSellQuote(seller, seller.saleQuote, newGood);
-
-            }
-        });
+        final DailyGoodTree seller = new DailyGoodTree(model,1,reservationPrice,market);
 
         if(initialDelay >0)
             getModel().addAgent(seller);
@@ -430,5 +406,41 @@ public class SimpleBuyerScenario extends Scenario {
      */
     public Class<? extends Controller> getControllerType() {
         return controllerType;
+    }
+
+    public int getSupplySlope() {
+        return supplySlope;
+    }
+
+    public void setSupplySlope(int supplySlope) {
+        this.supplySlope = supplySlope;
+    }
+
+    public int getSupplyIntercept() {
+        return supplyIntercept;
+    }
+
+    public void setSupplyIntercept(int supplyIntercept) {
+        this.supplyIntercept = supplyIntercept;
+    }
+
+    public int getNumberOfSuppliers() {
+        return numberOfSuppliers;
+    }
+
+    public void setNumberOfSuppliers(int numberOfSuppliers) {
+        this.numberOfSuppliers = numberOfSuppliers;
+    }
+
+    public int getNumberOfBuyers() {
+        return numberOfBuyers;
+    }
+
+    public void setNumberOfBuyers(int numberOfBuyers) {
+        this.numberOfBuyers = numberOfBuyers;
+    }
+
+    public LinkedList<PurchasesDepartment> getDepartments() {
+        return departments;
     }
 }

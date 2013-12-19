@@ -8,22 +8,37 @@ package model.scenario;
 
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
+import agents.firm.production.Blueprint;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.RobustMarginalMaximizer;
+import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
+import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.prediction.MarketSalesPredictor;
+import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
+import au.com.bytecode.opencsv.CSVWriter;
+import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.ActionOrder;
+import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import org.junit.Test;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -185,6 +200,7 @@ public class CompetitiveScenarioTest {
         List<Integer> competitors = new LinkedList<>();
         for(int competitor=0;competitor<=7;competitor++)
             competitors.add(competitor);
+        competitors.add(25);
 
         for(Integer competitor : competitors)
         {
@@ -468,6 +484,151 @@ public class CompetitiveScenarioTest {
 
     }
 
+
+
+    @Test
+    public void rightPriceAndQuantityBuyingLearning()
+    {
+
+        List<Integer> competitors = new LinkedList<>();
+
+        competitors.add(4);
+        competitors.add(5);
+        competitors.add(6);
+        competitors.add(7);
+
+        competitors.add(30);
+
+        for(Integer competitorNumber : competitors)
+        {
+            System.out.println("FORCED COMPETITIVE FIRMS: " + (competitorNumber+1));
+
+            for(int i=0; i<1; i++)
+            {
+                float averagePrice = 0;
+                float averageQ = 0;
+                float averageConsumed = 0;
+
+                final MacroII macroII = new MacroII(System.currentTimeMillis());
+                final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
+
+                    @Override
+                    protected void buildBeefSalesPredictor(SalesDepartment dept) {
+                        FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
+                        predictor.setDecrementDelta(2);
+                        dept.setPredictorStrategy(predictor);
+                    }
+
+
+
+                    @Override
+                    public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
+
+                    }
+
+                    @Override
+                    protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
+                        final SalesDepartment department = super.createSalesDepartment(firm, goodmarket);
+                        if(goodmarket.getGoodType().equals(GoodType.FOOD))
+                            department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+
+                        SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly askPricingStrategy =
+                                new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(department);
+                        department.setAskPricingStrategy(askPricingStrategy);
+                        if(goodmarket.getGoodType().equals(GoodType.BEEF))
+                        {
+                            askPricingStrategy.setProportionalGain(askPricingStrategy.getProportionalGain()/divideProportionalGainByThis);
+                            askPricingStrategy.setIntegralGain(askPricingStrategy.getIntegralGain()/divideIntegrativeGainByThis);
+                            model.scheduleAnotherDay(ActionOrder.CLEANUP_DATA_GATHERING,new Steppable() {
+                                @Override
+                                public void step(SimState state) {
+                                    department.getData().writeToCSVFile(new File("supplySales.csv"));
+                                }
+                            },10000);
+                        }
+
+                        return department;
+                    }
+
+                    @Override
+                    protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
+                        HumanResources hr = super.createPlant(blueprint, firm, laborMarket);
+                        if(blueprint.getOutputs().containsKey(GoodType.BEEF))      {
+                            hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
+                        }
+                        return hr;
+                    }
+                };
+                scenario1.setControlType(RobustMarginalMaximizer.class);
+                scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+                scenario1.setBeefPriceFilterer(null);
+
+                //competition!
+                scenario1.setNumberOfBeefProducers(1);
+                scenario1.setNumberOfFoodProducers(competitorNumber+1);
+
+                scenario1.setDivideProportionalGainByThis(100f);
+                scenario1.setDivideIntegrativeGainByThis(100f);
+                //no delay
+                scenario1.setBeefPricingSpeed(0);
+
+
+                macroII.setScenario(scenario1);
+                macroII.start();
+
+                //create the CSVWriter
+                try {
+                    CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/newrun.csv"));
+                    DailyStatCollector collector = new DailyStatCollector(macroII,writer);
+                    collector.start();
+
+                } catch (IOException e) {
+                    System.err.println("failed to create the file!");
+                }
+
+
+
+
+
+
+
+                while(macroII.schedule.getTime()<10000)
+                {
+                    macroII.schedule.step(macroII);
+                    printProgressBar(10001,(int)macroII.schedule.getSteps(),100);
+                }
+                for(int k=0; k< 1000; k++)
+                {
+                    macroII.schedule.step(macroII);
+                    averagePrice += macroII.getMarket(GoodType.BEEF).getLastPrice();
+                    averageQ += macroII.getMarket(GoodType.BEEF).getTodayVolume();
+                    averageConsumed += macroII.getMarket(GoodType.BEEF).countTodayConsumptionByRegisteredBuyers();
+                }
+                averagePrice /= 1000f;
+                averageQ /= 1000f;
+                averageConsumed /= 1000f;
+
+                System.out.println("averagePrice : " + averagePrice);
+                System.out.println("averageQuantity Traded : " + averageQ);
+                System.out.println("averageQuantity Consumed: " + averageConsumed);
+                System.out.println();
+
+
+
+
+
+                assertEquals(averagePrice, 68,5);
+                assertEquals(averageQ, 17,5);
+
+            }
+
+
+        }
+
+
+
+
+    }
 
 
 

@@ -6,22 +6,18 @@
 
 package model.scenario;
 
-import agents.EconomicAgent;
 import agents.firm.production.Blueprint;
 import agents.firm.purchases.PurchasesDepartment;
-import agents.firm.purchases.pid.PurchasesDailyPID;
+import agents.firm.purchases.pid.PurchasesFixedPID;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
-import goods.Good;
 import goods.GoodType;
 import model.MacroII;
-import model.utilities.ActionOrder;
-import model.utilities.dummies.DummySeller;
-import sim.engine.SimState;
-import sim.engine.Steppable;
+import model.utilities.dummies.DailyGoodTree;
+import model.utilities.pid.CascadePIDController;
 
 /**
  * <h4>Description</h4>
@@ -72,8 +68,9 @@ public class MonopolistWithInputScenario extends MonopolistScenario {
 
     }
 
-    private void addPurchaseDepartmentToMonopolist() {
-        PurchasesDepartment department = PurchasesDepartment.getEmptyPurchasesDepartment(Long.MAX_VALUE, monopolist,
+    protected void addPurchaseDepartmentToMonopolist() {
+        PurchasesDepartment department = PurchasesDepartment.
+                getEmptyPurchasesDepartment(Long.MAX_VALUE, monopolist,
                 getMarkets().get(GoodType.LEATHER));
         Market market = getMarkets().get(GoodType.LEATHER);
 
@@ -82,7 +79,7 @@ public class MonopolistWithInputScenario extends MonopolistScenario {
         department.setSupplierSearch(new SimpleSellerSearch(market, monopolist));
 
       //  PurchasesFixedPID control = new PurchasesFixedPID(department,4, CascadePIDController.class,model);
-        PurchasesDailyPID control = new PurchasesDailyPID(department);
+        PurchasesFixedPID control = new PurchasesFixedPID(department,10,CascadePIDController.class,model);
 
         department.setControl(control);
         department.setPricingStrategy(control);
@@ -95,58 +92,12 @@ public class MonopolistWithInputScenario extends MonopolistScenario {
         //min price = 2, max price = 50, increments of 1. Each of them sells one a day
         for(long price=2;price<50; price++)
         {
-            final DummySeller seller = createSupplier(getMarkets().get(GoodType.LEATHER),price);
+            final DailyGoodTree seller = new DailyGoodTree(model,price,getMarkets().get(GoodType.LEATHER));
 
 
             getAgents().add(seller);
         }
     }
 
-    private DummySeller createSupplier(final Market inputMarket, final long price) {
-        /**
-         * For this scenario we use a different kind of dummy buyer that, after "period" passed, puts a new order in the market
-         */
-        final DummySeller seller = new DummySeller(getModel(),price){
 
-            @Override
-            public void reactToFilledAskedQuote(Good g, long price, EconomicAgent buyer) {
-                final DummySeller reference = this;
-                assert !reference.has(g);
-                //schedule a new quote in period!
-                this.getModel().scheduleTomorrow(ActionOrder.TRADE, new Steppable() {
-                    @Override
-                    public void step(SimState simState) {
-                        //receive new good
-                        Good input = new Good(GoodType.LEATHER,reference,reference.saleQuote);
-                        reference.receive(input,null);
-
-                        //put another quote
-                        inputMarket.submitSellQuote(reference,reference.saleQuote,input );
-
-                    }
-                });
-
-
-            }
-        };
-
-        assert seller.saleQuote == price;
-        seller.setName("supplier:" + seller.saleQuote);
-
-        //make it adjust once to register and submit the first quote
-
-        getModel().scheduleSoon(ActionOrder.DAWN, new Steppable() {
-            @Override
-            public void step(SimState simState) {
-                inputMarket.registerSeller(seller);
-                //receive new good
-                Good input = new Good(GoodType.LEATHER,seller,seller.saleQuote);
-                seller.receive(input, null);
-
-                //put another quote
-                inputMarket.submitSellQuote(seller,seller.saleQuote,input );
-            }
-        });
-        return seller;
-    }
 }

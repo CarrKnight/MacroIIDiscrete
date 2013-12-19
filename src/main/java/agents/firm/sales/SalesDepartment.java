@@ -159,6 +159,8 @@ public abstract class  SalesDepartment  implements Department {
      * the sum of all the daily closing prices, 0 if there is no trade
      */
     private float sumClosingPrice = 0;
+
+    private long lastAskedPrice = -1;
     /**
      * When this is true, the sales department peddles its goods around when it can't make a quote.
      * If this is false and the sales department can't quote, it just passively wait for buyers
@@ -457,6 +459,7 @@ public abstract class  SalesDepartment  implements Department {
         Preconditions.checkState(getFirm().has(g));
 
         long price = price(g);
+        lastAskedPrice = price;
         if(MacroII.hasGUI())
             getFirm().logEvent(this, MarketEvents.SUBMIT_SELL_QUOTE,getFirm().getModel().getCurrentSimulationTimeInMillis(),
                     "price:" + price);
@@ -1449,6 +1452,10 @@ public abstract class  SalesDepartment  implements Department {
 
     public SalesData getData() {
         return data;
+    }
+
+    public long getLastAskedPrice() {
+        return lastAskedPrice;
     }
 }
 

@@ -1,13 +1,18 @@
 package model.scenario;
 
+import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
+import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.stats.collectors.enums.MarketDataType;
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -526,9 +531,217 @@ public class SimpleSellerScenarioTest {
 
 
     }
-    
-    
-    
+
+    /////////////////////////////////////////////////////////////////////////////////////////
+
+    private SimpleSellerScenario setup102minusq(MacroII macroII, int numberOfSellers) {
+        SimpleSellerScenario scenario = new SimpleSellerScenario(macroII);
+        scenario.setDemandShifts(false);
+        scenario.setDemandIntercept(102);
+        scenario.setDemandSlope(-1);
+        scenario.setInflowPerSeller(16/numberOfSellers);
+        scenario.setNumberOfSellers(numberOfSellers);
+        scenario.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+
+        return scenario;
+    }
+
+
+    private void run102minusqscenario(MacroII macroII, SimpleSellerScenario scenario) {
+        macroII.setScenario(scenario);
+        macroII.start();
+        while(macroII.schedule.getTime()<3500)
+        {
+            macroII.schedule.step(macroII);
+        }
+
+        float averagePrice = 0;
+        float averageQ = 0;
+        for(int i=0; i<500; i++)
+        {
+            macroII.schedule.step(macroII);
+            averageQ += macroII.getMarket(GoodType.GENERIC).getLatestObservation(MarketDataType.VOLUME_TRADED);
+            averagePrice +=macroII.getMarket(GoodType.GENERIC).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+            List<SalesDepartment> departments = scenario.getDepartments();
+            System.out.println("------------------------------------------------------------");
+            for(int k=0; k< scenario.getNumberOfSellers(); k++)
+            {
+                SalesDepartment department = departments.get(k);
+                System.out.println("department " + k + ", price: " + department.getLastAskedPrice() +
+                        ", today sold: " + department.getTodayOutflow() );
+            }
+        }
+
+        averageQ /= 500;
+        averagePrice /= 500;
+        System.out.println( averageQ + "  ----- " + averagePrice);
+        //price should be any between 60 and 51
+        assertEquals(86,averagePrice,.3d);
+        assertEquals(averageQ, 16,.3d); //every day 4 goods should have been traded
+    }
+
+
+
+    @Test
+    public void rightPriceAndQuantityTestWithNoInventoryOneAtATime101MinusQ()
+    {
+        for(int i=0; i<5; i++)
+        {
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            SimpleSellerScenario scenario = setup102minusq(macroII,1);
+            scenario.setSellerStrategy(SimpleFlowSellerPID.class);
+
+
+
+
+            run102minusqscenario(macroII, scenario);
+
+        }
+
+
+    }
+
+    @Test
+    public void SalesControlFlowPIDWithFixedInventoryOneAtATime101MinusQ()
+    {
+        for(int i=0; i<5; i++)
+        {
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            SimpleSellerScenario scenario = setup102minusq(macroII,1);
+            scenario.setSellerStrategy(SalesControlWithFixedInventoryAndPID.class);
+
+
+
+
+            run102minusqscenario(macroII, scenario);
+
+        }
+
+
+    }
+
+
+    @Test
+    public void SmoothedDailyInventoryPricingStrategyOneAtATime101MinusQ()
+    {
+        for(int i=0; i<5; i++)
+        {
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            SimpleSellerScenario scenario = setup102minusq(macroII,1);
+            scenario.setSellerStrategy(SmoothedDailyInventoryPricingStrategy.class);
+
+
+
+
+            run102minusqscenario(macroII, scenario);
+
+        }
+
+
+    }
+
+    @Test
+    public void FlowsOnly101MinusQ()
+    {
+        for(int i=0; i<5; i++)
+        {
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            SimpleSellerScenario scenario = setup102minusq(macroII,1);
+            scenario.setSellerStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
+
+
+
+
+            run102minusqscenario(macroII, scenario);
+
+        }
+
+
+    }
+
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+    //4 sellers!
+
+
+    @Test
+    public void rightPriceAndQuantityTestWithNoInventory4Sellers()
+    {
+        for(int i=0; i<5; i++)
+        {
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            SimpleSellerScenario scenario = setup102minusq(macroII,4);
+            scenario.setSellerStrategy(SimpleFlowSellerPID.class);
+
+
+
+
+            run102minusqscenario(macroII, scenario);
+
+        }
+
+
+    }
+
+    @Test
+    public void SalesControlFlowPIDWithFixedInventory4Sellers()
+    {
+        for(int i=0; i<5; i++)
+        {
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            SimpleSellerScenario scenario = setup102minusq(macroII,4);
+            scenario.setSellerStrategy(SalesControlWithFixedInventoryAndPID.class);
+
+
+
+
+            run102minusqscenario(macroII, scenario);
+
+        }
+
+
+    }
+
+
+    @Test
+    public void SmoothedDailyInventoryPricingStrategy4Sellers()
+    {
+        for(int i=0; i<5; i++)
+        {
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            SimpleSellerScenario scenario = setup102minusq(macroII,4);
+            scenario.setSellerStrategy(SmoothedDailyInventoryPricingStrategy.class);
+
+
+
+
+            run102minusqscenario(macroII, scenario);
+
+        }
+
+
+    }
+
+    @Test
+    public void FlowsOnly4Sellers()
+    {
+        for(int i=0; i<5; i++)
+        {
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            SimpleSellerScenario scenario = setup102minusq(macroII,4);
+            scenario.setSellerStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
+
+
+
+
+            run102minusqscenario(macroII, scenario);
+
+        }
+
+
+    }
     
     
     

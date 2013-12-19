@@ -102,7 +102,8 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
      * @param oldProfits          what were the profits back then   @return the new worker targets. Any negative number means to check again!
      */
     public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
-        LOGGER.log(Level.INFO,"-----------------------------------------" + maximizer.getHr().getFirm());
+        if(MarginalMaximizerStatics.printOutDiagnostics)
+            System.out.println("-----------------------------------------" + maximizer.getHr().getFirm());
         numberOfChoices++;
 
 
@@ -110,12 +111,14 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
         int futureTarget = maximizer.chooseWorkerTarget(currentWorkerNumber, newProfits, newRevenues, newCosts, oldRevenues, oldCosts, oldWorkerTarget, oldProfits);    //To change body of overridden methods use File | Settings | File Templates.
 
 
-
-        LOGGER.log(Level.INFO,"worker number: " + currentWorkerNumber + ", actual target: " + currentWorkerTarget + ", future target: " + futureTarget);
+        if(MarginalMaximizerStatics.printOutDiagnostics)
+            System.out.println("worker number: " + currentWorkerNumber + ", actual target: " + currentWorkerTarget + ", future target: " + futureTarget);
 
         if(futureTarget == currentWorkerNumber)
         {
-            LOGGER.log(Level.INFO, "----> unchanged at: " +currentWorkerTarget);
+            if(MarginalMaximizerStatics.printOutDiagnostics)
+
+                System.out.println("----> unchanged at: " +currentWorkerTarget);
             return currentWorkerTarget;
 
         }
@@ -123,12 +126,15 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
         {
             if(futureTarget>currentWorkerTarget)
             {
-                LOGGER.log(Level.INFO, "----> increased at at: " +(currentWorkerTarget+1));
+                if(MarginalMaximizerStatics.printOutDiagnostics)
+                    System.out.println("----> increased at at: " +(currentWorkerTarget+1));
+
                 return currentWorkerTarget+1;
             }
             else
             {
-                LOGGER.log(Level.INFO, "----> unchanged at: " +currentWorkerTarget);
+                if(MarginalMaximizerStatics.printOutDiagnostics)
+                    System.out.println("----> unchanged at: " +currentWorkerTarget);
                 return currentWorkerTarget;
             }
         }
@@ -137,15 +143,23 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
 
             if(futureTarget<currentWorkerTarget)
             {
-                LOGGER.log(Level.INFO, "----> decreased at at: " +(currentWorkerTarget-1));
+
                 if(numberOfChoices < 1000)
+                {
+                    if(MarginalMaximizerStatics.printOutDiagnostics)
+                        System.out.println("----> decreased at at: " +Math.max(currentWorkerTarget-1,1) + ", too few choices");
                     return Math.max(currentWorkerTarget-1,1);
+
+                }
                 else
+                if(MarginalMaximizerStatics.printOutDiagnostics)
+                    System.out.println("----> decreased at at: " + (currentWorkerTarget-1));
                     return currentWorkerTarget-1;
             }
             else
             {
-                LOGGER.log(Level.INFO, "----> unchanged at: " +currentWorkerTarget);
+                if(MarginalMaximizerStatics.printOutDiagnostics)
+                    System.out.println("----> unchanged at: " +currentWorkerTarget);
                 return currentWorkerTarget;
             }
         }

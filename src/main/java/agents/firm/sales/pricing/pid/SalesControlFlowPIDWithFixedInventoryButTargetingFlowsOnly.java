@@ -75,7 +75,11 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly implemen
     private boolean isActive;
 
 
-
+                                              /*
+                                               float proportionalGain =
+        float integralGain = ;
+        float derivativeGain = ;
+                                               */
 
 
     /**
@@ -84,9 +88,10 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly implemen
      */
     public SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(SalesDepartment department) {
         this(department,10,50,department.getFirm().getModel(),
-                department.getFirm().getModel().drawProportionalGain()/1.5f,
-                department.getFirm().getModel().drawIntegrativeGain()/1.5f,
-                department.getFirm().getModel().drawDerivativeGain(),
+
+                0.04954876f + ((float) department.getRandom().nextGaussian()) / 100f,
+                0.45825003f + ((float) department.getRandom().nextGaussian()) / 100f,
+                0.000708338f + ((float) department.getRandom().nextGaussian() / 10000f),
                 department.getRandom());
     }
 
@@ -184,14 +189,17 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly implemen
         }
 
 
-        //System.out.println("target:" + getTarget() + ", outflow: " + outflow);
+
+       // System.out.println("ouflow: " + outflow +", target: " + getTarget() + " ----> " + controller.getCurrentMV());
+
+
         controller.adjustOnce(outflow-getTarget(),isActive);
 
         department.getFirm().logEvent(department, MarketEvents.CHANGE_IN_POLICY, department.getFirm().getModel().getCurrentSimulationTimeInMillis(),
                 "inventory: " + department.getHowManyToSell() + ", outflow:"
-                + outflow + ", target: "
-                + getTarget() + "\n whichphase? :" + phase + ", oldPrice:"
-                + oldprice + " || newPrice: " + controller.getCurrentMV() );
+                        + outflow + ", target: "
+                        + getTarget() + "\n whichphase? :" + phase + ", oldPrice:"
+                        + oldprice + " || newPrice: " + controller.getCurrentMV() );
 
 
         if(getSpeed()==0)
@@ -288,14 +296,13 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly implemen
     @Override
     public float estimateSupplyGap() {
         int currentInventory = department.getHowManyToSell();
-        if(phase.equals(SimpleInventoryAndFlowPIDPhase.SELL))
+        if(phase.equals(SimpleInventoryAndFlowPIDPhase.SELL) && department.getHowManyToSell() >0 )
         {
-            return Math.round(getTarget()-getFilteredOutflow());
+            return 0;
         }
         else
         {
-            assert phase.equals(SimpleInventoryAndFlowPIDPhase.BUILDUP);
-            return department.getHowManyToSell() - acceptableInventory;
+            return 1000; //ignore not sell.
         }
     }
 

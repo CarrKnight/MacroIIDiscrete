@@ -17,7 +17,6 @@ import model.utilities.DelayException;
 import model.utilities.stats.collectors.enums.PlantDataType;
 
 import java.util.Set;
-import java.util.logging.Level;
 
 /**
  * <h4>Description</h4>
@@ -85,7 +84,7 @@ public final class MarginalMaximizerStatics {
 
 
         if(printOutDiagnostics)
-            RobustMarginalMaximizer.LOGGER.log(Level.INFO,
+            System.out.println(
                     "total input: " + inputCosts.getTotalCost() + ", total wage costs: " + wageCosts.getTotalCost() + ", targetWorkers: " + targetWorkers + "\n"
                             +"marginal input: " + inputCosts.getMarginalCost() + ", marginal wages:" + wageCosts.getMarginalCost() + ", revenue: " +
                             marginalRevenue + " ----- workers: " + currentWorkers + "\n"
@@ -176,7 +175,7 @@ public final class MarginalMaximizerStatics {
         //long oldWage = currentWorkers == 0 ? 0 : control.getCurrentWage();
         float oldWage = currentWorkers == 0 ? 0 : hr.predictPurchasePriceWhenNoChangeInProduction();
         if(printOutDiagnostics)
-           RobustMarginalMaximizer.LOGGER.log(Level.INFO,
+           System.out.println(
                     "predicte wages: " + futureWage + ", predicted current wage: " +  oldWage +
                     ", actual old wage:" + control.getCurrentWage() + ", total labor: " + hr.getMarket().getYesterdayVolume() );
 
@@ -226,7 +225,7 @@ public final class MarginalMaximizerStatics {
 
             pricePerUnit = pricePerUnit < 0 ? policy.replaceUnknownPrediction(owner.getSalesDepartment(output).getMarket(), p.getRandom()) : pricePerUnit;
             if(printOutDiagnostics)
-                RobustMarginalMaximizer.LOGGER.log(Level.INFO,"predicted price: " + pricePerUnit + ", old price:" + oldPrice);
+                System.out.println("predicted price: " + pricePerUnit + ", old price:" + oldPrice);
 
 
             marginalRevenue += (p.hypotheticalThroughput(targetWorkers, output) * pricePerUnit -
@@ -271,7 +270,7 @@ public final class MarginalMaximizerStatics {
             marginalInputCosts += (costPerInput*totalInputNeeded - oldCosts*oldNeeds);
 
             if(printOutDiagnostics)
-                RobustMarginalMaximizer.LOGGER.log(Level.INFO,"predicte inputCost: " + costPerInput + ", predicted current costs: " +  oldCosts +
+                System.out.println("predicte inputCost: " + costPerInput + ", predicted current costs: " +  oldCosts +
                         ", actual old costs:" + dept.getLastClosingPrice()+ ", total input: " + totalInputNeeded );
 
             //marginal costs are negative (marginal savings) if we are reducing production

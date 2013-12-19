@@ -98,7 +98,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
     /**
      * At what priority does the purchase department act when trading. It can be changed by its strategies.
      */
-    private Priority tradePriority = Priority.AFTER_STANDARD;
+    private Priority tradePriority = Priority.STANDARD;
 
 
     /**
@@ -827,19 +827,16 @@ public class PurchasesDepartment implements Deactivatable, Department {
             //call straight the buy algorithm
             final boolean queued =  cancelQuote();
             //schedule ASAP: the quote itself will only be placed on TRADE though, so that's okay!
-            model.scheduleASAP(new Steppable() {
-                @Override
-                public void step(SimState state) {
 
-                    buy(); //try again!
-                    if(!queuedBuy && queued){
-                        //there was something in queue we should buy
-                        if( status != PurchasesDepartmentStatus.IDLE)
-                            queuedBuy = true;     //empty the queue (unlesss you are waiting in which case you already have it full)
 
-                    }
-                }
-            });
+            buy(); //try again!
+            if(!queuedBuy && queued){
+                //there was something in queue we should buy
+                if( status != PurchasesDepartmentStatus.IDLE)
+                    queuedBuy = true;     //empty the queue (unlesss you are waiting in which case you already have it full)
+
+            }
+
 
 
 

@@ -61,7 +61,7 @@ public class Customer extends EconomicAgent{
 
     public Customer(MacroII model, long maxPrice, Market market) {
         super(model);
-        Preconditions.checkArgument(maxPrice > 0);
+        Preconditions.checkArgument(maxPrice >= 0);
         this.maxPrice = maxPrice;
         this.market = market;
         market.registerBuyer(this);

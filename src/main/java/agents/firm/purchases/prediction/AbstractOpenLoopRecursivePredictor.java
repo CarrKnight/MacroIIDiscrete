@@ -55,8 +55,8 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
         delegate.setInitialOpenLoopLearningTime(openLoopPeriod + 1);
         delegate.setTimeDelay(0);
         int dimensions = delegate.getPriceLags() + delegate.getIndependentLags() + 1;
-        setRegression(new GunnarsonRegularizerDecorator(new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(dimensions),.995d)));
-
+        setRegression(new GunnarsonRegularizerDecorator( new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(dimensions),.995d)));
+        //setRegression(new GunnarsonRegularizerDecorator(new KalmanRecursiveRegression(dimensions),1d));
 
 
 
@@ -89,7 +89,7 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
             updateSlopes();
 
 
-
+       /*
             if(delegate instanceof RecursivePurchasesPredictor)
             {
                 System.out.print(model.getMainScheduleTime() +", purchases ");
@@ -99,7 +99,7 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
                 System.out.print(model.getMainScheduleTime() + ", sales: ");
             }
             System.out.println("learned slope: " + (upwardSlope) +" ================ " + (downwardSlope ) + " Trace: "  + delegate.getRegression().getTrace());
-
+         */
 
 
 

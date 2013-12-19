@@ -53,7 +53,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
                     PurchasesDepartment.getPurchasesDepartment(Long.MAX_VALUE,firm,getMarkets().get(input),FixedInventoryControl.class,
                             CheaterPricing.class,null,null);
 
-            factoryProducedPurchaseDepartment.getInventoryControl().setInventoryTarget(80);
+            factoryProducedPurchaseDepartment.getInventoryControl().setInventoryTarget(100);
             factoryProducedPurchaseDepartment.getInventoryControl().setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(2f);
 
 
@@ -97,7 +97,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
 
         //create the CSVWriter
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/cheater3.csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/newrun.csv"));
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
 

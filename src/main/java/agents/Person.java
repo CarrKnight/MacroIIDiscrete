@@ -284,7 +284,7 @@ public class Person extends EconomicAgent {
                     //if we can't quote we have to peddle
                     throw new RuntimeException("Ernesto lazily didn't implement peddling.");
                 }            }
-        }, Priority.BEFORE_STANDARD);
+        }, Priority.AFTER_STANDARD);
 
 
 
@@ -418,7 +418,7 @@ public class Person extends EconomicAgent {
 
 
 
-        //if needed, start your routine of looking for better job (greedy)
+        //if need it, start your routine of looking for better job (greedy)
         getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
             @Override
             public void step(SimState simState) {

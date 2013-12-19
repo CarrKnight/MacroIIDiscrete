@@ -6,7 +6,6 @@
 
 package model.scenario;
 
-import agents.EconomicAgent;
 import agents.Person;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
@@ -33,6 +32,7 @@ import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
+import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.annotations.VisibleForTesting;
@@ -41,11 +41,10 @@ import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
 import financial.utilities.ShopSetPricePolicy;
-import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.dummies.DummyBuyer;
+import model.utilities.dummies.Customer;
 import model.utilities.filters.ExponentialFilter;
 import model.utilities.pid.PIDController;
 import model.utilities.stats.collectors.DailyStatCollector;
@@ -53,6 +52,7 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -137,17 +137,6 @@ public class OneLinkSupplyChainScenario extends Scenario {
      * how many units of beef you need for 1 unit of food
      */
     private int foodMultiplier = 1;
-
-    /**
-     * The maximization speed in weeks of beef producers
-     */
-    private int weeksToMakeObservationBeef = 3;
-
-    /**
-     * The maximization speed in weeks of food producers
-     */
-    private int weeksToMakeObservationFood = 3;
-
 
 
     //this is public only so that I can log it!
@@ -324,13 +313,9 @@ public class OneLinkSupplyChainScenario extends Scenario {
                 SellerSearchAlgorithm,PIDTargeterWithQuickFiring,WorkforceMaximizer<WorkerMaximizationAlgorithm>,WorkerMaximizationAlgorithm>
                 produced =
                 HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE,firm,laborMarket,plant,
-                PIDTargeterWithQuickFiring.class, maximizerType,controlType,null,null);
+                        PIDTargeterWithQuickFiring.class, maximizerType,controlType,null,null);
 
-    /*    if(blueprint.getOutputs().containsKey(GoodType.BEEF))
-            produced.getWorkforceMaximizer().setWeeksToMakeObservation(weeksToMakeObservationBeef);
-        else
-            produced.getWorkforceMaximizer().setWeeksToMakeObservation(weeksToMakeObservationFood);
-      */
+
 
 
         HumanResources hr = produced.getDepartment();
@@ -360,24 +345,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         /**
          * For this scenario we use a different kind of dummy buyer that, after "period" passed, puts a new order in the market
          */
-        final DummyBuyer buyer = new DummyBuyer(getModel(), reservationPrice,marketToBuyFrom){
-            @Override
-            public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
-                consume(g.getType());
-                //trick to get the steppable to recognize the anonymous me!
-                final DummyBuyer reference = this;
-                //schedule a new quote in period!
-                this.getModel().scheduleTomorrow(ActionOrder.TRADE, new Steppable() {
-                    @Override
-                    public void step(SimState simState) {
-                        earn(Math.max(1000l - reference.getCash(),0));
-                        //put another quote
-                        marketToBuyFrom.submitBuyQuote(reference, getFixedPrice());
-
-                    }
-                });
-
-            }
+        final Customer buyer = new Customer(model,reservationPrice,marketToBuyFrom){
 
             @Override
             public String toString() {
@@ -385,19 +353,6 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
             }
         };
-
-
-        //make it adjust once to register and submit the first quote
-
-        getModel().scheduleSoon(ActionOrder.DAWN, new Steppable() {
-            @Override
-            public void step(SimState simState) {
-                marketToBuyFrom.registerBuyer(buyer);
-                buyer.earn(1000l);
-                //make the buyer submit a quote soon.
-                marketToBuyFrom.submitBuyQuote(buyer, buyer.getFixedPrice());
-            }
-        });
 
         getAgents().add(buyer);
     }
@@ -532,7 +487,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
 
         final MacroII macroII = new MacroII(System.currentTimeMillis());
-        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
+        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII,GoodType.BEEF){
 
             @Override
             protected void buildBeefSalesPredictor(SalesDepartment dept) {
@@ -551,9 +506,26 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
             @Override
             protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
-                SalesDepartment department = super.createSalesDepartment(firm, goodmarket);
+                final SalesDepartment department = super.createSalesDepartment(firm, goodmarket);
                 if(goodmarket.getGoodType().equals(GoodType.FOOD))
                     department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+
+
+                if(goodmarket.getGoodType().equals(GoodType.BEEF))
+                {
+                    SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly askPricingStrategy =
+                            new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(department);
+                    department.setAskPricingStrategy(askPricingStrategy);
+                    askPricingStrategy.setProportionalGain(askPricingStrategy.getProportionalGain()/divideProportionalGainByThis);
+                    askPricingStrategy.setIntegralGain(askPricingStrategy.getIntegralGain()/divideIntegrativeGainByThis);
+                    model.scheduleAnotherDay(ActionOrder.CLEANUP_DATA_GATHERING,new Steppable() {
+                        @Override
+                        public void step(SimState state) {
+                            department.getData().writeToCSVFile(new File("supplySales.csv"));
+                        }
+                    },10000);
+                }
+
                 return department;
             }
 
@@ -561,7 +533,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
             protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
                 HumanResources hr = super.createPlant(blueprint, firm, laborMarket);
                 if(blueprint.getOutputs().containsKey(GoodType.BEEF))      {
-                   hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
+                    hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
                 }
                 else
                     hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
@@ -574,7 +546,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
         //competition!
         scenario1.setNumberOfBeefProducers(1);
-        scenario1.setNumberOfFoodProducers(1);
+        scenario1.setNumberOfFoodProducers(2);
 
         scenario1.setDivideProportionalGainByThis(100f);
         scenario1.setDivideIntegrativeGainByThis(100f);
@@ -587,7 +559,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
         //create the CSVWriter
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/stickyPrices.csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/newrun.csv"));
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
 
@@ -608,6 +580,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         }
 
 
+
     }
 
 
@@ -616,7 +589,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
     /**
      * Gets the type of sales department firms use.
- *
+     *
      * @return Value of the type of sales department firms use.
      */
     public Class<? extends SalesDepartment> getSalesDepartmentType() {
@@ -732,43 +705,6 @@ public class OneLinkSupplyChainScenario extends Scenario {
      */
     public void setControlType(Class<? extends WorkerMaximizationAlgorithm> controlType) {
         this.controlType = controlType;
-    }
-
-
-    /**
-     * Sets new The maximization speed in weeks of beef producers.
-     *
-     * @param weeksToMakeObservationBeef New value of The maximization speed in weeks of beef producers.
-     */
-    public void setWeeksToMakeObservationBeef(int weeksToMakeObservationBeef) {
-        this.weeksToMakeObservationBeef = weeksToMakeObservationBeef;
-    }
-
-    /**
-     * Gets The maximization speed in weeks of food producers.
-     *
-     * @return Value of The maximization speed in weeks of food producers.
-     */
-    public int getWeeksToMakeObservationFood() {
-        return weeksToMakeObservationFood;
-    }
-
-    /**
-     * Sets new The maximization speed in weeks of food producers.
-     *
-     * @param weeksToMakeObservationFood New value of The maximization speed in weeks of food producers.
-     */
-    public void setWeeksToMakeObservationFood(int weeksToMakeObservationFood) {
-        this.weeksToMakeObservationFood = weeksToMakeObservationFood;
-    }
-
-    /**
-     * Gets The maximization speed in weeks of beef producers.
-     *
-     * @return Value of The maximization speed in weeks of beef producers.
-     */
-    public int getWeeksToMakeObservationBeef() {
-        return weeksToMakeObservationBeef;
     }
 
 

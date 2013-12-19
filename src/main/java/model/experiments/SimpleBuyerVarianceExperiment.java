@@ -9,6 +9,7 @@ package model.experiments;
 import goods.GoodType;
 import model.MacroII;
 import model.scenario.SimpleBuyerScenario;
+import org.junit.Test;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -41,6 +42,7 @@ public class SimpleBuyerVarianceExperiment {
     double distanceFromTarget = 0;
 
     public static PrintWriter writer;
+
 
     public void runOneExperiment(float proportional,float integrative,float derivative)
     {

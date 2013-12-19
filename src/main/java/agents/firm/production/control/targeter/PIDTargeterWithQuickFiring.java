@@ -94,11 +94,11 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
      */
     public PIDTargeterWithQuickFiring(HumanResources hr, PlantControl control) {
         this(hr,new PIDController(
-                hr.getFirm().getModel().drawProportionalGain()/15,
+                hr.getFirm().getModel().drawProportionalGain()/2,
                 hr.getFirm().getModel().drawIntegrativeGain()/5,
                 -hr.getFirm().getModel().drawProportionalGain()/5,
                 hr.getRandom()),
-               control);
+                control);
     }
 
     /**
@@ -170,7 +170,7 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
         ControllerInput input = ControllerInput.simplePIDTarget(workerTarget,hr.getPlant().getNumberOfWorkers());
         pid.adjust(input
                 , active, hr.getPlant().getModel(), this,
-                ActionOrder.THINK);  //i made this before standard so it acts BEFORE the maximizer
+                ActionOrder.ADJUST_PRICES);  //i made this before standard so it acts BEFORE the maximizer
 
         //initially round
         final long newWage = Math.round(pid.getCurrentMV());
@@ -181,31 +181,30 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
         //if there was a REAL change call setCurrentWage of the control. Otherwise don't bother.
         if(oldWage != newWage && newWage >=0) //if pid says to change prices, change prices
         {
-            ((MacroII) simState).scheduleSoon(ActionOrder.DAWN,new Steppable() {
-                @Override
-                public void step(SimState state) {
-                        //if we have the ovverride flag on, this is the time
-      //              System.out.println(" setting new wage " + newWage + ", given old wage " + oldWage + " pid mv: " + pid.getCurrentMV() + "| workers : " + hr.getPlant().getNumberOfWorkers() + ", target: " + workerTarget  );
-                    plantControl.setCurrentWage(newWage); //set the new wage! that'll do it!
 
-                    //log it!
-                    if(MacroII.hasGUI())
+            //if we have the ovverride flag on, this is the time
+            //              System.out.println(" setting new wage " + newWage + ", given old wage " + oldWage + " pid mv: " + pid.getCurrentMV() + "| workers : " + hr.getPlant().getNumberOfWorkers() + ", target: " + workerTarget  );
+            plantControl.setCurrentWage(newWage); //set the new wage! that'll do it!
 
-                        hr.getFirm().logEvent(hr,
-                                MarketEvents.CHANGE_IN_POLICY,
-                                hr.getFirm().getModel().getCurrentSimulationTimeInMillis(),
-                                "target: " + workerTarget + ", #workers:" + hr.getPlant().getNumberOfWorkers() +
-                                        "; oldwage:" + oldWage + ", newWage:" + newWage);                }
-            });
+            //log it!
+            if(MacroII.hasGUI())
 
-
+                hr.getFirm().logEvent(hr,
+                        MarketEvents.CHANGE_IN_POLICY,
+                        hr.getFirm().getModel().getCurrentSimulationTimeInMillis(),
+                        "target: " + workerTarget + ", #workers:" + hr.getPlant().getNumberOfWorkers() +
+                                "; oldwage:" + oldWage + ", newWage:" + newWage);
         }
 
 
 
-
-
     }
+
+
+
+
+
+
 
     /**
      * utility to fire workers without trial and attempt: just target how many workers you want to fire and that's it
@@ -268,7 +267,7 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
     @Override
     public void start() {
         //start stepping your PID!
-        hr.getFirm().getModel().scheduleSoon(ActionOrder.THINK,this, Priority.BEFORE_STANDARD); //i made this before standard so it acts BEFORE the maximizer
+        hr.getFirm().getModel().scheduleSoon(ActionOrder.ADJUST_PRICES,this, Priority.STANDARD); //i made this before standard so it acts BEFORE the maximizer
 
     }
 

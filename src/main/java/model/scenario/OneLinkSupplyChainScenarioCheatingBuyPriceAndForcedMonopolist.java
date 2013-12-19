@@ -24,7 +24,7 @@ import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
-import agents.firm.sales.prediction.SalesPredictor;
+import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import au.com.bytecode.opencsv.CSVWriter;
 import financial.market.Market;
 import goods.GoodType;
@@ -36,6 +36,7 @@ import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -96,6 +97,8 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
         }
         else
         {
+
+
 
             Plant plant = new Plant(blueprint, firm);
             plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
@@ -219,12 +222,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
                 new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.BEEF)
                 {
 
-                    @Override
-                    protected void buildBeefSalesPredictor(SalesDepartment dept) {
-                        FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
-                        predictor.setDecrementDelta(2f);
-                        dept.setPredictorStrategy(predictor);
-                    }
+
 
                     @Override
                     public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
@@ -235,10 +233,27 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
 
                     @Override
                     protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
-                        SalesDepartment department = super.createSalesDepartment(firm, goodmarket);    //To change body of overridden methods use File | Settings | File Templates.
-                      //  department.setAskPricingStrategy(new SalesControlWithFixedInventoryAndPID(department,150));
-                        if(goodmarket.getGoodType().equals(GoodType.FOOD))
+                        final SalesDepartment department = super.createSalesDepartment(firm, goodmarket);
+                     //   if(goodmarket.getGoodType().equals(GoodType.FOOD))
                             department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+
+
+                        if(goodmarket.getGoodType().equals(GoodType.BEEF))
+                        {
+                            SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly askPricingStrategy =
+                                    new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(department);
+                            department.setAskPricingStrategy(askPricingStrategy);
+
+                            askPricingStrategy.setProportionalGain(askPricingStrategy.getProportionalGain()/divideProportionalGainByThis);
+                            askPricingStrategy.setIntegralGain(askPricingStrategy.getIntegralGain()/divideIntegrativeGainByThis);
+                            model.scheduleAnotherDay(ActionOrder.CLEANUP_DATA_GATHERING,new Steppable() {
+                                @Override
+                                public void step(SimState state) {
+                                    department.getData().writeToCSVFile(new File("supplySales.csv"));
+                                }
+                            },10000);
+                        }
+
                         return department;
                     }
 
@@ -258,6 +273,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
         scenario1.setBeefPriceFilterer(null);
 
         //competition!
+        scenario1.setNumberOfFoodProducers(5);
 
 
         scenario1.setDivideProportionalGainByThis(100f);
@@ -275,7 +291,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
 
         //create the CSVWriter
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/forcedmonopolistTest.csv"));
+            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/newrun.csv"));
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
 
@@ -295,6 +311,8 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
         {
             macroII.schedule.step(macroII);
             printProgressBar(15001, (int) macroII.schedule.getSteps(), 100);
+
+
         }
 
          System.out.println("done");
