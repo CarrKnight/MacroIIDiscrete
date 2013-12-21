@@ -78,12 +78,12 @@ public class OpenLoopRecursiveSalesPredictor extends AbstractOpenLoopRecursivePr
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
+    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         float slope = getUpwardSlope();
         if(slope > 0)
             slope = 0;
         decreaseSalesPredictor.setDecrementDelta(-slope);
-        return decreaseSalesPredictor.predictSalePriceWhenNotChangingPoduction(dept);
+        return decreaseSalesPredictor.predictSalePriceWhenNotChangingProduction(dept);
     }
 
     /**

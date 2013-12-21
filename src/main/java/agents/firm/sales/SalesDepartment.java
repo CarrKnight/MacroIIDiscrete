@@ -29,7 +29,7 @@ import goods.GoodType;
 import javafx.beans.value.ObservableDoubleValue;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.filters.WeightedMovingAverage;
+import model.utilities.filters.ExponentialFilter;
 import model.utilities.stats.collectors.SalesData;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.engine.SimState;
@@ -76,29 +76,29 @@ public abstract class  SalesDepartment  implements Department {
     /**
      * The firm where the sales department belongs
      */
-    protected final Firm firm;
-    protected final MacroII model;
+    private final Firm firm;
+    private final MacroII model;
     /**
      * Here we keep memorized the last n totalSales of this firm.
      */
-    protected final Deque<Long> totalSales;
+    private final Deque<Long> totalSales;
     /**
      * Here we keep memorized the value of unsold merchandise of this department
      */
-    protected final Deque<Long> totalUnsold;
+    private final Deque<Long> totalUnsold;
     /**
      * Here we keep memorized the sum of revenue-costs for the goods sold
      */
-    protected final Deque<Long> grossMargin;
+    private final Deque<Long> grossMargin;
     /**
      * Here we keep memorized the cost of goods sold
      */
-    protected final Deque<Long> cogs;
-    protected LinkedList<SalesDepartmentListener> salesDepartmentListeners;
+    private final Deque<Long> cogs;
+    private LinkedList<SalesDepartmentListener> salesDepartmentListeners;
     /**
      * The market the sales department deals in
      */
-    protected Market market;
+    protected final Market market;
     /**
      * The procedure used by the sales department to search the market.
      * It is
@@ -106,7 +106,7 @@ public abstract class  SalesDepartment  implements Department {
     protected BuyerSearchAlgorithm buyerSearchAlgorithm;
     protected SellerSearchAlgorithm sellerSearchAlgorithm;
 
-    public static Class<? extends  SalesPredictor> defaultPredictorStrategy = OpenLoopRecursiveSalesPredictor.class;
+    public static final Class<? extends  SalesPredictor> defaultPredictorStrategy = OpenLoopRecursiveSalesPredictor.class;
 
     /**
      * This is the strategy to predict future sale prices when the order book is not visible.
@@ -152,9 +152,9 @@ public abstract class  SalesDepartment  implements Department {
     private long lastClosingPrice = -1;
 
     /**
-     * average last week price weihted by outflow
+     * average last week price weighted by outflow
      */
-    private WeightedMovingAverage<Long,Double> averagedPrice = new WeightedMovingAverage<>(7);
+    private final ExponentialFilter<Long> averagedPrice = new ExponentialFilter<>(1f);
 
 
 
@@ -172,7 +172,7 @@ public abstract class  SalesDepartment  implements Department {
      * When this is true, the sales department peddles its goods around when it can't make a quote.
      * If this is false and the sales department can't quote, it just passively wait for buyers
      */
-    protected boolean canPeddle = true;
+    protected boolean canPeddle = false;
 
     private boolean aboutToUpdateQuotes = false;
 
@@ -260,7 +260,7 @@ public abstract class  SalesDepartment  implements Department {
      * </ul>
      *
      *
-     * @param expectedProductionCost the HQ estimate of costs in producing whatever it wants to sell. It isn't necesarilly used.
+     * @param expectedProductionCost the HQ estimate of costs in producing whatever it wants to sell. It isn't necessarily used.
      * @param increaseStep by how much does production increase?
      * @return the best offer available or -1 if there are no quotes
      */
@@ -275,7 +275,7 @@ public abstract class  SalesDepartment  implements Department {
     /**
      * This is called by the firm when it wants to predict the price they can sell to if they increase production
      *
-     * @param expectedProductionCost the HQ estimate of costs in producing whatever it wants to sell. It isn't necesarilly used.
+     * @param expectedProductionCost the HQ estimate of costs in producing whatever it wants to sell. It isn't necessarily used.
      * @param decreaseStep by how much daily production will decrease
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
@@ -394,7 +394,7 @@ public abstract class  SalesDepartment  implements Department {
         sumClosingPrice = 0;
 
         if(data.numberOfObservations() > 1)
-            averagedPrice.addObservation(lastClosingPrice,Math.max(data.getLatestObservation(SalesDataType.OUTFLOW),1));
+            averagedPrice.addObservation(lastClosingPrice);
 
 
         model.scheduleTomorrow(ActionOrder.DAWN,new Steppable() {
@@ -622,7 +622,7 @@ public abstract class  SalesDepartment  implements Department {
         removeFromToSellMasterlist(g);
 
         //if you were waiting for this good to sell as a quote, stop waiting
-        dontWaitForThisQuoteToBeFilled(g);
+        doNotWaitForThisQuoteToBeFilled(g);
 
         //if the price is 0 or positive it means it was a sale, so you should register/log it as such
         logOutflow(g, price);
@@ -635,7 +635,7 @@ public abstract class  SalesDepartment  implements Department {
 
     }
 
-    protected void dontWaitForThisQuoteToBeFilled(Good g) {
+    void doNotWaitForThisQuoteToBeFilled(Good g) {
         if(goodsQuotedOnTheMarket.remove(g) != null)  //do you remember having a quote at all?
         {
             //removed the quote
@@ -696,7 +696,7 @@ public abstract class  SalesDepartment  implements Department {
      * @param q the quote made in the market
      * @return true if you want to peddle too
      */
-    public boolean shouldIPeddle(Quote q){
+    boolean shouldIPeddle(Quote q){
         return false; //TODO fix this
     }
 
@@ -794,7 +794,7 @@ public abstract class  SalesDepartment  implements Department {
      * @param g the good to sell
      * @return the wait time, or -1 if we are NOT going to try again!
      */
-    public final double tryAgainNextTime(Good g){
+    final double tryAgainNextTime(Good g){
         return getFirm().getModel().getPeddlingSpeed();
 
     }
@@ -927,7 +927,7 @@ public abstract class  SalesDepartment  implements Department {
     /**
      * @return the value for the field sellerSearchAlgorithm.
      */
-    public SellerSearchAlgorithm getSellerSearchAlgorithm() {
+    SellerSearchAlgorithm getSellerSearchAlgorithm() {
         return sellerSearchAlgorithm;
     }
 
@@ -973,6 +973,8 @@ public abstract class  SalesDepartment  implements Department {
             else{
                 //otherwise search for it
                 EconomicAgent opponent = getSellerSearchAlgorithm().getBestInSampleSeller();
+                if(opponent == null)
+                    return -1;
                 return opponent.askedForASaleQuote(getFirm(), getMarket().getGoodType()).getPriceQuoted();
             }
 
@@ -1190,7 +1192,7 @@ public abstract class  SalesDepartment  implements Department {
     /**
      * Notify the listeners and the logger/gui that a good was sold! Also count it among the daily goods sold
      */
-    public void fireGoodSoldEvent(SaleResult saleResult){
+    void fireGoodSoldEvent(SaleResult saleResult){
 
 
 
@@ -1299,7 +1301,7 @@ public abstract class  SalesDepartment  implements Department {
      * @param productionCost the hypothetical cost of production of this good
      * @return
      */
-    public long hypotheticalSalePrice(long productionCost){
+    long hypotheticalSalePrice(long productionCost){
         Good imaginaryGood =new Good(getGoodType(),getFirm(),productionCost);
         return price(imaginaryGood);
     }
@@ -1415,7 +1417,7 @@ public abstract class  SalesDepartment  implements Department {
      * @return predicted price
      */
     public long predictSalePriceWhenNotChangingPoduction() {
-        return predictorStrategy.predictSalePriceWhenNotChangingPoduction(this);
+        return predictorStrategy.predictSalePriceWhenNotChangingProduction(this);
     }
 
     @Override
@@ -1449,6 +1451,10 @@ public abstract class  SalesDepartment  implements Department {
 
     public long getLastAskedPrice() {
         return lastAskedPrice;
+    }
+
+    public float getDaysOfInventory() {
+        return daysOfInventory;
     }
 }
 

@@ -83,7 +83,7 @@ public class MemorySalesPredictor implements SalesPredictor {
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
+    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         return memorylookup(dept);
 
 

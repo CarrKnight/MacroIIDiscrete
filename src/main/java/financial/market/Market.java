@@ -20,6 +20,8 @@ import lifelines.data.GlobalEventData;
 import model.MacroII;
 import model.utilities.Deactivatable;
 import model.utilities.ExchangeNetwork;
+import model.utilities.filters.ExponentialFilter;
+import model.utilities.filters.Filter;
 import model.utilities.stats.collectors.MarketData;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import org.jfree.chart.ChartFactory;
@@ -58,6 +60,8 @@ public abstract class Market implements Deactivatable{
      * The array holding all the bid listeners. It's protected because subclasses need to use it!
      */
     protected LinkedList<BidListener> bidListeners = new LinkedList<>();
+
+    private Filter<Long> averagePrice = new ExponentialFilter<>(.1f);
 
     /**
      * How many goods were traded this week
@@ -903,6 +907,8 @@ public abstract class Market implements Deactivatable{
      */
     public void collectDayStatistics()
     {
+        averagePrice.addObservation(lastPrice);
+
         yesterdayLastPrice = lastPrice;
         yesterdaySumOfClosingPrices = todaySumOfClosingPrices;
         yesterdayVolume = todayVolume;
@@ -1085,7 +1091,8 @@ public abstract class Market implements Deactivatable{
     /**
      * return the latest price observed
      */
-    public Double getLatestObservation(MarketDataType type) {
+    @Nonnull
+    public  Double getLatestObservation(MarketDataType type) {
         return marketData.getLatestObservation(type);
     }
 
@@ -1120,5 +1127,9 @@ public abstract class Market implements Deactivatable{
 
     public MarketData getMarketData() {
         return marketData;
+    }
+
+    public float getLastDaysAveragePrice() {
+        return averagePrice.getSmoothedObservation();
     }
 }

@@ -1,5 +1,6 @@
 package model.scenario;
 
+import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
@@ -9,9 +10,14 @@ import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.enums.MarketDataType;
+import org.junit.Assert;
 import org.junit.Test;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 
+import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -568,8 +574,10 @@ public class SimpleSellerScenarioTest {
             {
                 SalesDepartment department = departments.get(k);
                 System.out.println("department " + k + ", price: " + department.getLastAskedPrice() +
-                        ", today sold: " + department.getTodayOutflow() );
+                        ", today sold: " + department.getTodayOutflow() + ", averaged price: " + department.getAveragedLastPrice() );
+                Assert.assertEquals(86,department.getAveragedLastPrice(),1);
             }
+
         }
 
         averageQ /= 500;
@@ -757,8 +765,114 @@ public class SimpleSellerScenarioTest {
 
     }
     
-    
-    
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    //2 unequal sellers
+
+
+
+    private SimpleSellerScenario setup102minusqUnequal(MacroII macroII) {
+        final SimpleSellerScenario scenario = new SimpleSellerScenario(macroII);
+        scenario.setDemandShifts(false);
+        scenario.setDemandIntercept(102);
+        scenario.setDemandSlope(-1);
+        scenario.setInflowPerSeller(8);
+        scenario.setNumberOfSellers(2);
+        scenario.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+
+        //change inflow at dawn!
+        macroII.scheduleSoon(ActionOrder.DAWN, new Steppable() {
+            @Override
+            public void step(SimState simState) {
+                Iterator<Firm> iterator = scenario.getSellerToInflowMap().keySet().iterator();
+                Firm firm1 = iterator.next();
+                Firm firm2 = iterator.next();
+                assert !iterator.hasNext();
+                scenario.getSellerToInflowMap().put(firm1,12);
+                scenario.getSellerToInflowMap().put(firm2,4);
+            }
+        });
+
+        return scenario;
+    }
+
+
+    @Test
+    public void rightPriceAndQuantityTestWithNoInventory2UnequalSellers()
+    {
+        for(int i=0; i<5; i++)
+        {
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            SimpleSellerScenario scenario = setup102minusqUnequal(macroII);
+            scenario.setSellerStrategy(SimpleFlowSellerPID.class);
+
+
+
+
+            run102minusqscenario(macroII, scenario);
+
+        }
+
+
+    }
+
+    @Test
+    public void SalesControlFlowPIDWithFixedInventory2UnequalSellers()
+    {
+        for(int i=0; i<5; i++)
+        {
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            SimpleSellerScenario scenario = setup102minusqUnequal(macroII);
+            scenario.setSellerStrategy(SalesControlWithFixedInventoryAndPID.class);
+
+
+
+
+            run102minusqscenario(macroII, scenario);
+
+        }
+
+
+    }
+
+
+    @Test
+    public void SmoothedDailyInventoryPricingStrategy2UnequalSellers()
+    {
+        for(int i=0; i<5; i++)
+        {
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            SimpleSellerScenario scenario = setup102minusqUnequal(macroII);
+            scenario.setSellerStrategy(SmoothedDailyInventoryPricingStrategy.class);
+
+
+
+
+            run102minusqscenario(macroII, scenario);
+
+        }
+
+
+    }
+
+    @Test
+    public void FlowsOnly2UnequalSellers()
+    {
+        for(int i=0; i<5; i++)
+        {
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            SimpleSellerScenario scenario = setup102minusqUnequal(macroII);
+            scenario.setSellerStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
+
+
+
+
+            run102minusqscenario(macroII, scenario);
+
+        }
+
+
+    }
     
     
     

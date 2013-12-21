@@ -101,7 +101,7 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
+    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         return (long) Math.round(predictPrice(0));
     }
 

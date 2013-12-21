@@ -309,7 +309,7 @@ public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
+    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         return dept.getLastClosingPrice();
     }
 }

@@ -115,7 +115,7 @@ public class FixedDecreaseSalesPredictor implements SalesPredictor {
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
-        return delegate.predictSalePriceWhenNotChangingPoduction(dept);
+    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+        return delegate.predictSalePriceWhenNotChangingProduction(dept);
     }
 }

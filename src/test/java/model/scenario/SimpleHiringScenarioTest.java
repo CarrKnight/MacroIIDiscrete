@@ -7,6 +7,11 @@
 package model.scenario;
 
 import agents.firm.personell.HumanResources;
+import agents.firm.production.control.FactoryProducedTargetAndMaximizePlantControl;
+import agents.firm.production.control.TargetAndMaximizePlantControl;
+import agents.firm.production.control.maximizer.EveryWeekMaximizer;
+import agents.firm.production.control.maximizer.algorithms.otherMaximizers.FixedTargetMaximizationAlgorithm;
+import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
@@ -15,6 +20,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import sim.engine.SimState;
 import sim.engine.Steppable;
+
+import java.util.Iterator;
 
 /**
  * <h4>Description</h4>
@@ -69,14 +76,16 @@ public class SimpleHiringScenarioTest {
                 Assert.assertEquals(hr.getNumberOfWorkers(), hr.getTodayInflow());
                 //yesterday hires are today workforce:
                 Assert.assertEquals(hr.getPurchasesData().getObservationRecordedThisDay(PurchasesDataType.INFLOW, day - 1),hr.getPlant().getNumberOfWorkersDuringProduction(),.0001d);
-                System.out.println(hr.getNumberOfWorkers() + " , " + hr.getLastOfferedPrice() + ", " + hr.getTodayInflow());
+                System.out.println("average wage paid: " + hr.getAveragedClosingPrice() + " , last offered wages: " + hr.getLastOfferedPrice() + ", today we hired: " + hr.getTodayInflow() + ", target: " + hr.getWorkerTarget());
+                Assert.assertEquals(16,hr.getAveragedClosingPrice(),.4); //everybody's averages need to be correct + o -
             }
             clearingWages += scenario.getMarket().getTodayAveragePrice();
         }
         averageWorkers /= 100;
         clearingWages /=100;
-        Assert.assertEquals(16,averageWorkers,.0001d);
-        Assert.assertEquals(16,clearingWages,.0001d);
+        System.out.println("average workers: " + averageWorkers + ", average wages: " + clearingWages);
+        Assert.assertEquals(16,averageWorkers,.1d);
+        Assert.assertEquals(16,clearingWages,.1d);
     }
 
     private SimpleHiringScenario setupTest(MacroII model, int buyers) {
@@ -120,5 +129,58 @@ public class SimpleHiringScenarioTest {
             }
         }, Priority.FINAL);
     }
+
+    @Test
+    public void twoUnequalFirmsTest()
+    {
+        for(int k=0; k< 5; k++)
+        {
+            final MacroII model = new MacroII(System.currentTimeMillis());
+            final SimpleHiringScenario scenario = setupTest(model,3);
+
+            model.start();
+
+
+
+            //first firm will target 11 workers
+            Iterator<HumanResources> iterator = scenario.getHrs().iterator();
+            HumanResources hr1 = iterator.next();
+            FactoryProducedTargetAndMaximizePlantControl produced;
+            produced = TargetAndMaximizePlantControl.PlantControlFactory(hr1, PIDTargeterWithQuickFiring.class, EveryWeekMaximizer.class, FixedTargetMaximizationAlgorithm.class);
+            ((EveryWeekMaximizer< FixedTargetMaximizationAlgorithm >) produced.getWorkforceMaximizer()).getMaximizationAlgorithm().setWorkerTarget(11);
+            ((PIDTargeterWithQuickFiring)produced.getWorkforceTargeter()).setMaximumPercentageOverTargetOfWorkersToHire(10000f);
+            hr1.setControl(produced.getControl());
+            hr1.setPricingStrategy(produced.getControl());
+            produced.getControl().start();
+
+            //second firm will target 4 workers
+            HumanResources hr2 = iterator.next();
+            produced = TargetAndMaximizePlantControl.PlantControlFactory(hr2, PIDTargeterWithQuickFiring.class, EveryWeekMaximizer.class, FixedTargetMaximizationAlgorithm.class);
+            ((EveryWeekMaximizer< FixedTargetMaximizationAlgorithm >) produced.getWorkforceMaximizer()).getMaximizationAlgorithm().setWorkerTarget(4);
+            ((PIDTargeterWithQuickFiring)produced.getWorkforceTargeter()).setMaximumPercentageOverTargetOfWorkersToHire(10000f);
+            hr2.setControl(produced.getControl());
+            hr2.setPricingStrategy(produced.getControl());
+            produced.getControl().start();
+
+            //the third will target 1 worker
+            HumanResources hr3 = iterator.next();
+            produced = TargetAndMaximizePlantControl.PlantControlFactory(hr3, PIDTargeterWithQuickFiring.class, EveryWeekMaximizer.class, FixedTargetMaximizationAlgorithm.class);
+            ((EveryWeekMaximizer< FixedTargetMaximizationAlgorithm >) produced.getWorkforceMaximizer()).getMaximizationAlgorithm().setWorkerTarget(1);
+            ((PIDTargeterWithQuickFiring)produced.getWorkforceTargeter()).setMaximumPercentageOverTargetOfWorkersToHire(10000f);
+            hr3.setControl(produced.getControl());
+            hr3.setPricingStrategy(produced.getControl());
+            produced.getControl().start();
+
+            assert !iterator.hasNext();
+
+
+
+            scheduleSanityCheck(model, scenario);
+
+
+            runModel(model, scenario);
+        }
+    }
+
 
 }

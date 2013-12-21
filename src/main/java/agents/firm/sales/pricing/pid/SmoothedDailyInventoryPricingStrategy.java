@@ -98,12 +98,13 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
                 0,
                 0);
 
-        float proportionalGain = 0.04954876f + ((float) salesDepartment.getRandom().nextGaussian()) / 100f;
+      /*  float proportionalGain = 0.04954876f + ((float) salesDepartment.getRandom().nextGaussian()) / 100f;
         float integralGain = 0.45825003f + ((float) salesDepartment.getRandom().nextGaussian()) / 100f;
         float derivativeGain = 0.000708338f + ((float) salesDepartment.getRandom().nextGaussian() / 10000f);
-        setGainsSlavePID(proportionalGain,
-                integralGain,
-                derivativeGain);
+        */
+        setGainsSlavePID(salesDepartment.getModel().drawProportionalGain()/5,
+                salesDepartment.getModel().drawIntegrativeGain()/5,
+                salesDepartment.getModel().drawDerivativeGain());
 
         //System.out.println(proportionalGain + " - " + integralGain + " - " + derivativeGain);
 

@@ -312,7 +312,7 @@ public class RegressionSalePredictor implements SalesPredictor{
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
+    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         //regress and return
         updateModel();
 

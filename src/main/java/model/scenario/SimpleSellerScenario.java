@@ -29,8 +29,7 @@ import sim.engine.Steppable;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 
@@ -91,6 +90,11 @@ public class SimpleSellerScenario extends Scenario {
     private int demandSlope = -10;
 
     private List<SalesDepartment> departments = new LinkedList<>();
+
+    /**
+     * how much inflow each firm gets
+     */
+    private LinkedHashMap<Firm, Integer> sellerToInflowMap = new LinkedHashMap<>();
 
     /**
      * the strategy used by the seller, after it has been instantiated
@@ -165,11 +169,13 @@ public class SimpleSellerScenario extends Scenario {
     }
 
     private void setupProduction(final Firm seller) {
+        sellerToInflowMap.put(seller,inflowPerSeller);
         getModel().scheduleSoon(ActionOrder.PRODUCTION,new Steppable() {
             @Override
             public void step(SimState simState) {
                 //sell 4 goods!
-                for(int i=0; i<inflowPerSeller; i++){
+                int inflow = sellerToInflowMap.get(seller);
+                for(int i=0; i<inflow; i++){
                     Good good = new Good(GoodType.GENERIC,seller,10l);
                     seller.receive(good,null);
                     seller.reactToPlantProduction(good);
@@ -396,5 +402,10 @@ public class SimpleSellerScenario extends Scenario {
 
     public List<SalesDepartment> getDepartments() {
         return departments;
+    }
+
+
+    public LinkedHashMap<Firm, Integer> getSellerToInflowMap() {
+        return sellerToInflowMap;
     }
 }

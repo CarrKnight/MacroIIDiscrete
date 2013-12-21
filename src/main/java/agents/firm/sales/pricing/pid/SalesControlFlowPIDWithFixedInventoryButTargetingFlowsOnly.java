@@ -87,11 +87,10 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly implemen
      * @param department the sales department to inform
      */
     public SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(SalesDepartment department) {
-        this(department,10,50,department.getFirm().getModel(),
-
-                0.04954876f + ((float) department.getRandom().nextGaussian()) / 100f,
-                0.45825003f + ((float) department.getRandom().nextGaussian()) / 100f,
-                0.000708338f + ((float) department.getRandom().nextGaussian() / 10000f),
+        this(department,10,200,department.getFirm().getModel(),
+                department.getFirm().getModel().drawProportionalGain()/5f,
+                department.getFirm().getModel().drawIntegrativeGain()/5f,
+                department.getFirm().getModel().drawDerivativeGain(),
                 department.getRandom());
     }
 

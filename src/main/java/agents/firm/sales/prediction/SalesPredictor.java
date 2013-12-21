@@ -67,7 +67,7 @@ public interface SalesPredictor {
      * @param dept the sales department
      * @return predicted price
      */
-    public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept);
+    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept);
 
     /**
      * Call this to kill the predictor

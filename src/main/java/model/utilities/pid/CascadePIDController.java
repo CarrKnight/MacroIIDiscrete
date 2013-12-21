@@ -288,8 +288,8 @@ public class CascadePIDController implements Controller{
                 0,
                 0);
 
-        setGainsSlavePID(model.drawProportionalGain(),
-                model.drawIntegrativeGain(),
+        setGainsSlavePID(model.drawProportionalGain()/5,
+                model.drawIntegrativeGain()/5,
                 model.drawDerivativeGain());
 
         setMasterCanGoNegative(true); setMasterWindupStop(false);

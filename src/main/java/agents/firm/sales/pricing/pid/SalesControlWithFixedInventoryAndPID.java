@@ -87,7 +87,8 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
                                                 Class<? extends CascadePIDController> controllerType )
     {
         //use default constructor
-        this(department,targetInventory,ControllerFactory.buildController(controllerType,department.getFirm().getModel()));
+        this(department,targetInventory,ControllerFactory.
+                buildController(controllerType,department.getFirm().getModel()));
 
 
 

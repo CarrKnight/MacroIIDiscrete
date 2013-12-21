@@ -94,9 +94,9 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
      */
     public PIDTargeterWithQuickFiring(HumanResources hr, PlantControl control) {
         this(hr,new PIDController(
-                hr.getFirm().getModel().drawProportionalGain()/2,
-                hr.getFirm().getModel().drawIntegrativeGain()/5,
-                -hr.getFirm().getModel().drawProportionalGain()/5,
+                hr.getFirm().getModel().drawProportionalGain()/5,
+                hr.getFirm().getModel().drawIntegrativeGain()/10,
+                -hr.getFirm().getModel().drawProportionalGain()/10,
                 hr.getRandom()),
                 control);
     }

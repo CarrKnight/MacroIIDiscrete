@@ -234,7 +234,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
                     @Override
                     protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
                         final SalesDepartment department = super.createSalesDepartment(firm, goodmarket);
-                     //   if(goodmarket.getGoodType().equals(GoodType.FOOD))
+                        if(goodmarket.getGoodType().equals(GoodType.FOOD))
                             department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
 
 
@@ -273,7 +273,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
         scenario1.setBeefPriceFilterer(null);
 
         //competition!
-        scenario1.setNumberOfFoodProducers(5);
+        scenario1.setNumberOfFoodProducers(1);
 
 
         scenario1.setDivideProportionalGainByThis(100f);
@@ -307,10 +307,10 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
 
 
 
-        while(macroII.schedule.getTime()<15000)
+        while(macroII.schedule.getTime()<45000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(15001, (int) macroII.schedule.getSteps(), 100);
+            printProgressBar(45001, (int) macroII.schedule.getSteps(), 100);
 
 
         }

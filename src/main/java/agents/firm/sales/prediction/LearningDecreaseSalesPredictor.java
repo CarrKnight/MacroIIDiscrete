@@ -139,7 +139,7 @@ public class LearningDecreaseSalesPredictor implements SalesPredictor {
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
-        return predictor.predictSalePriceWhenNotChangingPoduction(dept);
+    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+        return predictor.predictSalePriceWhenNotChangingProduction(dept);
     }
 }

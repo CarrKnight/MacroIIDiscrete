@@ -42,7 +42,7 @@ public class AveragePurchasePriceCounter implements Steppable, Deactivatable
     /**
      * average last week price weihted by outflow
      */
-    private WeightedMovingAverage<Long,Integer> averagedPrice = new WeightedMovingAverage<>(7);
+    private WeightedMovingAverage<Long,Integer> averagedPrice = new WeightedMovingAverage<>(10);
 
 
 

@@ -33,7 +33,7 @@ import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
-import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
+import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -259,8 +259,8 @@ public class OneLinkSupplyChainScenario extends Scenario {
         }
         else
         {
-            SmoothedDailyInventoryPricingStrategy strategy;
-            strategy = new SmoothedDailyInventoryPricingStrategy(dept);
+            SalesControlWithFixedInventoryAndPID strategy;
+            strategy = new SalesControlWithFixedInventoryAndPID(dept);
             strategy.setInitialPrice(model.random.nextInt(30)+70);
             // strategy.setProductionCostOverride(false);
             dept.setAskPricingStrategy(strategy); //set strategy to PID

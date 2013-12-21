@@ -32,7 +32,6 @@ import sim.portrayal.inspector.TabbedInspector;
 import sim.util.media.chart.HistogramGenerator;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
@@ -494,7 +493,6 @@ public class MacroII extends SimState{
     /**
      * Returns a specific market, if it exists!
      */
-    @Nullable
     public Market getMarket(GoodType goodType){
         return markets.get(goodType);
 

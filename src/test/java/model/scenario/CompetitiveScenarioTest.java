@@ -6,9 +6,11 @@
 
 package model.scenario;
 
+import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerStatics;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.RobustMarginalMaximizer;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
@@ -19,6 +21,7 @@ import agents.firm.sales.prediction.MarketSalesPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
+import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import financial.market.Market;
@@ -161,7 +164,7 @@ public class CompetitiveScenarioTest {
                 }
                 averagePrice = averagePrice/500f;
                 averageQ = averageQ/500f;
-                System.out.println(averagePrice + " - " + averageQ + "----" + macroII.seed() );
+                System.out.println(averagePrice + " - " + averageQ + "----" + macroII.seed() + " | " + macroII.getMarket(GoodType.GENERIC).getLastDaysAveragePrice());
 
                 averageResultingPrice += averagePrice;
                 averageResultingQuantity += averageQ;
@@ -205,11 +208,11 @@ public class CompetitiveScenarioTest {
             {
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
 
-                final MacroII macroII = new MacroII(System.currentTimeMillis());
+                final MacroII macroII = new MacroII(System.currentTimeMillis());   //1387582416533l
                 final TripolistScenario scenario1 = new TripolistScenario(macroII);
 
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-                scenario1.setAskPricingStrategy(SmoothedDailyInventoryPricingStrategy.class);
+                scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
                 scenario1.setAdditionalCompetitors( competitor);
                 scenario1.setWorkersToBeRehiredEveryDay(true);
@@ -249,16 +252,29 @@ public class CompetitiveScenarioTest {
                 float averageQ = 0;
                 for(int j=0; j<500; j++)
                 {
+                    MarginalMaximizerStatics.printOutDiagnostics = false;
                     macroII.schedule.step(macroII);
                     assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
                     averagePrice += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
                     averageQ += macroII.getMarket(GoodType.GENERIC).countTodayProductionByRegisteredSellers(); //shortcut to check how much is produced rather than just traded
 
+                    System.out.println("---------------------------------------------------------------------");
+                    int k =0; int totalSold = 0;
+                    for(EconomicAgent agent : macroII.getMarket(GoodType.GENERIC).getSellers())
+                    {
+                        SalesDepartment department = ((Firm) agent).getSalesDepartment(GoodType.GENERIC);
+                        System.out.println("department "+ k + ", offered price: " + department.getLastAskedPrice() + ", outflow: " + department.getTodayOutflow() + ", inflow: " +department.getTodayInflow() + ", averagedPrice:" + department.getAveragedLastPrice());
+                        totalSold+= department.getTodayOutflow();
+                    }
+                    System.out.println("---> total production : " + macroII.getMarket(GoodType.GENERIC).countTodayProductionByRegisteredSellers() + " , total sold: " + totalSold);
+
 
                 }
+                MarginalMaximizerStatics.printOutDiagnostics = false;
+
                 averagePrice = averagePrice/500f;
                 averageQ = averageQ/500f;
-                System.out.println(averagePrice + " - " + averageQ );
+                System.out.println(averagePrice + " - " + averageQ + "----" + macroII.seed() + " | " + macroII.getMarket(GoodType.GENERIC).getLastDaysAveragePrice());
 
                 averageResultingPrice += averagePrice;
                 averageResultingQuantity += averageQ;
@@ -336,26 +352,19 @@ public class CompetitiveScenarioTest {
 
                 float averagePrice = 0;
                 float averageQ = 0;
-                float averageInventory = 0;
-                float workers = 0;
 
                 for(int j=0; j<500; j++)
                 {
                     macroII.schedule.step(macroII);
-                    for(Firm f : scenario1.getCompetitors() )
-                        workers += f.getHRs().iterator().next().getWorkerTarget();
+
                     assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
                     averagePrice += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
                     averageQ += macroII.getMarket(GoodType.GENERIC).getLatestObservation(MarketDataType.VOLUME_PRODUCED);
-                    averageInventory += macroII.getMarket(GoodType.GENERIC).getLatestObservation(MarketDataType.SELLERS_INVENTORY);
 
 
                 }
                 averagePrice = averagePrice/500f;
-                workers /=500f;
                 averageQ = averageQ/500f;
-                averageInventory = averageInventory/500f;
-                averageInventory = averageInventory/(competitors+1);
                 System.out.println(averagePrice + "," + averageQ );
             /*    System.out.println((competitors+1) +","+averagePrice + "," + averageQ + "," + averageInventory + "," + workers);
                 for(Firm f : scenario1.getCompetitors())

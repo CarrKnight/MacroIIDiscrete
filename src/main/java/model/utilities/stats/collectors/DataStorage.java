@@ -159,6 +159,7 @@ public abstract class DataStorage<T extends  Enum<T>> implements Steppable, Deac
     /**
      * return the latest price observed
      */
+    @Nonnull
     public Double getLatestObservation(T type)
     {
         checkThatThereIsAtLeastOneObservation();

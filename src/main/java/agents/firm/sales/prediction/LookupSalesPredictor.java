@@ -8,10 +8,6 @@ package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
 import financial.market.Market;
-import financial.utilities.AveragePricePolicy;
-import goods.Good;
-
-import static org.mockito.Mockito.*;
 
 /**
  * <h4>Description</h4>
@@ -41,43 +37,9 @@ public class LookupSalesPredictor implements SalesPredictor {
      */
     @Override
     public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
-        Market market = dept.getMarket();
-        if(market.isBestBuyPriceVisible())
-            try {
-                long buyerPrice = getBuyerPrice(market);
-                //ask the market for best price (if there is none, assume old)
 
-                Good hypotheticalGood = mock(Good.class);
-                when(hypotheticalGood.getCostOfProduction()).thenReturn(expectedProductionCost);
-                when(hypotheticalGood.getLastValidPrice()).thenReturn(expectedProductionCost);
-                long sellerPrice = dept.price(hypotheticalGood);
-                if(buyerPrice >= sellerPrice)
-                {
-                    //it's strange to be here, since they are buying at more than we are willing to sell, we should have sold!
-                    //must be that we are out of stock or we don't want to sell or we have scheduled to update prices
-                    assert !dept.hasAnythingToSell() || !dept.isInventoryAcceptable() ||
-                            dept.isAboutToUpdateQuotes() || market.getBestBuyPrice() == -1  : sellerPrice + "-" + buyerPrice;
-                    //take the average, it doesn't matter because it'll close itself
-                    return Math.min(new AveragePricePolicy().price(sellerPrice,buyerPrice),(sellerPrice+1)*5);
-                }
-                else
-                {
-                    //more likely place, now if we have sold everything, we will have to lower the price to get it out
-                    if(dept.isInventoryAcceptable())
-                    {
-                        return buyerPrice;
-                    }
-                    else //otherwise, if we have stock left, just trust your pricing strategy
-                        return sellerPrice;
-                }
+        return Math.round(dept.getMarket().getLastDaysAveragePrice());
 
-            } catch (IllegalAccessException e) {
-                //this should really never happen;
-                assert false;
-                return dept.getLastClosingPrice();
-            }
-        else
-            return dept.getLastClosingPrice();
     }
 
     /**
@@ -90,8 +52,8 @@ public class LookupSalesPredictor implements SalesPredictor {
      */
     @Override
     public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
-        return dept.getLastClosingPrice();
 
+        return Math.round(dept.getMarket().getLastDaysAveragePrice());
     }
 
     private long getBuyerPrice(Market market) throws IllegalAccessException {
@@ -126,8 +88,8 @@ public class LookupSalesPredictor implements SalesPredictor {
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
-        return dept.getLastClosingPrice();
+    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+        return Math.round(dept.getMarket().getLastDaysAveragePrice());
 
     }
 }

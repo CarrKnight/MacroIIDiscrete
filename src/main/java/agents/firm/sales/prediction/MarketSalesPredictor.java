@@ -76,7 +76,7 @@ public class MarketSalesPredictor implements SalesPredictor {
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingPoduction(SalesDepartment dept) {
+    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         long lastPrice = dept.getMarket().getLastPrice();
         if(lastPrice == -1 )
             return -1;
