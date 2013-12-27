@@ -57,6 +57,7 @@ public class PricingPurchasesPredictorTest {
          * Make sure the last closing price is correctly predicted by the predictor!
          *********************************************/
         PricingPurchasesPredictor predictor = new PricingPurchasesPredictor();
+        System.out.println("predicted: " + predictor.predictPurchasePriceWhenIncreasingProduction(dept));
         assertTrue(predictor.predictPurchasePriceWhenIncreasingProduction(dept) >= 20 && predictor.predictPurchasePriceWhenIncreasingProduction(dept) <= 30);
     }
 

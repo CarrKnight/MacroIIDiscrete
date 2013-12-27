@@ -4,6 +4,8 @@ import agents.EconomicAgent;
 import agents.Inventory;
 import agents.InventoryListener;
 import agents.firm.Firm;
+import agents.firm.purchases.prediction.PricingPurchasesPredictor;
+import agents.firm.purchases.pricing.decorators.LookAtTheMarketBidPricingDecorator;
 import agents.firm.utilities.NumberOfPlantsListener;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.inventoryControl.FixedInventoryControl;
@@ -183,18 +185,16 @@ public class PurchasesDepartmentTest {
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(1,firm,mock(Market.class),
                 (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
-        dept.setLooksAhead(true);
 
 
         //addSalesDepartmentListener a stub pricing
         BidPricingStrategy pricingStrategy = mock(BidPricingStrategy.class);
-        dept.setPricingStrategy(pricingStrategy);   //addSalesDepartmentListener it as new strategy
+        dept.setPricingStrategy(new LookAtTheMarketBidPricingDecorator(pricingStrategy,market));   //addSalesDepartmentListener it as new strategy
 
         when(pricingStrategy.maxPrice((Good) any())).thenReturn(100l); //this always prices at 100!
         when(pricingStrategy.maxPrice((GoodType) any())).thenReturn(100l); //this always prices at 100!
 
-        assertEquals(dept.maxPrice(GoodType.GENERIC, market), 1l); //bounded by budget
-        dept.addToBudget(1000l);
+
         assertEquals(dept.maxPrice(GoodType.GENERIC, market), 100l); //bounded by pricing choice
         when(market.getBestSellPrice()).thenReturn(30l);
         assertEquals(dept.maxPrice(GoodType.GENERIC, market), 30l); //bounded by best visible price
@@ -625,6 +625,7 @@ public class PurchasesDepartmentTest {
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
                 FixedInventoryControl.class,null,null,null).getDepartment();
+        dept.setPredictor(new PricingPurchasesPredictor());
 
         firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
         BidPricingStrategy pricingStrategy = mock(BidPricingStrategy.class);//i am going to force the dept to offer maxPrice = 150
@@ -727,12 +728,11 @@ public class PurchasesDepartmentTest {
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(2000,firm,market,
                 FixedInventoryControl.class,null,null,null).getDepartment();
-        dept.setLooksAhead(true);
 
         firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
         BidPricingStrategy pricingStrategy = mock(BidPricingStrategy.class);//i am going to force the dept to offer maxPrice = 150
         when(pricingStrategy.maxPrice(any(GoodType.class))).thenReturn(150l);
-        dept.setPricingStrategy(pricingStrategy);
+        dept.setPricingStrategy(new LookAtTheMarketBidPricingDecorator(pricingStrategy,market));   //addSalesDepartmentListener it as new strategy
 
 
         for(int i=0; i<10; i++)

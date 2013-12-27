@@ -4,6 +4,7 @@ import agents.firm.Firm;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.purchases.pricing.SurveyMaxPricing;
+import agents.firm.purchases.pricing.decorators.LookAtTheMarketBidPricingDecorator;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
@@ -129,7 +130,7 @@ public class SurveyMaxPricingTest {
         //when there is nobody to search just go at random.
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100, f,
                 market, null, SurveyMaxPricing.class, null, null).getDepartment();
-        dept.setLooksAhead(true);
+        dept.setPricingStrategy(new LookAtTheMarketBidPricingDecorator(new SurveyMaxPricing(dept),market));
 
 
         //I assume the search depth is 5

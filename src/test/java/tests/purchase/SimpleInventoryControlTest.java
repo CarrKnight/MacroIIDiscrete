@@ -3,7 +3,6 @@ package tests.purchase;
 import agents.EconomicAgent;
 import agents.Inventory;
 import agents.firm.Firm;
-import agents.firm.utilities.NumberOfPlantsListener;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.PlantListener;
@@ -15,15 +14,17 @@ import agents.firm.purchases.inventoryControl.InventoryControl;
 import agents.firm.purchases.inventoryControl.Level;
 import agents.firm.purchases.inventoryControl.SimpleInventoryControl;
 import agents.firm.purchases.pricing.BidPricingStrategy;
+import agents.firm.purchases.pricing.decorators.LookAtTheMarketBidPricingDecorator;
+import agents.firm.utilities.NumberOfPlantsListener;
 import financial.Bankruptcy;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.dummies.DummySeller;
 import org.junit.Before;
 import org.junit.Test;
-import model.utilities.dummies.DummySeller;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -31,9 +32,7 @@ import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -249,8 +248,8 @@ public class SimpleInventoryControlTest {
 
         BidPricingStrategy stubStrategy = mock(BidPricingStrategy.class); //addSalesDepartmentListener this stub as a new strategy so we can fix prices as we prefer
         when(stubStrategy.maxPrice(GoodType.GENERIC)).thenReturn(80l); //price everything at 80; who cares
+        stubStrategy =  new LookAtTheMarketBidPricingDecorator(stubStrategy,market);
         dept.setPricingStrategy(stubStrategy);
-        dept.setLooksAhead(true);
 
 
         assertEquals(market.getBestBuyPrice(), -1);

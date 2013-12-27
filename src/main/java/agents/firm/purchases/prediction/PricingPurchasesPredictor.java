@@ -36,12 +36,20 @@ public class PricingPurchasesPredictor implements PurchasesPredictor {
     @Override
     public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
 
-        return Math.round(dept.getAveragedClosingPrice());
+        float averagedClosingPrice = dept.getAveragedClosingPrice();
+        if(Float.isNaN(averagedClosingPrice))
+            return -1;
+
+        return Math.round(averagedClosingPrice);
     }
 
     @Override
     public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
-        return Math.round(dept.getAveragedClosingPrice());
+        float averagedClosingPrice = dept.getAveragedClosingPrice();
+        if(Float.isNaN(averagedClosingPrice))
+            return -1;
+
+        return Math.round(averagedClosingPrice);
     }
 
     /**
@@ -52,7 +60,11 @@ public class PricingPurchasesPredictor implements PurchasesPredictor {
      */
     @Override
     public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
-        return Math.round(dept.getAveragedClosingPrice());
+        float averagedClosingPrice = dept.getAveragedClosingPrice();
+        if(Float.isNaN(averagedClosingPrice))
+            return -1;
+
+        return Math.round(averagedClosingPrice);
     }
 
     /**

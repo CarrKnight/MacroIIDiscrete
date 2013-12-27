@@ -819,7 +819,7 @@ public class SimpleSellerScenarioTest {
     @Test
     public void SalesControlFlowPIDWithFixedInventory2UnequalSellers()
     {
-        for(int i=0; i<5; i++)
+        for(int i=0; i<1; i++)
         {
             final MacroII macroII = new MacroII(System.currentTimeMillis());
             SimpleSellerScenario scenario = setup102minusqUnequal(macroII);

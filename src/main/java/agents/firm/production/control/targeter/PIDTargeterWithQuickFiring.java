@@ -85,7 +85,7 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
      * So for example, if this is 1.5 it means that the PID targeter will stop hiring once it exceeds by 50% its current target.
      * This is somewhat of a tradeoff because the less you let the PID be wrong, the slower it learns; on the other hand it reduces big swings in worker size.
      */
-    private float maximumPercentageOverTargetOfWorkersToHire = 1.2f;
+    private float maximumPercentageOverTargetOfWorkersToHire = 100f;
 
 
     /**

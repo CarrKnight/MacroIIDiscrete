@@ -162,9 +162,7 @@ public final class MarginalMaximizerStatics {
         if(targetWorkers > currentWorkers)
         {
             futureWage = hr.predictPurchasePriceWhenIncreasingProduction() ;
-            //but it should never be below the minimum to keep our currentworkers
-            if(currentWorkers>0 && futureWage > 0) //do this only if you aren't asking for a delay and you have at least one worker
-                futureWage = Math.max(futureWage,hr.hypotheticalWageAtThisLevel(currentWorkers));
+
         }
         else
         {
@@ -271,7 +269,7 @@ public final class MarginalMaximizerStatics {
 
             if(printOutDiagnostics)
                 System.out.println("predicte inputCost: " + costPerInput + ", predicted current costs: " +  oldCosts +
-                        ", actual old costs:" + dept.getLastClosingPrice()+ ", total input: " + totalInputNeeded );
+                        ", actual old costs:" + dept.getAveragedClosingPrice()+ ", total input: " + totalInputNeeded );
 
             //marginal costs are negative (marginal savings) if we are reducing production
             //       assert (marginalInputCosts >= 0 && targetWorkers > currentWorkers) ^   (marginalInputCosts <= 0 && targetWorkers < currentWorkers);

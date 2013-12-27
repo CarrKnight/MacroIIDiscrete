@@ -51,7 +51,7 @@ public class SalesControlWithInventoryAndPIDTest {
         //step it
         MacroII model = mock(MacroII.class); when(model.getCurrentPhase()).thenReturn(ActionOrder.ADJUST_PRICES);
         //step it a few times, just in case
-        for(int i=0; i < 10; i++)
+        for(int i=0; i < 100; i++)
             pid.step(model);
         //now price should be BELOW 100
         System.out.println("new price is:" + pid.price(mock(Good.class) ));

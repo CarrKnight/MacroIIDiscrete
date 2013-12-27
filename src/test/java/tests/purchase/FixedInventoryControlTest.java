@@ -175,7 +175,6 @@ public class FixedInventoryControlTest {
             Firm f = new Firm(model); f.earn(1000);
             PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(1000, f, market, FixedInventoryControl.class,
                     null, null, null).getDepartment();
-            dept.setLooksAhead(true);
 
             f.registerPurchasesDepartment(dept,GoodType.GENERIC);
 

@@ -36,11 +36,6 @@ public class UndercuttingAskPricing implements AskPricingStrategy,Steppable{
     private float percentageToUndercut;
 
     /**
-     * Time that passes between one adjust() and the next.
-     */
-    private float strategySpeed;
-
-    /**
      * The sales department using this strategy
      */
     private final SalesDepartment sales;
@@ -64,7 +59,6 @@ public class UndercuttingAskPricing implements AskPricingStrategy,Steppable{
     public UndercuttingAskPricing(SalesDepartment sales) {
         this.sales = sales;
         percentageToUndercut = sales.getFirm().getModel().drawNewUndercutReduction(sales.getFirm(),sales.getMarket());
-        strategySpeed = sales.getFirm().getModel().drawNewUndercutSpeed(sales.getFirm(),sales.getMarket());
         getSales().getModel().scheduleSoon(ActionOrder.ADJUST_PRICES,this);
 
 

@@ -154,11 +154,11 @@ public class MonopolistWithInputScenarioTest {
     }
 
 
-    //SalesControlWithFixedInventoryAndPID
+//SalesControlWithFixedInventoryAndPID
     @Test
     public void rightPriceAndQuantityTestAsMarginalWithCheatingPrices()
     {
-        for(int i=0; i<150; i++)
+        for(int i=0; i<15; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -191,7 +191,7 @@ public class MonopolistWithInputScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            System.out.println(scenario1.monopolist.getTotalWorkers());
+            System.out.println(i + " ----- " + scenario1.monopolist.getTotalWorkers());
             System.out.println(macroII.getMarket(GoodType.GENERIC).getLastPrice());
             assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
             assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);

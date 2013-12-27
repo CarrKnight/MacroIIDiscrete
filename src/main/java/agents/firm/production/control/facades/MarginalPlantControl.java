@@ -12,7 +12,7 @@ import agents.firm.production.PlantListener;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.maximizer.EveryWeekMaximizer;
-import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.RobustMarginalMaximizer;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.Machinery;
 import agents.firm.purchases.inventoryControl.Level;
@@ -46,7 +46,7 @@ public class MarginalPlantControl implements PlantControl, PlantListener {
     public MarginalPlantControl(@Nonnull HumanResources hr)
     {
         control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeterWithQuickFiring.class,EveryWeekMaximizer.class,
-                RobustMarginalMaximizer.class).getControl();
+                MarginalMaximizer.class).getControl();
 
     }
 

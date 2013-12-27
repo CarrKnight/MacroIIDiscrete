@@ -8,12 +8,12 @@ package agents.firm.production.control.facades;
 
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
+import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.decorators.MatchBestControlDecorator;
 import financial.market.Market;
 import goods.GoodType;
-import agents.firm.production.Plant;
-import agents.firm.production.control.decorators.MatchBestControlDecorator;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.mockito.Mockito.*;

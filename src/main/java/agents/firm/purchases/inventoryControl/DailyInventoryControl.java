@@ -161,7 +161,7 @@ public class DailyInventoryControl extends AbstractInventoryControl implements P
     @Nonnull
     private Level rateInventory(int currentLevel){
 
-        int dangerLevel = (int) Math.min(singleProductionRunNeed, dailyTarget /howManyDaysOfInventoryToHold + 1);
+        int dangerLevel = (int) Math.min(singleProductionRunNeed, dailyTarget+ 1);
 
         if(currentLevel < dangerLevel)
             return Level.DANGER;

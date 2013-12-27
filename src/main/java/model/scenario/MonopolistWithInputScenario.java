@@ -13,7 +13,7 @@ import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
-import financial.utilities.BuyerSetPricePolicy;
+import financial.utilities.ShopSetPricePolicy;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.dummies.DailyGoodTree;
@@ -55,7 +55,7 @@ public class MonopolistWithInputScenario extends MonopolistScenario {
 
         //market for input
         Market inputMarket = new OrderBookMarket(GoodType.LEATHER);
-        inputMarket.setPricePolicy(new BuyerSetPricePolicy());
+        inputMarket.setPricePolicy(new ShopSetPricePolicy());
         getMarkets().put(GoodType.LEATHER,inputMarket);
 
         //create the sellers

@@ -122,13 +122,6 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     private boolean aboutToBuy = false;
 
-    /**
-     * flag that, when set to true the market has "best visible price" activated, forces the purchase department to never
-     * overpay
-     */
-    private boolean looksAhead = false;
-
-
 
     /**
      * algorithm to search the registry for opponents
@@ -483,19 +476,13 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * @param market the market we are buying it from
      * @return the max price we are willing to pay!
      */
-    public long maxPrice(GoodType type, Market market){
+    public long maxPrice(GoodType type, Market market)
+    {
 
-        try {if(!market.isBestSalePriceVisible() || market.getBestSellPrice() < 0)    //if it's not visible or whatever, return the strategy or the budget
-            return Math.min(pricingStrategy.maxPrice(type), getAvailableBudget());
-        else{
-            long strategyPrice = pricingStrategy.maxPrice(type);
-            long bestReadyPrice = looksAhead? market.getBestSellPrice(): Long.MAX_VALUE;
-            long budget = getAvailableBudget();
-            return Math.min(Math.min(strategyPrice,bestReadyPrice),budget); //basically return the smallest of the 3: the best price visible, the budget and the strategic price
-        }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("I was promised that sale price was visible! But it wasn't!");
-        }
+
+        return pricingStrategy.maxPrice(type);
+
+
 
 
     }
@@ -1073,28 +1060,6 @@ public class PurchasesDepartment implements Deactivatable, Department {
     public long predictPurchasePriceWhenDecreasingProduction()
     {
         return predictor.predictPurchasePriceWhenDecreasingProduction(this);
-    }
-
-    /**
-     * Gets flag that, when set to true and the market has "best visible price" activated, forces the purchase department to never
-     * overpay.
-     *
-     * @return Value of flag that, when set to true the market has "best visible price" activated, forces the purchase department to never
-     *         overpay.
-     */
-    public boolean isLooksAhead() {
-        return looksAhead;
-    }
-
-    /**
-     * Sets new flag that, when set to true and the market has "best visible price" activated, forces the purchase department to never
-     * overpay.
-     *
-     * @param looksAhead New value of flag that, when set to true the market has "best visible price" activated, forces the purchase department to never
-     *                   overpay.
-     */
-    public void setLooksAhead(boolean looksAhead) {
-        this.looksAhead = looksAhead;
     }
 
     /**

@@ -14,8 +14,8 @@ import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import ec.util.MersenneTwisterFast;
 import goods.GoodType;
-import junit.framework.Assert;
 import model.MacroII;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -27,7 +27,8 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 /**
@@ -84,10 +85,10 @@ public class ParticleMaximizerTest {
 
 
         //set the attractions
-        maximizer.setVelocityInertia(.75f);assertEquals(.75f,maximizer.getVelocityInertia());
-        maximizer.setPersonalBestAttraction(.15f); assertEquals(.15f, maximizer.getPersonalBestAttraction());
-        maximizer.setNeighborAttraction(.15f); assertEquals(.15f, maximizer.getNeighborAttraction());
-        maximizer.setBestAttraction(.25f);assertEquals(.25f, maximizer.getBestAttraction());
+        maximizer.setVelocityInertia(.75f);assertEquals(.75f,maximizer.getVelocityInertia(),.01);
+        maximizer.setPersonalBestAttraction(.15f); assertEquals(.15f, maximizer.getPersonalBestAttraction(),.01);
+        maximizer.setNeighborAttraction(.15f); assertEquals(.15f, maximizer.getNeighborAttraction(),.01);
+        maximizer.setBestAttraction(.25f);assertEquals(.25f, maximizer.getBestAttraction(),.01);
 
         when(random.nextFloat()).thenReturn(1f);
 
@@ -205,7 +206,7 @@ public class ParticleMaximizerTest {
 
             when(random.nextInt(3)).thenReturn(0);
             Integer target = (Integer) method.invoke(maximizer,1,0);  //compares to itself
-            Assert.assertEquals(target.intValue(),1);
+            Assert.assertEquals(target.intValue(), 1);
             //compare to the most succesful one
             when(random.nextInt(3)).thenReturn(1);
             target = (Integer) method.invoke(maximizer,1,0);  //compares to the succesful one

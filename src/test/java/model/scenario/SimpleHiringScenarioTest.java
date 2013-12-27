@@ -51,12 +51,12 @@ public class SimpleHiringScenarioTest {
             scheduleSanityCheck(model, scenario);
 
 
-            runModel(model, scenario);
+            runModel(model, scenario,0,1);
         }
     }
 
-    private void runModel(MacroII model, SimpleHiringScenario scenario) {
-        for(int i=0; i<3500; i++){
+    private void runModel(MacroII model, SimpleHiringScenario scenario, int intercept, int slope) {
+        for(int i=0; i<5000; i++){
             model.schedule.step(model);
 
 
@@ -77,7 +77,7 @@ public class SimpleHiringScenarioTest {
                 //yesterday hires are today workforce:
                 Assert.assertEquals(hr.getPurchasesData().getObservationRecordedThisDay(PurchasesDataType.INFLOW, day - 1),hr.getPlant().getNumberOfWorkersDuringProduction(),.0001d);
                 System.out.println("average wage paid: " + hr.getAveragedClosingPrice() + " , last offered wages: " + hr.getLastOfferedPrice() + ", today we hired: " + hr.getTodayInflow() + ", target: " + hr.getWorkerTarget());
-                Assert.assertEquals(16,hr.getAveragedClosingPrice(),.4); //everybody's averages need to be correct + o -
+                Assert.assertEquals(intercept + slope *16,hr.getAveragedClosingPrice(),.4); //everybody's averages need to be correct + o -
             }
             clearingWages += scenario.getMarket().getTodayAveragePrice();
         }
@@ -85,7 +85,7 @@ public class SimpleHiringScenarioTest {
         clearingWages /=100;
         System.out.println("average workers: " + averageWorkers + ", average wages: " + clearingWages);
         Assert.assertEquals(16,averageWorkers,.1d);
-        Assert.assertEquals(16,clearingWages,.1d);
+        Assert.assertEquals(intercept + slope *16,clearingWages,.1d);
     }
 
     private SimpleHiringScenario setupTest(MacroII model, int buyers) {
@@ -111,7 +111,7 @@ public class SimpleHiringScenarioTest {
             scheduleSanityCheck(model, scenario);
 
 
-            runModel(model, scenario);
+            runModel(model, scenario,0,1);
         }
     }
 
@@ -137,6 +137,8 @@ public class SimpleHiringScenarioTest {
         {
             final MacroII model = new MacroII(System.currentTimeMillis());
             final SimpleHiringScenario scenario = setupTest(model,3);
+            scenario.setLaborSupplyIntercept(14);
+            scenario.setLaborSupplySlope(1);
 
             model.start();
 
@@ -178,7 +180,7 @@ public class SimpleHiringScenarioTest {
             scheduleSanityCheck(model, scenario);
 
 
-            runModel(model, scenario);
+            runModel(model, scenario,14,1);
         }
     }
 

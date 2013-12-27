@@ -29,7 +29,7 @@ import goods.GoodType;
 import javafx.beans.value.ObservableDoubleValue;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.filters.ExponentialFilter;
+import model.utilities.filters.WeightedMovingAverage;
 import model.utilities.stats.collectors.SalesData;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.engine.SimState;
@@ -154,7 +154,7 @@ public abstract class  SalesDepartment  implements Department {
     /**
      * average last week price weighted by outflow
      */
-    private final ExponentialFilter<Long> averagedPrice = new ExponentialFilter<>(1f);
+    private final WeightedMovingAverage<Long,Double> averagedPrice = new WeightedMovingAverage<>(10);
 
 
 
@@ -388,14 +388,14 @@ public abstract class  SalesDepartment  implements Department {
             daysOfInventory = Float.MAX_VALUE;
 
 
+
+
+        averagedPrice.addObservation(lastClosingPrice,(double)todayOutflow);
+
         //reset
         todayInflow = 0;
         todayOutflow = 0;
         sumClosingPrice = 0;
-
-        if(data.numberOfObservations() > 1)
-            averagedPrice.addObservation(lastClosingPrice);
-
 
         model.scheduleTomorrow(ActionOrder.DAWN,new Steppable() {
             @Override
@@ -832,7 +832,7 @@ public abstract class  SalesDepartment  implements Department {
                 //it's unsold
 //                assert saleRecord.getValue().getResult() != SaleResult.Result.BEING_UPDATED; //being updated should be a temporary state, shouldn't be still here by the end of the week
                 assert firm.has(saleRecord.getKey()); //we still own it!!!
-   //             assert toSell.contains(saleRecord.getKey()); //we still need to sell it
+                //             assert toSell.contains(saleRecord.getKey()); //we still need to sell it
 
 
                 if(saleRecord.getValue().getResult() == SaleResult.Result.QUOTED) //quoted are now counted as unsold
