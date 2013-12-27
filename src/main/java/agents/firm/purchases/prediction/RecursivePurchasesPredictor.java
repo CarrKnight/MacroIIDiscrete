@@ -65,7 +65,7 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
     @Override
     public Enum getYVariableType() {
         return
-                PurchasesDataType.CLOSING_PRICES;
+                PurchasesDataType.LAST_OFFERED_PRICE;
     }
 
     @Override

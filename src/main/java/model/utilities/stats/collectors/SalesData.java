@@ -98,6 +98,7 @@ public class SalesData extends DataStorage<SalesDataType> {
         Double howManyToSell = Double.valueOf(departmentToFollow.getHowManyToSell());
         Double workersProducing = Double.valueOf(departmentToFollow.getTotalWorkersWhoProduceThisGood());
         Double averageClosingPrice = Double.valueOf(departmentToFollow.getAverageClosingPrice());
+        Double lastAskedPrice = Double.valueOf(departmentToFollow.getLastAskedPrice());
         Double supplyGap = Double.valueOf(departmentToFollow.estimateSupplyGap());
 
         //memorize
@@ -107,6 +108,8 @@ public class SalesData extends DataStorage<SalesDataType> {
         data.get(SalesDataType.HOW_MANY_TO_SELL).add(howManyToSell);
         data.get(SalesDataType.WORKERS_PRODUCING_THIS_GOOD).add(workersProducing);
         data.get(SalesDataType.AVERAGE_CLOSING_PRICES).add(averageClosingPrice);
+        data.get(SalesDataType.LAST_ASKED_PRICE).add(lastAskedPrice);
+
         data.get(SalesDataType.SUPPLY_GAP).add(supplyGap);
 
         //reschedule

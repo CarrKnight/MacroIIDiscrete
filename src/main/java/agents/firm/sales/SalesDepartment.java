@@ -396,6 +396,7 @@ public abstract class  SalesDepartment  implements Department {
         todayInflow = 0;
         todayOutflow = 0;
         sumClosingPrice = 0;
+        lastAskedPrice= -1;
 
         model.scheduleTomorrow(ActionOrder.DAWN,new Steppable() {
             @Override

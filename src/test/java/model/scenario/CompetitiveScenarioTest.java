@@ -159,6 +159,20 @@ public class CompetitiveScenarioTest {
 //                    assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
                     averagePrice += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
                     averageQ += macroII.getMarket(GoodType.GENERIC).countYesterdayProductionByRegisteredSellers();
+                    //System.out.println("---------------------------------------------------------------------");
+                    int k =0; int totalSold = 0;
+                    for(EconomicAgent agent : macroII.getMarket(GoodType.GENERIC).getSellers())
+                    {
+                        SalesDepartment department = ((Firm) agent).getSalesDepartment(GoodType.GENERIC);
+                     //  System.out.println("department "+ k + ", offered price: " + department.getLastAskedPrice() + ", outflow: " + department.getTodayOutflow() + ", inflow: " +department.getTodayInflow()
+                      //          + ", worker target: " +((Firm) agent).getHRs().iterator().next().getWorkerTarget() + ", averagedPrice:" + department.getAveragedLastPrice() );
+
+                        totalSold+= department.getTodayOutflow();
+
+                    }
+                    //System.out.println("---> total production : " + macroII.getMarket(GoodType.GENERIC).countTodayProductionByRegisteredSellers() + " , prices:: " + macroII.getMarket(GoodType.GENERIC).getLastDaysAveragePrice());
+
+
 
 
                 }

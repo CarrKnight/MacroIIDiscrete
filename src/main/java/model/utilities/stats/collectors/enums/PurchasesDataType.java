@@ -31,14 +31,14 @@ public enum PurchasesDataType {
 
     CLOSING_PRICES,
 
-    AVERAGE_CLOSING_PRICES,
+    LAST_OFFERED_PRICE,
 
     INVENTORY,
 
     DEMAND_GAP,
 
     WORKERS_CONSUMING_THIS_GOOD,
-    /**
+    AVERAGE_CLOSING_PRICES, /**
      * this is 0 for the purchase department, it is only valid for HR
      */
     WORKERS_TARGETED

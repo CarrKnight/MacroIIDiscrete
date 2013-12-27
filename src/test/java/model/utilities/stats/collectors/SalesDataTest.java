@@ -90,7 +90,7 @@ public class SalesDataTest {
     }
 
   @Test
-    public void avgPriceTest()
+    public void askedPriceTest()
     {
 
 
@@ -103,14 +103,14 @@ public class SalesDataTest {
 
         data.start(model,department);
         //put in price data
-        when(department.getAverageClosingPrice()).thenReturn(1f,2f,3f);
+        when(department.getLastAskedPrice()).thenReturn(1l,2l,3l);
         when(model.getMainScheduleTime()).thenReturn(0d);
         data.step(model);
         data.step(model);
         data.step(model);
 
         //make sure it works!
-        SalesDataType type = SalesDataType.AVERAGE_CLOSING_PRICES;
+        SalesDataType type = SalesDataType.LAST_ASKED_PRICE;
         Assert.assertEquals(data.numberOfObservations(), 3);
         Assert.assertEquals(data.getObservationRecordedThisDay(type,0),1d,.00001d);
         Assert.assertEquals(data.getLatestObservation(type),3d,.00001d);

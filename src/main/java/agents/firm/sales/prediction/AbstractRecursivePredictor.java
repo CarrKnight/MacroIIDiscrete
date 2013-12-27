@@ -156,7 +156,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
             Enum priceVariable = getYVariableType();
             double price = data.getLatestObservation(priceVariable);
             assert price == data.getObservationRecordedThisDay(priceVariable, today);
-            if (price > 0 &&
+            if (price >= 0 &&
                     (burnoutPeriod == 0 ||data.getObservationRecordedThisDay(priceVariable,yesterday+1-burnoutPeriod) > 0)) { //y has been positive for at least burnoutPeriod days
 
                 //gather x with all the lags
@@ -210,33 +210,12 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                         regression.addObservation(weight, price, observation);
 
 
-                        //matrix = matrix.plus(Matrix.identity(observation.length,observation.length).times(1000));
-                        //      getRegression().setPCovariance(matrix.getArray());
 
-
-
-                        //            System.out.println(matrix.trace());
-                        //  matrix = matrix.minus(matrix.times(matrix).times(mu));
-//                        System.out.println(matrix.trace());
-                        //                    regression.setPCovariance(matrix.getArray());
-                        //  getRegression().multiplyPMatrixByThis(1d/(1d+mu));
-                        // getRegression().addNoise(1d/(1d+mu));
-
-                        //add noise
 
                         numberOfValidObservations++;
 
 
-                        if(numberOfValidObservations % 100 == 0)
-                        {
-                            /*
-                            if(this instanceof  RecursiveSalePredictor)
-                                System.out.println( "sales slope: " + ( predictPrice(1) - predictPrice(0)) + " , trace: " + getRegression().getTrace());
-                            else
-                                System.out.println( "purchases slope: " + ( predictPrice(1) - predictPrice(0)) + " , trace: " + getRegression().getTrace());
-                              */
-                            //         matrix = matrix.plus(Matrix.identity(observation.length,observation.length).times(1000));
-                        }
+
 
 
 
@@ -273,7 +252,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
     {
 
         for(Double d : array)
-            if(d <= eachElementMustBeAboveThisNumber)
+            if(d < eachElementMustBeAboveThisNumber)
                 return false;
         return true;
 
