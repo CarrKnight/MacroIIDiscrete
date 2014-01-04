@@ -5,7 +5,6 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
-import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import au.com.bytecode.opencsv.CSVWriter;
 import goods.GoodType;
 import model.MacroII;
@@ -179,7 +178,7 @@ public class MonopolistScenarioTest {
 
             //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
             if(macroII.random.nextBoolean() && scenario1.getControlType() != MonopolistScenario.MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_SIMPLE)
-                scenario1.setAskPricingStrategy(SmoothedDailyInventoryPricingStrategy.class);
+                scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
             else
                 scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
 
@@ -342,7 +341,7 @@ public class MonopolistScenarioTest {
             scenario1.setWorkersToBeRehiredEveryDay(true);
             //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
             if(macroII.random.nextBoolean())
-                scenario1.setAskPricingStrategy(SmoothedDailyInventoryPricingStrategy.class);
+                scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
             else
                 scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
 
@@ -512,7 +511,7 @@ public class MonopolistScenarioTest {
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
             scenario1.setWorkersToBeRehiredEveryDay(true);
             if(macroII.random.nextBoolean())
-                scenario1.setAskPricingStrategy(SmoothedDailyInventoryPricingStrategy.class);
+                scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
             else
                 scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
 
@@ -613,7 +612,7 @@ public class MonopolistScenarioTest {
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
             //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
             if(macroII.random.nextBoolean())
-                scenario1.setAskPricingStrategy(SmoothedDailyInventoryPricingStrategy.class);
+                scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
             else
                 scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
 
@@ -723,7 +722,7 @@ public class MonopolistScenarioTest {
     }
 
 
-    //all these use SmoothedDailyInventoryPricingStrategy
+    //all these use SalesControlWithFixedInventoryAndPID
 
 
 
@@ -767,7 +766,7 @@ public class MonopolistScenarioTest {
 
 
             System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79, 1);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice(), 79, 1);
             assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
 
 

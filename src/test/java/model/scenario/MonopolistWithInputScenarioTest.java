@@ -161,7 +161,7 @@ public class MonopolistWithInputScenarioTest {
         for(int i=0; i<15; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
-            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            final MacroII macroII = new MacroII(1388847705127l);
             MonopolistScenario scenario1 = new MonopolistWithInputScenario(macroII){
 
                 protected void addPurchaseDepartmentToMonopolist(){
@@ -191,8 +191,7 @@ public class MonopolistWithInputScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            System.out.println(i + " ----- " + scenario1.monopolist.getTotalWorkers());
-            System.out.println(macroII.getMarket(GoodType.GENERIC).getLastPrice());
+            System.out.println(i + " ----- " + scenario1.monopolist.getTotalWorkers() + " ... " + macroII.getMarket(GoodType.GENERIC).getLastPrice() + " ----> " + macroII.seed());
             assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
             assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
 

@@ -41,6 +41,10 @@ public class MemorySalesPredictor implements SalesPredictor {
     }
 
     private long memorylookup(SalesDepartment dept) {
+        if(Double.isNaN(dept.getAveragedLastPrice()) || dept.getAveragedLastPrice() < 0)
+        {
+            return -1;
+        }
         long lastPrice = Math.round(dept.getAveragedLastPrice());  //get the last closing price
         //do we not have anything in memory or did we screw up so badly
         //in the past term that we didn't sell a single item?
