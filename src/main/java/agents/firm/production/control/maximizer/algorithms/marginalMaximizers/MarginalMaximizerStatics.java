@@ -35,7 +35,7 @@ import java.util.Set;
  */
 public final class MarginalMaximizerStatics {
 
-    public static boolean printOutDiagnostics = true;
+    public static boolean printOutDiagnostics = false;
 
 
     private MarginalMaximizerStatics(){}

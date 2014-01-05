@@ -94,7 +94,7 @@ public class LinearExtrapolatorPurchasePredictorTest
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 return data.getObservationRecordedThisDay((PurchasesDataType)invocation.getArguments()[0],
-                        (int)invocation.getArguments()[1]);
+                        (Integer)invocation.getArguments()[1]);
 
             }
         });
@@ -103,7 +103,7 @@ public class LinearExtrapolatorPurchasePredictorTest
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 return data.getObservationsRecordedTheseDays((PurchasesDataType)invocation.getArguments()[0],
-                        (int)invocation.getArguments()[1],(int)invocation.getArguments()[2]);
+                        (Integer)invocation.getArguments()[1],(Integer)invocation.getArguments()[2]);
 
             }
         });
@@ -113,7 +113,7 @@ public class LinearExtrapolatorPurchasePredictorTest
 
         //p2=32.5904 p1=32
         //delta workers -1!
-        when(department.getLastClosingPrice()).thenReturn(100l);
+        when(department.getAveragedClosingPrice()).thenReturn(100f);
         Assert.assertEquals(100,predictor.predictPurchasePriceWhenIncreasingProduction(department)); //this is the reverse of what we expect when estimating supply shocks, but that's because the data is pure bogus
         Assert.assertEquals(100, predictor.predictPurchasePriceWhenDecreasingProduction(department)); //this is the reverse of what we expect when estimating supply shocks, but that's because the data is pure bogus
 
@@ -180,7 +180,7 @@ public class LinearExtrapolatorPurchasePredictorTest
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 return data.getObservationRecordedThisDay((PurchasesDataType)invocation.getArguments()[0],
-                        (int)invocation.getArguments()[1]);
+                        (Integer)invocation.getArguments()[1]);
 
             }
         });
@@ -189,7 +189,7 @@ public class LinearExtrapolatorPurchasePredictorTest
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 return data.getObservationsRecordedTheseDays((PurchasesDataType)invocation.getArguments()[0],
-                        (int)invocation.getArguments()[1],(int)invocation.getArguments()[2]);
+                        (Integer)invocation.getArguments()[1],(Integer)invocation.getArguments()[2]);
 
             }
         });
@@ -199,7 +199,7 @@ public class LinearExtrapolatorPurchasePredictorTest
 
         //p2=32.5904 p1=32
         //delta workers -1!
-        when(department.getLastClosingPrice()).thenReturn(100l);
+        when(department.getAveragedClosingPrice()).thenReturn(100f);
         Assert.assertEquals(100,predictor.predictPurchasePriceWhenIncreasingProduction(department)); //this is the reverse of what we expect when estimating supply shocks, but that's because the data is pure bogus
         Assert.assertEquals(100, predictor.predictPurchasePriceWhenDecreasingProduction(department)); //this is the reverse of what we expect when estimating supply shocks, but that's because the data is pure bogus
 

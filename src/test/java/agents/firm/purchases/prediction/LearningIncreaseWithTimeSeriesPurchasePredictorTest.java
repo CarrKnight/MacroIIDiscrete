@@ -76,7 +76,7 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictorTest {
         Assert.assertEquals(-6.596947,predictor.extractInterceptOfDemandFromRegression(),.5);
 
         PurchasesDepartment department = mock(PurchasesDepartment.class);
-        when(department.getLastClosingPrice()).thenReturn(100l);
+        when(department.getAveragedClosingPrice()).thenReturn(100f);
         Assert.assertEquals(Math.round(100+1d/0.8527228),predictor.predictPurchasePriceWhenIncreasingProduction(department));
         Assert.assertEquals(Math.round(100-1d/0.8527228),predictor.predictPurchasePriceWhenDecreasingProduction(department));
 

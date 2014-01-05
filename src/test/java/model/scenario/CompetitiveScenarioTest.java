@@ -23,7 +23,6 @@ import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
-import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
@@ -415,7 +414,7 @@ public class CompetitiveScenarioTest {
         //  System.out.println("FORCED COMPETITIVE FIRMS: " + (competitors+1));
         Class<? extends AskPricingStrategy> strategies[] = new Class[2];
         strategies[1] = SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class;
-        strategies[0] = SmoothedDailyInventoryPricingStrategy.class;
+        strategies[0] = SalesControlWithFixedInventoryAndPID.class;
         //    strategies[2] = SalesControlWithFixedInventoryAndPID.class;
 
 

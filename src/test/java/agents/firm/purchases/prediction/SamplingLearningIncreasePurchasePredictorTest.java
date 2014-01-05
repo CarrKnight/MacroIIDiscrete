@@ -74,7 +74,7 @@ public class SamplingLearningIncreasePurchasePredictorTest
         //this should regress to p=101.9 -2.6  * q
         //now Q doesn't matter anymore, only previous Price
 
-        when(department.getLastClosingPrice()).thenReturn(200l);
+        when(department.getAveragedClosingPrice()).thenReturn(200f);
         //the sales predictor will be predict for 9 (yesterdayVolume + 1)
         Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 203l); //200+2.6 (rounded)
 
@@ -107,7 +107,7 @@ public class SamplingLearningIncreasePurchasePredictorTest
 
 
         SamplingLearningIncreasePurchasePredictor predictor = new SamplingLearningIncreasePurchasePredictor(model );
-        when(department.getLastClosingPrice()).thenReturn(50l);
+        when(department.getAveragedClosingPrice()).thenReturn(50f);
         Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50l);
 
         //with one observation, it still returns whatever the sales department says
