@@ -289,7 +289,6 @@ public class PurchasesWeeklyPIDTest {
         final PurchasesDailyPID control = (PurchasesDailyPID) field.get(dept); //so we can start it!
         control.setHowManyDaysOfInventoryToHold(7);
 
-        //your weekly needs should be weekLength/25
         assertEquals(control.getDailyTarget(), 6 * model.getWeekLength() / 25f, .01);
         control.start();
 

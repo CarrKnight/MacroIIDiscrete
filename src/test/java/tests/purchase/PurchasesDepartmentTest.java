@@ -221,7 +221,7 @@ public class PurchasesDepartmentTest {
         market.start(model);
 
 
-        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100,firm,market,
+        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100000,firm,market,
                 FixedInventoryControl.class,null,null,null).getDepartment();
 
         firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
@@ -232,7 +232,6 @@ public class PurchasesDepartmentTest {
         Quote q = (Quote) field.get(dept);
         assertTrue(q != null);
         assertTrue(q.getPriceQuoted() > 0);
-       // assertTrue(q.getPriceQuoted() <= 100); not true anymore, i rather have it stop for bankruptcy than break the model silently
 
         //if I put in a bad quote it should throw an exception
         try{

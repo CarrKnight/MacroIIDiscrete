@@ -88,7 +88,7 @@ public class DailyInventoryControl extends AbstractInventoryControl implements P
 
         dailyTarget = 0;
         singleProductionRunNeed=0;
-        int weeklyNeeds = 0;
+        float weeklyNeeds = 0;
         //get the firm
         Firm f = getPurchasesDepartment().getFirm();
         List<Plant> importantPlants = f.getListOfPlantsUsingSpecificInput(getGoodTypeToControl());

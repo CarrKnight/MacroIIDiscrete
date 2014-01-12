@@ -74,7 +74,7 @@ public class SalesPriceAveragerTest {
         when(department.getLastClosingPrice()).thenReturn(78l);
         when(department.getTodayInflow()).thenReturn(12);
         averager.step(model);
-        Assert.assertEquals(86,averager.getAveragedPrice(),.0001d);
+        Assert.assertEquals(78,averager.getAveragedPrice(),.0001d);
 
         //now try in groups of four
         averager = new SalesPriceAverager(model,department,4);

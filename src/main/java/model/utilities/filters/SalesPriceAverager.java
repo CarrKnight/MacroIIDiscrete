@@ -63,10 +63,16 @@ public class SalesPriceAverager implements Steppable, Deactivatable{
         if(!active)
             return;
 
-        denominator.addObservation(department.getTodayInflow());
-        numerator.addObservation(department.getTodayOutflow() * department.getLastClosingPrice());
-        assert numerator.numberOfObservations() == denominator.numberOfObservations();
+        //read today's outflow
+        final int todayOutflow = department.getTodayOutflow();
 
+
+        if(department.getTodayInflow() > 0)
+        {
+            denominator.addObservation(department.getTodayInflow());
+            numerator.addObservation(todayOutflow * department.getLastClosingPrice());
+            assert numerator.numberOfObservations() == denominator.numberOfObservations();
+        }
         ((MacroII)simState).scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING,this);
     }
 
