@@ -208,7 +208,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         assert dept == sales;
         assert sales.getFirm() == owner;
         assert owner.has(good);
-      //  goodsToSell++;
+        //goodsToSell++;
         //percolate
         stockOuts.sellThisEvent(owner,dept,good);
     }

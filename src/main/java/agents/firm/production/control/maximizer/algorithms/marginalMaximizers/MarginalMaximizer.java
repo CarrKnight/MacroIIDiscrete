@@ -54,7 +54,8 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
      * The plant control object
      */
     final private PlantControl plantControl;
-    private final int minimumNumberOfChoicesBeforeClosingDown = 1000;
+
+    private final int minimumStepsBeforeClosingDown = 5;
 
     /**
      * What to do if some predictions don't exist?
@@ -64,7 +65,7 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
     /**
      * Each time the marginal maximizer is called,
      */
-    private int numberOfChoices = 0;
+    private int steps = 0;
 
 
     /**
@@ -98,8 +99,8 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
     @Override
     public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits)
     {
-
-        numberOfChoices++;
+            if(oldWorkerTarget >=0)
+                steps++;
 
 
         //compute profits if we increase
@@ -139,7 +140,7 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
 
 
                 int newTarget = Math.max(currentWorkerTarget - 1, 0);
-                if(newTarget ==0 && currentWorkerTarget >0 && numberOfChoices < minimumNumberOfChoicesBeforeClosingDown)
+                if(newTarget ==0 && currentWorkerTarget >0 && steps < minimumStepsBeforeClosingDown)
                     return currentWorkerTarget; //don't quit just yet
                 return newTarget;
 

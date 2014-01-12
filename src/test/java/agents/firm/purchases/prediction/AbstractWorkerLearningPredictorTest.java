@@ -8,13 +8,15 @@ package agents.firm.purchases.prediction;
 
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
-import agents.firm.sales.prediction.RecursiveSalePredictor;
+import agents.firm.sales.prediction.OpenLoopRecursiveSalesPredictor;
+import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
-import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import goods.GoodType;
 import model.MacroII;
 import model.scenario.MonopolistScenario;
 import org.junit.Test;
+
+import java.io.File;
 
 import static org.junit.Assert.assertEquals;
 
@@ -64,7 +66,7 @@ public class AbstractWorkerLearningPredictorTest {
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
             //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
             if(macroII.random.nextBoolean())
-                scenario1.setAskPricingStrategy(SmoothedDailyInventoryPricingStrategy.class);
+                scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
             else
                 scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
 
@@ -79,18 +81,19 @@ public class AbstractWorkerLearningPredictorTest {
 
             macroII.start();
             macroII.schedule.step(macroII);
-            RecursiveSalePredictor predictor = new RecursiveSalePredictor(macroII,scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC));
+            OpenLoopRecursiveSalesPredictor predictor = new OpenLoopRecursiveSalesPredictor(macroII,scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC));
            // predictor.setRegressingOnWorkers(true);
             scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC).setPredictorStrategy(predictor);
             while(macroII.schedule.getTime()<5000)
                 macroII.schedule.step(macroII);
 
 
-            System.out.println(predictor.getDecrementDelta() + " - " + p1+ " - " +macroII.seed());
+            System.out.println(predictor.getDecrementDelta() + " - " + p1+ " - " +macroII.seed() +  ", " + scenario1.getAskPricingStrategy().getSimpleName());
       /*      System.out.println(macroII.getMarket(GoodType.GENERIC).getLastPrice() + " ---- " + predictor.predictPrice(0) + " ---- " + predictor.predictPrice(1) + "\n" +
                     predictor.predictPrice(1,10) +"---"+ predictor.predictPrice(1,100) +"---"+ predictor.predictPrice(1,1000)+"---"+ predictor.predictPrice(1,10000));
                     */
-            assertEquals(predictor.getDecrementDelta(),(double)(p1 ) ,.5d);
+            scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC).getData().writeToCSVFile(new File("test.csv"));
+            assertEquals(predictor.getDecrementDelta(), (double) (p1), .5d);
 
 
         }

@@ -4,17 +4,17 @@ import agents.EconomicAgent;
 import agents.Inventory;
 import agents.InventoryListener;
 import agents.firm.Firm;
-import agents.firm.purchases.prediction.PricingPurchasesPredictor;
-import agents.firm.purchases.pricing.decorators.LookAtTheMarketBidPricingDecorator;
-import agents.firm.utilities.NumberOfPlantsListener;
 import agents.firm.purchases.PurchasesDepartment;
+import agents.firm.purchases.inventoryControl.DailyInventoryControl;
 import agents.firm.purchases.inventoryControl.FixedInventoryControl;
 import agents.firm.purchases.inventoryControl.InventoryControl;
 import agents.firm.purchases.inventoryControl.Level;
-import agents.firm.purchases.inventoryControl.DailyInventoryControl;
+import agents.firm.purchases.prediction.PricingPurchasesPredictor;
 import agents.firm.purchases.pricing.BidPricingStrategy;
+import agents.firm.purchases.pricing.decorators.LookAtTheMarketBidPricingDecorator;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
+import agents.firm.utilities.NumberOfPlantsListener;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import financial.market.OrderBookBlindMarket;
@@ -23,18 +23,16 @@ import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.dummies.DummySeller;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import model.utilities.dummies.DummySeller;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -234,7 +232,7 @@ public class PurchasesDepartmentTest {
         Quote q = (Quote) field.get(dept);
         assertTrue(q != null);
         assertTrue(q.getPriceQuoted() > 0);
-        assertTrue(q.getPriceQuoted() <= 100);
+       // assertTrue(q.getPriceQuoted() <= 100); not true anymore, i rather have it stop for bankruptcy than break the model silently
 
         //if I put in a bad quote it should throw an exception
         try{

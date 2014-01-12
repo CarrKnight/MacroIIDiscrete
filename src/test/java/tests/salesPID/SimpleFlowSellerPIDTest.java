@@ -13,8 +13,8 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import org.junit.Test;
 import model.utilities.dummies.DummyBuyer;
+import org.junit.Test;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -176,18 +176,20 @@ public class SimpleFlowSellerPIDTest {
     }
 
 
-    @Test
+    //obsolete and deprecated. Replaced by SimpleSellerScenarioTest
+   // @Test
+    @Deprecated
     public void scenario3() throws IllegalAccessException   //now it's 2 sellers, each with 2 goods to sell each
     {
 
-        for(int k=0; k< 25; k++) //this used to fail a lot
+        for(int k=0; k< 100; k++) //this used to fail a lot
         {
 
             Market.TESTING_MODE = true;
             System.out.println("-------------------------------------------------------------------------------------");
             System.out.println("SimpleFlowSeller scenario3");
 
-            MacroII model = new MacroII(1l);
+            MacroII model = new MacroII(System.currentTimeMillis());
             OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
 
             Firm firm1 = new Firm(model);
@@ -195,7 +197,7 @@ public class SimpleFlowSellerPIDTest {
             SimpleFlowSellerPID strategy1 = new SimpleFlowSellerPID(dept1);
             dept1.setAskPricingStrategy(strategy1);
             firm1.registerSaleDepartment(dept1,GoodType.GENERIC);
-            dept1.start();
+            dept1.start(); 
 
 
             Firm firm2 = new Firm(model);
@@ -216,8 +218,7 @@ public class SimpleFlowSellerPIDTest {
 
 
 
-                //10 sellers
-                //1 buyer
+                //10 buyers
                 for(int i=1; i<11; i++)
                 {
                     DummyBuyer buyer = new DummyBuyer(model,i*10,market);
@@ -245,6 +246,7 @@ public class SimpleFlowSellerPIDTest {
 
                 model.schedule.step(model);
 
+
                 System.out.println("At time: " +j +" seller1 price :" + strategy1.getTargetPrice() + " ---  seller2 price :" + strategy2.getTargetPrice());
                 if(j<99)
                     for(Quote q : quotes)
@@ -254,11 +256,13 @@ public class SimpleFlowSellerPIDTest {
                         catch (IllegalArgumentException ignored){}
 
                 System.out.println("At time: " +j +" seller1 price :" + strategy1.getTargetPrice() + " ---  seller2 price :" + strategy2.getTargetPrice());
+                System.out.println(market.getTodayVolume() + " --- " + market.getBestBuyPrice());
 
             }
 
 
             //this is not necessarilly true because of the order with which things are sold
+
             assertEquals(market.getBestBuyPrice(), 60l);
             assertTrue(strategy1.getTargetPrice() > 60 && strategy1.getTargetPrice() <=75);
             assertTrue(strategy2.getTargetPrice() > 60 && strategy2.getTargetPrice() <=75);
