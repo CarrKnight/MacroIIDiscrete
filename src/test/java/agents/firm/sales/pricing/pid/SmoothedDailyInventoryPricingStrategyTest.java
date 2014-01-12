@@ -62,12 +62,12 @@ public class SmoothedDailyInventoryPricingStrategyTest {
         assertTrue(strategy.getTargetInventory() > 0);
         assertTrue(strategy.getTargetInventory() < 100*7);
 
-        for(int i=0; i<10;i++)
+        for(int i=0; i<100;i++)
         {
             strategy.step(model);
         }
 
-        assertEquals(strategy.getTargetInventory(),700); //now it should be exactly 100*7
+        assertEquals(strategy.getTargetInventory(),700,1); //now it should be exactly 100*7
 
 
 

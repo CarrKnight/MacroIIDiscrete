@@ -4,6 +4,7 @@ import agents.firm.Firm;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.prediction.LinearExtrapolationPredictor;
+import agents.firm.sales.prediction.PricingSalesPredictor;
 import agents.firm.sales.pricing.MarkupFollower;
 import financial.market.OrderBookMarket;
 import goods.Good;
@@ -57,6 +58,8 @@ public class SalesDepartmentStopConsumingTest {
                 newSalesDepartment(firm, orderBookMarket, null, null, MarkupFollower.class, LinearExtrapolationPredictor.class,
                         SalesDepartmentAllAtOnce.class);
         SalesDepartment department = factoryMade.getSalesDepartment();
+        department.setPredictorStrategy(new PricingSalesPredictor());
+
 
         //give three goods to the firm
         Good[] produced = new Good[3];
@@ -133,6 +136,7 @@ public class SalesDepartmentStopConsumingTest {
         SalesDepartment department = SalesDepartmentFactory.
                 newSalesDepartment(firm,orderBookMarket,null,null,MarkupFollower.class,null,SalesDepartmentOneAtATime.class).getSalesDepartment();
 
+        department.setPredictorStrategy(new PricingSalesPredictor());
 
         department.start();
         macroII.start();

@@ -575,7 +575,9 @@ public class SimpleSellerScenarioTest {
                 SalesDepartment department = departments.get(k);
                 System.out.println("department " + k + ", price: " + department.getLastAskedPrice() +
                         ", today sold: " + department.getTodayOutflow() + ", averaged price: " + department.getAveragedLastPrice() );
-                Assert.assertEquals(86,department.getAveragedLastPrice(),1);
+                //if you have inventory, this should always be true
+                if(!scenario.getSellerStrategy().equals(SimpleFlowSellerPID.class))
+                    Assert.assertEquals(86,department.getAveragedLastPrice(),1);
             }
 
         }

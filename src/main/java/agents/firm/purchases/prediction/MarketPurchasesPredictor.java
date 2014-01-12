@@ -32,12 +32,12 @@ public class MarketPurchasesPredictor implements PurchasesPredictor {
      */
     @Override
     public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
-        return Math.round(dept.getMarket().getLastDaysAveragePrice());
+        return dept.getMarket().getLastPrice();
     }
 
     @Override
     public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
-        return Math.round(dept.getMarket().getLastDaysAveragePrice());
+        return dept.getMarket().getLastPrice();
     }
 
     /**
@@ -48,7 +48,7 @@ public class MarketPurchasesPredictor implements PurchasesPredictor {
      */
     @Override
     public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
-        return Math.round(dept.getMarket().getLastDaysAveragePrice());
+        return dept.getMarket().getLastPrice();
     }
 
 

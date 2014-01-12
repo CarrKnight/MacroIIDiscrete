@@ -8,6 +8,7 @@ import agents.firm.production.Plant;
 import agents.firm.production.control.facades.MaxCapacityControl;
 import agents.firm.production.technology.IRSExponentialMachinery;
 import agents.firm.purchases.PurchasesDepartment;
+import agents.firm.purchases.prediction.PricingPurchasesPredictor;
 import financial.market.Market;
 import financial.market.OrderBookBlindMarket;
 import goods.GoodType;
@@ -75,6 +76,7 @@ public class MaxCapacityControlTest {
         Market market = new OrderBookBlindMarket(GoodType.LABOR);
         assertEquals(p.maximumWorkersPossible(),100);
         HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000,firm,market,p,MaxCapacityControl.class,null,null).getDepartment(); //create!!!
+        humanResources.setPredictor(new PricingPurchasesPredictor());
 
         Field field = PurchasesDepartment.class.getDeclaredField("control");
         field.setAccessible(true);

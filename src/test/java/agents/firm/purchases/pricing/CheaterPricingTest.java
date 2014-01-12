@@ -40,7 +40,6 @@ public class CheaterPricingTest {
 
 
     //this isn't true anymore!
-    @Test
     public void submitRightPrice() throws IllegalAccessException {
         //create the market, the purchase department and the pricer
         Market market = mock(Market.class); when(market.getGoodType()).thenReturn(GoodType.GENERIC);
