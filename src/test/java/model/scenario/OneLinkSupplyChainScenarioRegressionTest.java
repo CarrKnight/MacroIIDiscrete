@@ -4,7 +4,7 @@ import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.control.maximizer.EveryWeekMaximizer;
-import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.RobustMarginalMaximizer;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
@@ -101,7 +101,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     private OneLinkSupplyChainResult testWithStickyPriceOneRun(long seed) {
         final MacroII macroII = new MacroII(seed);
         final OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
-        scenario1.setControlType(RobustMarginalMaximizer.class);
+        scenario1.setControlType(MarginalMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         //use standard PID parameters
         scenario1.setDivideProportionalGainByThis(1f);
@@ -177,7 +177,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     private OneLinkSupplyChainResult testWithSlowPidOneRun(long seed) {
         final MacroII macroII = new MacroII(seed);
         final OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
-        scenario1.setControlType(RobustMarginalMaximizer.class);
+        scenario1.setControlType(MarginalMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         //divide standard PID parameters by 100
         scenario1.setDivideProportionalGainByThis(100f);
@@ -259,7 +259,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     private OneLinkSupplyChainResult beefMonopolistFixedProductionWithStickyPricesOneRun(long seed) {
         final MacroII macroII = new MacroII(seed);
         final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 = new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.BEEF);
-        scenario1.setControlType(RobustMarginalMaximizer.class);
+        scenario1.setControlType(MarginalMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         //use standard PID parameters
         scenario1.setDivideProportionalGainByThis(1f);
@@ -360,7 +360,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     private OneLinkSupplyChainResult testBeefMonopolistFixedProductionWithSlowPIDOneRun(long seed) {
         final MacroII macroII = new MacroII(seed);
         final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 = new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.BEEF);
-        scenario1.setControlType(RobustMarginalMaximizer.class);
+        scenario1.setControlType(MarginalMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         //divide standard PID parameters by 100
         scenario1.setDivideProportionalGainByThis(100f);
@@ -496,8 +496,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
         };
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setMaximizerType(EveryWeekMaximizer.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setMaximizerType(EveryWeekMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         //divide standard PID parameters by 100
         scenario1.setDivideProportionalGainByThis(100f);
@@ -607,8 +606,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                 return dept;
             }
         };
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setMaximizerType(EveryWeekMaximizer.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setMaximizerType(EveryWeekMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         //use standard PID parameters
         scenario1.setDivideProportionalGainByThis(1f);
@@ -669,7 +667,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
-        for(int i=0; i <5; i++)
+        for(int i=0; i <1; i++)
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
@@ -739,15 +737,14 @@ public class OneLinkSupplyChainScenarioRegressionTest
                 return hr;
             }
         };
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
         //competition!
         scenario1.setNumberOfBeefProducers(1);
-        scenario1.setNumberOfFoodProducers(1);
+        scenario1.setNumberOfFoodProducers(5);
 
-        scenario1.setDivideProportionalGainByThis(100f);
+       scenario1.setDivideProportionalGainByThis(100f);
         scenario1.setDivideIntegrativeGainByThis(100f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
@@ -869,8 +866,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                 return hr;
             }
         };
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
         //competition!
@@ -1004,8 +1000,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                 return hr;
             }
         };
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
         //competition!
@@ -1141,8 +1136,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                 return hr;
             }
         };
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
         //competition!
@@ -1255,8 +1249,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                 return hr;
             }
         };
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
         //competition!
@@ -1364,8 +1357,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                 return hr;
             }
         };
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
         //competition!
@@ -1464,8 +1456,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
 
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
 
@@ -1565,8 +1556,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
 
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
 
@@ -1664,8 +1654,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
 
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
 
@@ -1764,8 +1753,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     private OneLinkSupplyChainResult learningBeefMonopolistStickyPIDRun(long random) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
         //competition!
@@ -1870,8 +1858,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 =
                 new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.FOOD);
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         //use standard PID parameters
         scenario1.setDivideProportionalGainByThis(1f);
         scenario1.setDivideIntegrativeGainByThis(1f);
@@ -1965,8 +1952,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     private OneLinkSupplyChainResult testFoodMonopolistWithSlowPIDAndFixedQuantityRun(long random) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 = new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.FOOD);
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         //divide standard PID parameters by 100
         scenario1.setDivideProportionalGainByThis(100f);
         scenario1.setDivideIntegrativeGainByThis(100f);
@@ -2068,8 +2054,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
         };
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
 
@@ -2171,8 +2156,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
         };
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
         //competition!
@@ -2266,8 +2250,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
 
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
 
@@ -2355,8 +2338,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     private OneLinkSupplyChainResult learningFoodMonopolistStickyPIDRun(long random) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
         //competition!

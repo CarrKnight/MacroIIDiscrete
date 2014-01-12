@@ -43,7 +43,7 @@ public class PricingSalesPredictor implements SalesPredictor {
 
         //what would the pricing section do?
 
-        return dept.hypotheticalSalePrice();
+        return dept.hypotheticalSalePrice(expectedProductionCost);
 
 
     }

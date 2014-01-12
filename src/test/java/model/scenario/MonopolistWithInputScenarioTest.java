@@ -161,7 +161,7 @@ public class MonopolistWithInputScenarioTest {
         for(int i=0; i<15; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
-            final MacroII macroII = new MacroII(1388847705127l);
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
             MonopolistScenario scenario1 = new MonopolistWithInputScenario(macroII){
 
                 protected void addPurchaseDepartmentToMonopolist(){

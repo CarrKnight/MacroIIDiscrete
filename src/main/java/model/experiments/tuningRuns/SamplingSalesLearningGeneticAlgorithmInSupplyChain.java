@@ -8,7 +8,7 @@ package model.experiments.tuningRuns;
 
 import agents.firm.Firm;
 import agents.firm.production.Blueprint;
-import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.RobustMarginalMaximizer;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.SamplingLearningIncreasePurchasePredictor;
 import agents.firm.sales.SalesDepartment;
@@ -387,7 +387,7 @@ public class SamplingSalesLearningGeneticAlgorithmInSupplyChain
                     }
                 };
 
-                scenario1.setControlType(RobustMarginalMaximizer.class);
+                scenario1.setControlType(MarginalMaximizer.class);
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
                 scenario1.setBeefPriceFilterer(null);
 

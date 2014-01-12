@@ -1296,13 +1296,15 @@ public abstract class  SalesDepartment  implements Department {
     }
 
 
+
+
     /**
      * this is a "utility" method that should be used sparingly. What it does is it creates a mock good, passes it to the pricing department
      * and asks for a price. It is no guarantee that the firm actually will charge such price when a real good gets created.
      * @param productionCost the hypothetical cost of production of this good
      * @return
      */
-    long hypotheticalSalePrice(long productionCost){
+    public long hypotheticalSalePrice(long productionCost){
         Good imaginaryGood =new Good(getGoodType(),getFirm(),productionCost);
         return price(imaginaryGood);
     }

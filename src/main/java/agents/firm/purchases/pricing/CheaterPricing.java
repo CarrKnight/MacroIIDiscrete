@@ -64,8 +64,10 @@ public class CheaterPricing implements BidPricingStrategy {
      */
     @Override
     public long maxPrice(GoodType type) {
-        //if the best sale is visible and exists, return it otherwise default
-        return defaultOffer;
+
+
+            return defaultOffer;
+
     }
 
     /**

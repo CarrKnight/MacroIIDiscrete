@@ -35,6 +35,7 @@ import java.util.logging.Logger;
  * @version 2013-09-06
  * @see
  */
+@Deprecated
 public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
 
     /**

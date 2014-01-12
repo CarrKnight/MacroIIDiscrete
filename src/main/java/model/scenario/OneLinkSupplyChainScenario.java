@@ -17,7 +17,7 @@ import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.maximizer.EveryWeekMaximizer;
 import agents.firm.production.control.maximizer.WorkforceMaximizer;
 import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
-import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.RobustMarginalMaximizer;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
@@ -111,7 +111,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
     /**
      * The type of integrated control that is used by human resources in firms to choose production
      */
-    private Class<? extends WorkerMaximizationAlgorithm> controlType = RobustMarginalMaximizer.class;
+    private Class<? extends WorkerMaximizationAlgorithm> controlType = MarginalMaximizer.class;
 
     /**
      * the type of sales department firms use
@@ -542,7 +542,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
                 return hr;
             }
         };
-        scenario1.setControlType(RobustMarginalMaximizer.class);
+        scenario1.setControlType(MarginalMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 

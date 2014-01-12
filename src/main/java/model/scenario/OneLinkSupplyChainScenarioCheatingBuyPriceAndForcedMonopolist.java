@@ -15,7 +15,6 @@ import agents.firm.production.Plant;
 import agents.firm.production.control.maximizer.EveryWeekMaximizer;
 import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
-import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.RobustMarginalMaximizer;
 import agents.firm.production.control.maximizer.algorithms.otherMaximizers.FixedTargetMaximizationAlgorithm;
 import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.LinearConstantMachinery;
@@ -268,7 +267,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
                     }
 
                 }  ;
-        scenario1.setControlType(RobustMarginalMaximizer.class);
+        scenario1.setControlType(MarginalMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
@@ -343,7 +342,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
                 return department;
             }
         };
-        scenario1.setControlType(RobustMarginalMaximizer.class);
+        scenario1.setControlType(MarginalMaximizer.class);
         scenario1.setMaximizerType(EveryWeekMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         //divide standard PID parameters by 100

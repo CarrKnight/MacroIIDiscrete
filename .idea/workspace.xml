@@ -14,14 +14,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b2f2be4b-01ab-4023-8729-b370a266331e" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pricing/CheaterPricing.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pricing/CheaterPricing.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/agents/firm/purchases/pricing/CheaterPricingTest.java" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/purchases/pricing/CheaterPricingTest.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/model/scenario/CompetitiveScenarioTest.java" afterPath="$PROJECT_DIR$/src/test/java/model/scenario/CompetitiveScenarioTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/LearningIncreaseWithTimeSeriesPurchasePredictorTest.java" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/LearningIncreaseWithTimeSeriesPurchasePredictorTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/LinearExtrapolatorPurchasePredictorTest.java" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/LinearExtrapolatorPurchasePredictorTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStatics.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStatics.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/tests/purchase/PricingPurchasesPredictorTest.java" afterPath="$PROJECT_DIR$/src/test/java/tests/purchase/PricingPurchasesPredictorTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java" afterPath="$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/OneLinkPredictorGeneticAlgorithm.java" afterPath="$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/OneLinkPredictorGeneticAlgorithm.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java" afterPath="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist.java" afterPath="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/model/scenario/OneLinkSupplyChainScenarioRegressionTest.java" afterPath="$PROJECT_DIR$/src/test/java/model/scenario/OneLinkSupplyChainScenarioRegressionTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/tests/predictor/PricingPredictorStrategyTest.java" afterPath="$PROJECT_DIR$/src/test/java/tests/predictor/PricingPredictorStrategyTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/PricingSalesPredictor.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/PricingSalesPredictor.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/RecursivePurchasesPredictor.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/RecursivePurchasesPredictor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/SamplingLearningIncreasePurchasePredictorTest.java" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/SamplingLearningIncreasePurchasePredictorTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/RobustMarginalMaximizer.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/RobustMarginalMaximizer.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartment.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/tests/SalesDepartmentTest2.java" afterPath="$PROJECT_DIR$/src/test/java/tests/SalesDepartmentTest2.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/SamplingSalesLearningGeneticAlgorithmInSupplyChain.java" afterPath="$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/SamplingSalesLearningGeneticAlgorithmInSupplyChain.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="MacroIIDiscrete.iws" />
@@ -308,7 +315,7 @@
         <option name="CONDITION" value="&#13;&#13;JAVA" />
         <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist.java" line="317" class="model.scenario.OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist" package="model.scenario">
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist.java" line="316" class="model.scenario.OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist" package="model.scenario">
         <option name="ENABLED" value="false" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -593,7 +600,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist.java" line="312" class="model.scenario.OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist" package="model.scenario">
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist.java" line="311" class="model.scenario.OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist" package="model.scenario">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -668,7 +675,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/test/java/tests/predictor/PricingPredictorStrategyTest.java" line="74" class="tests.predictor.PricingPredictorStrategyTest" package="tests.predictor">
+      <breakpoint url="file://$PROJECT_DIR$/src/test/java/tests/predictor/PricingPredictorStrategyTest.java" line="76" class="tests.predictor.PricingPredictorStrategyTest" package="tests.predictor">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -713,22 +720,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStatics.java" line="64" class="agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerStatics" package="agents.firm.production.control.maximizer.algorithms.marginalMaximizers">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="REMOVE_AFTER_HIT" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="SUSPEND" value="true" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="true" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStatics.java" line="211" class="agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerStatics" package="agents.firm.production.control.maximizer.algorithms.marginalMaximizers">
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStatics.java" line="53" class="agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerStatics" package="agents.firm.production.control.maximizer.algorithms.marginalMaximizers">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -753,54 +745,108 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="MonopolistScenarioTest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistScenarioTest.java">
+      <file leaf-file-name="PricingPredictorStrategyTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/java/tests/predictor/PricingPredictorStrategyTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="587" column="40" selection-start="23402" selection-end="23402" vertical-scroll-proportion="0.0" vertical-offset="9786" max-vertical-offset="13651">
+            <state line="76" column="0" selection-start="2322" selection-end="2322" vertical-scroll-proportion="0.0" vertical-offset="781" max-vertical-offset="1496">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PricingSalesPredictor.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/PricingSalesPredictor.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="45" column="29" selection-start="1466" selection-end="1466" vertical-scroll-proportion="0.0" vertical-offset="479" max-vertical-offset="1360">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SalesDepartment.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="1306" column="11" selection-start="46471" selection-end="46471" vertical-scroll-proportion="0.0" vertical-offset="10764" max-vertical-offset="13209">
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="method#rightPriceAndQuantityTestAsHillClimber#0;class#MonopolistScenarioTest#0" expanded="true" />
-                <element signature="method#problematicScenario1#0;class#MonopolistScenarioTest#0" expanded="true" />
-                <element signature="method#problematicScenario3#0;class#MonopolistScenarioTest#0" expanded="true" />
-                <element signature="method#problematicScenario2#0;class#MonopolistScenarioTest#0" expanded="true" />
-                <element signature="method#rightPriceAndQuantityTestRandomControlRandomSlopes#0;class#MonopolistScenarioTest#0" expanded="true" />
-                <element signature="method#rightPriceAndQuantityTestRandomControlRandomSlopesFlowsOnly#0;class#MonopolistScenarioTest#0" expanded="true" />
-                <element signature="method#rightPriceAndQuantityTestRandomControlRandomSlopesWithShift#0;class#MonopolistScenarioTest#0" expanded="true" />
-                <element signature="method#rightPriceAndQuantityTestAsMarginal#0;class#MonopolistScenarioTest#0" expanded="true" />
-                <element signature="method#marketSanityCheck#0;class#MonopolistScenarioTest#0" expanded="true" />
-                <element signature="method#rightPriceAndQuantityTestAsMarginalWithSalesControlFlowPIDWithFixedInventory#0;class#MonopolistScenarioTest#0" expanded="true" />
-                <element signature="method#testfindWorkerTargetThatMaximizesProfits#0;class#MonopolistScenarioTest#0" expanded="true" />
+                <element signature="method#SalesDepartment#0;class#SalesDepartment#0" expanded="true" />
+                <element signature="method#price#0;class#SalesDepartment#0" expanded="true" />
+                <element signature="method#beginningOfTheDayStatistics#0;class#SalesDepartment#0" expanded="true" />
+                <element signature="method#placeAQuoteNow#0;class#SalesDepartment#0" expanded="true" />
+                <element signature="method#logOutflow#0;class#SalesDepartment#0" expanded="true" />
+                <element signature="method#hypotheticalSalePrice#0;class#SalesDepartment#0" expanded="true" />
+                <element signature="method#hypotheticalSalePrice#1;class#SalesDepartment#0" expanded="true" />
+                <element signature="method#getAverageClosingPrice#0;class#SalesDepartment#0" expanded="true" />
+                <element signature="method#getAveragedLastPrice#0;class#SalesDepartment#0" expanded="true" />
+                <element signature="method#predictSalePriceWhenNotChangingPoduction#0;class#SalesDepartment#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SimpleBuyerScenarioTest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/SimpleBuyerScenarioTest.java">
+      <file leaf-file-name="OneLinkPredictorGeneticAlgorithm.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/OneLinkPredictorGeneticAlgorithm.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="176" column="0" selection-start="6557" selection-end="6557" vertical-scroll-proportion="0.0" vertical-offset="987" max-vertical-offset="1513">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PricingPurchasesPredictorTest.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/test/java/tests/purchase/PricingPurchasesPredictorTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="38" column="76" selection-start="968" selection-end="968" vertical-scroll-proportion="1.0228215" vertical-offset="0" max-vertical-offset="833">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CheaterPricingTest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/purchases/pricing/CheaterPricingTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="6" selection-start="1031" selection-end="1031" vertical-scroll-proportion="0.0" vertical-offset="233" max-vertical-offset="1581">
+            <state line="331" column="58" selection-start="12996" selection-end="13013" vertical-scroll-proportion="0.0" vertical-offset="1431" max-vertical-offset="2686">
               <folding>
-                <element signature="method#submitRightPrice#0;class#CheaterPricingTest#0" expanded="true" />
-                <element signature="method#submitDefaultOfferWhenNotVisible#0;class#CheaterPricingTest#0" expanded="true" />
-                <element signature="method#submitDefaultOfferWhenNoAsk#0;class#CheaterPricingTest#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OneLinkSupplyChainScenario.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="544" column="50" selection-start="18472" selection-end="18472" vertical-scroll-proportion="0.0" vertical-offset="3420" max-vertical-offset="6494">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="344" column="50" selection-start="13398" selection-end="13398" vertical-scroll-proportion="0.0" vertical-offset="1958" max-vertical-offset="3536">
+              <folding>
+                <element signature="method#main#0;class#OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SamplingSalesLearningGeneticAlgorithmInSupplyChain.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/SamplingSalesLearningGeneticAlgorithmInSupplyChain.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="389" column="58" selection-start="16800" selection-end="16800" vertical-scroll-proportion="0.0" vertical-offset="1890" max-vertical-offset="3315">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CompetitiveScenarioTest.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/CompetitiveScenarioTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="582" column="48" selection-start="23146" selection-end="23146" vertical-scroll-proportion="0.54315305" vertical-offset="7790" max-vertical-offset="9435">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="method#rightPriceAndQuantityTestAsMarginalNoPID#0;class#CompetitiveScenarioTest#0" expanded="true" />
+                <element signature="method#rightPriceAndQuantityTestAsMarginalNoPIDAlreadyLearned#0;class#CompetitiveScenarioTest#0" expanded="true" />
+                <element signature="method#rightPriceAndQuantityTestAsMarginalNoPIDAlreadyLearnedFlows#0;class#CompetitiveScenarioTest#0" expanded="true" />
+                <element signature="method#tooManyLearnedCompetitors#0;class#CompetitiveScenarioTest#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="UndercuttingAskPricing.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/UndercuttingAskPricing.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="83" column="65" selection-start="2485" selection-end="2505" vertical-scroll-proportion="-6.148148" vertical-offset="1092" max-vertical-offset="2431">
+              <folding>
+                <element signature="method#UndercuttingAskPricing#0;class#UndercuttingAskPricing#0" expanded="true" />
+                <element signature="method#step#0;class#UndercuttingAskPricing#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -809,75 +855,11 @@
       <file leaf-file-name="RecursiveSalePredictorTest.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/sales/prediction/RecursiveSalePredictorTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="112" column="0" selection-start="3570" selection-end="3570" vertical-scroll-proportion="0.0" vertical-offset="647" max-vertical-offset="1377">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SmoothedDailyInventoryPricingStrategyTest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/sales/pricing/pid/SmoothedDailyInventoryPricingStrategyTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="69" column="0" selection-start="2113" selection-end="2113" vertical-scroll-proportion="0.0" vertical-offset="783" max-vertical-offset="1309">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SalesDepartmentStopConsumingTest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/sales/SalesDepartmentStopConsumingTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="170" column="0" selection-start="5588" selection-end="5588" vertical-scroll-proportion="0.0" vertical-offset="2239" max-vertical-offset="3315">
+            <state line="112" column="0" selection-start="3570" selection-end="3570" vertical-scroll-proportion="0.0" vertical-offset="625" max-vertical-offset="1377">
               <folding>
-                <element signature="method#testStopConsuming#0;class#SalesDepartmentStopConsumingTest#0" expanded="true" />
-                <element signature="method#testStopSellingThisGoodBecauseItWasConsumed_WithAllAtOnceDepartment#0;class#SalesDepartmentStopConsumingTest#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AbstractRecursivePredictor.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/AbstractRecursivePredictor.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="164" column="0" selection-start="5538" selection-end="5538" vertical-scroll-proportion="0.0" vertical-offset="1763" max-vertical-offset="4845">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DataStorage.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/DataStorage.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="145" column="0" selection-start="3494" selection-end="3494" vertical-scroll-proportion="0.0" vertical-offset="1304" max-vertical-offset="2193">
-              <folding>
-                <element signature="e#0#5401#0" expanded="false" />
+                <element signature="e#0#3775#0" expanded="false" />
                 <element signature="imports" expanded="false" />
-                <element signature="method#DataStorage#0;class#DataStorage#0" expanded="false" />
-                <element signature="method#numberOfObservations#0;class#DataStorage#0" expanded="false" />
-                <element signature="method#doubleCheckNumberOfObservationsAreTheSameForAllObservations#0;class#DataStorage#0" expanded="false" />
-                <element signature="e#2431#2432#0" expanded="false" />
-                <element signature="e#2465#2466#0" expanded="false" />
-                <element signature="e#2516#2517#0" expanded="false" />
-                <element signature="e#2562#2563#0" expanded="false" />
-                <element signature="method#getLastObservedDay#0;class#DataStorage#0" expanded="false" />
-                <element signature="method#checkThatThereIsAtLeastOneObservation#0;class#DataStorage#0" expanded="false" />
-                <element signature="method#getAllRecordedObservations#0;class#DataStorage#0" expanded="false" />
-                <element signature="method#getObservationsRecordedTheseDays#0;class#DataStorage#0" expanded="false" />
-                <element signature="method#getObservationRecordedThisDay#0;class#DataStorage#0" expanded="false" />
-                <element signature="method#getLatestObservation#0;class#DataStorage#0" expanded="false" />
-                <element signature="method#getLatestObservationObservable#0;class#DataStorage#0" expanded="false" />
-                <element signature="method#writeToCSVFile#0;class#DataStorage#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DailyObservations.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/DailyObservations.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="222" column="0" selection-start="7132" selection-end="7132" vertical-scroll-proportion="0.0" vertical-offset="2715" max-vertical-offset="3536">
-              <folding>
-                <element signature="method#getObservationsRecordedTheseDays#1;class#DailyObservations#0" expanded="true" />
+                <element signature="method#testSimulatePriceStatic#0;class#RecursiveSalePredictorTest#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -913,15 +895,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/production/control/facades/MatchBestControlDecoratorTest.java" />
-        <option value="$PROJECT_DIR$/src/test/java/agents/firm/sales/pricing/pid/SalesControlWithInventoryAndPIDTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/hillClimbers/ParticleMaximizerTest.java" />
-        <option value="$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/FixedIncreasePurchasesPredictorTest.java" />
-        <option value="$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/LearningIncreasePurchasesPredictorTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/PricingPurchasesPredictor.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/PurchasesDepartment.java" />
-        <option value="$PROJECT_DIR$/src/test/java/tests/purchase/MarketPurchasesPredictorTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/tests/purchase/FixedInventoryControlTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/scenario/MonopolistWithInputScenario.java" />
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/inventoryControl/DailyInventoryControl.java" />
@@ -931,7 +904,6 @@
         <option value="$PROJECT_DIR$/src/test/java/tests/purchase/PurchasesDepartmentTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/AveragePurchasePriceCounter.java" />
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/UndercuttingAskPricing.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/PricingSalesPredictor.java" />
         <option value="$PROJECT_DIR$/src/test/java/model/scenario/SimpleSellerScenarioTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/MarketPurchasesPredictor.java" />
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/production/control/targeter/PIDTargeterWithQuickFiring.java" />
@@ -941,7 +913,6 @@
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/FixedDecreaseSalesPredictor.java" />
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/FixedIncreasePurchasesPredictor.java" />
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/AbstractOpenLoopRecursivePredictor.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartment.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/enums/SalesDataType.java" />
         <option value="$PROJECT_DIR$/src/test/java/model/utilities/stats/collectors/SalesDataTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/AbstractRecursivePredictor.java" />
@@ -955,15 +926,26 @@
         <option value="$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/PurchasesDepartmentData.java" />
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/MemorySalesPredictor.java" />
         <option value="$PROJECT_DIR$/src/test/java/model/scenario/MonopolistScenarioTest.java" />
-        <option value="$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/RecursivePurchasesPredictor.java" />
         <option value="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStatics.java" />
-        <option value="$PROJECT_DIR$/src/test/java/model/scenario/CompetitiveScenarioTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/LearningIncreaseWithTimeSeriesPurchasePredictorTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/LinearExtrapolatorPurchasePredictorTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/SamplingLearningIncreasePurchasePredictorTest.java" />
-        <option value="$PROJECT_DIR$/src/test/java/agents/firm/purchases/pricing/CheaterPricingTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/tests/purchase/PricingPurchasesPredictorTest.java" />
+        <option value="$PROJECT_DIR$/src/test/java/agents/firm/purchases/pricing/CheaterPricingTest.java" />
+        <option value="$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/RobustMarginalMaximizer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/pricing/CheaterPricing.java" />
+        <option value="$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/RecursivePurchasesPredictor.java" />
+        <option value="$PROJECT_DIR$/src/test/java/model/scenario/OneLinkSupplyChainScenarioRegressionTest.java" />
+        <option value="$PROJECT_DIR$/src/test/java/tests/SalesDepartmentTest2.java" />
+        <option value="$PROJECT_DIR$/src/test/java/tests/predictor/PricingPredictorStrategyTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/PricingSalesPredictor.java" />
+        <option value="$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartment.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/OneLinkPredictorGeneticAlgorithm.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist.java" />
+        <option value="$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/SamplingSalesLearningGeneticAlgorithmInSupplyChain.java" />
+        <option value="$PROJECT_DIR$/src/test/java/model/scenario/CompetitiveScenarioTest.java" />
       </list>
     </option>
   </component>
@@ -1162,14 +1144,90 @@
       <recent name="model.utilities" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.All tests">
-    <configuration default="false" name="LearningIncreaseWithTimeSeriesPurchasePredictorTest.testing" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="JUnit.PricingPredictorStrategyTest">
+    <configuration default="false" name="MonopolistWithInputScenarioTest.rightPriceAndQuantityTestAsMarginalWithCheatingPrices" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="MacroIIDiscrete" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="agents.firm.purchases.prediction" />
-      <option name="MAIN_CLASS_NAME" value="agents.firm.purchases.prediction.LearningIncreaseWithTimeSeriesPurchasePredictorTest" />
-      <option name="METHOD_NAME" value="testing" />
+      <option name="PACKAGE_NAME" value="model.scenario" />
+      <option name="MAIN_CLASS_NAME" value="model.scenario.MonopolistWithInputScenarioTest" />
+      <option name="METHOD_NAME" value="rightPriceAndQuantityTestAsMarginalWithCheatingPrices" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <envs />
+      <patterns />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="false" name="OneLinkSupplyChainScenarioRegressionTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MacroIIDiscrete" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="PACKAGE_NAME" value="model.scenario" />
+      <option name="MAIN_CLASS_NAME" value="model.scenario.OneLinkSupplyChainScenarioRegressionTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <envs />
+      <patterns />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="false" name="OneLinkSupplyChainScenarioRegressionTest.everybodyLearnedBeefMonopolistSlowPID" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MacroIIDiscrete" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="PACKAGE_NAME" value="model.scenario" />
+      <option name="MAIN_CLASS_NAME" value="model.scenario.OneLinkSupplyChainScenarioRegressionTest" />
+      <option name="METHOD_NAME" value="everybodyLearnedBeefMonopolistSlowPID" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <envs />
+      <patterns />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="JProfiler">
+        <option name="WINDOW" value="false" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="JProfiler" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="false" name="PricingPredictorStrategyTest.scenario1" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="MacroIIDiscrete" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" value="" />
+      <option name="PACKAGE_NAME" value="tests.predictor" />
+      <option name="MAIN_CLASS_NAME" value="tests.predictor.PricingPredictorStrategyTest" />
+      <option name="METHOD_NAME" value="scenario1" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="" />
       <option name="PARAMETERS" value="" />
@@ -1182,87 +1240,22 @@
       <envs />
       <dir value="$PROJECT_DIR$/src/test/java" />
       <patterns />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <ConfigurationWrapper RunnerId="Debug" />
       <method />
     </configuration>
-    <configuration default="false" name="LinearExtrapolatorPurchasePredictorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration default="false" name="PricingPredictorStrategyTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="MacroIIDiscrete" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="agents.firm.purchases.prediction" />
-      <option name="MAIN_CLASS_NAME" value="agents.firm.purchases.prediction.LinearExtrapolatorPurchasePredictorTest" />
+      <option name="PACKAGE_NAME" value="tests.predictor" />
+      <option name="MAIN_CLASS_NAME" value="tests.predictor.PricingPredictorStrategyTest" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <dir value="$PROJECT_DIR$/src/test/java" />
-      <patterns />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
-    <configuration default="false" name="SamplingLearningIncreasePurchasePredictorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="MacroIIDiscrete" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="agents.firm.purchases.prediction" />
-      <option name="MAIN_CLASS_NAME" value="agents.firm.purchases.prediction.SamplingLearningIncreasePurchasePredictorTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <dir value="$PROJECT_DIR$/src/test/java" />
-      <patterns />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
-    <configuration default="false" name="CheaterPricingTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="MacroIIDiscrete" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="agents.firm.purchases.pricing" />
-      <option name="MAIN_CLASS_NAME" value="agents.firm.purchases.pricing.CheaterPricingTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <dir value="$PROJECT_DIR$/src/test/java" />
-      <patterns />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method />
-    </configuration>
-    <configuration default="false" name="PricingPurchasesPredictorTest.mockTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="MacroIIDiscrete" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="tests.purchase" />
-      <option name="MAIN_CLASS_NAME" value="tests.purchase.PricingPurchasesPredictorTest" />
-      <option name="METHOD_NAME" value="mockTest" />
-      <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="" />
       <option name="PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
@@ -1312,6 +1305,19 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method />
+    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -1337,19 +1343,6 @@
       <envs />
       <properties />
       <listeners />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -1667,19 +1660,19 @@
       <item index="6" class="java.lang.String" itemvalue="JUnit.All tests" />
       <item index="7" class="java.lang.String" itemvalue="JUnit.CompetitiveScenarioTest.rightPriceAndQuantityTestAsMarginalNoPIDAlreadyLearned" />
       <item index="8" class="java.lang.String" itemvalue="JUnit.MonopolistScenarioTest.rightPriceAndQuantityTestRandomControlRandomSlopes" />
-      <item index="9" class="java.lang.String" itemvalue="JUnit.LearningIncreaseWithTimeSeriesPurchasePredictorTest.testing" />
-      <item index="10" class="java.lang.String" itemvalue="JUnit.LinearExtrapolatorPurchasePredictorTest" />
-      <item index="11" class="java.lang.String" itemvalue="JUnit.SamplingLearningIncreasePurchasePredictorTest" />
-      <item index="12" class="java.lang.String" itemvalue="JUnit.CheaterPricingTest" />
-      <item index="13" class="java.lang.String" itemvalue="JUnit.PricingPurchasesPredictorTest.mockTest" />
+      <item index="9" class="java.lang.String" itemvalue="JUnit.MonopolistWithInputScenarioTest.rightPriceAndQuantityTestAsMarginalWithCheatingPrices" />
+      <item index="10" class="java.lang.String" itemvalue="JUnit.OneLinkSupplyChainScenarioRegressionTest" />
+      <item index="11" class="java.lang.String" itemvalue="JUnit.OneLinkSupplyChainScenarioRegressionTest.everybodyLearnedBeefMonopolistSlowPID" />
+      <item index="12" class="java.lang.String" itemvalue="JUnit.PricingPredictorStrategyTest.scenario1" />
+      <item index="13" class="java.lang.String" itemvalue="JUnit.PricingPredictorStrategyTest" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.PricingPurchasesPredictorTest.mockTest" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.CheaterPricingTest" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.SamplingLearningIncreasePurchasePredictorTest" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.LinearExtrapolatorPurchasePredictorTest" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.LearningIncreaseWithTimeSeriesPurchasePredictorTest.testing" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.PricingPredictorStrategyTest" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.PricingPredictorStrategyTest.scenario1" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.OneLinkSupplyChainScenarioRegressionTest.everybodyLearnedBeefMonopolistSlowPID" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.OneLinkSupplyChainScenarioRegressionTest" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.MonopolistWithInputScenarioTest.rightPriceAndQuantityTestAsMarginalWithCheatingPrices" />
       </list>
     </recent_temporary>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
@@ -2169,7 +2162,11 @@
       <created>1388847971830</created>
       <updated>1388847971830</updated>
     </task>
-    <option name="localTasksCounter" value="114" />
+    <task id="LOCAL-00114" summary="fixed a few minor test bugs">
+      <created>1388955552305</created>
+      <updated>1388955552306</updated>
+    </task>
+    <option name="localTasksCounter" value="115" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -2213,8 +2210,8 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39967984" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="JProfiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32760474" sideWeight="0.49786553" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.5495208" sideWeight="0.5997795" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.38238454" sideWeight="0.63129103" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.087326944" sideWeight="0.5997795" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.38238454" sideWeight="0.63129103" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21192758" sideWeight="0.59312636" order="2" side_tool="false" content_ui="tabs" x="654" y="139" width="761" height="854" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2497332" sideWeight="0.54102" order="1" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -2239,7 +2236,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="Moved Priorities around a bit more, lowered the P value of the Master PID, forced robust maximizer to hire a worker for at least 10 steps (in order to avoid getting stuck at the very beggining with SmoothedInventory strategies)." />
     <MESSAGE value="fixed some tests. There is something off in having food sales department predict 0 in supply chains" />
     <MESSAGE value="past week I set up some genetic algorithms for the win, but it seems like the supply chain monopolist is just unable to learn" />
     <MESSAGE value="Comitting a lot although not still done. Mostly I made maximization faster so that most delay problems don't ruin learning, but I still need to find a decent window/workers frame" />
@@ -2264,7 +2260,8 @@
     <MESSAGE value="Broke the competitive learning. This will be my next pain. Also removed a few legacy code (look for market price in purchase department, for example)" />
     <MESSAGE value="Changed learning to not ignore price 0 observations. Works sporadically" />
     <MESSAGE value="small problem with averaged price being NaN but Math.round() turning it into 0 has been solved. Next on the agenda is understanding how Cheater pricing messes up purchase prediction" />
-    <option name="LAST_COMMIT_MESSAGE" value="small problem with averaged price being NaN but Math.round() turning it into 0 has been solved. Next on the agenda is understanding how Cheater pricing messes up purchase prediction" />
+    <MESSAGE value="fixed a few minor test bugs" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed a few minor test bugs" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -2279,96 +2276,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/regression/RecursiveLinearRegression.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="17" selection-start="407" selection-end="407" vertical-scroll-proportion="0.35730088" vertical-offset="0" max-vertical-offset="904">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/enums/SalesDataType.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="20" selection-start="494" selection-end="494" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="731">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/model/utilities/stats/collectors/SalesDataTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="115" column="38" selection-start="3738" selection-end="3738" vertical-scroll-proportion="0.0" vertical-offset="631" max-vertical-offset="1581">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/RecursiveSalePredictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="131" column="45" selection-start="4585" selection-end="4585" vertical-scroll-proportion="0.0" vertical-offset="937" max-vertical-offset="1921">
-          <folding>
-            <element signature="e#4538#4539#0" expanded="false" />
-            <element signature="e#4591#4592#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/model/utilities/stats/collectors/PurchasesDataTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="13" selection-start="403" selection-end="403" vertical-scroll-proportion="0.36621314" vertical-offset="0" max-vertical-offset="882" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/LearningTimeSeriesGeneticAlgorithm.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="710" column="127" selection-start="29455" selection-end="29455" vertical-scroll-proportion="0.36745888" vertical-offset="1839" max-vertical-offset="3094">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/utilities/DailyProfitReport.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="51" column="79" selection-start="1310" selection-end="1310" vertical-scroll-proportion="0.3985375" vertical-offset="513" max-vertical-offset="1938" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/AroundShockLinearRegressionSalesPredictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="136" column="120" selection-start="4814" selection-end="4814" vertical-scroll-proportion="0.3985375" vertical-offset="1618" max-vertical-offset="4063">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/SalesData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="90" column="46" selection-start="2233" selection-end="2233" vertical-scroll-proportion="1.0255941" vertical-offset="544" max-vertical-offset="1853">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/LinearExtrapolatorPurchasePredictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="223" column="100" selection-start="6852" selection-end="6874" vertical-scroll-proportion="0.0" vertical-offset="1904" max-vertical-offset="4471">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/enums/PurchasesDataType.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="13" selection-start="503" selection-end="527" vertical-scroll-proportion="0.0" vertical-offset="195" max-vertical-offset="850">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/SamplingLearningDecreaseSalesPredictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="53" column="72" selection-start="1358" selection-end="1358" vertical-scroll-proportion="0.3985375" vertical-offset="411" max-vertical-offset="1921">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/LearningDecreaseWithTimeSeriesSalesPredictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="365" column="82" selection-start="12834" selection-end="12834" vertical-scroll-proportion="0.0" vertical-offset="3233" max-vertical-offset="6477">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/PurchasesDepartmentData.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="102" column="52" selection-start="3332" selection-end="3332" vertical-scroll-proportion="0.0" vertical-offset="790" max-vertical-offset="1700">
@@ -2383,22 +2290,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/CostEstimate.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="0" selection-start="770" selection-end="770" vertical-scroll-proportion="0.0" vertical-offset="109" max-vertical-offset="544">
-          <folding>
-            <element signature="e#800#801#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="140" column="0" selection-start="4677" selection-end="4677" vertical-scroll-proportion="0.0" vertical-offset="1912" max-vertical-offset="3162">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/EveryWeekMaximizer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="245" column="0" selection-start="8084" selection-end="8084" vertical-scroll-proportion="0.0" vertical-offset="3085" max-vertical-offset="4165">
@@ -2408,25 +2299,12 @@
     </entry>
     <entry file="jar:///opt/java/jre/lib/rt.jar!/sun/reflect/NativeMethodAccessorImpl.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="43" selection-start="788" selection-end="788" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="391">
-          <folding />
-        </state>
+        <state line="17" column="43" selection-start="788" selection-end="788" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="391" />
       </provider>
     </entry>
     <entry file="jar://$PROJECT_DIR$/lib/mason/jar/mason.16.jar!/sim/engine/Schedule.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="55" column="32" selection-start="1796" selection-end="1796" vertical-scroll-proportion="-5.16" vertical-offset="789" max-vertical-offset="1581">
-          <folding>
-            <element signature="method#step#0;class#Schedule#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/junit-4.11-sources.jar!/org/junit/internal/runners/model/ReflectiveCallable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="0" selection-start="417" selection-end="417" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="408">
-          <folding />
-        </state>
+        <state line="55" column="32" selection-start="1796" selection-end="1796" vertical-scroll-proportion="-5.16" vertical-offset="789" max-vertical-offset="1581" />
       </provider>
     </entry>
     <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/junit-4.11-sources.jar!/org/junit/runners/ParentRunner.java">
@@ -2439,13 +2317,6 @@
     <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/junit-4.11-sources.jar!/org/junit/runners/BlockJUnit4ClassRunner.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="71" column="0" selection-start="2689" selection-end="2689" vertical-scroll-proportion="0.0" vertical-offset="611" max-vertical-offset="4352">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/Firm.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="505" column="0" selection-start="15922" selection-end="15922" vertical-scroll-proportion="0.0" vertical-offset="3654" max-vertical-offset="10472">
           <folding />
         </state>
       </provider>
@@ -2466,263 +2337,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/MemorySalesPredictor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="9" selection-start="1431" selection-end="1431" vertical-scroll-proportion="0.0" vertical-offset="322" max-vertical-offset="1564">
-          <folding>
-            <element signature="method#predictSalePriceAfterDecreasingProduction#0;class#MemorySalesPredictor#0" expanded="false" />
-            <element signature="method#predictSalePriceWhenNotChangingProduction#0;class#MemorySalesPredictor#0" expanded="false" />
-            <element signature="method#turnOff#0;class#MemorySalesPredictor#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="172" column="0" selection-start="6241" selection-end="6241" vertical-scroll-proportion="0.0" vertical-offset="824" max-vertical-offset="1734">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="392" column="0" selection-start="14096" selection-end="14096" vertical-scroll-proportion="0.0" vertical-offset="4207" max-vertical-offset="13056">
-          <folding>
-            <element signature="method#SalesDepartment#0;class#SalesDepartment#0" expanded="true" />
-            <element signature="method#placeAQuoteNow#0;class#SalesDepartment#0" expanded="true" />
-            <element signature="method#logOutflow#0;class#SalesDepartment#0" expanded="true" />
-            <element signature="method#getAverageClosingPrice#0;class#SalesDepartment#0" expanded="true" />
-            <element signature="method#getAveragedLastPrice#0;class#SalesDepartment#0" expanded="true" />
-            <element signature="method#predictSalePriceWhenNotChangingPoduction#0;class#SalesDepartment#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/PurchasesDepartment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1052" column="0" selection-start="41540" selection-end="41540" vertical-scroll-proportion="0.0" vertical-offset="8389" max-vertical-offset="10982">
-          <folding>
-            <element signature="method#PurchasesDepartment#0;class#PurchasesDepartment#0" expanded="false" />
-            <element signature="method#weekEnd#0;class#PurchasesDepartment#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/OpenLoopRecursivePurchasesPredictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="81" selection-start="784" selection-end="784" vertical-scroll-proportion="0.0" vertical-offset="262" max-vertical-offset="1207">
-          <folding>
-            <element signature="e#0#2479#0" expanded="false" />
-            <element signature="imports" expanded="false" />
-            <element signature="method#OpenLoopRecursivePurchasesPredictor#0;class#OpenLoopRecursivePurchasesPredictor#0" expanded="false" />
-            <element signature="method#predictPurchasePriceWhenDecreasingProduction#0;class#OpenLoopRecursivePurchasesPredictor#0" expanded="false" />
-            <element signature="method#predictPurchasePriceWhenNoChangeInProduction#0;class#OpenLoopRecursivePurchasesPredictor#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/AbstractOpenLoopRecursivePredictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="125" column="63" selection-start="3764" selection-end="3764" vertical-scroll-proportion="-5.037037" vertical-offset="1700" max-vertical-offset="2329">
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#1992#2134#0" expanded="false" />
-            <element signature="e#2123#2124#0" expanded="false" />
-            <element signature="method#updateSlopes#0;class#AbstractOpenLoopRecursivePredictor#0" expanded="false" />
-            <element signature="method#turnOff#0;class#AbstractOpenLoopRecursivePredictor#0" expanded="false" />
-            <element signature="method#modifyStepIfNeeded#0;class#AbstractOpenLoopRecursivePredictor#0" expanded="false" />
-            <element signature="e#4171#4172#0" expanded="false" />
-            <element signature="e#4205#4206#0" expanded="false" />
-            <element signature="e#4245#4246#0" expanded="false" />
-            <element signature="e#4281#4282#0" expanded="false" />
-            <element signature="method#defaultPriceWithNoObservations#0;class#AbstractOpenLoopRecursivePredictor#0" expanded="false" />
-            <element signature="method#setRegression#0;class#AbstractOpenLoopRecursivePredictor#0" expanded="false" />
-            <element signature="method#getTimeDelay#0;class#AbstractOpenLoopRecursivePredictor#0" expanded="false" />
-            <element signature="method#setTimeDelay#0;class#AbstractOpenLoopRecursivePredictor#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStatics.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="53" selection-start="1024" selection-end="1024" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4607">
-          <folding>
-            <element signature="e#0#13921#0" expanded="false" />
-            <element signature="imports" expanded="false" />
-            <element signature="method#computeUnitMarginalProfits#0;class#MarginalMaximizerStatics#0" expanded="false" />
-            <element signature="method#marginalProduction#0;class#MarginalMaximizerStatics#0" expanded="false" />
-            <element signature="method#sigmoid#0;class#MarginalMaximizerStatics#0" expanded="false" />
-            <element signature="method#exponentialSigmoid#0;class#MarginalMaximizerStatics#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/CompetitiveScenarioTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="629" column="0" selection-start="24799" selection-end="24799" vertical-scroll-proportion="0.0" vertical-offset="7870" max-vertical-offset="8976">
-          <folding>
-            <element signature="method#rightPriceAndQuantityTestAsMarginalNoPID#0;class#CompetitiveScenarioTest#0" expanded="true" />
-            <element signature="method#rightPriceAndQuantityTestAsMarginalNoPIDAlreadyLearned#0;class#CompetitiveScenarioTest#0" expanded="true" />
-            <element signature="method#rightPriceAndQuantityTestAsMarginalNoPIDAlreadyLearnedFlows#0;class#CompetitiveScenarioTest#0" expanded="true" />
-            <element signature="method#tooManyLearnedCompetitors#0;class#CompetitiveScenarioTest#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/OneLinkSupplyChainScenarioRegressionTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="346" column="17" selection-start="13976" selection-end="13976" vertical-scroll-proportion="0.0" vertical-offset="1185" max-vertical-offset="4641">
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#testWithStickyPrices#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#2716#3300#0" expanded="false" />
-            <element signature="e#3277#3278#0" expanded="false" />
-            <element signature="method#testWithStickyPriceOneRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="method#testWithSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#5879#6459#0" expanded="false" />
-            <element signature="e#6436#6437#0" expanded="false" />
-            <element signature="method#testWithSlowPidOneRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="method#testBeefMonopolistFixedProductionWithStickyPrices#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#9188#9798#0" expanded="false" />
-            <element signature="e#9775#9776#0" expanded="false" />
-            <element signature="method#beefMonopolistFixedProductionWithStickyPricesOneRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="method#testBeefMonopolistFixedProductionWithSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#12963#13584#0" expanded="false" />
-            <element signature="e#13561#13562#0" expanded="false" />
-            <element signature="method#checkCompetitiveResult#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="method#testBeefMonopolistFixedProductionWithSlowPIDOneRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="method#testBeefMonopolistFixedProductionWithSlowPIDFakeFoodCompetitive#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#18000#18640#0" expanded="false" />
-            <element signature="e#18617#18618#0" expanded="false" />
-            <element signature="method#testBeefMonopolistFixedProductionWithSlowPIDFakeFoodCompetitiveOneRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="class#19235:20609" expanded="false" />
-            <element signature="method#buildFoodPurchasesPredictor#0;class#19235:20609" expanded="false" />
-            <element signature="method#createSalesDepartment#0;class#19235:20609" expanded="false" />
-            <element signature="method#createPlant#0;class#19235:20609" expanded="false" />
-            <element signature="method#testBeefMonopolistFixedProductionWithStickyPricesFakeFoodCompetitive#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#23402#24031#0" expanded="false" />
-            <element signature="e#24008#24009#0" expanded="false" />
-            <element signature="method#beefMonopolistFixedProductionWithStickyPricesFakeFoodCompetitiveOneRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="class#24561:25289" expanded="false" />
-            <element signature="method#buildFoodPurchasesPredictor#0;class#24561:25289" expanded="false" />
-            <element signature="method#createSalesDepartment#0;class#24561:25289" expanded="false" />
-            <element signature="method#everybodyLearnedBeefMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#28420#29031#0" expanded="false" />
-            <element signature="e#29008#29009#0" expanded="false" />
-            <element signature="method#everybodyLearnedBeefMonopolistSlowPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="class#29522:31061" expanded="false" />
-            <element signature="method#buildBeefSalesPredictor#0;class#29522:31061" expanded="false" />
-            <element signature="method#buildFoodPurchasesPredictor#0;class#29522:31061" expanded="false" />
-            <element signature="method#createSalesDepartment#0;class#29522:31061" expanded="false" />
-            <element signature="method#createPlant#0;class#29522:31061" expanded="false" />
-            <element signature="e#33521#34134#0" expanded="false" />
-            <element signature="e#34111#34112#0" expanded="false" />
-            <element signature="method#everybodyLearnedBeefMonopolistStickyPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="class#34628:36167" expanded="false" />
-            <element signature="method#buildBeefSalesPredictor#0;class#34628:36167" expanded="false" />
-            <element signature="method#buildFoodPurchasesPredictor#0;class#34628:36167" expanded="false" />
-            <element signature="method#createSalesDepartment#0;class#34628:36167" expanded="false" />
-            <element signature="method#createPlant#0;class#34628:36167" expanded="false" />
-            <element signature="method#foodLearnedBeefMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#38591#39197#0" expanded="false" />
-            <element signature="e#39174#39175#0" expanded="false" />
-            <element signature="method#foodLearnedBeefMonopolistSlowPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="class#39862:41249" expanded="false" />
-            <element signature="method#buildFoodPurchasesPredictor#0;class#39862:41249" expanded="false" />
-            <element signature="method#createSalesDepartment#0;class#39862:41249" expanded="false" />
-            <element signature="method#createPlant#0;class#39862:41249" expanded="false" />
-            <element signature="method#foodLearnedBeefMonopolistStickyPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#43791#44399#0" expanded="false" />
-            <element signature="e#44376#44377#0" expanded="false" />
-            <element signature="method#foodLearnedBeefMonopolistStickyPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="class#45066:46452" expanded="false" />
-            <element signature="method#buildFoodPurchasesPredictor#0;class#45066:46452" expanded="false" />
-            <element signature="method#createSalesDepartment#0;class#45066:46452" expanded="false" />
-            <element signature="method#createPlant#0;class#45066:46452" expanded="false" />
-            <element signature="method#beefLearnedBeefMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#48989#49595#0" expanded="false" />
-            <element signature="e#49572#49573#0" expanded="false" />
-            <element signature="method#beefLearnedBeefMonopolistSlowPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="class#50081:50985" expanded="false" />
-            <element signature="method#buildBeefSalesPredictor#0;class#50081:50985" expanded="false" />
-            <element signature="method#createPlant#0;class#50081:50985" expanded="false" />
-            <element signature="method#beefLearnedBeefMonopolistStickyPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#53357#53965#0" expanded="false" />
-            <element signature="e#53942#53943#0" expanded="false" />
-            <element signature="method#beefLearnedBeefMonopolistStickyPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="class#54450:55354" expanded="false" />
-            <element signature="method#buildBeefSalesPredictor#0;class#54450:55354" expanded="false" />
-            <element signature="method#createPlant#0;class#54450:55354" expanded="false" />
-            <element signature="method#everybodyLearningCompetitiveSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#57967#58576#0" expanded="false" />
-            <element signature="e#58553#58554#0" expanded="false" />
-            <element signature="method#everybodyLearningCompetitiveSlowPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="method#everybodyLearningCompetitiveStickyPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#61892#62503#0" expanded="false" />
-            <element signature="e#62480#62481#0" expanded="false" />
-            <element signature="method#everybodyLearningCompetitiveStickyPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="method#learningBeefMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#65808#66411#0" expanded="false" />
-            <element signature="e#66388#66389#0" expanded="false" />
-            <element signature="method#learningBeefMonopolistSlowPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="method#learningBeefMonopolistStickyPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#69943#70548#0" expanded="false" />
-            <element signature="e#70525#70526#0" expanded="false" />
-            <element signature="method#learningBeefMonopolistStickyPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="method#testFoodMonopolistWithStickyPricesAndFixedQuantity#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#74369#74981#0" expanded="false" />
-            <element signature="e#74958#74959#0" expanded="false" />
-            <element signature="method#testFoodMonopolistWithStickyPricesAndFixedQuantityRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="method#checkResultsOfFoodMonopolist#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="method#testFoodMonopolistWithSlowPIDAndFixedQuantity#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#78622#79229#0" expanded="false" />
-            <element signature="e#79206#79207#0" expanded="false" />
-            <element signature="method#testFoodMonopolistWithSlowPIDAndFixedQuantityRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="method#alreadyLearnedFoodMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#82604#83201#0" expanded="false" />
-            <element signature="e#83178#83179#0" expanded="false" />
-            <element signature="method#alreadyLearnedFoodMonopolistSlowPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="class#83638:84114" expanded="false" />
-            <element signature="method#buildFoodPurchasesPredictor#0;class#83638:84114" expanded="false" />
-            <element signature="method#alreadyLearnedFoodMonopolistStickyPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#86626#87225#0" expanded="false" />
-            <element signature="e#87202#87203#0" expanded="false" />
-            <element signature="method#alreadyLearnedFoodMonopolistStickyPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="class#87665:88142" expanded="false" />
-            <element signature="method#buildFoodPurchasesPredictor#0;class#87665:88142" expanded="false" />
-            <element signature="method#learningFoodMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#90888#91479#0" expanded="false" />
-            <element signature="e#91456#91457#0" expanded="false" />
-            <element signature="method#learningFoodMonopolistSlowPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="method#learningFoodMonopolistStickyPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-            <element signature="e#94474#95067#0" expanded="false" />
-            <element signature="e#95044#95045#0" expanded="false" />
-            <element signature="method#learningFoodMonopolistStickyPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/RecursivePurchasesPredictor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="140" column="67" selection-start="4155" selection-end="4155" vertical-scroll-proportion="0.0" vertical-offset="1234" max-vertical-offset="1785">
-          <folding>
-            <element signature="method#getXVariableType#0;class#RecursivePurchasesPredictor#0" expanded="false" />
-            <element signature="method#getYVariableType#0;class#RecursivePurchasesPredictor#0" expanded="false" />
-            <element signature="e#4204#4205#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/AbstractWorkerLearningPredictorTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="92" column="0" selection-start="3512" selection-end="3512" vertical-scroll-proportion="0.0" vertical-offset="1123" max-vertical-offset="1649">
-          <folding />
-        </state>
+        <state line="44" column="9" selection-start="1431" selection-end="1431" vertical-scroll-proportion="0.0" vertical-offset="322" max-vertical-offset="1564" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/LearningIncreaseWithTimeSeriesPurchasePredictorTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="128" column="0" selection-start="4969" selection-end="4969" vertical-scroll-proportion="0.0" vertical-offset="1695" max-vertical-offset="2329">
           <folding>
-            <element signature="method#testing#0;class#LearningIncreaseWithTimeSeriesPurchasePredictorTest#0" expanded="true" />
+            <element signature="method#testing#0;class#LearningIncreaseWithTimeSeriesPurchasePredictorTest#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2745,35 +2367,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/pricing/CheaterPricing.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="48" column="0" selection-start="1294" selection-end="1294" vertical-scroll-proportion="0.0" vertical-offset="539" max-vertical-offset="1700">
-          <folding>
-            <element signature="e#1354#1621#0" expanded="true" />
-            <element signature="e#1610#1611#0" expanded="true" />
-            <element signature="method#maxPrice#0;class#CheaterPricing#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/purchases/pricing/CheaterPricingTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="6" selection-start="1031" selection-end="1031" vertical-scroll-proportion="0.0" vertical-offset="233" max-vertical-offset="1581">
-          <folding>
-            <element signature="method#submitRightPrice#0;class#CheaterPricingTest#0" expanded="true" />
-            <element signature="method#submitDefaultOfferWhenNotVisible#0;class#CheaterPricingTest#0" expanded="true" />
-            <element signature="method#submitDefaultOfferWhenNoAsk#0;class#CheaterPricingTest#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/sales/prediction/RecursiveSalePredictorTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="112" column="0" selection-start="3570" selection-end="3570" vertical-scroll-proportion="0.0" vertical-offset="647" max-vertical-offset="1377">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/sales/pricing/pid/SmoothedDailyInventoryPricingStrategyTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="69" column="0" selection-start="2113" selection-end="2113" vertical-scroll-proportion="0.0" vertical-offset="783" max-vertical-offset="1309">
@@ -2791,64 +2384,21 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/DataStorage.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="145" column="0" selection-start="3494" selection-end="3494" vertical-scroll-proportion="0.0" vertical-offset="1304" max-vertical-offset="2193">
-          <folding>
-            <element signature="e#0#5401#0" expanded="false" />
-            <element signature="imports" expanded="false" />
-            <element signature="method#DataStorage#0;class#DataStorage#0" expanded="false" />
-            <element signature="method#numberOfObservations#0;class#DataStorage#0" expanded="false" />
-            <element signature="method#doubleCheckNumberOfObservationsAreTheSameForAllObservations#0;class#DataStorage#0" expanded="false" />
-            <element signature="e#2431#2432#0" expanded="false" />
-            <element signature="e#2465#2466#0" expanded="false" />
-            <element signature="e#2516#2517#0" expanded="false" />
-            <element signature="e#2562#2563#0" expanded="false" />
-            <element signature="method#getLastObservedDay#0;class#DataStorage#0" expanded="false" />
-            <element signature="method#checkThatThereIsAtLeastOneObservation#0;class#DataStorage#0" expanded="false" />
-            <element signature="method#getAllRecordedObservations#0;class#DataStorage#0" expanded="false" />
-            <element signature="method#getObservationsRecordedTheseDays#0;class#DataStorage#0" expanded="false" />
-            <element signature="method#getObservationRecordedThisDay#0;class#DataStorage#0" expanded="false" />
-            <element signature="method#getLatestObservation#0;class#DataStorage#0" expanded="false" />
-            <element signature="method#getLatestObservationObservable#0;class#DataStorage#0" expanded="false" />
-            <element signature="method#writeToCSVFile#0;class#DataStorage#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/model/utilities/stats/collectors/DailyObservations.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="222" column="0" selection-start="7132" selection-end="7132" vertical-scroll-proportion="0.0" vertical-offset="2715" max-vertical-offset="3536">
-          <folding>
-            <element signature="method#getObservationsRecordedTheseDays#1;class#DailyObservations#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/sales/SalesDepartmentStopConsumingTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="170" column="0" selection-start="5588" selection-end="5588" vertical-scroll-proportion="0.0" vertical-offset="2239" max-vertical-offset="3315">
-          <folding>
-            <element signature="method#testStopConsuming#0;class#SalesDepartmentStopConsumingTest#0" expanded="true" />
-            <element signature="method#testStopSellingThisGoodBecauseItWasConsumed_WithAllAtOnceDepartment#0;class#SalesDepartmentStopConsumingTest#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistScenarioTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="587" column="40" selection-start="23402" selection-end="23402" vertical-scroll-proportion="0.0" vertical-offset="9786" max-vertical-offset="13651">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#rightPriceAndQuantityTestAsHillClimber#0;class#MonopolistScenarioTest#0" expanded="true" />
-            <element signature="method#problematicScenario1#0;class#MonopolistScenarioTest#0" expanded="true" />
-            <element signature="method#problematicScenario3#0;class#MonopolistScenarioTest#0" expanded="true" />
-            <element signature="method#problematicScenario2#0;class#MonopolistScenarioTest#0" expanded="true" />
-            <element signature="method#rightPriceAndQuantityTestRandomControlRandomSlopes#0;class#MonopolistScenarioTest#0" expanded="true" />
-            <element signature="method#rightPriceAndQuantityTestRandomControlRandomSlopesFlowsOnly#0;class#MonopolistScenarioTest#0" expanded="true" />
-            <element signature="method#rightPriceAndQuantityTestRandomControlRandomSlopesWithShift#0;class#MonopolistScenarioTest#0" expanded="true" />
-            <element signature="method#rightPriceAndQuantityTestAsMarginal#0;class#MonopolistScenarioTest#0" expanded="true" />
-            <element signature="method#marketSanityCheck#0;class#MonopolistScenarioTest#0" expanded="true" />
-            <element signature="method#rightPriceAndQuantityTestAsMarginalWithSalesControlFlowPIDWithFixedInventory#0;class#MonopolistScenarioTest#0" expanded="true" />
-            <element signature="method#testfindWorkerTargetThatMaximizesProfits#0;class#MonopolistScenarioTest#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2861,8 +2411,548 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/tests/purchase/PricingPurchasesPredictorTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="76" selection-start="968" selection-end="968" vertical-scroll-proportion="1.0228215" vertical-offset="0" max-vertical-offset="833">
+        <state line="38" column="76" selection-start="968" selection-end="968" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="833">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/purchases/pricing/CheaterPricingTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="42" column="4" selection-start="1029" selection-end="1029" vertical-scroll-proportion="0.0" vertical-offset="511" max-vertical-offset="1037">
+          <folding>
+            <element signature="method#submitRightPrice#0;class#CheaterPricingTest#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/RobustMarginalMaximizer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="36" selection-start="1295" selection-end="1318" vertical-scroll-proportion="0.0" vertical-offset="97" max-vertical-offset="1615">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioWithCheatingBuyingPrice.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="53" column="36" selection-start="2058" selection-end="2058" vertical-scroll-proportion="0.0" vertical-offset="453" max-vertical-offset="1173">
+          <folding>
+            <element signature="method#OneLinkSupplyChainScenarioWithCheatingBuyingPrice#0;class#OneLinkSupplyChainScenarioWithCheatingBuyingPrice#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/LearningIncreasePurchasesPredictor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="118" column="61" selection-start="3360" selection-end="4960" vertical-scroll-proportion="0.032319393" vertical-offset="1309" max-vertical-offset="2142">
+          <folding>
+            <element signature="method#predictPurchasePriceWhenNoChangeInProduction#0;class#LearningIncreasePurchasesPredictor#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistWithInputScenarioTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="194" column="0" selection-start="7581" selection-end="7581" vertical-scroll-proportion="0.0" vertical-offset="1185" max-vertical-offset="2261">
+          <folding>
+            <element signature="method#rightPriceAndQuantityTestAsHillClimber#0;class#MonopolistWithInputScenarioTest#0" expanded="false" />
+            <element signature="class#5711:6655" expanded="false" />
+            <element signature="method#addPurchaseDepartmentToMonopolist#0;class#5711:6655" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/PurchasesDepartment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="61" column="44" selection-start="2639" selection-end="2639" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="10506">
+          <folding>
+            <element signature="method#predictPurchasePriceWhenIncreasingProduction#0;class#PurchasesDepartment#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/PurchasesPredictor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="51" column="16" selection-start="1418" selection-end="1418" vertical-scroll-proportion="0.0" vertical-offset="471" max-vertical-offset="1122">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/AbstractOpenLoopRecursivePredictor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="151" column="23" selection-start="4353" selection-end="4361" vertical-scroll-proportion="-6.148148" vertical-offset="1942" max-vertical-offset="2465">
+          <folding>
+            <element signature="method#AbstractOpenLoopRecursivePredictor#0;class#AbstractOpenLoopRecursivePredictor#0" expanded="false" />
+            <element signature="method#step#0;class#AbstractOpenLoopRecursivePredictor#0" expanded="false" />
+            <element signature="method#predictPrice#0;class#AbstractOpenLoopRecursivePredictor#0" expanded="false" />
+            <element signature="method#setRegression#0;class#AbstractOpenLoopRecursivePredictor#0" expanded="false" />
+            <element signature="method#getTimeDelay#0;class#AbstractOpenLoopRecursivePredictor#0" expanded="false" />
+            <element signature="method#setTimeDelay#0;class#AbstractOpenLoopRecursivePredictor#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/OpenLoopRecursivePurchasesPredictor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="35" column="38" selection-start="1027" selection-end="1027" vertical-scroll-proportion="0.0" vertical-offset="221" max-vertical-offset="1258">
+          <folding>
+            <element signature="method#predictPurchasePriceWhenDecreasingProduction#0;class#OpenLoopRecursivePurchasesPredictor#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/prediction/RecursivePurchasesPredictor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="29" column="0" selection-start="694" selection-end="694" vertical-scroll-proportion="0.0" vertical-offset="250" max-vertical-offset="1819">
+          <folding>
+            <element signature="method#RecursivePurchasesPredictor#0;class#RecursivePurchasesPredictor#0" expanded="false" />
+            <element signature="method#getXVariableType#0;class#RecursivePurchasesPredictor#0" expanded="false" />
+            <element signature="method#getYVariableType#0;class#RecursivePurchasesPredictor#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/RecursiveSalePredictor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="131" column="48" selection-start="4586" selection-end="4586" vertical-scroll-proportion="0.0" vertical-offset="1192" max-vertical-offset="1921">
+          <folding>
+            <element signature="e#4538#4539#0" expanded="false" />
+            <element signature="e#4591#4592#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/purchases/pricing/CheaterPricing.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="59" selection-start="1186" selection-end="1186" vertical-scroll-proportion="0.0" vertical-offset="664" max-vertical-offset="1598">
+          <folding>
+            <element signature="method#maxPrice#0;class#CheaterPricing#0" expanded="false" />
+            <element signature="method#maxPrice#1;class#CheaterPricing#0" expanded="false" />
+            <element signature="method#turnOff#0;class#CheaterPricing#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="108" column="0" selection-start="3415" selection-end="3415" vertical-scroll-proportion="0.0" vertical-offset="1368" max-vertical-offset="3162">
+          <folding>
+            <element signature="e#0#7636#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="method#MarginalMaximizer#0;class#MarginalMaximizer#0" expanded="false" />
+            <element signature="class#RandomizationPolicy#0;class#MarginalMaximizer#0" expanded="false" />
+            <element signature="method#replaceUnknownPrediction#0;class#RandomizationPolicy#0;class#MarginalMaximizer#0" expanded="false" />
+            <element signature="e#6411#6412#0" expanded="false" />
+            <element signature="e#6440#6441#0" expanded="false" />
+            <element signature="e#6497#6498#0" expanded="false" />
+            <element signature="e#6533#6534#0" expanded="false" />
+            <element signature="e#6666#6667#0" expanded="false" />
+            <element signature="e#6690#6691#0" expanded="false" />
+            <element signature="e#6833#6834#0" expanded="false" />
+            <element signature="e#6861#6862#0" expanded="false" />
+            <element signature="method#reset#0;class#MarginalMaximizer#0" expanded="false" />
+            <element signature="method#turnOff#0;class#MarginalMaximizer#0" expanded="false" />
+            <element signature="e#7419#7420#0" expanded="false" />
+            <element signature="e#7454#7455#0" expanded="false" />
+            <element signature="e#7606#7607#0" expanded="false" />
+            <element signature="e#7631#7632#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/CostEstimate.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="29" column="0" selection-start="770" selection-end="770" vertical-scroll-proportion="0.0" vertical-offset="109" max-vertical-offset="544">
+          <folding>
+            <element signature="e#0#1004#0" expanded="false" />
+            <element signature="method#CostEstimate#0;class#CostEstimate#0" expanded="false" />
+            <element signature="e#692#693#0" expanded="false" />
+            <element signature="e#727#728#0" expanded="false" />
+            <element signature="method#toString#0;class#CostEstimate#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/Firm.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="505" column="0" selection-start="15922" selection-end="15922" vertical-scroll-proportion="0.0" vertical-offset="3654" max-vertical-offset="10472">
+          <folding>
+            <element signature="e#0#41095#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="method#Firm#0;class#Firm#0" expanded="false" />
+            <element signature="method#Firm#1;class#Firm#0" expanded="false" />
+            <element signature="method#addPlantCreationListener#0;class#Firm#0" expanded="false" />
+            <element signature="method#registerHumanResources#0;class#Firm#0" expanded="false" />
+            <element signature="e#6907#7065#0" expanded="false" />
+            <element signature="e#7050#7051#0" expanded="false" />
+            <element signature="method#removePlantCreationListener#0;class#Firm#0" expanded="false" />
+            <element signature="method#addPlant#0;class#Firm#0" expanded="false" />
+            <element signature="method#removePlant#0;class#Firm#0" expanded="false" />
+            <element signature="method#getListOfPlantsUsingSpecificInput#0;class#Firm#0" expanded="false" />
+            <element signature="method#getListOfPlantsProducingSpecificOutput#0;class#Firm#0" expanded="false" />
+            <element signature="method#reactToPlantProduction#0;class#Firm#0" expanded="false" />
+            <element signature="e#10398#10399#0" expanded="false" />
+            <element signature="e#10433#10434#0" expanded="false" />
+            <element signature="method#consumeAll#0;class#Firm#0" expanded="false" />
+            <element signature="method#consume#0;class#Firm#0" expanded="false" />
+            <element signature="e#11349#11350#0" expanded="false" />
+            <element signature="e#11377#11378#0" expanded="false" />
+            <element signature="method#reactToFilledAskedQuote#0;class#Firm#0" expanded="false" />
+            <element signature="method#reactToFilledBidQuote#0;class#Firm#0" expanded="false" />
+            <element signature="method#maximumOffer#0;class#Firm#0" expanded="false" />
+            <element signature="method#expectedInputPrice#0;class#Firm#0" expanded="false" />
+            <element signature="method#askedForABuyOffer#0;class#Firm#0" expanded="false" />
+            <element signature="method#askedForASaleQuote#0;class#Firm#0" expanded="false" />
+            <element signature="method#getSalesDepartments#0;class#Firm#0" expanded="false" />
+            <element signature="method#registerSaleDepartment#0;class#Firm#0" expanded="false" />
+            <element signature="e#16539#16703#0" expanded="false" />
+            <element signature="e#16688#16689#0" expanded="false" />
+            <element signature="method#registerPurchasesDepartment#0;class#Firm#0" expanded="false" />
+            <element signature="e#17320#17488#0" expanded="false" />
+            <element signature="e#17473#17474#0" expanded="false" />
+            <element signature="method#weekEnd#0;class#Firm#0" expanded="false" />
+            <element signature="method#hire#0;class#Firm#0" expanded="false" />
+            <element signature="method#workerQuit#0;class#Firm#0" expanded="false" />
+            <element signature="method#turnOff#0;class#Firm#0" expanded="false" />
+            <element signature="method#start#0;class#Firm#0" expanded="false" />
+            <element signature="method#getPlants#0;class#Firm#0" expanded="false" />
+            <element signature="method#getHR#0;class#Firm#0" expanded="false" />
+            <element signature="method#getPlantProfits#0;class#Firm#0" expanded="false" />
+            <element signature="method#getEfficiencyRatio#0;class#Firm#0" expanded="false" />
+            <element signature="method#getPlantCosts#0;class#Firm#0" expanded="false" />
+            <element signature="method#getPlantRevenues#0;class#Firm#0" expanded="false" />
+            <element signature="method#getAggregateProfits#0;class#Firm#0" expanded="false" />
+            <element signature="method#getNetProfitRatio#0;class#Firm#0" expanded="false" />
+            <element signature="method#setActive#0;class#Firm#0" expanded="false" />
+            <element signature="method#buildInspector#0;class#Firm#0" expanded="false" />
+            <element signature="e#24657#24941#0" expanded="false" />
+            <element signature="e#24784#24915#0" expanded="false" />
+            <element signature="e#24896#24897#0" expanded="false" />
+            <element signature="e#24930#24931#0" expanded="false" />
+            <element signature="method#firmInspector#0;class#Firm#0" expanded="false" />
+            <element signature="method#logEvent#0;class#Firm#0" expanded="false" />
+            <element signature="method#logEvent#1;class#Firm#0" expanded="false" />
+            <element signature="method#addAgentToLog#0;class#Firm#0" expanded="false" />
+            <element signature="method#getInspector#0;class#Firm#0" expanded="false" />
+            <element signature="e#27547#27548#0" expanded="false" />
+            <element signature="e#27575#27576#0" expanded="false" />
+            <element signature="e#27680#27681#0" expanded="false" />
+            <element signature="e#27714#27715#0" expanded="false" />
+            <element signature="e#27816#27817#0" expanded="false" />
+            <element signature="e#27855#27856#0" expanded="false" />
+            <element signature="method#setDividendStrategy#0;class#Firm#0" expanded="false" />
+            <element signature="method#getPurchaseDepartment#0;class#Firm#0" expanded="false" />
+            <element signature="method#getRandomPlantProducingThis#0;class#Firm#0" expanded="false" />
+            <element signature="method#hasPlants#0;class#Firm#0" expanded="false" />
+            <element signature="e#29825#29826#0" expanded="false" />
+            <element signature="e#29879#29880#0" expanded="false" />
+            <element signature="method#shopHere#0;class#Firm#0" expanded="false" />
+            <element signature="method#toString#0;class#Firm#0" expanded="false" />
+            <element signature="e#31061#31062#0" expanded="false" />
+            <element signature="e#31088#31089#0" expanded="false" />
+            <element signature="e#31128#31129#0" expanded="false" />
+            <element signature="e#31160#31161#0" expanded="false" />
+            <element signature="e#31208#31209#0" expanded="false" />
+            <element signature="e#31243#31244#0" expanded="false" />
+            <element signature="method#getLastWeekProduction#0;class#Firm#0" expanded="false" />
+            <element signature="method#getTotalWorkers#0;class#Firm#0" expanded="false" />
+            <element signature="method#hypotheticalSellPrice#0;class#Firm#0" expanded="false" />
+            <element signature="method#getSalesDepartmentRecordedOutflow#0;class#Firm#0" expanded="false" />
+            <element signature="method#getSalesDepartmentRecordedInflow#0;class#Firm#0" expanded="false" />
+            <element signature="method#getNumberOfWorkersWhoProduceThisGood#0;class#Firm#0" expanded="false" />
+            <element signature="method#getNumberOfWorkersWhoProducedThisGoodThatDay#0;class#Firm#0" expanded="false" />
+            <element signature="method#getNumberOfWorkersWhoConsumeThisGood#0;class#Firm#0" expanded="false" />
+            <element signature="method#getNumberOfWorkersWhoConsumedThisGoodThatDay#0;class#Firm#0" expanded="false" />
+            <element signature="method#getLatestObservableObservation#0;class#Firm#0" expanded="false" />
+            <element signature="method#wereThereMissingInputsInAtLeastOnePlant#0;class#Firm#0" expanded="false" />
+            <element signature="method#estimateDemandGap#0;class#Firm#0" expanded="false" />
+            <element signature="method#estimateSupplyGap#0;class#Firm#0" expanded="false" />
+            <element signature="method#getHRs#0;class#Firm#0" expanded="false" />
+            <element signature="method#getLatestDayWithMeaningfulWorkforceChangeInProducingThisGood#0;class#Firm#0" expanded="false" />
+            <element signature="method#getLatestDayWithMeaningfulWorkforceChangeInConsumingThisGood#0;class#Firm#0" expanded="false" />
+            <element signature="method#getAllDayWithMeaningfulWorkforceChangeInProducingThisGood#0;class#Firm#0" expanded="false" />
+            <element signature="method#getAllDayWithMeaningfulWorkforceChangeInConsumingThisGood#0;class#Firm#0" expanded="false" />
+            <element signature="method#getDay#0;class#Firm#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/OneLinkSupplyChainScenarioRegressionTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="346" column="17" selection-start="13952" selection-end="13952" vertical-scroll-proportion="-10.814815" vertical-offset="5590" max-vertical-offset="40698">
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="method#testWithStickyPrices#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#2710#3294#0" expanded="false" />
+            <element signature="e#3271#3272#0" expanded="false" />
+            <element signature="method#testWithStickyPriceOneRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="method#testWithSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#5867#6447#0" expanded="false" />
+            <element signature="e#6424#6425#0" expanded="false" />
+            <element signature="method#testWithSlowPidOneRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="method#testBeefMonopolistFixedProductionWithStickyPrices#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#9170#9780#0" expanded="false" />
+            <element signature="e#9757#9758#0" expanded="false" />
+            <element signature="method#beefMonopolistFixedProductionWithStickyPricesOneRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="method#testBeefMonopolistFixedProductionWithSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#12939#13560#0" expanded="false" />
+            <element signature="e#13537#13538#0" expanded="false" />
+            <element signature="method#checkBeefMonopolistResult#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="method#checkCompetitiveResult#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="method#testBeefMonopolistFixedProductionWithSlowPIDOneRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="method#testBeefMonopolistFixedProductionWithSlowPIDFakeFoodCompetitive#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#17970#18610#0" expanded="false" />
+            <element signature="e#18587#18588#0" expanded="false" />
+            <element signature="method#testBeefMonopolistFixedProductionWithSlowPIDFakeFoodCompetitiveOneRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="class#19205:20579" expanded="false" />
+            <element signature="method#buildFoodPurchasesPredictor#0;class#19205:20579" expanded="false" />
+            <element signature="method#createSalesDepartment#0;class#19205:20579" expanded="false" />
+            <element signature="method#createPlant#0;class#19205:20579" expanded="false" />
+            <element signature="method#testBeefMonopolistFixedProductionWithStickyPricesFakeFoodCompetitive#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#23365#23994#0" expanded="false" />
+            <element signature="e#23971#23972#0" expanded="false" />
+            <element signature="method#beefMonopolistFixedProductionWithStickyPricesFakeFoodCompetitiveOneRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="class#24524:25252" expanded="false" />
+            <element signature="method#buildFoodPurchasesPredictor#0;class#24524:25252" expanded="false" />
+            <element signature="method#createSalesDepartment#0;class#24524:25252" expanded="false" />
+            <element signature="method#everybodyLearnedBeefMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#28376#28987#0" expanded="false" />
+            <element signature="e#28964#28965#0" expanded="false" />
+            <element signature="method#everybodyLearnedBeefMonopolistSlowPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="class#29478:31017" expanded="false" />
+            <element signature="method#buildBeefSalesPredictor#0;class#29478:31017" expanded="false" />
+            <element signature="method#buildFoodPurchasesPredictor#0;class#29478:31017" expanded="false" />
+            <element signature="method#createSalesDepartment#0;class#29478:31017" expanded="false" />
+            <element signature="method#createPlant#0;class#29478:31017" expanded="false" />
+            <element signature="method#everybodyLearnedBeefMonopolistStickyPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#33469#34082#0" expanded="false" />
+            <element signature="e#34059#34060#0" expanded="false" />
+            <element signature="method#everybodyLearnedBeefMonopolistStickyPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="class#34576:36115" expanded="false" />
+            <element signature="method#buildBeefSalesPredictor#0;class#34576:36115" expanded="false" />
+            <element signature="method#buildFoodPurchasesPredictor#0;class#34576:36115" expanded="false" />
+            <element signature="method#createSalesDepartment#0;class#34576:36115" expanded="false" />
+            <element signature="method#createPlant#0;class#34576:36115" expanded="false" />
+            <element signature="method#foodLearnedBeefMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#38532#39138#0" expanded="false" />
+            <element signature="e#39115#39116#0" expanded="false" />
+            <element signature="method#foodLearnedBeefMonopolistSlowPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="class#39803:41190" expanded="false" />
+            <element signature="method#buildFoodPurchasesPredictor#0;class#39803:41190" expanded="false" />
+            <element signature="method#createSalesDepartment#0;class#39803:41190" expanded="false" />
+            <element signature="method#createPlant#0;class#39803:41190" expanded="false" />
+            <element signature="method#foodLearnedBeefMonopolistStickyPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#43725#44333#0" expanded="false" />
+            <element signature="e#44310#44311#0" expanded="false" />
+            <element signature="method#foodLearnedBeefMonopolistStickyPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="class#45000:46386" expanded="false" />
+            <element signature="method#buildFoodPurchasesPredictor#0;class#45000:46386" expanded="false" />
+            <element signature="method#createSalesDepartment#0;class#45000:46386" expanded="false" />
+            <element signature="method#createPlant#0;class#45000:46386" expanded="false" />
+            <element signature="method#beefLearnedBeefMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#48916#49522#0" expanded="false" />
+            <element signature="e#49499#49500#0" expanded="false" />
+            <element signature="method#beefLearnedBeefMonopolistSlowPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="class#50008:50912" expanded="false" />
+            <element signature="method#buildBeefSalesPredictor#0;class#50008:50912" expanded="false" />
+            <element signature="method#createPlant#0;class#50008:50912" expanded="false" />
+            <element signature="method#beefLearnedBeefMonopolistStickyPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#53277#53885#0" expanded="false" />
+            <element signature="e#53862#53863#0" expanded="false" />
+            <element signature="method#beefLearnedBeefMonopolistStickyPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="class#54370:55274" expanded="false" />
+            <element signature="method#buildBeefSalesPredictor#0;class#54370:55274" expanded="false" />
+            <element signature="method#createPlant#0;class#54370:55274" expanded="false" />
+            <element signature="method#everybodyLearningCompetitiveSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#57880#58489#0" expanded="false" />
+            <element signature="e#58466#58467#0" expanded="false" />
+            <element signature="method#everybodyLearningCompetitiveSlowPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="method#everybodyLearningCompetitiveStickyPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#61798#62409#0" expanded="false" />
+            <element signature="e#62386#62387#0" expanded="false" />
+            <element signature="method#everybodyLearningCompetitiveStickyPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="method#learningBeefMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#65707#66310#0" expanded="false" />
+            <element signature="e#66287#66288#0" expanded="false" />
+            <element signature="method#learningBeefMonopolistSlowPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="method#learningBeefMonopolistStickyPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#69835#70440#0" expanded="false" />
+            <element signature="e#70417#70418#0" expanded="false" />
+            <element signature="method#learningBeefMonopolistStickyPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="method#testFoodMonopolistWithStickyPricesAndFixedQuantity#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#74254#74866#0" expanded="false" />
+            <element signature="e#74843#74844#0" expanded="false" />
+            <element signature="method#testFoodMonopolistWithStickyPricesAndFixedQuantityRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="method#checkResultsOfFoodMonopolist#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="method#testFoodMonopolistWithSlowPIDAndFixedQuantity#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#78500#79107#0" expanded="false" />
+            <element signature="e#79084#79085#0" expanded="false" />
+            <element signature="method#testFoodMonopolistWithSlowPIDAndFixedQuantityRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="method#alreadyLearnedFoodMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#82475#83072#0" expanded="false" />
+            <element signature="e#83049#83050#0" expanded="false" />
+            <element signature="method#alreadyLearnedFoodMonopolistSlowPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="class#83509:83985" expanded="false" />
+            <element signature="method#buildFoodPurchasesPredictor#0;class#83509:83985" expanded="false" />
+            <element signature="method#alreadyLearnedFoodMonopolistStickyPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#86490#87089#0" expanded="false" />
+            <element signature="e#87066#87067#0" expanded="false" />
+            <element signature="method#alreadyLearnedFoodMonopolistStickyPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="class#87529:88006" expanded="false" />
+            <element signature="method#buildFoodPurchasesPredictor#0;class#87529:88006" expanded="false" />
+            <element signature="method#learningFoodMonopolistSlowPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#90745#91336#0" expanded="false" />
+            <element signature="e#91313#91314#0" expanded="false" />
+            <element signature="method#learningFoodMonopolistSlowPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="method#learningFoodMonopolistStickyPID#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+            <element signature="e#94324#94917#0" expanded="false" />
+            <element signature="e#94894#94895#0" expanded="false" />
+            <element signature="method#learningFoodMonopolistStickyPIDRun#0;class#OneLinkSupplyChainScenarioRegressionTest#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/MonopolistScenarioTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="562" column="0" selection-start="22946" selection-end="22946" vertical-scroll-proportion="0.0" vertical-offset="2334" max-vertical-offset="4590">
+          <folding>
+            <element signature="method#problematicScenario5#0;class#MonopolistScenarioTest#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/purchases/prediction/AbstractWorkerLearningPredictorTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="92" column="0" selection-start="3512" selection-end="3512" vertical-scroll-proportion="0.0" vertical-offset="562" max-vertical-offset="1649">
+          <folding>
+            <element signature="e#0#3615#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/tests/SalesDepartmentTest2.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="141" column="0" selection-start="5211" selection-end="5211" vertical-scroll-proportion="0.0" vertical-offset="762" max-vertical-offset="2975">
+          <folding>
+            <element signature="method#simpleScenarioSetup#0;class#SalesDepartmentTest2#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/powermock-junit4/junit-4.11-sources.jar!/org/junit/internal/runners/model/ReflectiveCallable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="0" selection-start="417" selection-end="417" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="408">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStatics.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="53" column="0" selection-start="1759" selection-end="1759" vertical-scroll-proportion="0.0" vertical-offset="518" max-vertical-offset="4029">
+          <folding>
+            <element signature="method#computeWageCosts#0;class#MarginalMaximizerStatics#0" expanded="true" />
+            <element signature="method#computeMarginalRevenue#0;class#MarginalMaximizerStatics#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/agents/firm/sales/prediction/RecursiveSalePredictorTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="112" column="0" selection-start="3570" selection-end="3570" vertical-scroll-proportion="0.0" vertical-offset="625" max-vertical-offset="1377">
+          <folding>
+            <element signature="e#0#3775#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="method#testSimulatePriceStatic#0;class#RecursiveSalePredictorTest#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/pricing/UndercuttingAskPricing.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="83" column="65" selection-start="2485" selection-end="2505" vertical-scroll-proportion="-6.148148" vertical-offset="1092" max-vertical-offset="2431">
+          <folding>
+            <element signature="method#UndercuttingAskPricing#0;class#UndercuttingAskPricing#0" expanded="true" />
+            <element signature="method#step#0;class#UndercuttingAskPricing#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/tests/predictor/PricingPredictorStrategyTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="76" column="0" selection-start="2322" selection-end="2322" vertical-scroll-proportion="0.0" vertical-offset="781" max-vertical-offset="1496">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/prediction/PricingSalesPredictor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="45" column="29" selection-start="1466" selection-end="1466" vertical-scroll-proportion="0.0" vertical-offset="479" max-vertical-offset="1360">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/agents/firm/sales/SalesDepartment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1306" column="11" selection-start="46471" selection-end="46471" vertical-scroll-proportion="0.0" vertical-offset="10764" max-vertical-offset="13209">
+          <folding>
+            <element signature="method#SalesDepartment#0;class#SalesDepartment#0" expanded="true" />
+            <element signature="method#price#0;class#SalesDepartment#0" expanded="true" />
+            <element signature="method#beginningOfTheDayStatistics#0;class#SalesDepartment#0" expanded="true" />
+            <element signature="method#placeAQuoteNow#0;class#SalesDepartment#0" expanded="true" />
+            <element signature="method#logOutflow#0;class#SalesDepartment#0" expanded="true" />
+            <element signature="method#hypotheticalSalePrice#0;class#SalesDepartment#0" expanded="true" />
+            <element signature="method#hypotheticalSalePrice#1;class#SalesDepartment#0" expanded="true" />
+            <element signature="method#getAverageClosingPrice#0;class#SalesDepartment#0" expanded="true" />
+            <element signature="method#getAveragedLastPrice#0;class#SalesDepartment#0" expanded="true" />
+            <element signature="method#predictSalePriceWhenNotChangingPoduction#0;class#SalesDepartment#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/OneLinkPredictorGeneticAlgorithm.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="331" column="58" selection-start="12996" selection-end="13013" vertical-scroll-proportion="0.0" vertical-offset="1431" max-vertical-offset="2686">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenario.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="544" column="50" selection-start="18472" selection-end="18472" vertical-scroll-proportion="0.0" vertical-offset="3420" max-vertical-offset="6494">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/scenario/OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="344" column="50" selection-start="13398" selection-end="13398" vertical-scroll-proportion="0.0" vertical-offset="1958" max-vertical-offset="3536">
+          <folding>
+            <element signature="method#main#0;class#OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/model/experiments/tuningRuns/SamplingSalesLearningGeneticAlgorithmInSupplyChain.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="389" column="58" selection-start="16800" selection-end="16800" vertical-scroll-proportion="0.0" vertical-offset="1890" max-vertical-offset="3315">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/model/scenario/CompetitiveScenarioTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="582" column="48" selection-start="23146" selection-end="23146" vertical-scroll-proportion="0.54315305" vertical-offset="7790" max-vertical-offset="9435">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#rightPriceAndQuantityTestAsMarginalNoPID#0;class#CompetitiveScenarioTest#0" expanded="true" />
+            <element signature="method#rightPriceAndQuantityTestAsMarginalNoPIDAlreadyLearned#0;class#CompetitiveScenarioTest#0" expanded="true" />
+            <element signature="method#rightPriceAndQuantityTestAsMarginalNoPIDAlreadyLearnedFlows#0;class#CompetitiveScenarioTest#0" expanded="true" />
+            <element signature="method#tooManyLearnedCompetitors#0;class#CompetitiveScenarioTest#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

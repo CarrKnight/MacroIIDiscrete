@@ -27,7 +27,8 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
 
 
     private final PurchasesDepartment department;
-    private PurchasesDataType yVariableType  = PurchasesDataType.LAST_OFFERED_PRICE;;
+
+    private PurchasesDataType yVariableType  = PurchasesDataType.LAST_OFFERED_PRICE;
 
     public RecursivePurchasesPredictor(MacroII model,PurchasesDepartment department) {
         super(model);

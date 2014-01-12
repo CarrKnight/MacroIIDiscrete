@@ -72,6 +72,8 @@ public class PricingPredictorStrategyTest {
         DummySeller seller = new DummySeller(model, 300l); market.registerSeller(seller);
         market.submitSellQuote(seller,300l,new Good(GoodType.GENERIC,seller,300l));
 
+
+
         assertEquals(240, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //markup 20% (since you haven't stepped and seen the competition)
         pricing.step(mock(MacroII.class));
         assertEquals(297, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //undercut by 1%

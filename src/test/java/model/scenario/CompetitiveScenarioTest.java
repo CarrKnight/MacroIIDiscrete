@@ -10,8 +10,8 @@ import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
+import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerStatics;
-import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.RobustMarginalMaximizer;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
@@ -580,7 +580,7 @@ public class CompetitiveScenarioTest {
                         return hr;
                     }
                 };
-                scenario1.setControlType(RobustMarginalMaximizer.class);
+                scenario1.setControlType(MarginalMaximizer.class);
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
                 scenario1.setBeefPriceFilterer(null);
 
