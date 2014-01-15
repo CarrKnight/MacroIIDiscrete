@@ -6,6 +6,7 @@
 
 package model.scenario;
 
+import agents.firm.Firm;
 import agents.firm.production.Blueprint;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesFixedPID;
@@ -34,7 +35,7 @@ import model.utilities.pid.CascadePIDController;
  * @version 2013-01-10
  * @see
  */
-public class MonopolistWithInputScenario extends MonopolistScenario {
+public class MonopolistWithInputScenario extends TripolistScenario {
 
     public MonopolistWithInputScenario(MacroII macroII) {
         super(macroII);
@@ -62,29 +63,33 @@ public class MonopolistWithInputScenario extends MonopolistScenario {
         createSuppliers();
 
         //register a purchase department to the monopolist
-        addPurchaseDepartmentToMonopolist();
+        addPurchaseDepartmentToFirms();
 
 
 
     }
 
-    protected void addPurchaseDepartmentToMonopolist() {
-        PurchasesDepartment department = PurchasesDepartment.
-                getEmptyPurchasesDepartment(Long.MAX_VALUE, monopolist,
-                getMarkets().get(GoodType.LEATHER));
-        Market market = getMarkets().get(GoodType.LEATHER);
+    protected void addPurchaseDepartmentToFirms() {
+        assert super.getCompetitors() != null;
+        for(Firm f : super.getCompetitors())
+        {
+
+            PurchasesDepartment department = PurchasesDepartment.
+                    getEmptyPurchasesDepartment(Long.MAX_VALUE, f,
+                            getMarkets().get(GoodType.LEATHER));
+            Market market = getMarkets().get(GoodType.LEATHER);
 
 
-        department.setOpponentSearch(new SimpleBuyerSearch(market, monopolist));
-        department.setSupplierSearch(new SimpleSellerSearch(market, monopolist));
+            department.setOpponentSearch(new SimpleBuyerSearch(market, f));
+            department.setSupplierSearch(new SimpleSellerSearch(market, f));
 
-      //  PurchasesFixedPID control = new PurchasesFixedPID(department,4, CascadePIDController.class,model);
-        PurchasesFixedPID control = new PurchasesFixedPID(department,10,CascadePIDController.class,model);
+            PurchasesFixedPID control = new PurchasesFixedPID(department,50,CascadePIDController.class,model);
 
-        department.setControl(control);
-        department.setPricingStrategy(control);
-       // department.setPredictor(new LookAheadPredictor());
-        monopolist.registerPurchasesDepartment(department, GoodType.LEATHER);
+            department.setControl(control);
+            department.setPricingStrategy(control);
+            // department.setPredictor(new LookAheadPredictor());
+            f.registerPurchasesDepartment(department, GoodType.LEATHER);
+        }
     }
 
     private void createSuppliers() {

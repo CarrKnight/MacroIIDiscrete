@@ -50,6 +50,11 @@ public class OrderBookMarket extends Market {
      */
     private HistogramGenerator histogramGenerator = null;
 
+    /**
+     * this is the object that tries to match bids and asks and allows for trades.
+     */
+    private OrderHandler orderHandler;
+
 
     public OrderBookMarket(GoodType t) {
         super(t);
@@ -91,6 +96,7 @@ public class OrderBookMarket extends Market {
 
 
 
+        orderHandler = new ImmediateOrderHandler();
 
 
     }

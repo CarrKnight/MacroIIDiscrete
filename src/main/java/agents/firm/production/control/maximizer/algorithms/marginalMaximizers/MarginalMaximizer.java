@@ -99,12 +99,17 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
     @Override
     public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits)
     {
-            if(oldWorkerTarget >=0)
-                steps++;
+        if(oldWorkerTarget >=0)
+            steps++;
 
 
         //compute profits if we increase
+        if(MarginalMaximizerStatics.printOutDiagnostics)
+        {
+            System.out.println("=========================================================================================================");
+        }
 
+        int newTarget = -1;
 
         try{
             float profitsIfWeIncrease = currentWorkerTarget < p.maximumWorkersPossible() ? //if we can increase production
@@ -122,36 +127,43 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
             {
 
                 //if profits decrease in both direction, stay where you are
-
-                return currentWorkerTarget;
+                newTarget = currentWorkerTarget;
+                return newTarget;
 
             }
             else
             if(profitsIfWeIncrease >= profitsIfWeDecrease){ //if we increase profits going up, let's do that
-            //    System.out.println(profitsIfWeIncrease + " ++ on day: " + owner.getModel().getMainScheduleTime());
+                //    System.out.println(profitsIfWeIncrease + " ++ on day: " + owner.getModel().getMainScheduleTime());
                 assert profitsIfWeIncrease > 0;
-                return currentWorkerTarget+1;
+                newTarget = currentWorkerTarget + 1;
+                return newTarget;
             }
             else
             {
-         //       System.out.println(profitsIfWeDecrease + " -- on day: " + owner.getModel().getMainScheduleTime());
+                //       System.out.println(profitsIfWeDecrease + " -- on day: " + owner.getModel().getMainScheduleTime());
 
                 assert profitsIfWeDecrease >=0;
 
 
-                int newTarget = Math.max(currentWorkerTarget - 1, 0);
+                newTarget = Math.max(currentWorkerTarget - 1, 0);
                 if(newTarget ==0 && currentWorkerTarget >0 && steps < minimumStepsBeforeClosingDown)
                     return currentWorkerTarget; //don't quit just yet
                 return newTarget;
 
             }
 
-        }catch (DelayException e)
+        }
+        catch (DelayException e)
         {
             //if an exception was thrown, it must be because we need more time!
             return -1;
         }
-
+        finally {
+            if(MarginalMaximizerStatics.printOutDiagnostics){
+                System.out.println(" new target chosen: " + newTarget);
+                System.out.println("====================================================");
+            }
+        }
 
 
     }

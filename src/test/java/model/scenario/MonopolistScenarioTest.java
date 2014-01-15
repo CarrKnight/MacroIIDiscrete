@@ -1,7 +1,10 @@
 package model.scenario;
 
+import agents.firm.Firm;
+import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
+import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
@@ -791,6 +794,95 @@ public class MonopolistScenarioTest {
 
 
     }
+
+
+
+    /**
+     * This was a strange cool experiment. If I put 5 agents, each of them thinking to be a monopolist, will I get monopolist prices?
+     * The answer is actually no, because "stock" and "distribution" matters:
+     *
+     * 3 learned monopolist
+
+     w= 14 + L
+     p= 101 - q
+     right monopolist result: q=22, p = 79
+
+     1st monopolist has 15 workers
+     2nd monopolist has 15 workers
+     3rd has 1
+
+     wages: 45
+     prices: 70
+
+
+     3rd monopolist thinking:
+     if I increase workers, i will pay wages: 46 and prices will be 69
+     Total Wage now: 45, total wage if I increase: 92 (46*2);
+     total revenues now: 70; total revenues if I increase: 138
+     MC = 47, MR= 68
+     INCREASE PRODUCTION!
+
+     a.k.a: distribution matters and many learned monopolists still produce more.
+     *
+     */
+    public void fiveLearnedMonopolists() throws IOException {
+        for(int i=0; i<5; i++)
+        {
+            //we know the profit maximizing equilibrium is q=220, price = 72
+            final MacroII macroII = new MacroII(1l);
+            TripolistScenario scenario1 = new TripolistScenario(macroII);
+            scenario1.setAdditionalCompetitors(4);
+            macroII.setScenario(scenario1);
+            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
+            scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
+            if(macroII.random.nextBoolean())
+                scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            else
+                scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+
+
+            //create stat collector
+     /*       CSVWriter writer = new CSVWriter(new FileWriter("runs/5LearnedMonopolists.csv"));
+            DailyStatCollector collector = new DailyStatCollector(macroII,writer);
+            collector.start();
+            */
+
+
+
+            macroII.start();
+            macroII.schedule.step(macroII);
+            //force learning
+            //sales:
+            for(Firm f : scenario1.getCompetitors())
+            {
+                f.getSalesDepartment(GoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(1));
+                f.getHRs().iterator().next().setPredictor(new FixedIncreasePurchasesPredictor(1));
+            }
+
+            while(macroII.schedule.getTime()<5000)
+                macroII.schedule.step(macroII);
+
+            double price = 0;
+            double quantity = 0;
+
+            for(int averaging=0; averaging<1000; averaging++)
+            {
+                macroII.schedule.step(macroII);
+                price += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
+                quantity += macroII.getMarket(GoodType.GENERIC).getTodayVolume();
+            }
+            price /=1000;
+            quantity /= 1000;
+
+
+            System.out.println("price : " + price + ", quantity: " + quantity);
+
+            // not true:
+        //    assertEquals(79,price,2);
+        //    assertEquals(22,quantity,2);
+        }
+    }
+
 
 
 

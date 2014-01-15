@@ -15,6 +15,7 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -101,7 +102,7 @@ public class DailyGoodTree extends EconomicAgent
 
                 sellIfPossible(market);
 
-                model.scheduleTomorrow(ActionOrder.TRADE,this);
+                model.scheduleTomorrow(ActionOrder.TRADE,this, Priority.AFTER_STANDARD);
 
             }
         });
