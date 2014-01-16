@@ -17,6 +17,18 @@ import agents.EconomicAgent;
  */
 public class Bankruptcy extends RuntimeException {
 
+    private final EconomicAgent cause;
+
     public Bankruptcy(EconomicAgent cause) {
+
+        this.cause = cause;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Bankruptcy{");
+        sb.append("cause=").append(cause);
+        sb.append('}');
+        return sb.toString();
     }
 }

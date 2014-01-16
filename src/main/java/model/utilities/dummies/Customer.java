@@ -39,6 +39,7 @@ import javax.annotation.Nonnull;
 public class Customer extends EconomicAgent{
 
 
+    private Priority tradePriority = Priority.AFTER_STANDARD;
     /**
      * how many units do you want to buy every day?
      */
@@ -99,7 +100,7 @@ public class Customer extends EconomicAgent{
 
                 buyIfNeeded(market);
                 //reschedule yourself
-                model.scheduleTomorrow(ActionOrder.TRADE,this, Priority.AFTER_STANDARD);
+                model.scheduleTomorrow(ActionOrder.TRADE,this, tradePriority);
 
             }
         });
@@ -259,5 +260,12 @@ public class Customer extends EconomicAgent{
     }
 
 
+    public Priority getTradePriority() {
+        return tradePriority;
+    }
+
+    public void setTradePriority(Priority tradePriority) {
+        this.tradePriority = tradePriority;
+    }
 }
 

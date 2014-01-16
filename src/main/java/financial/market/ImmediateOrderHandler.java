@@ -43,7 +43,6 @@ public class ImmediateOrderHandler implements OrderHandler {
     /**
      * tell the handler a new quote arrived.
      *
-     * @param q the new quote!
      */
     @Override
     public void reactToNewQuote(Queue<Quote> asks, Queue<Quote> bids, OrderBookMarket market) {
@@ -62,7 +61,7 @@ public class ImmediateOrderHandler implements OrderHandler {
      * @param bids  the queue of bids
      * @return true if a trade occurred
      */
-    public boolean matchQuotes(Queue<Quote> asks, Queue<Quote> bids, OrderBookMarket market)
+    public static boolean matchQuotes(Queue<Quote> asks, Queue<Quote> bids, OrderBookMarket market)
     {
         if(bids.isEmpty() || asks.isEmpty())
             return false;  //if any of the two is empty, nothing to match
@@ -74,7 +73,7 @@ public class ImmediateOrderHandler implements OrderHandler {
         if(bestBid.getPriceQuoted() >= bestAsk.getPriceQuoted())
         {
             //price is somewhere in the middle
-            long price = market.getPricePolicy().price(bestAsk.getPriceQuoted(), bestBid.getPriceQuoted());
+            long price = market.price(bestAsk.getPriceQuoted(), bestBid.getPriceQuoted());
 
             //sanity check
             assert price >= bestAsk.getPriceQuoted();

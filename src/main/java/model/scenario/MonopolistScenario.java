@@ -29,6 +29,7 @@ import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
+import financial.market.EndOfPhaseOrderHandler;
 import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
 import financial.utilities.ShopSetPricePolicy;
@@ -160,11 +161,13 @@ public class MonopolistScenario extends Scenario {
 
         //create and record a new market!
         goodMarket= new OrderBookMarket(GoodType.GENERIC);
+        goodMarket.setOrderHandler(new EndOfPhaseOrderHandler(),model);
         goodMarket.setPricePolicy(new ShopSetPricePolicy()); //make the seller price matter
         getMarkets().put(GoodType.GENERIC,goodMarket);
 
         //create and record the labor market!
         laborMarket= new OrderBookMarket(GoodType.LABOR);
+        laborMarket.setOrderHandler(new EndOfPhaseOrderHandler(),model);
         laborMarket.setPricePolicy(new BuyerSetPricePolicy()); //make the seller price matter
         getMarkets().put(GoodType.LABOR,laborMarket);
 

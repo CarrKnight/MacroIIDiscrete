@@ -37,6 +37,7 @@ import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import financial.market.EndOfPhaseOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
@@ -184,20 +185,27 @@ public class OneLinkSupplyChainScenario extends Scenario {
      * Instantiate all the markets
      */
     private void instantiateMarkets() {
-        Market beef = new OrderBookMarket(GoodType.BEEF);
+        OrderBookMarket beef = new OrderBookMarket(GoodType.BEEF);
         beef.setPricePolicy(new ShopSetPricePolicy());
+        beef.setOrderHandler(new EndOfPhaseOrderHandler(),model);
         getMarkets().put(beef.getGoodType(), beef);
-        Market food = new OrderBookMarket(GoodType.FOOD);
+        OrderBookMarket food = new OrderBookMarket(GoodType.FOOD);
         food.setPricePolicy(new ShopSetPricePolicy());
         getMarkets().put(food.getGoodType(), food);
+        food.setOrderHandler(new EndOfPhaseOrderHandler(),model);
 
 
-        Market beefLabor = new OrderBookMarket(GoodType.LABOR_BEEF);
+
+        OrderBookMarket beefLabor = new OrderBookMarket(GoodType.LABOR_BEEF);
         beefLabor.setPricePolicy(new BuyerSetPricePolicy());
         getMarkets().put(beefLabor.getGoodType(),beefLabor);
-        Market foodLabor = new OrderBookMarket(GoodType.LABOR_FOOD);
+        beefLabor.setOrderHandler(new EndOfPhaseOrderHandler(),model);
+
+        OrderBookMarket foodLabor = new OrderBookMarket(GoodType.LABOR_FOOD);
         beefLabor.setPricePolicy(new BuyerSetPricePolicy());
         getMarkets().put(foodLabor.getGoodType(),foodLabor);
+        foodLabor.setOrderHandler(new EndOfPhaseOrderHandler(),model);
+
     }
 
     protected Firm createFirm(final Market goodmarket, final Market laborMarket)

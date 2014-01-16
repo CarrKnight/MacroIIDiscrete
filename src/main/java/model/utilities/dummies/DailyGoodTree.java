@@ -39,6 +39,7 @@ import javax.annotation.Nonnull;
 public class DailyGoodTree extends EconomicAgent
 {
 
+    private Priority tradePriority = Priority.AFTER_STANDARD;
     /**
      * how many units of goods do you try to sell everyday
      */
@@ -102,7 +103,7 @@ public class DailyGoodTree extends EconomicAgent
 
                 sellIfPossible(market);
 
-                model.scheduleTomorrow(ActionOrder.TRADE,this, Priority.AFTER_STANDARD);
+                model.scheduleTomorrow(ActionOrder.TRADE,this, tradePriority);
 
             }
         });
@@ -234,5 +235,15 @@ public class DailyGoodTree extends EconomicAgent
     @Override
     public String toString() {
         return name;
+    }
+
+
+    public Priority getTradePriority() {
+        return tradePriority;
+    }
+
+
+    public void setTradePriority(Priority tradePriority) {
+        this.tradePriority = tradePriority;
     }
 }

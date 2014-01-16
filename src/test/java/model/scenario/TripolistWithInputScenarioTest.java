@@ -38,7 +38,7 @@ import static org.junit.Assert.assertEquals;
  * @version 2013-01-13
  * @see
  */
-public class MonopolistWithInputScenarioTest {
+public class TripolistWithInputScenarioTest {
 
     //these tests are all with SimpleFlowSeller
 
@@ -51,7 +51,7 @@ public class MonopolistWithInputScenarioTest {
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(System.currentTimeMillis());
-            MonopolistWithInputScenario scenario1 = new MonopolistWithInputScenario(macroII);
+            TripolistWithInputScenario scenario1 = new TripolistWithInputScenario(macroII);
             scenario1.setAdditionalCompetitors(0);
             //    scenario1.setAlwaysMoving(true);
             //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
@@ -87,7 +87,7 @@ public class MonopolistWithInputScenarioTest {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(System.currentTimeMillis());
             System.out.println(macroII.seed());
-            MonopolistWithInputScenario scenario1 = new MonopolistWithInputScenario(macroII);
+            TripolistWithInputScenario scenario1 = new TripolistWithInputScenario(macroII);
             scenario1.setAdditionalCompetitors(0);
             //    scenario1.setAlwaysMoving(true);
             //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
@@ -134,7 +134,7 @@ public class MonopolistWithInputScenarioTest {
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(System.currentTimeMillis());
-            MonopolistWithInputScenario scenario1 = new MonopolistWithInputScenario(macroII);
+            TripolistWithInputScenario scenario1 = new TripolistWithInputScenario(macroII);
             scenario1.setAdditionalCompetitors(0);
             //    scenario1.setAlwaysMoving(true);
             //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
@@ -172,7 +172,7 @@ public class MonopolistWithInputScenarioTest {
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(System.currentTimeMillis());
-            MonopolistWithInputScenario scenario1 = new MonopolistWithInputScenario(macroII){
+            TripolistWithInputScenario scenario1 = new TripolistWithInputScenario(macroII){
 
                 protected void addPurchaseDepartmentToFirms(){
                     FactoryProducedPurchaseDepartment<FixedInventoryControl,CheaterPricing,BuyerSearchAlgorithm,SellerSearchAlgorithm>
@@ -229,7 +229,7 @@ public class MonopolistWithInputScenarioTest {
             {
                 //we know the profit maximizing equilibrium is q=220, price = 72
                 final MacroII macroII = new MacroII(System.currentTimeMillis());
-                MonopolistWithInputScenario scenario1 = new MonopolistWithInputScenario(macroII);
+                TripolistWithInputScenario scenario1 = new TripolistWithInputScenario(macroII);
                 scenario1.setAdditionalCompetitors(competitors);
                 macroII.setScenario(scenario1);
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
@@ -299,7 +299,7 @@ public class MonopolistWithInputScenarioTest {
             {
                 //we know the profit maximizing equilibrium is q=220, price = 72
                 final MacroII macroII = new MacroII(System.currentTimeMillis());
-                MonopolistWithInputScenario scenario1 = new MonopolistWithInputScenario(macroII);
+                TripolistWithInputScenario scenario1 = new TripolistWithInputScenario(macroII);
                 scenario1.setAdditionalCompetitors(competitors);
                 macroII.setScenario(scenario1);
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
@@ -352,7 +352,7 @@ public class MonopolistWithInputScenarioTest {
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(1l);
-            MonopolistWithInputScenario scenario1 = new MonopolistWithInputScenario(macroII);
+            TripolistWithInputScenario scenario1 = new TripolistWithInputScenario(macroII);
             scenario1.setAdditionalCompetitors(4);
             macroII.setScenario(scenario1);
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
@@ -409,11 +409,11 @@ public class MonopolistWithInputScenarioTest {
 
 
 
-    @Test
+
     public void main(String[] args) throws IOException {
         //we know the profit maximizing equilibrium is q=220, price = 72
         final MacroII macroII = new MacroII(System.currentTimeMillis());
-        MonopolistWithInputScenario scenario1 = new MonopolistWithInputScenario(macroII);
+        TripolistWithInputScenario scenario1 = new TripolistWithInputScenario(macroII);
         scenario1.setAdditionalCompetitors(4);
         macroII.setScenario(scenario1);
         scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);

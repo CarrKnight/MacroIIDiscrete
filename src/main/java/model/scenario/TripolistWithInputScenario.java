@@ -12,6 +12,7 @@ import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesFixedPID;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
+import financial.market.EndOfPhaseOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.ShopSetPricePolicy;
@@ -35,9 +36,9 @@ import model.utilities.pid.CascadePIDController;
  * @version 2013-01-10
  * @see
  */
-public class MonopolistWithInputScenario extends TripolistScenario {
+public class TripolistWithInputScenario extends TripolistScenario {
 
-    public MonopolistWithInputScenario(MacroII macroII) {
+    public TripolistWithInputScenario(MacroII macroII) {
         super(macroII);
     }
 
@@ -55,7 +56,8 @@ public class MonopolistWithInputScenario extends TripolistScenario {
 
 
         //market for input
-        Market inputMarket = new OrderBookMarket(GoodType.LEATHER);
+        OrderBookMarket inputMarket = new OrderBookMarket(GoodType.LEATHER);
+        inputMarket.setOrderHandler(new EndOfPhaseOrderHandler(),model);
         inputMarket.setPricePolicy(new ShopSetPricePolicy());
         getMarkets().put(GoodType.LEATHER,inputMarket);
 

@@ -8,6 +8,7 @@ package financial.market;
 
 import financial.utilities.Quote;
 import model.MacroII;
+import model.utilities.Deactivatable;
 
 import java.util.Queue;
 
@@ -26,7 +27,7 @@ import java.util.Queue;
  * @version 2014-01-16
  * @see
  */
-public interface OrderHandler
+public interface OrderHandler extends Deactivatable
 {
 
     /**
@@ -40,6 +41,5 @@ public interface OrderHandler
      */
     public void reactToNewQuote(Queue<Quote> asks, Queue<Quote> bids, OrderBookMarket market);
 
-    public void turnOff();
 
 }

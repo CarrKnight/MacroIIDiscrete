@@ -888,4 +888,8 @@ public class MacroII extends SimState{
     public double getMainScheduleTime() {
         return schedule.getTime();
     }
+
+    public boolean hasStarted() {
+        return hasStarted;
+    }
 }

@@ -9,12 +9,10 @@ package financial.market;
 import agents.EconomicAgent;
 import agents.firm.Department;
 import com.google.common.base.Preconditions;
-import financial.Bankruptcy;
 import financial.BidListener;
 import financial.MarketEvents;
 import financial.utilities.ActionsAllowed;
 import financial.utilities.HistogramDecoratedPriorityBook;
-import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
@@ -101,6 +99,19 @@ public class OrderBookMarket extends Market {
 
     }
 
+
+    /**
+     * tells the market that the model is starting up, and it would be a good idea to start the data collector
+     *
+     * @param model  the MacroII model running the show
+     */
+    @Override
+    public void start(MacroII model) {
+        super.start(model);
+
+        orderHandler.start(model,asks,bids,this);
+    }
+
     /**
      * Order book with limit orders only!
      */
@@ -158,7 +169,7 @@ public class OrderBookMarket extends Market {
         }
 
 
-        matchQuotes(); //check for trades
+        orderHandler.reactToNewQuote(asks,bids,this);
 
         if(asks.contains(q)) //if it's still in
             return q; //return the quote to the seller
@@ -242,7 +253,7 @@ public class OrderBookMarket extends Market {
         }
 
 
-        matchQuotes(); //check for trades
+        orderHandler.reactToNewQuote(asks, bids, this);
 
 
         if(bids.contains(q)) //if it's still in
@@ -443,50 +454,6 @@ public class OrderBookMarket extends Market {
 
     }
 
-    /**
-     * Checks if there are crossing quotes, if so make trade happens!
-     */
-    private void matchQuotes(){
-        if(bids.isEmpty() || asks.isEmpty())
-            return; //if any of the two is empty, nothing to match
-
-        Quote bestBid = bids.peek(); //check best bid
-        Quote bestAsk = asks.peek(); //check best ask
-
-        //if best bid and best ask cross
-        if(bestBid.getPriceQuoted() >= bestAsk.getPriceQuoted())
-        {
-            //price is somewhere in the middle
-            long price = pricePolicy.price(bestAsk.getPriceQuoted(),bestBid.getPriceQuoted());
-
-            //sanity check
-            assert price >= bestAsk.getPriceQuoted();
-            assert price <= bestBid.getPriceQuoted();
-            assert bestAsk.getGood().getType().equals(bestBid.getType()); //they should be buying the same stuff
-
-
-            //TODO need to addSalesDepartmentListener a bankruptcy check that remove the bid, restarts the match quotes and notifies the bidder he's out of money!
-
-
-            PurchaseResult result = trade(bestBid.getAgent(),bestAsk.getAgent(),bestAsk.getGood(),price,bestBid,bestAsk);  //TRADE!
-            if(result == PurchaseResult.BUYER_HAS_NO_MONEY)
-                throw new Bankruptcy(bestBid.getAgent());
-
-            //remove the two crossing quotes
-            bids.remove();
-            asks.remove();
-            //reactions!
-            bestBid.getAgent().reactToFilledBidQuote(bestAsk.getGood(),price,bestAsk.getAgent());
-            bestAsk.getAgent().reactToFilledAskedQuote(bestAsk.getGood(), price,bestBid.getAgent());
-
-            //recursively make sure there are no more crossing quotes
-            matchQuotes();
-        }
-
-
-        //
-
-    }
 
 
     /**
@@ -578,4 +545,33 @@ public class OrderBookMarket extends Market {
     }
 
 
+    @Override
+    public void turnOff() {
+        super.turnOff();
+        orderHandler.turnOff();
+    }
+
+
+    public OrderHandler getOrderHandler() {
+        return orderHandler;
+    }
+
+    /**
+     * this setter requires a link to the model to start the new handler
+     * @param orderHandler
+     * @param model
+     */
+    public void setOrderHandler(OrderHandler orderHandler, MacroII model) {
+
+        assert this.orderHandler != null;
+        this.orderHandler.turnOff(); //turn off the old one!
+
+        //set the new order handler
+        this.orderHandler = orderHandler;
+        //start it!
+        if(model.hasStarted())
+            this.orderHandler.start(model,asks,bids,this);
+
+
+    }
 }

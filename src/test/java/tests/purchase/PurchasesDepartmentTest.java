@@ -214,9 +214,9 @@ public class PurchasesDepartmentTest {
 
         Market.TESTING_MODE = true;
 
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(System.currentTimeMillis());
         Firm firm = new Firm(model);
-        firm.earn(100);
+        firm.earn(100000);
         Market market = new OrderBookMarket(GoodType.GENERIC);
         market.start(model);
 
