@@ -36,7 +36,7 @@ public class FixedIncreasePurchasesPredictor implements PurchasesPredictor {
     /**
      * the delegate object we use to get the department price
      */
-    private final PricingPurchasesPredictor delegate;
+    private final PurchasesPredictor delegate;
 
     /**
      * creates the new

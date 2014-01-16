@@ -8,6 +8,7 @@ package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
 import financial.market.Market;
+import model.utilities.stats.collectors.enums.MarketDataType;
 
 /**
  * <h4>Description</h4>
@@ -38,7 +39,7 @@ public class LookupSalesPredictor implements SalesPredictor {
     @Override
     public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
 
-        return Math.round(dept.getMarket().getLastDaysAveragePrice());
+        return Math.round(dept.getMarket().getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
 
     }
 

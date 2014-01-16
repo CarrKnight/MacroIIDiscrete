@@ -28,7 +28,6 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
 
     private final PurchasesDepartment department;
 
-    private PurchasesDataType yVariableType  = PurchasesDataType.LAST_OFFERED_PRICE;
 
     public RecursivePurchasesPredictor(MacroII model,PurchasesDepartment department) {
         super(model);
@@ -66,8 +65,11 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
 
     @Override
     public Enum getYVariableType() {
-        return
-                yVariableType;
+     /*   if(department.getMarket().getPricePolicy() instanceof ShopSetPricePolicy)
+            return PurchasesDataType.CLOSING_PRICES;
+        else */
+            return PurchasesDataType.LAST_OFFERED_PRICE;
+
     }
 
     @Override
@@ -139,7 +141,4 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
 
     }
 
-    public void setyVariableType(PurchasesDataType yVariableType) {
-        this.yVariableType = yVariableType;
-    }
 }

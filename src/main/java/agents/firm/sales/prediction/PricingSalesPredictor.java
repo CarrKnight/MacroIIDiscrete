@@ -82,7 +82,7 @@ public class PricingSalesPredictor implements SalesPredictor {
      */
     @Override
     public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
-        return dept.getLastAskedPrice();
+        return dept.hypotheticalSalePrice();
 
     }
 }

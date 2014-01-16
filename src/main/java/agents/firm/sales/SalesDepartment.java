@@ -154,7 +154,7 @@ public abstract class  SalesDepartment  implements Department {
     /**
      * average last week price weighted by outflow
      */
-    private final WeightedMovingAverage<Long,Double> averagedPrice = new WeightedMovingAverage<>(10);
+    private final WeightedMovingAverage<Long,Double> averagedPrice = new WeightedMovingAverage<>(500);
 
 
 
