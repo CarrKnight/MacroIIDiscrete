@@ -15,8 +15,6 @@ import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlg
 
 import javax.annotation.Nonnull;
 import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * <h4>Description</h4>
@@ -47,24 +45,10 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
     private int numberOfChoices = 0;
 
 
-    public final static Logger LOGGER = Logger.getLogger(MarginalMaximizerStatics.class.getName());
 
     private static FileHandler fh = null;
 
-    static
-    {
-
-        LOGGER.setUseParentHandlers(MarginalMaximizerStatics.printOutDiagnostics);
-
-        //try{
-        //    fh = new FileHandler("/mnt/0EA6C8BFA6C8A913/maximization3.log",false);
-        //    fh.setFormatter(new XMLFormatter());
-        //    LOGGER.addHandler(fh);
-     //   } catch (IOException e) {
-      //      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-      //  }
-        LOGGER.setLevel(Level.ALL);
-    }
+   
 
 
     /**
@@ -103,8 +87,7 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
      * @param oldProfits          what were the profits back then   @return the new worker targets. Any negative number means to check again!
      */
     public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
-        if(MarginalMaximizerStatics.printOutDiagnostics)
-            System.out.println("-----------------------------------------" + maximizer.getHr().getFirm());
+        MarginalMaximizerStatics.logger.trace("----------------------------------------- {}", maximizer.getHr().getFirm());
         numberOfChoices++;
 
 
@@ -112,14 +95,14 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
         int futureTarget = maximizer.chooseWorkerTarget(currentWorkerNumber, newProfits, newRevenues, newCosts, oldRevenues, oldCosts, oldWorkerTarget, oldProfits);    //To change body of overridden methods use File | Settings | File Templates.
 
 
-        if(MarginalMaximizerStatics.printOutDiagnostics)
-            System.out.println("worker number: " + currentWorkerNumber + ", actual target: " + currentWorkerTarget + ", future target: " + futureTarget);
+      //  if(MarginalMaximizerStatics.logger.getLevel().isGreaterOrEqual(Level.TRACE))
+        MarginalMaximizerStatics.logger.trace("worker number: {}, actual target: {}, future target: {}",
+                new Object[]{currentWorkerNumber,currentWorkerTarget,futureTarget});
 
         if(futureTarget == currentWorkerNumber)
         {
-            if(MarginalMaximizerStatics.printOutDiagnostics)
 
-                System.out.println("----> unchanged at: " +currentWorkerTarget);
+                MarginalMaximizerStatics.logger.trace("----> unchanged at: {}",currentWorkerTarget);
             return currentWorkerTarget;
 
         }
@@ -127,15 +110,13 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
         {
             if(futureTarget>currentWorkerTarget)
             {
-                if(MarginalMaximizerStatics.printOutDiagnostics)
-                    System.out.println("----> increased at at: " +(currentWorkerTarget+1));
+                MarginalMaximizerStatics.logger.trace("----> increased at at: {}",(currentWorkerTarget+1));
 
                 return currentWorkerTarget+1;
             }
             else
             {
-                if(MarginalMaximizerStatics.printOutDiagnostics)
-                    System.out.println("----> unchanged at: " +currentWorkerTarget);
+                MarginalMaximizerStatics.logger.trace("----> unchanged at: {}",currentWorkerTarget);
                 return currentWorkerTarget;
             }
         }
@@ -147,20 +128,17 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
 
                 if(numberOfChoices < 1000)
                 {
-                    if(MarginalMaximizerStatics.printOutDiagnostics)
-                        System.out.println("----> decreased at at: " +Math.max(currentWorkerTarget-1,1) + ", too few choices");
+                        MarginalMaximizerStatics.logger.trace("----> decreased at at: {}, too few choices",Math.max(currentWorkerTarget-1,1));
                     return Math.max(currentWorkerTarget-1,1);
 
                 }
                 else
-                if(MarginalMaximizerStatics.printOutDiagnostics)
-                    System.out.println("----> decreased at at: " + (currentWorkerTarget-1));
+                    MarginalMaximizerStatics.logger.trace("----> decreased at at: {}",(currentWorkerTarget-1));
                     return currentWorkerTarget-1;
             }
             else
             {
-                if(MarginalMaximizerStatics.printOutDiagnostics)
-                    System.out.println("----> unchanged at: " +currentWorkerTarget);
+                    MarginalMaximizerStatics.logger.trace("----> unchanged at: {}",currentWorkerTarget);
                 return currentWorkerTarget;
             }
         }

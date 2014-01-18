@@ -82,6 +82,11 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
         this.owner = owner;
     }
 
+    /**
+     * basically, because of floating point, sometimes some computations that are 0 are instead 0.00000001 which is annoying. So instead of asking whether a predicted profit is above 0, we make it above epsilon
+     */
+    public static final float EPSILON = 0.1f;
+
 
     /**
      * Simply checks profit in the 2 directions around the currentWorkerTarget. Choose the highest of the three
@@ -104,26 +109,31 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
 
 
         //compute profits if we increase
-        if(MarginalMaximizerStatics.printOutDiagnostics)
-        {
-            System.out.println("=========================================================================================================");
-        }
+        MarginalMaximizerStatics.logger.trace("========================================================================================================= \n at time: {} firm {} maximizes",
+                owner.getModel().schedule.getTime(),owner.getName());
+
 
         int newTarget = -1;
 
         try{
+            MarginalMaximizerStatics.logger.trace("---> try to increase worker target to {}!", (currentWorkerTarget+1));
             float profitsIfWeIncrease = currentWorkerTarget < p.maximumWorkersPossible() ? //if we can increase production
                     MarginalMaximizerStatics.computeMarginalProfits(owner, p, hr, plantControl, policy, currentWorkerTarget, currentWorkerTarget + 1) //check marginal profits
                     :
                     Float.NEGATIVE_INFINITY; //otherwise don't go there!
+            MarginalMaximizerStatics.logger.trace("<--- profits if we increase {}",profitsIfWeIncrease);
+
 
 
             //compute profits if we decrease
+            MarginalMaximizerStatics.logger.trace("---> try to decrease worker target to{}!", (currentWorkerTarget-1));
             float profitsIfWeDecrease = currentWorkerTarget > 0 ?
                     MarginalMaximizerStatics.computeMarginalProfits(owner, p, hr, plantControl, policy, currentWorkerTarget, currentWorkerTarget - 1) :
                     Float.NEGATIVE_INFINITY;//if so check marginal profits
+            MarginalMaximizerStatics.logger.trace("<--- profits if we decrease {}",profitsIfWeDecrease);
 
-            if(profitsIfWeDecrease <= 0 && profitsIfWeIncrease <= 0)
+
+            if(profitsIfWeDecrease <= EPSILON && profitsIfWeIncrease <= EPSILON)
             {
 
                 //if profits decrease in both direction, stay where you are
@@ -134,7 +144,7 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
             else
             if(profitsIfWeIncrease >= profitsIfWeDecrease){ //if we increase profits going up, let's do that
                 //    System.out.println(profitsIfWeIncrease + " ++ on day: " + owner.getModel().getMainScheduleTime());
-                assert profitsIfWeIncrease > 0;
+                assert profitsIfWeIncrease > EPSILON;
                 newTarget = currentWorkerTarget + 1;
                 return newTarget;
             }
@@ -142,7 +152,7 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
             {
                 //       System.out.println(profitsIfWeDecrease + " -- on day: " + owner.getModel().getMainScheduleTime());
 
-                assert profitsIfWeDecrease >=0;
+                assert profitsIfWeDecrease >=EPSILON;
 
 
                 newTarget = Math.max(currentWorkerTarget - 1, 0);
@@ -159,10 +169,8 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
             return -1;
         }
         finally {
-            if(MarginalMaximizerStatics.printOutDiagnostics){
-                System.out.println(" new target chosen: " + newTarget);
-                System.out.println("====================================================");
-            }
+            MarginalMaximizerStatics.logger.trace(" new target chosen: {} \n====================================================",newTarget);
+
         }
 
 

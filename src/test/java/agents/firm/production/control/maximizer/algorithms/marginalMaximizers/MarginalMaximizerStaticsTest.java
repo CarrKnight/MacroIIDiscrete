@@ -25,7 +25,7 @@ import java.util.HashSet;
 
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.*;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
@@ -47,6 +47,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 public class MarginalMaximizerStaticsTest
 {
+
 
     //--------------------------------------------------------------------------------
     // marginal revenue

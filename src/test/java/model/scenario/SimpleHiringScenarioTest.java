@@ -131,7 +131,7 @@ public class SimpleHiringScenarioTest {
     }
 
     @Test
-    public void twoUnequalFirmsTest()
+    public void threeUnequalFirmsTest()
     {
         for(int k=0; k< 5; k++)
         {

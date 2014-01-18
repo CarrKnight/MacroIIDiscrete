@@ -11,7 +11,6 @@ import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
-import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerStatics;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
@@ -156,7 +155,6 @@ public class CompetitiveScenarioTest {
                 SummaryStatistics target = new SummaryStatistics();
                 for(int j=0; j<500; j++)
                 {
-                    MarginalMaximizerStatics.printOutDiagnostics = false;
                     macroII.schedule.step(macroII);
                     assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
                     prices.addValue(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
@@ -170,7 +168,6 @@ public class CompetitiveScenarioTest {
 
 
                 }
-                MarginalMaximizerStatics.printOutDiagnostics = false;
 
 
                 System.out.println(prices.getMean() + " - " + quantities.getMean() +"/" +target.getMean()+ "----" + macroII.seed() + " | " + macroII.getMarket(GoodType.GENERIC).getLastDaysAveragePrice());
@@ -255,7 +252,6 @@ public class CompetitiveScenarioTest {
                 SummaryStatistics target = new SummaryStatistics();
                 for(int j=0; j<500; j++)
                 {
-                    MarginalMaximizerStatics.printOutDiagnostics = false;
                     macroII.schedule.step(macroII);
                     assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
                     prices.addValue(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
@@ -269,7 +265,6 @@ public class CompetitiveScenarioTest {
 
 
                 }
-                MarginalMaximizerStatics.printOutDiagnostics = false;
 
 
                 System.out.println(prices.getMean() + " - " + quantities.getMean() +"/" +target.getMean()+ "----" + macroII.seed() + " | " + macroII.getMarket(GoodType.GENERIC).getLastDaysAveragePrice());
@@ -357,7 +352,6 @@ public class CompetitiveScenarioTest {
                 SummaryStatistics target = new SummaryStatistics();
                 for(int j=0; j<500; j++)
                 {
-                    MarginalMaximizerStatics.printOutDiagnostics = false;
                     macroII.schedule.step(macroII);
                     assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
                     prices.addValue(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
@@ -371,7 +365,6 @@ public class CompetitiveScenarioTest {
 
 
                 }
-                MarginalMaximizerStatics.printOutDiagnostics = false;
 
 
                 System.out.println(prices.getMean() + " - " + quantities.getMean() +"/" +target.getMean()+ "----" + macroII.seed() + " | " + macroII.getMarket(GoodType.GENERIC).getLastDaysAveragePrice());
