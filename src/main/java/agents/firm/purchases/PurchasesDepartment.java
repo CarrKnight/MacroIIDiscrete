@@ -188,7 +188,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
 
         counter = new InflowOutflowCounter(model,firm,goodType);
-        averagePriceCounter = new AveragePurchasePriceCounter();
+        averagePriceCounter = new AveragePurchasePriceCounter(this);
         purchasesData = new PurchasesDepartmentData();
 
 
@@ -1236,5 +1236,19 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
     public float getAveragedClosingPrice() {
         return averagePriceCounter.getAveragedClosingPrice();
+    }
+
+    public int getYesterdayInflow() {
+        return counter.getYesterdayInflow();
+    }
+
+    public int getYesterdayOutflow() {
+        return counter.getYesterdayOutflow();
+    }
+
+
+    public Class<? extends BidPricingStrategy> getPricingStrategyClass()
+    {
+        return pricingStrategy.getClass();
     }
 }

@@ -312,4 +312,30 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
 
     }
 
+    public float getProportionalGain() {
+        
+        return controller.getSlaveProportionalGain();
+
+    }
+
+
+    /**
+     * Change the gains of the second PID
+     * @param proportionalGain
+     * @param integralGain
+     * @param derivativeGain
+     */
+    public void setGainsSlavePID(float proportionalGain, float integralGain, float derivativeGain) {
+        controller.setGainsSlavePID(proportionalGain, integralGain, derivativeGain);
+    }
+
+    public float getIntegralGain() {
+        
+        return controller.getSlaveProportionalGain();
+
+    }
+
+    public float getDerivativeGain() {
+        return controller.getSlaveDerivativeGain();
+    }
 }

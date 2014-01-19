@@ -32,7 +32,6 @@ import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.annotations.VisibleForTesting;
@@ -142,7 +141,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
     //this is public only so that I can log it!
     @VisibleForTesting
-    public SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly strategy2;
+    public SalesControlWithFixedInventoryAndPID strategy2;
 
 
     /**
@@ -249,8 +248,8 @@ public class OneLinkSupplyChainScenario extends Scenario {
         if(!goodmarket.getGoodType().equals(GoodType.FOOD))
         {
 
-            strategy2 = new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(dept);
-            strategy2.setGains(strategy2.getProportionalGain()/divideProportionalGainByThis,
+            strategy2 = new SalesControlWithFixedInventoryAndPID(dept);
+            strategy2.setGainsSlavePID(strategy2.getProportionalGain()/divideProportionalGainByThis,
                     strategy2.getIntegralGain()/divideIntegrativeGainByThis,
                     strategy2.getDerivativeGain());
 
@@ -523,11 +522,11 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
                 if(goodmarket.getGoodType().equals(GoodType.BEEF))
                 {
-                    SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly askPricingStrategy =
-                            new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(department);
+                    SalesControlWithFixedInventoryAndPID askPricingStrategy =
+                            new SalesControlWithFixedInventoryAndPID(department);
                     department.setAskPricingStrategy(askPricingStrategy);
-                    askPricingStrategy.setProportionalGain(askPricingStrategy.getProportionalGain()/divideProportionalGainByThis);
-                    askPricingStrategy.setIntegralGain(askPricingStrategy.getIntegralGain()/divideIntegrativeGainByThis);
+                    askPricingStrategy.setGainsSlavePID(askPricingStrategy.getProportionalGain()/divideProportionalGainByThis,
+                            askPricingStrategy.getIntegralGain()/divideIntegrativeGainByThis, askPricingStrategy.getDerivativeGain());
                     model.scheduleAnotherDay(ActionOrder.CLEANUP_DATA_GATHERING,new Steppable() {
                         @Override
                         public void step(SimState state) {

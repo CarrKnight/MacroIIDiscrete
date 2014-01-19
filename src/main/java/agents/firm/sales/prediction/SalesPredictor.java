@@ -10,6 +10,7 @@ import agents.firm.sales.SalesDepartment;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import model.MacroII;
+import model.utilities.NonDrawable;
 import org.reflections.Reflections;
 
 import javax.annotation.Nonnull;
@@ -131,7 +132,7 @@ public interface SalesPredictor {
         {
             Class<? extends SalesPredictor > salesPredictor = null;
             //now you are going to pick at random, but keep doing it as long as you draw abstract classes or interfaces
-            while(salesPredictor == null || Modifier.isAbstract(salesPredictor.getModifiers()) || salesPredictor.isInterface())
+            while(salesPredictor == null || Modifier.isAbstract(salesPredictor.getModifiers()) || salesPredictor.isInterface()|| salesPredictor.isAnnotationPresent(NonDrawable.class))
             {
                 //get a new rule
                 salesPredictor = rules.get(randomizer.nextInt(rules.size()));

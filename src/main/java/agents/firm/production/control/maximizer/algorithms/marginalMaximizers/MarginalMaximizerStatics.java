@@ -11,6 +11,7 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import agents.firm.purchases.PurchasesDepartment;
+import agents.firm.sales.SalesDepartment;
 import com.google.common.base.Preconditions;
 import goods.GoodType;
 import model.utilities.DelayException;
@@ -214,21 +215,22 @@ public final class MarginalMaximizerStatics {
             float marginalProduction = (p.hypotheticalThroughput(targetWorkers, output) - p.hypotheticalThroughput(currentWorkers, output));
             assert (marginalProduction >= 0 && targetWorkers >= currentWorkers) ^  (marginalProduction <= 0 && targetWorkers < currentWorkers) :
                     "this method was thought for monotonic production functions.";
-            float oldPrice = owner.getSalesDepartment(output).predictSalePriceWhenNotChangingPoduction();
-            oldPrice = oldPrice < 0 ? policy.replaceUnknownPrediction(owner.getSalesDepartment(output).getMarket(), p.getRandom()) : oldPrice;
+            final SalesDepartment department = owner.getSalesDepartment(output);
+            float oldPrice = department.predictSalePriceWhenNotChangingPoduction();
+            oldPrice = oldPrice < 0 ? policy.replaceUnknownPrediction(department.getMarket(), p.getRandom()) : oldPrice;
 
             //are we increasing or decreasing production?
             float pricePerUnit =  targetWorkers>currentWorkers ?
-                    owner.getSalesDepartment(output).predictSalePriceAfterIncreasingProduction(
+                    department.predictSalePriceAfterIncreasingProduction(
                             p.hypotheticalUnitOutputCost(output, Math.round(totalFutureCosts), targetWorkers, Math.round(totalFutureWageCosts)
-                            ), Math.round(marginalProduction/7f)) :
-                    owner.getSalesDepartment(output).predictSalePriceAfterDecreasingProduction(
-                            p.hypotheticalUnitOutputCost(output, Math.round(totalFutureCosts), targetWorkers, Math.round(totalFutureWageCosts)),Math.round(-marginalProduction/7f) );
+                            ), Math.round(marginalProduction / 7f)) :
+                    department.predictSalePriceAfterDecreasingProduction(
+                            p.hypotheticalUnitOutputCost(output, Math.round(totalFutureCosts), targetWorkers, Math.round(totalFutureWageCosts)), Math.round(-marginalProduction / 7f));
 
 
-            pricePerUnit = pricePerUnit < 0 ? policy.replaceUnknownPrediction(owner.getSalesDepartment(output).getMarket(), p.getRandom()) : pricePerUnit;
+            pricePerUnit = pricePerUnit < 0 ? policy.replaceUnknownPrediction(department.getMarket(), p.getRandom()) : pricePerUnit;
 
-            logger.trace("predicted price: {}, old price: {}",pricePerUnit,oldPrice);
+            logger.trace("predicted price with production change: {}, predicted  price without: {}, actual price: {}",new Object[]{pricePerUnit,oldPrice,department.getLastClosingPrice()});
 
 
 

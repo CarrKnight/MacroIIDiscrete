@@ -36,7 +36,7 @@ public class AveragePurchasePriceCounterTest {
     @Test
     public void countingTest(){
 
-        AveragePurchasePriceCounter counter = new AveragePurchasePriceCounter();
+        AveragePurchasePriceCounter counter = new AveragePurchasePriceCounter(mock(PurchasesDepartment.class));
 
         Assert.assertEquals(-1,counter.getTodayAverageClosingPrice(),.0001f);
 
@@ -58,7 +58,7 @@ public class AveragePurchasePriceCounterTest {
     @Test
     public void rescheduleTest(){
 
-        AveragePurchasePriceCounter counter = new AveragePurchasePriceCounter();
+        AveragePurchasePriceCounter counter = new AveragePurchasePriceCounter(mock(PurchasesDepartment.class));
 
         MacroII mocked = mock(MacroII.class);
         //start should start it

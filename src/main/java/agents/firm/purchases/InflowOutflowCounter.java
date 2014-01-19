@@ -57,6 +57,18 @@ public class InflowOutflowCounter implements Deactivatable, InventoryListener, S
     private final GoodType type;
 
 
+
+    /**
+     * total inflow since dawn
+     */
+    private int yesterdayInflow=0;
+
+    /**
+     * total outflow since dawn
+     */
+    private int yesterdayOutflow=0;
+
+
     /**
      * total inflow since dawn
      */
@@ -83,8 +95,10 @@ public class InflowOutflowCounter implements Deactivatable, InventoryListener, S
         if(isActive)
         {
 
+            yesterdayInflow = todayInflow;
             todayInflow = 0;
 
+            yesterdayOutflow = todayOutflow;
             todayOutflow = 0;
 
             todayFailuresToConsume = 0;
@@ -221,5 +235,11 @@ public class InflowOutflowCounter implements Deactivatable, InventoryListener, S
     }
 
 
+    public int getYesterdayInflow() {
+        return yesterdayInflow;
+    }
 
+    public int getYesterdayOutflow() {
+        return yesterdayOutflow;
+    }
 }

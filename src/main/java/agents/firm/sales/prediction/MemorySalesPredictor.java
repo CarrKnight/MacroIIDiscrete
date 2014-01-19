@@ -37,10 +37,10 @@ public class MemorySalesPredictor implements SalesPredictor {
      */
     @Override
     public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
-        return memorylookup(dept);
+        return memoryLookup(dept);
     }
 
-    private long memorylookup(SalesDepartment dept) {
+    private long memoryLookup(SalesDepartment dept) {
         if(Double.isNaN(dept.getAveragedLastPrice()) || dept.getAveragedLastPrice() < 0)
         {
             return -1;
@@ -63,7 +63,7 @@ public class MemorySalesPredictor implements SalesPredictor {
      */
     @Override
     public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
-        return memorylookup(dept);
+        return memoryLookup(dept);
 
     }
 
@@ -76,7 +76,7 @@ public class MemorySalesPredictor implements SalesPredictor {
      */
     @Override
     public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
-        return memorylookup(dept);
+        return memoryLookup(dept);
 
 
     }

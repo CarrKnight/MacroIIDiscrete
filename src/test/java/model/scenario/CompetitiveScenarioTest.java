@@ -277,9 +277,9 @@ public class CompetitiveScenarioTest {
 
 
                 assertEquals(prices.getMean(), 58, 5);
-                assertTrue(prices.getStandardDeviation() < 5);
+                assertTrue(String.valueOf(prices.getStandardDeviation()),prices.getStandardDeviation() < 5);
                 assertEquals(quantities.getMean(), 44,5);
-                assertTrue(quantities.getStandardDeviation() < 5);
+                assertTrue(String.valueOf(prices.getStandardDeviation()),quantities.getStandardDeviation() < 5);
 
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=1;
             }
