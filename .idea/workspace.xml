@@ -16,235 +16,7 @@
     <bookmark url="file://$PROJECT_DIR$/src/test/java/model/scenario/TripolistWithInputScenarioTest.java" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b2f2be4b-01ab-4023-8729-b370a266331e" name="Default" comment="added logging">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/commons-math/commons-math3-3.2-javadoc.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/commons-math/commons-math3-3.2-sources.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/commons-math/commons-math3-3.2.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/lib/google-collect-1.0.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/resources/inherit.gif" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/jama/jama-1.0.3-javadoc.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/jama/jama-1.0.3-sources.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/jama/jama-1.0.3.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/jung/jcommon-1.0.16-javadoc.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/jung/jcommon-1.0.16-sources.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/jung/jcommon-1.0.16.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/lib/jcommon-1.0.16.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/jung/jfreechart-1.0.13.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/lib/jfreechart-1.0.13.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/logging/logback-classic-1.0.13-javadoc.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/logging/logback-classic-1.0.13-sources.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/logging/logback-classic-1.0.13.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/logging/logback-core-1.0.13.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/logging/slf4j-api-1.7.5.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/lib/uncommons-maths-1.2.1.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/watchmaker-examples-0.7.1.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/src/watchmaker-framework-0.7.1-src.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/watchmaker-framework-0.7.1.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/src/watchmaker-swing-0.7.1-src.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/watchmaker-swing-0.7.1.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/swing/AbortControl.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/factories/AbstractCandidateFactory.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/AbstractCrossover.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/AbstractEvolutionEngine.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/AbstractExampleApplet.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/monalisa/AbstractVertexMutation.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/monalisa/AddPolygonMutation.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/monalisa/AddVertexMutation.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/Addition.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/monalisa/AdjustVertexMutation.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/BinaryNode.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/biomorphs/Biomorph.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/biomorphs/BiomorphApplet.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/biomorphs/BiomorphFactory.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/BitStringCrossover.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/bits/BitStringEvaluator.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/factories/BitStringFactory.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/BitStringMutation.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/bits/BitsExample.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/travellingsalesman/BruteForceTravellingSalesman.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/ByteArrayCrossover.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/CHANGELOG.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/CachingFitnessEvaluator.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/CandidateFactory.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/CharArrayCrossover.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/monalisa/ColouredPolygon.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/model/experiments/CompetitiveScenarioVarianceTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/swing/ConfigurableLineBorder.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/interactive/Console.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/Constant.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/biomorphs/DawkinsBiomorphMutation.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/travellingsalesman/DistanceLookup.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/DoubleArrayCrossover.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/termination/ElapsedTime.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/travellingsalesman/EuropeanDistanceLookup.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/EvaluatedCandidate.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/swing/EvolutionControl.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/EvolutionEngine.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/EvolutionLogger.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/swing/evolutionmonitor/EvolutionMonitor.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/EvolutionObserver.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/travellingsalesman/EvolutionPanel.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/EvolutionPipeline.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/EvolutionStrategyEngine.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/EvolutionUtils.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/EvolutionaryOperator.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/travellingsalesman/EvolutionaryTravellingSalesman.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/travellingsalesman/ExecutionPanel.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/FitnessEvaluationWorker.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/FitnessEvaluator.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/termination/GenerationCount.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/GenerationalEvolutionEngine.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/GeneticProgrammingExample.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/IdentityOperator.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/IfThenElse.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/IntArrayCrossover.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/interactive/InteractiveSelection.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/IsGreater.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/islands/IslandEvolution.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/islands/IslandEvolutionObserver.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/travellingsalesman/ItineraryPanel.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/LICENCE.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/Launcher.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/LeafNode.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/ListCrossover.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/ListInversion.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/ListOperator.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/ListOrderCrossover.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/ListOrderMutation.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/factories/ListPermutationFactory.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/islands/Migration.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/monalisa/MonaLisaApplet.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/monalisa/MovePolygonMutation.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/Multiplication.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/NOTICE.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/Node.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/swing/NumericParameterControl.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/ObjectArrayCrossover.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/factories/ObjectArrayPermutationFactory.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/swing/ObjectSwingRenderer.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/Parameter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/monalisa/PolygonColourMutation.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/monalisa/PolygonImageEvaluator.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/monalisa/PolygonImageFactory.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/monalisa/PolygonImageRenderer.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/monalisa/PolygonImageSwingRenderer.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/PopulationData.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/monalisa/ProbabilitiesPanel.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/swing/ProbabilityParameterControl.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/travellingsalesman/ProgressListener.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/README.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/biomorphs/RandomBiomorphMutation.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/selection/RankSelection.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/monalisa/RemovePolygonMutation.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/monalisa/RemoveVertexMutation.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/interactive/Renderer.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/interactive/RendererAdapter.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/Replacement.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/islands/RingMigration.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/selection/RouletteWheelSelection.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/travellingsalesman/RouteEvaluator.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/SelectionStrategy.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/swing/SelectionStrategyControl.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/selection/SigmaScaling.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/Simplification.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/SplitEvolution.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/swing/SpringUtilities.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/termination/Stagnation.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/swing/evolutionmonitor/StatusBar.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/SteadyStateEvolutionEngine.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/selection/StochasticUniversalSampling.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/travellingsalesman/StrategyPanel.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/StringCrossover.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/strings/StringEvaluator.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/factories/StringFactory.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/StringMutation.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/strings/StringsExample.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/Subtraction.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/sudoku/Sudoku.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/sudoku/SudokuApplet.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/sudoku/SudokuCellRenderer.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/sudoku/SudokuEvaluator.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/sudoku/SudokuFactory.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/sudoku/SudokuRowMutation.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/sudoku/SudokuTableModel.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/sudoku/SudokuVerticalCrossover.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/sudoku/SudokuView.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/swing/SwingBackgroundTask.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/biomorphs/SwingBiomorphRenderer.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/swing/SwingConsole.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/SwingGPTreeRenderer.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/termination/TargetFitness.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/TerminationCondition.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/selection/TournamentSelection.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/travellingsalesman/TravellingSalesmanApplet.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/travellingsalesman/TravellingSalesmanStrategy.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/TreeCrossover.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/TreeEvaluator.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/TreeFactory.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/TreeMutation.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/selection/TruncationSelection.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/termination/UserAbort.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/allclasses-frame.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/allclasses-noframe.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/ch_qos_logback_logback_classic_1_0_13.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/constant-values.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/deprecated-list.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/help-doc.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/index-all.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/lib/jfreechart-LICENCE.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/logback.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/overview-frame.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/overview-summary.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/overview-tree.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/swing/package-frame.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/package-frame.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/factories/package-frame.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/interactive/package-frame.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/islands/package-frame.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/package-frame.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/selection/package-frame.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/termination/package-frame.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/swing/package-frame.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/swing/evolutionmonitor/package-frame.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/biomorphs/package-info.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/bits/package-info.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/geneticprogramming/package-info.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/monalisa/package-info.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/strings/package-info.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/sudoku/package-info.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/examples/src/org/uncommons/watchmaker/examples/travellingsalesman/package-info.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/package-list" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/swing/package-summary.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/package-summary.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/factories/package-summary.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/interactive/package-summary.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/islands/package-summary.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/package-summary.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/selection/package-summary.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/termination/package-summary.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/swing/package-summary.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/swing/evolutionmonitor/package-summary.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/swing/package-tree.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/package-tree.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/factories/package-tree.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/interactive/package-tree.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/islands/package-tree.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/operators/package-tree.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/selection/package-tree.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/framework/termination/package-tree.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/swing/package-tree.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/org/uncommons/watchmaker/swing/evolutionmonitor/package-tree.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/serialized-form.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/watchmaker-framework-0.7.1/docs/api/stylesheet.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/model/scenario/CompetitiveScenarioTest.java" afterPath="$PROJECT_DIR$/src/test/java/model/scenario/CompetitiveScenarioTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MacroIIDiscrete.iml" afterPath="$PROJECT_DIR$/MacroIIDiscrete.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizer.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStatics.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStatics.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStaticsTest.java" afterPath="$PROJECT_DIR$/src/test/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/MarginalMaximizerStaticsTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/RobustMarginalMaximizer.java" afterPath="$PROJECT_DIR$/src/main/java/agents/firm/production/control/maximizer/algorithms/marginalMaximizers/RobustMarginalMaximizer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/model/scenario/SimpleHiringScenarioTest.java" afterPath="$PROJECT_DIR$/src/test/java/model/scenario/SimpleHiringScenarioTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/model/scenario/TripolistScenario.java" afterPath="$PROJECT_DIR$/src/main/java/model/scenario/TripolistScenario.java" />
+    <list default="true" id="b2f2be4b-01ab-4023-8729-b370a266331e" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="MacroIIDiscrete.iws" />
@@ -2646,7 +2418,11 @@
       <created>1389965284972</created>
       <updated>1389965284972</updated>
     </task>
-    <option name="localTasksCounter" value="123" />
+    <task id="LOCAL-00123" summary="added logging, commiting a few jars i forgot to commit.">
+      <created>1390061186793</created>
+      <updated>1390061186793</updated>
+    </task>
+    <option name="localTasksCounter" value="124" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -2746,7 +2522,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="Added a few more variables for RCS, still need to run a GA on it. It seems to work most of the time (in simple environments) but when it's wrong it is wrong badly" />
     <MESSAGE value="Worked on open-loop recursive. Need tofind the right weights to use to get it right" />
     <MESSAGE value="Most promising approach so far, found a nasty weird bug in SimpleFlowPID of all places. Committing before breaking" />
     <MESSAGE value="A decent, but not perfect, return to non-open loop recursive predictor" />
@@ -2771,7 +2546,8 @@
     <MESSAGE value="Created a matcher that clears the market at the end of the day. Seems to have taken care of the tripolist with input issue. At least this was rather easy.&#10;I need to build a few more competitive scenario tests just to be sure, but after that it's time to deal with how cheater pricing learns" />
     <MESSAGE value="Learning on supply chain stinks, but before fixing that i have to deal with the oscillations in competitive scenarios. They all pass, but only because I focus on the last 1000 days' average. What I need to do is to write some standard deviation asserts and see if they pass.&#10;For now I realized that I can &quot;plug&quot; the problem by having the average range price (used for prediction) be extremely wide or by making maximization really slow. Still, both of them seem like plugs of something I need to study in greater detail" />
     <MESSAGE value="Created the initial seed for standard deviation tests. Also for some reason competitive scenario has problem learning, so i added a &quot;already learned&quot; scenario that works well but it's very slow" />
-    <option name="LAST_COMMIT_MESSAGE" value="Created the initial seed for standard deviation tests. Also for some reason competitive scenario has problem learning, so i added a &quot;already learned&quot; scenario that works well but it's very slow" />
+    <MESSAGE value="added logging, commiting a few jars i forgot to commit." />
+    <option name="LAST_COMMIT_MESSAGE" value="added logging, commiting a few jars i forgot to commit." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
