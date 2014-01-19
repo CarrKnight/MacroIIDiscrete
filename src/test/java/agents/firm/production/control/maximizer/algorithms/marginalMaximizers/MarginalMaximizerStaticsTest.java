@@ -12,6 +12,7 @@ import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.sales.SalesDepartment;
+import financial.market.OrderBookMarket;
 import goods.GoodType;
 import model.utilities.DelayException;
 import org.junit.Assert;
@@ -214,6 +215,8 @@ public class MarginalMaximizerStaticsTest
         HumanResources hr = mock(HumanResources.class);
         when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
         when(hr.isFixedPayStructure()).thenReturn(true);
+        Mockito.when(hr.getMarket()).thenReturn(Mockito.mock(OrderBookMarket.class));
+
         PlantControl control = mock(PlantControl.class);
 
         when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5l);
@@ -235,6 +238,8 @@ public class MarginalMaximizerStaticsTest
         HumanResources hr = mock(HumanResources.class);
         when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
         when(hr.isFixedPayStructure()).thenReturn(true);
+        Mockito.when(hr.getMarket()).thenReturn(Mockito.mock(OrderBookMarket.class));
+
         PlantControl control = mock(PlantControl.class);
         when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5l);
 
@@ -255,6 +260,8 @@ public class MarginalMaximizerStaticsTest
         HumanResources hr = mock(HumanResources.class);
         when(hr.isFixedPayStructure()).thenReturn(true);
         when(hr.predictPurchasePriceWhenDecreasingProduction()).thenReturn(5l);
+        Mockito.when(hr.getMarket()).thenReturn(Mockito.mock(OrderBookMarket.class));
+
         PlantControl control = mock(PlantControl.class);
         when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(10l);
 
@@ -275,6 +282,8 @@ public class MarginalMaximizerStaticsTest
         HumanResources hr = mock(HumanResources.class);
         when(hr.isFixedPayStructure()).thenReturn(true);
         when(hr.predictPurchasePriceWhenDecreasingProduction()).thenReturn(5l);
+        Mockito.when(hr.getMarket()).thenReturn(Mockito.mock(OrderBookMarket.class));
+
         PlantControl control = mock(PlantControl.class);
         when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(10l);
 

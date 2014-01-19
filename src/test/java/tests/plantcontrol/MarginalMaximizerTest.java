@@ -9,6 +9,7 @@ import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.Ma
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizerStatics;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
+import financial.market.OrderBookMarket;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.DelayException;
@@ -93,6 +94,7 @@ public class MarginalMaximizerTest {
         //say that wages are always 50, sell prices are always 100
         when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(50l); when(hr.predictPurchasePriceWhenDecreasingProduction()).thenReturn(50l);
         when(hr.getWagesPaid()).thenReturn(10*50l);
+        when(hr.getMarket()).thenReturn(mock(OrderBookMarket.class));
         when(sales.predictSalePriceAfterIncreasingProduction(anyLong(), anyInt())).thenReturn(100l);
         when(sales.predictSalePriceWhenNotChangingPoduction()).thenReturn(100l);
         when(sales.predictSalePriceAfterDecreasingProduction(anyLong(), anyInt())).thenReturn(100l);
