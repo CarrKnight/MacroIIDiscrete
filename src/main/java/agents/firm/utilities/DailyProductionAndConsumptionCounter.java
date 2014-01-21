@@ -13,9 +13,9 @@ import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import sun.java2d.xr.MutableInteger;
 
 import java.util.EnumMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <h4>Description</h4>
@@ -49,17 +49,17 @@ import java.util.EnumMap;
  */
 public class DailyProductionAndConsumptionCounter implements Steppable, Deactivatable
 {
-    private EnumMap<GoodType,MutableInteger> consumedToday;
+    private EnumMap<GoodType,AtomicInteger> consumedToday;
 
-    private EnumMap<GoodType,MutableInteger> boughtOrProducedToday;
+    private EnumMap<GoodType,AtomicInteger> boughtOrProducedToday;
 
-    private EnumMap<GoodType,MutableInteger> producedToday;
+    private EnumMap<GoodType,AtomicInteger> producedToday;
 
-    private EnumMap<GoodType,MutableInteger> consumedYesterday;
+    private EnumMap<GoodType,AtomicInteger> consumedYesterday;
 
-    private EnumMap<GoodType,MutableInteger> boughtOrProducedYesterday;
+    private EnumMap<GoodType,AtomicInteger> boughtOrProducedYesterday;
 
-    private EnumMap<GoodType,MutableInteger> producedYesterday;
+    private EnumMap<GoodType,AtomicInteger> producedYesterday;
 
     private boolean active = true;
     private boolean startWasCalled = false;
@@ -235,14 +235,14 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     /**
      * a simple lookup that returns 0 every time the map doesn't actually map the type you are looking for
      */
-    private int lookupMap(EnumMap<GoodType,MutableInteger> map, GoodType type)
+    private int lookupMap(EnumMap<GoodType,AtomicInteger> map, GoodType type)
     {
 
-        MutableInteger toReturn = map.get(type);
+        AtomicInteger toReturn = map.get(type);
         if(toReturn == null)
             return 0;
         else
-            return toReturn.getValue();
+            return toReturn.get();
 
 
     }
@@ -250,7 +250,7 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     /**
      * a simple way to increase by one an entry in the map
      */
-    private void increaseByOne(EnumMap<GoodType,MutableInteger> map, GoodType type)
+    private void increaseByOne(EnumMap<GoodType,AtomicInteger> map, GoodType type)
     {
 
         increaseByN(map,type,1);
@@ -259,18 +259,18 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     /**
      * a simple way to increase by n an entry in the map
      */
-    private void increaseByN(EnumMap<GoodType,MutableInteger> map, GoodType type, int n)
+    private void increaseByN(EnumMap<GoodType,AtomicInteger> map, GoodType type, int n)
     {
 
         Preconditions.checkArgument(n >0);
-        MutableInteger currentCount = map.get(type);
+        AtomicInteger currentCount = map.get(type);
         if(currentCount == null)
-            map.put(type,new MutableInteger(n));
+            map.put(type,new AtomicInteger(n));
         else
         {
-            assert currentCount.getValue() > 0;
-            currentCount.setValue(currentCount.getValue()+n);
-            assert currentCount.getValue() == map.get(type).getValue();
+            assert currentCount.get() > 0;
+            currentCount.addAndGet(n);
+            assert currentCount.get() == map.get(type).get();
         }
 
     }
