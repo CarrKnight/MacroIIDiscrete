@@ -15,7 +15,6 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.pid.CascadePIDController;
 import model.utilities.pid.Controller;
 import model.utilities.pid.ControllerFactory;
 import model.utilities.pid.PIDController;
@@ -77,9 +76,7 @@ public class PurchasesSimplePID extends SimpleInventoryControl implements BidPri
     {
         super(purchasesDepartment);
         controller = ControllerFactory.buildController(controllerType, macroII);
-        //if you have a pid controller, play a bit with it
-        if(controllerType.equals(CascadePIDController.class))
-            ((CascadePIDController)controller).setupAsInventoryCascade(macroII);
+
     }
 
 

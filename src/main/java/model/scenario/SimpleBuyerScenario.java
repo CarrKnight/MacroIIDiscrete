@@ -21,7 +21,7 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.dummies.DailyGoodTree;
-import model.utilities.pid.CascadePIDController;
+import model.utilities.pid.CascadePToPIDController;
 import model.utilities.pid.Controller;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -83,7 +83,7 @@ public class SimpleBuyerScenario extends Scenario {
     public int consumedThisWeek = 0;
 
     // private Class<? extends Controller> controllerType = CascadePIDController.class;
-    private Class<? extends Controller> controllerType = CascadePIDController.class;
+    private Class<? extends Controller> controllerType = CascadePToPIDController.class;
 
 
     private int supplyIntercept = 90;

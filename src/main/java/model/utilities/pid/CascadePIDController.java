@@ -9,7 +9,6 @@ package model.utilities.pid;
 import ec.util.MersenneTwisterFast;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.pid.decorator.ExponentialFilterTargetDecorator;
 import sim.engine.Steppable;
 
 import javax.annotation.Nullable;
@@ -44,7 +43,7 @@ public class CascadePIDController implements Controller{
     private PIDController pid2Root;
 
 
-      /**
+    /**
      * The slave controller
      */
     private Controller pid2;
@@ -55,7 +54,6 @@ public class CascadePIDController implements Controller{
     /**
      * when this is set to true, the second PID input is the second target - the original second input
      */
-    private boolean inventoryCascadeMode = false;
 
     public CascadePIDController(float proportional1, float integrative1, float derivative1,
                                 float proportional2, float integrative2, float derivative2,
@@ -91,17 +89,8 @@ public class CascadePIDController implements Controller{
     @Override
     public void adjust(ControllerInput input, boolean isActive, @Nullable MacroII simState, @Nullable Steppable user,
                        ActionOrder phase){
-        if(inventoryCascadeMode)
-        {
-            float targetInventory = input.getTarget(0);
-            float currentInventory = input.getInput(0);
 
-
-
-            this.adjust(targetInventory,currentInventory,input.getTarget(1)-input.getInput(1),isActive,simState,user, phase);
-        }
-        else
-            this.adjust(input.getTarget(0),input.getInput(0),input.getInput(1),isActive,simState,user, phase);
+        this.adjust(input.getTarget(0),input.getInput(0),input.getInput(1),isActive,simState,user, phase);
 
     }
 
@@ -121,15 +110,19 @@ public class CascadePIDController implements Controller{
                        @Nullable MacroII state, @Nullable Steppable user,  ActionOrder phase)
     {
         //master
-        pid1.adjust(firstTarget,Math.min(firstInput,firstTarget*2),isActive,state,user,phase); //to avoid exxaggerating in disinvesting, the recorded inventory is never more than twice the target
+        pid1.adjust(firstTarget,firstInput,isActive,state,user,phase); //to avoid exxaggerating in disinvesting, the recorded inventory is never more than twice the target
         //slave
-        secondTarget = pid1.getCurrentMV();
-       //
 
+        final float masterOutput = pid1.getCurrentMV();
+        secondTarget = masterOutput;
+        // secondTarget = masterOutput > 1 ? (float)Math.log(masterOutput) : masterOutput < -1 ? -(float)Math.log(-masterOutput) : 0;
+        //
+
+        assert !Float.isNaN(secondTarget) && !Float.isInfinite(secondTarget);
         float oldMV = pid2.getCurrentMV();
         ControllerInput secondPIDInput = ControllerInput.simplePIDTarget(secondTarget,secondInput);
         pid2.adjust(secondPIDInput, isActive, null, null, null);
-      //  System.out.println("targ additional inflow " + secondTarget + ", price: " + pid2.getCurrentMV() + ", old price: " + oldMV);
+        //  System.out.println("targ additional inflow " + secondTarget + ", price: " + pid2.getCurrentMV() + ", old price: " + oldMV);
 
     }
 
@@ -272,33 +265,6 @@ public class CascadePIDController implements Controller{
     }
 
 
-    /**
-     * a utility method to turn the PID controller so that the master is P and the slave is PID. Also sets a flag so that when it adjusts,
-     * the second input is the difference between second target and the original second input. This method exists because I had to keep doing this many times
-     * I used the cascade that way. So I figured I would just put it here and be done with it!
-     * @param model needed to generate new gains
-     */
-    public void setupAsInventoryCascade(MacroII model)
-    {
-
-        //careful how you set up your controller!
-        //somewhat counterintuitively we let the Master PID be a P only. Because our slave will have as input---> (Inflow-Outflow)
-        //which should nicely be 0 at inventory.
-        setGainsMasterPID(1f/30f,
-                0,
-                0);
-
-        setGainsSlavePID(model.drawProportionalGain()/5,
-                model.drawIntegrativeGain()/5,
-                model.drawDerivativeGain());
-
-        setMasterCanGoNegative(true); setMasterWindupStop(false);
-        setSlaveCanGoNegative(false); setSlaveWindupStop(true);
-
-       pid2 = new ExponentialFilterTargetDecorator(pid2,.8f);
-
-        inventoryCascadeMode=true;
-    }
 
     public float getMasterMV()
     {
@@ -314,15 +280,13 @@ public class CascadePIDController implements Controller{
         return pid2Root.getNewError();
     }
 
+
+
+
+
+
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("CascadePIDController{");
-        sb.append("secondTarget=").append(secondTarget);
-        sb.append("\n pid1=").append(pid1);
-        sb.append("\n pid2Root=").append(pid2Root);
-        sb.append("\n pid2=").append(pid2);
-        sb.append("\n inventoryCascadeMode=").append(inventoryCascadeMode);
-        sb.append('}');
-        return sb.toString();
+        return "CascadePIDController{" + "secondTarget=" + secondTarget + "\n pid1=" + pid1 + "\n pid2Root=" + pid2Root + "\n pid2=" + pid2 + '}';
     }
 }

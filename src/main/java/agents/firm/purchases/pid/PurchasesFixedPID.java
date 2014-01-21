@@ -97,9 +97,6 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
         super(purchasesDepartment,specificTarget);
         rootController = ControllerFactory.buildController(controllerType,model);
         controller = rootController;
-        //if you have a pid controller, play a bit with it
-        if(controllerType.equals(CascadePIDController.class))
-            ((CascadePIDController)controller).setupAsInventoryCascade(model);
 
     }
 

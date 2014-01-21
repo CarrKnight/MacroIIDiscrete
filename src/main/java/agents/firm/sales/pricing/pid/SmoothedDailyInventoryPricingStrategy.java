@@ -13,7 +13,7 @@ import goods.Good;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.filters.ExponentialFilter;
-import model.utilities.pid.CascadePIDController;
+import model.utilities.pid.CascadePToPIDController;
 import model.utilities.pid.ControllerFactory;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -60,7 +60,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
     /**
      * the PID controller used by the delegate fixedInventory sales control. Useful to set gains and speed.
      */
-    private final CascadePIDController controllerUsedByDelegate;
+    private final CascadePToPIDController controllerUsedByDelegate;
 
     private int howManyTimesTheDailyInflowShouldTheInventoryBe = 10;
 
@@ -74,7 +74,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         this.salesDepartment = salesDepartment;
 
         //I am creating the PID controller here so that I can set the gains; I am sure it's a PID controller so I am sure the setGains() method exists
-        controllerUsedByDelegate = ControllerFactory.buildController(CascadePIDController.class,
+        controllerUsedByDelegate = ControllerFactory.buildController(CascadePToPIDController.class,
                 salesDepartment.getFirm().getModel());
 
         delegate = new SalesControlWithFixedInventoryAndPID(salesDepartment,0,controllerUsedByDelegate);
@@ -94,9 +94,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
 
 
         //parameters found through genetic algorithm
-        setGainsMasterPID(0.035f,
-                0,
-                0);
+        setMasterProportionalGain(0.035f);
 
       /*  float proportionalGain = 0.04954876f + ((float) salesDepartment.getRandom().nextGaussian()) / 100f;
         float integralGain = 0.45825003f + ((float) salesDepartment.getRandom().nextGaussian()) / 100f;
@@ -122,7 +120,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
     {
         this(salesDepartment);
         //scale the master proportional too
-        float originalScale = controllerUsedByDelegate.getMasterProportionalGain()/controllerUsedByDelegate.getSlaveProportionalGain();
+        float originalScale = controllerUsedByDelegate.getMasterProportionalGain()/controllerUsedByDelegate.getProportionalGain();
 
 
 
@@ -132,7 +130,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         assert controllerUsedByDelegate.getMasterIntegralGain() ==0;
         assert controllerUsedByDelegate.getMasterDerivativeGain() == 0;
 
-        controllerUsedByDelegate.setGainsMasterPID(proportionalGain * originalScale, 0,0 );
+        controllerUsedByDelegate.setProportionalGain(proportionalGain * originalScale);
 
 
 
@@ -270,8 +268,8 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         controllerUsedByDelegate.setGainsSlavePID(proportionalGain, integralGain, derivativeGain);
     }
 
-    public void setGainsMasterPID(float proportionalGain, float integralGain, float derivativeGain) {
-        controllerUsedByDelegate.setGainsMasterPID(proportionalGain, integralGain, derivativeGain);
+    public void setMasterProportionalGain(float proportionalGain) {
+        controllerUsedByDelegate.setMasterProportionalGain(proportionalGain);
     }
 
     @Override
@@ -314,27 +312,5 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
         return controllerUsedByDelegate.getMasterDerivativeGain();
     }
 
-    /**
-     * Get the proportional gain of the second PID
-     * @return the proportional gain of the second PID
-     */
-    public float getSlaveProportionalGain() {
-        return controllerUsedByDelegate.getSlaveProportionalGain();
-    }
 
-    /**
-     * Get the integral gain of the second PID
-     * @return the integral gain of the second PID
-     */
-    public float getSlaveIntegralGain() {
-        return controllerUsedByDelegate.getSlaveIntegralGain();
-    }
-
-    /**
-     * Get the derivative gain of the second PID
-     * @return the derivative gain of the second PID
-     */
-    public float getSlaveDerivativeGain() {
-        return controllerUsedByDelegate.getSlaveDerivativeGain();
-    }
 }

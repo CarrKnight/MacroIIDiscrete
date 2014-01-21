@@ -60,6 +60,10 @@ public class ControllerFactory
                     model.drawProportionalGain(), model.drawIntegrativeGain(), model.drawDerivativeGain()
                     ,model.getRandom());
         }
+        else if(controllerType.equals(CascadePToPIDController.class))
+        {
+            return (C) new CascadePToPIDController(model.getRandom(),model);
+        }
         else
             throw new IllegalArgumentException("The Controller factory doesn't recognize: " + controllerType);
 

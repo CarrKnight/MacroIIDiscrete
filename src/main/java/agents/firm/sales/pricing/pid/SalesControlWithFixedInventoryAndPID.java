@@ -51,7 +51,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     /**
      * A controller to change prices as inventory changes. By default it's a cascade control
      */
-    private final CascadePIDController controller;
+    private final CascadePToPIDController controller;
 
 
     /**
@@ -71,7 +71,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
      */
     public SalesControlWithFixedInventoryAndPID(SalesDepartment department, int targetInventory)
     {
-        this(department,targetInventory, CascadePIDController.class);
+        this(department,targetInventory, CascadePToPIDController.class);
         //by default, set it proportional
 
 
@@ -84,7 +84,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
      * @param controllerType the type of controller to use
      */
     public SalesControlWithFixedInventoryAndPID(SalesDepartment department,int targetInventory,
-                                                Class<? extends CascadePIDController> controllerType )
+                                                Class<? extends CascadePToPIDController> controllerType )
     {
         //use default constructor
         this(department,targetInventory,ControllerFactory.
@@ -99,14 +99,11 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
      * @param targetInventory the target inventory of this control
      * @param controller the type of controller to use
      */
-    public SalesControlWithFixedInventoryAndPID(SalesDepartment department, int targetInventory,CascadePIDController controller) {
+    public SalesControlWithFixedInventoryAndPID(SalesDepartment department, int targetInventory,CascadePToPIDController controller) {
         this.controller = controller;
         this.department = department;
         this.targetInventory = targetInventory;
         department.getFirm().getModel().scheduleSoon(ActionOrder.ADJUST_PRICES,this);
-
-        //careful how you set up your controller!
-        controller.setupAsInventoryCascade(department.getModel());
 
         roundedPrice = Math.round(controller.getCurrentMV());
 
@@ -122,7 +119,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     public SalesControlWithFixedInventoryAndPID(SalesDepartment department, int targetInventory,
                                                 float proportionalGain,float integrativeGain, float derivativeGain) {
         //use default constructor
-        this(department,targetInventory,ControllerFactory.buildController(CascadePIDController.class,department.getFirm().getModel()));
+        this(department,targetInventory,ControllerFactory.buildController(CascadePToPIDController.class,department.getFirm().getModel()));
         controller.setGainsSlavePID(proportionalGain,integrativeGain,derivativeGain);
 
 
@@ -316,7 +313,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
 
     public float getProportionalGain() {
         
-        return controller.getSlaveProportionalGain();
+        return controller.getProportionalGain();
 
     }
 
@@ -333,11 +330,11 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
 
     public float getIntegralGain() {
         
-        return controller.getSlaveProportionalGain();
+        return controller.getIntegralGain();
 
     }
 
     public float getDerivativeGain() {
-        return controller.getSlaveDerivativeGain();
+        return controller.getDerivativeGain();
     }
 }

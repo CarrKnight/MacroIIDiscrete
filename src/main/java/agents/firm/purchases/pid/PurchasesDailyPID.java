@@ -42,7 +42,7 @@ public class PurchasesDailyPID extends DailyInventoryControl implements BidPrici
     /**
      * The controller used to choose prices
      */
-    private CascadePIDController controller;
+    private CascadePToPIDController controller;
 
     /**
      * This is the standard constructor needed to generate at random this strategy.
@@ -50,14 +50,11 @@ public class PurchasesDailyPID extends DailyInventoryControl implements BidPrici
      */
     public PurchasesDailyPID(@Nonnull PurchasesDepartment purchasesDepartment) {
         super(purchasesDepartment);
-        controller = ControllerFactory.buildController(CascadePIDController.class,purchasesDepartment.getModel());
+        controller = ControllerFactory.buildController(CascadePToPIDController.class,purchasesDepartment.getModel());
         //if you have a pid controller, play a bit with it
-        controller.setupAsInventoryCascade(purchasesDepartment.getModel());
         //parameters found through genetic algorithm
 
-        controller.setGainsMasterPID(0.035f,
-                0,
-                0);
+        controller.setMasterProportionalGain(0.035f);
 
         float proportionalGain = 0.04954876f + ((float) purchasesDepartment.getRandom().nextGaussian()) / 100f;
         float integralGain = 0.45825003f + ((float) purchasesDepartment.getRandom().nextGaussian()) / 100f;
@@ -74,9 +71,8 @@ public class PurchasesDailyPID extends DailyInventoryControl implements BidPrici
     public PurchasesDailyPID(@Nonnull PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
                              float derivativeGain) {
         super(purchasesDepartment);
-        controller = ControllerFactory.buildController(CascadePIDController.class,purchasesDepartment.getModel());
+        controller = ControllerFactory.buildController(CascadePToPIDController.class,purchasesDepartment.getModel());
         //if you have a pid controller, play a bit with it
-        controller.setupAsInventoryCascade(purchasesDepartment.getModel());
         controller.setGainsSlavePID(proportionalGain, integralGain, derivativeGain);
 
     }

@@ -19,7 +19,7 @@ import financial.utilities.ShopSetPricePolicy;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.dummies.DailyGoodTree;
-import model.utilities.pid.CascadePIDController;
+import model.utilities.pid.CascadePToPIDController;
 
 /**
  * <h4>Description</h4>
@@ -85,7 +85,7 @@ public class TripolistWithInputScenario extends TripolistScenario {
             department.setOpponentSearch(new SimpleBuyerSearch(market, f));
             department.setSupplierSearch(new SimpleSellerSearch(market, f));
 
-            PurchasesFixedPID control = new PurchasesFixedPID(department,50,CascadePIDController.class,model);
+            PurchasesFixedPID control = new PurchasesFixedPID(department,50,CascadePToPIDController.class,model);
 
             department.setControl(control);
             department.setPricingStrategy(control);

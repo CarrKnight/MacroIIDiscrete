@@ -139,7 +139,7 @@ public class CompetitivePIDGeneticAlgorithm {
                     for(Firm f : scenario1.getCompetitors()){
                         SalesDepartment department = f.getSalesDepartment(GoodType.GENERIC);
                         SmoothedDailyInventoryPricingStrategy strategy =new SmoothedDailyInventoryPricingStrategy(department);
-                        strategy.setGainsMasterPID((float) (averageMasterP + macroII.random.nextGaussian()/100f),0,0);
+                        strategy.setMasterProportionalGain((float) (averageMasterP + macroII.random.nextGaussian()/100f));
                         strategy.setGainsSlavePID(averageSlaveP + ((float)macroII.random.nextGaussian()) / 100f
                                 , averageSlaveI + ((float)macroII.random.nextGaussian()/100f),
                                 averageSlaveD + ((float)macroII.random.nextGaussian()/10000f));

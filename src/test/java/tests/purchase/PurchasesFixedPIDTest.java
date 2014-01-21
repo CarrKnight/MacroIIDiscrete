@@ -13,6 +13,7 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.pid.CascadePIDController;
+import model.utilities.pid.CascadePToPIDController;
 import org.junit.Test;
 import sim.engine.Schedule;
 import model.utilities.dummies.DummySeller;
@@ -274,7 +275,7 @@ public class PurchasesFixedPIDTest {
         PurchasesDepartment department = mock(PurchasesDepartment.class); when(department.getFirm()).thenReturn(mock(Firm.class));
         MacroII model = new MacroII(1l);
 
-        PurchasesFixedPID cascade = new PurchasesFixedPID(department,1, CascadePIDController.class,model);
+        PurchasesFixedPID cascade = new PurchasesFixedPID(department,1, CascadePToPIDController.class,model);
         assertEquals(cascade.getKindOfController(), CascadePIDController.class);
 
     }

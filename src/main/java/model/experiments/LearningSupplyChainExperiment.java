@@ -49,7 +49,7 @@ public class LearningSupplyChainExperiment {
 
 
     public static void main(String[] args){
-        monopolist(true);
+        monopolist(false);
     }
 
     public static void monopolist(final boolean learned)
