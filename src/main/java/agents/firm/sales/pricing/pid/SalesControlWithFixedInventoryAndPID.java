@@ -281,10 +281,12 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     {
 
         //return department.getHowManyToSell() - targetInventory;
-       float gap = controller.getSlaveError();
-       return gap;
 
+        if(department.getHowManyToSell() == 0)
+            return controller.getMasterError();
+        else
 
+            return (controller.getSlaveError()/10f);
         //return Math.round(controller.getMasterMV() + department.getTodayInflow() - department.getTodayOutflow());
 
     }

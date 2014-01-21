@@ -2,6 +2,7 @@ package agents.firm.purchases;
 
 import agents.firm.Firm;
 import agents.firm.purchases.inventoryControl.InventoryControl;
+import agents.firm.purchases.pricing.BidPricingStrategy;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import goods.Good;
@@ -135,6 +136,7 @@ public class InflowOutflowCounterTest {
         Firm firm = new Firm(model);
         Market market = new OrderBookMarket(GoodType.GENERIC);
         PurchasesDepartment toTest = new PurchasesDepartment(10000000,firm,market,model); toTest.setControl(mock(InventoryControl.class));
+        toTest.setPricingStrategy(mock(BidPricingStrategy.class));
         firm.registerPurchasesDepartment(toTest,GoodType.GENERIC);
         firm.start(model);
 

@@ -248,7 +248,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         if(!goodmarket.getGoodType().equals(GoodType.FOOD))
         {
 
-            strategy2 = new SalesControlWithFixedInventoryAndPID(dept);
+            strategy2 = new SalesControlWithFixedInventoryAndPID(dept,100*numberOfFoodProducers);
             strategy2.setGainsSlavePID(strategy2.getProportionalGain()/divideProportionalGainByThis,
                     strategy2.getIntegralGain()/divideIntegrativeGainByThis,
                     strategy2.getDerivativeGain());
@@ -267,7 +267,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         else
         {
             SalesControlWithFixedInventoryAndPID strategy;
-            strategy = new SalesControlWithFixedInventoryAndPID(dept);
+            strategy = new SalesControlWithFixedInventoryAndPID(dept,100);
             strategy.setInitialPrice(model.random.nextInt(30)+70);
             // strategy.setProductionCostOverride(false);
             dept.setAskPricingStrategy(strategy); //set strategy to PID

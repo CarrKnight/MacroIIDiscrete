@@ -1465,7 +1465,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return             everybodyLearnedCompetitiveSlowPIDRun(random.nextLong());
+                            return             everybodyLearnedCompetitivePIDRun(random.nextLong(),100,0);
                         }
                     });
 
@@ -1485,7 +1485,50 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     }
 
-    private OneLinkSupplyChainResult everybodyLearnedCompetitiveSlowPIDRun(long random) {
+    @Test
+    public  void everybodyLearnedCompetitiveStickyPID() throws ExecutionException, InterruptedException {
+
+
+        //this will take a looong time
+        final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
+        ExecutorService testRunner = Executors.newFixedThreadPool(5);
+        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+
+        //run the test 5 times!
+        for(int i=0; i <5; i++)
+        {
+            //run the test, add it as a future so I can check the results!
+            Future<OneLinkSupplyChainResult> testReceipt =
+                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
+                        /**
+                         * Computes a result, or throws an exception if unable to do so.
+                         *
+                         * @return computed result
+                         * @throws Exception if unable to compute a result
+                         */
+                        @Override
+                        public OneLinkSupplyChainResult call() throws Exception {
+                            return             everybodyLearnedCompetitivePIDRun(random.nextLong(),1,100);
+                        }
+                    });
+
+            testResults.add(testReceipt);
+
+        }
+
+        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        {
+            OneLinkSupplyChainResult result = receipt.get();
+            checkCompetitiveResult(result);
+        }
+
+
+
+
+
+    }
+
+    private OneLinkSupplyChainResult everybodyLearnedCompetitivePIDRun(long random,final float dividePIByThis, final int beefPricingSpeed) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
 
@@ -1528,20 +1571,21 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setNumberOfBeefProducers(5);
         scenario1.setNumberOfFoodProducers(5);
 
-        scenario1.setDivideProportionalGainByThis(100f);
-        scenario1.setDivideIntegrativeGainByThis(100f);
+
+        scenario1.setDivideProportionalGainByThis(dividePIByThis);
+        scenario1.setDivideIntegrativeGainByThis(dividePIByThis);
         //no delay
-        scenario1.setBeefPricingSpeed(0);
+        scenario1.setBeefPricingSpeed(beefPricingSpeed);
 
 
         macroII.setScenario(scenario1);
         macroII.start();
 
 
-        while(macroII.schedule.getTime()<9000)
+        while(macroII.schedule.getTime()<14000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(9001,(int)macroII.schedule.getSteps(),100);
+            printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
      //       System.out.println(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
         }
 
@@ -1643,10 +1687,10 @@ public class OneLinkSupplyChainScenarioRegressionTest
         macroII.start();
 
 
-        while(macroII.schedule.getTime()<9000)
+        while(macroII.schedule.getTime()<14000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(9001,(int)macroII.schedule.getSteps(),100);
+            printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
         }
 
 
