@@ -9,6 +9,7 @@ package agents.firm.production.control.facades;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.PlantListener;
+import agents.firm.production.control.FactoryProducedTargetAndMaximizePlantControl;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.production.control.maximizer.EveryWeekMaximizer;
@@ -43,10 +44,19 @@ public class MarginalPlantControl implements PlantControl, PlantListener {
      */
     TargetAndMaximizePlantControl control;
 
+    private final PIDTargeterWithQuickFiring targeter;
+
+    private final EveryWeekMaximizer maximizer;
+
     public MarginalPlantControl(@Nonnull HumanResources hr)
     {
-        control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeterWithQuickFiring.class,EveryWeekMaximizer.class,
-                MarginalMaximizer.class).getControl();
+        final FactoryProducedTargetAndMaximizePlantControl<PIDTargeterWithQuickFiring,? extends EveryWeekMaximizer> produced =
+                TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeterWithQuickFiring.class, EveryWeekMaximizer.class,
+                MarginalMaximizer.class);
+        targeter = produced.getWorkforceTargeter();
+        maximizer = produced.getWorkforceMaximizer();
+
+        control = produced.getControl();
 
     }
 
@@ -229,5 +239,13 @@ public class MarginalPlantControl implements PlantControl, PlantListener {
     @Override
     public void setCanBuy(boolean canBuy) {
         control.setCanBuy(canBuy);
+    }
+
+    public PIDTargeterWithQuickFiring getTargeter() {
+        return targeter;
+    }
+
+    public EveryWeekMaximizer getMaximizer() {
+        return maximizer;
     }
 }

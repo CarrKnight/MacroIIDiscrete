@@ -12,6 +12,7 @@ import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
+import agents.firm.production.control.HillClimberThroughPredictionControl;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.facades.DiscreteSlowPlantControl;
 import agents.firm.production.control.facades.DumbClimberControl;
@@ -343,7 +344,10 @@ public class MonopolistScenario extends Scenario {
         HILL_CLIMBER_ALWAYS_MOVING(DumbClimberControl.class),
 
 
-        MARGINAL_WITH_UNIT_PID(MarginalPlantControlWithPIDUnit.class);
+        MARGINAL_WITH_UNIT_PID(MarginalPlantControlWithPIDUnit.class),
+
+        CRAZY_MARGINAL(HillClimberThroughPredictionControl.class);
+
 
 
 

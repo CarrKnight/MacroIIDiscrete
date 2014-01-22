@@ -314,11 +314,13 @@ public class CompetitiveScenarioVarianceTest {
 
         //competition!
         scenario1.setNumberOfBeefProducers(1);
-        scenario1.setNumberOfFoodProducers(1);
+        scenario1.setNumberOfFoodProducers(5);
 
 
-        scenario1.setDivideProportionalGainByThis(100);
-        scenario1.setDivideIntegrativeGainByThis(100);
+        scenario1.setDivideProportionalGainByThis(25);
+        scenario1.setDivideIntegrativeGainByThis(25);
+        scenario1.setBeefTargetInventory(50);
+        scenario1.setFoodTargetInventory(50);
         //no delay
         scenario1.setBeefPricingSpeed(0);
 

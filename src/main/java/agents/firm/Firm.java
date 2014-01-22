@@ -1332,6 +1332,10 @@ public class Firm extends EconomicAgent {
     }
 
 
+    public Collection<PurchasesDepartment> getPurchaseDepartments(){
+        return Collections.unmodifiableCollection(purchaseDepartments.values());
+    }
+
     /**
      * checks the model for what day it is
      * @return

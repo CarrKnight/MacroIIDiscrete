@@ -76,6 +76,8 @@ import static org.mockito.Mockito.*;
  */
 public class OneLinkSupplyChainScenario extends Scenario {
 
+    private int beefTargetInventory = 100;
+    private int foodTargetInventory = 100;
     /**
      * The filter to attach to the beef ask pricing strategy
      */
@@ -248,7 +250,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         if(!goodmarket.getGoodType().equals(GoodType.FOOD))
         {
 
-            strategy2 = new SalesControlWithFixedInventoryAndPID(dept,100*numberOfFoodProducers);
+            strategy2 = new SalesControlWithFixedInventoryAndPID(dept, beefTargetInventory);
             strategy2.setGainsSlavePID(strategy2.getProportionalGain()/divideProportionalGainByThis,
                     strategy2.getIntegralGain()/divideIntegrativeGainByThis,
                     strategy2.getDerivativeGain());
@@ -267,7 +269,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         else
         {
             SalesControlWithFixedInventoryAndPID strategy;
-            strategy = new SalesControlWithFixedInventoryAndPID(dept,100);
+            strategy = new SalesControlWithFixedInventoryAndPID(dept, foodTargetInventory);
             strategy.setInitialPrice(model.random.nextInt(30)+70);
             // strategy.setProductionCostOverride(false);
             dept.setAskPricingStrategy(strategy); //set strategy to PID
@@ -741,5 +743,21 @@ public class OneLinkSupplyChainScenario extends Scenario {
      */
     public boolean isWorkersToBeRehiredEveryDay() {
         return workersToBeRehiredEveryDay;
+    }
+
+    public int getBeefTargetInventory() {
+        return beefTargetInventory;
+    }
+
+    public void setBeefTargetInventory(int beefTargetInventory) {
+        this.beefTargetInventory = beefTargetInventory;
+    }
+
+    public int getFoodTargetInventory() {
+        return foodTargetInventory;
+    }
+
+    public void setFoodTargetInventory(int foodTargetInventory) {
+        this.foodTargetInventory = foodTargetInventory;
     }
 }
