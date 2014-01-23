@@ -24,6 +24,7 @@ import model.scenario.OneLinkSupplyChainScenarioWithCheatingBuyingPrice;
 import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.enums.MarketDataType;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -116,7 +117,8 @@ public class LearningSupplyChainExperiment {
         scenario1.setBeefPricingSpeed(0);
 
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/"+"beefshouldlearn"+".csv"));
+            File toWriteTo = Paths.get("runs","supplychai","beefshouldlearn.csv").toFile();
+            CSVWriter writer = new CSVWriter(new FileWriter( toWriteTo));
             DailyStatCollector collector = new DailyStatCollector(macroII,writer);
             collector.start();
 
@@ -135,6 +137,8 @@ public class LearningSupplyChainExperiment {
         {
             macroII.schedule.step(macroII);
             printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
+            if(macroII.schedule.getTime() % 1000 == 0)
+                System.out.println( macroII.getMarket(GoodType.BEEF).getYesterdayVolume());
         }
 
 

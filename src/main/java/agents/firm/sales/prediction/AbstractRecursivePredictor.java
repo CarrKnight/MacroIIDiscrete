@@ -207,12 +207,14 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                             observation = Doubles.concat(new double[]{1},laggedIndependentVariable);
                         //add it to the regression (DeltaP ~ 1 + laggedP + laggedX)
                         if(weight > .001)
-                        regression.addObservation(weight, price, observation);
+                        {
+                            regression.addObservation(weight, price, observation);
+                            numberOfValidObservations++;
+
+                        }
 
 
 
-
-                        numberOfValidObservations++;
 
 
 
@@ -466,8 +468,8 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
 
 
     //test a few possible decorators to find the best one!
-   // [4.0, 3.0, 9.0, 4.0, 36.0, 4.0, 58.0, 26.0]
-   // [186.0, 535.0, 172.0, 150.0, 165.0, 288.0, 185.0, 264.0]
+    // [4.0, 3.0, 9.0, 4.0, 36.0, 4.0, 58.0, 26.0]
+    // [186.0, 535.0, 172.0, 150.0, 165.0, 288.0, 185.0, 264.0]
 
     public static void main(String[] args)
     {        //run the tests on failures first

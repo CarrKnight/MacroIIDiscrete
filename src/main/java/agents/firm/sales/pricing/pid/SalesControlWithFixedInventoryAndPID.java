@@ -46,6 +46,8 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
 
     private long roundedPrice;
 
+    private float slavePIDOriginalError = 0;
+
     public static int defaultTargetInventory =  100;
 
     /**
@@ -63,6 +65,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
 
         this(department,defaultTargetInventory); //default to 5 units of inventory
     }
+
 
     /**
      * The sales department with an initial target inventory and a PID controller
@@ -181,9 +184,9 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
         //first PID tries to deal with difference in inventory
         //second PID is fed in AS INPUT the difference in flows, the first PID is only a P so when the inventory is of the right size
         //the first PID feeds in to the second the target 0, which means that inflows and outflows have to equalize
+        slavePIDOriginalError = input.getTarget(1)-input.getInput(1);
         controller.adjust(input,
                 department.getFirm().isActive(), macroII, this, ActionOrder.ADJUST_PRICES);
-
 
 
         getDepartment().getFirm().logEvent(getDepartment(),
@@ -280,10 +283,9 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
         //return department.getHowManyToSell() - targetInventory;
 
         if(department.getHowManyToSell() == 0)
-            return controller.getMasterError();
+            return 100;
         else
-
-            return (controller.getSlaveError()/10f);
+            return slavePIDOriginalError;
         //return Math.round(controller.getMasterMV() + department.getTodayInflow() - department.getTodayOutflow());
 
     }
