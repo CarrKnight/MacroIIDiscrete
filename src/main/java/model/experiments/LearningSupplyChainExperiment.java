@@ -23,6 +23,7 @@ import model.MacroII;
 import model.scenario.OneLinkSupplyChainScenarioWithCheatingBuyingPrice;
 import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.enums.MarketDataType;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -50,12 +51,12 @@ public class LearningSupplyChainExperiment {
 
 
     public static void main(String[] args){
-        monopolist(false);
+        monopolist(false, 1l);
     }
 
-    public static void monopolist(final boolean learned)
+    public static void monopolist(final boolean learned, long seed)
     {
-        final MacroII macroII = new MacroII(1l);
+        final MacroII macroII = new MacroII(seed);
         final SalesDepartment[] outerDepartment = new SalesDepartment[1];
 
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1= new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
@@ -142,24 +143,24 @@ public class LearningSupplyChainExperiment {
         }
 
 
-        float averageFoodPrice = 0;
-        float averageBeefProduced = 0;
-        float averageBeefPrice=0;
+        SummaryStatistics averageFoodPrice = new SummaryStatistics();
+        SummaryStatistics averageBeefProduced = new SummaryStatistics();
+        SummaryStatistics averageBeefPrice=new SummaryStatistics();
         for(int j=0; j< 1000; j++)
         {
             //make the model run one more day:
             macroII.schedule.step(macroII);
-            averageFoodPrice += macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
-            averageBeefProduced+= macroII.getMarket(GoodType.BEEF).getYesterdayVolume();
-            averageBeefPrice+= macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+            averageFoodPrice.addValue(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+            averageBeefProduced.addValue(macroII.getMarket(GoodType.BEEF).getYesterdayVolume());
+            averageBeefPrice.addValue(macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
         }
 
 
         outerDepartment[0].getData().writeToCSVFile(Paths.get("runs","supplychai","supplySales.csv").toFile());
 
-        System.out.println("beef price: " +averageBeefPrice/1000f );
-        System.out.println("food price: " +averageFoodPrice/1000f );
-        System.out.println("produced: " +averageBeefProduced/1000f );
+        System.out.println("beef price: " +averageBeefPrice.getMean() );
+        System.out.println("food price: " +averageFoodPrice.getMean() );
+        System.out.println("produced: " +averageBeefProduced.getMean() );
         System.out.println(); System.out.flush();
 
 
