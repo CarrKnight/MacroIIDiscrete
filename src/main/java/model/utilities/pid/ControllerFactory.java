@@ -62,7 +62,7 @@ public class ControllerFactory
         }
         else if(controllerType.equals(CascadePToPIDController.class))
         {
-            return (C) new CascadePToPIDController(model.getRandom(),model);
+            return (C) new CascadePToPIDController(model);
         }
         else
             throw new IllegalArgumentException("The Controller factory doesn't recognize: " + controllerType);

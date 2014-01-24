@@ -388,6 +388,8 @@ public class HillClimberThroughPredictionControl implements PlantControl, PlantL
 
     private class CreateNeighbors implements HillClimberState
     {
+
+
         @Override
         public void step() {
 
