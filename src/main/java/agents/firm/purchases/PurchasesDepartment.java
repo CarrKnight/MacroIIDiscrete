@@ -12,8 +12,8 @@ import agents.firm.Department;
 import agents.firm.Firm;
 import agents.firm.purchases.inventoryControl.InventoryControl;
 import agents.firm.purchases.inventoryControl.Level;
-import agents.firm.purchases.prediction.OpenLoopRecursivePurchasesPredictor;
 import agents.firm.purchases.prediction.PurchasesPredictor;
+import agents.firm.purchases.prediction.RecursivePurchasesPredictor;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.purchases.pricing.decorators.MaximumBidPriceDecorator;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
@@ -59,7 +59,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
 
     public static Class<? extends PurchasesPredictor> defaultPurchasePredictor =
-            OpenLoopRecursivePurchasesPredictor.class;
+            RecursivePurchasesPredictor.class;
     /**
      * The weekly budget given by the firm to this purchase department to carry out its tasks
      */

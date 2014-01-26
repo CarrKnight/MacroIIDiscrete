@@ -38,6 +38,7 @@ import java.util.Arrays;
 
 import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * <h4>Description</h4>
@@ -57,8 +58,83 @@ import static org.junit.Assert.assertEquals;
 public class CompetitiveScenarioVarianceTest {
 
     public static void main(String[] args){
-        supplyChainLearned(args);
+        learning(args);
     }
+
+
+
+    public static void learning(String[] args)
+    {
+        //make sure logger is set up
+
+        MarginalMaximizerStatics.logger.setLevel(Level.ALL);
+        assert MarginalMaximizerStatics.class.getClassLoader().getResource("/logback.xml") != null;
+        int competitors = 7;
+        System.out.println("FORCED COMPETITIVE FIRMS: " + (1390584437950l));
+
+
+
+        final MacroII macroII = new MacroII(System.currentTimeMillis());
+        final TripolistScenario scenario1 = new TripolistScenario(macroII);
+        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
+        scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
+        scenario1.setAdditionalCompetitors(competitors);
+        scenario1.setWorkersToBeRehiredEveryDay(true);
+        scenario1.setDemandIntercept(102);
+
+
+
+        //assign scenario
+        macroII.setScenario(scenario1);
+
+        macroII.start();
+
+
+        while(macroII.schedule.getTime()<8000)
+        {
+            macroII.schedule.step(macroII);
+              /*      System.out.println("sales: " + scenario1.getCompetitors().get(0).getSalesDepartment(GoodType.GENERIC).
+                            getLatestObservation(SalesDataType.OUTFLOW) +","
+                            + scenario1.getCompetitors().get(1).getSalesDepartment(GoodType.GENERIC).
+                            getLatestObservation(SalesDataType.OUTFLOW));
+                */
+
+
+        }
+        SummaryStatistics prices = new SummaryStatistics();
+        SummaryStatistics quantities = new SummaryStatistics();
+        SummaryStatistics target = new SummaryStatistics();
+        for(int j=0; j<500; j++)
+        {
+            macroII.schedule.step(macroII);
+            assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
+            prices.addValue(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
+            quantities.addValue(macroII.getMarket(GoodType.GENERIC).getTodayVolume());
+
+            for(EconomicAgent agent : macroII.getMarket(GoodType.GENERIC).getSellers())
+            {
+                SalesDepartment department = ((Firm) agent).getSalesDepartment(GoodType.GENERIC);
+                target.addValue(macroII.getMarket(GoodType.GENERIC).getTodayVolume());
+            }
+
+
+        }
+
+
+        System.out.println(prices.getMean() + " - " + quantities.getMean() +"/" +target.getMean()+ "----" + macroII.seed() + " | " + macroII.getMarket(GoodType.GENERIC).getLastDaysAveragePrice());
+        System.out.println("standard deviations: price : " + prices.getStandardDeviation() + " , quantity: " + quantities.getStandardDeviation());
+
+        assertEquals(prices.getMean(), 58, 5);
+        assertTrue(prices.getStandardDeviation() < 5);
+        assertEquals(quantities.getMean(), 44,5);
+        assertTrue(quantities.getStandardDeviation() < 5);
+
+
+
+    }
+
+
 
     public static void learned(String[] args)
     {

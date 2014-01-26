@@ -137,7 +137,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
      */
     @Override
     public long price(Good g) {
-         return price();
+        return price();
     }
 
 
@@ -192,7 +192,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
         getDepartment().getFirm().logEvent(getDepartment(),
                 MarketEvents.CHANGE_IN_POLICY,getDepartment().getFirm().getModel().getCurrentSimulationTimeInMillis(),
                 "old-new price: " + oldPrice + " - " + (long)Math.round(controller.getCurrentMV()) + "\n"+
-                "howManyToSell-Target Inventory- Total Inventory: " + department.getHowManyToSell() + " - " +
+                        "howManyToSell-Target Inventory- Total Inventory: " + department.getHowManyToSell() + " - " +
                         targetInventory + " - " +
                         getDepartment().getFirm().hasHowMany(department.getMarket().getGoodType()) + "\n" +
                         "inflow-outflow: " + department.getTodayInflow() + " - " + department.getTodayOutflow() + "\n"
@@ -285,7 +285,9 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
         if(department.getHowManyToSell() == 0)
             return 100;
         else
-            return slavePIDOriginalError;
+        {
+            return 0;
+        }
         //return Math.round(controller.getMasterMV() + department.getTodayInflow() - department.getTodayOutflow());
 
     }
@@ -314,7 +316,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     }
 
     public float getProportionalGain() {
-        
+
         return controller.getProportionalGain();
 
     }
@@ -331,7 +333,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
     }
 
     public float getIntegralGain() {
-        
+
         return controller.getIntegralGain();
 
     }

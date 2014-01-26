@@ -50,7 +50,7 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
 
     public RecursivePurchasesPredictor(MacroII model, double[] initialCoefficients, int priceLags,
                                        int independentLags, PurchasesDepartment department) {
-        super(model, initialCoefficients, priceLags, independentLags);
+        super(model, initialCoefficients, priceLags, independentLags,defaultMovingAverageSize);
         this.department = department;
 
     }

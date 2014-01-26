@@ -223,6 +223,12 @@ public class KalmanRecursiveRegression implements RecursiveLinearRegression {
         this.pCovariance = pCovariance;
     }
 
+    public void resetPCovariance(double diagonal) {
+        pCovariance = new  double[dimensions][dimensions];//fill as a diagonal
+        for(int i =0; i<dimensions; i++)
+            pCovariance[i][i] = diagonal ;
+    }
+
     @Override
     public double getTrace()
     {

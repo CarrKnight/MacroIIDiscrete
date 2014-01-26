@@ -1,3 +1,4 @@
+
 package agents.firm.sales.prediction;
 
 import agents.firm.personell.HumanResources;
@@ -16,6 +17,7 @@ import model.scenario.MonopolistScenario;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
 import model.utilities.filters.ExponentialFilter;
+import model.utilities.filters.MovingAverage;
 import model.utilities.stats.collectors.DataStorage;
 import model.utilities.stats.regression.ExponentialForgettingRegressionDecorator;
 import model.utilities.stats.regression.GunnarsonRegularizerDecorator;
@@ -50,6 +52,19 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
 
     public static int defaultIndependentLags = 1;
 
+    public static int defaultMovingAverageSize = 1000;
+
+
+    /**
+     * activated only if independent lag is 1
+     */
+    private MovingAverage<Float> x[];
+
+    /**
+     * activated only if independent lag is 1
+     */
+    private MovingAverage<Float> y;
+
 
     private boolean usingWeights =true;
 
@@ -59,19 +74,19 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
 
     public AbstractRecursivePredictor(final MacroII model,
                                       int priceLags, int independentLags) {
-        this(model,new double[independentLags +priceLags+1], priceLags, independentLags);
+        this(model,new double[independentLags +priceLags+1], priceLags, independentLags,defaultMovingAverageSize);
 
     }
 
     public AbstractRecursivePredictor(int priceLags,
                                       int independentLags, MacroII model, int timeDelay, int howFarIntoTheFutureToPredict) {
-        this(model,new double[independentLags +priceLags+1], priceLags, independentLags);
+        this(model,new double[independentLags +priceLags+1], priceLags, independentLags,defaultMovingAverageSize);
         this.timeDelay = timeDelay;
         this.howFarIntoTheFutureToPredict = howFarIntoTheFutureToPredict;
     }
 
     public AbstractRecursivePredictor(final MacroII model,double[] initialCoefficients,
-                                      int priceLags, int independentLags) {
+                                      int priceLags, int independentLags, int movingAverageSize) {
         Preconditions.checkState(priceLags + independentLags + 1 == initialCoefficients.length);
         this.model = model;
         this.priceLags=priceLags;
@@ -79,9 +94,16 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
         this.regression = new GunnarsonRegularizerDecorator(
                 new ExponentialForgettingRegressionDecorator(
                         new KalmanRecursiveRegression(1+priceLags+ independentLags,initialCoefficients)
-                        ,.995d ));
+                        ,.9995d ));
+        //this.regression = new KalmanRecursiveRegression(1+priceLags+ independentLags,initialCoefficients);
+
         if(priceLags > 0) //if there a y lag in there
             this.regression.setBeta(1,1); // start with a simple prior y_t = y_{t-1}
+
+
+        resetMovingAverages(movingAverageSize);
+
+
 
         //keep scheduling yourself until you aren't active anymore
         model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE,this);
@@ -199,18 +221,35 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                         else
                             weight=1;
 
+                        //smooth x and y
+                        y.addObservation(price);
+                        price = y.getSmoothedObservation();
+                        for(int i=0; i<x.length; i++)
+                        {
+                            x[i].addObservation(laggedIndependentVariable[i]);
+                            laggedIndependentVariable[i] = x[i].getSmoothedObservation();
+                        }
+
 
                         double[] observation;
                         if(laggedPrice != null)
                             observation = Doubles.concat(new double[]{1}, laggedPrice, laggedIndependentVariable);
                         else
                             observation = Doubles.concat(new double[]{1},laggedIndependentVariable);
+
+
+
                         //add it to the regression (DeltaP ~ 1 + laggedP + laggedX)
                         if(weight > .001)
                         {
                             regression.addObservation(weight, price, observation);
                             numberOfValidObservations++;
-
+                            if(numberOfValidObservations % 1000 == 0){
+                                if(this instanceof RecursiveSalePredictor)
+                                    System.out.println("sales: " + Arrays.toString(regression.getBeta()));
+                                else
+                                    System.out.println("purchases: " + Arrays.toString(regression.getBeta()));
+                            }
                         }
 
 
@@ -465,6 +504,14 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
     public void setRegression(RecursiveLinearRegression regression) {
         this.regression = regression;
     }
+
+    final
+    public void resetMovingAverages(int movingAverageSize)
+    {
+        y = new MovingAverage<>(movingAverageSize);
+        x = new MovingAverage[independentLags];
+        for(int i=0; i<x.length; i++)
+            x[i] = new MovingAverage<>(movingAverageSize);    }
 
 
     //test a few possible decorators to find the best one!

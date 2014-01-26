@@ -51,7 +51,7 @@ public class LearningSupplyChainExperiment {
 
 
     public static void main(String[] args){
-        monopolist(false, 1l);
+        monopolist(false, System.currentTimeMillis());
     }
 
     public static void monopolist(final boolean learned, long seed)
@@ -116,6 +116,7 @@ public class LearningSupplyChainExperiment {
         scenario1.setDivideIntegrativeGainByThis(100f);
         //no delay
         scenario1.setBeefPricingSpeed(0);
+        scenario1.setBeefTargetInventory(1000);
 
         try {
             File toWriteTo = Paths.get("runs","supplychai","beefshouldlearn.csv").toFile();
@@ -158,10 +159,12 @@ public class LearningSupplyChainExperiment {
 
         outerDepartment[0].getData().writeToCSVFile(Paths.get("runs","supplychai","supplySales.csv").toFile());
 
+//        System.out.println(Arrays.toString(((RecursiveSalePredictor) outerDepartment[0].getPredictorStrategy()).getBeta()));
         System.out.println("beef price: " +averageBeefPrice.getMean() );
         System.out.println("food price: " +averageFoodPrice.getMean() );
         System.out.println("produced: " +averageBeefProduced.getMean() );
         System.out.println(); System.out.flush();
+
 
 
     }
