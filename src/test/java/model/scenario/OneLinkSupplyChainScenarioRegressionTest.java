@@ -3,30 +3,24 @@ package model.scenario;
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
-import agents.firm.production.control.maximizer.EveryWeekMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
+import agents.firm.sales.prediction.RecursiveSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
-import au.com.bytecode.opencsv.CSVWriter;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.filters.ExponentialFilter;
-import model.utilities.filters.MovingAverage;
-import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -297,6 +291,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setBeefPricingSpeed(monopolistSpeed);
         //no need for filter with the cheating price
         scenario1.setBeefPriceFilterer(null);
+        scenario1.setBeefTargetInventory(1000);
 
 
         macroII.setScenario(scenario1);
@@ -500,7 +495,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   beefMonopolisOneRun(random.nextLong(),100,0,true,true);
+                            return   beefMonopolistOneRun(random.nextLong(), 100, 0, true, true);
                         }
                     });
 
@@ -520,8 +515,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
 
-    private OneLinkSupplyChainResult beefMonopolisOneRun(long random, float divideMonopolistGainsByThis, int monopolistSpeed,
-                                                                              final boolean beefLearned, final boolean foodLearned) {
+    private OneLinkSupplyChainResult beefMonopolistOneRun(long random, float divideMonopolistGainsByThis, int monopolistSpeed,
+                                                          final boolean beefLearned, final boolean foodLearned) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
 
@@ -531,6 +526,10 @@ public class OneLinkSupplyChainScenarioRegressionTest
                     FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
                     predictor.setDecrementDelta(2);
                     dept.setPredictorStrategy(predictor);
+                }
+                else{
+                    assert dept.getPredictorStrategy() instanceof RecursiveSalePredictor; //assuming here nothing has been changed and we are still dealing with recursive sale predictors
+                    dept.setPredictorStrategy( new RecursiveSalePredictor(model,dept,700));
                 }
             }
 
@@ -569,6 +568,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //competition!
         scenario1.setNumberOfBeefProducers(1);
+        scenario1.setBeefTargetInventory(1000);
         scenario1.setNumberOfFoodProducers(5);
 
         scenario1.setDivideProportionalGainByThis(divideMonopolistGainsByThis);
@@ -636,7 +636,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   beefMonopolisOneRun(random.nextLong(), 1, 100, true, true);
+                            return   beefMonopolistOneRun(random.nextLong(), 1, 100, true, true);
                         }
                     });
 
@@ -680,7 +680,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   beefMonopolisOneRun(random.nextLong(),100,0,false,true);
+                            return   beefMonopolistOneRun(random.nextLong(), 100, 0, false, true);
                         }
                     });
 
@@ -725,7 +725,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   beefMonopolisOneRun(random.nextLong(), 1, 100, false, true);
+                            return   beefMonopolistOneRun(random.nextLong(), 1, 100, false, true);
                         }
                     });
 
@@ -771,7 +771,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   beefMonopolisOneRun(random.nextLong(),100,0,true,false);
+                            return   beefMonopolistOneRun(random.nextLong(), 100, 0, true, false);
                         }
                     });
 
@@ -814,7 +814,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   beefMonopolisOneRun(random.nextLong(), 1, 100, true, false);
+                            return   beefMonopolistOneRun(random.nextLong(), 1, 100, true, false);
                         }
                     });
 
@@ -1234,7 +1234,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return             beefMonopolisOneRun(random.nextLong(),100,0,false,false);
+                            return             beefMonopolistOneRun(random.nextLong(), 100, 0, false, false);
                         }
                     });
 
@@ -1278,7 +1278,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return             beefMonopolisOneRun(random.nextLong(), 1, 100, false, false);
+                            return             beefMonopolistOneRun(random.nextLong(), 1, 100, false, false);
                         }
                     });
 

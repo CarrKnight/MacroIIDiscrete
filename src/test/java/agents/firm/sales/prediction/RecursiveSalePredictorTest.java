@@ -90,7 +90,7 @@ public class RecursiveSalePredictorTest {
         when(department.getLastClosingPrice()).thenReturn(5l,4l,3l,2l,1l);
         when(department.getLastAskedPrice()).thenReturn(5l,4l,3l,2l,1l);
         when(department.getTodayOutflow()).thenReturn(5,4,3,2,1);
-        RecursiveSalePredictor predictor = new RecursiveSalePredictor(model,department,new double[]{0,1,0,0,0,0,0},3,3);
+        RecursiveSalePredictor predictor = new RecursiveSalePredictor(model,department,new double[]{0,1,0,0,0,0,0},3,3,1);
         predictor.setTimeDelay(1);
         predictor.setRegressingOnWorkers(false);
         when(department.getData()).thenReturn(data);

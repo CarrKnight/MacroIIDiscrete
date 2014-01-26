@@ -44,19 +44,24 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
 
 
     public RecursiveSalePredictor(MacroII model, SalesDepartment department) {
-        this(model, department,AbstractRecursivePredictor.defaultPriceLags,AbstractRecursivePredictor.defaultIndependentLags);
+        this(model, department,AbstractRecursivePredictor.defaultPriceLags,AbstractRecursivePredictor.defaultIndependentLags,defaultMovingAverageSize);
+    }
+
+    public RecursiveSalePredictor(MacroII model, SalesDepartment department,int movingAverageSize) {
+        this(model, department,AbstractRecursivePredictor.defaultPriceLags,AbstractRecursivePredictor.defaultIndependentLags,movingAverageSize);
     }
 
     public RecursiveSalePredictor(final MacroII model, final SalesDepartment department,
-                                  int priceLags, int indepedentLags) {
-        this(model, department,new double[indepedentLags+priceLags+1], priceLags, indepedentLags);
+                                  int priceLags, int indepedentLags, int movingAverageSize) {
+        this(model, department,new double[indepedentLags+priceLags+1], priceLags, indepedentLags,movingAverageSize);
 
     }
 
 
+
     public RecursiveSalePredictor(final MacroII model, final SalesDepartment department,double[] initialCoefficients,
-                                  int priceLags, int indepedentLags) {
-        super(model,initialCoefficients,priceLags,indepedentLags,defaultMovingAverageSize);
+                                  int priceLags, int indepedentLags, int movingAverageSize) {
+        super(model,initialCoefficients,priceLags,indepedentLags,movingAverageSize);
         this.department = department;
 
     }
