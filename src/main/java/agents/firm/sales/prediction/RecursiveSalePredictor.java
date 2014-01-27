@@ -41,6 +41,10 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
      */
     final private SalesDepartment department;
 
+    /**
+     * to use if the regression is simply linear
+     */
+    private final FixedDecreaseSalesPredictor delegate = new FixedDecreaseSalesPredictor();
 
 
     public RecursiveSalePredictor(MacroII model, SalesDepartment department) {
@@ -78,8 +82,16 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
     @Override
     public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
 
-        double toReturn = Math.min(predictPrice(increaseStep), predictPrice(0));
-        return (long) Math.round(toReturn);
+        if(getIndependentLags() > 1 || getPriceLags() > 0)
+        {
+            double toReturn = Math.min(predictPrice(increaseStep), predictPrice(0));
+            return (long) Math.round(toReturn);
+        }
+        else
+        {
+            delegate.setDecrementDelta(-(float)((predictPrice(1)-predictPrice(0))));
+            return delegate.predictSalePriceAfterIncreasingProduction(dept,expectedProductionCost,increaseStep);
+        }
 
     }
 
@@ -93,8 +105,19 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
      */
     @Override
     public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
-        double toReturn = Math.max(predictPrice(-decreaseStep), predictPrice(0));
-        return (long) Math.round(toReturn);
+
+
+
+        if(getIndependentLags() > 1 || getPriceLags() > 0)
+        {
+            double toReturn = Math.max(predictPrice(-decreaseStep), predictPrice(0));
+            return (long) Math.round(toReturn);
+        }
+        else
+        {
+            delegate.setDecrementDelta(-(float)((predictPrice(0)-predictPrice(-1))));
+            return delegate.predictSalePriceAfterDecreasingProduction(dept, expectedProductionCost, decreaseStep);
+        }
 
     }
 
@@ -107,7 +130,16 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
      */
     @Override
     public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
-        return (long) Math.round(predictPrice(0));
+
+        if(getIndependentLags() > 1 || getPriceLags() > 0)
+        {
+            return (long) Math.round(predictPrice(0));
+        }
+        else
+        {
+            delegate.setDecrementDelta(-(float)((predictPrice(1)-predictPrice(0))));
+            return delegate.predictSalePriceWhenNotChangingProduction(dept);
+        }
     }
 
 

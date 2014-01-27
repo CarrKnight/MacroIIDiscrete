@@ -29,15 +29,24 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
 
     private final PurchasesDepartment department;
 
+    /**
+     * use delegate if it's a simple linear regression
+     */
+    private final FixedIncreasePurchasesPredictor delegate = new FixedIncreasePurchasesPredictor();
+
 
     public RecursivePurchasesPredictor(MacroII model,PurchasesDepartment department) {
         super(model);
         this.department = department;
+        this.setUsingWeights(false);
+
     }
 
     public RecursivePurchasesPredictor(MacroII model, int priceLags, int independentLags, PurchasesDepartment department) {
         super(model, priceLags, independentLags);
         this.department = department;
+        this.setUsingWeights(false);
+
 
     }
 
@@ -45,6 +54,8 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
                                        int howFarIntoTheFutureToPredict,PurchasesDepartment department) {
         super(priceLags, independentLags, model, timeDelay, howFarIntoTheFutureToPredict);
         this.department = department;
+        this.setUsingWeights(false);
+
 
     }
 
@@ -52,6 +63,7 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
                                        int independentLags, PurchasesDepartment department) {
         super(model, initialCoefficients, priceLags, independentLags,defaultMovingAverageSize);
         this.department = department;
+        this.setUsingWeights(false);
 
     }
 
@@ -108,7 +120,13 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
     @Override
     public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
     //    System.err.println("slope " + (predictPrice(1)-predictPrice(0)));
-        return Math.round(Math.max(predictPrice(1),predictPrice(0)));
+        if(getIndependentLags() > 1 || getPriceLags() > 0)
+            return Math.round(Math.max(predictPrice(1),predictPrice(0)));
+        else{
+            delegate.setIncrementDelta((float)(predictPrice(1)-predictPrice(0)));
+            return delegate.predictPurchasePriceWhenIncreasingProduction(dept);
+        }
+
 
     }
 
@@ -120,7 +138,13 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
      */
     @Override
     public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
-        return Math.round(predictPrice(0));
+
+        if(getIndependentLags() > 1 || getPriceLags() > 0)
+            return Math.round(predictPrice(0));
+        else{
+            delegate.setIncrementDelta((float)(predictPrice(1)-predictPrice(0)));
+            return delegate.predictPurchasePriceWhenNoChangeInProduction(dept);
+        }
 
     }
 
@@ -132,7 +156,12 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
      */
     @Override
     public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
-        return Math.round(Math.min(predictPrice(-1),predictPrice(0)));
+        if(getIndependentLags() > 1 || getPriceLags() > 0)
+            return Math.round(Math.min(predictPrice(-1), predictPrice(0)));
+        else{
+            delegate.setIncrementDelta((float)(predictPrice(0)-predictPrice(-1)));
+            return delegate.predictPurchasePriceWhenDecreasingProduction(dept);
+        }
     }
 
     @Override
