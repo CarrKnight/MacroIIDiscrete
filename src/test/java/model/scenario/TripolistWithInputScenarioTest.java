@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import static org.junit.Assert.assertEquals;
 
@@ -151,7 +152,9 @@ public class TripolistWithInputScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
+            scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs","test.csv").toFile());
+            System.out.println(macroII.seed());
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87, 1);
             assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
 
 

@@ -94,8 +94,9 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
         this.regression = new GunnarsonRegularizerDecorator(
                 new ExponentialForgettingRegressionDecorator(
                         new KalmanRecursiveRegression(1+priceLags+ independentLags,initialCoefficients)
-                        ,.995d ));
-        //this.regression = new KalmanRecursiveRegression(1+priceLags+ independentLags,initialCoefficients);
+                        ,.9995d ));
+
+     //   this.regression = new KalmanRecursiveRegression(1+priceLags+ independentLags,initialCoefficients);
 
         if(priceLags > 0) //if there a y lag in there
             this.regression.setBeta(1,1); // start with a simple prior y_t = y_{t-1}
@@ -244,14 +245,14 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                         {
                             regression.addObservation(weight, price, observation);
                             numberOfValidObservations++;
-                            if(numberOfValidObservations % 1000 == 0){
+                     /*       if(numberOfValidObservations % 1000 == 0){
                                 if(this instanceof RecursiveSalePredictor)
                                     System.out.println("sales: " + Arrays.toString(regression.getBeta()));
                                 else
                                     System.out.println("purchases: " + Arrays.toString(regression.getBeta()));
 
                             }
-
+                       */
                         }
 
 

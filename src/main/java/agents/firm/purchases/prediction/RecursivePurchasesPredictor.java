@@ -1,5 +1,6 @@
 package agents.firm.purchases.prediction;
 
+import agents.firm.personell.HumanResources;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pricing.CheaterPricing;
 import agents.firm.sales.prediction.AbstractRecursivePredictor;
@@ -38,15 +39,16 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
     public RecursivePurchasesPredictor(MacroII model,PurchasesDepartment department) {
         super(model);
         this.department = department;
-        this.setUsingWeights(false);
+        if(department instanceof HumanResources)
+            this.setUsingWeights(false);
 
     }
 
     public RecursivePurchasesPredictor(MacroII model, int priceLags, int independentLags, PurchasesDepartment department) {
         super(model, priceLags, independentLags);
         this.department = department;
-        this.setUsingWeights(false);
-
+        if(department instanceof HumanResources)
+            this.setUsingWeights(false);
 
     }
 
@@ -54,8 +56,8 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
                                        int howFarIntoTheFutureToPredict,PurchasesDepartment department) {
         super(priceLags, independentLags, model, timeDelay, howFarIntoTheFutureToPredict);
         this.department = department;
-        this.setUsingWeights(false);
-
+        if(department instanceof HumanResources)
+            this.setUsingWeights(false);
 
     }
 
@@ -63,8 +65,8 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
                                        int independentLags, PurchasesDepartment department) {
         super(model, initialCoefficients, priceLags, independentLags,defaultMovingAverageSize);
         this.department = department;
-        this.setUsingWeights(false);
-
+        if(department instanceof HumanResources)
+            this.setUsingWeights(false);
     }
 
     @Override

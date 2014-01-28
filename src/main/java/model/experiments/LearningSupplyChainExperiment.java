@@ -15,6 +15,7 @@ import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
+import agents.firm.sales.prediction.RecursiveSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import au.com.bytecode.opencsv.CSVWriter;
 import financial.market.Market;
@@ -69,6 +70,9 @@ public class LearningSupplyChainExperiment {
                         FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
                         predictor.setDecrementDelta(2);
                         dept.setPredictorStrategy(predictor);
+                    }
+                    else{
+                        dept.setPredictorStrategy(new RecursiveSalePredictor(model,dept,500));
                     }
                 }
 
