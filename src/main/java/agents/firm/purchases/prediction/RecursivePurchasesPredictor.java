@@ -93,6 +93,11 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
     }
 
     @Override
+    public boolean hasDepartmentTradedAtLeastOnce() {
+        return department.hasTradedAtLeastOnce();
+    }
+
+    @Override
     public int modifyStepIfNeeded(int step) {
         if(regressingOnWorkers)
             return Integer.signum(step);

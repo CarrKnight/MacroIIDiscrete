@@ -35,4 +35,10 @@ public interface Department {
      */
     public int getStartingDay();
 
+    /**
+     * flag that is set to true whenever a department has managed to fill a quote/make a trade at least once
+     * @return true if at least once the department has bought/sold/hired
+     */
+    public boolean hasTradedAtLeastOnce();
+
 }

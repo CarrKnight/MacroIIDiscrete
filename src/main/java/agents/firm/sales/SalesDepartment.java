@@ -1459,5 +1459,10 @@ public abstract class  SalesDepartment  implements Department {
     public float getDaysOfInventory() {
         return daysOfInventory;
     }
+
+    @Override
+    public boolean hasTradedAtLeastOnce() {
+        return lastClosingPrice >=0 ; //lastclosing price is -1 until one trade occurs!
+    }
 }
 

@@ -1250,4 +1250,13 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
     public int getConsumedToday(GoodType type) {
         return counter.getConsumedToday()[type.ordinal()];
     }
+
+    /**
+     * alwayas false, doesn't trade.
+     * @return
+     */
+    @Override
+    public boolean hasTradedAtLeastOnce() {
+        return false;
+    }
 }
