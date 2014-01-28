@@ -245,14 +245,14 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                         {
                             regression.addObservation(weight, price, observation);
                             numberOfValidObservations++;
-                     /*       if(numberOfValidObservations % 1000 == 0){
+                            if(numberOfValidObservations % 1000 == 0){
                                 if(this instanceof RecursiveSalePredictor)
                                     System.out.println("sales: " + Arrays.toString(regression.getBeta()));
                                 else
                                     System.out.println("purchases: " + Arrays.toString(regression.getBeta()));
 
                             }
-                       */
+
                         }
 
 
