@@ -134,7 +134,7 @@ public class TripolistWithInputScenarioTest {
         for(int i=0; i<15; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
-            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            final MacroII macroII = new MacroII(1390886847603l);
             TripolistWithInputScenario scenario1 = new TripolistWithInputScenario(macroII);
             scenario1.setAdditionalCompetitors(0);
             //    scenario1.setAlwaysMoving(true);
