@@ -1251,4 +1251,10 @@ public class PurchasesDepartment implements Deactivatable, Department {
     {
         return pricingStrategy.getClass();
     }
+
+    @Override
+    public boolean hasTradedAtLeastOnce() {
+        return getLastClosingPrice() >=0;
+
+    }
 }

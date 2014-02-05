@@ -173,6 +173,16 @@ public class FixedInventoryControl extends AbstractInventoryControl {
      */
     @Override
     public int estimateDemandGap() {
+        //if for whatever reason there was nothing to buy left today, we can't really use today's trade as a decent observation on what the real supply is
+        try{
+        if(getPurchasesDepartment().getMarket().getBestSeller() == null && getPurchasesDepartment().getTodayInflow() > 0
+
+                ||
+                getPurchasesDepartment().getTodayInflow() == 0 && !getPurchasesDepartment().canBuy())
+            //or another useless observation is when you bought nothing because you needed nothing
+            return 1000;
+        }
+        catch (IllegalAccessException e){}
         if(rateInventory().equals(Level.ACCEPTABLE))
             return  0;
         else

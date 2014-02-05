@@ -200,6 +200,12 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
 
     }
 
+    @Override
+    public boolean hasDepartmentTradedAtLeastOnce() {
+        return department.hasTradedAtLeastOnce();
+    }
+
+
     public SalesDataType getDisturbanceType() {
         return SalesDataType.SUPPLY_GAP;
     }

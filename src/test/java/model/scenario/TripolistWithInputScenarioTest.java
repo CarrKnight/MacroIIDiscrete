@@ -134,7 +134,7 @@ public class TripolistWithInputScenarioTest {
         for(int i=0; i<15; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
-            final MacroII macroII = new MacroII(1390886847603l);
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
             TripolistWithInputScenario scenario1 = new TripolistWithInputScenario(macroII);
             scenario1.setAdditionalCompetitors(0);
             //    scenario1.setAlwaysMoving(true);
@@ -152,7 +152,6 @@ public class TripolistWithInputScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs","test.csv").toFile());
             System.out.println(macroII.seed());
             assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87, 1);
             assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
@@ -206,6 +205,7 @@ public class TripolistWithInputScenarioTest {
                 macroII.schedule.step(macroII);
 
 
+            scenario1.getMonopolist().getPurchaseDepartment(GoodType.LEATHER).getPurchasesData().writeToCSVFile(Paths.get("runs","test.csv").toFile());
             System.out.println(i + " ----- " + scenario1.monopolist.getTotalWorkers() + " ... " + macroII.getMarket(GoodType.GENERIC).getLastPrice() + " ----> " + macroII.seed());
             assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
             assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
