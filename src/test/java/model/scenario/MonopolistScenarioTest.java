@@ -395,15 +395,14 @@ public class MonopolistScenarioTest {
     public void rightPriceAndQuantityTestRandomControlRandomSlopesFlowsOnly()
     {
 
-        //run the tests on failures first
-        LinkedList<Long> previouslyFailedSeeds = new LinkedList<>();
+
 
 
 
         //run the test 15 times
-        for(int i=0; i<50; i++)
+        for(int i=0; i<15; i++)
         {
-            long seed = i < previouslyFailedSeeds.size() ? previouslyFailedSeeds.get(i) : System.currentTimeMillis();
+            long seed = System.currentTimeMillis();
 
             final MacroII macroII = new MacroII(seed);
             MonopolistScenario scenario1 = new MonopolistScenario(macroII);
@@ -735,7 +734,7 @@ public class MonopolistScenarioTest {
     @Test
     public void rightPriceAndQuantityTestAsMarginalWithSalesControlFlowPIDWithFixedInventory()
     {
-        for(int i=0; i<50; i++)
+        for(int i=0; i<10; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(System.currentTimeMillis());

@@ -8,6 +8,7 @@ package agents.firm.sales.pricing.pid;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
+import com.google.common.base.Preconditions;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.pid.PIDController;
@@ -97,7 +98,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
     /**
      * if flow targeting is true, then rather than trying to keep inventory at level 0 at any check you just try to keep inflow and outflow constant
      */
-    boolean flowTargeting = false;
+    boolean flowTargeting = true;
 
     /**
      * This is the object we use to guess our stockouts
@@ -117,7 +118,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
      * @param sales
      */
     public SimpleFlowSellerPID(@Nonnull SalesDepartment sales) {
-        this(sales, sales.getFirm().getModel().drawProportionalGain()/2,  sales.getFirm().getModel().drawIntegrativeGain()/2,
+        this(sales, sales.getFirm().getModel().drawProportionalGain()/20,  sales.getFirm().getModel().drawIntegrativeGain()/20,
                 sales.getFirm().getModel().drawDerivativeGain(),sales.getFirm().getModel().drawPIDSpeed()  );
     }
 
@@ -156,7 +157,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         //schedule yourself to change prices
         sales.getFirm().getModel().scheduleSoon(ActionOrder.ADJUST_PRICES, this);
         //schedule yourself also to annoy reset stockflow
-        sales.getFirm().getModel().scheduleSoon(ActionOrder.DAWN,new Steppable() {
+        sales.getFirm().getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE,new Steppable() {
             @Override
             public void step(SimState state) {
                 if(!active)
@@ -168,7 +169,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
                 initialInventory = goodsToSell;
 
                 //reschedule automatically
-                sales.getFirm().getModel().scheduleTomorrow(ActionOrder.DAWN,this);
+                sales.getFirm().getModel().scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE,this);
 
             }
         });
@@ -252,18 +253,20 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         //remember the old price
         long oldPrice = price;
 
+        Preconditions.checkState(((MacroII)simState).getCurrentPhase().equals(ActionOrder.ADJUST_PRICES));
         goodsToSell = sales.getHowManyToSell();
         //make the PID adjust, please
 
 
         if(flowTargeting) {
-            gap = (float) ((goodsToSell - initialInventory) - ((float) goodsSold + (float) stockOuts.getStockouts()));
+            gap = (goodsToSell - ((float) goodsSold + (float) stockOuts.getStockouts()));
             controller.adjust(0, gap,    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
                     active, (MacroII) simState, this, ActionOrder.ADJUST_PRICES);
         }
         else
         {
-            gap =  (float) (goodsToSell - ((float) goodsSold + (float) stockOuts.getStockouts()));
+            //gap =  (float) (goodsToSell - ((float) goodsSold + (float) stockOuts.getStockouts()));
+            gap = goodsToSell - stockOuts.getStockouts();
             controller.adjust(0, (float) (goodsToSell - ((float) goodsSold + (float) stockOuts.getStockouts())),    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
                     active, (MacroII)simState, this,ActionOrder.ADJUST_PRICES);
         }

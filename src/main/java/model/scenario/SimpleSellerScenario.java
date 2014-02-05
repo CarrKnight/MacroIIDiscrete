@@ -325,7 +325,7 @@ public class SimpleSellerScenario extends Scenario {
         {
 
             //set up
-            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            final MacroII macroII = new MacroII(i);
             macroII.getRandom().setSeed(i);
             SimpleSellerScenario scenario1 = new SimpleSellerScenario(macroII);
             scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
