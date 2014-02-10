@@ -19,6 +19,9 @@ import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
+import javax.annotation.Nonnull;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.LinkedList;
@@ -340,5 +343,23 @@ public class DailyStatCollector implements Steppable{
 
     public EnumMap<GoodType, Boolean> getWereThereShortages() {
         return wereThereShortages;
+    }
+
+
+    /**
+     * simple static that creates the csv writer then the daily stat collector and starts it. Usually called BEFORE macroII is started.
+     * @param csvFile  the csv file
+     * @param macroII the model reference
+     */
+    public static void addDailyStatCollectorToModel(@Nonnull File csvFile,@Nonnull MacroII macroII)
+    {
+        try {
+            CSVWriter writer = new CSVWriter(new FileWriter(csvFile));
+            DailyStatCollector collector = new DailyStatCollector(macroII,writer);
+            collector.start();
+        } catch (IOException e) {
+            System.err.println("failed to create the daily stat collector file!");
+        }
+
     }
 }

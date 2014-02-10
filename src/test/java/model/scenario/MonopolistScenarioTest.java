@@ -693,8 +693,8 @@ public class MonopolistScenarioTest {
             if(i==0)
             {
 
-                scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("lamerbuy.csv").toFile());
-                scenario1.monopolist.getSalesDepartment(GoodType.GENERIC).getData().writeToCSVFile(Paths.get("lamersell.csv").toFile());
+                scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("runs","lamerbuy.csv").toFile());
+                scenario1.monopolist.getSalesDepartment(GoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs","lamersell.csv").toFile());
             }
 
 

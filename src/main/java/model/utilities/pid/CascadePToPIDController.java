@@ -7,13 +7,9 @@ package model.utilities.pid;
 
 
 
-import cern.jet.random.engine.MersenneTwister;
 import ec.util.MersenneTwisterFast;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.pid.Controller;
-import model.utilities.pid.ControllerInput;
-import model.utilities.pid.PIDController;
 import model.utilities.pid.decorator.ExponentialFilterTargetDecorator;
 import sim.engine.Steppable;
 
@@ -128,7 +124,7 @@ public class CascadePToPIDController implements Controller {
                        @Nullable MacroII state, @Nullable Steppable user,  ActionOrder phase)
     {
         //master
-        pid1.adjust(firstTarget,Math.min(firstInput,firstTarget*2),isActive,state,user,phase);
+        pid1.adjust(firstTarget,Math.min(firstInput,firstTarget*5),isActive,state,user,phase);
         //to avoid exxaggerating in disinvesting, the recorded inventory is never more than twice the target
         //slave
         secondTarget = pid1.getCurrentMV();
