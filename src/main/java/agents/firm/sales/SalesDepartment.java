@@ -605,7 +605,10 @@ public abstract class  SalesDepartment  implements Department {
         //make sure there is no sale result associated to it
         assert !salesResults.containsKey(g);
 
+
         return toReturn;
+
+
 
 
     }
@@ -1087,8 +1090,9 @@ public abstract class  SalesDepartment  implements Department {
                 aboutToUpdateQuotes=false;
                 //go through all the old quotes
                 for(Quote q : goodsToRequote){
+                    if(firm.has(q.getGood())) //it might have been consumed it in the process for whatever reason
                     //resell it tomorrow
-                    newGoodToSell(q.getGood());//sell it again
+                        newGoodToSell(q.getGood());//sell it again
 
 
                 }

@@ -687,6 +687,7 @@ public class MonopolistScenarioTest {
                 marketSanityCheck(macroII, scenario1);
             }
 
+            System.out.println(macroII.getMarket(GoodType.GENERIC).getYesterdayVolume());
 
             assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
             assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79,1);
@@ -721,7 +722,7 @@ public class MonopolistScenarioTest {
         double goods = scenario1.monopolist.getSalesDepartment(GoodType.GENERIC).getLatestObservation(SalesDataType.OUTFLOW);
         if(macroII.schedule.getTime()>1 && goods > 0){
             double askprice =  scenario1.monopolist.getSalesDepartment(GoodType.GENERIC).getLatestObservation(SalesDataType.CLOSING_PRICES);
-            Assert.assertEquals(101-goods,askprice,.01d);
+            Assert.assertEquals("price: " + askprice + ", supposed price given trade: " + (101-goods),101-goods,askprice,.01d);
         }
     }
 
@@ -785,7 +786,7 @@ public class MonopolistScenarioTest {
     }
 
 
-    @Test
+    //@Test crazy marginal was a bad idea, no need to test it further
     public void rightPriceAndQuantityTestAsCrazyMarginal()
     {
         for(int i=0; i<10; i++)
@@ -944,7 +945,7 @@ public class MonopolistScenarioTest {
 
 
 
-    @Test
+    //@Test crazy marginal was a bad idea, no need to test it further
     public void rightPriceAndQuantityTestRandomControlRandomSlopesCrazyMarginal()
     {
 

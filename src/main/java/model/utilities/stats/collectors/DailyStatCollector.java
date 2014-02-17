@@ -23,8 +23,14 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * <h4>Description</h4>
@@ -362,4 +368,42 @@ public class DailyStatCollector implements Steppable{
         }
 
     }
+
+    private static final int NUMBER_OF_RUNS = 300;
+    private static final int STEPS_PER_RUN = 10000;
+
+
+    private static class OneRunOfTheModel implements Runnable
+    {
+
+        @Override
+        public void run() {
+
+            MacroII model = new MacroII(System.currentTimeMillis());
+            model.start();
+            for(int i=0; i< STEPS_PER_RUN; i++)
+                model.schedule.step(model);
+
+        }
+    }
+
+
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        ExecutorService executor = Executors.newCachedThreadPool();
+        List<Future> receipts = new ArrayList<>(NUMBER_OF_RUNS);
+
+        for(int i=0; i< NUMBER_OF_RUNS; i++)
+        {
+            Future receipt = executor.submit(new OneRunOfTheModel());
+            receipts.add(receipt);
+        }
+
+        //here we make sure every run was completed
+        for(Future receipt : receipts)
+            receipt.get();
+
+        executor.shutdown();
+    }
+
 }

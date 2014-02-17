@@ -16,6 +16,7 @@ import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
+import com.google.common.base.Preconditions;
 import financial.market.OrderBookMarket;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
@@ -23,13 +24,16 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.dummies.Customer;
+import model.utilities.dummies.CustomerWithDelay;
 import model.utilities.stats.collectors.DailyStatCollector;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 
@@ -58,6 +62,9 @@ public class SimpleSellerScenario extends Scenario {
 
     private boolean demandShifts = false;
 
+    /**
+     * when this is >0 the demand responds to prices quoted "buyerDelay" days ago rather than current prices.
+     */
     private int buyerDelay = 0;
 
     /**
@@ -91,6 +98,14 @@ public class SimpleSellerScenario extends Scenario {
 
     private List<SalesDepartment> departments = new LinkedList<>();
 
+    private List<AskPricingStrategy> pricingStrategies = new LinkedList<>();
+
+
+    /**
+     * when this is set to true during the production phase all previously unsold inventory is destroyed
+     */
+    private boolean destroyUnsoldInventoryEachDay = false;
+
     /**
      * how much inflow each firm gets
      */
@@ -102,18 +117,30 @@ public class SimpleSellerScenario extends Scenario {
     protected AskPricingStrategy strategy;
 
 
+
     /**
      * Called by MacroII, it creates agents and then schedules them.
      */
     @Override
     public void start() {
+
         departments = new LinkedList<>();
+        pricingStrategies = new LinkedList<>();
 
         //create and record a new market!
         final OrderBookMarket market= new OrderBookMarket(GoodType.GENERIC);
         market.setPricePolicy(new ShopSetPricePolicy()); //make the seller price matter
 
         getMarkets().put(GoodType.GENERIC,market);
+
+
+        //create sellers
+        for(int i=0; i < numberOfSellers; i++)
+        {
+            final Firm seller = buildSeller(market);
+            //arrange for goods to drop periodically in the firm
+            setupProduction(seller);
+        }
 
 
         //create demand
@@ -124,13 +151,7 @@ public class SimpleSellerScenario extends Scenario {
         }
 
 
-        //create sellers
-        for(i=0; i < numberOfSellers; i++)
-        {
-            final Firm seller = buildSeller(market);
-            //arrange for goods to drop periodically in the firm
-            setupProduction(seller);
-        }
+
         //if demands shifts, add 10 more buyers after adjust 2000
         if(demandShifts)
         {
@@ -161,9 +182,18 @@ public class SimpleSellerScenario extends Scenario {
         model.scheduleAnotherDay(ActionOrder.DAWN,new Steppable() {
             @Override
             public void step(SimState state) {
-                final Customer customer = new Customer(getModel(),(i+10)*10,market);
-                model.addAgent(customer);
-        }},howManyDaysLaterShockWillOccur);
+                if(buyerDelay == 0)
+                {
+                    final Customer customer = new Customer(getModel(),(i+10)*10,market);
+                    model.addAgent(customer);
+                }
+                else
+                {
+                    assert buyerDelay > 0;
+                    CustomerWithDelay delay = new CustomerWithDelay(model,(i+10)*10,buyerDelay,market);
+                    model.addAgent(delay);
+                }
+            }},howManyDaysLaterShockWillOccur);
 
 
     }
@@ -173,6 +203,9 @@ public class SimpleSellerScenario extends Scenario {
         getModel().scheduleSoon(ActionOrder.PRODUCTION,new Steppable() {
             @Override
             public void step(SimState simState) {
+                if(destroyUnsoldInventoryEachDay)
+                    seller.consumeAll();
+
                 //sell 4 goods!
                 int inflow = sellerToInflowMap.get(seller);
                 for(int i=0; i<inflow; i++){
@@ -192,22 +225,35 @@ public class SimpleSellerScenario extends Scenario {
 
 
 
+
         SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(seller, market, new SimpleBuyerSearch(market, seller),
                 new SimpleSellerSearch(market, seller), salesDepartmentType);
         seller.registerSaleDepartment(dept, GoodType.GENERIC);
+
         strategy = AskPricingStrategy.Factory.newAskPricingStrategy(sellerStrategy,dept);
+
+
+
         //strategy.setSpeed(sellerDelay);
         dept.setAskPricingStrategy(strategy); //set strategy to PID
 
         departments.add(dept);
+        pricingStrategies.add(strategy);
 
         return seller;
     }
 
     protected void buildBuyer(final OrderBookMarket market, final long price) {
-        final Customer buyer = new Customer(getModel(),Math.max((price),1),market);
-
-        getAgents().add(buyer);
+        if(buyerDelay == 0 )
+        {
+            final Customer buyer = new Customer(getModel(),Math.max((price),1),market);
+            getAgents().add(buyer);
+        }
+        else
+        {
+            CustomerWithDelay delay = new CustomerWithDelay(model,Math.max((price),1),buyerDelay,market);
+            getAgents().add(delay);
+        }
     }
 
     /**
@@ -269,6 +315,7 @@ public class SimpleSellerScenario extends Scenario {
     }
 
     public void setBuyerDelay(int buyerDelay) {
+        Preconditions.checkArgument(buyerDelay >=0);
         this.buyerDelay = buyerDelay;
     }
 
@@ -397,6 +444,7 @@ public class SimpleSellerScenario extends Scenario {
     }
 
     public void setDemandSlope(int demandSlope) {
+        Preconditions.checkArgument(demandSlope <= 0, "slope can't be positive.");
         this.demandSlope = demandSlope;
     }
 
@@ -407,5 +455,19 @@ public class SimpleSellerScenario extends Scenario {
 
     public LinkedHashMap<Firm, Integer> getSellerToInflowMap() {
         return sellerToInflowMap;
+    }
+
+
+    public boolean isDestroyUnsoldInventoryEachDay() {
+        return destroyUnsoldInventoryEachDay;
+    }
+
+    public void setDestroyUnsoldInventoryEachDay(boolean destroyUnsoldInventoryEachDay) {
+        this.destroyUnsoldInventoryEachDay = destroyUnsoldInventoryEachDay;
+    }
+
+
+    public List<AskPricingStrategy> getPricingStrategies() {
+        return pricingStrategies;
     }
 }

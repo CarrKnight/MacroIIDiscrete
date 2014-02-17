@@ -109,7 +109,7 @@ public class PIDController implements Controller{
         this.proportionalGain = proportionalGain;
         this.integralGain = integralGain;
         this.derivativeGain = derivativeGain;
-        this.speed = 0;
+        this.speed = speed;
 
     }
 

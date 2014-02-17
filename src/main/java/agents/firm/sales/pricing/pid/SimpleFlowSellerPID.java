@@ -8,20 +8,20 @@ package agents.firm.sales.pricing.pid;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
-import com.google.common.base.Preconditions;
-import model.MacroII;
-import model.utilities.ActionOrder;
-import model.utilities.pid.PIDController;
 import agents.firm.sales.SaleResult;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentListener;
 import agents.firm.sales.pricing.AskPricingStrategy;
+import com.google.common.base.Preconditions;
 import financial.BidListener;
-import financial.market.Market;
 import financial.MarketEvents;
 import financial.TradeListener;
+import financial.market.Market;
 import financial.utilities.Quote;
 import goods.Good;
+import model.MacroII;
+import model.utilities.ActionOrder;
+import model.utilities.pid.PIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -95,10 +95,11 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
      */
     long price = 0;
 
+    public static boolean flowTargetingDefault = true;
     /**
      * if flow targeting is true, then rather than trying to keep inventory at level 0 at any check you just try to keep inflow and outflow constant
      */
-    boolean flowTargeting = true;
+    boolean flowTargeting = flowTargetingDefault;
 
     /**
      * This is the object we use to guess our stockouts
@@ -111,14 +112,12 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
     private int initialInventory = 0;
 
 
-
-
     /**
      * Constructor that generates at random the seller PID from the model randomizer
      * @param sales
      */
     public SimpleFlowSellerPID(@Nonnull SalesDepartment sales) {
-        this(sales, sales.getFirm().getModel().drawProportionalGain()/20,  sales.getFirm().getModel().drawIntegrativeGain()/20,
+        this(sales, sales.getFirm().getModel().drawProportionalGain()/5,  sales.getFirm().getModel().drawIntegrativeGain()/5,
                 sales.getFirm().getModel().drawDerivativeGain(),sales.getFirm().getModel().drawPIDSpeed()  );
     }
 
@@ -149,13 +148,16 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
 
         controller = new PIDController(proportionalGain,integralGain,derivativeGain,speed,sales.getRandom());
         //keep speed fixed if we are targeting flows rather than stock (otherwise you compare different periods and that's silly)
-        if(flowTargeting)
-            controller.setRandomSpeed(false);
+        controller.setRandomSpeed(false);
         //start with a random price!
         price = sales.getFirm().getRandom().nextInt(100);
         controller.setOffset(price);
+
         //schedule yourself to change prices
-        sales.getFirm().getModel().scheduleSoon(ActionOrder.ADJUST_PRICES, this);
+        if(speed == 0)
+            sales.getFirm().getModel().scheduleSoon(ActionOrder.ADJUST_PRICES, this);
+        else
+            sales.getFirm().getModel().scheduleAnotherDay(ActionOrder.ADJUST_PRICES,this,speed);
         //schedule yourself also to annoy reset stockflow
         sales.getFirm().getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE,new Steppable() {
             @Override
@@ -170,6 +172,15 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
 
                 //reschedule automatically
                 sales.getFirm().getModel().scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE,this);
+
+            }
+        });
+        sales.getFirm().getModel().scheduleSoon(ActionOrder.THINK, new Steppable() {
+            @Override
+            public void step(SimState simState) {
+                //we changed the prices, need to update the stockout counter
+                stockOuts.newPIDStep(market);
+                sales.getFirm().getModel().scheduleTomorrow(ActionOrder.THINK,this);
 
             }
         });
@@ -254,12 +265,19 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         long oldPrice = price;
 
         Preconditions.checkState(((MacroII)simState).getCurrentPhase().equals(ActionOrder.ADJUST_PRICES));
-        goodsToSell = sales.getHowManyToSell();
+    //
         //make the PID adjust, please
+        goodsToSell = sales.getHowManyToSell();
+
 
 
         if(flowTargeting) {
-            gap = (goodsToSell - ((float) goodsSold + (float) stockOuts.getStockouts()));
+
+            float inflow = sales.getTodayInflow();
+            float outflow = sales.getTodayOutflow() + stockOuts.getStockouts();
+            gap = -(outflow-inflow);
+
+         //   System.out.println("inflow: " + inflow + ", outflow: " + sales.getTodayOutflow() +",stockouts" + stockOuts.getStockouts() +", gap: " + gap);
             controller.adjust(0, gap,    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
                     active, (MacroII) simState, this, ActionOrder.ADJUST_PRICES);
         }
@@ -267,7 +285,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         {
             //gap =  (float) (goodsToSell - ((float) goodsSold + (float) stockOuts.getStockouts()));
             gap = goodsToSell - stockOuts.getStockouts();
-            controller.adjust(0, (float) (goodsToSell - ((float) goodsSold + (float) stockOuts.getStockouts())),    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
+            controller.adjust(0, gap,    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
                     active, (MacroII)simState, this,ActionOrder.ADJUST_PRICES);
         }
 
@@ -280,9 +298,6 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
                 + (goodsSold + stockOuts.getStockouts()) + "of which, stockouts: " + stockOuts.getStockouts() + "\n oldprice:" + oldPrice + ", newprice:" + price + " || MV: " + controller.getCurrentMV() );
 
 
-
-        //we changed the prices, need to update the stockout counter
-        stockOuts.newPIDStep(market);
 
 
         //we are being restepped by the controller so just wait.
