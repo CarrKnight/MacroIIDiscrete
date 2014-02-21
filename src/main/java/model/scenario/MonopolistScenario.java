@@ -258,32 +258,9 @@ public class MonopolistScenario extends Scenario {
         getModel().scheduleSoon(ActionOrder.DAWN, new Steppable() {
             @Override
             public void step(SimState simState) {
-                //sales department
-                SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(built, goodMarket,
-                        new SimpleBuyerSearch(goodMarket, built), new SimpleSellerSearch(goodMarket, built),
-                        salesDepartmentType);
-                dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(salesPricePreditorStrategy,dept));
-                built.registerSaleDepartment(dept, GoodType.GENERIC);
-                AskPricingStrategy askPricingStrategy = AskPricingStrategy.Factory.newAskPricingStrategy(MonopolistScenario.this.askPricingStrategy, dept);
-                dept.setAskPricingStrategy(askPricingStrategy); //set strategy to PID
-
-                //add the plant
-                Plant plant = new Plant(blueprint, built);
-                plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, built, 0, plant));
-                plant.setCostStrategy(new InputCostStrategy(plant));
-                built.addPlant(plant);
-
-
-                //human resources
-                HumanResources hr;
-
-                hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, built,
-                        laborMarket, plant,controlType.getController(), null, null).getDepartment();
-
-                //       seller.registerHumanResources(plant, hr);
-                hr.setFixedPayStructure(fixedPayStructure);
-
-            //    hr.setPredictor(PurchasesPredictor.Factory.newPurchasesPredictor(purchasesPricePreditorStrategy,hr));
+                buildSalesDepartmentToFirm(built);
+                Plant plant = buildPlantForFirm(built);
+                buildHrForFirm(plant, built);
 
 
             }
@@ -291,6 +268,39 @@ public class MonopolistScenario extends Scenario {
 
         model.addAgent(built);
         return built;
+    }
+
+    protected void buildHrForFirm(Plant plant, Firm built) {
+        //human resources
+        HumanResources hr;
+
+        hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, built,
+                laborMarket, plant,controlType.getController(), null, null).getDepartment();
+
+        //       seller.registerHumanResources(plant, hr);
+        hr.setFixedPayStructure(fixedPayStructure);
+
+        //    hr.setPredictor(PurchasesPredictor.Factory.newPurchasesPredictor(purchasesPricePreditorStrategy,hr));
+    }
+
+    protected Plant buildPlantForFirm(Firm built) {
+        //add the plant
+        Plant plant = new Plant(blueprint, built);
+        plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, built, 0, plant));
+        plant.setCostStrategy(new InputCostStrategy(plant));
+        built.addPlant(plant);
+        return plant;
+    }
+
+    protected void buildSalesDepartmentToFirm(Firm built) {
+        //sales department
+        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(built, goodMarket,
+                new SimpleBuyerSearch(goodMarket, built), new SimpleSellerSearch(goodMarket, built),
+                salesDepartmentType);
+        dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(salesPricePreditorStrategy,dept));
+        built.registerSaleDepartment(dept, GoodType.GENERIC);
+        AskPricingStrategy askPricingStrategy = AskPricingStrategy.Factory.newAskPricingStrategy(this.askPricingStrategy, dept);
+        dept.setAskPricingStrategy(askPricingStrategy); //set strategy to PID
     }
 
 

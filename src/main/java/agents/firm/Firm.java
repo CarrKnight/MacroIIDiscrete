@@ -347,7 +347,10 @@ public class Firm extends EconomicAgent {
 
     @Override
     public void consumeAll() {
-        throw new UnsupportedOperationException("Still to do"); //TODO do this
+        for(GoodType type : GoodType.values())
+            while(!type.isLabor() && this.hasAny(type))
+                this.consume(type);
+
     }
 
 

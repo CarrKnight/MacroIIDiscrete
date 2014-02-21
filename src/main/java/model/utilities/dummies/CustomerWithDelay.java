@@ -10,6 +10,7 @@ import com.google.common.base.Preconditions;
 import financial.market.Market;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -31,7 +32,7 @@ import java.util.LinkedList;
  * @version 2013-04-23
  * @see
  */
-public class DummyBuyerWithDelay extends DummyBuyer {
+public class CustomerWithDelay extends Customer {
 
     /**
      * how many consecutive days the closingprice/bestoffer has to be below our
@@ -44,18 +45,21 @@ public class DummyBuyerWithDelay extends DummyBuyer {
      */
     private long defaultPrice=-1l;
 
+    /**
+     * what is the real price of the customer
+     */
+    final private long originalMaxPrice;
+
     final private Market market;
 
     private final LinkedList<Long> delayQueue;
 
 
-    /**
-     * are we placing the real offer or the default price?
-     */
-    private boolean realOffer = false;
 
-    public DummyBuyerWithDelay(final MacroII model, long price, final int delay, final Market market) {
+    public CustomerWithDelay(final MacroII model, long price, final int delay, final Market market) {
         super(model, price,market);
+        originalMaxPrice = price;
+        maxPrice = defaultPrice;
         Preconditions.checkArgument(delay>=1);
         this.delay = delay;
         this.market = market;
@@ -66,14 +70,14 @@ public class DummyBuyerWithDelay extends DummyBuyer {
 
 
         //schedule yourself to check for delay
-        model.scheduleSoon(ActionOrder.THINK,new Steppable() {
+        model.scheduleSoon(ActionOrder.TRADE,new Steppable() {
             @Override
             public void step(SimState state) {
 
                 try {
                     checkPriceStep(market);
 
-                    model.scheduleTomorrow(ActionOrder.THINK,this);
+                    model.scheduleTomorrow(ActionOrder.TRADE,this, Priority.FINAL);
 
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
@@ -83,8 +87,10 @@ public class DummyBuyerWithDelay extends DummyBuyer {
 
 
             }
-        });
+        }, Priority.FINAL);
     }
+
+
 
     private void checkPriceStep(Market market) throws IllegalAccessException {
 
@@ -100,14 +106,17 @@ public class DummyBuyerWithDelay extends DummyBuyer {
     {
 
         if(delayQueue.size() < delay)
-            realOffer = false;
+            maxPrice = defaultPrice;
+
         else
         {
-            long oldPrice = delayQueue.poll();
-            if(oldPrice<= super.quotedPrice && oldPrice != -1 )
-                realOffer=true;
+            long oldPrice = delayQueue.pop();
+            if(oldPrice<= originalMaxPrice && oldPrice != -1 )
+            {
+                maxPrice = this.getCash()-1;
+            }
             else
-                realOffer=false;
+                maxPrice = defaultPrice;
         }
 
 
@@ -115,39 +124,5 @@ public class DummyBuyerWithDelay extends DummyBuyer {
     }
 
 
-    /**
-     * Dummy buyers have a fixed price with which they pretend to buy
-     *
-     * @return
-     */
-    @Override
-    public long getFixedPrice() {
-        if(realOffer)
-            return super.getFixedPrice();
-        else
-            return defaultPrice;
-    }
 
-
-    /**
-     * Gets price asked until the delay is over -1 means no offer.
-     *
-     * @return Value of price asked until the delay is over -1 means no offer.
-     */
-    public long getDefaultPrice() {
-        return defaultPrice;
-    }
-
-    /**
-     * Sets new price asked until the delay is over -1 means no offer.
-     *
-     * @param defaultPrice New value of price asked until the delay is over -1 means no offer.
-     */
-    public void setDefaultPrice(long defaultPrice) {
-        this.defaultPrice = defaultPrice;
-    }
-
-    public boolean isRealOffer() {
-        return realOffer;
-    }
 }

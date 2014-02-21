@@ -1125,7 +1125,7 @@ public abstract class Market implements Deactivatable{
         return volume;
     }
 
-    public MarketData getMarketData() {
+    public MarketData getData() {
         return marketData;
     }
 

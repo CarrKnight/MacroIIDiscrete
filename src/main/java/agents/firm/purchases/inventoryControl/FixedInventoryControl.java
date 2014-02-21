@@ -152,7 +152,7 @@ public class FixedInventoryControl extends AbstractInventoryControl {
     public void setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(float howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch) {
         Preconditions.checkArgument(howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch >= 1f, "the argument has to be above 1!");
 
-                this.howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch = howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch;
+        this.howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch = howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch;
     }
 
 
@@ -175,24 +175,19 @@ public class FixedInventoryControl extends AbstractInventoryControl {
     public int estimateDemandGap() {
         //if for whatever reason there was nothing to buy left today, we can't really use today's trade as a decent observation on what the real supply is
         try{
-        if(getPurchasesDepartment().getMarket().getBestSeller() == null && getPurchasesDepartment().getTodayInflow() > 0
+            if(getPurchasesDepartment().getMarket().getBestSeller() == null && getPurchasesDepartment().getTodayInflow() > 0
 
-                ||
-                getPurchasesDepartment().getTodayInflow() == 0 && !getPurchasesDepartment().canBuy())
-            //or another useless observation is when you bought nothing because you needed nothing
-            return 1000;
+                    ||
+                    getPurchasesDepartment().getTodayInflow() == 0 && !getPurchasesDepartment().canBuy())
+                //or another useless observation is when you bought nothing because you needed nothing
+                return 1000;
         }
         catch (IllegalAccessException e){}
-        if(rateInventory().equals(Level.ACCEPTABLE))
-            return  0;
-        else
-        {
-            int currentInventory = getPurchasesDepartment().getCurrentInventory();
-            if( currentInventory< inventoryTarget)
-                return  currentInventory-inventoryTarget;
-            else
-                return currentInventory - Math.round(inventoryTarget *howManyTimesOverInventoryHasToBeOverTargetToBeTooMuch);
 
-        }
+
+        return  0;
+
+
     }
+
 }

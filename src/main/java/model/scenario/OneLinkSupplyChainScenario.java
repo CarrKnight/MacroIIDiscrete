@@ -22,7 +22,6 @@ import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesFixedPID;
-import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.SalesDepartmentOneAtATime;
@@ -30,10 +29,7 @@ import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
-import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
-import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
-import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import financial.market.EndOfPhaseOrderHandler;
@@ -47,16 +43,11 @@ import model.utilities.ActionOrder;
 import model.utilities.dummies.Customer;
 import model.utilities.filters.ExponentialFilter;
 import model.utilities.pid.PIDController;
-import model.utilities.stats.collectors.DailyStatCollector;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import javax.annotation.Nullable;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
-import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 import static org.mockito.Mockito.*;
 
 /**
@@ -261,6 +252,11 @@ public class OneLinkSupplyChainScenario extends Scenario {
             strategy2.setSpeed(beefPricingSpeed);
             dept.setAskPricingStrategy(strategy2);
 
+/*            SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept);
+            strategy.setGains(strategy.getProportionalGain()/divideProportionalGainByThis,strategy.getIntegralGain()/divideIntegrativeGainByThis,0);
+            strategy.setSpeed(beefPricingSpeed);
+            dept.setAskPricingStrategy(strategy);
+  */
 
             buildBeefSalesPredictor(dept);
 
@@ -488,111 +484,6 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
 
 
-
-    /**
-     * Runs the supply chain with no GUI and writes a big CSV file
-     * @param args
-     */
-    public static void main(String[] args)
-    {
-
-
-        final MacroII macroII = new MacroII(System.currentTimeMillis());
-        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII,GoodType.BEEF){
-
-            @Override
-            protected void buildBeefSalesPredictor(SalesDepartment dept) {
-                FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
-                predictor.setDecrementDelta(2);
-                dept.setPredictorStrategy(predictor);
-            }
-
-
-
-            @Override
-            public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
-                department.setPredictor(new FixedIncreasePurchasesPredictor(0));
-
-            }
-
-            @Override
-            protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
-                final SalesDepartment department = super.createSalesDepartment(firm, goodmarket);
-                if(goodmarket.getGoodType().equals(GoodType.FOOD))
-                    department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
-
-
-                if(goodmarket.getGoodType().equals(GoodType.BEEF))
-                {
-                    SalesControlWithFixedInventoryAndPID askPricingStrategy =
-                            new SalesControlWithFixedInventoryAndPID(department);
-                    department.setAskPricingStrategy(askPricingStrategy);
-                    askPricingStrategy.setGainsSlavePID(askPricingStrategy.getProportionalGain()/divideProportionalGainByThis,
-                            askPricingStrategy.getIntegralGain()/divideIntegrativeGainByThis, askPricingStrategy.getDerivativeGain());
-                    model.scheduleAnotherDay(ActionOrder.CLEANUP_DATA_GATHERING,new Steppable() {
-                        @Override
-                        public void step(SimState state) {
-                            department.getData().writeToCSVFile(new File("supplySales.csv"));
-                        }
-                    },10000);
-                }
-
-                return department;
-            }
-
-            @Override
-            protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
-                HumanResources hr = super.createPlant(blueprint, firm, laborMarket);
-                if(blueprint.getOutputs().containsKey(GoodType.BEEF))      {
-                    hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
-                }
-                else
-                    hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
-                return hr;
-            }
-        };
-        scenario1.setControlType(MarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-        scenario1.setBeefPriceFilterer(null);
-
-        //competition!
-        scenario1.setNumberOfBeefProducers(1);
-        scenario1.setNumberOfFoodProducers(2);
-
-        scenario1.setDivideProportionalGainByThis(100f);
-        scenario1.setDivideIntegrativeGainByThis(100f);
-        //no delay
-        scenario1.setBeefPricingSpeed(0);
-
-
-        macroII.setScenario(scenario1);
-        macroII.start();
-
-        //create the CSVWriter
-        try {
-            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/newrun.csv"));
-            DailyStatCollector collector = new DailyStatCollector(macroII,writer);
-            collector.start();
-
-        } catch (IOException e) {
-            System.err.println("failed to create the file!");
-        }
-
-
-
-
-
-
-
-        while(macroII.schedule.getTime()<15000)
-        {
-            macroII.schedule.step(macroII);
-            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
-        }
-
-
-
-    }
 
 
 

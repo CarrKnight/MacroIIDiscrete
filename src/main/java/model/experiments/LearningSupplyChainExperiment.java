@@ -52,61 +52,69 @@ public class LearningSupplyChainExperiment {
 
 
     public static void main(String[] args){
-        monopolist(false, System.currentTimeMillis());
+        monopolist(true, false,-4874356916490738738l);
+        //  beefLearned();
     }
 
-    public static void monopolist(final boolean learned, long seed)
+    public static void monopolist(final boolean beefLearned, final boolean foodLearned, long seed)
     {
         final MacroII macroII = new MacroII(seed);
-        final SalesDepartment[] outerDepartment = new SalesDepartment[1];
 
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1= new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
 
 
-                @Override
-                protected void buildBeefSalesPredictor(SalesDepartment dept) {
-                    if(learned)
-                    {
-                        FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
-                        predictor.setDecrementDelta(2);
-                        dept.setPredictorStrategy(predictor);
-                    }
-                    else{
-                        dept.setPredictorStrategy(new RecursiveSalePredictor(model,dept,500));
-                    }
+            @Override
+            protected void buildBeefSalesPredictor(SalesDepartment dept) {
+                if(beefLearned)
+                {
+                    FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.
+                            newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
+                    predictor.setDecrementDelta(2);
+                    dept.setPredictorStrategy(predictor);
                 }
+                else{
+                    assert dept.getPredictorStrategy() instanceof RecursiveSalePredictor; //assuming here nothing has been changed and we are still dealing with recursive sale predictors
+                    dept.setPredictorStrategy(new RecursiveSalePredictor(model,dept,500));
+                }
+            }
 
 
 
-                @Override
-                public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
+            @Override
+            public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
+                if(foodLearned)
                     department.setPredictor(new FixedIncreasePurchasesPredictor(0));
 
-                }
+            }
 
-                @Override
-                protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
-                    SalesDepartment department = super.createSalesDepartment(firm, goodmarket);
-                    if(goodmarket.getGoodType().equals(GoodType.FOOD))
+            @Override
+            protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
+                SalesDepartment department = super.createSalesDepartment(firm, goodmarket);
+                if(goodmarket.getGoodType().equals(GoodType.FOOD))  {
+                    if(foodLearned)
                         department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
-                    else
-                        outerDepartment[0] = department;
-                    return department;
                 }
+                return department;
+            }
 
-                @Override
-                protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
-                    HumanResources hr = super.createPlant(blueprint, firm, laborMarket);
-                    if(blueprint.getOutputs().containsKey(GoodType.BEEF))
-                        if(learned){
+            @Override
+            protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
+                HumanResources hr = super.createPlant(blueprint, firm, laborMarket);
+                if(blueprint.getOutputs().containsKey(GoodType.BEEF))
+                {
+                    if(beefLearned){
                         hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
-                        }
-                    if(blueprint.getOutputs().containsKey(GoodType.FOOD))
-                        hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
-                    return hr;
+                    }
                 }
+                if(blueprint.getOutputs().containsKey(GoodType.FOOD))
+                {
+                    if(foodLearned)
+                        hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
+                }
+                return hr;
+            }
 
-            };
+        };
 
         scenario1.setControlType(MarginalMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
@@ -143,8 +151,6 @@ public class LearningSupplyChainExperiment {
         {
             macroII.schedule.step(macroII);
             printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
-            if(macroII.schedule.getTime() % 1000 == 0)
-                System.out.println( macroII.getMarket(GoodType.BEEF).getYesterdayVolume());
         }
 
 
@@ -161,9 +167,9 @@ public class LearningSupplyChainExperiment {
         }
 
 
-        outerDepartment[0].getData().writeToCSVFile(Paths.get("runs","supplychai","supplySales.csv").toFile());
 
-//        System.out.println(Arrays.toString(((RecursiveSalePredictor) outerDepartment[0].getPredictorStrategy()).getBeta()));
+        ((Firm)macroII.getMarket(GoodType.FOOD).getSellers().iterator().next()).getPurchaseDepartment(GoodType.BEEF).getPurchasesData().writeToCSVFile(Paths.get("runs","supplychai","beefBuying.csv").toFile());
+
         System.out.println("beef price: " +averageBeefPrice.getMean() );
         System.out.println("food price: " +averageFoodPrice.getMean() );
         System.out.println("produced: " +averageBeefProduced.getMean() );
@@ -172,4 +178,6 @@ public class LearningSupplyChainExperiment {
 
 
     }
+
+
 }

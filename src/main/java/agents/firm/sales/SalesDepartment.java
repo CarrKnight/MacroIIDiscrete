@@ -154,7 +154,7 @@ public abstract class  SalesDepartment  implements Department {
     /**
      * average last week price weighted by outflow
      */
-    private final WeightedMovingAverage<Long,Double> averagedPrice = new WeightedMovingAverage<>(500);
+    private WeightedMovingAverage<Long,Double> averagedPrice = new WeightedMovingAverage<>(500);
 
 
 
@@ -605,7 +605,10 @@ public abstract class  SalesDepartment  implements Department {
         //make sure there is no sale result associated to it
         assert !salesResults.containsKey(g);
 
+
         return toReturn;
+
+
 
 
     }
@@ -1087,8 +1090,9 @@ public abstract class  SalesDepartment  implements Department {
                 aboutToUpdateQuotes=false;
                 //go through all the old quotes
                 for(Quote q : goodsToRequote){
+                    if(firm.has(q.getGood())) //it might have been consumed it in the process for whatever reason
                     //resell it tomorrow
-                    newGoodToSell(q.getGood());//sell it again
+                        newGoodToSell(q.getGood());//sell it again
 
 
                 }
@@ -1463,6 +1467,11 @@ public abstract class  SalesDepartment  implements Department {
     @Override
     public boolean hasTradedAtLeastOnce() {
         return lastClosingPrice >=0 ; //lastclosing price is -1 until one trade occurs!
+    }
+
+
+    public void setAveragedPrice(WeightedMovingAverage<Long, Double> averagedPrice) {
+        this.averagedPrice = averagedPrice;
     }
 }
 

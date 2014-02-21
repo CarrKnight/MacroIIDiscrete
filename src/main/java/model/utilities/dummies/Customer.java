@@ -49,7 +49,7 @@ public class Customer extends EconomicAgent{
      * the maximum price the customer is willing to pay for its stuff, that is
      * oilPrice + distanceCost * distance <= maxPrice to buy.
      */
-    private long maxPrice;
+    protected long maxPrice;
 
 
     /**
@@ -114,7 +114,8 @@ public class Customer extends EconomicAgent{
         //cancel all previous quotes
         //place all the orders you need
         for(int i=0; i<dailyDemand-hasHowMany(market.getGoodType()); i++)
-            market.submitBuyQuote(this,maxPrice);
+            if(maxPrice >= 0)
+                market.submitBuyQuote(this,maxPrice);
 
 
 

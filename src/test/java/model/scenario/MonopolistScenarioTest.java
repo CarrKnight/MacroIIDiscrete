@@ -395,15 +395,14 @@ public class MonopolistScenarioTest {
     public void rightPriceAndQuantityTestRandomControlRandomSlopesFlowsOnly()
     {
 
-        //run the tests on failures first
-        LinkedList<Long> previouslyFailedSeeds = new LinkedList<>();
+
 
 
 
         //run the test 15 times
-        for(int i=0; i<50; i++)
+        for(int i=0; i<15; i++)
         {
-            long seed = i < previouslyFailedSeeds.size() ? previouslyFailedSeeds.get(i) : System.currentTimeMillis();
+            long seed = System.currentTimeMillis();
 
             final MacroII macroII = new MacroII(seed);
             MonopolistScenario scenario1 = new MonopolistScenario(macroII);
@@ -688,14 +687,15 @@ public class MonopolistScenarioTest {
                 marketSanityCheck(macroII, scenario1);
             }
 
+            System.out.println(macroII.getMarket(GoodType.GENERIC).getYesterdayVolume());
 
             assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
             assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79,1);
             if(i==0)
             {
 
-                scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("lamerbuy.csv").toFile());
-                scenario1.monopolist.getSalesDepartment(GoodType.GENERIC).getData().writeToCSVFile(Paths.get("lamersell.csv").toFile());
+                scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("runs","lamerbuy.csv").toFile());
+                scenario1.monopolist.getSalesDepartment(GoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs","lamersell.csv").toFile());
             }
 
 
@@ -722,7 +722,7 @@ public class MonopolistScenarioTest {
         double goods = scenario1.monopolist.getSalesDepartment(GoodType.GENERIC).getLatestObservation(SalesDataType.OUTFLOW);
         if(macroII.schedule.getTime()>1 && goods > 0){
             double askprice =  scenario1.monopolist.getSalesDepartment(GoodType.GENERIC).getLatestObservation(SalesDataType.CLOSING_PRICES);
-            Assert.assertEquals(101-goods,askprice,.01d);
+            Assert.assertEquals("price: " + askprice + ", supposed price given trade: " + (101-goods),101-goods,askprice,.01d);
         }
     }
 
@@ -735,7 +735,7 @@ public class MonopolistScenarioTest {
     @Test
     public void rightPriceAndQuantityTestAsMarginalWithSalesControlFlowPIDWithFixedInventory()
     {
-        for(int i=0; i<50; i++)
+        for(int i=0; i<10; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -786,7 +786,7 @@ public class MonopolistScenarioTest {
     }
 
 
-    @Test
+    //@Test crazy marginal was a bad idea, no need to test it further
     public void rightPriceAndQuantityTestAsCrazyMarginal()
     {
         for(int i=0; i<10; i++)
@@ -945,7 +945,7 @@ public class MonopolistScenarioTest {
 
 
 
-    @Test
+    //@Test crazy marginal was a bad idea, no need to test it further
     public void rightPriceAndQuantityTestRandomControlRandomSlopesCrazyMarginal()
     {
 
