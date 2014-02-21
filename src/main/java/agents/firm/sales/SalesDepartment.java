@@ -154,7 +154,7 @@ public abstract class  SalesDepartment  implements Department {
     /**
      * average last week price weighted by outflow
      */
-    private final WeightedMovingAverage<Long,Double> averagedPrice = new WeightedMovingAverage<>(500);
+    private WeightedMovingAverage<Long,Double> averagedPrice = new WeightedMovingAverage<>(500);
 
 
 
@@ -1467,6 +1467,11 @@ public abstract class  SalesDepartment  implements Department {
     @Override
     public boolean hasTradedAtLeastOnce() {
         return lastClosingPrice >=0 ; //lastclosing price is -1 until one trade occurs!
+    }
+
+
+    public void setAveragedPrice(WeightedMovingAverage<Long, Double> averagedPrice) {
+        this.averagedPrice = averagedPrice;
     }
 }
 

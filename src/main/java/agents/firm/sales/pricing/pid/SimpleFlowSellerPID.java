@@ -178,6 +178,8 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         sales.getFirm().getModel().scheduleSoon(ActionOrder.THINK, new Steppable() {
             @Override
             public void step(SimState simState) {
+                if(!active)
+                    return;
                 //we changed the prices, need to update the stockout counter
                 stockOuts.newPIDStep(market);
                 sales.getFirm().getModel().scheduleTomorrow(ActionOrder.THINK,this);
