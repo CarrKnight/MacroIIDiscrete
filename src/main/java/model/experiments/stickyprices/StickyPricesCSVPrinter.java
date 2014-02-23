@@ -16,6 +16,7 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
+import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Preconditions;
@@ -67,8 +68,12 @@ public class StickyPricesCSVPrinter {
 
    //     badlyOptimizedNoInventorySupplyChain(0,.08f,.16f,0,Paths.get("runs","supplychai","paper","badlyOptimized.csv").toFile());
     //    badlyOptimizedNoInventorySupplyChain(0,.08f/100f,.16f/100f, 0, Paths.get("runs","supplychai","paper","slowedBadlyOptimized.csv").toFile());
-        badlyOptimizedNoInventorySupplyChain(0,.08f,.16f, 100, Paths.get("runs","supplychai","paper","stickyBadlyOptimized.csv").toFile());
+ //        badlyOptimizedNoInventorySupplyChain(0,.08f,.16f, 100, Paths.get("runs","supplychai","paper","stickyBadlyOptimized.csv").toFile());
 
+
+        runWithoutDelayWithInventory();
+        runWithDelayWithInventory(10, 0, 1, true, false, 0);
+        runWithDelayWithInventory(10,10,1,true,false,0);
         //beefMonopolistRuns()
 
 
@@ -582,6 +587,108 @@ public class StickyPricesCSVPrinter {
         System.out.println("food price: " + averageFoodPrice.getMean() );
         System.out.println("produced: " + averageBeefProduced.getMean() );
         System.out.println();
+
+    }
+
+
+
+
+    //simple seller run without delay.
+    private static void runWithoutDelayWithInventory() {
+        MacroII macroII = new MacroII(100);
+        SimpleSellerScenario scenario = new SimpleSellerScenario(macroII);
+        macroII.setScenario(scenario);
+
+        scenario.setDemandSlope(-1);
+        scenario.setDemandIntercept(101);
+        scenario.setDemandShifts(false);
+        scenario.setSellerStrategy(SalesControlWithFixedInventoryAndPID.class); // no inventory
+        scenario.setDestroyUnsoldInventoryEachDay(false);
+        scenario.setNumberOfSellers(1);
+        scenario.setInflowPerSeller(50);
+        scenario.setBuyerDelay(0);
+        //fix the pid parameters
+
+
+        DailyStatCollector.addDailyStatCollectorToModel(Paths.get("runs", "supplychai", "paper", "simpleInventorySeller.csv").toFile(), macroII);
+        macroII.start();
+
+        final SalesControlWithFixedInventoryAndPID askPricingStrategy = new SalesControlWithFixedInventoryAndPID(scenario.getDepartments().get(0),100,
+
+                .1f, .1f, 0f);
+        scenario.getDepartments().get(0).setAskPricingStrategy(askPricingStrategy);
+        askPricingStrategy.setInitialPrice(80); //so the run is the same for all possible runs
+
+        for(int i=0; i< 15000; i++)
+        {
+            macroII.schedule.step(macroII);
+            MarginalMaximizerPIDTuning.printProgressBar(15000, i, 20);
+        }
+    }
+
+
+    //simple seller with delay
+    private static SimpleSellerScenario runWithDelayWithInventory
+    (int buyerDelay, int pidSpeed, float dividePIParametersByThis, boolean writeToFile, boolean randomize, int seed) {
+        Preconditions.checkArgument(pidSpeed >= 0);
+        Preconditions.checkArgument(dividePIParametersByThis > 0);
+
+        MacroII macroII;
+        macroII = new MacroII(seed);
+
+        SimpleSellerScenario scenario = new SimpleSellerScenario(macroII);
+        macroII.setScenario(scenario);
+
+        scenario.setDemandSlope(-1);
+        scenario.setDemandIntercept(101);
+        scenario.setDemandShifts(false);
+        scenario.setSellerStrategy(SalesControlWithFixedInventoryAndPID.class); // no inventory
+        scenario.setDestroyUnsoldInventoryEachDay(false);
+        scenario.setNumberOfSellers(1);
+        scenario.setInflowPerSeller(50);
+        scenario.setBuyerDelay(buyerDelay);
+
+        macroII.start();
+
+        //the explicit cast has to be true because we set the strategy to be so earlier
+        //change the PI values if needed!
+        float proportionalAndIntegralGain = .1f / dividePIParametersByThis;
+        final SalesControlWithFixedInventoryAndPID askPricingStrategy = new SalesControlWithFixedInventoryAndPID(
+                scenario.getDepartments().get(0),100,
+                proportionalAndIntegralGain, proportionalAndIntegralGain, 0f);
+        askPricingStrategy.setSpeed(pidSpeed);
+        if(!randomize)
+            askPricingStrategy.setInitialPrice(80); //so the run is the same for all possible runs
+        else
+            askPricingStrategy.setInitialPrice(macroII.getRandom().nextInt(100));
+        scenario.getDepartments().get(0).setAskPricingStrategy(askPricingStrategy);
+
+
+
+
+
+
+
+
+        for(int i=0; i< 15000; i++)
+        {
+            macroII.schedule.step(macroII);
+            MarginalMaximizerPIDTuning.printProgressBar(15000, i, 20);
+        }
+        if(writeToFile)
+        {
+            //i use the sales department data as it shows the "offered" price rather than just the closing one
+            final String filename = pidSpeed == 0 && dividePIParametersByThis == 1 ? "inventory_withDelays" + buyerDelay + ".csv"
+                    : "inventory_demandDelay" + buyerDelay + "speed" + pidSpeed + "slowness" + dividePIParametersByThis + ".csv";
+
+            scenario.getDepartments().get(0).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper", filename).toFile());
+        }
+
+
+        macroII.finish();
+
+        return scenario;
+
 
     }
 
