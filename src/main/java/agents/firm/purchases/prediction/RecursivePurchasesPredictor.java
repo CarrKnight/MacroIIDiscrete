@@ -44,6 +44,15 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
 
     }
 
+    public RecursivePurchasesPredictor(MacroII model, PurchasesDepartment department,int movingAverageSize) {
+        super(model, new double[AbstractRecursivePredictor.defaultPriceLags + AbstractRecursivePredictor.defaultIndependentLags + 1],
+                AbstractRecursivePredictor.defaultPriceLags, AbstractRecursivePredictor.defaultIndependentLags, movingAverageSize);
+        this.department = department;
+        if(department instanceof HumanResources)
+            this.setUsingWeights(false);
+    }
+
+
     public RecursivePurchasesPredictor(MacroII model, int priceLags, int independentLags, PurchasesDepartment department) {
         super(model, priceLags, independentLags);
         this.department = department;

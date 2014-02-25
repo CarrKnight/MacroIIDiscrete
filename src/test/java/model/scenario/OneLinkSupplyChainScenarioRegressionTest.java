@@ -1,8 +1,6 @@
 package model.scenario;
 
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
-import agents.firm.purchases.PurchasesDepartment;
-import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
@@ -18,6 +16,7 @@ import org.junit.Test;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -307,6 +306,18 @@ public class OneLinkSupplyChainScenarioRegressionTest
         Assert.assertEquals(result.getQuantity(), 34, 3);
         Assert.assertEquals(result.getBeefPrice(), 34, 5l);
         Assert.assertEquals(result.getFoodPrice(),68,5l );
+    }
+
+    private void checkResultsOfFoodMonopolist(OneLinkSupplyChainResult result) {
+        System.out.println("done with food price: " + result.getFoodPrice() + " quantity " + result.getQuantity() );
+        System.out.println("beef price: " + result.getBeefPrice() );
+        System.out.println();
+        //the food price is in the ballpark
+        //with competition, you are better off testing an MA
+
+        Assert.assertEquals(result.getBeefPrice(),17,4l );
+        Assert.assertEquals(result.getFoodPrice(), 85l, 5l);
+        Assert.assertEquals(result.getQuantity(),17,3);
     }
 
 
@@ -821,7 +832,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return             everybodyLearningCompetitiveStickyPIDRun(random.nextLong());
+                            return             OneLinkSupplyChainResult.everybodyLearningCompetitiveStickyPIDRun(random.nextLong());
                         }
                     });
 
@@ -838,61 +849,6 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
 
-
-    }
-
-    private OneLinkSupplyChainResult everybodyLearningCompetitiveStickyPIDRun(long random) {
-        final MacroII macroII = new MacroII(random);
-        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
-
-        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-        scenario1.setBeefPriceFilterer(null);
-
-
-        //competition!
-        scenario1.setNumberOfBeefProducers(5);
-        scenario1.setNumberOfFoodProducers(5);
-
-        scenario1.setDivideProportionalGainByThis(1f);
-        scenario1.setDivideIntegrativeGainByThis(1f);
-        //no delay
-        scenario1.setBeefPricingSpeed(50);
-
-
-        macroII.setScenario(scenario1);
-        macroII.start();
-
-
-        while(macroII.schedule.getTime()<9000)
-        {
-            macroII.schedule.step(macroII);
-            printProgressBar(9001,(int)macroII.schedule.getSteps(),100);
-        }
-
-
-        //I used to assert this:
-        //Assert.assertEquals(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),85l,6l );
-        //but that's too hard because while on average the price hovers there, competition is noisy. Sometimes a lot.
-        //so what I did was to attach a daily stat collector and then check the average of the last 10 prices
-        float averageFoodPrice = 0;
-        float averageBeefProduced = 0;
-        float averageBeefPrice=0;
-        for(int j=0; j< 1000; j++)
-        {
-            //make the model run one more day:
-            macroII.schedule.step(macroII);
-            averageFoodPrice += macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
-            averageBeefProduced+= macroII.getMarket(GoodType.BEEF).countTodayProductionByRegisteredSellers();
-            averageBeefPrice+= macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
-        }
-
-        System.out.println("beef price: " +averageBeefPrice/1000f );
-        System.out.println("food price: " +averageFoodPrice/1000f );
-        System.out.println("produced: " +averageBeefProduced/1000f );
-        System.out.println();
-
-
-        return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f);
 
     }
 
@@ -1103,17 +1059,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
       
 
 
-    private void checkResultsOfFoodMonopolist(OneLinkSupplyChainResult result) {
-        System.out.println("done with food price: " + result.getFoodPrice() + " quantity " + result.getQuantity() );
-        System.out.println("beef price: " + result.getBeefPrice() );
-        System.out.println();
-        //the food price is in the ballpark
-        //with competition, you are better off testing an MA
 
-        Assert.assertEquals(result.getBeefPrice(),17,4l );
-        Assert.assertEquals(result.getFoodPrice(), 85l, 5l);
-        Assert.assertEquals(result.getQuantity(),17,3);
-    }
 
     @Test
     public void testFoodMonopolistWithSlowPIDAndFixedQuantity() throws ExecutionException, InterruptedException {
@@ -1235,7 +1181,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     // Now the food monopolist isn't told to produce the right amount, but it knows the price drops by 2 every increase in production
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // @Test
+    @Test
     public  void alreadyLearnedFoodMonopolistSlowPID() throws ExecutionException, InterruptedException {
 
 
@@ -1258,7 +1204,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return alreadyLearnedFoodMonopolistSlowPIDRun(random.nextLong());
+                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextLong(),100,0,true,true,null);
                         }
                     });
 
@@ -1275,67 +1221,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     }
 
-    private OneLinkSupplyChainResult alreadyLearnedFoodMonopolistSlowPIDRun(long random) {
-        final MacroII macroII = new MacroII(random);
-        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
-
-            @Override
-            public void buildFoodPurchasesPredictor(PurchasesDepartment dept) {
-                FixedIncreasePurchasesPredictor predictor  = FixedIncreasePurchasesPredictor.Factory.
-                        newPurchasesPredictor(FixedIncreasePurchasesPredictor.class, dept);
-                predictor.setIncrementDelta(1);
-                dept.setPredictor(predictor);
-            }
-
-
-        };
-        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-        scenario1.setBeefPriceFilterer(null);
-
-
-        //competition!
-        scenario1.setNumberOfBeefProducers(5);
-        scenario1.setNumberOfFoodProducers(1);
-
-        scenario1.setDivideProportionalGainByThis(100f);
-        scenario1.setDivideIntegrativeGainByThis(100f);
-        //no delay
-        scenario1.setBeefPricingSpeed(0);
-
-
-        macroII.setScenario(scenario1);
-        macroII.start();
-
-
-
-        while(macroII.schedule.getTime()<14000)
-        {
-            macroII.schedule.step(macroII);
-            printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
-        }
-
-
-        //I used to assert this:
-        //Assert.assertEquals(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),85l,6l );
-        //but that's too hard because while on average the price hovers there, competition is noisy. Sometimes a lot.
-        //so what I did was to attach a daily stat collector and then check the average of the last 10 prices
-        float averageFoodPrice = 0;
-        float averageBeefProduced = 0;
-        float averageBeefPrice=0;
-        for(int j=0; j< 1000; j++)
-        {
-            //make the model run one more day:
-            macroII.schedule.step(macroII);
-            averageFoodPrice += macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
-            averageBeefProduced+= macroII.getMarket(GoodType.BEEF).getYesterdayVolume();
-            averageBeefPrice+= macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
-
-        }
-
-        return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f);
-    }
-
-    //    @Test
+    @Test
     public  void alreadyLearnedFoodMonopolistStickyPID() throws ExecutionException, InterruptedException {
 
 
@@ -1358,7 +1244,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return alreadyLearnedFoodMonopolistStickyPIDRun(random.nextLong());
+                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextLong(), 1, 100, true, true, null);
                         }
                     });
 
@@ -1376,64 +1262,6 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     }
 
-    private OneLinkSupplyChainResult alreadyLearnedFoodMonopolistStickyPIDRun(long random) {
-        final MacroII macroII = new MacroII(random);
-        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
-
-            @Override
-            public void buildFoodPurchasesPredictor(PurchasesDepartment dept) {
-                FixedIncreasePurchasesPredictor predictor  = FixedIncreasePurchasesPredictor.Factory.
-                        newPurchasesPredictor(FixedIncreasePurchasesPredictor.class, dept);
-                predictor.setIncrementDelta(1);
-                dept.setPredictor(predictor);
-            }
-
-
-
-        };
-        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-        scenario1.setBeefPriceFilterer(null);
-
-        //competition!
-        scenario1.setNumberOfBeefProducers(5);
-        scenario1.setNumberOfFoodProducers(1);
-
-        scenario1.setDivideProportionalGainByThis(1f);
-        scenario1.setDivideIntegrativeGainByThis(1f);
-        //no delay
-        scenario1.setBeefPricingSpeed(100);
-
-
-        macroII.setScenario(scenario1);
-        macroII.start();
-
-
-        while(macroII.schedule.getTime()<14000)
-        {
-            macroII.schedule.step(macroII);
-            printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
-        }
-
-
-        //I used to assert this:
-        //Assert.assertEquals(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),85l,6l );
-        //but that's too hard because while on average the price hovers there, competition is noisy. Sometimes a lot.
-        //so what I did was to attach a daily stat collector and then check the average of the last 10 prices
-        float averageFoodPrice = 0;
-        float averageBeefProduced = 0;
-        float averageBeefPrice=0;
-        for(int j=0; j< 1000; j++)
-        {
-            //make the model run one more day:
-            macroII.schedule.step(macroII);
-            averageFoodPrice += macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
-            averageBeefProduced+= macroII.getMarket(GoodType.BEEF).getYesterdayVolume();
-            averageBeefPrice+= macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
-
-        }
-
-        return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f);
-    }
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1441,7 +1269,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    // @Test
+    @Test
     public  void learningFoodMonopolistSlowPID() throws ExecutionException, InterruptedException {
 
 
@@ -1451,7 +1279,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
-        for(int i=0; i <5; i++)
+        for(int i=0; i <1; i++)
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
@@ -1464,7 +1292,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return learningFoodMonopolistSlowPIDRun(random.nextLong());
+                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextLong(), 100, 0, false, false, null);
                         }
                     });
 
@@ -1481,57 +1309,9 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     }
 
-    private OneLinkSupplyChainResult learningFoodMonopolistSlowPIDRun(long random) {
-        final MacroII macroII = new MacroII(random);
-        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
-
-        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-        scenario1.setBeefPriceFilterer(null);
 
 
-        //competition!
-        scenario1.setNumberOfBeefProducers(5);
-        scenario1.setNumberOfFoodProducers(1);
-
-        scenario1.setDivideProportionalGainByThis(100f);
-        scenario1.setDivideIntegrativeGainByThis(100f);
-        //no delay
-        scenario1.setBeefPricingSpeed(0);
-
-
-        macroII.setScenario(scenario1);
-        macroII.start();
-
-
-        while(macroII.schedule.getTime()<14000)
-        {
-            macroII.schedule.step(macroII);
-            printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
-        }
-
-
-        //I used to assert this:
-        //Assert.assertEquals(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),85l,6l );
-        //but that's too hard because while on average the price hovers there, competition is noisy. Sometimes a lot.
-        //so what I did was to attach a daily stat collector and then check the average of the last 10 prices
-        float averageFoodPrice = 0;
-        float averageBeefProduced = 0;
-        float averageBeefPrice=0;
-        for(int j=0; j< 1000; j++)
-        {
-            //make the model run one more day:
-            macroII.schedule.step(macroII);
-            averageFoodPrice += macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
-            averageBeefProduced+= macroII.getMarket(GoodType.BEEF).getYesterdayVolume();
-            averageBeefPrice+= macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
-
-        }
-
-        return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f);
-    }
-
-
-    // @Test
+    @Test
     public  void learningFoodMonopolistStickyPID() throws ExecutionException, InterruptedException {
 
         //this will take a looong time
@@ -1540,7 +1320,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
-        for(int i=0; i <5; i++)
+        for(int i=0; i <1; i++)
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
@@ -1553,7 +1333,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return learningFoodMonopolistStickyPIDRun(random.nextLong());
+                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextLong(), 1, 100, false, false, Paths.get("runs","noone.csv").toFile());
                         }
                     });
 

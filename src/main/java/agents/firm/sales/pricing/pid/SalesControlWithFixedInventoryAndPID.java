@@ -235,6 +235,7 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
         Preconditions.checkArgument(price >= 0);
         controller.setOffset(price);
         roundedPrice = Math.round(controller.getCurrentMV());
+        department.updateQuotes();
     }
 
 

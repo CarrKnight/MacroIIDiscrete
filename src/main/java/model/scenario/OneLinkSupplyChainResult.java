@@ -26,6 +26,7 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.nio.file.Paths;
 
 import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 
@@ -368,6 +369,185 @@ public class OneLinkSupplyChainResult {
         {
             macroII.schedule.step(macroII);
             printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
+        }
+
+
+        //I used to assert this:
+        //Assert.assertEquals(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),85l,6l );
+        //but that's too hard because while on average the price hovers there, competition is noisy. Sometimes a lot.
+        //so what I did was to attach a daily stat collector and then check the average of the last 10 prices
+        float averageFoodPrice = 0;
+        float averageBeefProduced = 0;
+        float averageBeefPrice=0;
+        for(int j=0; j< 1000; j++)
+        {
+            //make the model run one more day:
+            macroII.schedule.step(macroII);
+            averageFoodPrice += macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+            averageBeefProduced+= macroII.getMarket(GoodType.BEEF).countTodayProductionByRegisteredSellers();
+            averageBeefPrice+= macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+        }
+
+        System.out.println("beef price: " +averageBeefPrice/1000f );
+        System.out.println("food price: " +averageFoodPrice/1000f );
+        System.out.println("produced: " +averageBeefProduced/1000f );
+        System.out.println();
+
+
+        return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f);
+
+    }
+
+
+
+    public static OneLinkSupplyChainResult foodMonopolistOneRun(long random, float divideMonopolistGainsByThis, int beefSpeed,
+                                                                final boolean beefLearned, final boolean foodLearned,
+                                                                @Nullable File csvFileToWrite) {
+        final MacroII macroII = new MacroII(random);
+        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
+
+            @Override
+            protected void buildBeefSalesPredictor(SalesDepartment dept) {
+                if(beefLearned){
+                    FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.
+                            newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
+                    predictor.setDecrementDelta(0);
+                    dept.setPredictorStrategy(predictor);
+                }
+                else{
+                    assert dept.getPredictorStrategy() instanceof RecursiveSalePredictor; //assuming here nothing has been changed and we are still dealing with recursive sale predictors
+            //        dept.setPredictorStrategy( new RecursiveSalePredictor(model,dept,500));
+                }
+            }
+
+
+
+            @Override
+            public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
+                if(foodLearned)
+                    department.setPredictor(new FixedIncreasePurchasesPredictor(1));
+                else{
+                  //  department.setPredictor(new RecursivePurchasesPredictor(macroII,department,500));
+                }
+
+            }
+
+            @Override
+            protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
+                SalesDepartment department = super.createSalesDepartment(firm, goodmarket);
+                if(goodmarket.getGoodType().equals(GoodType.FOOD))  {
+                    if(foodLearned)
+                        department.setPredictorStrategy(new FixedDecreaseSalesPredictor(1));
+                }
+                return department;
+            }
+
+            @Override
+            protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
+                HumanResources hr = super.createPlant(blueprint, firm, laborMarket);
+                if(blueprint.getOutputs().containsKey(GoodType.BEEF))
+                {
+                    if(beefLearned){
+                        hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
+                    }
+                }
+                if(blueprint.getOutputs().containsKey(GoodType.FOOD))
+                {
+                    if(foodLearned)
+                        hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
+                }
+                return hr;
+            }
+        };
+        scenario1.setControlType(MarginalMaximizer.class);
+        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setBeefPriceFilterer(null);
+
+        //competition!
+        scenario1.setNumberOfBeefProducers(5);
+        scenario1.setBeefTargetInventory(200);
+        scenario1.setNumberOfFoodProducers(1);
+        scenario1.setFoodTargetInventory(30);
+
+        scenario1.setDivideProportionalGainByThis(divideMonopolistGainsByThis);
+        scenario1.setDivideIntegrativeGainByThis(divideMonopolistGainsByThis);
+        //no delay
+        scenario1.setBeefPricingSpeed(beefSpeed);
+
+
+
+        //add csv writer if needed
+        if(csvFileToWrite != null)
+            DailyStatCollector.addDailyStatCollectorToModel(csvFileToWrite, macroII);
+
+
+
+        macroII.setScenario(scenario1);
+        macroII.start();
+
+
+        while(macroII.schedule.getTime()<14000)
+        {
+            macroII.schedule.step(macroII);
+            printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
+        }
+
+
+        SummaryStatistics averageFoodPrice = new SummaryStatistics();
+        SummaryStatistics averageBeefProduced = new SummaryStatistics();
+        SummaryStatistics averageBeefPrice= new SummaryStatistics();
+        for(int j=0; j< 1000; j++)
+        {
+            //make the model run one more day:
+            macroII.schedule.step(macroII);
+            averageFoodPrice.addValue(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+            averageBeefProduced.addValue(macroII.getMarket(GoodType.BEEF).getYesterdayVolume());
+            averageBeefPrice.addValue(macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+        }
+
+
+        System.out.println("seed: " + random);
+        System.out.println("beef price: " +averageBeefPrice.getMean() );
+        System.out.println("food price: " + averageFoodPrice.getMean() );
+        System.out.println("produced: " + averageBeefProduced.getMean() );
+        System.out.println();
+
+        ((Firm)(macroII.getMarket(GoodType.FOOD).getSellers().iterator().next())).getPurchaseDepartment(GoodType.BEEF).getPurchasesData().writeToCSVFile(
+                Paths.get("runs","purchases.csv").toFile());
+
+
+        return new OneLinkSupplyChainResult(averageBeefPrice.getMean(),
+                averageFoodPrice.getMean(), averageBeefProduced.getMean() );
+
+
+    }
+
+    public static OneLinkSupplyChainResult everybodyLearningCompetitiveStickyPIDRun(long random) {
+        final MacroII macroII = new MacroII(random);
+        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
+
+        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setBeefPriceFilterer(null);
+
+
+        //competition!
+        scenario1.setNumberOfBeefProducers(5);
+        scenario1.setNumberOfFoodProducers(5);
+
+        scenario1.setDivideProportionalGainByThis(1f);
+        scenario1.setDivideIntegrativeGainByThis(1f);
+        //no delay
+        scenario1.setBeefPricingSpeed(50);
+
+
+        macroII.setScenario(scenario1);
+        macroII.start();
+
+
+        while(macroII.schedule.getTime()<9000)
+        {
+            macroII.schedule.step(macroII);
+            printProgressBar(9001,(int)macroII.schedule.getSteps(),100);
         }
 
 
