@@ -74,10 +74,11 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
      */
     private final ALG workerMaximizationAlgorithm;
 
+    private static int defaultAverageCheckFrequency = 20;
     /**
      * How many days must pass between asking the WorkerMaximizationAlgorithm
      */
-    private int howManyDaysBeforeEachCheck = 20;
+    private int howManyDaysBeforeEachCheck = defaultAverageCheckFrequency;
 
     /**
      * when this is true, the day the check is actually made varies
@@ -298,7 +299,21 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
     }
 
 
+    /**
+     * Sets new defaultAverageCheckFrequency.
+     *
+     * @param newDefault New value of defaultAverageCheckFrequency.
+     */
+    public static void setDefaultAverageCheckFrequency(int newDefault) {
+        defaultAverageCheckFrequency = newDefault;
+    }
 
-
-
+    /**
+     * Gets defaultAverageCheckFrequency.
+     *
+     * @return Value of defaultAverageCheckFrequency.
+     */
+    public static int getDefaultAverageCheckFrequency() {
+        return defaultAverageCheckFrequency;
+    }
 }

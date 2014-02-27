@@ -9,6 +9,7 @@ package model.experiments.stickyprices;
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
+import agents.firm.production.control.maximizer.EveryWeekMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
@@ -104,6 +105,13 @@ public class StickyPricesCSVPrinter {
 
         //beefMonopolistRuns()
 
+
+        //to prove the point that average frequency ought to be above 0:
+        EveryWeekMaximizer.setDefaultAverageCheckFrequency(1);
+        sampleCompetitiveRunLearned(0, 101, 1, 1, 14, .1f, .1f, "sampleCompetitiveEverydayCheck.csv");
+        badlyOptimizedNoInventorySupplyChain(0,.08f,.16f,0,Paths.get("runs","supplychai","paper","badlyOptimizedEveryday.csv").toFile());
+        badlyOptimizedNoInventorySupplyChain(0,.08f,.16f, 100, Paths.get("runs","supplychai","paper","stickyBadlyOptimizedEveryday.csv").toFile());
+        EveryWeekMaximizer.setDefaultAverageCheckFrequency(20); //reset back
 
     }
 
