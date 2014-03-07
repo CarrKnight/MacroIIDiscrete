@@ -12,7 +12,7 @@ import agents.firm.production.PlantListener;
 import agents.firm.production.control.FactoryProducedTargetAndMaximizePlantControl;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.EveryWeekMaximizer;
+import agents.firm.production.control.maximizer.PeriodicMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.Machinery;
@@ -46,12 +46,12 @@ public class MarginalPlantControl implements PlantControl, PlantListener {
 
     private final PIDTargeterWithQuickFiring targeter;
 
-    private final EveryWeekMaximizer maximizer;
+    private final PeriodicMaximizer maximizer;
 
     public MarginalPlantControl(@Nonnull HumanResources hr)
     {
-        final FactoryProducedTargetAndMaximizePlantControl<PIDTargeterWithQuickFiring,? extends EveryWeekMaximizer> produced =
-                TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeterWithQuickFiring.class, EveryWeekMaximizer.class,
+        final FactoryProducedTargetAndMaximizePlantControl<PIDTargeterWithQuickFiring,? extends PeriodicMaximizer> produced =
+                TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeterWithQuickFiring.class, PeriodicMaximizer.class,
                 MarginalMaximizer.class);
         targeter = produced.getWorkforceTargeter();
         maximizer = produced.getWorkforceMaximizer();
@@ -245,7 +245,7 @@ public class MarginalPlantControl implements PlantControl, PlantListener {
         return targeter;
     }
 
-    public EveryWeekMaximizer getMaximizer() {
+    public PeriodicMaximizer getMaximizer() {
         return maximizer;
     }
 }

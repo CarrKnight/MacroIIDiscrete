@@ -53,10 +53,13 @@ public class OneLinkSupplyChainResult {
 
     final private double quantity;
 
-    public OneLinkSupplyChainResult(double beefPrice, double foodPrice, double quantity) {
+    final private MacroII macroII;
+
+    public OneLinkSupplyChainResult(double beefPrice, double foodPrice, double quantity, MacroII macroII) {
         this.beefPrice = beefPrice;
         this.foodPrice = foodPrice;
         this.quantity = quantity;
+        this.macroII = macroII;
     }
 
     public static OneLinkSupplyChainResult beefMonopolistOneRun(long random, float divideMonopolistGainsByThis, int monopolistSpeed,
@@ -168,7 +171,7 @@ public class OneLinkSupplyChainResult {
         System.out.println();
 
         return new OneLinkSupplyChainResult(averageBeefPrice.getMean(),
-                averageFoodPrice.getMean(), averageBeefProduced.getMean() );
+                averageFoodPrice.getMean(), averageBeefProduced.getMean(), macroII);
 
 
     }
@@ -245,7 +248,7 @@ public class OneLinkSupplyChainResult {
 
 
         return new OneLinkSupplyChainResult(averageBeefPrice.getMean(),
-                averageFoodPrice.getMean(),averageBeefTraded.getMean());
+                averageFoodPrice.getMean(),averageBeefTraded.getMean(), macroII);
     }
 
     public static OneLinkSupplyChainResult everybodyLearnedCompetitivePIDRun(long random, final float dividePIByThis, final int beefPricingSpeed,
@@ -339,7 +342,7 @@ public class OneLinkSupplyChainResult {
         System.out.println();
 
 
-        return new OneLinkSupplyChainResult(averageBeefPrice.getMean(),averageFoodPrice.getMean(),averageBeefProduced.getMean());
+        return new OneLinkSupplyChainResult(averageBeefPrice.getMean(),averageFoodPrice.getMean(),averageBeefProduced.getMean(), macroII);
 
     }
 
@@ -394,7 +397,7 @@ public class OneLinkSupplyChainResult {
         System.out.println();
 
 
-        return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f);
+        return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f, macroII);
 
     }
 
@@ -517,7 +520,7 @@ public class OneLinkSupplyChainResult {
 
 
         return new OneLinkSupplyChainResult(averageBeefPrice.getMean(),
-                averageFoodPrice.getMean(), averageBeefProduced.getMean() );
+                averageFoodPrice.getMean(), averageBeefProduced.getMean(), macroII);
 
 
     }
@@ -573,7 +576,7 @@ public class OneLinkSupplyChainResult {
         System.out.println();
 
 
-        return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f);
+        return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f, macroII);
 
     }
 
@@ -588,5 +591,9 @@ public class OneLinkSupplyChainResult {
 
     public double getQuantity() {
         return quantity;
+    }
+
+    public MacroII getMacroII() {
+        return macroII;
     }
 }

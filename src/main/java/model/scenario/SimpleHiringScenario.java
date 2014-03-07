@@ -13,7 +13,7 @@ import agents.firm.personell.FactoryProducedHumanResourcesWithMaximizerAndTarget
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
-import agents.firm.production.control.maximizer.EveryWeekMaximizer;
+import agents.firm.production.control.maximizer.PeriodicMaximizer;
 import agents.firm.production.control.maximizer.algorithms.otherMaximizers.FixedTargetMaximizationAlgorithm;
 import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.LinearConstantMachinery;
@@ -124,12 +124,12 @@ public class SimpleHiringScenario extends Scenario
         //create an hr with fixed target
         FactoryProducedHumanResourcesWithMaximizerAndTargeter produced =
                 HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, firm,
-                        market, plant, PIDTargeterWithQuickFiring.class, EveryWeekMaximizer.class,
+                        market, plant, PIDTargeterWithQuickFiring.class, PeriodicMaximizer.class,
                         FixedTargetMaximizationAlgorithm.class, null, null);
         //take out all breaks
         ((PIDTargeterWithQuickFiring)produced.getWorkforceTargeter()).setMaximumPercentageOverTargetOfWorkersToHire(100f);
 
-        ((EveryWeekMaximizer< FixedTargetMaximizationAlgorithm >) produced.getWorkforceMaximizer()).
+        ((PeriodicMaximizer< FixedTargetMaximizationAlgorithm >) produced.getWorkforceMaximizer()).
                 getMaximizationAlgorithm().setWorkerTarget(targetEmploymentPerFirm);
 
         HumanResources hr = produced.getDepartment();

@@ -9,6 +9,7 @@ package model.scenario;
 import agents.Person;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
+import agents.firm.personell.FactoryProducedHumanResources;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
@@ -24,6 +25,8 @@ import agents.firm.purchases.prediction.PurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.SalesDepartmentOneAtATime;
+import agents.firm.sales.exploration.BuyerSearchAlgorithm;
+import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.SalesPredictor;
@@ -105,6 +108,7 @@ public class MonopolistScenario extends Scenario {
         super(macroII);
         workers= new LinkedList<>();
         demand = new LinkedList<>();
+        maximizers = new LinkedList<>();
     }
 
 
@@ -133,6 +137,8 @@ public class MonopolistScenario extends Scenario {
 
     final private List<Customer> demand;
 
+    private List<PlantControl> maximizers;
+
     /**
      * the strategy used by the sales department of the monopolist
      */
@@ -159,6 +165,7 @@ public class MonopolistScenario extends Scenario {
      */
     @Override
     public void start() {
+        maximizers.clear();
 
         //create and record a new market!
         goodMarket= new OrderBookMarket(GoodType.GENERIC);
@@ -274,11 +281,17 @@ public class MonopolistScenario extends Scenario {
         //human resources
         HumanResources hr;
 
-        hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, built,
-                laborMarket, plant,controlType.getController(), null, null).getDepartment();
+        final FactoryProducedHumanResources<? extends PlantControl,BuyerSearchAlgorithm,SellerSearchAlgorithm> factoryMadeHR = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, built,
+                laborMarket, plant, controlType.getController(), null, null);
+
+        hr = factoryMadeHR.getDepartment();
 
         //       seller.registerHumanResources(plant, hr);
         hr.setFixedPayStructure(fixedPayStructure);
+
+
+        maximizers.add(factoryMadeHR.getPlantControl());
+
 
         //    hr.setPredictor(PurchasesPredictor.Factory.newPurchasesPredictor(purchasesPricePreditorStrategy,hr));
     }
@@ -704,5 +717,9 @@ public class MonopolistScenario extends Scenario {
      */
     public boolean isWorkersToBeRehiredEveryDay() {
         return workersToBeRehiredEveryDay;
+    }
+
+    public List<PlantControl> getMaximizers() {
+        return maximizers;
     }
 }

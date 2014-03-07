@@ -37,7 +37,7 @@ import sim.engine.Steppable;
  * @version 2013-08-22
  * @see
  */
-public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> implements WorkforceMaximizer<ALG>, Steppable
+public class PeriodicMaximizer<ALG extends WorkerMaximizationAlgorithm> implements WorkforceMaximizer<ALG>, Steppable
 {
     /**
      * set to false at turnedOff
@@ -91,12 +91,12 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
     private int lastWorkerTarget = 0;
 
     /**
-     * Creates an EveryWeekMaximizer with a pre-made algorithm
+     * Creates an PeriodicMaximizer with a pre-made algorithm
      * @param hr the human resources
      * @param control the plant control
      * @param algorithm the pre-made algorithm
      */
-    public EveryWeekMaximizer(HumanResources hr, PlantControl control, ALG algorithm) {
+    public PeriodicMaximizer(HumanResources hr, PlantControl control, ALG algorithm) {
         this(hr.getModel(),hr.getFirm(),hr,hr.getPlant(),control,algorithm);
 
     }
@@ -107,12 +107,12 @@ public class EveryWeekMaximizer<ALG extends WorkerMaximizationAlgorithm> impleme
      * @param control the plant control
      * @param algorithmClass the type of algorithm to make!
      */
-    public EveryWeekMaximizer(HumanResources hr, PlantControl control, Class<ALG> algorithmClass) {
+    public PeriodicMaximizer(HumanResources hr, PlantControl control, Class<ALG> algorithmClass) {
         this(hr,control, WorkerMaximizationAlgorithmFactory.buildMaximizationAlgorithm(hr, control, algorithmClass));
 
     }
 
-    public EveryWeekMaximizer(MacroII model, Firm owner, HumanResources hr, Plant plant, PlantControl control, ALG workerMaximizationAlgorithm) {
+    public PeriodicMaximizer(MacroII model, Firm owner, HumanResources hr, Plant plant, PlantControl control, ALG workerMaximizationAlgorithm) {
         this.model = model;
         this.owner = owner;
         this.hr = hr;

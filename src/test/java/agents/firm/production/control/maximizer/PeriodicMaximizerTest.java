@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
  * @version 2013-08-23
  * @see
  */
-public class EveryWeekMaximizerTest {
+public class PeriodicMaximizerTest {
 
     //rescheduling test
 
@@ -45,7 +45,7 @@ public class EveryWeekMaximizerTest {
 
         Plant plant = mock(Plant.class);
         when(plant.getLastDayAMeaningfulChangeInWorkforceOccurred()).thenReturn(1);
-        EveryWeekMaximizer <MarginalMaximizer> maximizer = new EveryWeekMaximizer<MarginalMaximizer>(
+        PeriodicMaximizer<MarginalMaximizer> maximizer = new PeriodicMaximizer<MarginalMaximizer>(
                 model,mock(Firm.class),
                 mock(HumanResources.class), plant,
                 mock(PlantControl.class),algorithm

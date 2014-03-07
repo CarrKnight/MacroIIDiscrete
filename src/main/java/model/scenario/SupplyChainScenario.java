@@ -9,6 +9,7 @@ package model.scenario;
 import agents.Person;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
+import agents.firm.personell.FactoryProducedHumanResources;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
@@ -21,6 +22,8 @@ import agents.firm.purchases.pid.PurchasesDailyPID;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentFactory;
+import agents.firm.sales.exploration.BuyerSearchAlgorithm;
+import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.MarketSalesPredictor;
@@ -41,6 +44,8 @@ import sim.engine.Steppable;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -80,6 +85,8 @@ public class SupplyChainScenario extends Scenario
      */
     private Class<? extends PlantControl> controlType = MarginalPlantControl.class;
 
+    private List<PlantControl> maximizers = new LinkedList<>();
+
     /**
      * total number of firms producing beef
      */
@@ -107,7 +114,7 @@ public class SupplyChainScenario extends Scenario
     @Override
     public void start()
     {
-
+        maximizers.clear();
 
 
         //build markets and put firms in them
@@ -208,8 +215,10 @@ public class SupplyChainScenario extends Scenario
                 plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
                 plant.setCostStrategy(new InputCostStrategy(plant));
                 firm.addPlant(plant);
-                HumanResources hr = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, firm,
-                        laborMarket, plant, controlType, null, null).getDepartment();
+                final FactoryProducedHumanResources<? extends PlantControl,BuyerSearchAlgorithm,SellerSearchAlgorithm> hrBundle = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, firm,
+                        laborMarket, plant, controlType, null, null);
+                maximizers.add(hrBundle.getPlantControl());
+                HumanResources hr = hrBundle.getDepartment();
                 hr.setFixedPayStructure(true);
                 hr.start();
 

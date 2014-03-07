@@ -14,7 +14,7 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.EveryWeekMaximizer;
+import agents.firm.production.control.maximizer.PeriodicMaximizer;
 import agents.firm.production.control.maximizer.WorkforceMaximizer;
 import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
@@ -47,6 +47,7 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import javax.annotation.Nullable;
+import java.util.LinkedList;
 
 import static org.mockito.Mockito.*;
 
@@ -89,7 +90,10 @@ public class OneLinkSupplyChainScenario extends Scenario {
      */
     public int beefPricingSpeed = 100;
 
-    private Class< ? extends WorkforceMaximizer> maximizerType =  EveryWeekMaximizer.class;
+    private Class< ? extends WorkforceMaximizer> maximizerType =  PeriodicMaximizer.class;
+
+    private LinkedList<WorkforceMaximizer> maximizers = new LinkedList<>();
+
     /**
      * should workers act like a flow rather than a stock?
      */
@@ -143,7 +147,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
     @Override
     public void start()
     {
-
+        maximizers.clear();
 
 
         //build markets and put firms in them
@@ -324,6 +328,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
 
 
+        maximizers.add(produced.getWorkforceMaximizer());
 
         HumanResources hr = produced.getDepartment();
         hr.setFixedPayStructure(true);
@@ -650,5 +655,9 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
     public void setFoodTargetInventory(int foodTargetInventory) {
         this.foodTargetInventory = foodTargetInventory;
+    }
+
+    public LinkedList<WorkforceMaximizer> getMaximizers() {
+        return maximizers;
     }
 }

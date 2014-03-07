@@ -9,7 +9,7 @@ package model.scenario;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.control.FactoryProducedTargetAndMaximizePlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
-import agents.firm.production.control.maximizer.EveryWeekMaximizer;
+import agents.firm.production.control.maximizer.PeriodicMaximizer;
 import agents.firm.production.control.maximizer.algorithms.otherMaximizers.FixedTargetMaximizationAlgorithm;
 import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import model.MacroII;
@@ -148,8 +148,8 @@ public class SimpleHiringScenarioTest {
             Iterator<HumanResources> iterator = scenario.getHrs().iterator();
             HumanResources hr1 = iterator.next();
             FactoryProducedTargetAndMaximizePlantControl produced;
-            produced = TargetAndMaximizePlantControl.PlantControlFactory(hr1, PIDTargeterWithQuickFiring.class, EveryWeekMaximizer.class, FixedTargetMaximizationAlgorithm.class);
-            ((EveryWeekMaximizer< FixedTargetMaximizationAlgorithm >) produced.getWorkforceMaximizer()).getMaximizationAlgorithm().setWorkerTarget(11);
+            produced = TargetAndMaximizePlantControl.PlantControlFactory(hr1, PIDTargeterWithQuickFiring.class, PeriodicMaximizer.class, FixedTargetMaximizationAlgorithm.class);
+            ((PeriodicMaximizer< FixedTargetMaximizationAlgorithm >) produced.getWorkforceMaximizer()).getMaximizationAlgorithm().setWorkerTarget(11);
             ((PIDTargeterWithQuickFiring)produced.getWorkforceTargeter()).setMaximumPercentageOverTargetOfWorkersToHire(10000f);
             hr1.setControl(produced.getControl());
             hr1.setPricingStrategy(produced.getControl());
@@ -157,8 +157,8 @@ public class SimpleHiringScenarioTest {
 
             //second firm will target 4 workers
             HumanResources hr2 = iterator.next();
-            produced = TargetAndMaximizePlantControl.PlantControlFactory(hr2, PIDTargeterWithQuickFiring.class, EveryWeekMaximizer.class, FixedTargetMaximizationAlgorithm.class);
-            ((EveryWeekMaximizer< FixedTargetMaximizationAlgorithm >) produced.getWorkforceMaximizer()).getMaximizationAlgorithm().setWorkerTarget(4);
+            produced = TargetAndMaximizePlantControl.PlantControlFactory(hr2, PIDTargeterWithQuickFiring.class, PeriodicMaximizer.class, FixedTargetMaximizationAlgorithm.class);
+            ((PeriodicMaximizer< FixedTargetMaximizationAlgorithm >) produced.getWorkforceMaximizer()).getMaximizationAlgorithm().setWorkerTarget(4);
             ((PIDTargeterWithQuickFiring)produced.getWorkforceTargeter()).setMaximumPercentageOverTargetOfWorkersToHire(10000f);
             hr2.setControl(produced.getControl());
             hr2.setPricingStrategy(produced.getControl());
@@ -166,8 +166,8 @@ public class SimpleHiringScenarioTest {
 
             //the third will target 1 worker
             HumanResources hr3 = iterator.next();
-            produced = TargetAndMaximizePlantControl.PlantControlFactory(hr3, PIDTargeterWithQuickFiring.class, EveryWeekMaximizer.class, FixedTargetMaximizationAlgorithm.class);
-            ((EveryWeekMaximizer< FixedTargetMaximizationAlgorithm >) produced.getWorkforceMaximizer()).getMaximizationAlgorithm().setWorkerTarget(1);
+            produced = TargetAndMaximizePlantControl.PlantControlFactory(hr3, PIDTargeterWithQuickFiring.class, PeriodicMaximizer.class, FixedTargetMaximizationAlgorithm.class);
+            ((PeriodicMaximizer< FixedTargetMaximizationAlgorithm >) produced.getWorkforceMaximizer()).getMaximizationAlgorithm().setWorkerTarget(1);
             ((PIDTargeterWithQuickFiring)produced.getWorkforceTargeter()).setMaximumPercentageOverTargetOfWorkersToHire(10000f);
             hr3.setControl(produced.getControl());
             hr3.setPricingStrategy(produced.getControl());

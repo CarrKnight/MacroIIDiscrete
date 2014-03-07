@@ -122,7 +122,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         //the beef price is in the ballpark
         System.out.println("done!");
         return new OneLinkSupplyChainResult(macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),
-                macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),macroII.getMarket(GoodType.BEEF).getYesterdayVolume());
+                macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),macroII.getMarket(GoodType.BEEF).getYesterdayVolume(), macroII);
     }
 
 
@@ -197,7 +197,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         System.out.println();
         System.out.println("done!");
         return new OneLinkSupplyChainResult(macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),
-                macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),macroII.getMarket(GoodType.BEEF).getYesterdayVolume());
+                macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),macroII.getMarket(GoodType.BEEF).getYesterdayVolume(), macroII);
         //the beef price is in the ballpark
     }
 
@@ -1053,7 +1053,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         System.out.println("produced: " + averageBeefProduced.getMean() );
         System.out.println();
 
-        return new OneLinkSupplyChainResult(averageBeefPrice.getMean(),averageFoodPrice.getMean(),averageBeefProduced.getMean());
+        return new OneLinkSupplyChainResult(averageBeefPrice.getMean(),averageFoodPrice.getMean(),averageBeefProduced.getMean(), macroII);
 
     }
       
@@ -1394,7 +1394,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         }
 
-        return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f);
+        return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f, macroII);
     }
 
 

@@ -9,7 +9,10 @@ package model.experiments.stickyprices;
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
-import agents.firm.production.control.maximizer.EveryWeekMaximizer;
+import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.facades.MarginalPlantControl;
+import agents.firm.production.control.maximizer.PeriodicMaximizer;
+import agents.firm.production.control.maximizer.WorkforceMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
@@ -33,6 +36,7 @@ import model.utilities.stats.collectors.enums.MarketDataType;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -89,17 +93,28 @@ public class StickyPricesCSVPrinter {
         //oneHundredAllLearnedCompetitiveRuns(Paths.get("runs", "supplychai", "paper", "learnedCompetitiveInventoryChain100.csv").toFile());
         //oneHundredAllLearnedFoodRuns(Paths.get("runs", "supplychai", "paper", "learnedInventoryFoodChain100.csv").toFile());
 
+        competitiveSweepRun(1);
+        //competitiveSweepRun(2);
+        competitiveSweepRun(3);
+        competitiveSweepRun(4);
+        //competitiveSweepRun(5);
+        competitiveSweepRun(5);
+        competitiveSweepRun(6);
+        competitiveSweepRun(7);
+
+        //stickiness vs maximization stickiness
+        woodMonopolistSupplyChainSweep();
 
 
 
 
 
 //        oneHundredLearningMonopolist(Paths.get("runs", "supplychai", "paper", "100Monopolists.csv").toFile());
-  //      oneHundredLearningCompetitive(Paths.get("runs", "supplychai", "paper", "100Competitive.csv").toFile());
+        //      oneHundredLearningCompetitive(Paths.get("runs", "supplychai", "paper", "100Competitive.csv").toFile());
 
-   //     oneHundredAllLearningRuns(Paths.get("runs", "supplychai", "paper", "learningInventoryChain100.csv").toFile());
-    //    oneHundredAllLearningCompetitiveRuns(Paths.get("runs", "supplychai", "paper", "learningCompetitiveInventoryChain100.csv").toFile());
-    //    oneHundredAllLearningFoodRuns(Paths.get("runs", "supplychai", "paper", "learningInventoryFoodChain100.csv").toFile());
+        //     oneHundredAllLearningRuns(Paths.get("runs", "supplychai", "paper", "learningInventoryChain100.csv").toFile());
+        //    oneHundredAllLearningCompetitiveRuns(Paths.get("runs", "supplychai", "paper", "learningCompetitiveInventoryChain100.csv").toFile());
+        //    oneHundredAllLearningFoodRuns(Paths.get("runs", "supplychai", "paper", "learningInventoryFoodChain100.csv").toFile());
 
 
 
@@ -107,11 +122,12 @@ public class StickyPricesCSVPrinter {
 
 
         //to prove the point that average frequency ought to be above 0:
-        EveryWeekMaximizer.setDefaultAverageCheckFrequency(1);
+   /*     PeriodicMaximizer.setDefaultAverageCheckFrequency(1);
         sampleCompetitiveRunLearned(0, 101, 1, 1, 14, .1f, .1f, "sampleCompetitiveEverydayCheck.csv");
         badlyOptimizedNoInventorySupplyChain(0,.08f,.16f,0,Paths.get("runs","supplychai","paper","badlyOptimizedEveryday.csv").toFile());
         badlyOptimizedNoInventorySupplyChain(0,.08f,.16f, 100, Paths.get("runs","supplychai","paper","stickyBadlyOptimizedEveryday.csv").toFile());
-        EveryWeekMaximizer.setDefaultAverageCheckFrequency(20); //reset back
+        PeriodicMaximizer.setDefaultAverageCheckFrequency(20); //reset back
+        */
 
     }
 
@@ -528,6 +544,138 @@ public class StickyPricesCSVPrinter {
 
 
 
+    //sweep over the period of maximization to see what happens if the frequency is too high or too low.
+    private static void competitiveSweepRun(int additionalCompetitors) throws IOException {
+
+        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs", "supplychai", "paper","competitivePeriodSweep" + additionalCompetitors +".csv").toFile()));
+        writer.writeNext(new String[]{"speed","distance","finaldistance","variance"});
+
+        for(int speed =1; speed < 30; speed++)
+        {
+            SummaryStatistics distance = new SummaryStatistics();
+            SummaryStatistics finalDistance = new SummaryStatistics();
+            SummaryStatistics variance = new SummaryStatistics();
+            for(int seed =0; seed < 50; seed++)
+            {
+
+                final double[] result = competitiveSweepRun(seed, 101, 1, 1, 14, .1f, .1f, speed, 58, null, additionalCompetitors);
+                distance.addValue(result[0]);
+                finalDistance.addValue(result[1]);
+                variance.addValue(result[2]);
+
+            }
+
+            final String[] nextLine = {String.valueOf(speed), String.valueOf(distance.getMean()),
+                    String.valueOf(finalDistance.getMean()),String.valueOf(variance.getMean())};
+            System.out.println(Arrays.toString(nextLine));
+            writer.writeNext(nextLine);
+            writer.flush();
+        }
+
+        writer.close();
+
+
+
+    }
+
+
+    private static double[] competitiveSweepRun(int seed, int demandIntercept, int demandSlope, int wageSlope,
+                                                int dailyWageIntercept, float proportionalGain, float integralGain, int maximizationTimePeriod,
+                                                double correctCompetitivePrice,
+                                                String filename, int additionalCompetitors){
+
+
+
+        //create the run
+        MacroII macroII = new MacroII(seed);
+        TripolistScenario scenario = new TripolistScenario(macroII);
+        macroII.setScenario(scenario);
+        scenario.setAdditionalCompetitors(additionalCompetitors);
+        //set the demand
+        scenario.setDemandIntercept(demandIntercept);
+        scenario.setDemandSlope(demandSlope);
+        scenario.setDailyWageSlope(wageSlope);
+        scenario.setDailyWageIntercept(dailyWageIntercept);
+        scenario.setAskPricingStrategy(SimpleFlowSellerPID.class);
+        scenario.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
+
+        //start it and have one step
+        macroII.start();
+        macroII.schedule.step(macroII);
+
+        //now set the right parameters
+        for(final Firm firm : scenario.getCompetitors()){
+            final SalesDepartment salesDepartment = firm.getSalesDepartment(GoodType.GENERIC);
+            final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, proportionalGain + (float)macroII.random.nextGaussian()/100f,
+                    integralGain + (float)macroII.random.nextGaussian()/100f, 0f, 0); //added a bit of noise
+            salesDepartment.setAskPricingStrategy(strategy);
+            //salesDepartment.setAveragedPrice(new WeightedMovingAverage<Long, Double>(2)); //doesn't really need/care about Moving averages!
+
+            //all impacts are 0 because it's perfect competitive
+            salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+            firm.getHRs().iterator().next().setPredictor(new FixedIncreasePurchasesPredictor(0));
+        }
+        for(final PlantControl control : scenario.getMaximizers())
+        {
+            ((MarginalPlantControl)control).getMaximizer().setHowManyDaysBeforeEachCheck(maximizationTimePeriod);
+        }
+
+        SummaryStatistics distance = new SummaryStatistics();
+        SummaryStatistics finalPrice = new SummaryStatistics();
+        SummaryStatistics finalDistance = new SummaryStatistics();
+
+
+        //run the model
+        for(int i=0; i<4000; i++)
+        {
+            macroII.schedule.step(macroII);
+            MarginalMaximizerPIDTuning.printProgressBar(5000, i, 100);
+            final double closingPrice = macroII.getMarket(GoodType.GENERIC).getData().getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+            double distanceFromCorrect;
+            if(Double.isNaN(closingPrice) || closingPrice < 0)
+            {
+                distanceFromCorrect = correctCompetitivePrice;
+            }
+            else
+            {
+                distanceFromCorrect = Math.pow(correctCompetitivePrice - closingPrice, 2);
+            }
+            distance.addValue(distanceFromCorrect);
+        }
+
+        //run the model
+        for(int i=0; i<1000; i++)
+        {
+            macroII.schedule.step(macroII);
+            MarginalMaximizerPIDTuning.printProgressBar(1000, i, 100);
+            double closingPrice = macroII.getMarket(GoodType.GENERIC).getData().getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+            finalPrice.addValue(closingPrice);
+
+            double distanceFromCorrect;
+            if(Double.isNaN(closingPrice) || closingPrice < 0)
+            {
+                closingPrice = 0;
+            }
+
+            distanceFromCorrect = Math.pow(correctCompetitivePrice - closingPrice, 2);
+
+            distance.addValue(distanceFromCorrect);
+            finalDistance.addValue(distanceFromCorrect);
+        }
+
+
+
+        if(filename != null)
+            macroII.getMarket(GoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper",filename).toFile());
+
+
+        return new double[]{distance.getMean(),finalDistance.getMean(),finalPrice.getVariance()};
+
+
+
+    }
+
+
 
 
     private static void sampleMonopolistRunLearnedWithInventory(int seed, int demandIntercept, int demandSlope, int wageSlope,
@@ -621,8 +769,6 @@ public class StickyPricesCSVPrinter {
         macroII.getMarket(GoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper",filename).toFile());
 
     }
-
-
 
 
     private static void badlyOptimizedNoInventorySupplyChain(int seed, final float proportionalGain, final float integralGain, final int speed, File csvFileToWrite)
@@ -1208,6 +1354,172 @@ public class StickyPricesCSVPrinter {
     }
 
 
+
+
+
+    public static double[] beefMonopolistOneRun(long seed, float divideMonopolistGainsByThis, int monopolistSpeed,
+                                                final boolean beefLearned, final boolean foodLearned,  int maximizationSpeed,
+                                                @Nullable File csvFileToWrite) {
+        SummaryStatistics distance = new SummaryStatistics();
+        SummaryStatistics last1000Distance = new SummaryStatistics();
+
+        final MacroII macroII = new MacroII(seed);
+        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
+
+            @Override
+            protected void buildBeefSalesPredictor(SalesDepartment dept) {
+                if(beefLearned){
+                    FixedDecreaseSalesPredictor predictor  = SalesPredictor.Factory.
+                            newSalesPredictor(FixedDecreaseSalesPredictor.class, dept);
+                    predictor.setDecrementDelta(2);
+                    dept.setPredictorStrategy(predictor);
+                }
+                else{
+                    assert dept.getPredictorStrategy() instanceof RecursiveSalePredictor; //assuming here nothing has been changed and we are still dealing with recursive sale predictors
+                    dept.setPredictorStrategy( new RecursiveSalePredictor(model,dept,500));
+                }
+            }
+
+
+
+            @Override
+            public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
+                if(foodLearned)
+                    department.setPredictor(new FixedIncreasePurchasesPredictor(0));
+
+            }
+
+            @Override
+            protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
+                SalesDepartment department = super.createSalesDepartment(firm, goodmarket);
+                if(goodmarket.getGoodType().equals(GoodType.FOOD))  {
+                    if(foodLearned)
+                        department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+                }
+                return department;
+            }
+
+            @Override
+            protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
+                HumanResources hr = super.createPlant(blueprint, firm, laborMarket);
+                if(blueprint.getOutputs().containsKey(GoodType.BEEF))
+                {
+                    if(beefLearned){
+                        hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
+                    }
+                }
+                if(blueprint.getOutputs().containsKey(GoodType.FOOD))
+                {
+                    if(foodLearned)
+                        hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
+                }
+                return hr;
+            }
+        };
+        scenario1.setControlType(MarginalMaximizer.class);
+        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+        scenario1.setBeefPriceFilterer(null);
+
+        //competition!
+        scenario1.setNumberOfBeefProducers(1);
+        scenario1.setBeefTargetInventory(1000);
+        scenario1.setNumberOfFoodProducers(5);
+
+        scenario1.setDivideProportionalGainByThis(divideMonopolistGainsByThis);
+        scenario1.setDivideIntegrativeGainByThis(divideMonopolistGainsByThis);
+        //no delay
+        scenario1.setBeefPricingSpeed(monopolistSpeed);
+
+
+
+        //add csv writer if needed
+        if(csvFileToWrite != null)
+            DailyStatCollector.addDailyStatCollectorToModel(csvFileToWrite, macroII);
+
+
+
+        macroII.setScenario(scenario1);
+        macroII.start();
+        macroII.schedule.step(macroII);
+        Preconditions.checkState(scenario1.getMaximizers().size()==6,scenario1.getMaximizers().size() ); // 1 monopolist, 5 competitors
+        for(WorkforceMaximizer control : scenario1.getMaximizers())
+            ((PeriodicMaximizer) control).setHowManyDaysBeforeEachCheck(maximizationSpeed);
+
+
+        while(macroII.schedule.getTime()<5000)
+        {
+            macroII.schedule.step(macroII);
+            printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
+            long price = macroII.getMarket(GoodType.BEEF).getLastPrice();
+            if(price<0)
+                price=0;
+            distance.addValue(Math.pow(68 - price,2));
+        }
+
+
+        SummaryStatistics averageFoodPrice = new SummaryStatistics();
+        SummaryStatistics averageBeefProduced = new SummaryStatistics();
+        SummaryStatistics averageBeefPrice= new SummaryStatistics();
+        for(int j=0; j< 1000; j++)
+        {
+            //make the model run one more day:
+            macroII.schedule.step(macroII);
+            averageFoodPrice.addValue(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+            averageBeefProduced.addValue(macroII.getMarket(GoodType.BEEF).getYesterdayVolume());
+            averageBeefPrice.addValue(macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+
+            long price = macroII.getMarket(GoodType.BEEF).getLastPrice();
+            if(price<0)
+                price=0;
+            distance.addValue(Math.pow(68 - price,2));
+            last1000Distance.addValue(Math.pow(68 - price, 2));
+        }
+
+
+
+        return new double[]{distance.getMean(),last1000Distance.getMean()};
+
+
+    }
+
+
+
+    //sweep over the period of maximization to see what happens if the frequency is too high or too low.
+    private static void woodMonopolistSupplyChainSweep() throws IOException {
+
+        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs", "supplychai", "paper","woodMonopolistStickinessesSweep.csv").toFile()));
+        final String[] header = {"decisionSpeed", "stickiness", "distance", "finaldistance"};
+        System.out.println(Arrays.toString(header));
+        writer.writeNext(header);
+
+        for(int speed =1; speed < 30; speed++)
+        {
+            for(int stickiness = 0; stickiness < 100; stickiness++)
+            {
+                SummaryStatistics distance = new SummaryStatistics();
+                SummaryStatistics finalDistance = new SummaryStatistics();
+                for(int seed =0; seed < 5; seed++)
+                {
+
+                    final double[] result = beefMonopolistOneRun(seed,1,stickiness,true,true,speed,null);
+                    distance.addValue(result[0]);
+                    finalDistance.addValue(result[1]);
+
+                }
+
+                final String[] nextLine = {String.valueOf(speed), String.valueOf(stickiness),String.valueOf(distance.getMean()),
+                        String.valueOf(finalDistance.getMean())};
+                System.out.println(Arrays.toString(nextLine));
+                writer.writeNext(nextLine);
+                writer.flush();
+            }
+        }
+
+        writer.close();
+
+
+
+    }
 
 
 

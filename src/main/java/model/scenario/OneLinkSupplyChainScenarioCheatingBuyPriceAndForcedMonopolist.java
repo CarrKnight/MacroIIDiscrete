@@ -12,7 +12,7 @@ import agents.firm.personell.FactoryProducedHumanResourcesWithMaximizerAndTarget
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
-import agents.firm.production.control.maximizer.EveryWeekMaximizer;
+import agents.firm.production.control.maximizer.PeriodicMaximizer;
 import agents.firm.production.control.maximizer.SetTargetThenTryAgainMaximizer;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.production.control.maximizer.algorithms.otherMaximizers.FixedTargetMaximizationAlgorithm;
@@ -142,7 +142,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
         final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 =
                 new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.BEEF);
         scenario1.setControlType(MarginalMaximizer.class);
-        scenario1.setMaximizerType(EveryWeekMaximizer.class);
+        scenario1.setMaximizerType(PeriodicMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
@@ -343,7 +343,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
             }
         };
         scenario1.setControlType(MarginalMaximizer.class);
-        scenario1.setMaximizerType(EveryWeekMaximizer.class);
+        scenario1.setMaximizerType(PeriodicMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         //divide standard PID parameters by 100
         scenario1.setDivideProportionalGainByThis(10f);
