@@ -1473,5 +1473,10 @@ public abstract class  SalesDepartment  implements Department {
     public void setAveragedPrice(WeightedMovingAverage<Long, Double> averagedPrice) {
         this.averagedPrice = averagedPrice;
     }
+
+
+    public boolean isActive() {
+        return firm.isActive();
+    }
 }
 

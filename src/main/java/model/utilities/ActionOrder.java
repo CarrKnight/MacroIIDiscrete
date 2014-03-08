@@ -47,6 +47,12 @@ public enum ActionOrder
 
 
     /**
+     * before any action is taken after trade.
+     */
+    POST_TRADE_STATISTICS,
+
+
+    /**
      * deal with prices (pid and similar)
      */
     ADJUST_PRICES,

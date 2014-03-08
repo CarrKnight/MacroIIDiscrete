@@ -135,7 +135,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
             //listen to bids
             market.addBidListener(this);
             //use the order book stockouts
-            stockOuts = new OrderBookStockout(this);
+            stockOuts = new AfterTradeCounter(market,sales);
         }
         else
         {

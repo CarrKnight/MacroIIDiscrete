@@ -41,6 +41,7 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.dummies.Customer;
+import model.utilities.dummies.CustomerWithDelay;
 import model.utilities.stats.collectors.DailyStatCollector;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -102,6 +103,8 @@ public class MonopolistScenario extends Scenario {
      */
     protected Blueprint blueprint= new Blueprint.Builder().output(GoodType.GENERIC, laborProductivity).build();
     protected Firm monopolist;
+
+    private int buyerDelay=0;
 
 
     public MonopolistScenario(MacroII macroII) {
@@ -242,7 +245,7 @@ public class MonopolistScenario extends Scenario {
             if(buyerPrice <= 0) //break if the price is 0 or lower, we are done drawing!
                 break;
 
-            final Customer buyer = new Customer(model,buyerPrice,goodMarket);
+            final Customer buyer = buildBuyer(buyerPrice);
 
             //buyer.setName("Dummy Buyer");
 
@@ -251,16 +254,26 @@ public class MonopolistScenario extends Scenario {
 
 
             demand.add(buyer);
-           model.addAgent(buyer);
+            model.addAgent(buyer);
 
         }
+    }
+
+    private Customer buildBuyer(long buyerPrice) {
+
+        if(buyerDelay == 0 )
+
+          return new Customer(model,buyerPrice,goodMarket);
+        else
+            return new CustomerWithDelay(model,Math.max((buyerPrice),1),buyerDelay,goodMarket);
+
     }
 
     public Firm buildFirm() {
         //only one seller
         final Firm built= new Firm(getModel());
         built.earn(5000000000l);
-       // built.setName("monopolist");
+        // built.setName("monopolist");
         //set up the firm at time 1
         getModel().scheduleSoon(ActionOrder.DAWN, new Steppable() {
             @Override
@@ -460,7 +473,7 @@ public class MonopolistScenario extends Scenario {
         scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
         scenario1.setControlType(MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID);
 
-     //   scenario1.setSalesPricePreditorStrategy(PricingSalesPredictor.class);
+        //   scenario1.setSalesPricePreditorStrategy(PricingSalesPredictor.class);
 
 
 
@@ -676,7 +689,7 @@ public class MonopolistScenario extends Scenario {
         setDemandSlope(slope);
         setDemandIntercept(intercept);
 
-       createDemand();
+        createDemand();
 
 
     }
@@ -721,5 +734,13 @@ public class MonopolistScenario extends Scenario {
 
     public List<PlantControl> getMaximizers() {
         return maximizers;
+    }
+
+    public int getBuyerDelay() {
+        return buyerDelay;
+    }
+
+    public void setBuyerDelay(int buyerDelay) {
+        this.buyerDelay = buyerDelay;
     }
 }

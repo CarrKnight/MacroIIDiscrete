@@ -2,6 +2,7 @@ package model.scenario;
 
 import agents.firm.Firm;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
+import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
@@ -686,6 +687,138 @@ public class MonopolistScenarioTest {
                 //make sure the labor market is functioning properly!
                 marketSanityCheck(macroII, scenario1);
             }
+
+            System.out.println(macroII.getMarket(GoodType.GENERIC).getYesterdayVolume());
+
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79,1);
+            if(i==0)
+            {
+
+                scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("runs","lamerbuy.csv").toFile());
+                scenario1.monopolist.getSalesDepartment(GoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs","lamersell.csv").toFile());
+            }
+
+
+
+
+
+
+
+        }
+
+
+    }
+
+   @Test
+    public void rightPriceAndQuantityTestAsMarginalShouldRecoverIfIScrambleThePrice()
+    {
+        for(int i=0; i<5; i++)
+        {
+            //we know the profit maximizing equilibrium is q=220, price = 72
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            System.out.println("----------------------------------------------------------");
+            System.out.println(macroII.seed());
+            System.out.println("----------------------------------------------------------");
+            MonopolistScenario scenario1 = new MonopolistScenario(macroII);
+            //    scenario1.setAlwaysMoving(true);
+            //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
+            macroII.setScenario(scenario1);
+            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
+            scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
+            if(macroII.random.nextBoolean())
+                scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            else
+                scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+
+
+            //strategy
+
+
+
+            macroII.start();
+            macroII.schedule.step(macroII);
+            final SalesDepartment department = scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC);
+            final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(department);
+            department.setPredictorStrategy(new FixedDecreaseSalesPredictor(1));
+            department.setAskPricingStrategy(strategy);
+
+
+
+            while(macroII.schedule.getTime()<2000)
+            {
+                macroII.schedule.step(macroII);
+            }
+            strategy.setInitialPrice(20);   //scrambled  price
+            while(macroII.schedule.getTime()<3000)
+            {
+                macroII.schedule.step(macroII);
+            }
+            System.out.println(macroII.getMarket(GoodType.GENERIC).getYesterdayVolume());
+
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
+            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 79,1);
+            if(i==0)
+            {
+
+                scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("runs","lamerbuy.csv").toFile());
+                scenario1.monopolist.getSalesDepartment(GoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs","lamersell.csv").toFile());
+            }
+
+
+
+
+
+
+
+        }
+
+
+    }
+
+    @Test
+    public void rightPriceAndQuantityTestAsMarginalLearnedWithStickyAndDelay()
+    {
+        for(int i=0; i<5; i++)
+        {
+            //we know the profit maximizing equilibrium is q=220, price = 72
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            System.out.println("----------------------------------------------------------");
+            System.out.println(macroII.seed());
+            System.out.println("----------------------------------------------------------");
+            MonopolistScenario scenario1 = new MonopolistScenario(macroII);
+            //    scenario1.setAlwaysMoving(true);
+            //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
+            macroII.setScenario(scenario1);
+            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
+            scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
+            scenario1.setBuyerDelay(50);
+            if(macroII.random.nextBoolean())
+                scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            else
+                scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+
+
+            //csv writer
+
+
+
+
+            macroII.start();
+            macroII.schedule.step(macroII);
+            final SalesDepartment department = scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC);
+            final SimpleFlowSellerPID stickyStrategy = new SimpleFlowSellerPID(department);
+            department.setPredictorStrategy(new FixedDecreaseSalesPredictor(1));
+            scenario1.getMonopolist().getHRs().iterator().next().setPredictor(new FixedIncreasePurchasesPredictor(1));
+            stickyStrategy.setSpeed(50);
+            department.setAskPricingStrategy(stickyStrategy);
+
+            while(macroII.schedule.getTime()<5000)
+            {
+                macroII.schedule.step(macroII);
+                System.out.println(macroII.getMarket(GoodType.GENERIC).getLastPrice());
+            }
+
 
             System.out.println(macroII.getMarket(GoodType.GENERIC).getYesterdayVolume());
 

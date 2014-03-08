@@ -12,7 +12,6 @@ import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.enums.MarketDataType;
-import org.junit.Assert;
 import org.junit.Test;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -575,9 +574,8 @@ public class SimpleSellerScenarioTest {
                 SalesDepartment department = departments.get(k);
                 System.out.println("department " + k + ", price: " + department.getLastAskedPrice() +
                         ", today sold: " + department.getTodayOutflow() + ", averaged price: " + department.getAveragedLastPrice() );
-                //if you have inventory, this should always be true
-                if(!scenario.getSellerStrategy().equals(SimpleFlowSellerPID.class))
-                    Assert.assertEquals(86,department.getAveragedLastPrice(),1);
+
+
             }
 
         }
