@@ -93,17 +93,22 @@ public class StickyPricesCSVPrinter {
         //oneHundredAllLearnedCompetitiveRuns(Paths.get("runs", "supplychai", "paper", "learnedCompetitiveInventoryChain100.csv").toFile());
         //oneHundredAllLearnedFoodRuns(Paths.get("runs", "supplychai", "paper", "learnedInventoryFoodChain100.csv").toFile());
 
+        /*
         competitiveSweepRun(1);
-        //competitiveSweepRun(2);
+        competitiveSweepRun(2);
         competitiveSweepRun(3);
         competitiveSweepRun(4);
-        //competitiveSweepRun(5);
+        competitiveSweepRun(5);
         competitiveSweepRun(5);
         competitiveSweepRun(6);
         competitiveSweepRun(7);
+        */
 
         //stickiness vs maximization stickiness
-        woodMonopolistSupplyChainSweep();
+        //woodMonopolistSupplyChainSweep();
+
+        //what happens if one guy is more or less sticky than the others?
+        differentStickinessSweep();
 
 
 
@@ -1521,6 +1526,166 @@ public class StickyPricesCSVPrinter {
 
     }
 
+
+
+    //sweep over the period of maximization to see what happens if the frequency is too high or too low.
+    private static void differentStickinessSweep() throws IOException {
+
+        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs", "supplychai", "paper","differentStickinessCompetition.csv").toFile()));
+        writer.writeNext(new String[]{"specialSpeed","normalSpeed","distance","finaldistance","variance","normalCash","specialCash"});
+
+        for(int normalSpeed = 1; normalSpeed <50; normalSpeed++)
+        {
+            for(int specialSpeed =1; specialSpeed < 50; specialSpeed++)
+            {
+                SummaryStatistics distance = new SummaryStatistics();
+                SummaryStatistics finalDistance = new SummaryStatistics();
+                SummaryStatistics variance = new SummaryStatistics();
+                SummaryStatistics specialCash = new SummaryStatistics();
+                SummaryStatistics normalCash = new SummaryStatistics();
+                for(int seed =0; seed < 5; seed++)
+                {
+
+                    final double[] result = differentStickyCompetitiveRun(seed,50,normalSpeed,specialSpeed,null,4);
+                    Preconditions.checkArgument(result.length==5);
+                    distance.addValue(result[0]);
+                    finalDistance.addValue(result[1]);
+                    variance.addValue(result[2]);
+                    normalCash.addValue(result[3]);
+                    specialCash.addValue(result[4]);
+
+
+                }
+
+                final String[] nextLine = {String.valueOf(specialSpeed), String.valueOf(normalSpeed),
+                        String.valueOf(distance.getMean()),
+                        String.valueOf(finalDistance.getMean()),String.valueOf(variance.getMean()),
+                        String.valueOf(normalCash.getMean()),
+                        String.valueOf(specialCash.getMean())
+                };
+                System.out.println(Arrays.toString(nextLine));
+                writer.writeNext(nextLine);
+                writer.flush();
+            }
+
+        }
+        writer.close();
+
+
+
+    }
+
+
+    /**
+     * here we let one competitor use a specific stickiness and all the others use a different one
+     */
+    private static double[] differentStickyCompetitiveRun(int seed, int buyerDelay, int normalStickiness, int specialStickiness,
+                                                          String filename, int additionalCompetitors){
+
+
+
+        //create the run
+        MacroII macroII = new MacroII(seed);
+        TripolistScenario scenario = new TripolistScenario(macroII);
+        macroII.setScenario(scenario);
+        scenario.setAdditionalCompetitors(additionalCompetitors);
+        //set the demand
+        scenario.setDemandIntercept(101);
+        scenario.setDemandSlope(1);
+        scenario.setDailyWageSlope(1);
+        scenario.setDailyWageIntercept(14);
+        scenario.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
+        scenario.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
+        scenario.setBuyerDelay(buyerDelay);
+
+        //start it and have one step
+        macroII.start();
+        macroII.schedule.step(macroII);
+
+
+        //now set the right parameters
+        for(final Firm firm : scenario.getCompetitors()){
+            final SalesDepartment salesDepartment = firm.getSalesDepartment(GoodType.GENERIC);
+            final SalesControlWithFixedInventoryAndPID strategy = new SalesControlWithFixedInventoryAndPID(salesDepartment); //added a bit of noise
+            strategy.setTargetInventory(1000);
+            strategy.setSpeed(normalStickiness);
+            salesDepartment.setAskPricingStrategy(strategy);
+            //salesDepartment.setAveragedPrice(new WeightedMovingAverage<Long, Double>(2)); //doesn't really need/care about Moving averages!
+
+            //all impacts are 0 because it's perfect competitive
+            salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+            firm.getHRs().iterator().next().setPredictor(new FixedIncreasePurchasesPredictor(0));
+        }
+
+        //now change it again to the first one (which is identified as "monopolist"); that guy will be our special
+        final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(GoodType.GENERIC);
+        final SalesControlWithFixedInventoryAndPID strategy = new SalesControlWithFixedInventoryAndPID(salesDepartment); //added a bit of noise
+        strategy.setTargetInventory(1000);
+        strategy.setSpeed(specialStickiness);
+        salesDepartment.setAskPricingStrategy(strategy);
+
+
+        SummaryStatistics distance = new SummaryStatistics();
+        SummaryStatistics finalPrice = new SummaryStatistics();
+        SummaryStatistics finalDistance = new SummaryStatistics();
+        SummaryStatistics cashCompetitors = new SummaryStatistics();
+
+
+        //run the model
+        for(int i=0; i<7000; i++)
+        {
+            macroII.schedule.step(macroII);
+            MarginalMaximizerPIDTuning.printProgressBar(7000, i, 100);
+            final double closingPrice = macroII.getMarket(GoodType.GENERIC).getData().getLatestObservation(MarketDataType.CLOSING_PRICE);
+            double distanceFromCorrect;
+            if(Double.isNaN(closingPrice) || closingPrice < 0)
+            {
+                distanceFromCorrect = 58;
+            }
+            else
+            {
+                distanceFromCorrect = Math.pow(58 - closingPrice, 2);
+            }
+            distance.addValue(distanceFromCorrect);
+        }
+
+        //run the model
+        for(int i=0; i<1000; i++)
+        {
+            macroII.schedule.step(macroII);
+            MarginalMaximizerPIDTuning.printProgressBar(1000, i, 100);
+            double closingPrice = macroII.getMarket(GoodType.GENERIC).getData().getLatestObservation(MarketDataType.CLOSING_PRICE);
+            finalPrice.addValue(closingPrice);
+
+            double distanceFromCorrect;
+            if(Double.isNaN(closingPrice) || closingPrice < 0)
+            {
+                closingPrice = 0;
+            }
+
+            distanceFromCorrect = Math.pow(58 - closingPrice, 2);
+
+            distance.addValue(distanceFromCorrect);
+            finalDistance.addValue(distanceFromCorrect);
+        }
+
+
+        double cashSpecial = scenario.getMonopolist().getCash();
+        for(final Firm firm : scenario.getCompetitors())
+            if(firm != scenario.getMonopolist())
+                cashCompetitors.addValue(firm.getCash());
+
+
+
+        if(filename != null)
+            macroII.getMarket(GoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper",filename).toFile());
+
+
+        return new double[]{distance.getMean(),finalDistance.getMean(),finalPrice.getVariance(),cashCompetitors.getMean(),cashSpecial};
+
+
+
+    }
 
 
 

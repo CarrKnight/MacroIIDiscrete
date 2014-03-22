@@ -107,6 +107,7 @@ public class MonopolistScenario extends Scenario {
     private int buyerDelay=0;
 
 
+
     public MonopolistScenario(MacroII macroII) {
         super(macroII);
         workers= new LinkedList<>();
@@ -327,6 +328,7 @@ public class MonopolistScenario extends Scenario {
         built.registerSaleDepartment(dept, GoodType.GENERIC);
         AskPricingStrategy askPricingStrategy = AskPricingStrategy.Factory.newAskPricingStrategy(this.askPricingStrategy, dept);
         dept.setAskPricingStrategy(askPricingStrategy); //set strategy to PID
+
     }
 
 
@@ -743,4 +745,5 @@ public class MonopolistScenario extends Scenario {
     public void setBuyerDelay(int buyerDelay) {
         this.buyerDelay = buyerDelay;
     }
+
 }

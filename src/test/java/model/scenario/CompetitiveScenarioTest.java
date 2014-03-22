@@ -487,5 +487,92 @@ public class CompetitiveScenarioTest {
 
 
 
+    @Test
+    public void rightPriceAndQuantityTestAsMarginalNoPIDStickyLearned()
+    {
+
+        for(int competitors=2;competitors<=7;competitors++)
+        {
+            System.out.println("FORCED COMPETITIVE FIRMS: " + (competitors+1));
+            float averageResultingPrice = 0;
+            float averageResultingQuantity = 0;
+            for(int i=0; i<5; i++)
+            {
+
+                final MacroII macroII = new MacroII(System.currentTimeMillis());
+                final TripolistScenario scenario1 = new TripolistScenario(macroII);
+                scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+                scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
+                scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
+                scenario1.setAdditionalCompetitors(competitors);
+                scenario1.setWorkersToBeRehiredEveryDay(true);
+                scenario1.setDemandIntercept(102);
+                scenario1.setBuyerDelay(50);
+
+
+
+                //assign scenario
+                macroII.setScenario(scenario1);
+
+                macroII.start();
+                macroII.schedule.step(macroII);
+                for(Firm firm : scenario1.getCompetitors())
+                {
+                    SalesDepartment department = firm.getSalesDepartment(GoodType.GENERIC);
+                    final SimpleFlowSellerPID askPricingStrategy = new SimpleFlowSellerPID(department);
+                   // askPricingStrategy.setTargetInventory(1000);
+                    askPricingStrategy.setSpeed(0); //stickiness!
+                    department.setAskPricingStrategy(askPricingStrategy);
+                    department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+                }
+
+
+                while(macroII.schedule.getTime()<8000)
+                {
+                    macroII.schedule.step(macroII);
+
+
+
+                }
+                SummaryStatistics prices = new SummaryStatistics();
+                SummaryStatistics quantities = new SummaryStatistics();
+                SummaryStatistics target = new SummaryStatistics();
+                for(int j=0; j<3000; j++)
+                {
+                    macroII.schedule.step(macroII);
+ //                   assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
+                    prices.addValue(macroII.getMarket(GoodType.GENERIC).getLastPrice());
+                    quantities.addValue(macroII.getMarket(GoodType.GENERIC).getTodayVolume());
+
+                    for(EconomicAgent agent : macroII.getMarket(GoodType.GENERIC).getSellers())
+                    {
+                        SalesDepartment department = ((Firm) agent).getSalesDepartment(GoodType.GENERIC);
+                        target.addValue(macroII.getMarket(GoodType.GENERIC).getTodayVolume());
+                    }
+
+
+                }
+
+
+                System.out.println(prices.getMean() + " - " + quantities.getMean() +"/" +target.getMean()+ "----" + macroII.seed() + " | " + macroII.getMarket(GoodType.GENERIC).getLastDaysAveragePrice());
+                System.out.println("standard deviations: price : " + prices.getStandardDeviation() + " , quantity deviation: " + quantities.getStandardDeviation());
+                if(competitors>=4)
+                {
+                    assertEquals(prices.getMean(), 58, 5);
+//                    assertTrue(prices.getStandardDeviation() < 5);         these are probably a lot higher with stickiness
+                    assertEquals(quantities.getMean(), 44,5);
+                    //         assertTrue(quantities.getStandardDeviation() < 5);
+                }
+            }
+
+
+        }
+
+
+
+
+    }
+
+
 
 }
