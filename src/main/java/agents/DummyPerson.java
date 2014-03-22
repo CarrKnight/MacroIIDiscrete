@@ -152,7 +152,7 @@ public class DummyPerson extends Person{
         assert quotesMade.containsKey(type);
         assert quotesMade.get(type) != null;
         //remove the quote
-        markets.remove(quotesMade.get(type));
+        markets.get(type).removeBuyQuote(quotesMade.get(type));
         quotesMade.put(type,null);
         //try again
         status.put(type,ShoppingStatus.READY);

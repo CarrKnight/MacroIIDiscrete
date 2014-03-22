@@ -40,9 +40,10 @@ public interface SalesDepartmentListener {
     /**
      * This logEvent is fired whenever the sales department managed to sell a good!
      * @param dept The department
-     * @param result The saleResult object describing the trade!
+     * @param good the good being sold
+     * @param price the price sold for
      */
-    public void goodSoldEvent(@Nonnull final SalesDepartment dept,@Nonnull SaleResult result);
+    public void goodSoldEvent(@Nonnull final SalesDepartment dept, Good good, Long price);
 
     /**
      * Tell the listener a peddler just came by and we couldn't service him because we have no goods

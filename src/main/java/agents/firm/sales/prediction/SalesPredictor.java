@@ -160,11 +160,10 @@ public interface SalesPredictor {
 
             try {
                 //we don't need a big switch here, they are mostly without constructor
-
                 if(rule.equals(LinearExtrapolationPredictor.class) || rule.equals(AroundShockLinearRegressionSalesPredictor.class))
                     return rule.getConstructor(SalesDepartment.class).newInstance(department);
                 if(rule.equals(SamplingLearningDecreaseSalesPredictor.class))
-                    return rule.getConstructor(MacroII.class).newInstance(department.getModel());
+                    return rule.getConstructor().newInstance();
                 if(rule.equals(RecursiveSalePredictor.class) || rule.equals(OpenLoopRecursiveSalesPredictor.class))
                     return rule.getConstructor(MacroII.class,SalesDepartment.class).newInstance(department.getModel(),department);
                 if(rule.equals(RegressionSalePredictor.class) || rule.equals(RegressionWeightedSalePredictor.class)

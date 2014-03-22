@@ -423,8 +423,6 @@ public abstract class Market implements Deactivatable{
 
 
         PurchaseResult result = policy.trade(buyer,seller,good,price,buyerQuote,sellerQuote,this);
-        prices.setMaximumItemCount(100);
-        markups.setMaximumItemCount(3);
 
         if(result == PurchaseResult.SUCCESS)
         {
@@ -447,7 +445,7 @@ public abstract class Market implements Deactivatable{
             if(MacroII.hasGUI())
             {
                 //record it on the timeline
-                long time = buyer.getModel().getCurrentSimulationTimeInMillis();
+                long time = (long) buyer.getModel().getMainScheduleTime();
                 records.event(buyer,MarketEvents.BOUGHT,time,"price: " + price + ", seller: " +seller );
                 records.event(seller, MarketEvents.SOLD, time, "price: " + price + ", buyer: " + buyer);
                 //register it on the network!
@@ -681,6 +679,8 @@ public abstract class Market implements Deactivatable{
                 priceSeries,false,true,false);
         ChartPanel panel = new ChartPanel(chart,true);
         assert prices!= null;
+        prices.setMaximumItemCount(100);
+        markups.setMaximumItemCount(3);
 
 
 

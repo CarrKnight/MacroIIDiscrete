@@ -167,11 +167,10 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
 
 
             //don't return more than the max or less than 0
-            int newWorkerObjective =  Math.max(Math.min(Math.round(pid.getCurrentMV()),
+
+
+            return Math.max(Math.min(Math.round(pid.getCurrentMV()),
                     getHr().maximumWorkersPossible()), 0);
-
-
-            return newWorkerObjective;
 
 
 

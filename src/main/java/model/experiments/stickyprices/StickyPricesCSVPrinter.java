@@ -93,18 +93,19 @@ public class StickyPricesCSVPrinter {
         //oneHundredAllLearnedCompetitiveRuns(Paths.get("runs", "supplychai", "paper", "learnedCompetitiveInventoryChain100.csv").toFile());
         //oneHundredAllLearnedFoodRuns(Paths.get("runs", "supplychai", "paper", "learnedInventoryFoodChain100.csv").toFile());
 
+        /*
         competitiveSweepRun(1);
-        //competitiveSweepRun(2);
+        competitiveSweepRun(2);
         competitiveSweepRun(3);
         competitiveSweepRun(4);
-        //competitiveSweepRun(5);
+        competitiveSweepRun(5);
         competitiveSweepRun(5);
         competitiveSweepRun(6);
         competitiveSweepRun(7);
 
         //stickiness vs maximization stickiness
         woodMonopolistSupplyChainSweep();
-
+*/
 
 
 

@@ -383,7 +383,7 @@ public class Person extends EconomicAgent {
         if(isActive())
         {
             //if you started already and you weren't searching before we have to start the stepper
-            if( oldFlag == false)
+            if(!oldFlag)
             {
 
                 //schedule yourself for a look

@@ -726,7 +726,7 @@ public class MacroII extends SimState{
         }
 
         builder.append(sum);
-        //System.out.println(builder.toString());
+        System.out.println(builder.toString());
 
     }
 

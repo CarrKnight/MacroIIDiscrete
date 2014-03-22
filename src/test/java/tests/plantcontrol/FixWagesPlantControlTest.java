@@ -112,7 +112,6 @@ public class FixWagesPlantControlTest {
         SalesDepartment dept = mock(SalesDepartmentAllAtOnce.class);
         when(dept.getLastClosingCost()).thenReturn(1l);
         when(dept.getLastClosingPrice()).thenReturn(2l);
-        when(dept.getSoldPercentage()).thenReturn(.7f);
         //should be profitable
         firm.registerSaleDepartment(dept,GoodType.GENERIC);
 
@@ -244,7 +243,6 @@ public class FixWagesPlantControlTest {
         SalesDepartment dept = mock(SalesDepartmentAllAtOnce.class);
         when(dept.getLastClosingCost()).thenReturn(1l);
         when(dept.getLastClosingPrice()).thenReturn(2l);
-        when(dept.getSoldPercentage()).thenReturn(.7f);
         //should be profitable
         firm.registerSaleDepartment(dept,GoodType.GENERIC);
 

@@ -113,13 +113,11 @@ public class CascadePIDController implements Controller{
         pid1.adjust(firstTarget,firstInput,isActive,state,user,phase); //to avoid exxaggerating in disinvesting, the recorded inventory is never more than twice the target
         //slave
 
-        final float masterOutput = pid1.getCurrentMV();
-        secondTarget = masterOutput;
+        secondTarget = pid1.getCurrentMV();
         // secondTarget = masterOutput > 1 ? (float)Math.log(masterOutput) : masterOutput < -1 ? -(float)Math.log(-masterOutput) : 0;
         //
 
         assert !Float.isNaN(secondTarget) && !Float.isInfinite(secondTarget);
-        float oldMV = pid2.getCurrentMV();
         ControllerInput secondPIDInput = ControllerInput.simplePIDTarget(secondTarget,secondInput);
         pid2.adjust(secondPIDInput, isActive, null, null, null);
         //  System.out.println("targ additional inflow " + secondTarget + ", price: " + pid2.getCurrentMV() + ", old price: " + oldMV);

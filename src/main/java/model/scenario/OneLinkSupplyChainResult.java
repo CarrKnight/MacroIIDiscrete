@@ -204,7 +204,7 @@ public class OneLinkSupplyChainResult {
                 return hr;
             }
 
-        };;
+        };
         scenario1.setControlType(MarginalMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         //use standard PID parameters

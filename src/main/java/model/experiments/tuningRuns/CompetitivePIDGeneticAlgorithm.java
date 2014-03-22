@@ -92,9 +92,8 @@ public class CompetitivePIDGeneticAlgorithm {
             if (Float.compare(candidate.averageMasterP, averageMasterP) != 0) return false;
             if (Float.compare(candidate.averageSlaveD, averageSlaveD) != 0) return false;
             if (Float.compare(candidate.averageSlaveI, averageSlaveI) != 0) return false;
-            if (Float.compare(candidate.averageSlaveP, averageSlaveP) != 0) return false;
+            return Float.compare(candidate.averageSlaveP, averageSlaveP) == 0;
 
-            return true;
         }
 
         @Override

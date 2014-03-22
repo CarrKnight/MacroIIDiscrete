@@ -46,9 +46,9 @@ public class SamplingLearningIncreasePurchasePredictor extends  AbstractWorkerLe
      */
     private PurchasesDepartment department;
 
-    public SamplingLearningIncreasePurchasePredictor(MacroII model) {
+    public SamplingLearningIncreasePurchasePredictor() {
 
-        super(model);
+        super();
 
         predictor = new FixedIncreasePurchasesPredictor();
 

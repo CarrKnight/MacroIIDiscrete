@@ -594,10 +594,8 @@ public class LearningTimeSeriesGeneticAlgorithm
             if(predictor.getLastRegressionDay() == -1) //if you have run no regressions: BAD!
                 return Double.MAX_VALUE;
 
-            double distance = Math.pow(quantity-MonopolistScenario.findWorkerTargetThatMaximizesProfits(p0,p1,w0,w1,a)
+            return Math.pow(quantity-MonopolistScenario.findWorkerTargetThatMaximizesProfits(p0,p1,w0,w1,a)
                     ,2);
-
-            return distance;
         }
 
         /**

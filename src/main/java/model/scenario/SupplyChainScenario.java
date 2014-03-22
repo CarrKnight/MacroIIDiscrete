@@ -465,4 +465,7 @@ public class SupplyChainScenario extends Scenario
 
     }
 
+    public List<PlantControl> getMaximizers() {
+        return maximizers;
+    }
 }

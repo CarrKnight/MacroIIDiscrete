@@ -48,7 +48,6 @@ public class AbstractWorkerLearningPredictorTest {
         {
           //  final MacroII macroII = new MacroII(1384099470750l);
             final MacroII macroII = new MacroII(System.currentTimeMillis());
-            System.err.println(macroII.seed());
 
 
             MonopolistScenario scenario1 = new MonopolistScenario(macroII);
@@ -88,10 +87,7 @@ public class AbstractWorkerLearningPredictorTest {
                 macroII.schedule.step(macroII);
 
 
-            System.out.println(predictor.getDecrementDelta() + " - " + p1+ " - " +macroII.seed() +  ", " + scenario1.getAskPricingStrategy().getSimpleName());
-      /*      System.out.println(macroII.getMarket(GoodType.GENERIC).getLastPrice() + " ---- " + predictor.predictPrice(0) + " ---- " + predictor.predictPrice(1) + "\n" +
-                    predictor.predictPrice(1,10) +"---"+ predictor.predictPrice(1,100) +"---"+ predictor.predictPrice(1,1000)+"---"+ predictor.predictPrice(1,10000));
-                    */
+
             scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC).getData().writeToCSVFile(new File("test.csv"));
             assertEquals(predictor.getDecrementDelta(), (double) (p1), .5d);
 

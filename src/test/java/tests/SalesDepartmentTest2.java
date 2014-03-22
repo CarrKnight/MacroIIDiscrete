@@ -271,40 +271,14 @@ public class SalesDepartmentTest2 {
         LinkedList<Good> toSell = (LinkedList<Good>) field.get (dept1);
         assertEquals(1, toSell.size()); //2 things left to sell
 
-        field = SalesDepartment.class.getDeclaredField("salesResults");
-        field.setAccessible(true);
-        Map<Good,SaleResult> results = (Map<Good, SaleResult>) field.get(dept1);
-        int successes=0; int failures =0; int quotes=0;
-        for(SaleResult result : results.values()){
-            if(result.getResult() == SaleResult.Result.SOLD)
-                successes++;
-            else if(result.getResult() == SaleResult.Result.QUOTED)
-                quotes++;
-            else
-                failures++;
 
-        }
-        assertEquals(3, successes); //8 succesfully sold!!
-        assertEquals(1, quotes); //2 things left to sell
-        assertEquals(0, failures); //2 things left to sell
+
 
         assertEquals(1, dept1.getFirm().getTotalInventory().size());
 
 
-        results = (Map<Good, SaleResult>) field.get(dept2);
-        successes=0; failures =0; quotes=0;
-        for(SaleResult result : results.values()){
-            if(result.getResult() == SaleResult.Result.SOLD)
-                successes++;
-            else if(result.getResult() == SaleResult.Result.QUOTED)
-                quotes++;
-            else
-                failures++;
 
-        }
-        assertEquals(3, successes); //8 succesfully sold!!
-        assertEquals(0, quotes); //2 things left to sell
-        assertEquals(0, failures); //2 things left to sell
+
 
         assertEquals(0, dept2.getFirm().getTotalInventory().size());
 
@@ -318,20 +292,7 @@ public class SalesDepartmentTest2 {
         dept1.getMarket().submitBuyQuote(buyer,buyer.quotedPrice);
 
 
-        results = (Map<Good, SaleResult>) field.get(dept1);
-        successes=0; failures =0; quotes=0;
-        for(SaleResult result : results.values()){
-            if(result.getResult() == SaleResult.Result.SOLD)
-                successes++;
-            else if(result.getResult() == SaleResult.Result.QUOTED)
-                quotes++;
-            else
-                failures++;
 
-        }
-        assertEquals(4, successes); //8 succesfully sold!!
-        assertEquals(0, quotes); //2 things left to sell
-        assertEquals(0, failures); //2 things left to sell
 
         assertEquals(0, dept2.getFirm().getTotalInventory().size());
         assertEquals(dept1.getMarket().getLastPrice(), 72l);
@@ -362,12 +323,9 @@ public class SalesDepartmentTest2 {
 
 
 
-        Field field = SalesDepartment.class.getDeclaredField("salesResults");
-        field.setAccessible(true);
-        Map<Good,SaleResult> results = (Map<Good, SaleResult>) field.get(dept1);
-        assertEquals(results.size(), 1);
-        assertEquals(results.get(toQuote).getPriceSold(), 56);
-        assertEquals(results.get(toQuote).getPreviousCost(), 10);
+
+        assertEquals(dept1.getLastClosingPrice(), 56);
+        assertEquals(toQuote.getCostOfProduction(), 10);
 
 
         market.setPricePolicy(new BuyerSetPricePolicy());

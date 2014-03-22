@@ -8,7 +8,6 @@ package agents.firm.sales.pricing.pid;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
-import agents.firm.sales.SaleResult;
 import agents.firm.sales.SalesDepartment;
 import financial.market.Market;
 import financial.utilities.Quote;
@@ -132,12 +131,12 @@ public class AfterTradeCounter implements StockoutEstimator, Steppable {
 
     /**
      * This logEvent is fired whenever the sales department managed to sell a good!
-     *
-     * @param dept   The department
-     * @param result The saleResult object describing the trade!
+     *  @param dept   The department
+     * @param good
+     * @param price
      */
     @Override
-    public void goodSoldEvent(@Nonnull SalesDepartment dept, @Nonnull SaleResult result) {
+    public void goodSoldEvent(@Nonnull SalesDepartment dept, Good good, Long price) {
     }
 
     /**

@@ -37,11 +37,6 @@ public abstract class AbstractWorkerLearningPredictor {
     protected final LinearRegression regression;
 
 
-
-
-    private final MacroII model;
-
-
     static public int defaultHowManyDaysOnAverageToSample = 17;
 
     private int howManyDaysOnAverageToSample = defaultHowManyDaysOnAverageToSample;
@@ -71,10 +66,9 @@ public abstract class AbstractWorkerLearningPredictor {
     private int lastRegressionDay = -1;
 
 
-    public AbstractWorkerLearningPredictor(MacroII model) {
+    public AbstractWorkerLearningPredictor() {
         regression = new LinearRegression();
 
-        this.model = model;
     }
 
 

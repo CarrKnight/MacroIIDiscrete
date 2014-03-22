@@ -32,10 +32,6 @@ public class CheaterPricing implements BidPricingStrategy {
      */
     private long defaultOffer = 1000;
 
-    /**
-     * the purchase department we work for
-     */
-    private final PurchasesDepartment department;
 
 
     /**
@@ -43,7 +39,6 @@ public class CheaterPricing implements BidPricingStrategy {
      * @param department reference needed because it sets the priority of its action as "low" (trying to act after the sales departments)
      */
     public CheaterPricing(final PurchasesDepartment department) {
-        this.department = department;
         department.setTradePriority(Priority.AFTER_STANDARD);
 
         department.getModel().scheduleSoon(ActionOrder.DAWN,new Steppable() {

@@ -43,8 +43,7 @@ public class SamplingLearningDecreaseSalesPredictor extends AbstractWorkerLearni
      */
     private SalesDepartment department;
 
-    public SamplingLearningDecreaseSalesPredictor(MacroII model) {
-        super(model);
+    public SamplingLearningDecreaseSalesPredictor() {
 
         predictor = new FixedDecreaseSalesPredictor();
     }

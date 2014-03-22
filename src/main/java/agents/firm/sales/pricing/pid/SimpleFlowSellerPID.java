@@ -8,7 +8,6 @@ package agents.firm.sales.pricing.pid;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
-import agents.firm.sales.SaleResult;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentListener;
 import agents.firm.sales.pricing.AskPricingStrategy;
@@ -243,14 +242,14 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
 
     /**
      * This logEvent is fired whenever the sales department managed to sell a good!
-     *
-     * @param dept   The department
-     * @param result The saleResult object describing the trade!
+     *  @param dept   The department
+     * @param good
+     * @param price
      */
     @Override
-    public void goodSoldEvent(@Nonnull SalesDepartment dept, @Nonnull SaleResult result) {
+    public void goodSoldEvent(@Nonnull SalesDepartment dept, Good good, Long price) {
         goodsSold++;
-        stockOuts.goodSoldEvent(dept,result);
+        stockOuts.goodSoldEvent(dept, good,price );
 
     }
 

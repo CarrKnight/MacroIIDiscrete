@@ -311,4 +311,9 @@ public class FlowAndStockController implements Controller{
     public float getOffset() {
         return flowPID.getOffset();
     }
+
+
+    public PIDController getFlowPIDRoot() {
+        return flowPIDRoot;
+    }
 }

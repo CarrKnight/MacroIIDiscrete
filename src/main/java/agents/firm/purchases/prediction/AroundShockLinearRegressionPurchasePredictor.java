@@ -231,4 +231,12 @@ public class AroundShockLinearRegressionPurchasePredictor implements PurchasesPr
     public void setMaximumNumberOfDaysToLookAhead(int maximumNumberOfDaysToLookAhead) {
         this.maximumNumberOfDaysToLookAhead = maximumNumberOfDaysToLookAhead;
     }
+
+    public int getMinimumNumberOfDaysToLookAhead() {
+        return minimumNumberOfDaysToLookAhead;
+    }
+
+    public void setMinimumNumberOfDaysToLookAhead(int minimumNumberOfDaysToLookAhead) {
+        this.minimumNumberOfDaysToLookAhead = minimumNumberOfDaysToLookAhead;
+    }
 }

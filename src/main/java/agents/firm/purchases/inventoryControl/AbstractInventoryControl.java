@@ -163,8 +163,7 @@ public abstract class AbstractInventoryControl implements InventoryControl{
      */
     public void turnOff(){
         isActive = false; //remember you are off
-        boolean stopped = purchasesDepartment.getFirm().removeInventoryListener(this);  //stop listening.
-        //assert stopped; //make sure!
+        purchasesDepartment.getFirm().removeInventoryListener(this);  //stop listening.
 
 
     }

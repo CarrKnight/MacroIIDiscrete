@@ -135,9 +135,8 @@ public class OneLinkPredictorGeneticAlgorithm
 
             if (howManyDaysOnAverageToSample != that.howManyDaysOnAverageToSample) return false;
             if (maximumDaysToLookBack != that.maximumDaysToLookBack) return false;
-            if (maximumDaysToLookForward != that.maximumDaysToLookForward) return false;
+            return maximumDaysToLookForward == that.maximumDaysToLookForward;
 
-            return true;
         }
 
         @Override
@@ -299,7 +298,7 @@ public class OneLinkPredictorGeneticAlgorithm
 
                     @Override
                     protected void buildBeefSalesPredictor(SalesDepartment dept) {
-                        SamplingLearningDecreaseSalesPredictor predictorStrategy = new SamplingLearningDecreaseSalesPredictor(macroII);
+                        SamplingLearningDecreaseSalesPredictor predictorStrategy = new SamplingLearningDecreaseSalesPredictor();
                         predictorStrategy.setMaximumDaysToLookForward(candidate.getMaximumDaysToLookForward());
                         predictorStrategy.setMaximumDaysToLookBack(candidate.getMaximumDaysToLookBack());
                         predictorStrategy.setHowManyDaysOnAverageToSample(candidate.getHowManyDaysOnAverageToSample());

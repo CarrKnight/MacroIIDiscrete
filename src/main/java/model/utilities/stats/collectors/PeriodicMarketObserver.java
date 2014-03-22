@@ -419,11 +419,10 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
 
     public int getNumberOfObservations()
     {
-        int size =days.size();
         //all sizes should be the same
 
 
-        return size;
+        return days.size();
 
     }
 

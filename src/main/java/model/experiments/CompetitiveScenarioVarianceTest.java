@@ -114,7 +114,6 @@ public class CompetitiveScenarioVarianceTest {
 
             for(EconomicAgent agent : macroII.getMarket(GoodType.GENERIC).getSellers())
             {
-                SalesDepartment department = ((Firm) agent).getSalesDepartment(GoodType.GENERIC);
                 target.addValue(macroII.getMarket(GoodType.GENERIC).getTodayVolume());
             }
 
@@ -319,7 +318,6 @@ public class CompetitiveScenarioVarianceTest {
             int i=0;
             for(EconomicAgent agent : macroII.getMarket(GoodType.GENERIC).getSellers())
             {
-                SalesDepartment department = ((Firm) agent).getSalesDepartment(GoodType.GENERIC);
 
 
                 averageWorkerTarget+=  ((Firm) agent).getHRs().iterator().next().getWorkerTarget();

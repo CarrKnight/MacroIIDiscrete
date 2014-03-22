@@ -36,6 +36,7 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -68,32 +69,16 @@ public abstract class  SalesDepartment  implements Department {
      * a map associating to each good to sell the quote submitted for it at a centralized market
      */
     protected final Map<Good,Quote> goodsQuotedOnTheMarket;
-    /**
-     * This is the memory associated with the weekly results of selling. It records whether any good was sold, quoted or failed to sell.
-     * A good that remained quoted at the end of the week without being sold is unsold
-     */
-    protected final HashMap<Good,SaleResult> salesResults;
+
     /**
      * The firm where the sales department belongs
      */
     private final Firm firm;
     private final MacroII model;
+
     /**
-     * Here we keep memorized the last n totalSales of this firm.
+     * a list of all listeners to nofify
      */
-    private final Deque<Long> totalSales;
-    /**
-     * Here we keep memorized the value of unsold merchandise of this department
-     */
-    private final Deque<Long> totalUnsold;
-    /**
-     * Here we keep memorized the sum of revenue-costs for the goods sold
-     */
-    private final Deque<Long> grossMargin;
-    /**
-     * Here we keep memorized the cost of goods sold
-     */
-    private final Deque<Long> cogs;
     private LinkedList<SalesDepartmentListener> salesDepartmentListeners;
     /**
      * The market the sales department deals in
@@ -101,7 +86,6 @@ public abstract class  SalesDepartment  implements Department {
     protected final Market market;
     /**
      * The procedure used by the sales department to search the market.
-     * It is
      */
     protected BuyerSearchAlgorithm buyerSearchAlgorithm;
     protected SellerSearchAlgorithm sellerSearchAlgorithm;
@@ -116,14 +100,6 @@ public abstract class  SalesDepartment  implements Department {
      * This is the strategy used by the sales department to choose its price
      */
     protected AskPricingStrategy askPricingStrategy;
-    /**
-     * This counts how many goods the department managed to sell last week
-     */
-    private int goodsSoldLastWeek;
-    /**
-     * This counts how many goods the department was tasked to sell last week
-     */
-    private int goodsToSellLastWeek;
     /**
      * goods sold today. Reset every day at PREPARE_TO_TRADE step
      */
@@ -142,10 +118,6 @@ public abstract class  SalesDepartment  implements Department {
      * this flag is set to true whenever the first sellThis is called. It is never set to false
      */
     private boolean started = false;
-    /**
-     * This is the ratio goodsToSell/GoodsSold
-     */
-    private float soldPercentage = 1;
     /**
      * This is the price of the last good the sales department managed to sell
      */
@@ -180,16 +152,11 @@ public abstract class  SalesDepartment  implements Department {
 
     public SalesDepartment(SellerSearchAlgorithm sellerSearchAlgorithm, Market market, @Nonnull MacroII model, Firm firm, BuyerSearchAlgorithm buyerSearchAlgorithm) {
         data = new SalesData();
-        cogs = new ArrayDeque<>(model.getSalesMemoryLength());
-        salesResults = new HashMap<>();
         this.sellerSearchAlgorithm = sellerSearchAlgorithm;
-        totalSales = new ArrayDeque<>(model.getSalesMemoryLength());
         this.market = market;
         toSell = new LinkedList<>();
         goodsQuotedOnTheMarket = new HashMap<>();
-        grossMargin = new ArrayDeque<>(model.getSalesMemoryLength());
         this.model = model;
-        totalUnsold = new ArrayDeque<>(model.getSalesMemoryLength());
         this.firm = firm;
         predictorStrategy = RegressionSalePredictor.Factory.newSalesPredictor(defaultPredictorStrategy,this);
         this.buyerSearchAlgorithm = buyerSearchAlgorithm;
@@ -293,7 +260,7 @@ public abstract class  SalesDepartment  implements Department {
      * </p>
      *
      * @param g the good to price
-     * @return
+     * @return price of the good
      */
     public long price(Good g){
         return askPricingStrategy.price(g);
@@ -421,7 +388,6 @@ public abstract class  SalesDepartment  implements Department {
                 boolean success = peddleNow(g);
                 if(success){               //did we manage to sell?
                     assert !firm.has(g);
-                    assert salesResults.get(g).getResult() == SaleResult.Result.SOLD;
 
                     //done!
 
@@ -429,7 +395,6 @@ public abstract class  SalesDepartment  implements Department {
                 else{
                     //we didn't manage to sell!
                     assert firm.has(g);
-                    assert salesResults.get(g).getResult() == SaleResult.Result.UNSOLD;
                     //shall we try again?
                     double tryAgainIn = tryAgainNextTime(g);
                     if(tryAgainIn > 0)   //if we do want to try again
@@ -480,7 +445,6 @@ public abstract class  SalesDepartment  implements Department {
             //if the quote is not null, we quoted but not sold
             assert q.getAgent() == firm; //make sure we got back the right quote
             goodsQuotedOnTheMarket.put(g,q); //record the quote!
-            salesResults.put(g, SaleResult.quoted());
 
             if(shouldIPeddle(q))    //do you want to try and peddle too?
                 peddleNow(q.getGood()); //then peddle!
@@ -491,9 +455,6 @@ public abstract class  SalesDepartment  implements Department {
             assert !firm.has(g); //shouldn't be ours anymore!
             assert q.getAgent() == null; //should be null
 
-            //now the accounting should have been already taken care of by reactToFilledAskedQuote() method! Make sure:
-            assert salesResults.get(g).getResult() == SaleResult.Result.SOLD;
-            assert lastClosingPrice == salesResults.get(g).getPriceSold(); //check that the price recorded is correct
         }
     }
 
@@ -597,13 +558,11 @@ public abstract class  SalesDepartment  implements Department {
             toReturn = true;
         }
         //erase from memory
-        salesResults.remove(g);
 
         //make sure there is no trace in the tosell and  wait list
         assert !toSell.contains(g);
         assert !goodsQuotedOnTheMarket.containsKey(g);
-        //make sure there is no sale result associated to it
-        assert !salesResults.containsKey(g);
+
 
 
         return toReturn;
@@ -634,27 +593,14 @@ public abstract class  SalesDepartment  implements Department {
         //make sure there is no trace in the tosell and  wait list
         assert !toSell.contains(g);
         assert !goodsQuotedOnTheMarket.containsKey(g);
-        //make sure there is a sale result associated to it
-        assert salesResults.containsKey(g);
+
 
     }
 
-    void doNotWaitForThisQuoteToBeFilled(Good g) {
-        if(goodsQuotedOnTheMarket.remove(g) != null)  //do you remember having a quote at all?
-        {
-            //removed the quote
-            SaleResult oldResult = salesResults.remove(g);
-            //it should have been registered as either quoted or unsold
-            assert oldResult.getResult() == SaleResult.Result.UNSOLD || oldResult.getResult() == SaleResult.Result.QUOTED;
+    @Nullable
+    private Quote doNotWaitForThisQuoteToBeFilled(Good g) {
 
-        }
-        else
-        {
-            //you don't have a quote, but it was still in the ToSell, it means we got immediately filled!
-            assert !salesResults.containsKey(g) || salesResults.get(g).getResult() == SaleResult.Result.BEING_UPDATED : //you shouldn't be registered as a result or you were repriced
-                    "The sales result is: " + salesResults.get(g);
-
-        }
+        return goodsQuotedOnTheMarket.remove(g);
     }
 
     private void removeFromToSellMasterlist(Good g) {
@@ -673,20 +619,17 @@ public abstract class  SalesDepartment  implements Department {
         assert !toSell.contains(g); //you should have removed it!!!
 
         //finally, register the sale!!
-        SaleResult newResult = SaleResult.sold(price,g.getSecondLastValidPrice()); //congratulation, you sold
         //       newResult.setPriceSold(price); //record the price of sale
-        salesResults.put(g, newResult); //put it in!
         lastClosingPrice = price;
 
-        lastClosingCost = newResult.getPreviousCost();
         sumClosingPrice += lastClosingPrice;
 
         //tell the listeners!
-        fireGoodSoldEvent(newResult);
+        fireGoodSoldEvent(g,price);
 
         //log it
         getFirm().logEvent(SalesDepartment.this, MarketEvents.SOLD
-                , getFirm().getModel().getCurrentSimulationTimeInMillis(), "price " + newResult.getPriceSold());
+                , getFirm().getModel().getCurrentSimulationTimeInMillis(), "price ");
 
         todayOutflow++;
 
@@ -754,14 +697,13 @@ public abstract class  SalesDepartment  implements Department {
                 if(q!=null)
                     market.removeSellQuote(q);
                 SaleResult saleResult = SaleResult.sold(finalPrice, cost);
-                salesResults.put(g,saleResult ); //record the sale
                 lastClosingPrice = finalPrice;
 
                 sumClosingPrice += lastClosingPrice;
                 buyerSearchAlgorithm.reactToSuccess(buyer,result); //tell the search algorithm
 
                 //tell the listeners!
-                fireGoodSoldEvent(saleResult);
+                fireGoodSoldEvent(g,finalPrice);
                 logOutflow(g,finalPrice);
 
                 return true;
@@ -771,8 +713,6 @@ public abstract class  SalesDepartment  implements Department {
             {
                 //we failed!
                 assert firm.has(g);  //we still have it, uh?
-                if(!salesResults.containsKey(g))
-                    salesResults.put(g,SaleResult.unsold()); //record it as unsold!
 
                 buyerSearchAlgorithm.reactToFailure(buyer,result);
                 return false;
@@ -783,8 +723,6 @@ public abstract class  SalesDepartment  implements Department {
         }
         //we failed
         assert firm.has(g);  //we still have it, uh?
-        if(!salesResults.containsKey(g))
-            salesResults.put(g,SaleResult.unsold()); //record it as unsold!
         //they rejected our price!
         buyerSearchAlgorithm.reactToFailure(buyer, PurchaseResult.PRICE_REJECTED);
         return false;
@@ -807,73 +745,11 @@ public abstract class  SalesDepartment  implements Department {
      * Weekend is a magical time when we record all quoted but unsold goods as unsold and then compute statistics and move on.
      */
     public void weekEnd(){
-        //zero all the counters
-        Collection<Good> recordsToRemove = new LinkedList<>();
-        long thisWeekSales = 0;
-        long thisWeekCOGS = 0;
-        long thisWeekInventory = 0;
-        long thisWeekMargin = 0;
-        goodsSoldLastWeek= 0;  goodsToSellLastWeek =0;
 
-        //compute the sales
-        for(Map.Entry<Good, SaleResult> saleRecord : salesResults.entrySet()) //go through the entry set
-        {
-            goodsToSellLastWeek++; //count this among the goods I was supposed to sell
-
-            if(saleRecord.getValue().getResult() == SaleResult.Result.SOLD) //was this good sold?
-            {
-                assert !firm.has(saleRecord.getKey()); //we shouldn't own it anymore!!!
-//                assert !toSell.contains(saleRecord.getKey());
-                assert saleRecord.getValue().getPriceSold() >= 0 : saleRecord.getValue().getPriceSold(); //we should have recorded the price!!
-                thisWeekSales = thisWeekSales + saleRecord.getValue().getPriceSold(); //sum up the sale
-                thisWeekCOGS = thisWeekCOGS + saleRecord.getValue().getPreviousCost(); //sum up the costs
-                thisWeekMargin = thisWeekMargin + saleRecord.getValue().getPriceSold() - saleRecord.getValue().getPreviousCost(); //addSalesDepartmentListener the margin
-                recordsToRemove.add(saleRecord.getKey()); //remove it, so we don't count it twice
-                goodsSoldLastWeek++; //count it
-            }
-            else
-            {
-                //it's unsold
-//                assert saleRecord.getValue().getResult() != SaleResult.Result.BEING_UPDATED; //being updated should be a temporary state, shouldn't be still here by the end of the week
-                assert firm.has(saleRecord.getKey()); //we still own it!!!
-                //             assert toSell.contains(saleRecord.getKey()); //we still need to sell it
-
-
-                if(saleRecord.getValue().getResult() == SaleResult.Result.QUOTED) //quoted are now counted as unsold
-                    saleRecord.setValue(SaleResult.unsold());
-                thisWeekInventory = thisWeekInventory + saleRecord.getKey().getLastValidPrice(); //count their value as part of unsold cost
-            }
-        }
-
-        soldPercentage =  ((float)goodsSoldLastWeek)/(float)goodsToSellLastWeek;
-        assert soldPercentage <= 1 || goodsToSellLastWeek == 0;
-        assert soldPercentage >=0 || goodsToSellLastWeek == 0;
-
-        //remove all keys
-        salesResults.keySet().removeAll(recordsToRemove); //remove them all!
 
         if(MacroII.SAFE_MODE) //if safe mode is on
         {
             additionalDiagnostics();
-        }
-
-
-        //RECORD results
-
-        totalSales.addLast(thisWeekSales); //record total sales
-        totalUnsold.addLast(thisWeekInventory);
-        cogs.addLast(thisWeekCOGS);
-        grossMargin.addLast(thisWeekMargin);
-        assert thisWeekMargin == thisWeekSales - thisWeekCOGS;
-        assert totalSales.size() == totalUnsold.size(); //they should be of the same size
-        assert totalSales.size() == grossMargin.size(); //they should be of the same size
-
-
-        if(totalSales.size() >= firm.getModel().getSalesMemoryLength()){
-            //if the memory is too long
-            totalSales.removeFirst();
-            totalUnsold.removeFirst();
-            grossMargin.removeFirst();
         }
 
 
@@ -884,13 +760,6 @@ public abstract class  SalesDepartment  implements Department {
     }
 
     private void additionalDiagnostics() {
-        for(Map.Entry<Good, SaleResult> saleRecord : salesResults.entrySet())      //go back through all the salesResults
-        {
-            assert firm.has(saleRecord.getKey()); //unsold should still be in inventory
-            assert toSell.contains(saleRecord.getKey()); //should be owned by us, now
-            assert saleRecord.getValue().getResult() != SaleResult.Result.SOLD; //all successes should have been eliminated
-        }
-
         for(Good g : toSell)
         {
             assert firm.has(g); //unsold should still be in inventory
@@ -986,26 +855,11 @@ public abstract class  SalesDepartment  implements Department {
         }catch (IllegalAccessException e){assert false; System.exit(-1); return -1;}            //this won't happen4
     }
 
-    /**
-     * @return the value for the field goodsSoldLastWeek.
-     */
-    public int getGoodsSoldLastWeek() {
-        return goodsSoldLastWeek;
-    }
 
-    /**
-     * @return the value for the field goodsToSellLastWeek.
-     */
-    public int getGoodsToSellLastWeek() {
-        return goodsToSellLastWeek;
-    }
 
-    /**
-     * @return the value for the field soldPercentage. (100% if never usec)
-     */
-    public float getSoldPercentage() {
-        return soldPercentage;
-    }
+
+
+
 
     /**
      * last closing price
@@ -1026,41 +880,11 @@ public abstract class  SalesDepartment  implements Department {
         this.predictorStrategy = predictorStrategy;
     }
 
-    public Deque<Long> getGrossMargin() {
-        return grossMargin;
-    }
 
-    public Deque<Long> getTotalSales() {
-        return totalSales;
-    }
 
-    public Deque<Long> getTotalUnsold() {
-        return totalUnsold;
-    }
 
-    /**
-     * Return last week gross margin (revenue - costs)
-     */
-    public long getLastWeekMargin(){
-        return grossMargin.getLast();
-    }
 
-    /**
-     * Return the last week cost of good solds
-     */
-    public long getLastWeekCostOfGoodSold()
-    {
-        return cogs.getLast();
 
-    }
-
-    /**
-     * Return last week sales (that is, revenues)
-     */
-    public long getLastWeekSales()
-    {
-        return totalSales.getLast();
-    }
 
     /**
      *
@@ -1079,8 +903,6 @@ public abstract class  SalesDepartment  implements Department {
         for(Quote q: goodsToRequote)
         {
             market.removeSellQuote(q); //remove the quote
-            SaleResult oldResult = salesResults.put(q.getGood(), SaleResult.updating()); //signal to the results map that the good is being updated
-            assert oldResult.getResult() == SaleResult.Result.QUOTED || oldResult.getResult() == SaleResult.Result.UNSOLD; //previously you should have been classified as unsold or quoted
         }
 
         //when you can, requote
@@ -1126,9 +948,7 @@ public abstract class  SalesDepartment  implements Department {
         if(predictorStrategy!= null)
             predictorStrategy.turnOff(); predictorStrategy = null;
         toSell.clear();
-        grossMargin.clear();
         goodsQuotedOnTheMarket.clear();
-        salesResults.clear();
         assert salesDepartmentListeners.isEmpty(); //hopefully it is clear by now!
         salesDepartmentListeners.clear();
         salesDepartmentListeners = null;
@@ -1197,12 +1017,12 @@ public abstract class  SalesDepartment  implements Department {
     /**
      * Notify the listeners and the logger/gui that a good was sold! Also count it among the daily goods sold
      */
-    void fireGoodSoldEvent(SaleResult saleResult){
+    void fireGoodSoldEvent(Good good, Long price){
 
 
 
         for(SalesDepartmentListener listener : salesDepartmentListeners)
-            listener.goodSoldEvent(this,saleResult);
+            listener.goodSoldEvent(this,good,price);
 
 
 
