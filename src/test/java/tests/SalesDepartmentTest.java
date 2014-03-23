@@ -166,22 +166,8 @@ public class SalesDepartmentTest {
         LinkedList<Good> toSell = (LinkedList<Good>) field.get (dept);
         assertEquals(2, toSell.size()); //2 things left to sell
 
-        field = SalesDepartment.class.getDeclaredField("salesResults");
-        field.setAccessible(true);
-        Map<Good,SaleResult> results = (Map<Good, SaleResult>) field.get(dept);
-        int successes=0; int failures =0; int quotes=0;
-        for(SaleResult result : results.values()){
-            if(result.getResult() == SaleResult.Result.SOLD)
-                successes++;
-            else if(result.getResult() == SaleResult.Result.QUOTED)
-                quotes++;
-            else
-                failures++;
 
-        }
-        assertEquals(8, successes); //8 succesfully sold!!
-        assertEquals(2, quotes); //2 things left to sell
-        assertEquals(0, failures); //2 things left to sell
+
 
         assertEquals(2, dept.getFirm().getTotalInventory().size());
 
@@ -209,19 +195,7 @@ public class SalesDepartmentTest {
         assertEquals(1, toSell.size()); //2 things left to sell
 
 
-        successes=0; failures =0; quotes=0;
-        for(SaleResult result : results.values()){
-            if(result.getResult() == SaleResult.Result.SOLD)
-                successes++;
-            else if(result.getResult() == SaleResult.Result.QUOTED)
-                quotes++;
-            else
-                failures++;
 
-        }
-        assertEquals(9, successes); //8 succesfully sold!!
-        assertEquals(1, quotes); //2 things left to sell
-        assertEquals(0, failures); //2 things left to sell
 
         assertEquals(1, dept.getFirm().getTotalInventory().size());
 
@@ -249,12 +223,11 @@ public class SalesDepartmentTest {
 
 
 
-        Field field = SalesDepartment.class.getDeclaredField("salesResults");
-        field.setAccessible(true);
-        Map<Good,SaleResult> results = (Map<Good, SaleResult>) field.get(dept);
-        assertEquals(results.size(), 1);
-        assertEquals(results.get(toQuote).getPriceSold(), 56);
-        assertEquals(results.get(toQuote).getPreviousCost(), 10);
+
+
+        assertEquals(dept.getLastClosingPrice(), 56);
+        assertEquals(toQuote.getLastValidPrice(), 56);
+        assertEquals(toQuote.getCostOfProduction(), 10);
 
 
 
@@ -293,24 +266,6 @@ public class SalesDepartmentTest {
 
 
 
-        field = SalesDepartment.class.getDeclaredField("salesResults");
-        field.setAccessible(true);
-        Map<Good,SaleResult> results = (Map<Good, SaleResult>) field.get(dept);
-        int successes=0; int failures =0; int quotes=0;
-        for(SaleResult result : results.values()){
-            if(result.getResult() == SaleResult.Result.SOLD)
-                successes++;
-            else if(result.getResult() == SaleResult.Result.QUOTED)
-                quotes++;
-            else
-                failures++;
-
-        }
-        assertEquals(8, successes); //8 succesfully sold!!
-        assertEquals(0, quotes); //2 things left to sell
-        assertEquals(2, failures); //2 things left to sell
-
-        assertEquals(2, dept.getFirm().getTotalInventory().size());
 
 
 
@@ -329,33 +284,6 @@ public class SalesDepartmentTest {
 
     }
 
-    @Test
-    public void testWeekEnd() throws Exception {
-        Market.TESTING_MODE = true;
-        assertEquals(-1, dept.getLastClosingPrice());
-        testSellThis(); //do the usual shenanigans
-        assertEquals(30, dept.getLastClosingPrice());
-        assertEquals(1f, dept.getSoldPercentage(), .0001); //at the beginning it defaults at 100%
-        assertEquals(dept.getGrossMargin().size(), 0);
-        assertEquals(dept.getTotalUnsold().size(), 0);
-        assertEquals(dept.getTotalSales().size(), 0);
-        dept.weekEnd();
-        assertEquals(.90f, dept.getSoldPercentage(),.01f);
-        assertEquals(dept.getGrossMargin().size(), 1);
-        assertEquals(dept.getGrossMargin().getFirst().longValue(), 140l);
-        assertEquals(dept.getTotalUnsold().size(), 1);
-        assertEquals(dept.getTotalUnsold().getFirst().longValue(), 30l);
-        assertEquals(dept.getTotalSales().getFirst().longValue(), 410l);
-        Market.TESTING_MODE = false;
-
-
-
-
-
-
-
-
-    }
 
 
 

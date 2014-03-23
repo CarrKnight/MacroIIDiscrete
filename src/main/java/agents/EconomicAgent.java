@@ -230,7 +230,7 @@ public abstract class EconomicAgent implements Agent, HasInventory{
 
     public MersenneTwisterFast getRandom(){
         return model.getRandom();
-    };
+    }
 
 
     abstract  public void reactToFilledAskedQuote(Good g, long price, EconomicAgent buyer);

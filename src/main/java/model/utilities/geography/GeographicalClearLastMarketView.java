@@ -30,7 +30,7 @@ import java.util.Map;
 
 /**
  * <h4>Description</h4>
- * <p/> Mostly a javafx object hidden within a simple
+ * <p/> Mostly a javafx object hidden within a simple tabbed inspector
  * <p/>
  * <p/>
  * <h4>Notes</h4>

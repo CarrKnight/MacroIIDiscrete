@@ -137,10 +137,11 @@ public class AroundShockLinearRegressionSalesPredictor implements SalesPredictor
                 List<Double> prices = new ArrayList<>(Doubles.asList(dept.getObservationsRecordedTheseDays(SalesDataType.AVERAGE_CLOSING_PRICES, lowestBound, upperBound)));
                 List<Double> gaps = new ArrayList<>(Doubles.asList(dept.getObservationsRecordedTheseDays(SalesDataType.SUPPLY_GAP, lowestBound, upperBound)));
 
-                int indexToRemove;
 
-                while((indexToRemove =prices.indexOf(-1d))!=-1)     //remove all days with no price (no sales)
+                while(prices.indexOf(-1d)!=-1)     //remove all days with no price (no sales)
                 {
+                    int indexToRemove=prices.indexOf(-1d);
+
                     prices.remove(indexToRemove);
                     quantities.remove(indexToRemove);
                     gaps.remove(indexToRemove);

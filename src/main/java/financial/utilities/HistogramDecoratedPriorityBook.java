@@ -6,6 +6,7 @@
 
 package financial.utilities;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ForwardingQueue;
 import sim.util.media.chart.HistogramGenerator;
 
@@ -167,5 +168,10 @@ public class HistogramDecoratedPriorityBook extends ForwardingQueue<Quote> {
 
         histogramGenerator.updateSeries(index, array);
 
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

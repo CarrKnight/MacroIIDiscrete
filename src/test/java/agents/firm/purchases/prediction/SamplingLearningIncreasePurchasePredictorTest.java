@@ -46,7 +46,7 @@ public class SamplingLearningIncreasePurchasePredictorTest
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         when(department.getFirm()).thenReturn(mock(Firm.class));
         MacroII model = new MacroII(System.currentTimeMillis());
-        SamplingLearningIncreasePurchasePredictor predictor = new SamplingLearningIncreasePurchasePredictor(model );
+        SamplingLearningIncreasePurchasePredictor predictor = new SamplingLearningIncreasePurchasePredictor();
         predictor.setHowManyDaysOnAverageToSample(1);
 
         //observation 1
@@ -106,7 +106,7 @@ public class SamplingLearningIncreasePurchasePredictorTest
 
 
 
-        SamplingLearningIncreasePurchasePredictor predictor = new SamplingLearningIncreasePurchasePredictor(model );
+        SamplingLearningIncreasePurchasePredictor predictor = new SamplingLearningIncreasePurchasePredictor();
         when(department.getAveragedClosingPrice()).thenReturn(50f);
         Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50l);
 

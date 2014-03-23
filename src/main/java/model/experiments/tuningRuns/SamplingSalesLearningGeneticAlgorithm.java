@@ -109,7 +109,7 @@ public class SamplingSalesLearningGeneticAlgorithm {
 
             macroII.start();
             macroII.schedule.step(macroII);
-            SamplingLearningDecreaseSalesPredictor predictor = new SamplingLearningDecreaseSalesPredictor(macroII);
+            SamplingLearningDecreaseSalesPredictor predictor = new SamplingLearningDecreaseSalesPredictor();
             predictor.setHowManyDaysOnAverageToSample(howManyDaysOnAverageToSample);
             predictor.setMaximumDaysToLookBack(maximumDaysToLookBack);
             predictor.setMaximumDaysToLookForward(maximumDaysToLookForward);

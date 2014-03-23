@@ -510,4 +510,11 @@ public class HillClimberThroughPredictionControl implements PlantControl, PlantL
     }
 
 
+    public int getDaysBetweenEachTrial() {
+        return daysBetweenEachTrial;
+    }
+
+    public void setDaysBetweenEachTrial(int daysBetweenEachTrial) {
+        this.daysBetweenEachTrial = daysBetweenEachTrial;
+    }
 }

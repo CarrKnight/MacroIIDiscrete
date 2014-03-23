@@ -64,10 +64,9 @@ public class EverythingMustGoAdaptive implements AskPricingStrategy {
      */
     @Override
     public void weekEnd() {
-        float successRate = department.getSoldPercentage();
         MacroII model = department.getFirm().getModel();
         float oldMarkup = markup; //memorize old markup
-        if(successRate > model.getMinSuccessRate())
+        if(department.getHowManyToSell() > 0)
             markup = markup + model.getMarkupIncreases();
         else
             markup = Math.max(0,markup - model.getMarkupIncreases());
@@ -85,14 +84,14 @@ public class EverythingMustGoAdaptive implements AskPricingStrategy {
     }
 
     /**
-     * tries to sell 95% or more
+     * tries to sell all
      *
      * @param inventorySize
      * @return
      */
     @Override
     public boolean isInventoryAcceptable(int inventorySize) {
-        return department.getSoldPercentage() >= .95f;
+        return department.getHowManyToSell() > 0;
 
     }
 

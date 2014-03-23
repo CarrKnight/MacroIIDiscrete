@@ -29,10 +29,6 @@ import agents.firm.production.technology.Machinery;
  */
 public class FullCapacityMaximizer<ALG extends WorkerMaximizationAlgorithm> implements WorkforceMaximizer<ALG> {
 
-    /**
-     * The human resources the control controls
-     */
-    private HumanResources hr;
 
     /**
      * the plant control we are part of
@@ -45,9 +41,8 @@ public class FullCapacityMaximizer<ALG extends WorkerMaximizationAlgorithm> impl
      * @param control
      * @param ignored not used.
      */
-    public  FullCapacityMaximizer(HumanResources hr, PlantControl control,
-                                                                           Class<ALG> ignored) {
-        this.hr = hr;
+    public  FullCapacityMaximizer(HumanResources ignored, PlantControl control,
+                                                                           Class<ALG> ignored2) {
         this.control = control;
     }
 

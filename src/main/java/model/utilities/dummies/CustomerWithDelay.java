@@ -50,8 +50,6 @@ public class CustomerWithDelay extends Customer {
      */
     final private long originalMaxPrice;
 
-    final private Market market;
-
     private final LinkedList<Long> delayQueue;
 
 
@@ -62,7 +60,7 @@ public class CustomerWithDelay extends Customer {
         maxPrice = defaultPrice;
         Preconditions.checkArgument(delay>=1);
         this.delay = delay;
-        this.market = market;
+
 
         delayQueue = new LinkedList<>();
 

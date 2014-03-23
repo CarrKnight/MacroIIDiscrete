@@ -45,11 +45,10 @@ public class MemorySalesPredictor implements SalesPredictor {
         {
             return -1;
         }
-        long lastPrice = Math.round(dept.getAveragedLastPrice());  //get the last closing price
         //do we not have anything in memory or did we screw up so badly
         //in the past term that we didn't sell a single item?
 
-        return lastPrice;
+        return Math.round(dept.getAveragedLastPrice());
     }
 
     /**

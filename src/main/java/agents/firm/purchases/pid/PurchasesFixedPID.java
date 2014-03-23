@@ -202,8 +202,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      */
     @Override
     protected boolean shouldIBuy(HasInventory source, GoodType type, int quantity) {
-        boolean shouldIBuy =        super.shouldIBuy(source,type,quantity);
-        return shouldIBuy;
+        return super.shouldIBuy(source,type,quantity);
     }
 
     /**

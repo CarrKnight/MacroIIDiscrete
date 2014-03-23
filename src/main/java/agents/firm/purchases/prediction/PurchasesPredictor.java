@@ -153,7 +153,7 @@ public interface PurchasesPredictor
                     return rule.getConstructor(Market.class, MacroII.class).
                             newInstance(department.getMarket(), department.getModel());
                 if(rule.equals(SamplingLearningIncreasePurchasePredictor.class))
-                    return rule.getConstructor(MacroII.class).newInstance(department.getModel());
+                    return rule.getConstructor().newInstance(department.getModel());
                 if(rule.equals(RecursivePurchasesPredictor.class) || rule.equals(OpenLoopRecursivePurchasesPredictor.class))
                     return rule.getConstructor(MacroII.class,PurchasesDepartment.class).newInstance(department.getModel(),department);
                 if(rule.equals(LinearExtrapolatorPurchasePredictor.class) || rule.equals(AroundShockLinearRegressionPurchasePredictor.class))

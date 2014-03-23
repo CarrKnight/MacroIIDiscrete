@@ -15,7 +15,7 @@ import agents.firm.purchases.prediction.PricingPurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.prediction.PricingSalesPredictor;
-import agents.firm.utilities.WeeklyProfitReport;
+import agents.firm.utilities.ProfitReport;
 import financial.market.Market;
 import financial.market.OrderBookBlindMarket;
 import goods.GoodType;
@@ -85,7 +85,6 @@ public class ProfitCheckPlantControlTest {
         dept.setPredictorStrategy(new PricingSalesPredictor());
         when(dept.getLastClosingCost()).thenReturn(1l);
         when(dept.getLastClosingPrice()).thenReturn(2l);
-        when(dept.getSoldPercentage()).thenReturn(.7f);
         //should be profitable
         firm.registerSaleDepartment(dept,GoodType.GENERIC);
 
@@ -127,7 +126,7 @@ public class ProfitCheckPlantControlTest {
 //        assertTrue(p.getNumberOfWorkers() > 0);
 
 
-        WeeklyProfitReport profits = mock(WeeklyProfitReport.class);
+        ProfitReport profits = mock(ProfitReport.class);
         firm.setProfitReport(profits);
 
 
@@ -255,7 +254,7 @@ public class ProfitCheckPlantControlTest {
         assertTrue(control.toString(),!steppableList.contains(control));
      //   assertTrue(p.getNumberOfWorkers() > 0);
 
-        WeeklyProfitReport profits = mock(WeeklyProfitReport.class);
+        ProfitReport profits = mock(ProfitReport.class);
         firm.setProfitReport(profits);
 
 

@@ -91,8 +91,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
     protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
         if(!blueprint.getOutputs().containsKey(monopolistGoodType))
         {
-            HumanResources hr = super.createPlant(blueprint, firm, laborMarket);
-            return hr;
+            return super.createPlant(blueprint, firm, laborMarket);
         }
         else
         {

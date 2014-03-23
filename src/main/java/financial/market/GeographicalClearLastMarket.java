@@ -684,4 +684,7 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
     }
 
 
+    public ObservableMap<OilCustomer, Collection<Quote>> getBuyerBackerMap() {
+        return buyerBackerMap;
+    }
 }

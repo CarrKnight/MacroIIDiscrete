@@ -40,7 +40,6 @@ public class LearningDecreaseSalesPredictor implements SalesPredictor {
      */
     protected final FixedDecreaseSalesPredictor predictor;
 
-    private final MacroII model;
 
 
     /**
@@ -62,7 +61,6 @@ public class LearningDecreaseSalesPredictor implements SalesPredictor {
         else
             regressor = new RegressionSalePredictor(market,model);
         predictor = new FixedDecreaseSalesPredictor(0);
-        this.model = model;
 
     }
 

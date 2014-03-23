@@ -352,7 +352,7 @@ public class SamplingSalesLearningGeneticAlgorithmInSupplyChain
                     @Override
                     protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
                         SalesDepartment salesDepartment = super.createSalesDepartment(firm, goodmarket);
-                        SamplingLearningDecreaseSalesPredictor predictorStrategy = new SamplingLearningDecreaseSalesPredictor(macroII);
+                        SamplingLearningDecreaseSalesPredictor predictorStrategy = new SamplingLearningDecreaseSalesPredictor();
                         predictorStrategy.setHowManyDaysOnAverageToSample(candidate.getHowManyDaysOnAverageToSample());
                         predictorStrategy.setMaximumDaysToLookBack(candidate.getMaximumDaysToLookBack());
                         predictorStrategy.setMaximumDaysToLookForward(candidate.getMaximumDaysToLookForward());
@@ -378,7 +378,7 @@ public class SamplingSalesLearningGeneticAlgorithmInSupplyChain
                         if(purchaseDepartment== null)
                             return purchaseDepartment;
 
-                        SamplingLearningIncreasePurchasePredictor predictor = new SamplingLearningIncreasePurchasePredictor(macroII);
+                        SamplingLearningIncreasePurchasePredictor predictor = new SamplingLearningIncreasePurchasePredictor();
                         predictor.setHowManyDaysOnAverageToSample(candidate.getHowManyDaysOnAverageToSample());
                         predictor.setMaximumDaysToLookBack(candidate.getMaximumDaysToLookBack());
                         predictor.setMaximumDaysToLookForward(candidate.getMaximumDaysToLookForward());

@@ -941,9 +941,6 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         return plantMachinery.hypotheticalWeeklyInputNeeds(inputType, workerSize);
     }
 
-    public long getSecondLastValidPrice() {
-        return plantMachinery.getSecondLastValidPrice();
-    }
 
     /**
      * Returns how many additional production runs a new worker would accomplish

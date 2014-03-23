@@ -77,57 +77,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
     }
 
 
-    //food learned, beef learning
-    public static void main(String[] args)
-    {
 
-        final MacroII macroII = new MacroII(1l);
-        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
-
-        scenario1.setControlType(RobustMarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-        scenario1.setBeefPriceFilterer(null);
-
-
-        //competition!
-        scenario1.setNumberOfBeefProducers(1);
-        scenario1.setNumberOfFoodProducers(5);
-
-        scenario1.setDivideProportionalGainByThis(100f);
-        scenario1.setDivideIntegrativeGainByThis(100f);
-        //no delay
-        scenario1.setBeefPricingSpeed(0);
-
-
-        macroII.setScenario(scenario1);
-        macroII.start();
-
-        //create the CSVWriter
-        try {
-            CSVWriter writer = new CSVWriter(new FileWriter("runs/supplychai/newrun.csv"));
-            DailyStatCollector collector = new DailyStatCollector(macroII,writer);
-            collector.start();
-
-
-
-
-
-        } catch (IOException e) {
-            System.err.println("failed to create the file!");
-        }
-
-
-
-
-
-
-        while(macroII.schedule.getTime()<15000)
-        {
-            macroII.schedule.step(macroII);
-            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
-        }
-
-    }
 
 
 
