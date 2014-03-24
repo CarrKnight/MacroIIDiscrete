@@ -9,6 +9,7 @@ package model.utilities.stats.collectors;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Preconditions;
 import javafx.beans.value.ObservableDoubleValue;
+import javafx.collections.ListChangeListener;
 import model.utilities.Deactivatable;
 import sim.engine.Steppable;
 
@@ -173,6 +174,14 @@ public abstract class DataStorage<T extends  Enum<T>> implements Steppable, Deac
     public ObservableDoubleValue getLatestObservationObservable(T type)
     {
         return data.get(type).getObservableLastObservation();
+    }
+
+    /**
+     * Make the passed listener tune in the data to be told whenever something new comes up
+     */
+    public void addListListener(T type, ListChangeListener<? super Double> listChangeListener)
+    {
+         data.get(type).addListListener(listChangeListener);
     }
 
     /**
