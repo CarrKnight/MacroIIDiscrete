@@ -94,7 +94,7 @@ public class SimpleSellerScenario extends Scenario {
 
     private int demandIntercept = 100;
 
-    private int demandSlope = -1;
+    private int demandSlope = -10;
 
     private List<SalesDepartment> departments = new LinkedList<>();
 

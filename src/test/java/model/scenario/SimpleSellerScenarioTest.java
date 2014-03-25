@@ -51,6 +51,7 @@ public class SimpleSellerScenarioTest {
             scenario.setSellerStrategy(SimpleFlowSellerPID.class);
             scenario.setDemandShifts(false);
             scenario.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            scenario.setDemandSlope(-10);
 
 
             macroII.setScenario(scenario);
@@ -82,6 +83,7 @@ public class SimpleSellerScenarioTest {
             scenario.setSellerStrategy(SimpleFlowSellerPID.class);
             scenario.setDemandShifts(true);
             scenario.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            scenario.setDemandSlope(-10);
 
 
             macroII.setScenario(scenario);
@@ -111,6 +113,7 @@ public class SimpleSellerScenarioTest {
             scenario.setSellerStrategy(SalesControlWithFixedInventoryAndPID.class);
             scenario.setDemandShifts(false);
             scenario.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            scenario.setDemandSlope(-10);
 
 
 
@@ -138,6 +141,7 @@ public class SimpleSellerScenarioTest {
             scenario.setSellerStrategy(SalesControlWithFixedInventoryAndPID.class);
             scenario.setDemandShifts(true);
             scenario.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            scenario.setDemandSlope(-10);
 
 
             macroII.setScenario(scenario);
@@ -168,18 +172,21 @@ public class SimpleSellerScenarioTest {
             scenario.setSellerStrategy(SalesControlWithFixedInventoryAndPID.class);
             scenario.setDemandShifts(false);
             scenario.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            scenario.setDemandSlope(-10);
 
 
             macroII.setScenario(scenario);
             macroII.start();
-            while(macroII.schedule.getTime()<3500)
-                macroII.schedule.step(macroII);
-
+            while(macroII.schedule.getTime()<3500) {
+                  macroII.schedule.step(macroII);
+                System.out.println(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
+            }
 
             //price should be any between 60 and 51
             assertTrue(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice() <= 60);
             assertTrue(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice() >= 51);
             assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(), 4 * 7); //every day 4 goods should have been traded
+
 
         }
 
@@ -198,6 +205,7 @@ public class SimpleSellerScenarioTest {
             scenario.setSellerStrategy(SalesControlWithFixedInventoryAndPID.class);
             scenario.setDemandShifts(true);
             scenario.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            scenario.setDemandSlope(-10);
 
 
             macroII.setScenario(scenario);
@@ -227,6 +235,7 @@ public class SimpleSellerScenarioTest {
             scenario.setSellerStrategy(SmoothedDailyInventoryPricingStrategy.class);
             scenario.setDemandShifts(false);
             scenario.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            scenario.setDemandSlope(-10);
 
 
             macroII.setScenario(scenario);
@@ -258,6 +267,7 @@ public class SimpleSellerScenarioTest {
             scenario.setSellerStrategy(SmoothedDailyInventoryPricingStrategy.class);
             scenario.setDemandShifts(true);
             scenario.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            scenario.setDemandSlope(-10);
 
 
             macroII.setScenario(scenario);
@@ -299,6 +309,7 @@ public class SimpleSellerScenarioTest {
             scenario.setSellerStrategy(SimpleFlowSellerPID.class);
             scenario.setDemandShifts(false);
             scenario.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+            scenario.setDemandSlope(-10);
 
 
             macroII.setScenario(scenario);
