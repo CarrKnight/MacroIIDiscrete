@@ -322,6 +322,24 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
 
     }
 
+    @Override
+    public void removeSellQuotes(Collection<Quote> quotes)
+    {
+        for(Quote q : quotes)
+        {
+            boolean removedCorrectly =  sellersWhoPlacedAQuote.remove(q.getAgent(),q);
+            if(removedCorrectly)
+            {
+                assert !sellersWhoPlacedAQuote.containsKey(q.getAgent()) ||
+                        (!sellersWhoPlacedAQuote.get((GeographicalFirm) q.getAgent()).isEmpty() && !sellersWhoPlacedAQuote.get((GeographicalFirm)q.getAgent()).contains(q));
+
+                //map has changed!
+                changedMap = true;
+            }
+        }
+
+    }
+
     /**
      * Submit a buy quote
      *
@@ -357,6 +375,24 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
         changedMap = true;
 
         return quoteMade;
+    }
+
+
+    @Override
+    public void removeBuyQuotes(Collection<Quote> quotes) {
+        for(Quote q : quotes)
+        {
+            boolean removedCorrectly =  buyersWhoPlacedAQuote.remove(q.getAgent(),q);
+
+            if(removedCorrectly) {
+                //either you have been removed from the multimap or you had another quote!
+                assert !buyersWhoPlacedAQuote.containsKey(q.getAgent()) ||
+                        (!buyersWhoPlacedAQuote.get((OilCustomer) q.getAgent()).isEmpty() && !buyersWhoPlacedAQuote.get((OilCustomer) q.getAgent()).contains(q));
+
+                //map has changed!
+                changedMap = true;
+            }
+        }
     }
 
     /**

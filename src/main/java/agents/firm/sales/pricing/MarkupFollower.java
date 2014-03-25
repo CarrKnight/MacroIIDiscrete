@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 by Ernesto Carrella
+ * Copyright (c) 2014 by Ernesto Carrella
  * Licensed under the Academic Free License version 3.0
  * See the file "LICENSE" for more information
  */
@@ -41,13 +41,12 @@ public class MarkupFollower implements AskPricingStrategy {
     @Override
     public long price(Good g) {
         long priceToFollow =sales.getMarket().getLastPrice();
-        TimeSeries markups = sales.getMarket().getMarkups();
+        double markup = sales.getMarket().getLastMarkup();
         if(priceToFollow == -1)
             //if you know nothing, just act cluelessly
             return (long) (g.getLastValidPrice() * (1f + sales.getFirm().getModel().getCluelessDefaultMarkup()));
         else
         {//if you you can copy the last markup
-            double markup = markups.getValue(markups.getItemCount() - 1).doubleValue();
             //i hope this works
 
 

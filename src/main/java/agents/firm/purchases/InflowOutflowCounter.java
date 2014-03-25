@@ -149,12 +149,16 @@ public class InflowOutflowCounter implements Deactivatable, InventoryListener, S
      * @param source   the agent with the inventory that is calling the listener
      * @param type     which type of good has increased/decreased in numbers
      * @param quantity how many goods do we have in the inventory now
+     * @param delta change in inventory (always positive)
      */
     @Override
-    public void inventoryIncreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity) {
-        if(this.type.equals(type))
-            todayInflow++;
+    public void inventoryIncreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity, int delta) {
 
+        if(this.type.equals(type))
+        {
+            Preconditions.checkArgument(delta > 0);
+            todayInflow+= delta;
+        }
     }
 
     /**
@@ -163,11 +167,14 @@ public class InflowOutflowCounter implements Deactivatable, InventoryListener, S
      * @param source   the agent with the inventory that is calling the listener
      * @param type     which type of good has increased/decreased in numbers
      * @param quantity how many goods do we have in the inventory now
+     * @param delta change in inventory (always positive)
      */
     @Override
-    public void inventoryDecreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity) {
-        if(this.type.equals(type))
-            todayOutflow++;
+    public void inventoryDecreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity,int delta) {
+        if(this.type.equals(type)) {
+            Preconditions.checkArgument(delta > 0);
+            todayOutflow+= delta;
+        }
     }
 
     /**

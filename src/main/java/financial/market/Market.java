@@ -13,7 +13,13 @@ import financial.*;
 import financial.utilities.*;
 import goods.Good;
 import goods.GoodType;
-import javafx.beans.value.ObservableDoubleValue;
+import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import lifelines.LifelinesPanel;
 import lifelines.data.DataManager;
 import lifelines.data.GlobalEventData;
@@ -24,13 +30,6 @@ import model.utilities.filters.ExponentialFilter;
 import model.utilities.filters.Filter;
 import model.utilities.stats.collectors.MarketData;
 import model.utilities.stats.collectors.enums.MarketDataType;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.time.TimeTableXYDataset;
 import sim.portrayal.Inspector;
 import sim.portrayal.inspector.TabbedInspector;
 
@@ -104,21 +103,12 @@ public abstract class Market implements Deactivatable{
      */
     protected long lastFilledAsk = -1;
 
-    /**
-     * A time series holding on all the sales records
-     */
-    protected TimeSeries prices = new TimeSeries("prices","time","prices");
-
-    /**
-     * A time series holding on all the weekly volume sales
-     */
-    protected TimeTableXYDataset volume = new TimeTableXYDataset(TimeZone.getDefault());
 
 
     /**
      * A time series of the markups in the market;
      */
-    protected TimeSeries markups = new TimeSeries("markups","time","markups");
+    protected double lastMarkup = -1;
 
     /**
      * If this is true, there is no data collection. Useful for testing only
@@ -164,6 +154,7 @@ public abstract class Market implements Deactivatable{
 
         buyers = buildBuyerSet();
         sellers = buildSellerSet();
+        marketData = new MarketData();
 
 
         //build the gui inspector
@@ -364,6 +355,8 @@ public abstract class Market implements Deactivatable{
      */
     abstract public void removeSellQuote(Quote q);
 
+    abstract public void  removeSellQuotes(Collection<Quote> quotes);
+
 
     /**
      * Submit a buy quote
@@ -389,6 +382,11 @@ public abstract class Market implements Deactivatable{
      * @param q quote to cancel
      */
     abstract public void removeBuyQuote(Quote q);
+
+
+    abstract public void  removeBuyQuotes(Collection<Quote> quotes);
+
+
 
     /**
      * Remove all these quotes by the buyer
@@ -429,8 +427,7 @@ public abstract class Market implements Deactivatable{
 
             //record
             lastPrice = price;
-            if(good.getLastValidPrice() != 0)
-                markups.addOrUpdate(buyer.getModel().getCurrentSimulationDay(),price/good.getLastValidPrice());
+            lastMarkup = price - sellerCost;
             todaySumOfClosingPrices +=price;
             lastFilledAsk = sellerQuote.getPriceQuoted();
             lastFilledBid = buyerQuote.getPriceQuoted();
@@ -517,9 +514,6 @@ public abstract class Market implements Deactivatable{
     }
 
 
-    public TimeSeries getMarkups() {
-        return markups;
-    }
 
     public GoodType getGoodType() {
         return goodType;
@@ -629,7 +623,6 @@ public abstract class Market implements Deactivatable{
      */
     public void start(MacroII model)
     {
-        marketData = new MarketData();
 
         marketData.start(model,this);
 
@@ -671,20 +664,43 @@ public abstract class Market implements Deactivatable{
          * Prices
          ********************************************/
 
-        //I fuckin hate JFreeChart.
-        // DynamicTimeSeriesCollection priceSeries;
-        TimeSeriesCollection priceSeries = new TimeSeriesCollection();
-        priceSeries.addSeries(prices);
-        JFreeChart chart = ChartFactory.createTimeSeriesChart("Last Closing Prices","time","price",
-                priceSeries,false,true,false);
-        ChartPanel panel = new ChartPanel(chart,true);
-        assert prices!= null;
-        prices.setMaximumItemCount(100);
-        markups.setMaximumItemCount(3);
+        //switching to JavaFX for fun and profit
+        //set up the chart
+        NumberAxis xAxis= new NumberAxis();
+        NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Day");
+        yAxis.setLabel("Price");
+        final LineChart<Number,Number> priceChart = new LineChart<>(xAxis,yAxis);
+        priceChart.setAnimated(true);
+        priceChart.setCreateSymbols(false);
+        //set up the series
+        final XYChart.Series<Number,Number> priceSeries = new XYChart.Series<>();
+        priceSeries.setName("LastClosingPrice");
+        //now make the price update whenever data updates!
+        marketData.addListListener(MarketDataType.CLOSING_PRICE, new ListChangeListener<Double>() {
+            @Override
+            public void onChanged(Change<? extends Double> change) {
+                final double newPrice = marketData.getLatestObservation(MarketDataType.CLOSING_PRICE);
+               // if(newPrice >=0)
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            priceSeries.getData().add(new XYChart.Data<Number, Number>(marketData.getLastObservedDay(),
+                                    newPrice));
+                        }
+                    });
+            }
+        });
 
+        priceChart.getData().add(priceSeries);
+        final JFXPanel panel = new JFXPanel();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                panel.setScene(new Scene(priceChart));
 
-
-
+            }
+        });
         //we are going to add the new JPanel IN the new inspector
         closingPriceInspector = new Inspector() {
             @Override
@@ -705,12 +721,45 @@ public abstract class Market implements Deactivatable{
          * VOLUME
          ********************************************/
 
-        JFreeChart volumeChart = ChartFactory.createXYBarChart("volume","week",true,"Volume Traded",volume, PlotOrientation.VERTICAL,false,true,false);
-        // StandardChartTheme.createDarknessTheme().apply(volumeChart);
-        panel = new ChartPanel(volumeChart);
+        //switching to JavaFX for fun and profit
+        //set up the chart
+        xAxis= new NumberAxis();
+        yAxis = new NumberAxis();
+        xAxis.setLabel("Day");
+        yAxis.setLabel("Volume");
+        final LineChart<Number,Number> volumeChart = new LineChart<>(xAxis,yAxis);
+        volumeChart.setAnimated(true);
+        volumeChart.setCreateSymbols(false);
+        //set up the series
+        final XYChart.Series<Number,Number> volumeSeries = new XYChart.Series<>();
+        volumeSeries.setName("Daily Volume Traded");
+        //now make the price update whenever data updates!
+        marketData.addListListener(MarketDataType.VOLUME_TRADED, new ListChangeListener<Double>() {
+            @Override
+            public void onChanged(Change<? extends Double> change) {
+                final double newVolume = marketData.getLatestObservation(MarketDataType.VOLUME_TRADED);
+                // if(newPrice >=0)
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        volumeSeries.getData().add(new XYChart.Data<Number, Number>(marketData.getLastObservedDay(),
+                                newVolume));
+                    }
+                });
+            }
+        });
 
+        volumeChart.getData().add(volumeSeries);
+        final JFXPanel panel2 = new JFXPanel();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                panel2.setScene(new Scene(volumeChart));
+
+            }
+        });
         //we are going to add the new JPanel IN the new inspector
-        Inspector volumePriceInspector = new Inspector() {
+        Inspector closingVolumeInspector = new Inspector() {
             @Override
             public void updateInspector() {
                 SwingUtilities.invokeLater(new Runnable() { public void run() {
@@ -718,11 +767,12 @@ public abstract class Market implements Deactivatable{
                 }});
             }
         };
-        volumePriceInspector.setVolatile(true);
-        volumePriceInspector.setLayout(new BorderLayout()); //this centers it
-        volumePriceInspector.add(panel);
+        closingVolumeInspector.setVolatile(true);
+        closingVolumeInspector.setLayout(new BorderLayout()); //this centers it
+        closingVolumeInspector.add(panel2);
 
-        toReturn.addInspector(volumePriceInspector, "Volume");
+        toReturn.addInspector(closingVolumeInspector, "Volume");
+
 
 
         /*********************************************
@@ -1096,12 +1146,7 @@ public abstract class Market implements Deactivatable{
         return marketData.getLatestObservation(type);
     }
 
-    /**
-     * return an observable value that keeps updating
-     */
-    public ObservableDoubleValue getLatestObservationObservable(MarketDataType type) {
-        return marketData.getLatestObservationObservable(type);
-    }
+
 
     /**
      * a method to check if, given the acceptor, the latest observation is valid
@@ -1117,12 +1162,8 @@ public abstract class Market implements Deactivatable{
     }
 
 
-    public TimeSeries getPricesTimeSeriesGUI() {
-        return prices;
-    }
-
-    public TimeTableXYDataset getVolumeTimeSeriesGUI() {
-        return volume;
+    public double getLastMarkup() {
+        return lastMarkup;
     }
 
     public MarketData getData() {

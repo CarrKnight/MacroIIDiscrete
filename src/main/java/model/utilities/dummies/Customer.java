@@ -20,6 +20,8 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * <h4>Description</h4>
@@ -40,6 +42,8 @@ public class Customer extends EconomicAgent{
 
 
     private Priority tradePriority = Priority.AFTER_STANDARD;
+
+    private Collection<Quote> bidsMade = new LinkedList<>();
     /**
      * how many units do you want to buy every day?
      */
@@ -97,7 +101,7 @@ public class Customer extends EconomicAgent{
                 {
                     return;
                 }
-
+                assert bidsMade.isEmpty();
                 buyIfNeeded(market);
                 //reschedule yourself
                 model.scheduleTomorrow(ActionOrder.TRADE,this, tradePriority);
@@ -114,8 +118,10 @@ public class Customer extends EconomicAgent{
         //cancel all previous quotes
         //place all the orders you need
         for(int i=0; i<dailyDemand-hasHowMany(market.getGoodType()); i++)
-            if(maxPrice >= 0)
-                market.submitBuyQuote(this,maxPrice);
+            if(maxPrice >= 0) {
+                Quote bidMade = market.submitBuyQuote(this, maxPrice);
+                bidsMade.add(bidMade);
+            }
 
 
 
@@ -124,7 +130,9 @@ public class Customer extends EconomicAgent{
     }
 
     private void removeAllQuotes(Market market) {
-        market.removeAllBuyQuoteByBuyer(this);
+        if(bidsMade.size() > 0)
+        market.removeBuyQuotes(bidsMade);
+        bidsMade.clear();
     }
 
 
@@ -249,7 +257,7 @@ public class Customer extends EconomicAgent{
     }
 
     /**
-     * This is called by a peddler/survey to the agent and asks what would be the maximum he's willing to pay to buy a new good.
+     * This is called by a peddler/survey toc the agent and asks what would be the maximum he's willing to pay to buy a new good.
      *
      * @param g the good the peddler/survey is pushing
      * @return the maximum price willing to pay or -1 if no price is good.

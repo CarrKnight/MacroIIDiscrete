@@ -350,7 +350,7 @@ public class HumanResources extends PurchasesDepartment implements Steppable {
     @Override
     public void reactToFilledQuote(Good g, long price, @Nonnull EconomicAgent seller) {
         assert seller instanceof Person && plant.getWorkers().contains(seller);
-        counter.inventoryIncreaseEvent(getFirm(),getGoodType(),1); //call the counter yourself because workers aren't really an inventory item
+        counter.inventoryIncreaseEvent(getFirm(),getGoodType(),getNumberOfWorkers(),1); //call the counter yourself because workers aren't really an inventory item
         super.reactToFilledQuote(g, price, seller);
     }
 

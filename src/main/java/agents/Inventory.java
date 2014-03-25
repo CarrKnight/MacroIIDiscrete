@@ -102,7 +102,7 @@ public class Inventory {
                 model.registerInventoryDelivery(sender, owner, g.getType());
             //tell the listeners
             for(InventoryListener l : listeners)
-                l.inventoryIncreaseEvent(owner, g.getType(), rightInventory.size());
+                l.inventoryIncreaseEvent(owner, g.getType(), rightInventory.size(),1);
         }
 
 
@@ -161,26 +161,26 @@ public class Inventory {
         destination.receive(g, owner);
         //tell the listeners!
         for(InventoryListener l : listeners)
-            l.inventoryDecreaseEvent(owner, g.getType(), rightInventory.size());
+            l.inventoryDecreaseEvent(owner, g.getType(), rightInventory.size(),1);
 
 
     }
 
     /**
      * This method burns inventory by 1
-     * @param g what good is consumed?
+     * @param type what good is consumed?
      * @return the good consumed
      */
-    public Good consume(GoodType g) {
+    public Good consume(GoodType type) {
 
-        PriorityQueue<Good> rightInventory =   inventory.get(g);
+        PriorityQueue<Good> rightInventory =   inventory.get(type);
         Good eaten = null;
         try{
             eaten = rightInventory.poll();
         }
         catch (NoSuchElementException e)
         {
-            //MacroII.logger.log(Level.SEVERE,this + " couldn't consume any " + g + "since he doesn't have it");
+            //MacroII.logger.log(Level.SEVERE,this + " couldn't consume any " + type + "since he doesn't have it");
             e.printStackTrace();
             System.exit(-1);
         }
@@ -190,7 +190,7 @@ public class Inventory {
 
         //tell the listeners!
         for(InventoryListener l : listeners)
-            l.inventoryDecreaseEvent(owner, g, rightInventory.size());
+            l.inventoryDecreaseEvent(owner, type, rightInventory.size(),1);
 
         //MacroII.logger.log(Level.FINER,this + " consumed " + eaten);
         return eaten;
@@ -204,11 +204,23 @@ public class Inventory {
      */
     public void consumeAll()
     {
-        List<Good> totalInventory = getTotalInventory();
-        for(Good g : totalInventory)
-            consume(g.getType());
+        //go through each goodType
+        for(Map.Entry<GoodType,PriorityQueue<Good>> inventorySection : inventory.entrySet())
+        {
+            //check the size of the inventory
+            int size = inventorySection.getValue().size();
+            if(size > 0) //if there is any
+            {
+                //destroy it
+                inventorySection.getValue().clear();
+                for(InventoryListener l : listeners) //then tell the listeners about it
+                    l.inventoryDecreaseEvent(owner, inventorySection.getKey(), 0,size);
+            }
+        }
 
-        //consume tell the listeners, no need to do anything here
+       assert getTotalInventory().size() == 0;
+
+
     }
 
     /**

@@ -222,6 +222,19 @@ public class DecentralizedMarket extends Market {
         throw new IllegalAccessException("Not visible! Should have checked!");
     }
 
+
+    @Override
+    public void removeSellQuotes(Collection<Quote> quotes) {
+        throw new IllegalStateException("Decentralized markets take no quotes!");
+
+    }
+
+    @Override
+    public void removeBuyQuotes(Collection<Quote> quotes) {
+        throw new IllegalStateException("Decentralized markets take no quotes!");
+
+    }
+
     public DecentralizedMarket(GoodType goodType) {
         super(goodType);
     }

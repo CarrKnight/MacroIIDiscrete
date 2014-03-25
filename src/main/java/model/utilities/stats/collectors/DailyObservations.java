@@ -10,6 +10,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.primitives.Doubles;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableDoubleValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -34,7 +37,7 @@ public class DailyObservations implements Iterable<Double> {
     /**
      * this is the real deal
      */
-    final private List<Double> observations;
+    final private ObservableList<Double> observations;
 
     final private SimpleDoubleProperty lastObservation = new SimpleDoubleProperty();
 
@@ -52,9 +55,9 @@ public class DailyObservations implements Iterable<Double> {
     {
 
         if(preferArrayListOverLinkedLists)
-            observations = new ArrayList<>();
+            observations =  FXCollections.observableArrayList();
         else
-            observations = new LinkedList<>();
+            observations = FXCollections.observableList(new LinkedList<Double>());
 
     }
 
@@ -114,6 +117,7 @@ public class DailyObservations implements Iterable<Double> {
 
         boolean toReturn = observations.addAll(c);
         lastObservation.setValue(observations.get(observations.size() - 1));
+
         return toReturn;
 
     }
@@ -261,5 +265,10 @@ public class DailyObservations implements Iterable<Double> {
         return lastObservation;
     }
 
-
+    /**
+     * listen to whenever there is a new observation
+     */
+    public void addListListener(ListChangeListener<? super Double> listChangeListener) {
+        observations.addListener(listChangeListener);
+    }
 }

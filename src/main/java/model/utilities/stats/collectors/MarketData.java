@@ -82,14 +82,7 @@ public class MarketData extends DataStorage<MarketDataType>
         data.get(MarketDataType.AVERAGE_CLOSING_PRICE).add((double) todayAveragePrice);
 
 
-        //if needed, update GUI
-        TimeSeries pricesTimeSeriesGUI = marketToFollow.getPricesTimeSeriesGUI();
-        if(pricesTimeSeriesGUI!=null)
-        {
-            pricesTimeSeriesGUI.addOrUpdate(model.getCurrentSimulationDay(),todayAveragePrice);
-            marketToFollow.getVolumeTimeSeriesGUI().add(model.getCurrentSimulationDay(),todayVolume,"Volume");
 
-        }
         //reschedule
         model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING,this);
 

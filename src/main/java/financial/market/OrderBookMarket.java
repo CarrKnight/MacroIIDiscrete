@@ -296,6 +296,36 @@ public class OrderBookMarket extends Market {
 
     }
 
+
+    /**
+     * Cancel a list of buy quotes
+     *
+     * @param q quote to cancel
+     */
+    @Override
+    public void removeBuyQuotes(@Nonnull Collection<Quote> quotes) {
+
+        Preconditions.checkArgument(!quotes.isEmpty());
+        bids.removeAll(quotes);
+
+        for(Quote q : quotes)
+            notifyListenersAndGUIQuoteHasBeenRemoved(q);
+
+
+    }
+
+
+    @Override
+    public void removeSellQuotes(Collection<Quote> quotes) {
+
+        Preconditions.checkArgument(!quotes.isEmpty());
+        asks.removeAll(quotes);
+
+        for(Quote q : quotes)
+            notifyListenersAndGUIQuoteHasBeenRemoved(q);
+
+    }
+
     private void notifyListenersAndGUIQuoteHasBeenRemoved(Quote q) {
         //notify the listeners (if the order book is visible)
         if(isBestBuyPriceVisible())

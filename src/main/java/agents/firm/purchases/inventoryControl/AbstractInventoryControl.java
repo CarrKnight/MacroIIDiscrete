@@ -92,9 +92,10 @@ public abstract class AbstractInventoryControl implements InventoryControl{
      * @param source   the agent with the inventory that is calling the listener
      * @param type     which type of good has increased/decreased in numbers
      * @param quantity how many goods do we have in the inventory now
+     * @param delta the difference from the previous quantity owned (always a positive number)
      */
     @Override
-    public void inventoryIncreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity) {
+    public void inventoryIncreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity, int delta) {
 
         if(!isActive || type != goodTypeToControl) //if you have been turned off or this isn't the good you are controlling for, don't bother
             return;
@@ -117,9 +118,10 @@ public abstract class AbstractInventoryControl implements InventoryControl{
      * @param source   the agent with the inventory that is calling the listener
      * @param type     which type of good has increased/decreased in numbers
      * @param quantity how many goods do we have in the inventory now
+     * @param delta the difference from the previous quantity owned (always a positive number)
      */
     @Override
-    public void inventoryDecreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity) {
+    public void inventoryDecreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity, int delta) {
 
         if(!isActive || type != goodTypeToControl) //if you have been turned off, don't bother
             return;

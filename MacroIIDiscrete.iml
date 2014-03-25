@@ -30,7 +30,7 @@
     <orderEntry type="library" name="net.sf.jung:jung-algorithms:2.0.1" level="project" />
     <orderEntry type="library" name="net.sf.jung:jung-graph-impl:2.0.1" level="project" />
     <orderEntry type="library" name="net.sf.jung:jung-visualization:2.0.1" level="project" />
-    <orderEntry type="library" name="jfree:jfreechart:1.0.13" level="project" />
+    <orderEntry type="library" exported="" name="jfree:jfreechart:1.0.13" level="project" />
     <orderEntry type="library" name="gov.nist.math:jama:1.0.3" level="project" />
     <orderEntry type="library" name="org.apache.commons:commons-math3:3.2" level="project" />
     <orderEntry type="library" name="watchmaker-swing-0.7.1" level="project" />
