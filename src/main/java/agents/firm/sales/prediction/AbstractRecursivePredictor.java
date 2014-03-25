@@ -1,20 +1,9 @@
 
 package agents.firm.sales.prediction;
 
-import agents.firm.personell.HumanResources;
-import agents.firm.purchases.prediction.OpenLoopRecursivePurchasesPredictor;
-import agents.firm.purchases.prediction.RecursivePurchasesPredictor;
-import agents.firm.purchases.prediction.SamplingLearningIncreasePurchasePredictor;
-import agents.firm.sales.SalesDepartment;
-import agents.firm.sales.SalesDepartmentAllAtOnce;
-import agents.firm.sales.SalesDepartmentOneAtATime;
-import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Doubles;
-import ec.util.MersenneTwisterFast;
-import goods.GoodType;
 import model.MacroII;
-import model.scenario.MonopolistScenario;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
 import model.utilities.filters.ExponentialFilter;
@@ -27,7 +16,6 @@ import model.utilities.stats.regression.RecursiveLinearRegression;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 

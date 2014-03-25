@@ -149,7 +149,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         //keep speed fixed if we are targeting flows rather than stock (otherwise you compare different periods and that's silly)
         controller.setRandomSpeed(false);
         //start with a random price!
-        price = sales.getFirm().getRandom().nextInt(100);
+        price = sales.getRandom().nextInt(100);
         controller.setOffset(price);
 
         //schedule yourself to change prices
@@ -169,10 +169,13 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
                 goodsToSell = sales.getHowManyToSell();
                 initialInventory = goodsToSell;
 
+
                 //reschedule automatically
                 sales.getFirm().getModel().scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE,this);
 
             }
+
+
         });
         sales.getFirm().getModel().scheduleSoon(ActionOrder.THINK, new Steppable() {
             @Override
@@ -181,7 +184,6 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
                     return;
                 //we changed the prices, need to update the stockout counter
                 stockOuts.newPIDStep(market);
-                sales.getFirm().getModel().scheduleTomorrow(ActionOrder.THINK,this);
 
             }
         });
@@ -265,7 +267,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         //remember the old price
         long oldPrice = price;
 
-        Preconditions.checkState(((MacroII)simState).getCurrentPhase().equals(ActionOrder.ADJUST_PRICES));
+        Preconditions.checkState(((MacroII)simState).getCurrentPhase().equals(ActionOrder.ADJUST_PRICES), ((MacroII)simState).getCurrentPhase());
     //
         //make the PID adjust, please
         goodsToSell = sales.getHowManyToSell();
@@ -277,6 +279,8 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
             float inflow = sales.getTodayInflow();
             float outflow = sales.getTodayOutflow() + stockOuts.getStockouts();
             gap = -(outflow-inflow);
+
+
 
          //   System.out.println("inflow: " + inflow + ", outflow: " + sales.getTodayOutflow() +",stockouts" + stockOuts.getStockouts() +", gap: " + gap);
             controller.adjust(0, gap,    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
@@ -512,4 +516,6 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
     public int getSpeed() {
         return controller.getSpeed();
     }
+
+
 }

@@ -498,7 +498,6 @@ public class HillClimberThroughPredictionControl implements PlantControl, PlantL
             //quit this loop if the current profits are a lot different from what we remember
             if((currentProfits>0 && bestProfits==0) || bestProfits != 0 && percentDifference>.05)
             {
-                System.out.println(" that's too much of a change!");
                 currentSlopes = null;
                 bestProfits = Long.MIN_VALUE;
                 neighborsToCheck=null;

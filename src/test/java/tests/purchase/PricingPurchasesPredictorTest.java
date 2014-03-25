@@ -2,13 +2,9 @@ package tests.purchase;
 
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.PricingPurchasesPredictor;
-import financial.market.Market;
-import financial.market.OrderBookMarket;
-import goods.GoodType;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 /**
@@ -44,21 +40,6 @@ public class PricingPurchasesPredictorTest {
 
 
 
-    }
-
-    @Test
-    public void fullyDressedTest() throws Exception {
-
-        Market market = new OrderBookMarket(GoodType.GENERIC);
-
-        PurchasesDepartment dept = MemoryPurchasesPredictorTest.fixedPIDTest(market);
-
-        /**********************************************
-         * Make sure the last closing price is correctly predicted by the predictor!
-         *********************************************/
-        PricingPurchasesPredictor predictor = new PricingPurchasesPredictor();
-        System.out.println("predicted: " + predictor.predictPurchasePriceWhenIncreasingProduction(dept));
-        assertTrue(predictor.predictPurchasePriceWhenIncreasingProduction(dept) >= 20 && predictor.predictPurchasePriceWhenIncreasingProduction(dept) <= 30);
     }
 
 }

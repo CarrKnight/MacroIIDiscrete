@@ -49,6 +49,7 @@ public class CustomerWithDelayTest
 
         Market market = mock(Market.class);
         CustomerWithDelay delay = new CustomerWithDelay(mock(MacroII.class),100,5,market);
+        delay.earn(101);
 
 
         when(market.getBestSellPrice()).thenReturn(0l);
@@ -62,7 +63,7 @@ public class CustomerWithDelayTest
 
             updateMethod.invoke(delay,market);
 
-            assertEquals(delay.getMaxPrice(),0);
+            assertEquals(delay.getMaxPrice(),-1l);
         }
 
         //the fifth is the charm!
@@ -79,7 +80,7 @@ public class CustomerWithDelayTest
         }
         //finally it will show up
         updateMethod.invoke(delay, market);
-        assertEquals(delay.getMaxPrice(), 0);
+        assertEquals(delay.getMaxPrice(), -1);
     }
 
     //same test as before, but now the market is not a mock, but no trade occurs
@@ -88,8 +89,10 @@ public class CustomerWithDelayTest
 
         Market market = new OrderBookMarket(GoodType.GENERIC);
         CustomerWithDelay delay = new CustomerWithDelay(mock(MacroII.class),100,5,market);
+        delay.earn(101);
 
-        assertEquals(delay.getMaxPrice(), 0);
+
+        assertEquals(delay.getMaxPrice(), -1l);
 
         EconomicAgent mocki = mock(EconomicAgent.class);
         market.registerSeller(mocki);
@@ -103,7 +106,7 @@ public class CustomerWithDelayTest
             Quote q =  market.submitSellQuote(mocki, 100l, new Good(GoodType.GENERIC, mock(EconomicAgent.class), 0l));
             updateMethod.invoke(delay,market);
 
-            assertEquals(delay.getMaxPrice(), 0);
+            assertEquals(delay.getMaxPrice(), -1);
 
             market.removeSellQuote(q);
         }
@@ -130,7 +133,7 @@ public class CustomerWithDelayTest
         //finally it will show up
         q1 =  market.submitSellQuote(mocki, 150l, new Good(GoodType.GENERIC, mock(EconomicAgent.class), 0l));
         updateMethod.invoke(delay,market);
-        assertEquals(delay.getMaxPrice(), 0);
+        assertEquals(delay.getMaxPrice(), -1);
 
         market.removeSellQuote(q1);
 
@@ -143,8 +146,10 @@ public class CustomerWithDelayTest
         Market.TESTING_MODE = true;
         market.setPricePolicy(new ShopSetPricePolicy());
         CustomerWithDelay delay = new CustomerWithDelay(mock(MacroII.class),100,5,market);
+        delay.earn(101);
 
-        assertEquals(delay.getMaxPrice(), 0);
+
+        assertEquals(delay.getMaxPrice(), -1);
 
         EconomicAgent mocki = mock(EconomicAgent.class);  when(mocki.has(any(Good.class))).thenReturn(true);
         EconomicAgent buyer = mock(EconomicAgent.class);  when(buyer.hasEnoughCash(anyLong())).thenReturn(true);
@@ -191,7 +196,7 @@ public class CustomerWithDelayTest
         market.submitBuyQuote(buyer,1000l);
 
         updateMethod.invoke(delay,market);
-        assertEquals(delay.getMaxPrice(), 0);
+        assertEquals(delay.getMaxPrice(), -1);
 
         Market.TESTING_MODE = false;
 

@@ -236,36 +236,5 @@ public class FixedInventoryControlTest {
     }
 
 
-    @Test
-    public void DemandGap() throws Exception {
 
-        PurchasesDepartment department = mock(PurchasesDepartment.class);
-        FixedInventoryControl control = new FixedInventoryControl(department,10);
-        control.setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(2f);
-
-        when(department.getCurrentInventory()).thenReturn(0);
-        Assert.assertEquals(-10,control.estimateDemandGap());
-
-        when(department.getCurrentInventory()).thenReturn(5);
-        Assert.assertEquals(-5,control.estimateDemandGap());
-
-
-        when(department.getCurrentInventory()).thenReturn(9);
-        Assert.assertEquals(-1,control.estimateDemandGap());
-
-        when(department.getCurrentInventory()).thenReturn(10);
-        Assert.assertEquals(0,control.estimateDemandGap());
-
-        when(department.getCurrentInventory()).thenReturn(15);
-        Assert.assertEquals(0,control.estimateDemandGap());
-
-        when(department.getCurrentInventory()).thenReturn(20);
-        Assert.assertEquals(0,control.estimateDemandGap());
-
-        when(department.getCurrentInventory()).thenReturn(25);
-        Assert.assertEquals(5, control.estimateDemandGap());
-
-
-
-    }
 }

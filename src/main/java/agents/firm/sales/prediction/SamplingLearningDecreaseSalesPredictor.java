@@ -10,7 +10,6 @@ import agents.firm.Firm;
 import agents.firm.purchases.prediction.AbstractWorkerLearningPredictor;
 import agents.firm.sales.SalesDepartment;
 import goods.GoodType;
-import model.MacroII;
 import model.utilities.stats.collectors.enums.SalesDataType;
 
 import java.util.Collections;
@@ -92,7 +91,6 @@ public class SamplingLearningDecreaseSalesPredictor extends AbstractWorkerLearni
         if(newSlope)
             predictor.setDecrementDelta((float) -regression.getSlope());
 
-        // System.out.println("sales slope: " + predictor.getDecrementDelta());
 
         return predictor.predictSalePriceAfterIncreasingProduction(dept, expectedProductionCost, 1); //we increase step only by 1 because we are focusing on workers, not outflow
     }
@@ -188,7 +186,6 @@ public class SamplingLearningDecreaseSalesPredictor extends AbstractWorkerLearni
                 break;
         }
 
- //      System.out.println(shockDays.size()-getHowManyShockDaysBackToLookFor() +"---" + i + "----" + shockDays.size());
 
         return shockDays.get(i);
     }

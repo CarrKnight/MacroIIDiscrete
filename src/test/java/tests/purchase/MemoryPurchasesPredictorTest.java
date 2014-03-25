@@ -4,6 +4,7 @@ import agents.firm.Firm;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesFixedPID;
 import agents.firm.purchases.prediction.MemoryPurchasesPredictor;
+import agents.firm.purchases.prediction.PricingPurchasesPredictor;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
@@ -90,6 +91,8 @@ public class MemoryPurchasesPredictorTest {
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartmentIntegrated(
                 10000000,f,market,PurchasesFixedPID.class,null,null).getDepartment();
+        dept.setPredictor(new PricingPurchasesPredictor());
+ //       dept.start();
         f.registerPurchasesDepartment(dept,GoodType.GENERIC);
 
         Field field = null;

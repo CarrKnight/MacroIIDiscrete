@@ -94,6 +94,7 @@ public class RecursiveSalePredictorTest {
         predictor.setTimeDelay(1);
         predictor.setRegressingOnWorkers(false);
         when(department.getData()).thenReturn(data);
+        when(department.hasTradedAtLeastOnce()).thenReturn(true);
         for(int i=0; i<5; i++) //should be well fed now!
         {
             when(model.getMainScheduleTime()).thenReturn(Double.valueOf(i));

@@ -175,10 +175,10 @@ public class FixedInventoryControl extends AbstractInventoryControl {
     public int estimateDemandGap() {
         //if for whatever reason there was nothing to buy left today, we can't really use today's trade as a decent observation on what the real supply is
         try{
-            if(getPurchasesDepartment().getMarket().getBestSeller() == null && getPurchasesDepartment().getTodayInflow() > 0
-
+            if(
+            getPurchasesDepartment().getTodayInflow() == 0 && !getPurchasesDepartment().canBuy()
                     ||
-                    getPurchasesDepartment().getTodayInflow() == 0 && !getPurchasesDepartment().canBuy())
+                    getPurchasesDepartment().getMarket().getBestSeller() == null && getPurchasesDepartment().getTodayInflow() > 0)
                 //or another useless observation is when you bought nothing because you needed nothing
                 return 1000;
         }

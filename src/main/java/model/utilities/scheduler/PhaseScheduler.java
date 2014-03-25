@@ -6,7 +6,6 @@
 
 package model.utilities.scheduler;
 
-import com.sun.javafx.beans.annotations.NonNull;
 import model.utilities.ActionOrder;
 import sim.engine.Steppable;
 
@@ -34,7 +33,7 @@ public interface PhaseScheduler extends Steppable {
      * @param phase the phase i want the action to occur in
      * @param action the steppable that should be called
      */
-    void scheduleSoon(@NonNull ActionOrder phase, @NonNull Steppable action);
+    void scheduleSoon(@Nonnull ActionOrder phase, @Nonnull Steppable action);
 
 
     /**
@@ -44,7 +43,7 @@ public interface PhaseScheduler extends Steppable {
      * @param priority the action priority
      *
      */
-    void scheduleSoon(@NonNull ActionOrder phase, @NonNull Steppable action, Priority priority);
+    void scheduleSoon(@Nonnull ActionOrder phase, @Nonnull Steppable action, Priority priority);
 
     /**
      * Schedule tomorrow assuming the phase passed is EXACTLY the current phase (at priority STANDARD)

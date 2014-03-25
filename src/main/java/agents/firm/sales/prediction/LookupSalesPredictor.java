@@ -65,7 +65,6 @@ public class LookupSalesPredictor implements SalesPredictor {
         //if the price is -1, there is no quote
         assert price == -1 ;
 
-        System.out.println("lastFilledBid:" + market.getLastFilledBid());
         return market.getLastFilledBid();
 
 

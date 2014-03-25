@@ -460,8 +460,8 @@ public class CompetitivePIDGeneticAlgorithm {
         solutions.addEvolutionObserver(new EvolutionObserver<CompetitivePIDCandidate>() {
             @Override
             public void populationUpdate(PopulationData<? extends CompetitivePIDCandidate> data) {
-                System.out.println("Generation " +  data.getGenerationNumber() + ": " + data.getBestCandidate() + "\n Mean fitness:" +
-                        data.getMeanFitness());
+        //        System.out.println("Generation " +  data.getGenerationNumber() + ": " + data.getBestCandidate() + "\n Mean fitness:" +
+         //               data.getMeanFitness());
 
                 try(BufferedWriter writer = Files.newBufferedWriter(
                         file, Charset.defaultCharset(), StandardOpenOption.APPEND))
@@ -472,7 +472,7 @@ public class CompetitivePIDGeneticAlgorithm {
                     writer.flush();
 
                 }catch(IOException exception){
-                    System.out.println("Error writing to file");
+                 //   System.out.println("Error writing to file");
                 }
 
 
@@ -488,7 +488,7 @@ public class CompetitivePIDGeneticAlgorithm {
             writer.newLine();
 
         }catch(IOException exception){
-            System.out.println("Error writing to file");
+            System.err.println("Error writing to file");
         }
 
     }

@@ -10,7 +10,6 @@ import agents.firm.Firm;
 import agents.firm.purchases.PurchasesDepartment;
 import com.google.common.base.Preconditions;
 import goods.GoodType;
-import model.MacroII;
 import model.utilities.stats.collectors.enums.PurchasesDataType;
 
 import java.util.Collections;

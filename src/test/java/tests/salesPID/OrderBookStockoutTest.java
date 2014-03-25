@@ -4,24 +4,15 @@ import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
-import agents.firm.sales.SalesDepartmentFactory;
-import agents.firm.sales.exploration.SimpleBuyerSearch;
-import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.OrderBookStockout;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
-import agents.firm.sales.pricing.pid.StockoutEstimator;
 import financial.market.Market;
-import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
-import model.utilities.ActionOrder;
 import org.junit.Test;
-import model.utilities.dummies.DummyBuyer;
-import model.utilities.dummies.DummySeller;
 
-import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -140,89 +131,6 @@ public class OrderBookStockoutTest {
     }
 
 
-    @Test
-    public void fullyDressedTest() throws NoSuchFieldException, IllegalAccessException {
-
-        Market.TESTING_MODE = true;
-        //like before but without stubs
-        MacroII model = new MacroII(1l);
-        Firm owner = new Firm(model);
-        OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
-        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(owner, market, new SimpleBuyerSearch(market, owner), new SimpleSellerSearch(market, owner), SalesDepartmentAllAtOnce.class);
-        SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept);
-        strategy.setInitialPrice(10l);
-        dept.setAskPricingStrategy(strategy);
-//        market.registerSeller(owner);
 
 
-        Field f = SimpleFlowSellerPID.class.getDeclaredField("stockOuts");
-        f.setAccessible(true);
-        StockoutEstimator stockouts = (StockoutEstimator) f.get(strategy);
-
-        DummySeller competitor = new DummySeller(model,100);market.registerSeller(competitor);
-
-
-        //buyer 1
-        EconomicAgent buyer1 = new DummyBuyer(model,20,market);  buyer1.earn(10000);
-        market.registerBuyer(buyer1);
-        Quote q = market.submitBuyQuote(buyer1,20);
-        assertEquals(stockouts.getStockouts(),1);
-        market.removeBuyQuote(q);
-        assertEquals(stockouts.getStockouts(), 0);
-        market.submitBuyQuote(buyer1,30);
-        assertEquals(stockouts.getStockouts(), 1);
-        Good good = new Good(GoodType.GENERIC,competitor,0); competitor.receive(good,null);
-        market.submitSellQuote(competitor,9,good);
-
-        assertEquals(stockouts.getStockouts(), 0);
-        buyer1=null;
-
-        //buyer 2: same as buyer 1 but we aren't outcompeted
-        EconomicAgent buyer2 = new DummyBuyer(model,20,market);  buyer2.earn(10000);
-        market.registerBuyer(buyer2);
-        q = market.submitBuyQuote(buyer2,20);
-        assertEquals(stockouts.getStockouts(),1);
-        market.removeBuyQuote(q);
-        assertEquals(stockouts.getStockouts(), 0);
-        market.submitBuyQuote(buyer2,30);
-        assertEquals(stockouts.getStockouts(), 1);
-        good = new Good(GoodType.GENERIC,competitor,0); competitor.receive(good,null);
-        market.submitSellQuote(competitor,11,good);
-
-        assertEquals(stockouts.getStockouts(), 1);
-        buyer2=null;
-
-
-        //buyer 3 places a bid and forgets about it
-        EconomicAgent buyer3 = new DummyBuyer(model,20,market);  buyer3.earn(10000);
-        market.registerBuyer(buyer3);
-        market.submitBuyQuote(buyer3,20);
-        assertEquals(stockouts.getStockouts(), 2);
-
-
-        //buyer4
-        EconomicAgent buyer4 = new DummyBuyer(model,20,market);  buyer4.earn(10000);
-        market.registerBuyer(buyer4);
-        market.submitBuyQuote(buyer4,19);         good = new Good(GoodType.GENERIC,competitor,0); competitor.receive(good,null);
-        market.submitSellQuote(competitor,9,good);
-        //The point here is that we were outcompeted so it's not really a valid stockout anymore
-        assertEquals(stockouts.getStockouts(), 2);
-
-        //buyer5
-        EconomicAgent buyer5 = new DummyBuyer(model,20,market);  buyer5.earn(10000);
-        market.registerBuyer(buyer5);
-        market.submitBuyQuote(buyer5,19);         good = new Good(GoodType.GENERIC,competitor,0); competitor.receive(good,null);
-        market.submitSellQuote(competitor,11,good);
-        //we weren't outcompeted, this is a stockout
-        assertEquals(stockouts.getStockouts(), 3);
-
-        model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy);
-        model.getPhaseScheduler().step(model);
-        assertEquals(stockouts.getStockouts(), 1);
-
-
-
-
-
-    }
 }

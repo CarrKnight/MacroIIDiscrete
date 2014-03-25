@@ -29,11 +29,8 @@ import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -61,56 +58,7 @@ public class MarginalMaximizerPIDTuning {
     private static DecimalFormat df = new DecimalFormat("#.##");
 
 
-    public static void main(String[] args){
 
-
-        //create the writer
-        try {
-            CSVWriter writer = new CSVWriter(new FileWriter("multithreadedNonUnitTuning.csv"));
-
-
-
-            ExecutorCompletionService<Runnable> executor = new ExecutorCompletionService<>(Executors.newFixedThreadPool(5));
-
-            int combinations = 0;
-            for(float proportional=0f; proportional< 8f; proportional = proportional +.2f)
-                for(float integral=0f; integral< 8f; integral=  integral + .2f)
-                    for(float derivative = 0f; derivative <=.5; derivative = derivative + .05f)
-                    {
-                        combinations++;
-
-                        SingleRun run = new SingleRun(writer,proportional,integral,derivative);
-                        executor.submit(run, null);
-                    }
-
-            System.out.println("total combinations to try: " + combinations );
-
-
-            printProgressBar(combinations, 0, 20);
-
-            //now start them all
-            int i =0;
-            while(i < combinations)
-            {
-                executor.take();
-                i++;
-                printProgressBar(combinations,i,20);
-            }
-
-
-            System.out.println("done!");
-            writer.close();
-            System.exit(0);
-
-        } catch (IOException e) {
-            System.err.println("couldn't write!!");
-            System.exit(0);
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-    }
 
     /**
      * simple progress bar that exploits '\r'

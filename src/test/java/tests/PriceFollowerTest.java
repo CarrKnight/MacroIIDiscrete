@@ -15,8 +15,6 @@ import model.MacroII;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Field;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
@@ -164,14 +162,8 @@ public class PriceFollowerTest {
         assertEquals(price, 60);
 
 
-        //now fudge the sales report to get what you need
-        Field f = SalesDepartment.class.getDeclaredField("soldPercentage");
-        f.setAccessible(true);
-        f.set(dept,.45f);
-        other.getModel().setMarkupIncreases(.01f);
-        for(int i=0; i < 10; i++)
-            strategyAsk.weekEnd(); //now it should be 10%
-        assertEquals(60, strategyAsk.price(good));
+
+
 
 
     }

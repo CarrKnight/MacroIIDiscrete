@@ -12,11 +12,10 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.pid.CascadePIDController;
+import model.utilities.dummies.DummySeller;
 import model.utilities.pid.CascadePToPIDController;
 import org.junit.Test;
 import sim.engine.Schedule;
-import model.utilities.dummies.DummySeller;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -276,7 +275,7 @@ public class PurchasesFixedPIDTest {
         MacroII model = new MacroII(1l);
 
         PurchasesFixedPID cascade = new PurchasesFixedPID(department,1, CascadePToPIDController.class,model);
-        assertEquals(cascade.getKindOfController(), CascadePIDController.class);
+        assertEquals(cascade.getKindOfController(), CascadePToPIDController.class);
 
     }
 

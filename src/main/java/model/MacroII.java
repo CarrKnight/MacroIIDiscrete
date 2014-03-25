@@ -11,7 +11,6 @@ import agents.EconomicAgent;
 import agents.HasInventory;
 import agents.Person;
 import agents.firm.Firm;
-import com.sun.javafx.beans.annotations.NonNull;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import goods.GoodType;
@@ -392,7 +391,6 @@ public class MacroII extends SimState{
 
 
     public void weekEnd(){
-        //System.out.println("Weekend!");
         weeksPassed++;
 
     //    Collections.shuffle(agents,new Random(random.nextLong())); //todo make this shuffled by the MersenneTwisterFast
@@ -404,7 +402,7 @@ public class MacroII extends SimState{
             market.weekEnd(this);
 
 
-        printOutWorkers();
+     //   printOutWorkers();
         scheduleAnotherDay(ActionOrder.DAWN, new Steppable() {
             @Override
             public void step(SimState state) {
@@ -778,7 +776,7 @@ public class MacroII extends SimState{
      * @param priority the action priority
      *
      */
-    public void scheduleSoon(@NonNull ActionOrder phase, @NonNull Steppable action, Priority priority) {
+    public void scheduleSoon(@Nonnull ActionOrder phase, @Nonnull Steppable action, Priority priority) {
         phaseScheduler.scheduleSoon(phase, action, priority);
     }
 

@@ -7,7 +7,6 @@
 package model.utilities.scheduler;
 
 import com.google.common.base.Preconditions;
-import com.sun.javafx.beans.annotations.NonNull;
 import ec.util.MersenneTwisterFast;
 import model.MacroII;
 import model.utilities.ActionOrder;
@@ -211,7 +210,7 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
      * @param action the action taken!
      */
     @Override
-    public void scheduleSoon(@NonNull ActionOrder phase, @NonNull Steppable action){
+    public void scheduleSoon(@Nonnull ActionOrder phase, @Nonnull Steppable action){
 
         scheduleSoon(phase, action,Priority.STANDARD);
 
@@ -226,7 +225,7 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
      * @param priority the action priority
      */
     @Override
-    public void scheduleSoon(@NonNull ActionOrder phase, @NonNull Steppable action, Priority priority) {
+    public void scheduleSoon(@Nonnull ActionOrder phase, @Nonnull Steppable action, Priority priority) {
 
         steppablesByPhase.get(phase)[priority.ordinal()].add(action);
 

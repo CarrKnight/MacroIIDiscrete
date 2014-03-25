@@ -167,7 +167,6 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
     @Override
     public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
         updateModelIfNeeded();
-        System.out.println("slope: " + predictor.getIncrementDelta());
         return predictor.predictPurchasePriceWhenIncreasingProduction(dept);
 
     }
@@ -331,7 +330,6 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
     @Override
     public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         updateModelIfNeeded();
-        System.out.println("slope: " + predictor.getIncrementDelta());
         return predictor.predictPurchasePriceWhenDecreasingProduction(dept);
     }
 

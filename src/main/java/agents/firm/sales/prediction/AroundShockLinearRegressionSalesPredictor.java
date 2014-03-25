@@ -103,7 +103,6 @@ public class AroundShockLinearRegressionSalesPredictor implements SalesPredictor
     public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
 
         updateModelIfPossible(dept);
-        System.out.println("sales slope: " + predictor.getDecrementDelta() + ", day: " + findLatestShockDay());
         return predictor.predictSalePriceAfterIncreasingProduction(dept, expectedProductionCost, increaseStep);
 
 
@@ -190,7 +189,6 @@ public class AroundShockLinearRegressionSalesPredictor implements SalesPredictor
                     predictor.setDecrementDelta(weightedAverage);
                 }
 
-             //   System.out.println("slope: " + predictor.getDecrementDelta() +", workers: " + department.getLatestObservation(SalesDataType.WORKERS_PRODUCING_THIS_GOOD));
 
                 //memorize the new bounds
                 lastUsedLowerBound = lowestBound;

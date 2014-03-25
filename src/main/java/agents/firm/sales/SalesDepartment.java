@@ -76,6 +76,7 @@ public abstract class  SalesDepartment  implements Department {
     private final Firm firm;
     private final MacroII model;
 
+
     /**
      * a list of all listeners to nofify
      */
@@ -959,7 +960,7 @@ public abstract class  SalesDepartment  implements Department {
      * Get the randomizer of the owner
      */
     public MersenneTwisterFast getRandom() {
-        return firm.getRandom();
+        return model.getRandom();
     }
 
     /**

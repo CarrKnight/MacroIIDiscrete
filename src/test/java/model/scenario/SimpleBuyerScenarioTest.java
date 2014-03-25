@@ -13,6 +13,7 @@ import model.utilities.pid.CascadePIDController;
 import model.utilities.pid.FlowAndStockController;
 import model.utilities.pid.PIDController;
 import model.utilities.scheduler.Priority;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -171,8 +172,11 @@ public class SimpleBuyerScenarioTest
 
             }
 
+            SummaryStatistics averagePrice = new SummaryStatistics();
+            for(int j=0; j<1000; j++)
+                averagePrice.addValue(macroII.getMarket(GoodType.GENERIC).getLastPrice());
             //price should be any between 60 and 51
-            assertEquals(16,macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice(),.001d);
+            assertEquals(16,averagePrice.getMean(),.5d);
             for(PurchasesDepartment department : scenario.getDepartments())
                 assertEquals(16,department.getAveragedClosingPrice(),.001d);
             assertEquals(macroII.getMarket(GoodType.GENERIC).getYesterdayVolume(), 16,.0001d); //every day 4 goods should have been traded
