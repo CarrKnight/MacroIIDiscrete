@@ -35,7 +35,6 @@ import java.util.List;
  * @see PlantListener
  * @see NumberOfPlantsListener
  */
-//todo remember to switch name to DAILY
 public class DailyInventoryControl extends AbstractInventoryControl implements PlantListener, NumberOfPlantsListener
 {
 

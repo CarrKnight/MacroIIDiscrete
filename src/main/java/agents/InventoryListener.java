@@ -33,8 +33,9 @@ public interface InventoryListener {
      * @param source the agent with the inventory that is calling the listener
      * @param type which type of good has increased/decreased in numbers
      * @param quantity how many goods do we have in the inventory now
+     * @param delta by how much did the inventory change (always positive!)
      */
-    public void inventoryIncreaseEvent(@Nonnull HasInventory source,@Nonnull GoodType type, int quantity);
+    public void inventoryIncreaseEvent(@Nonnull HasInventory source,@Nonnull GoodType type, int quantity, int delta);
 
 
     /**
@@ -42,8 +43,9 @@ public interface InventoryListener {
      * @param source the agent with the inventory that is calling the listener
      * @param type which type of good has increased/decreased in numbers
      * @param quantity how many goods do we have in the inventory now
+     * @param delta by how much did the inventory change (always positive!)
      */
-    public void inventoryDecreaseEvent(@Nonnull HasInventory source,@Nonnull GoodType type, int quantity);
+    public void inventoryDecreaseEvent(@Nonnull HasInventory source,@Nonnull GoodType type, int quantity, int delta);
 
     /**
      * This method is called by departments (plants usually) that need this input but found none. It is called

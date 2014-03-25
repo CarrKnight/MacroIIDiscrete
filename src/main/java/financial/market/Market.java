@@ -355,6 +355,8 @@ public abstract class Market implements Deactivatable{
      */
     abstract public void removeSellQuote(Quote q);
 
+    abstract public void  removeSellQuotes(Collection<Quote> quotes);
+
 
     /**
      * Submit a buy quote
@@ -380,6 +382,11 @@ public abstract class Market implements Deactivatable{
      * @param q quote to cancel
      */
     abstract public void removeBuyQuote(Quote q);
+
+
+    abstract public void  removeBuyQuotes(Collection<Quote> quotes);
+
+
 
     /**
      * Remove all these quotes by the buyer
@@ -1155,7 +1162,9 @@ public abstract class Market implements Deactivatable{
     }
 
 
-
+    public double getLastMarkup() {
+        return lastMarkup;
+    }
 
     public MarketData getData() {
         return marketData;

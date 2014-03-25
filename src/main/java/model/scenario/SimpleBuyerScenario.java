@@ -217,7 +217,7 @@ public class SimpleBuyerScenario extends Scenario {
         //add a "thing" that consume X units of input as soon as they are available each week
         firm.addInventoryListener(new InventoryListener() {
             @Override
-            public void inventoryIncreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity) {
+            public void inventoryIncreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity,final  int delta) {
                 System.out.println("about to consume: " + firm.hasHowMany(GoodType.GENERIC) + ", consumedThisWeek: " + consumedThisWeek);
                 if(consumedThisWeek<consumptionRate)
                 {
@@ -225,10 +225,12 @@ public class SimpleBuyerScenario extends Scenario {
                     getModel().scheduleASAP(new Steppable() {
                         @Override
                         public void step(SimState state) {
-                            assert firm.hasAny(GoodType.GENERIC);
-                            firm.consume(GoodType.GENERIC);
-                            System.out.println("Consumed!");
-                            consumedThisWeek++;
+                            for(int i=0; i< delta ;i++) {
+                                assert firm.hasAny(GoodType.GENERIC);
+                                firm.consume(GoodType.GENERIC);
+                                System.out.println("Consumed!");
+                                consumedThisWeek++;
+                            }
                         }
                     });
 
@@ -237,7 +239,7 @@ public class SimpleBuyerScenario extends Scenario {
             }
 
             @Override
-            public void inventoryDecreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity) {
+            public void inventoryDecreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity, int delta) {
             }
 
             //ignored

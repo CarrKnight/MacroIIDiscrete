@@ -789,9 +789,10 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
      * @param source   the agent with the inventory that is calling the listener
      * @param type     which type of good has increased/decreased in numbers
      * @param quantity how many goods do we have in the inventory now
+     * @param delta the difference from the previous quantity owned (always a positive number)
      */
     @Override
-    public void inventoryIncreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity) {
+    public void inventoryIncreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity, int delta) {
 
 
     }
@@ -802,9 +803,10 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
      * @param source   the agent with the inventory that is calling the listener
      * @param type     which type of good has increased/decreased in numbers
      * @param quantity how many goods do we have in the inventory now
+     * @param delta the difference from the previous quantity owned (always a positive number)
      */
     @Override
-    public void inventoryDecreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity) {
+    public void inventoryDecreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity, int delta) {
 
 
 
