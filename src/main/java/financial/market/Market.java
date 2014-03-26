@@ -427,7 +427,7 @@ public abstract class Market implements Deactivatable{
 
             //record
             lastPrice = price;
-            lastMarkup = price - sellerCost;
+            lastMarkup = (price - sellerCost)/sellerCost;
             todaySumOfClosingPrices +=price;
             lastFilledAsk = sellerQuote.getPriceQuoted();
             lastFilledBid = buyerQuote.getPriceQuoted();

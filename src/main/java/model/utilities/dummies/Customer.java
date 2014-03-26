@@ -43,7 +43,7 @@ public class Customer extends EconomicAgent{
 
     private Priority tradePriority = Priority.AFTER_STANDARD;
 
-    private Collection<Quote> bidsMade = new LinkedList<>();
+    protected Collection<Quote> bidsMade = new LinkedList<>();
     /**
      * how many units do you want to buy every day?
      */
@@ -129,7 +129,7 @@ public class Customer extends EconomicAgent{
 
     }
 
-    private void removeAllQuotes(Market market) {
+    protected void removeAllQuotes(Market market) {
         if(bidsMade.size() > 0)
         market.removeBuyQuotes(bidsMade);
         bidsMade.clear();

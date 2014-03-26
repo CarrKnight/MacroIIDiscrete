@@ -124,10 +124,11 @@ public class CustomerTest
         model.start();
         model.schedule.step(model);
 
+        //doesn't call the remove quotes because it hadn't made any quote
+        verify(geographicalClearLastMarket,times(0)).removeBuyQuotes(anyCollection());
         //should have placed two quotes
         verify(geographicalClearLastMarket,times(2)).submitBuyQuote(customer,100);
-        //should have called the clear all too
-        verify(geographicalClearLastMarket,times(1)).removeAllBuyQuoteByBuyer(customer);
+
 
 
         //step again
@@ -135,7 +136,7 @@ public class CustomerTest
         //two more quotes, total 4
         verify(geographicalClearLastMarket,times(4)).submitBuyQuote(customer,100);
         //and should have removed the quotes twice
-        verify(geographicalClearLastMarket,times(2)).removeAllBuyQuoteByBuyer(customer);
+        verify(geographicalClearLastMarket,times(1)).removeBuyQuotes(anyCollection());
 
         //now give the customer one unit of good between trade and production
         model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
@@ -151,7 +152,7 @@ public class CustomerTest
         //two more quotes, total 4
         verify(geographicalClearLastMarket,times(5)).submitBuyQuote(customer,100);
         //and should have removed the quotes twice
-        verify(geographicalClearLastMarket,times(3)).removeAllBuyQuoteByBuyer(customer);
+        verify(geographicalClearLastMarket,times(2)).removeBuyQuotes(anyCollection());
 
 
     }

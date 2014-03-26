@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
 import com.sun.istack.internal.Nullable;
 import financial.market.GeographicalClearLastMarket;
+import financial.market.Market;
 import financial.utilities.Quote;
 import goods.Good;
 import javafx.beans.property.DoubleProperty;
@@ -162,6 +163,13 @@ public class OilCustomer extends Customer implements HasLocation{
             lastSupplier.setValue((GeographicalFirm) sender);
     }
 
+
+    //i override this to call removeAllBuyQuoteByBuyer because it's faster for geographical markets
+    @Override
+    protected void removeAllQuotes(Market market) {
+        market.removeAllBuyQuoteByBuyer(this);
+        bidsMade.clear();
+    }
 
     public GeographicalFirm getLastSupplier() {
         return lastSupplier.get();
