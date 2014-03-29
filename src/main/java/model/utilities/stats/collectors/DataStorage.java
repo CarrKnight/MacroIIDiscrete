@@ -176,13 +176,7 @@ public abstract class DataStorage<T extends  Enum<T>> implements Steppable, Deac
         return data.get(type).getObservableLastObservation();
     }
 
-    /**
-     * Make the passed listener tune in the data to be told whenever something new comes up
-     */
-    public void addListListener(T type, ListChangeListener<? super Double> listChangeListener)
-    {
-         data.get(type).addListListener(listChangeListener);
-    }
+
 
     /**
      * Utility method to write all the data to CSV File

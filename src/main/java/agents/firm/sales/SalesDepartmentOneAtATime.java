@@ -139,9 +139,9 @@ public class SalesDepartmentOneAtATime extends SalesDepartment
      * tries to sell a good on the order book conditional on not being waiting for other orders.
      */
     private void placeIfAble() {
-        if(!this.hasItPlacedAtLeastOneOrder() && toSell.size() >0 && !lock)
+        if(!this.hasItPlacedAtLeastOneOrder() && goodsQuotedOnTheMarket.size()>0 && !lock)
         {
-            Good g =  toSell.iterator().next();
+            Good g =  goodsQuotedOnTheMarket.keySet().iterator().next();
             prepareToPlaceAQuote(g);
         }
     }
@@ -185,4 +185,7 @@ public class SalesDepartmentOneAtATime extends SalesDepartment
         return toReturn;
 
     }
+
+
+
 }

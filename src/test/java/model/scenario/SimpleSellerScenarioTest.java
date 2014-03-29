@@ -594,7 +594,7 @@ public class SimpleSellerScenarioTest {
         averageQ /= 500;
         averagePrice /= 500;
         System.out.println( averageQ + "  ----- " + averagePrice);
-        //price should be any between 60 and 51
+        //price should be 86
         assertEquals(86,averagePrice,.3d);
         assertEquals(averageQ, 16,.3d); //every day 4 goods should have been traded
 

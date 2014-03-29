@@ -61,14 +61,13 @@ import java.util.*;
  * @see
  */
 public abstract class  SalesDepartment  implements Department {
-    /**
-     * the list of goods that the firm has decided to let the sales department sell
-     */
-    protected final List<Good> toSell;
+
     /**
      * a map associating to each good to sell the quote submitted for it at a centralized market
      */
     protected final Map<Good,Quote> goodsQuotedOnTheMarket;
+
+    private int quotesCurrentlyPlaced = 0;
 
     /**
      * The firm where the sales department belongs
@@ -155,8 +154,7 @@ public abstract class  SalesDepartment  implements Department {
         data = new SalesData();
         this.sellerSearchAlgorithm = sellerSearchAlgorithm;
         this.market = market;
-        toSell = new LinkedList<>();
-        goodsQuotedOnTheMarket = new HashMap<>();
+        goodsQuotedOnTheMarket = new LinkedHashMap<>();
         this.model = model;
         this.firm = firm;
         predictorStrategy = RegressionSalePredictor.Factory.newSalesPredictor(defaultPredictorStrategy,this);
@@ -173,7 +171,7 @@ public abstract class  SalesDepartment  implements Department {
      */
     public Quote askedForASalePrice(EconomicAgent buyer){
         long priceQuoted = Long.MAX_VALUE;
-        if(toSell.isEmpty()){ //if you have nothing to sell
+        if(goodsQuotedOnTheMarket.isEmpty()){ //if you have nothing to sell
             //was the seller rich enough to buy something if we had any?
             if(lastClosingCost >=0) //if we ever sold something before
                 if(buyer.maximumOffer(new Good(market.getGoodType(),getFirm(),lastClosingCost)) >= lastClosingPrice)
@@ -200,7 +198,7 @@ public abstract class  SalesDepartment  implements Department {
         {
             Good goodQuoted = null;
             //you don't have a list of quotes; go through each toSell and price them
-            for(Good g : toSell){
+            for(Good g : goodsQuotedOnTheMarket.keySet()){
                 long price = price(g); //the price of this good
                 assert price >=0; //can't be -1!
                 if(price < priceQuoted) //if that's the lowest, quote that
@@ -278,9 +276,9 @@ public abstract class  SalesDepartment  implements Department {
 
         //preconditions
         assert firm.has(g); //we should be selling something we have!
-        assert !toSell.contains(g);
+        assert !goodsQuotedOnTheMarket.keySet().contains(g);
         assert market.getGoodType().equals(g.getType());
-        toSell.add(g); //addSalesDepartmentListener it to the list of stuff to sell
+        goodsQuotedOnTheMarket.put(g,null);
 
 
         //log it (this also fires listeners)
@@ -348,10 +346,10 @@ public abstract class  SalesDepartment  implements Department {
 
 
         float netflow = todayOutflow - todayInflow;
-        if(toSell.size() == 0)   //no inventory, days of inventory is 0
+        if(goodsQuotedOnTheMarket.size() == 0)   //no inventory, days of inventory is 0
             daysOfInventory = 0;
         else if(netflow > 0) //positive netflow (we sell more than we produce, that's great)
-            daysOfInventory = ((float)toSell.size()) / netflow;
+            daysOfInventory = ((float)goodsQuotedOnTheMarket.size()) / netflow;
         else //negative or 0 netflow, days of inventory is infinite
             daysOfInventory = Float.MAX_VALUE;
 
@@ -420,13 +418,7 @@ public abstract class  SalesDepartment  implements Department {
         Preconditions.checkState(getFirm().has(g));
 
 
-        model.scheduleSoon(ActionOrder.TRADE,new Steppable() {
-            @Override
-            public void step(SimState state) {
-
-                placeAQuoteNow(g);
-            }
-        });
+        model.scheduleSoon(ActionOrder.TRADE, state -> placeAQuoteNow(g));
 
 
 
@@ -446,6 +438,7 @@ public abstract class  SalesDepartment  implements Department {
             //if the quote is not null, we quoted but not sold
             assert q.getAgent() == firm; //make sure we got back the right quote
             goodsQuotedOnTheMarket.put(g,q); //record the quote!
+            quotesCurrentlyPlaced++;
 
             if(shouldIPeddle(q))    //do you want to try and peddle too?
                 peddleNow(q.getGood()); //then peddle!
@@ -479,7 +472,7 @@ public abstract class  SalesDepartment  implements Department {
         {
             //then trade it!
             g = sellerQuote.getGood();
-            assert toSell.contains(g); assert getFirm().has(g); //make sure we own it and we can sell it
+            assert goodsQuotedOnTheMarket.keySet().contains(g); assert getFirm().has(g); //make sure we own it and we can sell it
 
         }
         else
@@ -487,7 +480,7 @@ public abstract class  SalesDepartment  implements Department {
             assert false : "This should never happen as long as I don't introduce displayPrice";
             //if we didn't quote a specific good
 
-            if(toSell.isEmpty()) //if we have none, tell them it's a stockout
+            if(goodsQuotedOnTheMarket.isEmpty()) //if we have none, tell them it's a stockout
             {
                 assert false : "This should never happen as long as I don't introduce displayPrice";
 
@@ -499,7 +492,7 @@ public abstract class  SalesDepartment  implements Department {
 
             }
             else //otherwise it's the cheapest possible
-                g = Collections.min(toSell,new Comparator<Good>() {
+                g = Collections.min(goodsQuotedOnTheMarket.keySet(),new Comparator<Good>() {
                     @Override
                     public int compare(Good o1, Good o2) {
                         return Long.compare(o1.getLastValidPrice(),o2.getLastValidPrice());
@@ -525,9 +518,13 @@ public abstract class  SalesDepartment  implements Department {
         /********************************************************************
          * Record information
          *******************************************************************/
-        assert toSell.contains(g);
-        toSell.remove(g);
-        assert !toSell.contains(g);
+        assert goodsQuotedOnTheMarket.containsKey(g);
+        Quote oldQuote = goodsQuotedOnTheMarket.remove(g);
+        if(oldQuote != null)
+        {
+            removeQuoteFromMarket(oldQuote);
+        }
+        assert !goodsQuotedOnTheMarket.containsKey(g);
         logOutflow(g, finalPrice);
         PurchaseResult toReturn =  PurchaseResult.SUCCESS;
         toReturn.setPriceTrade(finalPrice);
@@ -546,22 +543,21 @@ public abstract class  SalesDepartment  implements Department {
      */
     public boolean stopSellingThisGoodBecauseItWasConsumed(Good g)
     {
+
+
         //remove it from the masterlist
-        removeFromToSellMasterlist(g);
-
-
+        Quote q = removeFromToSellMasterlist(g);
         boolean toReturn = false;
         //if needed, remove the quote
-        if( goodsQuotedOnTheMarket.containsKey(g))
+        if( q != null)
         {
             //remove the good quoted in the market (and also remove it from memory)
-            market.removeSellQuote(goodsQuotedOnTheMarket.remove(g));
+            removeQuoteFromMarket(q);
             toReturn = true;
         }
-        //erase from memory
+
 
         //make sure there is no trace in the tosell and  wait list
-        assert !toSell.contains(g);
         assert !goodsQuotedOnTheMarket.containsKey(g);
 
 
@@ -574,6 +570,15 @@ public abstract class  SalesDepartment  implements Department {
     }
 
     /**
+     * call this AFTER you remove the good from the goodQuoted map to remove from the market as well
+     */
+    private void removeQuoteFromMarket(Quote q) {
+        market.removeSellQuote(q);
+        quotesCurrentlyPlaced--;
+        assert quotesCurrentlyPlaced >= 0;
+    }
+
+    /**
      * This is called automatically whenever a quote we made was filled
      * @param g the good sold
      * @param price the price for which it sold, the price must be positive or 0. If it's negative it is assumed that the good was consumed rather than sold.
@@ -583,32 +588,28 @@ public abstract class  SalesDepartment  implements Department {
         Preconditions.checkArgument(price>=0);
 
         //remove it from the masterlist
-        removeFromToSellMasterlist(g);
-
-        //if you were waiting for this good to sell as a quote, stop waiting
-        doNotWaitForThisQuoteToBeFilled(g);
+        Quote q = removeFromToSellMasterlist(g);
+        if(q!= null)
+            quotesCurrentlyPlaced--;
 
         //if the price is 0 or positive it means it was a sale, so you should register/log it as such
         logOutflow(g, price);
 
         //make sure there is no trace in the tosell and  wait list
-        assert !toSell.contains(g);
         assert !goodsQuotedOnTheMarket.containsKey(g);
 
 
     }
 
+
+
     @Nullable
-    private Quote doNotWaitForThisQuoteToBeFilled(Good g) {
-
-        return goodsQuotedOnTheMarket.remove(g);
-    }
-
-    private void removeFromToSellMasterlist(Good g) {
+    protected Quote removeFromToSellMasterlist(Good g) {
         assert !firm.has(g); //we should have sold
-        boolean removedCorrectly = toSell.remove(g);  //remove it from the list of tosell
-        assert !toSell.contains(g);
-        Preconditions.checkState(removedCorrectly,"Removed a good I didn't have!");
+        Preconditions.checkState(goodsQuotedOnTheMarket.containsKey(g),"Removed a good I didn't have!");
+        Quote quoteRemoved = goodsQuotedOnTheMarket.remove(g);//remove it from the list of tosell
+        assert !goodsQuotedOnTheMarket.containsKey(g);
+        return quoteRemoved;
     }
 
     /**
@@ -617,7 +618,7 @@ public abstract class  SalesDepartment  implements Department {
     private void logOutflow(Good g, long price)
     {
         assert !firm.has(g); //you can't have it if you sold it!
-        assert !toSell.contains(g); //you should have removed it!!!
+        assert !goodsQuotedOnTheMarket.containsKey(g); //you should have removed it!!!
 
         //finally, register the sale!!
         //       newResult.setPriceSold(price); //record the price of sale
@@ -658,9 +659,8 @@ public abstract class  SalesDepartment  implements Department {
     public boolean peddleNow(Good g)
     {
         assert firm.has(g); //should be owned by us, now
-        assert toSell.contains(g); //should be owned by us, now
+        assert goodsQuotedOnTheMarket.containsKey(g); //should be owned by us, now
 
-        long cost = g.getLastValidPrice(); //what did it cost us? Used for accounting only
 
 
         //look for a buyer
@@ -691,13 +691,12 @@ public abstract class  SalesDepartment  implements Department {
             {
                 //we made it!
                 assert !firm.has(g);  //we sold it, right?
-                toSell.remove(g);
-                assert !toSell.contains(g);
                 Quote q = goodsQuotedOnTheMarket.remove(g); //if you had a quote, remove it
+                assert !goodsQuotedOnTheMarket.containsKey(g);
+
                 //remove it from the market too, if needed
                 if(q!=null)
-                    market.removeSellQuote(q);
-                SaleResult saleResult = SaleResult.sold(finalPrice, cost);
+                    removeQuoteFromMarket(q);
                 lastClosingPrice = finalPrice;
 
                 sumClosingPrice += lastClosingPrice;
@@ -761,7 +760,7 @@ public abstract class  SalesDepartment  implements Department {
     }
 
     private void additionalDiagnostics() {
-        for(Good g : toSell)
+        for(Good g : goodsQuotedOnTheMarket.keySet())
         {
             assert firm.has(g); //unsold should still be in inventory
         }
@@ -900,11 +899,15 @@ public abstract class  SalesDepartment  implements Department {
         //get all the quotes to remove
         final Iterable<Quote> goodsToRequote = new LinkedList<>(goodsQuotedOnTheMarket.values());
         //forget the old quotes
-        goodsQuotedOnTheMarket.clear();
         for(Quote q: goodsToRequote)
         {
-            market.removeSellQuote(q); //remove the quote
+            if(q != null)
+            {
+                goodsQuotedOnTheMarket.put(q.getGood(),null);
+                removeQuoteFromMarket(q);
+            }
         }
+        assert quotesCurrentlyPlaced == 0 : "quotesCurrentlyPlaced: " + quotesCurrentlyPlaced;
 
         //when you can, requote
         model.scheduleSoon(ActionOrder.TRADE,new Steppable() {
@@ -913,8 +916,8 @@ public abstract class  SalesDepartment  implements Department {
                 aboutToUpdateQuotes=false;
                 //go through all the old quotes
                 for(Quote q : goodsToRequote){
-                    if(firm.has(q.getGood())) //it might have been consumed it in the process for whatever reason
-                    //resell it tomorrow
+                    if(q!= null && firm.has(q.getGood())) //it might have been consumed it in the process for whatever reason
+                        //resell it tomorrow
                         newGoodToSell(q.getGood());//sell it again
 
 
@@ -948,8 +951,8 @@ public abstract class  SalesDepartment  implements Department {
         sellerSearchAlgorithm.turnOff(); sellerSearchAlgorithm = null;
         if(predictorStrategy!= null)
             predictorStrategy.turnOff(); predictorStrategy = null;
-        toSell.clear();
         goodsQuotedOnTheMarket.clear();
+        quotesCurrentlyPlaced = 0;
         assert salesDepartmentListeners.isEmpty(); //hopefully it is clear by now!
         salesDepartmentListeners.clear();
         salesDepartmentListeners = null;
@@ -1004,7 +1007,7 @@ public abstract class  SalesDepartment  implements Department {
      * @return
      */
     public boolean hasAnythingToSell(){
-        return !toSell.isEmpty();
+        return !goodsQuotedOnTheMarket.isEmpty();
     }
 
     /**
@@ -1012,7 +1015,7 @@ public abstract class  SalesDepartment  implements Department {
      * @return goods to sell
      */
     public int getHowManyToSell(){
-        return toSell.size();
+        return goodsQuotedOnTheMarket.size();
     }
 
     /**
@@ -1068,7 +1071,8 @@ public abstract class  SalesDepartment  implements Department {
      * @return true if the sales department thinks it has at least one order placed
      */
     public boolean hasItPlacedAtLeastOneOrder(){
-        return !goodsQuotedOnTheMarket.isEmpty();
+        return quotesCurrentlyPlaced >=1;
+
     }
 
     /**
@@ -1076,7 +1080,7 @@ public abstract class  SalesDepartment  implements Department {
      * @return
      */
     public boolean isInventoryAcceptable() {
-        return askPricingStrategy.isInventoryAcceptable(toSell.size());
+        return askPricingStrategy.isInventoryAcceptable(goodsQuotedOnTheMarket.size());
     }
 
     /**
@@ -1108,7 +1112,7 @@ public abstract class  SalesDepartment  implements Department {
      * @return true if the sales department masterlist contains that good
      */
     public boolean isSelling(Good o) {
-        return toSell.contains(o);
+        return goodsQuotedOnTheMarket.containsKey(o);
     }
 
     /**

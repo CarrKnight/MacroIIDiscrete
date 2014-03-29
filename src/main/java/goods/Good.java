@@ -66,10 +66,6 @@ public class Good implements Comparable<Good>{
         return lastValidPrice;
     }
 
-    public long getSecondLastValidPrice() {
-        return secondLastValidPrice;
-    }
-
     public void setLastValidPrice(long lastValidPrice) {
         secondLastValidPrice = this.lastValidPrice;
         this.lastValidPrice =lastValidPrice;

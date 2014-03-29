@@ -24,12 +24,16 @@ import lifelines.LifelinesPanel;
 import lifelines.data.DataManager;
 import lifelines.data.GlobalEventData;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
 import model.utilities.ExchangeNetwork;
 import model.utilities.filters.ExponentialFilter;
 import model.utilities.filters.Filter;
+import model.utilities.scheduler.Priority;
 import model.utilities.stats.collectors.MarketData;
 import model.utilities.stats.collectors.enums.MarketDataType;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 import sim.portrayal.Inspector;
 import sim.portrayal.inspector.TabbedInspector;
 
@@ -139,10 +143,13 @@ public abstract class Market implements Deactivatable{
      */
     private int lastWeekVolume;
 
+
     /**
      * the data collector, created at start()
      */
     private MarketData marketData;
+    private XYChart.Series<Number, Number> priceSeries;
+    private XYChart.Series<Number, Number> volumeSeries;
 
     protected Market(GoodType goodType) {
         this.goodType = goodType;
@@ -618,13 +625,48 @@ public abstract class Market implements Deactivatable{
 
 
     /**
-     * tells the market that the model is starting up, and it would be a good idea to start the data collector
+     * tells the market that the model is starting up, and it would be a good idea to start the data collector.
+     * It also schedules a final cleanup step to update gui if needed
      * @param model
      */
     public void start(MacroII model)
     {
 
         marketData.start(model,this);
+
+        if(priceSeries!= null)
+        {
+            Steppable guiUpdater = new Steppable() {
+                @Override
+                public void step(SimState simState) {
+                    if(!marketData.isActive())
+                        return;
+                    final Double newPrice = marketData.getLatestObservation(MarketDataType.CLOSING_PRICE);
+                    final Double newVolume = marketData.getLatestObservation(MarketDataType.VOLUME_TRADED);
+                    final int day = marketData.getLastObservedDay();
+                    System.out.println(newPrice + "--- " + day);
+
+                    // if(newPrice >=0
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            priceSeries.getData().add(new XYChart.Data<Number, Number>(day,
+                                    newPrice));
+                            volumeSeries.getData().add(new XYChart.Data<Number, Number>(day,
+                                    newVolume));
+
+
+                        }
+                    });
+                    model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING,this, Priority.FINAL);
+                }
+            };
+
+            model.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING,guiUpdater,Priority.FINAL);
+
+        }
+
+
 
     }
 
@@ -666,6 +708,8 @@ public abstract class Market implements Deactivatable{
 
         //switching to JavaFX for fun and profit
         //set up the chart
+        final JFXPanel panel = new JFXPanel();
+
         NumberAxis xAxis= new NumberAxis();
         NumberAxis yAxis = new NumberAxis();
         xAxis.setLabel("Day");
@@ -674,26 +718,13 @@ public abstract class Market implements Deactivatable{
         priceChart.setAnimated(true);
         priceChart.setCreateSymbols(false);
         //set up the series
-        final XYChart.Series<Number,Number> priceSeries = new XYChart.Series<>();
+        priceSeries = new XYChart.Series<>();
         priceSeries.setName("LastClosingPrice");
         //now make the price update whenever data updates!
-        marketData.addListListener(MarketDataType.CLOSING_PRICE, new ListChangeListener<Double>() {
-            @Override
-            public void onChanged(Change<? extends Double> change) {
-                final double newPrice = marketData.getLatestObservation(MarketDataType.CLOSING_PRICE);
-               // if(newPrice >=0)
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            priceSeries.getData().add(new XYChart.Data<Number, Number>(marketData.getLastObservedDay(),
-                                    newPrice));
-                        }
-                    });
-            }
-        });
+        //use steppable to update
 
         priceChart.getData().add(priceSeries);
-        final JFXPanel panel = new JFXPanel();
+
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -723,6 +754,8 @@ public abstract class Market implements Deactivatable{
 
         //switching to JavaFX for fun and profit
         //set up the chart
+        final JFXPanel panel2 = new JFXPanel();
+
         xAxis= new NumberAxis();
         yAxis = new NumberAxis();
         xAxis.setLabel("Day");
@@ -731,26 +764,11 @@ public abstract class Market implements Deactivatable{
         volumeChart.setAnimated(true);
         volumeChart.setCreateSymbols(false);
         //set up the series
-        final XYChart.Series<Number,Number> volumeSeries = new XYChart.Series<>();
+        volumeSeries = new XYChart.Series<>();
         volumeSeries.setName("Daily Volume Traded");
-        //now make the price update whenever data updates!
-        marketData.addListListener(MarketDataType.VOLUME_TRADED, new ListChangeListener<Double>() {
-            @Override
-            public void onChanged(Change<? extends Double> change) {
-                final double newVolume = marketData.getLatestObservation(MarketDataType.VOLUME_TRADED);
-                // if(newPrice >=0)
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        volumeSeries.getData().add(new XYChart.Data<Number, Number>(marketData.getLastObservedDay(),
-                                newVolume));
-                    }
-                });
-            }
-        });
+
 
         volumeChart.getData().add(volumeSeries);
-        final JFXPanel panel2 = new JFXPanel();
         Platform.runLater(new Runnable() {
             @Override
             public void run() {

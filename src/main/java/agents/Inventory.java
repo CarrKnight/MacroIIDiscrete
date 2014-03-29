@@ -253,8 +253,7 @@ public class Inventory {
      * @return how many do you have.
      */
     public int hasHowMany(GoodType t){
-        PriorityQueue<Good> list = inventory.get(t); //open the right inventory
-        return list.size();
+        return inventory.get(t).size(); //open the right inventory
 
 
     }

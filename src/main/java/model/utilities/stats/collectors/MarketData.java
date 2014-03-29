@@ -205,4 +205,7 @@ public class MarketData extends DataStorage<MarketDataType>
     }
 
 
+    public boolean isActive() {
+        return active;
+    }
 }

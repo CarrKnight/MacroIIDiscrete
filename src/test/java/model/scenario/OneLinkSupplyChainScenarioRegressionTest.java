@@ -327,11 +327,11 @@ public class OneLinkSupplyChainScenarioRegressionTest
     public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws ExecutionException, InterruptedException {
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(5);
+        ExecutorService testRunner = Executors.newFixedThreadPool(1);
         ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
-        for(int i=0; i <1; i++)
+        for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =

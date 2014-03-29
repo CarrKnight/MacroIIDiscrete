@@ -22,6 +22,7 @@ import sim.engine.Steppable;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.function.Predicate;
 
 /**
  * <h4>Description</h4>
@@ -43,7 +44,7 @@ public class Customer extends EconomicAgent{
 
     private Priority tradePriority = Priority.AFTER_STANDARD;
 
-    protected Collection<Quote> bidsMade = new LinkedList<>();
+    protected LinkedList<Quote> bidsMade = new LinkedList<>();
     /**
      * how many units do you want to buy every day?
      */
@@ -120,7 +121,11 @@ public class Customer extends EconomicAgent{
         for(int i=0; i<dailyDemand-hasHowMany(market.getGoodType()); i++)
             if(maxPrice >= 0) {
                 Quote bidMade = market.submitBuyQuote(this, maxPrice);
-                bidsMade.add(bidMade);
+                if(!(bidMade.getAgent() == null))
+                {
+                    bidsMade.add(bidMade);
+                    assert bidMade.getPriceQuoted()>=0;
+                }
             }
 
 
@@ -130,8 +135,10 @@ public class Customer extends EconomicAgent{
     }
 
     protected void removeAllQuotes(Market market) {
-        if(bidsMade.size() > 0)
-        market.removeBuyQuotes(bidsMade);
+        if(bidsMade.size() == 1)
+            market.removeBuyQuote(bidsMade.iterator().next());
+        if(bidsMade.size() > 1)
+            market.removeBuyQuotes(bidsMade);
         bidsMade.clear();
     }
 
@@ -188,7 +195,9 @@ public class Customer extends EconomicAgent{
 
     @Override
     public void reactToFilledBidQuote(Good g, long price, EconomicAgent seller) {
-        //nothing happens. We placed all our quotes already
+
+        if(!bidsMade.isEmpty())
+            bidsMade.remove(); //doesn't matter which you remove, they are all the same.
     }
 
     /**

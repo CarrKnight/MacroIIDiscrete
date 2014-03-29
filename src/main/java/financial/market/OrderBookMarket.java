@@ -94,7 +94,7 @@ public class OrderBookMarket extends Market {
 
 
 
-        orderHandler = new ImmediateOrderHandler();
+        orderHandler = new EndOfPhaseOrderHandler(); //let everybody place quotes before you start crossing them. With this priorities don't really matter
 
 
     }

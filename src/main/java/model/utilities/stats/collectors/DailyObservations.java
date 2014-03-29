@@ -37,7 +37,7 @@ public class DailyObservations implements Iterable<Double> {
     /**
      * this is the real deal
      */
-    final private ObservableList<Double> observations;
+    final private List<Double> observations;
 
     final private SimpleDoubleProperty lastObservation = new SimpleDoubleProperty();
 
@@ -55,9 +55,9 @@ public class DailyObservations implements Iterable<Double> {
     {
 
         if(preferArrayListOverLinkedLists)
-            observations =  FXCollections.observableArrayList();
+            observations =  new ArrayList<>();
         else
-            observations = FXCollections.observableList(new LinkedList<Double>());
+            observations = new LinkedList<>();
 
     }
 
@@ -72,33 +72,8 @@ public class DailyObservations implements Iterable<Double> {
         return observations.iterator();
     }
 
-    /**
-     * Returns a list iterator over the elements in this list (in proper
-     * sequence).
-     *
-     * <p>The returned list iterator is <a href="#fail-fast"><i>fail-fast</i></a>.
-     *
-     * @see #listIterator(int)
-     */
-    public ListIterator<Double> listIterator() {
-        return observations.listIterator();
-    }
 
-    /**
-     * Returns a list iterator over the elements in this list (in proper
-     * sequence), starting at the specified position in the list.
-     * The specified index indicates the first element that would be
-     * returned by an initial call to {@link java.util.ListIterator#next next}.
-     * An initial call to {@link java.util.ListIterator#previous previous} would
-     * return the element with the specified index minus one.
-     *
-     * <p>The returned list iterator is <a href="#fail-fast"><i>fail-fast</i></a>.
-     *
-     * @throws IndexOutOfBoundsException {@inheritDoc}
-     */
-    public ListIterator<Double> listIterator(int index) {
-        return observations.listIterator(index);
-    }
+
 
     /**
      * Appends all of the elements in the specified collection to the end of
@@ -265,10 +240,5 @@ public class DailyObservations implements Iterable<Double> {
         return lastObservation;
     }
 
-    /**
-     * listen to whenever there is a new observation
-     */
-    public void addListListener(ListChangeListener<? super Double> listChangeListener) {
-        observations.addListener(listChangeListener);
-    }
+
 }

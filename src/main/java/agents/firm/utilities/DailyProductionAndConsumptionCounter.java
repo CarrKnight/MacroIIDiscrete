@@ -49,17 +49,17 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DailyProductionAndConsumptionCounter implements Steppable, Deactivatable
 {
-    private EnumMap<GoodType,AtomicInteger> consumedToday;
+    private AtomicInteger[] consumedToday;
 
-    private EnumMap<GoodType,AtomicInteger> boughtOrProducedToday;
+    private AtomicInteger[] boughtOrProducedToday;
 
-    private EnumMap<GoodType,AtomicInteger> producedToday;
+    private AtomicInteger[] producedToday;
 
-    private EnumMap<GoodType,AtomicInteger> consumedYesterday;
+    private AtomicInteger[] consumedYesterday;
 
-    private EnumMap<GoodType,AtomicInteger> boughtOrProducedYesterday;
+    private AtomicInteger[] boughtOrProducedYesterday;
 
-    private EnumMap<GoodType,AtomicInteger> producedYesterday;
+    private AtomicInteger[] producedYesterday;
 
     private boolean active = true;
     private boolean startWasCalled = false;
@@ -71,12 +71,12 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     public DailyProductionAndConsumptionCounter()
     {
         //instantiate all the lists
-        consumedToday = new EnumMap<>(GoodType.class);
-        boughtOrProducedToday = new EnumMap<>(GoodType.class);
-        producedToday = new EnumMap<>(GoodType.class);
-        consumedYesterday = new EnumMap<>(GoodType.class);
-        boughtOrProducedYesterday = new EnumMap<>(GoodType.class);
-        producedYesterday = new EnumMap<>(GoodType.class);
+        consumedToday = new AtomicInteger[GoodType.values().length];
+        boughtOrProducedToday= new AtomicInteger[GoodType.values().length];
+        producedToday = new AtomicInteger[GoodType.values().length];
+        consumedYesterday = new AtomicInteger[GoodType.values().length];
+        boughtOrProducedYesterday = new AtomicInteger[GoodType.values().length];
+        producedYesterday = new AtomicInteger[GoodType.values().length];
 
     }
 
@@ -118,9 +118,9 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
         boughtOrProducedYesterday = boughtOrProducedToday;
         producedYesterday = producedToday;
 
-        consumedToday = new EnumMap<>(GoodType.class);
-        boughtOrProducedToday = new EnumMap<>(GoodType.class);
-        producedToday = new EnumMap<>(GoodType.class);
+        consumedToday = new AtomicInteger[GoodType.values().length];
+        boughtOrProducedToday = new AtomicInteger[GoodType.values().length];
+        producedToday = new AtomicInteger[GoodType.values().length];
     }
 
 
@@ -235,10 +235,10 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     /**
      * a simple lookup that returns 0 every time the map doesn't actually map the type you are looking for
      */
-    private int lookupMap(EnumMap<GoodType,AtomicInteger> map, GoodType type)
+    private int lookupMap(AtomicInteger[] map, GoodType type)
     {
 
-        AtomicInteger toReturn = map.get(type);
+        AtomicInteger toReturn = map[type.ordinal()];
         if(toReturn == null)
             return 0;
         else
@@ -250,7 +250,7 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     /**
      * a simple way to increase by one an entry in the map
      */
-    private void increaseByOne(EnumMap<GoodType,AtomicInteger> map, GoodType type)
+    private void increaseByOne(AtomicInteger[] map, GoodType type)
     {
 
         increaseByN(map,type,1);
@@ -259,18 +259,18 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     /**
      * a simple way to increase by n an entry in the map
      */
-    private void increaseByN(EnumMap<GoodType,AtomicInteger> map, GoodType type, int n)
+    private void increaseByN(AtomicInteger[] map, GoodType type, int n)
     {
 
         Preconditions.checkArgument(n >0);
-        AtomicInteger currentCount = map.get(type);
-        if(currentCount == null)
-            map.put(type,new AtomicInteger(n));
+        if(map[type.ordinal()]== null)
+            map[type.ordinal()] = new AtomicInteger(n);
         else
         {
-            assert currentCount.get() > 0;
-            currentCount.addAndGet(n);
-            assert currentCount.get() == map.get(type).get();
+            AtomicInteger toChange =  map[type.ordinal()];
+            assert toChange.get() > 0;
+            toChange.addAndGet(n);
+            assert toChange.get() == map[type.ordinal()].get();
         }
 
     }

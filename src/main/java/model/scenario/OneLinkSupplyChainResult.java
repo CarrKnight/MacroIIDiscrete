@@ -241,6 +241,8 @@ public class OneLinkSupplyChainResult {
             }
         }
 
+        macroII.finish();
+
         System.out.println("done with price: " +averageBeefPrice.getMean() + ", and standard deviation : " + averageBeefPrice.getStandardDeviation() );
         System.out.println("seed: " + macroII.seed());
         System.out.println();
