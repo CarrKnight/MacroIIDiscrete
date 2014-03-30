@@ -7,8 +7,10 @@ import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.MarketSalesPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
+import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
+import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
@@ -17,7 +19,7 @@ import model.utilities.dummies.DummySeller;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
-import java.util.LinkedList;
+import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -43,7 +45,7 @@ public class MarketPredictorStrategyTest {
     SalesDepartment department;
     SalesPredictor strategy;
     MacroII model;
-    Market market;
+    OrderBookMarket market;
     Firm f;
 
     /**
@@ -86,6 +88,7 @@ public class MarketPredictorStrategyTest {
 
         model = new MacroII(100l);
         market = new OrderBookMarket(GoodType.GENERIC);
+        market.setOrderHandler(new ImmediateOrderHandler(),model);
         f = new Firm(model);
         department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new MarketSalesPredictor();
@@ -136,6 +139,7 @@ public class MarketPredictorStrategyTest {
                 return false;
             }
         };
+        market.setOrderHandler(new ImmediateOrderHandler(),model);
         f = new Firm(model);
         department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new MarketSalesPredictor();
@@ -198,6 +202,7 @@ public class MarketPredictorStrategyTest {
 
         model = new MacroII(100l);
         market = new OrderBookMarket(GoodType.GENERIC);
+        market.setOrderHandler(new ImmediateOrderHandler(),model);
         f = new Firm(model);
         department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         f.registerSaleDepartment(department,GoodType.GENERIC);
@@ -225,10 +230,9 @@ public class MarketPredictorStrategyTest {
         //market.registerSeller(department.getFirm()); Automatically registered when you create the sales department
         department.getFirm().receive(sold,null);
         //hack to simulate sellThis without actually calling it
-        Field field = SalesDepartment.class.getDeclaredField("toSell");
+        Field field = SalesDepartment.class.getDeclaredField("goodsQuotedOnTheMarket");
         field.setAccessible(true);
-        LinkedList<Good> toSell = (LinkedList<Good>) field.get (department);
-        toSell.add(sold);
+        ((HashMap<Good,Quote>)field.get (department)).put(sold, null);
 
         market.submitSellQuote(department.getFirm(),250l,sold);
 

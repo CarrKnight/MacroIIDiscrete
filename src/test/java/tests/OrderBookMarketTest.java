@@ -2,6 +2,7 @@ package tests;
 
 import agents.EconomicAgent;
 import agents.Person;
+import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
@@ -49,6 +50,7 @@ public class OrderBookMarketTest {
 
         market.registerBuyer(buyer);
         market.registerSeller(seller);
+        market.setOrderHandler(new ImmediateOrderHandler(),model);
 
     }
 

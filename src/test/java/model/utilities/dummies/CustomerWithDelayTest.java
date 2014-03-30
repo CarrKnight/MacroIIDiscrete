@@ -8,6 +8,7 @@ package model.utilities.dummies;
 
 import agents.EconomicAgent;
 import financial.market.EndOfPhaseOrderHandler;
+import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
@@ -142,7 +143,8 @@ public class CustomerWithDelayTest
     @Test
     public void dummyBuyerWithRealTrades() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
-        Market market = new OrderBookMarket(GoodType.GENERIC);
+        OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
+        market.setOrderHandler(new ImmediateOrderHandler(),mock(MacroII.class));
         Market.TESTING_MODE = true;
         market.setPricePolicy(new ShopSetPricePolicy());
         CustomerWithDelay delay = new CustomerWithDelay(mock(MacroII.class),100,5,market);

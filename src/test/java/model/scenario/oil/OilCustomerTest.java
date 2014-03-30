@@ -41,7 +41,7 @@ public class OilCustomerTest {
     @Before
     public void setUp() throws Exception {
         when(market.getGoodType()).thenReturn(GoodType.OIL);
-
+        when(market.submitBuyQuote(any(EconomicAgent.class),anyLong())).thenReturn(mock(Quote.class));
 
     }
 

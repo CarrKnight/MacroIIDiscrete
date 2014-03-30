@@ -7,6 +7,7 @@ import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.MemorySalesPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
+import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import goods.Good;
@@ -39,7 +40,7 @@ public class MemoryPredictorStrategyTest {
     SalesDepartment department;
     SalesPredictor strategy;
     MacroII model;
-    Market market;
+    OrderBookMarket market;
     Firm f;
 
     /**
@@ -83,6 +84,7 @@ public class MemoryPredictorStrategyTest {
 
         model = new MacroII(100l);
         market = new OrderBookMarket(GoodType.GENERIC);
+        market.setOrderHandler(new ImmediateOrderHandler(),model);
         f = new Firm(model);
         department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new MemorySalesPredictor();
@@ -133,6 +135,7 @@ public class MemoryPredictorStrategyTest {
                 return false;
             }
         };
+        market.setOrderHandler(new ImmediateOrderHandler(),model);
         f = new Firm(model);
         department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new MemorySalesPredictor();

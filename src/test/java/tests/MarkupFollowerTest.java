@@ -7,6 +7,7 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.MarkupFollower;
+import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import goods.Good;
@@ -44,7 +45,7 @@ public class MarkupFollowerTest {
     SalesDepartment dept;
 
 
-    Market market;
+    OrderBookMarket market;
 
     MacroII model;
 
@@ -58,6 +59,7 @@ public class MarkupFollowerTest {
         other = new Firm(model);
 
         market = new OrderBookMarket(GoodType.GENERIC);
+        market.setOrderHandler(new ImmediateOrderHandler(),model);
         dept = SalesDepartmentFactory.incompleteSalesDepartment(producer, market, null, null,
                 agents.firm.sales.SalesDepartmentAllAtOnce.class); //useless null is useless
         producer.registerSaleDepartment(dept,GoodType.GENERIC);

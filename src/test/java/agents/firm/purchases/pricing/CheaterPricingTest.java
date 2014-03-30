@@ -7,6 +7,7 @@ import agents.firm.purchases.inventoryControl.FixedInventoryControl;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import ec.util.MersenneTwisterFast;
+import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import goods.Good;
@@ -109,6 +110,7 @@ public class CheaterPricingTest {
             //create the model, the market, the firm and the purchase department
             final MacroII model = new MacroII(System.currentTimeMillis());
             final OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
+            market.setOrderHandler(new ImmediateOrderHandler(),model);
             Firm firm = new Firm(model); firm.earn(1000000l);
             FactoryProducedPurchaseDepartment<FixedInventoryControl,CheaterPricing,
                     BuyerSearchAlgorithm,SellerSearchAlgorithm> factoryMade
@@ -151,8 +153,8 @@ public class CheaterPricingTest {
             model.start();
             model.schedule.step(model);
             //after:
-            Assert.assertEquals(market.numberOfAsks(),1);
             Assert.assertTrue(firm.hasHowMany(GoodType.GENERIC)==2);
+            Assert.assertEquals(market.numberOfAsks(), 1);
 
 
         }
