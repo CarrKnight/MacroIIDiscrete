@@ -24,6 +24,7 @@ import lifelines.LifelinesPanel;
 import lifelines.data.DataManager;
 import lifelines.data.GlobalEventData;
 import model.MacroII;
+import model.MacroIIGUI;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
 import model.utilities.ExchangeNetwork;
@@ -150,6 +151,7 @@ public abstract class Market implements Deactivatable{
     private MarketData marketData;
     private XYChart.Series<Number, Number> priceSeries;
     private XYChart.Series<Number, Number> volumeSeries;
+    private JFXPanel panel;
 
     protected Market(GoodType goodType) {
         this.goodType = goodType;
@@ -440,6 +442,7 @@ public abstract class Market implements Deactivatable{
             lastFilledBid = buyerQuote.getPriceQuoted();
             weeklyVolume++;
             todayVolume++;
+            //System.out.println("today volume has increased to: " + todayVolume);
 
             //tell the listeners!
             for(TradeListener tl : tradeListeners)
@@ -634,6 +637,7 @@ public abstract class Market implements Deactivatable{
 
         marketData.start(model,this);
 
+
         if(priceSeries!= null)
         {
             Steppable guiUpdater = new Steppable() {
@@ -643,22 +647,23 @@ public abstract class Market implements Deactivatable{
                         return;
                     final Double newPrice = marketData.getLatestObservation(MarketDataType.CLOSING_PRICE);
                     final Double newVolume = marketData.getLatestObservation(MarketDataType.VOLUME_TRADED);
-                    final int day = marketData.getLastObservedDay();
-                    System.out.println(newPrice + "--- " + day);
+                    final Double day = new Double(marketData.getLastObservedDay());
 
                     // if(newPrice >=0
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
+                            System.out.println(newPrice + "--- " + day + ", " + priceSeries.getData().size());
                             priceSeries.getData().add(new XYChart.Data<Number, Number>(day,
                                     newPrice));
                             volumeSeries.getData().add(new XYChart.Data<Number, Number>(day,
                                     newVolume));
 
-
                         }
                     });
                     model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING,this, Priority.FINAL);
+                    panel.repaint();
+
                 }
             };
 
@@ -708,7 +713,7 @@ public abstract class Market implements Deactivatable{
 
         //switching to JavaFX for fun and profit
         //set up the chart
-        final JFXPanel panel = new JFXPanel();
+        panel = new JFXPanel();
 
         NumberAxis xAxis= new NumberAxis();
         NumberAxis yAxis = new NumberAxis();
@@ -716,7 +721,7 @@ public abstract class Market implements Deactivatable{
         yAxis.setLabel("Price");
         final LineChart<Number,Number> priceChart = new LineChart<>(xAxis,yAxis);
         priceChart.setAnimated(true);
-        priceChart.setCreateSymbols(false);
+
         //set up the series
         priceSeries = new XYChart.Series<>();
         priceSeries.setName("LastClosingPrice");
@@ -724,6 +729,9 @@ public abstract class Market implements Deactivatable{
         //use steppable to update
 
         priceChart.getData().add(priceSeries);
+
+
+
 
         Platform.runLater(new Runnable() {
             @Override
@@ -746,6 +754,7 @@ public abstract class Market implements Deactivatable{
         closingPriceInspector.add(panel);
 
         toReturn.addInspector(closingPriceInspector, "Closing price");
+
 
 
         /*********************************************
@@ -829,6 +838,9 @@ public abstract class Market implements Deactivatable{
         marketRecordsInspector.add(recordPanel);
         //add it as a tab!
         toReturn.addInspector(marketRecordsInspector, "Timeline");
+
+
+
 
         /***************************************************
          * Network

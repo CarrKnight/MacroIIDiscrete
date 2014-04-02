@@ -66,7 +66,12 @@ public enum ActionOrder
     /**
      * Final Phase, just maintenance
      */
-    CLEANUP_DATA_GATHERING
+    CLEANUP_DATA_GATHERING,
+
+    /**
+     * possibly useless phase, there for GUI objects to step
+     */
+    GUI_PHASE
 
 
 

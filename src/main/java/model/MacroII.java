@@ -506,7 +506,7 @@ public class MacroII extends SimState{
     /**
      * this is the GUI controller, it's a static reference which is used by the exchange network
      */
-    private static GUIState gui;
+    private static MacroIIGUI gui;
 
     /**
      * register the gui and the controller
@@ -525,7 +525,7 @@ public class MacroII extends SimState{
     /**
      * get the GUI controller!
      */
-    public static GUIState getGUI() {
+    public static MacroIIGUI getGUI() {
         assert hasGUI; //we must have gui to even get called!
         return gui;
     }
