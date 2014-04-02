@@ -2,6 +2,7 @@ package tests;
 
 import agents.DummyPerson;
 import financial.market.DecentralizedMarket;
+import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.ActionsAllowed;
@@ -151,6 +152,7 @@ public class DummyPersonTest {
 
 
         OrderBookMarket beefMarket = new OrderBookMarket(GoodType.BEEF);
+        beefMarket.setOrderHandler(new ImmediateOrderHandler(),model);
         DummySeller seller = new DummySeller(model,5l);
         beefMarket.registerSeller(seller);
         Good toSell = new Good(GoodType.BEEF,seller,3l); seller.receive(toSell,null);

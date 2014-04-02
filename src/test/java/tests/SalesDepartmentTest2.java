@@ -2,7 +2,6 @@ package tests;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
-import agents.firm.sales.SaleResult;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
@@ -13,6 +12,7 @@ import agents.firm.sales.prediction.SurveySalesPredictor;
 import agents.firm.sales.pricing.PriceFollower;
 import agents.firm.sales.pricing.UndercuttingAskPricing;
 import financial.Bankruptcy;
+import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.AveragePricePolicy;
@@ -28,12 +28,11 @@ import org.junit.Test;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 
 /**
@@ -58,7 +57,7 @@ public class SalesDepartmentTest2 {
     SalesDepartment dept2;
     UndercuttingAskPricing strategy2;
     MacroII model;
-    Market market;
+    OrderBookMarket market;
 
 
     @Before
@@ -66,6 +65,7 @@ public class SalesDepartmentTest2 {
 
         model = new MacroII(0);
         market = new OrderBookMarket(GoodType.GENERIC);
+        market.setOrderHandler(new ImmediateOrderHandler(),model);
         Firm firm1 = new Firm(model);
         dept1 = SalesDepartmentFactory.incompleteSalesDepartment(firm1, market, new SimpleBuyerSearch(market, firm1), new SimpleSellerSearch(market, firm1), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         firm1.registerSaleDepartment(dept1,market.getGoodType());
@@ -112,17 +112,11 @@ public class SalesDepartmentTest2 {
         dept1.getFirm().receive(toQuote,null);
         assertEquals(-1, dept1.askedForASalePrice(dummy).getPriceQuoted()); //the good is still not in the "toSell" list
         //force it in the toSell list
-        Field field = SalesDepartment.class.getDeclaredField("toSell");
+        Field field = SalesDepartment.class.getDeclaredField("goodsQuotedOnTheMarket");
         field.setAccessible(true);
-        LinkedList<Good> toSell = (LinkedList<Good>) field.get (dept1);
-        toSell.add(toQuote);
+        ((HashMap<Good,Quote>)field.get (dept1)).put(toQuote, null);
+        assertNull(dept1.askedForASalePrice(dummy));
 
-        try{
-            assertEquals(10, dept1.askedForASalePrice(dummy));    //this should fail because the department doesn't have a quote yet.
-            fail();
-        }catch (NoSuchElementException ex){
-
-        }
 
 
         Quote q = dept1.getMarket().submitSellQuote(dept1.getFirm(),dept1.price(toQuote),toQuote);
@@ -266,10 +260,10 @@ public class SalesDepartmentTest2 {
 
 
 
-        Field field = SalesDepartment.class.getDeclaredField("toSell");
+        Field field = SalesDepartment.class.getDeclaredField("goodsQuotedOnTheMarket");
         field.setAccessible(true);
-        LinkedList<Good> toSell = (LinkedList<Good>) field.get (dept1);
-        assertEquals(1, toSell.size()); //2 things left to sell
+        int size = ((HashMap<Good,Quote>)field.get (dept1)).size();
+        assertEquals(1, size); //2 things left to sell
 
 
 

@@ -67,6 +67,7 @@ public abstract class  SalesDepartment  implements Department {
      */
     protected final Map<Good,Quote> goodsQuotedOnTheMarket;
 
+
     private int quotesCurrentlyPlaced = 0;
 
     /**
@@ -284,8 +285,6 @@ public abstract class  SalesDepartment  implements Department {
         //log it (this also fires listeners)
         logInflow(g);
         newGoodToSell(g);
-
-
     }
 
     /**

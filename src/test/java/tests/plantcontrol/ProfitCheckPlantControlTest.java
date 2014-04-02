@@ -16,8 +16,10 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.prediction.PricingSalesPredictor;
 import agents.firm.utilities.ProfitReport;
+import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookBlindMarket;
+import financial.market.OrderBookMarket;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.NonDrawable;
@@ -91,8 +93,9 @@ public class ProfitCheckPlantControlTest {
 
 
 
-        Market market = new OrderBookBlindMarket(GoodType.LABOR);
-        assertEquals(p.maximumWorkersPossible(),100);
+        OrderBookMarket market = new OrderBookBlindMarket(GoodType.LABOR);
+        market.setOrderHandler(new ImmediateOrderHandler(),model);
+        assertEquals(p.maximumWorkersPossible(), 100);
         HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000,firm,market,
                 p,ProfitCheckPlantControl.class,null,null).getDepartment(); //create!!!
 
@@ -207,8 +210,9 @@ public class ProfitCheckPlantControlTest {
 
 
 
-        Market market = new OrderBookBlindMarket(GoodType.LABOR);
-        assertEquals(p.maximumWorkersPossible(),100);
+        OrderBookMarket market = new OrderBookBlindMarket(GoodType.LABOR);
+        market.setOrderHandler(new ImmediateOrderHandler(),model);
+        assertEquals(p.maximumWorkersPossible(), 100);
         HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000,
                 firm,market,p,ProfitCheckPlantControl.class,null,null).getDepartment(); //create!!!
 //        firm.registerHumanResources(p,humanResources);

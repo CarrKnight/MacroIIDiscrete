@@ -2,7 +2,6 @@ package tests;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
-import agents.firm.sales.SaleResult;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
@@ -12,6 +11,7 @@ import agents.firm.sales.pricing.CostAskPricing;
 import agents.firm.sales.pricing.PriceFollower;
 import agents.firm.sales.pricing.UndercuttingAskPricing;
 import financial.Bankruptcy;
+import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
@@ -23,12 +23,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNull;
 
 /**
  * <h4>Description</h4>
@@ -49,13 +48,14 @@ public class SalesDepartmentTest {
 
     SalesDepartment dept;
     MacroII model;
-    Market market;
+    OrderBookMarket market;
 
 
     @Before
     public void simpleScenarioSetup(){
         model = new MacroII(0);
         market = new OrderBookMarket(GoodType.GENERIC);
+        market.setOrderHandler(new ImmediateOrderHandler(),model);
         Firm firm = new Firm(model);
         dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, market, new SimpleBuyerSearch(market, firm), new SimpleSellerSearch(market, firm), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         firm.registerSaleDepartment(dept,market.getGoodType());
@@ -92,17 +92,11 @@ public class SalesDepartmentTest {
         dept.getFirm().receive(toQuote,null);
         assertEquals(-1, dept.askedForASalePrice(dummy).getPriceQuoted()); //the good is still not in the "toSell" list
         //force it in the toSell list
-        Field field = SalesDepartment.class.getDeclaredField("toSell");
+        Field field = SalesDepartment.class.getDeclaredField("goodsQuotedOnTheMarket");
         field.setAccessible(true);
-        LinkedList<Good> toSell = (LinkedList<Good>) field.get (dept);
-        toSell.add(toQuote);
+        ((HashMap<Good,Quote>)field.get (dept)).put(toQuote, null);
 
-        try{
-            assertEquals(10, dept.askedForASalePrice(dummy));    //this should fail because the department doesn't have a quote yet.
-            fail();
-        }catch (NoSuchElementException ex){
-
-        }
+        assertNull(dept.askedForASalePrice(dummy));
 
 
         Quote q = dept.getMarket().submitSellQuote(dept.getFirm(),1000000,toQuote);
@@ -161,10 +155,11 @@ public class SalesDepartmentTest {
         assertEquals(380, dept.getFirm().getCash());
 
 
-        Field field = SalesDepartment.class.getDeclaredField("toSell");
+        Field field = SalesDepartment.class.getDeclaredField("goodsQuotedOnTheMarket");
         field.setAccessible(true);
-        LinkedList<Good> toSell = (LinkedList<Good>) field.get (dept);
-        assertEquals(2, toSell.size()); //2 things left to sell
+        int size = ((HashMap<Good,Quote>)field.get (dept)).size();
+
+        assertEquals(2, size); //2 things left to sell
 
 
 
@@ -191,8 +186,8 @@ public class SalesDepartmentTest {
 
 
 
-
-        assertEquals(1, toSell.size()); //2 things left to sell
+        size = ((HashMap<Good,Quote>)field.get (dept)).size();
+        assertEquals(1, size); //2 things left to sell
 
 
 
@@ -244,22 +239,22 @@ public class SalesDepartmentTest {
 
         assertEquals(dept.getMarket().getBestBuyPrice(), 100l); //all the others should have been taken
 
-        Field field = SalesDepartment.class.getDeclaredField("toSell");
+        Field field = SalesDepartment.class.getDeclaredField("goodsQuotedOnTheMarket");
         field.setAccessible(true);
-        LinkedList<Good> toSell = (LinkedList<Good>) field.get (dept);
 
 
         for(int i=0; i<10; i++){
             Good good = new Good(GoodType.GENERIC,dept.getFirm(),30);
             dept.getFirm().receive(good,null);
-            toSell.add(good);
+            ((HashMap<Good,Quote>)field.get (dept)).put(good, null);
             dept.peddleNow(good); //sell this, now!
         }
 
 
+        int size =         ((HashMap<Good,Quote>)field.get (dept)).size();
 
         //the results are the same because the market is small and we are using cost pricing
-        assertEquals(2, toSell.size()); //2 things left to sell
+        assertEquals(2, size); //2 things left to sell
         assertEquals(30l, dept.getLastClosingPrice());
         assertEquals(380, dept.getFirm().getCash());
 

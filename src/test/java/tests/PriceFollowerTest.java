@@ -7,7 +7,7 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.PriceFollower;
-import financial.market.Market;
+import financial.market.ImmediateOrderHandler;
 import financial.market.OrderBookMarket;
 import goods.Good;
 import goods.GoodType;
@@ -44,7 +44,7 @@ public class PriceFollowerTest {
     SalesDepartment dept;
 
 
-    Market market;
+    OrderBookMarket market;
 
     MacroII model;
 
@@ -58,6 +58,8 @@ public class PriceFollowerTest {
         other = new Firm(model);
 
         market = new OrderBookMarket(GoodType.GENERIC);
+        market.setOrderHandler(new ImmediateOrderHandler(),model);
+
         dept = SalesDepartmentFactory.incompleteSalesDepartment(producer, market, null, null, agents.firm.sales.SalesDepartmentAllAtOnce.class); //useless null is useless
         producer.registerSaleDepartment(dept,GoodType.GENERIC);
 //        dept.getFirm().getSalesDepartments().put(GoodType.GENERIC,dept);

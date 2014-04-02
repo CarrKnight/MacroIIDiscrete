@@ -6,6 +6,7 @@
 
 package model.utilities.dummies;
 
+import financial.market.ImmediateOrderHandler;
 import financial.market.OrderBookMarket;
 import financial.utilities.ShopSetPricePolicy;
 import goods.GoodType;
@@ -39,6 +40,7 @@ public class DailyGoodTreeTest
         model.start();
 
         OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
+        market.setOrderHandler(new ImmediateOrderHandler(),model);
         market.setPricePolicy(new ShopSetPricePolicy()); //the seller price is the final price
 
         //create the tree
@@ -143,6 +145,7 @@ public class DailyGoodTreeTest
         model.start();
 
         OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
+        market.setOrderHandler(new ImmediateOrderHandler(),model);
         market.setPricePolicy(new ShopSetPricePolicy()); //the seller price is the final price
 
         //create the tree

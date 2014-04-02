@@ -8,7 +8,9 @@ package model.utilities.dummies;
 
 import agents.EconomicAgent;
 import financial.market.GeographicalClearLastMarket;
+import financial.market.ImmediateOrderHandler;
 import financial.market.OrderBookMarket;
+import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
@@ -45,6 +47,10 @@ public class CustomerTest
     @Before
     public void setUp() throws Exception {
         when(market.getGoodType()).thenReturn(GoodType.OIL);
+
+
+        when(market.submitBuyQuote(any(EconomicAgent.class), anyLong())).thenAnswer(invocation ->
+                Quote.newBuyerQuote((EconomicAgent)invocation.getArguments()[0],(Long)invocation.getArguments()[1],market.getGoodType()));
 
 
     }
@@ -163,6 +169,8 @@ public class CustomerTest
         //daily demand 2, with empty inventory that's 0
         OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
         MacroII model = new MacroII(1l);
+        market.setOrderHandler(new ImmediateOrderHandler(),model);
+
         final Customer buyer = new Customer(model,100,market);
         buyer.setDailyDemand(2);
         buyer.start(model);
