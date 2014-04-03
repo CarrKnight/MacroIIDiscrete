@@ -44,6 +44,7 @@ public class MacroIIGUI extends GUIState {
 
 
     org.jfree.data.xy.XYSeries series;    // the data series we'll add to
+
     sim.util.media.chart.TimeSeriesChartGenerator chart;  // the charting facility
 
 

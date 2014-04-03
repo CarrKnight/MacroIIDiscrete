@@ -96,13 +96,13 @@ public abstract class Scenario {
      * Scenario inspector, to choose which scenario to run
      ***********************************************/
 
-    final static Set<Class<? extends Scenario>> scenarios;
+    final public static Set<Class<? extends Scenario>> allScenarios;
 
     static{
         //turn on the reader
         Reflections reflections = new Reflections("model.scenario");
-        //read all the scenarios
-        scenarios = reflections.getSubTypesOf(Scenario.class);
+        //read all the allScenarios
+        allScenarios = reflections.getSubTypesOf(Scenario.class);
 
 
     }
@@ -134,7 +134,7 @@ public abstract class Scenario {
         boolean found = false;
 
 
-        ArrayList<Class<? extends Scenario>> sortedScenarios = new ArrayList<>(scenarios);
+        ArrayList<Class<? extends Scenario>> sortedScenarios = new ArrayList<>(allScenarios);
         System.out.println(sortedScenarios);
         Collections.sort(sortedScenarios,new Comparator<Class<? extends Scenario>>() {
             @Override

@@ -24,7 +24,7 @@ import sim.engine.Steppable;
 /**
  * <h4>Description</h4>
  * <p/> This maximizer simply asks the maximization algorithm a new target every week. It does't wait for that target to be achieved before asking again.
- * This is done with the hope that during competitive scenarios the maximization won't keep targeting something that is now unreacheable/unprofitable because a competitor has changed its behavior
+ * This is done with the hope that during competitive allScenarios the maximization won't keep targeting something that is now unreacheable/unprofitable because a competitor has changed its behavior
  * <p/>
  * <p/>
  * <h4>Notes</h4>

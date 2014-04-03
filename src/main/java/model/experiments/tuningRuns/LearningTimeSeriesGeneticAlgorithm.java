@@ -440,7 +440,7 @@ public class LearningTimeSeriesGeneticAlgorithm
     public static class LearningEvaluator implements FitnessEvaluator<LearningCandidate>{
 
 
-        //6 monopolist and 2 competitive scenarios!
+        //6 monopolist and 2 competitive allScenarios!
 
 
         /**
