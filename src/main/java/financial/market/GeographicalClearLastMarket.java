@@ -23,9 +23,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
 import model.MacroII;
-import model.scenario.oil.OilCustomer;
+import model.scenario.oil.GeographicalCustomer;
 import model.utilities.ActionOrder;
-import model.utilities.geography.GeographicalClearLastMarketView;
+import model.utilities.geography.GeographicalClearLastMarketSwingView;
 import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -82,26 +82,14 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
      * so that it takes care of all the listeners blah blah
      *
      */
-    private final ObservableMap<OilCustomer,Collection<Quote>> buyerBackerMap;
-
-    /**
-     * We are going to use this set for buyers instead of the one created by the abstract class because we need it observable!
-     * I am creating checks so that only OilCustomers can be put in here. It's ugly but hopefully I'll change this later
-     */
-    private ObservableSet<EconomicAgent> buyers;
-
-    /**
-     * We are going to use this set for sellers instead of the one created by the abstract class because we need it observable!
-     * I am creating checks so that only GeographicalFirm can be put in here. It's ugly but hopefully I'll change this later
-     */
-    private ObservableSet<EconomicAgent> sellers;
+    private final ObservableMap<GeographicalCustomer,Collection<Quote>> buyerBackerMap;
 
 
     /**
      * here we store both all the firms that made a quote and their quotes if multiples. It's handy because
      * it keeps the iteration order steady                     -
      */
-    private final Multimap<OilCustomer,Quote> buyersWhoPlacedAQuote;
+    private final Multimap<GeographicalCustomer,Quote> buyersWhoPlacedAQuote;
 
     /**
      * this is set to false when we are going through the quotes to clear them, and set to true whenever
@@ -119,9 +107,9 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
 
         //the buyers quote are kept in a priority queue from the highest to the lowest
         //but because these are oilCustomers only, I can "cheat" and order the keys too by
-        TreeMap<OilCustomer, Collection<Quote>> backingBuyerTreeMapPOJO = new TreeMap<>(new Comparator<OilCustomer>() {
+        TreeMap<GeographicalCustomer, Collection<Quote>> backingBuyerTreeMapPOJO = new TreeMap<>(new Comparator<GeographicalCustomer>() {
             @Override
-            public int compare(OilCustomer o1, OilCustomer o2) {
+            public int compare(GeographicalCustomer o1, GeographicalCustomer o2) {
                 return -Long.compare(o1.getMaxPrice(), o2.getMaxPrice());
 
             }
@@ -150,65 +138,29 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
 
         //sellers quote are sorted from lowest to highest
         sellersWhoPlacedAQuote = Multimaps.newMultimap(
-                new LinkedHashMap<GeographicalFirm, Collection<Quote>>(),
-                new Supplier<PriorityQueue<Quote>>() {
-                    @Override
-                    public PriorityQueue<Quote> get() {
-                        return new PriorityQueue<>(1,new Comparator<Quote>() {
-                            @Override
-                            public int compare(Quote o1, Quote o2) {
-                                return Long.compare(o1.getPriceQuoted(),o2.getPriceQuoted());
-
-
-                            }
-
-                        });
-                    }
-                });
+                new LinkedHashMap<>(),
+                () -> new PriorityQueue<>(1, (o1, o2) -> Long.compare(o1.getPriceQuoted(),o2.getPriceQuoted()))
+        );
 
 
         //make sure the buyers and sellers were initialized
-        assert buyers != null;
-        assert sellers!=null;
+        assert getBuyers() != null;
+        assert getBuyers()!=null;
 
         //you'll schedule yourself in the start
 
 
     }
 
-    /**
-     * this just creates a new hashset, but can be overriden by subclasses if they need a special set where to keep the buyers
-     *
-     * @return just an empty hashset
-     */
-    @Override
-    protected Set<EconomicAgent> buildSellerSet() {
-        //create an observable set
-        sellers = FXCollections.observableSet(new HashSet<EconomicAgent>());
-        //let the rest of the market use the observable set to register/deregister buyers
-        return sellers;
 
-    }
 
-    /**
-     * this just creates a new hashset, but can be overriden by subclasses if they need a special set where to keep the buyers
-     *
-     * @return just an empty hashset
-     */
-    @Override
-    protected Set<EconomicAgent> buildBuyerSet() {
-        //create the observable set
-        buyers = FXCollections.observableSet(new HashSet<EconomicAgent>());
-        //feed the observable set into the market, good good.
-        return buyers;
-    }
 
     /**
      * Only accept hasLocation buyers!
      */
     @Override
     public void registerBuyer(EconomicAgent buyer) {
-        Preconditions.checkArgument(buyer instanceof OilCustomer, "only geographical agents accepted!");
+        Preconditions.checkArgument(buyer instanceof GeographicalCustomer, "only geographical agents accepted!");
         super.registerBuyer(buyer);
 
     }
@@ -352,7 +304,7 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
     @Override
     public Quote submitBuyQuote(@Nonnull EconomicAgent buyer, long price, @Nullable Department department) {
         assert getBuyers().contains(buyer);
-        assert buyer instanceof OilCustomer;
+        assert buyer instanceof GeographicalCustomer;
         if(MacroII.SAFE_MODE) //double check the good isn't already on sale
             Preconditions.checkState(buyer.getModel().getCurrentPhase().equals(ActionOrder.TRADE));
 
@@ -361,7 +313,7 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
 
 
         //ignore the quote
-        OilCustomer buyerCast = (OilCustomer) buyer;
+        GeographicalCustomer buyerCast = (GeographicalCustomer) buyer;
         //put the quote in the collection and return it
         Quote quoteMade = Quote.newBuyerQuote(buyer, price,goodType);
         if(department!=null)
@@ -387,7 +339,7 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
             if(removedCorrectly) {
                 //either you have been removed from the multimap or you had another quote!
                 assert !buyersWhoPlacedAQuote.containsKey(q.getAgent()) ||
-                        (!buyersWhoPlacedAQuote.get((OilCustomer) q.getAgent()).isEmpty() && !buyersWhoPlacedAQuote.get((OilCustomer) q.getAgent()).contains(q));
+                        (!buyersWhoPlacedAQuote.get((GeographicalCustomer) q.getAgent()).isEmpty() && !buyersWhoPlacedAQuote.get((GeographicalCustomer) q.getAgent()).contains(q));
 
                 //map has changed!
                 changedMap = true;
@@ -421,7 +373,7 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
 
         //either you have been removed from the multimap or you had another quote!
         assert !buyersWhoPlacedAQuote.containsKey(q.getAgent()) ||
-                (!buyersWhoPlacedAQuote.get((OilCustomer) q.getAgent()).isEmpty() && !buyersWhoPlacedAQuote.get((OilCustomer)q.getAgent()).contains(q));
+                (!buyersWhoPlacedAQuote.get((GeographicalCustomer) q.getAgent()).isEmpty() && !buyersWhoPlacedAQuote.get((GeographicalCustomer)q.getAgent()).contains(q));
 
         //map has changed!
         changedMap = true;
@@ -641,7 +593,7 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
         }
 
         //let's go!
-        Iterator<OilCustomer> buyerIterator = buyersWhoPlacedAQuote.keySet().iterator();
+        Iterator<GeographicalCustomer> buyerIterator = buyersWhoPlacedAQuote.keySet().iterator();
         for(int i=0; i<indexToLoopTo; i++)
         {
             assert buyerIterator.hasNext();   //should never fail, because we have been here before!
@@ -657,7 +609,7 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
         }
 
         //okay, then there is another buyer to process, let's do this
-        OilCustomer currentBuyer = buyerIterator.next();
+        GeographicalCustomer currentBuyer = buyerIterator.next();
         //make him choose among all the possible buyers
         GeographicalFirm sellerChosen = currentBuyer.chooseSupplier(Multimaps.unmodifiableMultimap(sellersWhoPlacedAQuote));
 
@@ -713,14 +665,14 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
     @Override
     public TabbedInspector buildInspector() {
 
-        return new GeographicalClearLastMarketView(this);
+        return new GeographicalClearLastMarketSwingView(this);
 
 
 
     }
 
 
-    public ObservableMap<OilCustomer, Collection<Quote>> getBuyerBackerMap() {
+    public ObservableMap<GeographicalCustomer, Collection<Quote>> getBuyerBackerMap() {
         return buyerBackerMap;
     }
 }

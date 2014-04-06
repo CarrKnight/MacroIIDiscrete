@@ -10,7 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.scenario.oil.OilCustomer;
+import model.scenario.oil.GeographicalCustomer;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,14 +43,14 @@ public class OilCustomerPortrait extends HasLocationPortrait
     }
 
     @Override
-    protected Image initImage(HasLocation agent, GeographicalClearLastMarketView marketView) {
+    protected Image initImage(HasLocation agent, GeographicalClearLastMarketSwingView marketView) {
         return customerImage;
     }
 
 
     @Override
-    protected ObservableObjectValue<Color> initColor(final HasLocation agent, GeographicalClearLastMarketView marketView) {
-        final OilCustomer agentCast = (OilCustomer) agent;
+    protected ObservableObjectValue<Color> initColor(final HasLocation agent, GeographicalClearLastMarketSwingView marketView) {
+        final GeographicalCustomer agentCast = (GeographicalCustomer) agent;
 
        return new ObjectBinding<Color>() {
             {
@@ -69,10 +69,10 @@ public class OilCustomerPortrait extends HasLocationPortrait
     /**
      * the oil customer we are trying to paint!
      */
-    private final OilCustomer oilCustomer;
+    private final GeographicalCustomer oilCustomer;
 
 
-    public OilCustomerPortrait(OilCustomer agent, GeographicalClearLastMarketView marketView) {
+    public OilCustomerPortrait(GeographicalCustomer agent, GeographicalClearLastMarketSwingView marketView) {
         super(agent, marketView);
         this.oilCustomer = agent;
     }
@@ -97,12 +97,12 @@ public class OilCustomerPortrait extends HasLocationPortrait
         @Override
         public void start(Stage stage) throws Exception {
             StackPane panel = new StackPane();
-            OilCustomer fakeCustomer = mock(OilCustomer.class);
+            GeographicalCustomer fakeCustomer = mock(GeographicalCustomer.class);
 
 
             final SimpleObjectProperty<Color> color = new SimpleObjectProperty<>(Color.BLUE);
          //   when(fakeCustomer.colorProperty()).thenReturn(color);
-            panel.getChildren().addAll(new OilCustomerPortrait(fakeCustomer,mock(GeographicalClearLastMarketView.class)));
+            panel.getChildren().addAll(new OilCustomerPortrait(fakeCustomer,mock(GeographicalClearLastMarketSwingView.class)));
 
 
             Scene scene = new Scene(panel);

@@ -23,7 +23,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import model.MacroII;
 import model.scenario.Scenario;
-import model.scenario.oil.OilCustomer;
+import model.scenario.oil.GeographicalCustomer;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
 import model.utilities.stats.collectors.enums.MarketDataType;
@@ -115,10 +115,10 @@ public class GeographicalClearLastMarketTest
 
         //create 3 fake buyers
         //create and start the 3 buyers
-        final OilCustomer customers[] = new OilCustomer[3];
+        final GeographicalCustomer customers[] = new GeographicalCustomer[3];
         for(int i=0; i<3; i++)
         {
-            customers[i] = mock(OilCustomer.class);
+            customers[i] = mock(GeographicalCustomer.class);
             when(customers[i].getModel()).thenReturn(macroII);
             //if they are ever asked to choose, choose the seller
             when(customers[i].chooseSupplier(any(Multimap.class))).thenReturn(seller);
@@ -189,10 +189,10 @@ public class GeographicalClearLastMarketTest
 
         //create 3 fake buyers
         //create and start the 3 buyers
-        final OilCustomer customers[] = new OilCustomer[3];
+        final GeographicalCustomer customers[] = new GeographicalCustomer[3];
         for(int i=0; i<3; i++)
         {
-            customers[i] = mock(OilCustomer.class);
+            customers[i] = mock(GeographicalCustomer.class);
             when(customers[i].getModel()).thenReturn(macroII);
             //if they are ever asked to choose, choose the seller
             when(customers[i].chooseSupplier(any(Multimap.class))).thenReturn(seller);
@@ -275,10 +275,10 @@ public class GeographicalClearLastMarketTest
 
         //create 3 fake buyers
         //create and start the 3 buyers
-        final OilCustomer customers[] = new OilCustomer[3];
+        final GeographicalCustomer customers[] = new GeographicalCustomer[3];
         for(int i=0; i<3; i++)
         {
-            customers[i] = mock(OilCustomer.class);
+            customers[i] = mock(GeographicalCustomer.class);
             //if they are ever asked to choose, choose the seller
             when(customers[i].chooseSupplier(any(Multimap.class))).thenReturn(null);
             //make sure buyer is never bankrupt
@@ -323,8 +323,8 @@ public class GeographicalClearLastMarketTest
         //the only seller prices its good to high, nobody buys.
         //model to step
         MacroII macroII = new MacroII(1l);
-        final OilCustomer customers[] = new OilCustomer[100];
-        final OilCustomer farCustomers[] = new OilCustomer[100];
+        final GeographicalCustomer customers[] = new GeographicalCustomer[100];
+        final GeographicalCustomer farCustomers[] = new GeographicalCustomer[100];
 
         Scenario simpleSellerOilScenario = new Scenario(macroII) {
             @Override
@@ -370,13 +370,13 @@ public class GeographicalClearLastMarketTest
                 //create and start the 3 buyers
                 for(int i=0; i<customers.length; i++)
                 {
-                    customers[i] =new OilCustomer(getModel(),i+1,0,0,market);
+                    customers[i] =new GeographicalCustomer(getModel(),i+1,0,0,market);
                     getAgents().add(customers[i]);
                 }
                 //create another 100 fake buyers that all want to pay 200 but they are very very far. They shouldn't be able to buy anything!
                 for(int i=0; i<farCustomers.length; i++)
                 {
-                    farCustomers[i] =new OilCustomer(getModel(),200,500,500,market);
+                    farCustomers[i] =new GeographicalCustomer(getModel(),200,500,500,market);
                     getAgents().add(farCustomers[i]);
                 }
             }
@@ -394,7 +394,7 @@ public class GeographicalClearLastMarketTest
         Assert.assertEquals(91d,market.getLatestObservation(MarketDataType.CLOSING_PRICE),.0001d);
 
         //all distant agents bought nothing
-        for(OilCustomer farCustomer : farCustomers)
+        for(GeographicalCustomer farCustomer : farCustomers)
             Assert.assertEquals(0,farCustomer.hasHowMany(GoodType.OIL));
 
         //cheap people got nothing
@@ -423,14 +423,14 @@ public class GeographicalClearLastMarketTest
         jFrame.setSize(500,500);
         GeographicalClearLastMarket market = new GeographicalClearLastMarket(GoodType.OIL);
         System.out.println(market.getBuyers().size());
-        OilCustomer customer = new OilCustomer(mock(MacroII.class),10,10,10,market);
+        GeographicalCustomer customer = new GeographicalCustomer(mock(MacroII.class),10,10,10,market);
         System.out.println(market.getBuyers().size());
         jFrame.setContentPane(market.buildInspector());
         jFrame.setVisible(true);
 
         //create customer
         System.out.println(market.getBuyers().size());
-        customer = mock(OilCustomer.class);
+        customer = mock(GeographicalCustomer.class);
         when(customer.xLocationProperty()).thenReturn(new SimpleDoubleProperty(40));
         when(customer.yLocationProperty()).thenReturn(new SimpleDoubleProperty(40));
         when(customer.lastSupplierProperty()).thenReturn(mock(SimpleObjectProperty.class));

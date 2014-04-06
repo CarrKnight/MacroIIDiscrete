@@ -14,7 +14,9 @@ import financial.utilities.*;
 import goods.Good;
 import goods.GoodType;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableSet;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
@@ -161,8 +163,8 @@ public abstract class Market implements Deactivatable{
         else
             policy = SimpleGoodTradePolicy.getInstance();
 
-        buyers = buildBuyerSet();
-        sellers = buildSellerSet();
+        buyers = FXCollections.observableSet(new HashSet<>());
+        sellers = FXCollections.observableSet(new HashSet<>());
         marketData = new MarketData();
 
 
@@ -176,22 +178,7 @@ public abstract class Market implements Deactivatable{
         }
     }
 
-    /**
-     * this just creates a new hashset, but can be overriden by subclasses if they need a special set where to keep the buyers
-     * @return just an empty hashset
-     */
-    protected Set<EconomicAgent> buildSellerSet() {
-        return new HashSet<>();
 
-    }
-
-    /**
-     * this just creates a new hashset, but can be overriden by subclasses if they need a special set where to keep the buyers
-     * @return just an empty hashset
-     */
-    protected Set<EconomicAgent> buildBuyerSet() {
-        return new HashSet<>();
-    }
 
 
     /**
@@ -208,15 +195,15 @@ public abstract class Market implements Deactivatable{
     abstract public ActionsAllowed getBuyerRole();
 
 
-    private final Set<EconomicAgent> buyers;
+    private final ObservableSet<EconomicAgent> buyers;
 
     /**
      * Get all agents that belong in the market as buyers
      * @return all people who somehow can buy in this market
      */
     @Nonnull
-    public Set<EconomicAgent> getBuyers(){
-        return Collections.unmodifiableSet(buyers);
+    public ObservableSet<EconomicAgent> getBuyers(){
+        return FXCollections.unmodifiableObservableSet(buyers);
     }
 
     /**
@@ -273,7 +260,7 @@ public abstract class Market implements Deactivatable{
     /**
      * The registry containing all the sellers in the market
      */
-    private final Set<EconomicAgent> sellers;
+    private final ObservableSet<EconomicAgent> sellers;
 
 
 
@@ -282,8 +269,9 @@ public abstract class Market implements Deactivatable{
      * @return all people who somehow can buy in this market
      */
     @Nonnull
-    public Set<EconomicAgent> getSellers(){
-        return Collections.unmodifiableSet(sellers);
+    public ObservableSet<EconomicAgent> getSellers(){
+
+        return FXCollections.unmodifiableObservableSet(sellers);
     }
 
     /**
@@ -773,7 +761,7 @@ public abstract class Market implements Deactivatable{
         volumeChart.setAnimated(true);
         volumeChart.setCreateSymbols(false);
         //set up the series
-        volumeSeries = new XYChart.Series<>();
+        volumeSeries = new XYChart.Series<Number,Number>();
         volumeSeries.setName("Daily Volume Traded");
 
 

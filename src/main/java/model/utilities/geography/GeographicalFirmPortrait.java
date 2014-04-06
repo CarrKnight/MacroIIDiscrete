@@ -47,17 +47,17 @@ public class GeographicalFirmPortrait extends HasLocationPortrait {
     final private GeographicalFirm firm;
 
     @Override
-    protected Image initImage(HasLocation agent, GeographicalClearLastMarketView marketView) {
+    protected Image initImage(HasLocation agent, GeographicalClearLastMarketSwingView marketView) {
         return oilImage;
 
     }
 
     @Override
-    protected ObservableObjectValue<Color> initColor(HasLocation agent, GeographicalClearLastMarketView marketView) {
+    protected ObservableObjectValue<Color> initColor(HasLocation agent, GeographicalClearLastMarketSwingView marketView) {
         return color;
     }
 
-    protected GeographicalFirmPortrait(HasLocation agent, GeographicalClearLastMarketView marketView,
+    protected GeographicalFirmPortrait(HasLocation agent, GeographicalClearLastMarketSwingView marketView,
                                       Color firmColor) {
         super(agent, marketView);
         assert agent instanceof GeographicalFirm;

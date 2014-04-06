@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
  * @version 2013-10-27
  * @see
  */
-public class OilCustomerTest {
+public class GeographicalCustomerTest {
 
 
     private final GeographicalClearLastMarket market = mock(GeographicalClearLastMarket.class);
@@ -51,7 +51,7 @@ public class OilCustomerTest {
         //create the model
         MacroII macroII = new MacroII(1l);
         //create the customer
-        OilCustomer customer = new OilCustomer(macroII,10,2,2, market);
+        GeographicalCustomer customer = new GeographicalCustomer(macroII,10,2,2, market);
         //give it two units of oil
         customer.receive(new Good(GoodType.OIL,null,0),null);
         customer.receive(new Good(GoodType.OIL,null,0),null);
@@ -76,7 +76,7 @@ public class OilCustomerTest {
         //create the model
         MacroII macroII = new MacroII(1l);
         //create the customer
-        OilCustomer customer = new OilCustomer(macroII,10,2,2, market);
+        GeographicalCustomer customer = new GeographicalCustomer(macroII,10,2,2, market);
         long targetCash = customer.getResetCashTo() + 100;
         customer.setResetCashTo(targetCash);
         Assert.assertFalse(targetCash == customer.getCash());
@@ -91,7 +91,7 @@ public class OilCustomerTest {
         //target lower than what you have
         macroII = new MacroII(1l);
         //create the customer
-        customer = new OilCustomer(macroII,10,2,2, market);
+        customer = new GeographicalCustomer(macroII,10,2,2, market);
         targetCash = customer.getResetCashTo() -1;
         customer.setResetCashTo(targetCash);
         Assert.assertFalse(targetCash == customer.getCash());
@@ -108,7 +108,7 @@ public class OilCustomerTest {
     @Test
     public void testChoosingSuppliersByPrice(){
 
-        OilCustomer customer = new OilCustomer(mock(MacroII.class),100,0,0, market);
+        GeographicalCustomer customer = new GeographicalCustomer(mock(MacroII.class),100,0,0, market);
 
         //firm 1, location 1,1 price 10
         GeographicalFirm firm1 = mock(GeographicalFirm.class);
@@ -133,7 +133,7 @@ public class OilCustomerTest {
     @Test
     public void testChoosingSuppliersByLocation(){
 
-        OilCustomer customer = new OilCustomer(mock(MacroII.class),100,0,0, market);
+        GeographicalCustomer customer = new GeographicalCustomer(mock(MacroII.class),100,0,0, market);
 
         //firm 1, location 1,1 price 10
         GeographicalFirm firm1 = mock(GeographicalFirm.class);
@@ -156,7 +156,7 @@ public class OilCustomerTest {
     @Test
     public void testChoosingSuppliersByChoosingNone(){
 
-        OilCustomer customer = new OilCustomer(mock(MacroII.class),100,0,0, market);
+        GeographicalCustomer customer = new GeographicalCustomer(mock(MacroII.class),100,0,0, market);
         Multimap<GeographicalFirm,Quote> firms = HashMultimap.create();
 
         //firm 1, location 1,1 price 1000
@@ -184,7 +184,7 @@ public class OilCustomerTest {
         //daily demand 2, with empty inventory that's 0
         GeographicalClearLastMarket geographicalClearLastMarket = market;
         MacroII model = new MacroII(1l);
-        final OilCustomer customer = new OilCustomer(model,100,0,0, geographicalClearLastMarket);
+        final GeographicalCustomer customer = new GeographicalCustomer(model,100,0,0, geographicalClearLastMarket);
         customer.setDailyDemand(2);
         customer.start(model);
         model.start();

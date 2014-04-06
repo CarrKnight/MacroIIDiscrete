@@ -27,12 +27,12 @@ import javafx.scene.paint.Color;
  */
 public abstract class HasLocationPortrait extends ImageView {
 
-    abstract protected Image initImage(HasLocation agent, GeographicalClearLastMarketView marketView);
+    abstract protected Image initImage(HasLocation agent, GeographicalClearLastMarketSwingView marketView);
 
-    abstract protected ObservableObjectValue<Color> initColor(HasLocation agent, GeographicalClearLastMarketView marketView);
+    abstract protected ObservableObjectValue<Color> initColor(HasLocation agent, GeographicalClearLastMarketSwingView marketView);
 
 
-    protected HasLocationPortrait(HasLocation agent, GeographicalClearLastMarketView marketView)
+    protected HasLocationPortrait(HasLocation agent, GeographicalClearLastMarketSwingView marketView)
     {
         //load the image
         setImage(initImage(agent, marketView));

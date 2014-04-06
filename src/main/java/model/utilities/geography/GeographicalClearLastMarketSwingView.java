@@ -19,7 +19,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
-import model.scenario.oil.OilCustomer;
+import model.scenario.oil.GeographicalCustomer;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.portrayal.Inspector;
 import sim.portrayal.inspector.TabbedInspector;
@@ -43,12 +43,12 @@ import java.util.Map;
  * @version 2013-11-08
  * @see
  */
-public class GeographicalClearLastMarketView extends TabbedInspector
+public class GeographicalClearLastMarketSwingView extends TabbedInspector
 {
     /**
      * A map that links the oil customer to the portrait used!
      */
-    final private Map<OilCustomer,OilCustomerPortrait> customerToPortraitMap;
+    final private Map<GeographicalCustomer,OilCustomerPortrait> customerToPortraitMap;
 
     /**
      * A map that connects each firm to its portrait (which also holds the firm's assigned color)!
@@ -70,7 +70,7 @@ public class GeographicalClearLastMarketView extends TabbedInspector
      */
     final private ObservableList<XYChart.Series<Number,Number>> priceLines;
 
-    public GeographicalClearLastMarketView(final GeographicalClearLastMarket market)
+    public GeographicalClearLastMarketSwingView(final GeographicalClearLastMarket market)
     {
 
         /*===========================================================
@@ -117,7 +117,7 @@ public class GeographicalClearLastMarketView extends TabbedInspector
 
         //BUYERS
         //go through all buyers to put them among the agents!
-        ObservableSet<EconomicAgent > buyers = (ObservableSet<EconomicAgent>) market.getBuyers();
+        ObservableSet<EconomicAgent > buyers = market.getBuyers();
 
 
         for(EconomicAgent a : buyers)
@@ -131,14 +131,14 @@ public class GeographicalClearLastMarketView extends TabbedInspector
                 if (change.wasAdded()) {
                     //add a new customer
                     assert !change.wasRemoved(); //can't be both!
-                    OilCustomer newCustomer = (OilCustomer) change.getElementAdded();
+                    GeographicalCustomer newCustomer = (GeographicalCustomer) change.getElementAdded();
                     newBuyer(agents, newCustomer);
 
 
                 } else {
                     //find its drawing and remove it!
                     assert change.wasRemoved(); //one of the two!
-                    OilCustomer oldCustomer = (OilCustomer) change.getElementRemoved();
+                    GeographicalCustomer oldCustomer = (GeographicalCustomer) change.getElementRemoved();
                     removeBuyer(oldCustomer, agents);
 
 
@@ -277,7 +277,7 @@ public class GeographicalClearLastMarketView extends TabbedInspector
         firm.getLatestObservableObservation(market.getGoodType(), SalesDataType.CLOSING_PRICES).addListener(chartUpdater);
     }
 
-    private void removeBuyer(OilCustomer oldCustomer, final Group agents) {
+    private void removeBuyer(GeographicalCustomer oldCustomer, final Group agents) {
         final OilCustomerPortrait oldDrawing = customerToPortraitMap.remove(oldCustomer);
         assert oldDrawing != null;
         //the removal itself ought to be done on JAVAFX thread
@@ -290,8 +290,8 @@ public class GeographicalClearLastMarketView extends TabbedInspector
     }
 
     private void newBuyer(final Group agents, EconomicAgent a) {
-        assert a instanceof OilCustomer;
-        final OilCustomerPortrait oilCustomerPortrait = buildPortraitForCustomer((OilCustomer) a);
+        assert a instanceof GeographicalCustomer;
+        final OilCustomerPortrait oilCustomerPortrait = buildPortraitForCustomer((GeographicalCustomer) a);
         Platform.runLater(new Runnable() {
 
             @Override
@@ -299,11 +299,11 @@ public class GeographicalClearLastMarketView extends TabbedInspector
                 //this is the only part that interacts with the LIVE JavaFX
                 agents.getChildren().add(oilCustomerPortrait);
             }                                                  });
-        customerToPortraitMap.put((OilCustomer)a,oilCustomerPortrait);
+        customerToPortraitMap.put((GeographicalCustomer)a,oilCustomerPortrait);
     }
 
 
-    private OilCustomerPortrait buildPortraitForCustomer(OilCustomer a) {
+    private OilCustomerPortrait buildPortraitForCustomer(GeographicalCustomer a) {
         return new OilCustomerPortrait(a,this);
 
     }

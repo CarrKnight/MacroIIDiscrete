@@ -36,7 +36,7 @@ import java.util.Comparator;
  * @version 2013-10-27
  * @see
  */
-public class OilCustomer extends Customer implements HasLocation{
+public class GeographicalCustomer extends Customer implements HasLocation{
 
 
 
@@ -52,7 +52,7 @@ public class OilCustomer extends Customer implements HasLocation{
 
 
 
-    public OilCustomer(@Nonnull MacroII model, long maxPrice, double x, double y, GeographicalClearLastMarket market) {
+    public GeographicalCustomer(@Nonnull MacroII model, long maxPrice, double x, double y, GeographicalClearLastMarket market) {
         super(model, maxPrice,market);
         this.location = new Location(x,y);
         lastSupplier = new SimpleObjectProperty<>();
@@ -78,11 +78,11 @@ public class OilCustomer extends Customer implements HasLocation{
             public int compare(GeographicalFirm o1, GeographicalFirm o2) {
                 //price + distance
                 double pricePlusDistance1 =
-                        firmsToChooseFrom.get(o1).iterator().next().getPriceQuoted() + distance(OilCustomer.this,o1);
+                        firmsToChooseFrom.get(o1).iterator().next().getPriceQuoted() + distance(GeographicalCustomer.this,o1);
                 assert pricePlusDistance1 >=0;
 
                 double pricePlusDistance2 =
-                        firmsToChooseFrom.get(o2).iterator().next().getPriceQuoted() + distance(OilCustomer.this,o2);
+                        firmsToChooseFrom.get(o2).iterator().next().getPriceQuoted() + distance(GeographicalCustomer.this,o2);
                 assert pricePlusDistance2 >=0;
 
                 return Double.compare(pricePlusDistance1,pricePlusDistance2);
@@ -91,7 +91,7 @@ public class OilCustomer extends Customer implements HasLocation{
 
         assert best != null;
         //is the minimum price distance okay?
-        double bestPricePlusDistance = firmsToChooseFrom.get(best).iterator().next().getPriceQuoted() + distance(OilCustomer.this,best);
+        double bestPricePlusDistance = firmsToChooseFrom.get(best).iterator().next().getPriceQuoted() + distance(GeographicalCustomer.this,best);
         if(bestPricePlusDistance <= getMaxPrice())
             return best;
         else

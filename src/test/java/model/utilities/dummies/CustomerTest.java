@@ -14,7 +14,7 @@ import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
-import model.scenario.oil.OilCustomer;
+import model.scenario.oil.GeographicalCustomer;
 import model.utilities.ActionOrder;
 import org.junit.Assert;
 import org.junit.Before;
@@ -101,7 +101,7 @@ public class CustomerTest
         //target lower than what you have
         macroII = new MacroII(1l);
         //create the customer
-        customer = new OilCustomer(macroII,10,2,2, market);
+        customer = new GeographicalCustomer(macroII,10,2,2, market);
         targetCash = customer.getResetCashTo() -1;
         customer.setResetCashTo(targetCash);
         Assert.assertFalse(targetCash == customer.getCash());

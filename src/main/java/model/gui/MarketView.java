@@ -15,12 +15,13 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import model.MacroII;
+import model.utilities.Deactivatable;
 
 /**
  * The JavaFX view of the market. Works through the MarketPresentation
  * Created by carrknight on 4/2/14.
  */
-public class MarketView extends TabPane
+public class MarketView extends TabPane implements Deactivatable
 {
 
     private final LineChart<Number,Number> priceChart;
@@ -36,7 +37,6 @@ public class MarketView extends TabPane
     public MarketView(Market market, MacroII model) {
         //create data collector!
         presentation = new MarketPresentation();
-
         //two tabs, price and volume
         Tab priceTab = new Tab("Price Tab");
         NumberAxis xAxis= new NumberAxis();
@@ -70,5 +70,11 @@ public class MarketView extends TabPane
         //start the presentation
         presentation.start(model,market.getData());
 
+    }
+
+
+    @Override
+    public void turnOff() {
+        presentation.turnOff();
     }
 }
