@@ -314,4 +314,21 @@ public class GeographicalMarketPresentation implements Deactivatable{
     public Pane getCanvasMap() {
         return canvasMap;
     }
+
+
+    public int getMinimumModelY() {
+        return minimumModelY.get();
+    }
+
+    public IntegerProperty minimumModelYProperty() {
+        return minimumModelY;
+    }
+
+    public int getMinimumModelX() {
+        return minimumModelX.get();
+    }
+
+    public IntegerProperty minimumModelXProperty() {
+        return minimumModelX;
+    }
 }
