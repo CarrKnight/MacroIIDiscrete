@@ -17,6 +17,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
@@ -198,12 +199,28 @@ public abstract class Market implements Deactivatable{
     private final ObservableSet<EconomicAgent> buyers;
 
     /**
-     * Get all agents that belong in the market as buyers
+     * Get an unmodifiable view of  all agents that belong in the market as buyers
      * @return all people who somehow can buy in this market
      */
     @Nonnull
     public ObservableSet<EconomicAgent> getBuyers(){
         return FXCollections.unmodifiableObservableSet(buyers);
+    }
+
+    public void addListenerToBuyerSet(SetChangeListener<? super EconomicAgent> setChangeListener) {
+        buyers.addListener(setChangeListener);
+    }
+
+    public void addListenerToSellerSet(SetChangeListener<? super EconomicAgent> setChangeListener) {
+        sellers.addListener(setChangeListener);
+    }
+
+    public void removeListenerFromBuyerSet(SetChangeListener<? super EconomicAgent> setChangeListener) {
+        buyers.removeListener(setChangeListener);
+    }
+
+    public void removeListenerFromSellerSet(SetChangeListener<? super EconomicAgent> setChangeListener) {
+        sellers.removeListener(setChangeListener);
     }
 
     /**

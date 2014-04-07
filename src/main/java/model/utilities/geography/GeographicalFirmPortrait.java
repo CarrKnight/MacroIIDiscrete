@@ -47,7 +47,7 @@ public class GeographicalFirmPortrait extends HasLocationPortrait {
 
     }
 
-    protected GeographicalFirmPortrait(HasLocation agent,
+    public GeographicalFirmPortrait(HasLocation agent,
                                       Color firmColor) {
         super(agent);
         assert agent instanceof GeographicalFirm;

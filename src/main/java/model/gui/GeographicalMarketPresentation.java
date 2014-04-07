@@ -6,25 +6,39 @@
 
 package model.gui;
 
+import agents.EconomicAgent;
+import agents.firm.GeographicalFirm;
+import com.google.common.base.Preconditions;
+import financial.market.GeographicalClearLastMarket;
+import financial.market.Market;
 import javafx.beans.binding.IntegerBinding;
-import javafx.beans.property.DoubleProperty;
+import javafx.beans.binding.NumberBinding;
+import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableDoubleValue;
+import javafx.collections.MapChangeListener;
+import javafx.collections.SetChangeListener;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import model.scenario.oil.GeographicalCustomer;
+import model.utilities.Deactivatable;
+import model.utilities.geography.GeographicalCustomerPortrait;
+import model.utilities.geography.GeographicalFirmPortrait;
 import model.utilities.geography.HasLocation;
 import model.utilities.geography.HasLocationPortrait;
 
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
  * Collecting data "map" to show who's selling to whom on top of the usual market presentation.
  * Created by carrknight on 4/5/14.
  */
-public class GeographicalMarketPresentation {
+public class GeographicalMarketPresentation implements Deactivatable{
 
 
     /**
@@ -38,6 +52,31 @@ public class GeographicalMarketPresentation {
      */
     private final static int defaultOneUnitInModelEqualsHowManyPixels = 100;
 
+    private final SetChangeListener<EconomicAgent> buyerSetListener = change -> {
+        if (change.wasAdded()) {
+            EconomicAgent agent = change.getElementAdded();
+            if (agent instanceof GeographicalCustomer)
+                addBuyerToMap((GeographicalCustomer) agent);
+        }
+        if (change.wasRemoved()) {
+            EconomicAgent agent = change.getElementAdded();
+            if (agent instanceof GeographicalCustomer)
+                removeAgentFromMap((GeographicalCustomer) agent);
+        }
+    };
+
+    private final MapChangeListener<GeographicalFirm, Color> sellerListener = change -> {
+        if (change.wasAdded()) {
+            GeographicalFirm seller = change.getKey();
+            addSellerToMap(seller, change.getValueAdded());
+        }
+        if (change.wasRemoved()) {
+            GeographicalFirm seller = change.getKey();
+            removeAgentFromMap(seller);
+        }
+
+    };
+
     /**
      * the zoom/conversion between model space and pixels!
      */
@@ -48,10 +87,40 @@ public class GeographicalMarketPresentation {
      */
     private final static int defaultPortraitSizeInPixels = 15;
 
-    //todo make this have some sense!
-    private IntegerProperty pixelOffsetToSimulateNegativeXCoordinate = new SimpleIntegerProperty(0);
 
-    private IntegerProperty pixelOffsetToSimulateNegativeYCoordinate = new SimpleIntegerProperty(0);
+    private final IntegerProperty portraitSize = new SimpleIntegerProperty(defaultPortraitSizeInPixels);
+
+    /**
+     * the lowest y in the model. Notice that the model coordinates are double, so here I'll need to feed rounded up
+     * values.
+     * Notice that this will always be negative or 0 (because it starts at 0)
+     */
+    private final IntegerProperty minimumModelY = new SimpleIntegerProperty(0);
+
+    /**
+     * the lowest x in the model. Notice that the model coordinates are double, so here I'll need to feed rounded up
+     * values
+     * Notice that this will always be negative or 0 (because it starts at 0)
+     */
+    private final IntegerProperty minimumModelX = new SimpleIntegerProperty(0);
+
+    /**
+     * a reference to the market is needed to turn off properly
+     */
+    private final Market market;
+
+
+    /**
+     * the map where all the agents are
+     */
+    private final Pane canvasMap;
+
+
+
+    //todo make this have some sense!
+    private NumberBinding pixelOffsetToSimulateNegativeXCoordinate =  minimumModelX.negate().multiply(oneUnitInModelEqualsHowManyPixels);
+
+    private NumberBinding pixelOffsetToSimulateNegativeYCoordinate = minimumModelY.negate().multiply(oneUnitInModelEqualsHowManyPixels);
 
 
 
@@ -61,23 +130,45 @@ public class GeographicalMarketPresentation {
     private final Map<HasLocation,HasLocationPortrait> portraitList; //could switch HasLocationPortrait to ImageView if needed
 
 
-    public GeographicalMarketPresentation(SellingFirmToColorMap colorMap) {
+    public GeographicalMarketPresentation(SellingFirmToColorMap colorMap, GeographicalClearLastMarket market) {
+        this.market = market;
         portraitList = new HashMap<>();
+        canvasMap = new Pane();
+        canvasMap.setBackground(new Background(new BackgroundFill(Color.LIGHTCYAN,null,null)));
         this.colorMap = colorMap;
 
+
+        //initialize buyer list
+        for(EconomicAgent agent : market.getBuyers())
+        {
+            if(agent instanceof GeographicalCustomer)
+                addBuyerToMap((GeographicalCustomer) agent);
+        }
+        //now start listening to the buyer list
+        market.addListenerToBuyerSet(buyerSetListener);
+
+        for(Map.Entry<GeographicalFirm,Color> entry : colorMap.getColorMap().entrySet())
+        {
+                 addSellerToMap(entry.getKey(),entry.getValue());
+        }
+        //initialize the seller list!
+        colorMap.getColorMap().addListener(sellerListener);
+
+
+
     }
 
-    private IntegerBinding getPixelXCoordinateWhenYouSupplyThisMethodXModelCoordinate(ObservableDoubleValue xCoordinate)
+    private IntegerBinding convertXModelCoordinateToXPixelCoordinate(ObservableDoubleValue xModel)
     {
 
         return new IntegerBinding() {
             {
-                this.bind(xCoordinate,oneUnitInModelEqualsHowManyPixels,pixelOffsetToSimulateNegativeXCoordinate);
+                this.bind(xModel,oneUnitInModelEqualsHowManyPixels,pixelOffsetToSimulateNegativeXCoordinate);
             }
             @Override
             protected int computeValue() {
-                int newValue = (int) Math.round(xCoordinate.get() * oneUnitInModelEqualsHowManyPixels.get() +
-                        pixelOffsetToSimulateNegativeXCoordinate.get());
+                int newValue = (int) Math.round(xModel.get() * oneUnitInModelEqualsHowManyPixels.get() +
+                        pixelOffsetToSimulateNegativeXCoordinate.doubleValue());
                 assert newValue >= 0; //new value must always be positive!
                 return newValue;
             }
@@ -85,17 +176,17 @@ public class GeographicalMarketPresentation {
     }
 
 
-    private IntegerBinding getPixelYCoordinateWhenYouSupplyThisMethodYModelCoordinate(ObservableDoubleValue yCoordinate)
+    private IntegerBinding convertYModelCoordinateToYPixelCoordinate(ObservableDoubleValue yModel)
     {
 
         return new IntegerBinding() {
             {
-                this.bind(yCoordinate,oneUnitInModelEqualsHowManyPixels,pixelOffsetToSimulateNegativeYCoordinate);
+                this.bind(yModel,oneUnitInModelEqualsHowManyPixels,pixelOffsetToSimulateNegativeYCoordinate);
             }
             @Override
             protected int computeValue() {
-                int newValue = (int) Math.round(yCoordinate.get() * oneUnitInModelEqualsHowManyPixels.get() +
-                        pixelOffsetToSimulateNegativeYCoordinate.get());
+                int newValue = (int) Math.round(yModel.get() * oneUnitInModelEqualsHowManyPixels.get() +
+                        pixelOffsetToSimulateNegativeYCoordinate.doubleValue());
                 assert newValue >= 0; //new value must always be positive!
                 return newValue;
             }
@@ -103,12 +194,124 @@ public class GeographicalMarketPresentation {
     }
 
 
+    /**
+     * adds seller to map and list
+     */
+    private void addSellerToMap(GeographicalFirm seller, Color color)
+    {
+
+        //create proper portrait
+        GeographicalFirmPortrait portrait = new GeographicalFirmPortrait(seller,color);
+        addAgentToMap(seller, portrait);
+
+
+    }
+
+    private void addBuyerToMap(final GeographicalCustomer buyer)
+    {
+        GeographicalCustomerPortrait portrait = new GeographicalCustomerPortrait(buyer);
+        portrait.colorProperty().bind(new ObjectBinding<Color>() {
+            {
+                this.bind(buyer.lastSupplierProperty());
+            }
+            @Override
+            protected Color computeValue() {
+
+                if(buyer.lastSupplierProperty().get()==null)
+                    return Color.BLACK;
+                else
+                    return colorMap.getFirmColor(buyer.lastSupplierProperty().get());
+            }
+        });
+
+        addAgentToMap(buyer, portrait);
+
+
+    }
+
+    private void addAgentToMap(HasLocation seller, HasLocationPortrait portrait) {
+        //see if there is a need to change the minimums
+        if(seller.getxLocation() < minimumModelX.get())
+            minimumModelX.setValue(Math.floor(seller.getxLocation()-0.5d));
+        if(seller.getyLocation() < minimumModelY.get())
+            minimumModelY.setValue(Math.floor(seller.getyLocation()-0.5d));
+
+
+        //set Coordinates
+        portrait.layoutXProperty().bind(convertXModelCoordinateToXPixelCoordinate(seller.xLocationProperty()));
+        portrait.layoutYProperty().bind(convertYModelCoordinateToYPixelCoordinate(seller.yLocationProperty()));
+        //resize image
+        portrait.fitHeightProperty().bind(portraitSize);
+        portrait.fitWidthProperty().bind(portraitSize);
+
+        //add it to the big list
+        portraitList.put(seller,portrait);
+        //add it to canvas!
+        canvasMap.getChildren().add(portrait);
+    }
+
+    /**
+     * i assume the seller has already been removed from the colorMap (in fact, that removal is what triggers this)
+     */
+    private void removeAgentFromMap(HasLocation seller)
+    {
+        //grab the portrait from the map
+        HasLocationPortrait portrait = portraitList.remove(seller);
+        //make sure it's not null
+        Preconditions.checkNotNull(portrait);
+        //make sure it's the right portrait
+        assert portrait.getAgent().equals(seller);
+
+        //remove it from the canvasMap
+        canvasMap.getChildren().remove(portrait);
+        portrait.layoutXProperty().unbind();
+        portrait.layoutYProperty().unbind();
+        portrait.fitHeightProperty().unbind();
+        portrait.fitWidthProperty().unbind();
+
+        assert !portraitList.containsKey(seller);
+        assert !canvasMap.getChildren().contains(portrait);
+
+    }
 
 
 
+    public int getOneUnitInModelEqualsHowManyPixels() {
+        return oneUnitInModelEqualsHowManyPixels.get();
+    }
+
+    public IntegerProperty oneUnitInModelEqualsHowManyPixelsProperty() {
+        return oneUnitInModelEqualsHowManyPixels;
+    }
+
+    public void setOneUnitInModelEqualsHowManyPixels(int oneUnitInModelEqualsHowManyPixels) {
+        this.oneUnitInModelEqualsHowManyPixels.set(oneUnitInModelEqualsHowManyPixels);
+    }
+
+    @Override
+    public void turnOff() {
+
+        market.removeListenerFromBuyerSet(buyerSetListener);
+        colorMap.removeListener(sellerListener);
+
+        List<HasLocation> agents = new LinkedList<>(portraitList.keySet());
+        for(HasLocation agent : agents)
+            removeAgentFromMap(agent);
+        portraitList.clear();
+        //they should all be gone!
+        assert canvasMap.getChildren().isEmpty();
 
 
+    }
 
+    /**
+     * a view of the map agent---> portrait
+     */
+    public Map<HasLocation, HasLocationPortrait> getPortraitList() {
+        return Collections.unmodifiableMap(portraitList);
+    }
 
-
+    public Pane getCanvasMap() {
+        return canvasMap;
+    }
 }

@@ -41,14 +41,6 @@ public abstract class HasLocationPortrait extends ImageView {
         //load the image
         setImage(initImage(agent));
 
-        //set layout properly
-        //force the layout
-        layoutXProperty().bind(agent.xLocationProperty());
-        layoutYProperty().bind(agent.yLocationProperty());
-
-        //resize image
-        setFitHeight(32);
-        setFitWidth(32);
 
         //this is to keep it with the right color
         ColorAdjust monochrome = new ColorAdjust(); //this is the first effect
@@ -86,5 +78,21 @@ public abstract class HasLocationPortrait extends ImageView {
      */
     public DoubleProperty agentYLocationProperty() {
         return agent.yLocationProperty();
+    }
+
+    public HasLocation getAgent() {
+        return agent;
+    }
+
+    public Color getColor() {
+        return color.get();
+    }
+
+    public SimpleObjectProperty<Color> colorProperty() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color.set(color);
     }
 }

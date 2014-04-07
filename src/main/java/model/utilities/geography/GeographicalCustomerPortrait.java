@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
  * @version 2013-11-07
  * @see
  */
-public class OilCustomerPortrait extends HasLocationPortrait
+public class GeographicalCustomerPortrait extends HasLocationPortrait
 {
 
     //load the image once statically and be done with it
@@ -48,7 +48,7 @@ public class OilCustomerPortrait extends HasLocationPortrait
     }
 
 
-    public OilCustomerPortrait(GeographicalCustomer agent) {
+    public GeographicalCustomerPortrait(GeographicalCustomer agent) {
         super(agent);
     }
 

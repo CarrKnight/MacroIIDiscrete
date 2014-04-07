@@ -48,7 +48,7 @@ public class GeographicalClearLastMarketSwingView extends TabbedInspector
     /**
      * A map that links the oil customer to the portrait used!
      */
-    final private Map<GeographicalCustomer,OilCustomerPortrait> customerToPortraitMap;
+    final private Map<GeographicalCustomer,GeographicalCustomerPortrait> customerToPortraitMap;
 
     /**
      * A map that connects each firm to its portrait (which also holds the firm's assigned color)!
@@ -244,7 +244,7 @@ public class GeographicalClearLastMarketSwingView extends TabbedInspector
     private void newSeller(GeographicalClearLastMarket market, final Group agents, final GeographicalFirm firm) {
         MersenneTwisterFast random = firm.getRandom();
         //create a firm portrait with random color
-        final GeographicalFirmPortrait portrait = new GeographicalFirmPortrait(firm,this,
+        final GeographicalFirmPortrait portrait = new GeographicalFirmPortrait(firm,
                 Color.color(random.nextDouble(), random.nextDouble(), random.nextDouble()));
         firmToPortraitColorMap.put(firm,portrait);
         //create the series chart
@@ -278,7 +278,7 @@ public class GeographicalClearLastMarketSwingView extends TabbedInspector
     }
 
     private void removeBuyer(GeographicalCustomer oldCustomer, final Group agents) {
-        final OilCustomerPortrait oldDrawing = customerToPortraitMap.remove(oldCustomer);
+        final GeographicalCustomerPortrait oldDrawing = customerToPortraitMap.remove(oldCustomer);
         assert oldDrawing != null;
         //the removal itself ought to be done on JAVAFX thread
         Platform.runLater(new Runnable() {
@@ -291,7 +291,7 @@ public class GeographicalClearLastMarketSwingView extends TabbedInspector
 
     private void newBuyer(final Group agents, EconomicAgent a) {
         assert a instanceof GeographicalCustomer;
-        final OilCustomerPortrait oilCustomerPortrait = buildPortraitForCustomer((GeographicalCustomer) a);
+        final GeographicalCustomerPortrait oilCustomerPortrait = buildPortraitForCustomer((GeographicalCustomer) a);
         Platform.runLater(new Runnable() {
 
             @Override
@@ -303,8 +303,8 @@ public class GeographicalClearLastMarketSwingView extends TabbedInspector
     }
 
 
-    private OilCustomerPortrait buildPortraitForCustomer(GeographicalCustomer a) {
-        return new OilCustomerPortrait(a,this);
+    private GeographicalCustomerPortrait buildPortraitForCustomer(GeographicalCustomer a) {
+        return new GeographicalCustomerPortrait(a);
 
     }
 }

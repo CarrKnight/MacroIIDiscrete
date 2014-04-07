@@ -12,10 +12,7 @@ import agents.firm.GeographicalFirm;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
-import javafx.collections.ObservableSet;
-import javafx.collections.SetChangeListener;
+import javafx.collections.*;
 import javafx.scene.paint.Color;
 import model.utilities.Deactivatable;
 
@@ -68,10 +65,7 @@ public class SellingFirmToColorMap implements Deactivatable, SetChangeListener<E
      */
     private final ObservableMap<GeographicalFirm,Color> colorMap = FXCollections.observableMap(new HashMap<>());
 
-    /**
-     * the set of sellers to observe
-     */
-    private final ObservableSet<EconomicAgent> sellers;
+    private final Market market;
 
     /**
      * Starts to listen to the market straight away
@@ -79,16 +73,17 @@ public class SellingFirmToColorMap implements Deactivatable, SetChangeListener<E
      */
     public SellingFirmToColorMap(Market market, MersenneTwisterFast randomizer)
     {
+        this.market = market;
         this.randomizer = randomizer;
         //initialize the colorMap if the seller list is already filled!
-        sellers = market.getSellers();
+        Set<EconomicAgent> sellers = market.getSellers();
         for(EconomicAgent agent : sellers)
         {
             if(agent instanceof GeographicalFirm)
                 addNewFirm((GeographicalFirm) agent);
         }
 
-        sellers.addListener(this);
+        market.addListenerToSellerSet(this);
 
 
     }
@@ -117,7 +112,7 @@ public class SellingFirmToColorMap implements Deactivatable, SetChangeListener<E
 
     @Override
     public void turnOff() {
-        sellers.removeListener(this);
+        market.removeListenerFromSellerSet(this);
         colorMap.clear();
     }
 
@@ -143,12 +138,28 @@ public class SellingFirmToColorMap implements Deactivatable, SetChangeListener<E
 
 
     /**
-     * an unmodifiable view of the color map. Useful to know the color associated with each firm, but also just to know who the seller firms are
+     * An unmodifiable copy of the current color map.
+     * Useful to know the color associated with each firm, but also just to know who the seller firms are
      * without having to ask the market object itself
      * @return the map
      */
     public ObservableMap<GeographicalFirm, Color> getColorMap() {
         return FXCollections.unmodifiableObservableMap(colorMap);
+    }
+
+    /**
+     * add a listener to the color map changes.
+     * @param mapChangeListener
+     */
+    public void addListener(MapChangeListener<? super GeographicalFirm, ? super Color> mapChangeListener) {
+        colorMap.addListener(mapChangeListener);
+    }
+/**
+ * removes a listener to the color map changes.
+ * @param mapChangeListener
+ */
+    public void removeListener(MapChangeListener<? super GeographicalFirm, ? super Color> mapChangeListener) {
+        colorMap.removeListener(mapChangeListener);
     }
 
     public Color getFirmColor(Firm firm)
