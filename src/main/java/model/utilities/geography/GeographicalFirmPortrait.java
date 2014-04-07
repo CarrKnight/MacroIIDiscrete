@@ -37,29 +37,19 @@ public class GeographicalFirmPortrait extends HasLocationPortrait {
     }
 
     /**
-     * the color associated with the firm
-     */
-    final private ObjectProperty<Color> color = new SimpleObjectProperty<>(Color.BLACK);
-
-    /**
      * the firm you are linked to
      */
     final private GeographicalFirm firm;
 
     @Override
-    protected Image initImage(HasLocation agent, GeographicalClearLastMarketSwingView marketView) {
+    protected Image initImage(HasLocation agent) {
         return oilImage;
 
     }
 
-    @Override
-    protected ObservableObjectValue<Color> initColor(HasLocation agent, GeographicalClearLastMarketSwingView marketView) {
-        return color;
-    }
-
-    protected GeographicalFirmPortrait(HasLocation agent, GeographicalClearLastMarketSwingView marketView,
+    protected GeographicalFirmPortrait(HasLocation agent,
                                       Color firmColor) {
-        super(agent, marketView);
+        super(agent);
         assert agent instanceof GeographicalFirm;
         color.setValue(firmColor);
         this.firm = (GeographicalFirm) agent;

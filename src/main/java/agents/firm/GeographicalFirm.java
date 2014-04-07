@@ -28,8 +28,6 @@ public class GeographicalFirm extends Firm implements HasLocation{
 
     private final Location location;
 
-    private final SimpleObjectProperty<Color> color = new SimpleObjectProperty<>(Color.YELLOW);
-
     /**
      * the usual constructor, checks for gui to build panel
      *
@@ -81,15 +79,4 @@ public class GeographicalFirm extends Firm implements HasLocation{
         location.setyLocation(yLocation);
     }
 
-    public Color getColor() {
-        return color.get();
-    }
-
-    public SimpleObjectProperty<Color> colorProperty() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color.set(color);
-    }
 }

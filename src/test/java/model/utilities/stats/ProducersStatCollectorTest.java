@@ -7,6 +7,8 @@ import au.com.bytecode.opencsv.CSVWriter;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import goods.GoodType;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableSet;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.ProducersStatCollector;
@@ -44,7 +46,7 @@ public class ProducersStatCollectorTest
         when(market.getGoodType()).thenReturn(GoodType.GENERIC);
 
         //now create 3 sellers, 2 firms and 1 person.
-        LinkedHashSet<EconomicAgent> sellers = new LinkedHashSet<>(); //make it linked so it keeps the order
+        ObservableSet<EconomicAgent> sellers = FXCollections.observableSet(new LinkedHashSet<>()); //make it linked so it keeps the order
         Firm firm1 = mock(Firm.class); sellers.add(firm1); when(firm1.getName()).thenReturn("uno");
         Firm firm2 = mock(Firm.class); sellers.add(firm2); when(firm2.getName()).thenReturn("due");
         Person p = mock(Person.class); sellers.add(p);

@@ -1,5 +1,7 @@
 package model.utilities.geography;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableObjectValue;
 import javafx.scene.CacheHint;
 import javafx.scene.effect.Blend;
@@ -27,15 +29,17 @@ import javafx.scene.paint.Color;
  */
 public abstract class HasLocationPortrait extends ImageView {
 
-    abstract protected Image initImage(HasLocation agent, GeographicalClearLastMarketSwingView marketView);
+    abstract protected Image initImage(HasLocation agent);
 
-    abstract protected ObservableObjectValue<Color> initColor(HasLocation agent, GeographicalClearLastMarketSwingView marketView);
+    protected final SimpleObjectProperty<Color> color;
 
+    protected final HasLocation agent;
 
-    protected HasLocationPortrait(HasLocation agent, GeographicalClearLastMarketSwingView marketView)
+    protected HasLocationPortrait(HasLocation agent)
     {
+        this.agent =agent;
         //load the image
-        setImage(initImage(agent, marketView));
+        setImage(initImage(agent));
 
         //set layout properly
         //force the layout
@@ -50,7 +54,7 @@ public abstract class HasLocationPortrait extends ImageView {
         ColorAdjust monochrome = new ColorAdjust(); //this is the first effect
         //monochrome.setBrightness(-1.0);
         //keep the color
-        ObservableObjectValue<Color> color= initColor(agent, marketView);
+        color= new SimpleObjectProperty<>(Color.WHITE);
 
         ColorInput input = new ColorInput(); //this is the second effect, the coloring proper
         input.setX(0); input.setY(0);
@@ -65,5 +69,22 @@ public abstract class HasLocationPortrait extends ImageView {
         setCache(true);
         setCacheHint(CacheHint.SPEED);
 
+    }
+
+
+    /**
+     * the x location of the agent (in model coordinates)
+     * @return
+     */
+    public DoubleProperty agentXLocationProperty() {
+        return agent.xLocationProperty();
+    }
+
+    /**
+     * the y location of the agent (in model coordinates)
+     * @return
+     */
+    public DoubleProperty agentYLocationProperty() {
+        return agent.yLocationProperty();
     }
 }

@@ -43,94 +43,16 @@ public class OilCustomerPortrait extends HasLocationPortrait
     }
 
     @Override
-    protected Image initImage(HasLocation agent, GeographicalClearLastMarketSwingView marketView) {
+    protected Image initImage(HasLocation agent) {
         return customerImage;
     }
 
 
-    @Override
-    protected ObservableObjectValue<Color> initColor(final HasLocation agent, GeographicalClearLastMarketSwingView marketView) {
-        final GeographicalCustomer agentCast = (GeographicalCustomer) agent;
-
-       return new ObjectBinding<Color>() {
-            {
-                this.bind(agentCast.lastSupplierProperty());
-            }
-            @Override
-            protected Color computeValue() {
-
-                if(agentCast.lastSupplierProperty().get()==null)
-                    return Color.BLACK;
-                else
-                    return agentCast.lastSupplierProperty().get().colorProperty().get();
-            }
-        };    }
-
-    /**
-     * the oil customer we are trying to paint!
-     */
-    private final GeographicalCustomer oilCustomer;
-
-
-    public OilCustomerPortrait(GeographicalCustomer agent, GeographicalClearLastMarketSwingView marketView) {
-        super(agent, marketView);
-        this.oilCustomer = agent;
-    }
-
-    public DoubleProperty xLocationProperty() {
-        return oilCustomer.xLocationProperty();
-    }
-
-    public DoubleProperty yLocationProperty() {
-        return oilCustomer.yLocationProperty();
+    public OilCustomerPortrait(GeographicalCustomer agent) {
+        super(agent);
     }
 
 
-    public static void main(String[] args) throws Exception {
-        Application.launch(TestApplication.class);
-
-    }
 
 
-    public static class TestApplication extends Application
-    {
-        @Override
-        public void start(Stage stage) throws Exception {
-            StackPane panel = new StackPane();
-            GeographicalCustomer fakeCustomer = mock(GeographicalCustomer.class);
-
-
-            final SimpleObjectProperty<Color> color = new SimpleObjectProperty<>(Color.BLUE);
-         //   when(fakeCustomer.colorProperty()).thenReturn(color);
-            panel.getChildren().addAll(new OilCustomerPortrait(fakeCustomer,mock(GeographicalClearLastMarketSwingView.class)));
-
-
-            Scene scene = new Scene(panel);
-
-            stage.setScene(scene);
-
-            stage.show();
-
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        System.out.println(color.get());
-                        Thread.sleep(2000);
-                        color.setValue(Color.RED);
-                        System.out.println(color.get());
-                        Thread.sleep(2000);
-                        color.setValue(Color.BLACK);
-
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    }
-
-                }
-            });
-            thread.start();
-
-
-        }
-    }
 }

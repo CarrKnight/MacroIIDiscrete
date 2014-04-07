@@ -8,6 +8,7 @@ package model.gui;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
+import agents.firm.GeographicalFirm;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
@@ -18,10 +19,7 @@ import javafx.collections.SetChangeListener;
 import javafx.scene.paint.Color;
 import model.utilities.Deactivatable;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A very simple object, in essence a map firm---> color. It takes a Market object and observes its seller set to keep
@@ -36,7 +34,7 @@ public class SellingFirmToColorMap implements Deactivatable, SetChangeListener<E
     //they should be color-blind friendly (and they work on me, so that's nice)
     private static final LinkedList<Color> defaultInitialColors  =
             new LinkedList<>();
-    {
+    static {
         defaultInitialColors.add(new Color(.9,.6,0,1)); //Orange
         defaultInitialColors.add(new Color(.35,.7,.9,1)); //SkyBlue
         defaultInitialColors.add(new Color(0,.6,.5,1)); //bluish green
@@ -49,6 +47,13 @@ public class SellingFirmToColorMap implements Deactivatable, SetChangeListener<E
     }
 
     /**
+     * returns an unmodifiable view of the default initial colors!
+     */
+    public static List<Color> getDefaultColors(){
+        return Collections.unmodifiableList(defaultInitialColors);
+    }
+
+    /**
      * we use the iterator to grab the default colors, if possible
      */
     private final Iterator<Color> defaultColorsIterator = defaultInitialColors.iterator();
@@ -56,12 +61,12 @@ public class SellingFirmToColorMap implements Deactivatable, SetChangeListener<E
     /**
      * the randomizer for colors when we run out of the default ones!
      */
-    private final MersenneTwisterFast randomizer = new MersenneTwisterFast();
+    private final MersenneTwisterFast randomizer;
 
     /**
      * the map at the core of the class
      */
-    private final ObservableMap<Firm,Color> colorMap = FXCollections.observableMap(new HashMap<>());
+    private final ObservableMap<GeographicalFirm,Color> colorMap = FXCollections.observableMap(new HashMap<>());
 
     /**
      * the set of sellers to observe
@@ -72,14 +77,15 @@ public class SellingFirmToColorMap implements Deactivatable, SetChangeListener<E
      * Starts to listen to the market straight away
       * @param market
      */
-    public SellingFirmToColorMap(Market market)
+    public SellingFirmToColorMap(Market market, MersenneTwisterFast randomizer)
     {
+        this.randomizer = randomizer;
         //initialize the colorMap if the seller list is already filled!
         sellers = market.getSellers();
         for(EconomicAgent agent : sellers)
         {
-            if(agent instanceof Firm)
-                addNewFirm((Firm) agent);
+            if(agent instanceof GeographicalFirm)
+                addNewFirm((GeographicalFirm) agent);
         }
 
         sellers.addListener(this);
@@ -87,7 +93,7 @@ public class SellingFirmToColorMap implements Deactivatable, SetChangeListener<E
 
     }
 
-    private void addNewFirm(Firm agent) {
+    private void addNewFirm(GeographicalFirm agent) {
         Color oldColor = colorMap.put(agent, getNewColor());
         Preconditions.checkState(oldColor == null); //it shouldn't replace an old color, it should just be gone!
     }
@@ -120,14 +126,14 @@ public class SellingFirmToColorMap implements Deactivatable, SetChangeListener<E
     public void onChanged(Change<? extends EconomicAgent> change) {
         if (change.wasAdded()) {
             EconomicAgent agent = change.getElementAdded();
-            if (agent instanceof Firm)
-                addNewFirm((Firm) agent);
+            if (agent instanceof GeographicalFirm)
+                addNewFirm((GeographicalFirm) agent);
         }
         else
         {
             assert change.wasRemoved();
             EconomicAgent agent = change.getElementRemoved();
-            if (agent instanceof Firm)
+            if (agent instanceof GeographicalFirm)
             {
                 Color removedColor = colorMap.remove(agent);
                 Preconditions.checkNotNull(removedColor);
@@ -141,7 +147,7 @@ public class SellingFirmToColorMap implements Deactivatable, SetChangeListener<E
      * without having to ask the market object itself
      * @return the map
      */
-    public ObservableMap<Firm, Color> getColorMap() {
+    public ObservableMap<GeographicalFirm, Color> getColorMap() {
         return FXCollections.unmodifiableObservableMap(colorMap);
     }
 
