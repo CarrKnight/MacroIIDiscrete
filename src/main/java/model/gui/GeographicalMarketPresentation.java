@@ -218,7 +218,7 @@ public class GeographicalMarketPresentation implements Deactivatable{
             protected Color computeValue() {
 
                 if(buyer.lastSupplierProperty().get()==null)
-                    return Color.BLACK;
+                    return Color.WHITE;
                 else
                     return colorMap.getFirmColor(buyer.lastSupplierProperty().get());
             }

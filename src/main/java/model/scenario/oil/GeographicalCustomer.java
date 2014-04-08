@@ -12,9 +12,12 @@ import goods.Good;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import model.MacroII;
+import model.utilities.ActionOrder;
 import model.utilities.dummies.Customer;
 import model.utilities.geography.HasLocation;
 import model.utilities.geography.Location;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -56,6 +59,14 @@ public class GeographicalCustomer extends Customer implements HasLocation{
         super(model, maxPrice,market);
         location.setxLocation(x);
         location.setyLocation(y);
+
+        model.scheduleSoon(ActionOrder.DAWN, simState -> {
+            if(!isActive())
+                return;
+            lastSupplier.setValue(null);
+            model.scheduleTomorrow(ActionOrder.DAWN,this);
+        });
+
     }
 
 
@@ -63,7 +74,11 @@ public class GeographicalCustomer extends Customer implements HasLocation{
     protected void init() {
         this.location = new Location(0,0);
         lastSupplier = new SimpleObjectProperty<>();
+
+
     }
+
+
 
     /**
      * Chooses which of this firms the customer wants to choose, if any.
@@ -183,6 +198,8 @@ public class GeographicalCustomer extends Customer implements HasLocation{
     public SimpleObjectProperty<GeographicalFirm> lastSupplierProperty() {
         return lastSupplier;
     }
+
+
 
 
 }
