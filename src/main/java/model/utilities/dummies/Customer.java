@@ -70,10 +70,18 @@ public class Customer extends EconomicAgent{
         Preconditions.checkArgument(maxPrice >= 0);
         this.maxPrice = maxPrice;
         this.market = market;
+        init();
         market.registerBuyer(this);
         startSteppables(market);
     }
 
+    /**
+     * a ugly hack, here we can do initializations BEFORE registering as a buyer
+     */
+    protected void init()
+    {
+
+    }
 
 
     private void startSteppables(final Market market)

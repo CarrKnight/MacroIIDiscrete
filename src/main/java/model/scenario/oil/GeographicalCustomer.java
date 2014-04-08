@@ -40,7 +40,7 @@ public class GeographicalCustomer extends Customer implements HasLocation{
 
 
 
-    private final Location location;
+    private  Location location;
 
     /**
 
@@ -48,16 +48,22 @@ public class GeographicalCustomer extends Customer implements HasLocation{
     /**
      * the firm that supplied you the last unit of oil; as a JavaFX property so that I don't have to implement listeners
      */
-    private final SimpleObjectProperty<GeographicalFirm> lastSupplier = new SimpleObjectProperty<>();;
+    private SimpleObjectProperty<GeographicalFirm> lastSupplier;
 
 
 
     public GeographicalCustomer(@Nonnull MacroII model, long maxPrice, double x, double y, GeographicalClearLastMarket market) {
         super(model, maxPrice,market);
-        this.location = new Location(x,y);
+        location.setxLocation(x);
+        location.setyLocation(y);
     }
 
 
+    @Override
+    protected void init() {
+        this.location = new Location(0,0);
+        lastSupplier = new SimpleObjectProperty<>();
+    }
 
     /**
      * Chooses which of this firms the customer wants to choose, if any.
