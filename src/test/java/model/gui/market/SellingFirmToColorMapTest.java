@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package model.gui;
+package model.gui.market;
 
 import agents.EconomicAgent;
 import agents.Person;

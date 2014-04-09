@@ -1302,5 +1302,9 @@ public abstract class  SalesDepartment  implements Department {
     public boolean isActive() {
         return firm.isActive();
     }
+
+    public boolean isStarted() {
+        return started;
+    }
 }
 

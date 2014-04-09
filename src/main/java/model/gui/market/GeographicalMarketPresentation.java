@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package model.gui;
+package model.gui.market;
 
 import agents.EconomicAgent;
 import agents.firm.GeographicalFirm;
@@ -58,7 +58,7 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
     /**
      * normal zoom
      */
-    private final static int defaultOneUnitInModelEqualsHowManyPixels = 100;
+    private final static int defaultOneUnitInModelEqualsHowManyPixels = 50;
 
     private final SetChangeListener<EconomicAgent> buyerSetListener = change -> {
         if (change.wasAdded()) {

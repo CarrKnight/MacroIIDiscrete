@@ -132,7 +132,7 @@ public class GeographicalCustomer extends Customer implements HasLocation{
         double xDistance = Math.pow(customer.getxLocation() - seller.getxLocation(),2);
         double yDistance = Math.pow(customer.getxLocation() - seller.getxLocation(),2);
 
-        double distance =  Math.sqrt(xDistance + yDistance);
+        double distance =  Math.pow(Math.sqrt(xDistance + yDistance),1);
         assert distance >= 0;
         return distance;
     }

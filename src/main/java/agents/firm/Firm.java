@@ -517,9 +517,8 @@ public class Firm extends EconomicAgent {
         salesDepartments.put(type,newSales);
 
         //if start was already called, you need to start this too next dawn
-        if(startWasCalled)
-        {
-            model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
+        if(!newSales.isStarted()) {
+            model.scheduleSoon(ActionOrder.DAWN, new Steppable() {
                 @Override
                 public void step(SimState state) {
                     newSales.start();

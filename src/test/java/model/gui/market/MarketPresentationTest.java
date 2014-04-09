@@ -4,15 +4,13 @@
  * See the file "LICENSE" for more information
  */
 
-package model.gui;
+package model.gui.market;
 
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import model.MacroII;
 import model.utilities.stats.collectors.MarketData;
 import model.utilities.stats.collectors.enums.MarketDataType;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

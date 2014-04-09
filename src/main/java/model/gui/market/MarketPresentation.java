@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package model.gui;
+package model.gui.market;
 
 import com.google.common.base.Preconditions;
 import javafx.application.Platform;
@@ -115,7 +115,7 @@ public class MarketPresentation implements Steppable, Deactivatable {
                 Tooltip.install(consumedDatum.getNode(),tooltip);
 
             }
-
+;
             closingPriceSeries.getData().add(priceDatum);
             volumeTraded.getData().add(tradedDatum);
             volumeProduced.getData().add(producedDatum);

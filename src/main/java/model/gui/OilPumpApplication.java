@@ -11,6 +11,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.MacroII;
+import model.gui.market.GeographicalMarketView;
 import model.scenario.OilDistributorScenario;
 
 /**

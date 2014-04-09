@@ -4,12 +4,10 @@
  * See the file "LICENSE" for more information
  */
 
-package model.gui;
+package model.gui.market;
 
 import financial.market.Market;
-import javafx.beans.NamedArg;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.CacheHint;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Tab;
@@ -48,7 +46,8 @@ public class MarketView extends TabPane implements Deactivatable
         yAxis.setLabel("Price");
         priceChart = new LineChart<>(xAxis,yAxis);
         priceChart.setCreateSymbols(false);
-        priceChart.setAnimated(true);
+        priceChart.setCache(true);
+        priceChart.setCacheHint(CacheHint.SPEED);
         priceChart.getData().add(presentation.getClosingPriceSeries());
         priceTab.setContent(priceChart);
         this.getTabs().add(priceTab);
@@ -60,7 +59,8 @@ public class MarketView extends TabPane implements Deactivatable
         yAxis.setLabel("Volume");
         volumeChart = new LineChart<>(xAxis,yAxis);
         volumeChart.setCreateSymbols(false);
-        volumeChart.setAnimated(true);
+        volumeChart.setCache(true);
+        volumeChart.setCacheHint(CacheHint.SPEED);
         volumeChart.getData().add(presentation.getVolumeConsumed());
         volumeChart.getData().add(presentation.getVolumeProduced());
         volumeChart.getData().add(presentation.getVolumeTraded());

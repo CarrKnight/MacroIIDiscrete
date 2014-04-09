@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package model.gui;
+package model.gui.market;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
@@ -34,12 +34,12 @@ public class SellingFirmToColorMap implements Deactivatable, SetChangeListener<E
     static {
         defaultInitialColors.add(new Color(.9,.6,0,1)); //Orange
         defaultInitialColors.add(new Color(.35,.7,.9,1)); //SkyBlue
-        defaultInitialColors.add(new Color(0,.6,.5,1)); //bluish green
         defaultInitialColors.add(new Color(.95,.90,.25,1)); //Yellow
         defaultInitialColors.add(new Color(0,.45,.70,1)); //Blue
         defaultInitialColors.add(new Color(.8,.4,0,1)); //Vermillon
         defaultInitialColors.add(new Color(.8,.6,.7,1)); //Reddish-Purple
-        defaultInitialColors.add(new Color(0,0,0,1)); //Black
+        defaultInitialColors.add(new Color(0,.6,.5,1)); //bluish green
+
 
     }
 

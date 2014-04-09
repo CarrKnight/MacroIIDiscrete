@@ -8,11 +8,13 @@ package model.scenario;
 
 import agents.firm.GeographicalFirm;
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
+import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.market.GeographicalMarket;
@@ -74,16 +76,16 @@ public class OilDistributorScenario extends Scenario
         GeographicalMarket market = new GeographicalMarket(GoodType.OIL);
         getMarkets().put(GoodType.OIL,market);
         //poor neighborhood
-        createNeighborhood(new Location(-5,-5),1.5,minPricePoorNeighborhood,maxPricePoorNeighborhood,
+        createNeighborhood(new Location(-10,-2),1.5,minPricePoorNeighborhood,maxPricePoorNeighborhood,
                 neighborhoodSize,market,model.getRandom());
         //rich neighborhood
-        createNeighborhood(new Location(5,5),1.5,minPriceRichNeighborhood,maxPriceRichNeighborhood,
+        createNeighborhood(new Location(10,2),1.5,minPriceRichNeighborhood,maxPriceRichNeighborhood,
                 neighborhoodSize,market,model.getRandom());
 
         //three pumps
-        createOilPump(new Location(-5,-5), 10,market);
-        createOilPump(new Location(0,0), 10,market);
-        createOilPump(new Location(5,5), 10,market);
+        createOilPump(new Location(-10,-2), 10,market,"poor");
+        createOilPump(new Location(0,0), 10,market,"middle");
+        createOilPump(new Location(10,2), 10,market,"rich");
     }
 
     public void createNeighborhood(Location center, double centerStandardDeviation, int minPrice, int maxPrice,
@@ -105,16 +107,17 @@ public class OilDistributorScenario extends Scenario
 
     }
 
-    public void createOilPump(Location location, int productionRate,GeographicalMarket market)
+    public void createOilPump(Location location, int productionRate,GeographicalMarket market, String name)
     {
         Preconditions.checkState(productionRate >0, "min price can't be negative");
 
         final GeographicalFirm oilPump = new GeographicalFirm(getModel(),location.getxLocation(),location.getyLocation());
+        oilPump.setName(name);
         //create a salesDepartment
         SalesDepartment salesDepartment = SalesDepartmentFactory.incompleteSalesDepartment(oilPump, market,
                 new SimpleBuyerSearch(market, oilPump), new SimpleSellerSearch(market, oilPump), SalesDepartmentOneAtATime.class);
         //give the sale department a simple PID
-        salesDepartment.setAskPricingStrategy(new SalesControlWithFixedInventoryAndPID(salesDepartment,10));
+        salesDepartment.setAskPricingStrategy(new SimpleFlowSellerPID(salesDepartment));
         //finally register it!
         oilPump.registerSaleDepartment(salesDepartment, GoodType.OIL);
 

@@ -4,6 +4,9 @@ import agents.firm.GeographicalFirm;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableObjectValue;
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
@@ -53,7 +56,9 @@ public class GeographicalFirmPortrait extends HasLocationPortrait {
         assert agent instanceof GeographicalFirm;
         color.setValue(firmColor);
         this.firm = (GeographicalFirm) agent;
-
+        //add a glow effect
+        Blend blend = new Blend(BlendMode.SRC_OVER,new Glow(3),this.effectProperty().getValue());
+        this.setEffect(blend);
     }
 
     public GeographicalFirm getFirm() {

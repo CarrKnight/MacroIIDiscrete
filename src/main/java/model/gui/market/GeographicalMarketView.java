@@ -4,13 +4,12 @@
  * See the file "LICENSE" for more information
  */
 
-package model.gui;
+package model.gui.market;
 
 import financial.market.GeographicalMarket;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -21,6 +20,7 @@ import javafx.scene.text.Text;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
+import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -36,7 +36,6 @@ public class GeographicalMarketView extends TabPane implements Deactivatable {
     private final SellingFirmToColorMap colors;
 
     public GeographicalMarketView(GeographicalMarket market, MacroII model) {
-
         //create the map
         Tab mapTab = new Tab("Geography");
         colors = new SellingFirmToColorMap(market,model.getRandom());
@@ -81,6 +80,13 @@ public class GeographicalMarketView extends TabPane implements Deactivatable {
         StackPane.setAlignment(date, Pos.TOP_LEFT);
 
         date.toFront();
+
+
+        //create price-tab
+        Tab prices = new Tab("Prices");
+        prices.setContent(new FirmChartPresentation(colors,market.getGoodType(), SalesDataType.CLOSING_PRICES));
+        this.getTabs().add(prices);
+
     }
 
     @Override
