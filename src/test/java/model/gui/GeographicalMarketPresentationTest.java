@@ -63,7 +63,7 @@ public class GeographicalMarketPresentationTest {
         market.registerSeller(firm2);
 
 
-        GeographicalMarketPresentation presentation = new GeographicalMarketPresentation(map,market);
+        GeographicalMarketPresentation presentation = new GeographicalMarketPresentation(map,market,mock(MacroII.class));
 
 
         isPositionCorrect(firm1, firm2, buyer, presentation);
@@ -75,7 +75,7 @@ public class GeographicalMarketPresentationTest {
     public void positioningWhenListening() throws Exception {
         GeographicalMarket market = new GeographicalMarket(GoodType.GENERIC);
         SellingFirmToColorMap map = new SellingFirmToColorMap(market,new MersenneTwisterFast());
-        GeographicalMarketPresentation presentation = new GeographicalMarketPresentation(map,market);
+        GeographicalMarketPresentation presentation = new GeographicalMarketPresentation(map,market,mock(MacroII.class));
 
         //add a seller at -5,-5 and 5,5 and a buyer at 0,0
         GeographicalFirm firm1 = new GeographicalFirm(mock(MacroII.class), -5, -5);
@@ -199,7 +199,7 @@ public class GeographicalMarketPresentationTest {
 
         //CREATE GUI OBJECTS!
         SellingFirmToColorMap map = new SellingFirmToColorMap(market,new MersenneTwisterFast());
-        GeographicalMarketPresentation presentation = new GeographicalMarketPresentation(map,market);
+        GeographicalMarketPresentation presentation = new GeographicalMarketPresentation(map,market,macroII);
 
         for(int i=0; i< 1000; i++)
         {

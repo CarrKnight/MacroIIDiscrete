@@ -40,7 +40,7 @@ public class GeographicalMarketView extends TabPane implements Deactivatable {
         //create the map
         Tab mapTab = new Tab("Geography");
         colors = new SellingFirmToColorMap(market,model.getRandom());
-        presentation = new GeographicalMarketPresentation(colors,market);
+        presentation = new GeographicalMarketPresentation(colors,market,model);
         //create a scrollview to hold on to the map
         ScrollPane pane = new ScrollPane(presentation.getCanvasMap());
         StackPane mapContainer = new StackPane(pane);

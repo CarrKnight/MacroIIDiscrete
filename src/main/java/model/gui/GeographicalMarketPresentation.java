@@ -14,7 +14,6 @@ import financial.market.Market;
 import javafx.application.Platform;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.binding.NumberBinding;
-import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
@@ -26,12 +25,16 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import model.MacroII;
 import model.scenario.oil.GeographicalCustomer;
+import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
 import model.utilities.geography.GeographicalCustomerPortrait;
 import model.utilities.geography.GeographicalFirmPortrait;
 import model.utilities.geography.HasLocation;
 import model.utilities.geography.HasLocationPortrait;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 
 
 import java.util.*;
@@ -39,9 +42,10 @@ import java.util.*;
 /**
  *
  * Collecting data "map" to show who's selling to whom on top of the usual market presentation.
+ * The step updates the color of all buyers
  * Created by carrknight on 4/5/14.
  */
-public class GeographicalMarketPresentation implements Deactivatable{
+public class GeographicalMarketPresentation implements Steppable, Deactivatable{
 
 
     /**
@@ -49,6 +53,7 @@ public class GeographicalMarketPresentation implements Deactivatable{
      */
     private final SellingFirmToColorMap colorMap;
 
+    private boolean isActive = true;
 
     /**
      * normal zoom
@@ -63,8 +68,9 @@ public class GeographicalMarketPresentation implements Deactivatable{
         }
         if (change.wasRemoved()) {
             EconomicAgent agent = change.getElementAdded();
-            if (agent instanceof GeographicalCustomer)
-                removeAgentFromMap((GeographicalCustomer) agent);
+            if (agent instanceof GeographicalCustomer) {
+                removeBuyerFromMap((GeographicalCustomer) agent);
+            }
         }
     };
 
@@ -132,10 +138,15 @@ public class GeographicalMarketPresentation implements Deactivatable{
      */
     private final Map<HasLocation,HasLocationPortrait> portraitList; //could switch HasLocationPortrait to ImageView if needed
 
+    /**
+     * A map  exclusively for customers, handy for updating fast
+     */
+    private final Map<GeographicalCustomer,GeographicalCustomerPortrait> buyerPortraits; //could switch HasLocationPortrait to ImageView if needed
 
-    public GeographicalMarketPresentation(SellingFirmToColorMap colorMap, GeographicalMarket market) {
+    public GeographicalMarketPresentation(SellingFirmToColorMap colorMap, GeographicalMarket market, MacroII macroII) {
         this.market = market;
         portraitList = new HashMap<>();
+        buyerPortraits = new HashMap<>();
         canvasMap = new Pane();
         canvasMap.setBackground(new Background(new BackgroundFill(Color.GRAY,null,null)));
         this.colorMap = colorMap;
@@ -158,7 +169,8 @@ public class GeographicalMarketPresentation implements Deactivatable{
         colorMap.getColorMap().addListener(sellerListener);
 
 
-
+        //start the steppable, please
+        macroII.scheduleSoon(ActionOrder.GUI_PHASE,this);
     }
 
     private IntegerBinding convertXModelCoordinateToXPixelCoordinate(ObservableDoubleValue xModel)
@@ -226,8 +238,10 @@ public class GeographicalMarketPresentation implements Deactivatable{
                 });
             }
         });
-
         addAgentToMap(buyer, portrait);
+        //second copy in specialized map
+        buyerPortraits.put(buyer, portrait);
+
 
 
     }
@@ -248,9 +262,18 @@ public class GeographicalMarketPresentation implements Deactivatable{
         portrait.fitWidthProperty().bind(portraitSize);
 
         //add it to the big list
-        portraitList.put(seller,portrait);
+        portraitList.put(seller, portrait);
         //add it to canvas!
         canvasMap.getChildren().add(portrait);
+    }
+
+
+    private void removeBuyerFromMap(GeographicalCustomer buyer){
+        removeAgentFromMap(buyer);
+        assert buyerPortraits.containsKey(buyer);
+        buyerPortraits.remove(buyer);
+        assert !buyerPortraits.containsKey(buyer);
+
     }
 
     /**
@@ -293,6 +316,7 @@ public class GeographicalMarketPresentation implements Deactivatable{
 
     @Override
     public void turnOff() {
+        isActive = false;
 
         market.removeListenerFromBuyerSet(buyerSetListener);
         colorMap.removeListener(sellerListener);
@@ -305,6 +329,20 @@ public class GeographicalMarketPresentation implements Deactivatable{
         assert canvasMap.getChildren().isEmpty();
 
 
+    }
+
+    /**
+     * update all colors of the buyers
+     */
+    public void step(SimState state){
+        Platform.runLater(() -> {
+            for(Map.Entry<GeographicalCustomer,GeographicalCustomerPortrait> buyer : buyerPortraits.entrySet())
+            {
+                Color color = buyer.getKey().getLastSupplier() == null ? Color.WHITE : colorMap.getFirmColor(buyer.getKey().getLastSupplier());
+                buyer.getValue().setColor(color);
+            }
+        });
+        ((MacroII)state).scheduleTomorrow(ActionOrder.GUI_PHASE,this);
     }
 
     /**
