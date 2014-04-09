@@ -3,7 +3,7 @@ package model.utilities.geography;
 import agents.EconomicAgent;
 import agents.firm.GeographicalFirm;
 import ec.util.MersenneTwisterFast;
-import financial.market.GeographicalClearLastMarket;
+import financial.market.GeographicalMarket;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -70,7 +70,7 @@ public class GeographicalClearLastMarketSwingView extends TabbedInspector
      */
     final private ObservableList<XYChart.Series<Number,Number>> priceLines;
 
-    public GeographicalClearLastMarketSwingView(final GeographicalClearLastMarket market)
+    public GeographicalClearLastMarketSwingView(final GeographicalMarket market)
     {
 
         /*===========================================================
@@ -216,7 +216,7 @@ public class GeographicalClearLastMarketSwingView extends TabbedInspector
 
     }
 
-    private void removeSeller(GeographicalFirm firm, final Group agents, GeographicalClearLastMarket market) {
+    private void removeSeller(GeographicalFirm firm, final Group agents, GeographicalMarket market) {
         //first remove its drawing
         final GeographicalFirmPortrait portraitToRemove = firmToPortraitColorMap.remove(firm);
         assert portraitToRemove != null;
@@ -241,7 +241,7 @@ public class GeographicalClearLastMarketSwingView extends TabbedInspector
         //done!
     }
 
-    private void newSeller(GeographicalClearLastMarket market, final Group agents, final GeographicalFirm firm) {
+    private void newSeller(GeographicalMarket market, final Group agents, final GeographicalFirm firm) {
         MersenneTwisterFast random = firm.getRandom();
         //create a firm portrait with random color
         final GeographicalFirmPortrait portrait = new GeographicalFirmPortrait(firm,

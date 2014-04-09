@@ -6,7 +6,6 @@
 
 package model.gui;
 
-import agents.EconomicAgent;
 import agents.firm.GeographicalFirm;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentFactory;
@@ -14,11 +13,8 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
-import com.google.common.collect.Multimap;
 import ec.util.MersenneTwisterFast;
-import financial.market.GeographicalClearLastMarket;
-import financial.market.Market;
-import financial.utilities.Quote;
+import financial.market.GeographicalMarket;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
 import goods.GoodType;
@@ -32,15 +28,11 @@ import model.utilities.stats.collectors.enums.MarketDataType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -58,7 +50,7 @@ public class GeographicalMarketPresentationTest {
     //make sure the pixels coordinates are correct
     @Test
     public void positioningWhenEverythingIsInitialized() throws Exception {
-        GeographicalClearLastMarket market = new GeographicalClearLastMarket(GoodType.GENERIC);
+        GeographicalMarket market = new GeographicalMarket(GoodType.GENERIC);
         SellingFirmToColorMap map = new SellingFirmToColorMap(market,new MersenneTwisterFast());
 
         //add a seller at -5,-5 and 5,5 and a buyer at 0,0
@@ -81,7 +73,7 @@ public class GeographicalMarketPresentationTest {
     //make sure the pixels coordinates are correct
     @Test
     public void positioningWhenListening() throws Exception {
-        GeographicalClearLastMarket market = new GeographicalClearLastMarket(GoodType.GENERIC);
+        GeographicalMarket market = new GeographicalMarket(GoodType.GENERIC);
         SellingFirmToColorMap map = new SellingFirmToColorMap(market,new MersenneTwisterFast());
         GeographicalMarketPresentation presentation = new GeographicalMarketPresentation(map,market);
 
@@ -150,7 +142,7 @@ public class GeographicalMarketPresentationTest {
             public void start() {
 
                 //geographical market for oil!
-                final GeographicalClearLastMarket market = new GeographicalClearLastMarket(GoodType.OIL);
+                final GeographicalMarket market = new GeographicalMarket(GoodType.OIL);
                 market.setPricePolicy(new ShopSetPricePolicy());
                 getMarkets().put(GoodType.OIL,market);
 
@@ -202,7 +194,7 @@ public class GeographicalMarketPresentationTest {
         };
         macroII.setScenario(simpleSellerOilScenario);
         macroII.start();
-        GeographicalClearLastMarket market = (GeographicalClearLastMarket) macroII.getMarket(GoodType.OIL);
+        GeographicalMarket market = (GeographicalMarket) macroII.getMarket(GoodType.OIL);
 
 
         //CREATE GUI OBJECTS!

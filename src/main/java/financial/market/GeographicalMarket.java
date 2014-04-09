@@ -50,7 +50,7 @@ import java.util.*;
  * @version 2013-11-03
  * @see
  */
-public class GeographicalClearLastMarket extends Market implements Steppable{
+public class GeographicalMarket extends Market implements Steppable{
 
 
     private boolean isActive = true;
@@ -102,7 +102,7 @@ public class GeographicalClearLastMarket extends Market implements Steppable{
     private int indexToLoopTo = 0;
 
 
-    public GeographicalClearLastMarket(GoodType goodType) {
+    public GeographicalMarket(GoodType goodType) {
         super(goodType);
 
         //the buyers quote are kept in a priority queue from the highest to the lowest

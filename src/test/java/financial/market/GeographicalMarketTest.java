@@ -53,7 +53,7 @@ import static org.mockito.Mockito.*;
  * @version 2013-11-04
  * @see
  */
-public class GeographicalClearLastMarketTest
+public class GeographicalMarketTest
 {
 
     //make sure it schedule itself correctly
@@ -63,7 +63,7 @@ public class GeographicalClearLastMarketTest
 
         //make sure start() puts it on the schedule
         MacroII mocked = mock(MacroII.class);
-        GeographicalClearLastMarket market = new GeographicalClearLastMarket(GoodType.OIL);
+        GeographicalMarket market = new GeographicalMarket(GoodType.OIL);
 
         market.start(mocked);
         verify(mocked,times(1)).scheduleSoon(ActionOrder.TRADE,market, Priority.FINAL);
@@ -90,7 +90,7 @@ public class GeographicalClearLastMarketTest
         MacroII macroII = new MacroII(1l);
 
         //geographical market for oil!
-        final GeographicalClearLastMarket market = new GeographicalClearLastMarket(GoodType.OIL);
+        final GeographicalMarket market = new GeographicalMarket(GoodType.OIL);
         market.setPricePolicy(new ShopSetPricePolicy());
         market.start(macroII);
 
@@ -164,7 +164,7 @@ public class GeographicalClearLastMarketTest
         MacroII macroII = new MacroII(1l);
 
         //geographical market for oil!
-        final GeographicalClearLastMarket market = new GeographicalClearLastMarket(GoodType.OIL);
+        final GeographicalMarket market = new GeographicalMarket(GoodType.OIL);
         market.setPricePolicy(new ShopSetPricePolicy());
         market.start(macroII);
 
@@ -250,7 +250,7 @@ public class GeographicalClearLastMarketTest
         MacroII macroII = new MacroII(1l);
 
         //geographical market for oil!
-        final GeographicalClearLastMarket market = new GeographicalClearLastMarket(GoodType.OIL);
+        final GeographicalMarket market = new GeographicalMarket(GoodType.OIL);
         market.setPricePolicy(new ShopSetPricePolicy());
         market.start(macroII);
 
@@ -331,7 +331,7 @@ public class GeographicalClearLastMarketTest
             public void start() {
 
                 //geographical market for oil!
-                final GeographicalClearLastMarket market = new GeographicalClearLastMarket(GoodType.OIL);
+                final GeographicalMarket market = new GeographicalMarket(GoodType.OIL);
                 market.setPricePolicy(new ShopSetPricePolicy());
                 getMarkets().put(GoodType.OIL,market);
 
@@ -421,7 +421,7 @@ public class GeographicalClearLastMarketTest
     {
         JFrame jFrame = new JFrame("lame example");
         jFrame.setSize(500,500);
-        GeographicalClearLastMarket market = new GeographicalClearLastMarket(GoodType.OIL);
+        GeographicalMarket market = new GeographicalMarket(GoodType.OIL);
         System.out.println(market.getBuyers().size());
         GeographicalCustomer customer = new GeographicalCustomer(mock(MacroII.class),10,10,10,market);
         System.out.println(market.getBuyers().size());

@@ -9,14 +9,17 @@ package model.gui;
 import agents.EconomicAgent;
 import agents.firm.GeographicalFirm;
 import com.google.common.base.Preconditions;
-import financial.market.GeographicalClearLastMarket;
+import financial.market.GeographicalMarket;
 import financial.market.Market;
+import javafx.application.Platform;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableDoubleValue;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.MapChangeListener;
 import javafx.collections.SetChangeListener;
 import javafx.scene.layout.Background;
@@ -85,7 +88,7 @@ public class GeographicalMarketPresentation implements Deactivatable{
     /**
      * the default size of each agent portrait when.
      */
-    private final static int defaultPortraitSizeInPixels = 15;
+    private final static int defaultPortraitSizeInPixels = 30;
 
 
     private final IntegerProperty portraitSize = new SimpleIntegerProperty(defaultPortraitSizeInPixels);
@@ -130,11 +133,11 @@ public class GeographicalMarketPresentation implements Deactivatable{
     private final Map<HasLocation,HasLocationPortrait> portraitList; //could switch HasLocationPortrait to ImageView if needed
 
 
-    public GeographicalMarketPresentation(SellingFirmToColorMap colorMap, GeographicalClearLastMarket market) {
+    public GeographicalMarketPresentation(SellingFirmToColorMap colorMap, GeographicalMarket market) {
         this.market = market;
         portraitList = new HashMap<>();
         canvasMap = new Pane();
-        canvasMap.setBackground(new Background(new BackgroundFill(Color.LIGHTCYAN,null,null)));
+        canvasMap.setBackground(new Background(new BackgroundFill(Color.GRAY,null,null)));
         this.colorMap = colorMap;
 
 
@@ -210,17 +213,17 @@ public class GeographicalMarketPresentation implements Deactivatable{
     private void addBuyerToMap(final GeographicalCustomer buyer)
     {
         GeographicalCustomerPortrait portrait = new GeographicalCustomerPortrait(buyer);
-        portrait.colorProperty().bind(new ObjectBinding<Color>() {
-            {
-                this.bind(buyer.lastSupplierProperty());
-            }
+        buyer.lastSupplierProperty().addListener(new ChangeListener<GeographicalFirm>() {
             @Override
-            protected Color computeValue() {
-
+            public void changed(ObservableValue<? extends GeographicalFirm> observableValue, GeographicalFirm geographicalFirm, GeographicalFirm geographicalFirm2) {
+                Color color;
                 if(buyer.lastSupplierProperty().get()==null)
-                    return Color.WHITE;
+                    color= Color.WHITE;
                 else
-                    return colorMap.getFirmColor(buyer.lastSupplierProperty().get());
+                    color = colorMap.getFirmColor(buyer.lastSupplierProperty().get());
+                Platform.runLater(() -> {
+                    portrait.colorProperty().setValue(color);
+                });
             }
         });
 

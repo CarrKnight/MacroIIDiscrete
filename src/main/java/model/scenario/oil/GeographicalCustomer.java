@@ -5,7 +5,7 @@ import agents.firm.GeographicalFirm;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
 import com.sun.istack.internal.Nullable;
-import financial.market.GeographicalClearLastMarket;
+import financial.market.GeographicalMarket;
 import financial.market.Market;
 import financial.utilities.Quote;
 import goods.Good;
@@ -16,8 +16,6 @@ import model.utilities.ActionOrder;
 import model.utilities.dummies.Customer;
 import model.utilities.geography.HasLocation;
 import model.utilities.geography.Location;
-import sim.engine.SimState;
-import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -55,7 +53,7 @@ public class GeographicalCustomer extends Customer implements HasLocation{
 
 
 
-    public GeographicalCustomer(@Nonnull MacroII model, long maxPrice, double x, double y, GeographicalClearLastMarket market) {
+    public GeographicalCustomer(@Nonnull MacroII model, long maxPrice, double x, double y, GeographicalMarket market) {
         super(model, maxPrice,market);
         location.setxLocation(x);
         location.setyLocation(y);

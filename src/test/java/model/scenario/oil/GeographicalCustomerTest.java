@@ -4,7 +4,7 @@ import agents.EconomicAgent;
 import agents.firm.GeographicalFirm;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import financial.market.GeographicalClearLastMarket;
+import financial.market.GeographicalMarket;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.*;
 public class GeographicalCustomerTest {
 
 
-    private final GeographicalClearLastMarket market = mock(GeographicalClearLastMarket.class);
+    private final GeographicalMarket market = mock(GeographicalMarket.class);
 
     @Before
     public void setUp() throws Exception {
@@ -182,26 +182,26 @@ public class GeographicalCustomerTest {
     public void placingQuotes()
     {
         //daily demand 2, with empty inventory that's 0
-        GeographicalClearLastMarket geographicalClearLastMarket = market;
+        GeographicalMarket geographicalMarket = market;
         MacroII model = new MacroII(1l);
-        final GeographicalCustomer customer = new GeographicalCustomer(model,100,0,0, geographicalClearLastMarket);
+        final GeographicalCustomer customer = new GeographicalCustomer(model,100,0,0, geographicalMarket);
         customer.setDailyDemand(2);
         customer.start(model);
         model.start();
         model.schedule.step(model);
 
         //should have placed two quotes
-        verify(geographicalClearLastMarket,times(2)).submitBuyQuote(customer,100);
+        verify(geographicalMarket,times(2)).submitBuyQuote(customer,100);
         //should have called the clear all too
-        verify(geographicalClearLastMarket,times(1)).removeAllBuyQuoteByBuyer(customer);
+        verify(geographicalMarket,times(1)).removeAllBuyQuoteByBuyer(customer);
 
 
         //step again
         model.schedule.step(model);
         //two more quotes, total 4
-        verify(geographicalClearLastMarket,times(4)).submitBuyQuote(customer,100);
+        verify(geographicalMarket,times(4)).submitBuyQuote(customer,100);
         //and should have removed the quotes twice
-        verify(geographicalClearLastMarket,times(2)).removeAllBuyQuoteByBuyer(customer);
+        verify(geographicalMarket,times(2)).removeAllBuyQuoteByBuyer(customer);
 
         //now give the customer one unit of good between trade and production
         model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
@@ -215,9 +215,9 @@ public class GeographicalCustomerTest {
         //now it should only add one more quote!
         model.schedule.step(model);
         //two more quotes, total 4
-        verify(geographicalClearLastMarket,times(5)).submitBuyQuote(customer,100);
+        verify(geographicalMarket,times(5)).submitBuyQuote(customer,100);
         //and should have removed the quotes twice
-        verify(geographicalClearLastMarket,times(3)).removeAllBuyQuoteByBuyer(customer);
+        verify(geographicalMarket,times(3)).removeAllBuyQuoteByBuyer(customer);
 
 
     }
