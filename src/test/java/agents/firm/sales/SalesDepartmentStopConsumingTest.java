@@ -138,7 +138,6 @@ public class SalesDepartmentStopConsumingTest {
 
         department.setPredictorStrategy(new PricingSalesPredictor());
 
-        department.start();
         macroII.start();
 
         //give three goods to the firm
