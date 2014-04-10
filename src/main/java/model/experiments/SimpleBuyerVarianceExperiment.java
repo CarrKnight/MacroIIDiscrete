@@ -9,7 +9,6 @@ package model.experiments;
 import goods.GoodType;
 import model.MacroII;
 import model.scenario.SimpleBuyerScenario;
-import org.junit.Test;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 

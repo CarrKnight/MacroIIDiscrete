@@ -32,8 +32,6 @@ import sim.engine.Steppable;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static org.mockito.Mockito.*;
-
 /**
  * <h4>Description</h4>
  * <p/>
@@ -101,7 +99,7 @@ public class MarginalMaximizerWithUnitPIDTuning {
 
                                         //add the plant
                                         Plant plant = new Plant(blueprint, built);
-                                        plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
+                                        plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, built, 0, plant));
                                         plant.setCostStrategy(new InputCostStrategy(plant));
                                         built.addPlant(plant);
 

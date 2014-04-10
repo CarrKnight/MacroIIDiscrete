@@ -34,8 +34,6 @@ import java.text.DecimalFormat;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static org.mockito.Mockito.*;
-
 /**
  * <h4>Description</h4>
  * <p/>  a tuning where each thread is on its own, let's hope for the best
@@ -144,7 +142,7 @@ public class MarginalMaximizerPIDTuning {
 
                                 //add the plant
                                 Plant plant = new Plant(blueprint, built);
-                                plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
+                                plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, built, 0, plant));
                                 plant.setCostStrategy(new InputCostStrategy(plant));
                                 built.addPlant(plant);
 

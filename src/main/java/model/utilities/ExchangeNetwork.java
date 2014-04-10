@@ -21,7 +21,6 @@ import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import goods.GoodType;
 import model.MacroII;
 import org.apache.commons.collections15.Transformer;
-import org.mockito.Mock;
 import sim.portrayal.Inspector;
 import sim.util.Bag;
 import model.utilities.dummies.DummyBuyer;
@@ -59,8 +58,7 @@ public class ExchangeNetwork {
 
             if(hasInventory instanceof Person)
                 return Color.blue;
-            if(hasInventory instanceof DummyBuyer || hasInventory instanceof DummySeller ||
-                    hasInventory instanceof Mock)
+            if(hasInventory instanceof DummyBuyer || hasInventory instanceof DummySeller)
                 return Color.BLACK;
             if(hasInventory instanceof Firm)
                 return Color.red;

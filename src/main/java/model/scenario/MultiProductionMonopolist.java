@@ -31,8 +31,6 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 import model.utilities.dummies.DummyBuyer;
 
-import static org.mockito.Mockito.*;
-
 /**
  * <h4>Description</h4>
  * <p/>
@@ -218,7 +216,7 @@ public class MultiProductionMonopolist extends Scenario{
                     //add the plant
                     Blueprint blueprint = new Blueprint.Builder().output(GoodType.BEEF,1).output(GoodType.LEATHER,2).build();
                     Plant plant = new Plant(blueprint,seller);
-                    plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL,mock(Firm.class),0,plant));
+                    plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL,seller,0,plant));
                     plant.setCostStrategy(new InputCostStrategy(plant));
                     seller.addPlant(plant);
 

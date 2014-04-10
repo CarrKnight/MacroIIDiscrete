@@ -49,7 +49,6 @@ import sim.engine.Steppable;
 import javax.annotation.Nullable;
 import java.util.LinkedList;
 
-import static org.mockito.Mockito.*;
 
 /**
  * <h4>Description</h4>
@@ -317,7 +316,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
     protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
         Plant plant = new Plant(blueprint, firm);
-        plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
+        plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, firm, 0, plant));
         plant.setCostStrategy(new InputCostStrategy(plant));
         firm.addPlant(plant);
         FactoryProducedHumanResourcesWithMaximizerAndTargeter<TargetAndMaximizePlantControl,BuyerSearchAlgorithm,

@@ -29,7 +29,6 @@ import model.MacroII;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import static org.mockito.Mockito.*;
 
 /**
  * <h4>Description</h4>
@@ -155,7 +154,7 @@ public class DummyMacroScenario extends Scenario {
                     //add the plant
                     Blueprint blueprint = new Blueprint.Builder().output(GoodType.BEEF, 1).build();
                     Plant plant = new Plant(blueprint, seller);
-                    plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
+                    plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, seller, 0, plant));
                     plant.setCostStrategy(new InputCostStrategy(plant));
                     seller.addPlant(plant);
 

@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package agents.firm.production.control.facades;
+package agents.firm.production.control;
 
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;

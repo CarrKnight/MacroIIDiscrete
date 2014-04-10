@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package agents.firm.production.control.maximizer.algorithms.hillClimbers;
+package agents.firm.production.control.maximizer;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
@@ -12,6 +12,7 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.maximizer.algorithms.hillClimbers.ParticleMaximizer;
 import ec.util.MersenneTwisterFast;
 import goods.GoodType;
 import model.MacroII;
@@ -79,7 +80,6 @@ public class ParticleMaximizerTest {
         assertEquals(maximizer.getTimeToSpendHillClimbing(),50000,.001f);
         maximizer.setTimeToSpendHillClimbing(0);
         assertTrue(maximizer.getTimeToSpendHillClimbing() < hr.getTime());
-        assertEquals(maximizer.direction(1,2,3,4),1);             //should always return 1 in the particle maximization phase
 
         assertTrue(maximizer.checkMemory(1,2)); //it shouldn't check
 
@@ -206,15 +206,15 @@ public class ParticleMaximizerTest {
 
             when(random.nextInt(3)).thenReturn(0);
             Integer target = (Integer) method.invoke(maximizer,1,0);  //compares to itself
-            Assert.assertEquals(target.intValue(), 1);
+            assertEquals(target.intValue(), 1);
             //compare to the most succesful one
             when(random.nextInt(3)).thenReturn(1);
             target = (Integer) method.invoke(maximizer,1,0);  //compares to the succesful one
-            Assert.assertEquals(target.intValue(),100);
+            assertEquals(target.intValue(),100);
             //compare to the least succesful one
             when(random.nextInt(3)).thenReturn(2);
             target = (Integer) method.invoke(maximizer,1,0);  //compares to the succesful one
-            Assert.assertEquals(target.intValue(),1);
+            assertEquals(target.intValue(),1);
 
             verify(random, times(3)).nextInt(3);
         }
@@ -270,15 +270,15 @@ public class ParticleMaximizerTest {
 
             when(random.nextInt(3)).thenReturn(0);
             Integer target = (Integer) method.invoke(maximizer,1,0);  //compares to itself
-            Assert.assertEquals(target.intValue(),100);
+            assertEquals(target.intValue(),100);
             //compare to the most succesful one
             when(random.nextInt(3)).thenReturn(1);
             target = (Integer) method.invoke(maximizer,1,0);  //compares to the succesful one
-            Assert.assertEquals(target.intValue(),100);
+            assertEquals(target.intValue(),100);
             //compare to the least succesful one
             when(random.nextInt(3)).thenReturn(2);
             target = (Integer) method.invoke(maximizer,1,0);  //compares to the succesful one
-            Assert.assertEquals(target.intValue(),100);
+            assertEquals(target.intValue(),100);
 
         }
         catch (Exception e){

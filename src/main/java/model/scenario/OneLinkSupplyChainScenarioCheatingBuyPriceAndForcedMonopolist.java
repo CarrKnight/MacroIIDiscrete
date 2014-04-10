@@ -40,7 +40,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
-import static org.mockito.Mockito.*;
 
 /**
  * <h4>Description</h4>
@@ -99,7 +98,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
 
 
             Plant plant = new Plant(blueprint, firm);
-            plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, mock(Firm.class), 0, plant));
+            plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, firm, 0, plant));
             plant.setCostStrategy(new InputCostStrategy(plant));
             firm.addPlant(plant);
             FactoryProducedHumanResourcesWithMaximizerAndTargeter produced =

@@ -26,11 +26,10 @@ import sim.engine.Steppable;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
+
 import java.util.LinkedList;
 
 import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
-import static org.junit.Assert.assertEquals;
 
 /**
  * <h4>Description</h4>

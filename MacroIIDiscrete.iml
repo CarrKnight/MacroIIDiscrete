@@ -20,8 +20,8 @@
       </library>
     </orderEntry>
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="org.powermock:powermock-api-mockito:1.5" level="project" />
-    <orderEntry type="library" name="junit:junit:4.11" level="project" />
+    <orderEntry type="library" scope="TEST" name="org.powermock:powermock-api-mockito:1.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="junit:junit:4.11" level="project" />
     <orderEntry type="library" name="net.sf.opencsv:opencsv:2.3" level="project" />
     <orderEntry type="library" name="com.google.guava:guava:14.0.1" level="project" />
     <orderEntry type="library" name="mason" level="project" />
@@ -30,19 +30,19 @@
     <orderEntry type="library" name="net.sf.jung:jung-algorithms:2.0.1" level="project" />
     <orderEntry type="library" name="net.sf.jung:jung-graph-impl:2.0.1" level="project" />
     <orderEntry type="library" name="net.sf.jung:jung-visualization:2.0.1" level="project" />
-    <orderEntry type="library" exported="" name="jfree:jfreechart:1.0.13" level="project" />
+    <orderEntry type="library" name="jfree:jfreechart:1.0.13" level="project" />
     <orderEntry type="library" name="gov.nist.math:jama:1.0.3" level="project" />
     <orderEntry type="library" name="org.apache.commons:commons-math3:3.2" level="project" />
     <orderEntry type="library" name="watchmaker-swing-0.7.1" level="project" />
     <orderEntry type="library" name="ch.qos.logback:logback-classic:1.0.13" level="project" />
-    <orderEntry type="library" name="Maven: org.powermock:powermock-module-junit4:1.5" level="project" />
-    <orderEntry type="library" name="Maven: junit:junit:4.9" level="project" />
-    <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
-    <orderEntry type="library" name="Maven: org.powermock:powermock-module-junit4-common:1.5" level="project" />
-    <orderEntry type="library" name="Maven: org.powermock:powermock-core:1.5" level="project" />
-    <orderEntry type="library" name="Maven: org.powermock:powermock-reflect:1.5" level="project" />
-    <orderEntry type="library" name="Maven: org.objenesis:objenesis:1.2" level="project" />
-    <orderEntry type="library" name="Maven: org.javassist:javassist:3.17.1-GA" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.powermock:powermock-module-junit4:1.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.9" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.powermock:powermock-module-junit4-common:1.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.powermock:powermock-core:1.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.powermock:powermock-reflect:1.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.objenesis:objenesis:1.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.javassist:javassist:3.17.1-GA" level="project" />
   </component>
 </module>
 

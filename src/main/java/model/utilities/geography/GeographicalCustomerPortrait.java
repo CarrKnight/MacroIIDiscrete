@@ -15,7 +15,6 @@ import model.scenario.oil.GeographicalCustomer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.mockito.Mockito.*;
 
 /**
  * <h4>Description</h4>

@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package model.experiments;
+package model;
 
 import agents.EconomicAgent;
 import agents.firm.Firm;
