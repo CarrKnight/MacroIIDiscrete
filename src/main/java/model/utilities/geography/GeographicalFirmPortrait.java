@@ -57,8 +57,10 @@ public class GeographicalFirmPortrait extends HasLocationPortrait {
         color.setValue(firmColor);
         this.firm = (GeographicalFirm) agent;
         //add a glow effect
-        Blend blend = new Blend(BlendMode.SRC_OVER,new Glow(3),this.effectProperty().getValue());
-        this.setEffect(blend);
+        Glow glow = new Glow(3);
+        Blend blend = new Blend(BlendMode.SRC_OVER, glow,icon.effectProperty().getValue());
+
+        icon.setEffect(blend);
     }
 
     public GeographicalFirm getFirm() {

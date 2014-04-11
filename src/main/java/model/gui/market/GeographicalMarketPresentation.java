@@ -97,7 +97,8 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
     private final static int defaultPortraitSizeInPixels = 30;
 
 
-    private final IntegerProperty portraitSize = new SimpleIntegerProperty(defaultPortraitSizeInPixels);
+    private final NumberBinding portraitSize = (new SimpleIntegerProperty(defaultPortraitSizeInPixels)
+            .multiply(oneUnitInModelEqualsHowManyPixels).divide(defaultOneUnitInModelEqualsHowManyPixels));
 
     /**
      * the lowest y in the model. Notice that the model coordinates are double, so here I'll need to feed rounded up
@@ -258,8 +259,8 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
         portrait.layoutXProperty().bind(convertXModelCoordinateToXPixelCoordinate(seller.xLocationProperty()));
         portrait.layoutYProperty().bind(convertYModelCoordinateToYPixelCoordinate(seller.yLocationProperty()));
         //resize image
-        portrait.fitHeightProperty().bind(portraitSize);
-        portrait.fitWidthProperty().bind(portraitSize);
+        portrait.prefHeightProperty().bind(portraitSize);
+        portrait.prefWidthProperty().bind(portraitSize);
 
         //add it to the big list
         portraitList.put(seller, portrait);
@@ -292,8 +293,8 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
         canvasMap.getChildren().remove(portrait);
         portrait.layoutXProperty().unbind();
         portrait.layoutYProperty().unbind();
-        portrait.fitHeightProperty().unbind();
-        portrait.fitWidthProperty().unbind();
+        portrait.prefHeightProperty().unbind();
+        portrait.prefWidthProperty().unbind();
 
         assert !portraitList.containsKey(seller);
         assert !canvasMap.getChildren().contains(portrait);

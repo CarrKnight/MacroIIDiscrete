@@ -10,11 +10,12 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.ColorInput;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 /**
  * <h4>Description</h4>
- * <p/>
+ * <p/> A "stackpane" made of an icon and a tex on top of it
  * <p/>
  * <p/>
  * <h4>Notes</h4>
@@ -27,7 +28,9 @@ import javafx.scene.paint.Color;
  * @version 2013-11-08
  * @see
  */
-public abstract class HasLocationPortrait extends ImageView {
+public abstract class HasLocationPortrait extends StackPane {
+
+    protected final ImageView icon;
 
     abstract protected Image initImage(HasLocation agent);
 
@@ -39,7 +42,12 @@ public abstract class HasLocationPortrait extends ImageView {
     {
         this.agent =agent;
         //load the image
-        setImage(initImage(agent));
+        icon = new ImageView();
+        icon.setImage(initImage(agent));
+        this.getChildren().add(icon);
+        //bind icon height to pref-height. The idea here is that when they resize this region, we resize the location portrait as well
+        icon.fitWidthProperty().bind(prefWidthProperty());
+        icon.fitHeightProperty().bind(prefHeightProperty());
 
 
         //this is to keep it with the right color
@@ -48,15 +56,18 @@ public abstract class HasLocationPortrait extends ImageView {
         //keep the color
         color= new SimpleObjectProperty<>(Color.WHITE);
 
+
+
         ColorInput input = new ColorInput(); //this is the second effect, the coloring proper
         input.setX(0); input.setY(0);
-        input.setWidth(getImage().getWidth()); input.setHeight(getImage().getHeight());
-        //todo might want to bind the x,y,width and height
+        input.widthProperty().bind(prefWidthProperty());
+        input.heightProperty().bind(prefHeightProperty());
+
         input.paintProperty().bind(color);
 
         //bind the color adjust
         Blend coloring = new Blend(BlendMode.SRC_ATOP,monochrome,input);
-        effectProperty().setValue(coloring);
+        icon.effectProperty().setValue(coloring);
 
         setCache(true);
         setCacheHint(CacheHint.SPEED);

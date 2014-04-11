@@ -10,15 +10,21 @@ import agents.firm.Firm;
 import com.google.common.base.Preconditions;
 import goods.GoodType;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.scene.CacheHint;
+import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.effect.ColorInput;
+import javafx.scene.shape.Path;
 import model.utilities.stats.collectors.SalesData;
 import model.utilities.stats.collectors.enums.SalesDataType;
 
 import java.util.LinkedList;
+import java.util.Set;
 
 /**
  * A different charting that is updated only when forced to
@@ -51,6 +57,10 @@ public class CreateChartOnDemand extends Task<LineChart<Number,Number>> {
         LinkedList<Firm> sellers = new LinkedList<>(sellerMap.getColorMap().keySet());
         chart = new LineChart<>(new NumberAxis(),new NumberAxis());
         ObservableList<XYChart.Series<Number, Number>> serieses = chart.getData();
+        chart.setCache(true);
+        chart.setCacheHint(CacheHint.SPEED);
+        chart.setCreateSymbols(false);
+        chart.setAnimated(false);
 
         int observationsPerFirm = -1; //while we are updating the chart, it's clearly possible that the model is still running
         //that would make later sellers' curves longer which is very silly. with this variable we make sure all curves are of the same length
@@ -66,6 +76,11 @@ public class CreateChartOnDemand extends Task<LineChart<Number,Number>> {
             Firm seller = sellers.get(firmNumber);
             XYChart.Series<Number, Number> series = new XYChart.Series<>();
             series.setName(seller.getName()); //name!
+
+
+
+            // series.nodeProperty().get().setStyle("-fx-stroke: " + "red;");
+
             updateMessage("Collecting " + seller.getName() + " data");
             //grab the salesData
             SalesData salesData = seller.getSalesDepartment(goodBeingTraded).getData();
@@ -92,9 +107,26 @@ public class CreateChartOnDemand extends Task<LineChart<Number,Number>> {
             }
             //add the series
             serieses.add(series);
+
+
+
+
         }
         updateMessage("Drawing");
+        //now color it (this is really annoying)
 
+
+        for (int j = 0; j < chart.getData().size(); j++) {
+            Set<Node> nodes = chart.lookupAll(".series" + j);
+            String color = sellerMap.getFirmColor(sellers.get(j)).toString();
+            color = color.replace("0x","#");
+            for (Node n : nodes) {
+                StringBuilder style = new StringBuilder();
+                style.append("-fx-stroke: ").append(color).append("; ");
+                style.append("-fx-background-color: ").append(color).append(", white").append(";");
+                n.setStyle(style.toString());
+            }
+        }
         System.out.println("chart created succesfully");
         return chart;
 

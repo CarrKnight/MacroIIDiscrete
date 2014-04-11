@@ -5,10 +5,14 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableObjectValue;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.scenario.oil.GeographicalCustomer;
 
@@ -49,6 +53,15 @@ public class GeographicalCustomerPortrait extends HasLocationPortrait
 
     public GeographicalCustomerPortrait(GeographicalCustomer agent) {
         super(agent);
+
+        //add a label describing its price
+        Label price = new Label("lol",this);
+        price.setContentDisplay(ContentDisplay.TOP);
+
+        Text priceText = new Text(Long.toString(agent.getMaxPrice()));
+        this.getChildren().add(priceText);
+
+        this.setAlignment(Pos.CENTER);
     }
 
 
