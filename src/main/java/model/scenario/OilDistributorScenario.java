@@ -12,6 +12,7 @@ import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
+import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
@@ -115,7 +116,7 @@ public class OilDistributorScenario extends Scenario
         SalesDepartment salesDepartment = SalesDepartmentFactory.incompleteSalesDepartment(oilPump, market,
                 new SimpleBuyerSearch(market, oilPump), new SimpleSellerSearch(market, oilPump), SalesDepartmentOneAtATime.class);
         //give the sale department a simple PID
-        salesDepartment.setAskPricingStrategy(new SimpleFlowSellerPID(salesDepartment));
+        salesDepartment.setAskPricingStrategy(new SalesControlWithFixedInventoryAndPID(salesDepartment,100));
         //finally register it!
         oilPump.registerSaleDepartment(salesDepartment, GoodType.OIL);
         getAgents().add(oilPump);

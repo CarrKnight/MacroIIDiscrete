@@ -61,6 +61,7 @@ public class CreateChartOnDemand extends Task<LineChart<Number,Number>> {
         chart.setCacheHint(CacheHint.SPEED);
         chart.setCreateSymbols(false);
         chart.setAnimated(false);
+        chart.setLegendVisible(false); //only because i can't control the stupid colors
 
         int observationsPerFirm = -1; //while we are updating the chart, it's clearly possible that the model is still running
         //that would make later sellers' curves longer which is very silly. with this variable we make sure all curves are of the same length
@@ -124,6 +125,7 @@ public class CreateChartOnDemand extends Task<LineChart<Number,Number>> {
                 StringBuilder style = new StringBuilder();
                 style.append("-fx-stroke: ").append(color).append("; ");
                 style.append("-fx-background-color: ").append(color).append(", white").append(";");
+                System.out.println(style);
                 n.setStyle(style.toString());
             }
         }
