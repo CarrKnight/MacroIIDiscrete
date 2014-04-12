@@ -21,9 +21,10 @@ public class ModelControlBar extends TitledPane
     private final MacroII modelToRun;
 
     private final PlayButton play;
+    private final HBox contentBox;
 
 
-    /**
+    /**t
      * the model control bar creates a play-button and the model thread within it.
      * @param modelToRun
      */
@@ -32,13 +33,13 @@ public class ModelControlBar extends TitledPane
         this.modelToRun = modelToRun;
         this.setText("Model Control");
         //create an hbox within the titledPane
-        HBox hbox = new HBox();
-        hbox.setPadding(new Insets(15, 12, 15, 12));
-        hbox.setSpacing(10);
+        contentBox = new HBox();
+        contentBox.setPadding(new Insets(15, 12, 15, 12));
+        contentBox.setSpacing(10);
         play = new PlayButton(modelToRun);
-        hbox.getChildren().add(play);
+        contentBox.getChildren().add(play);
 
-        this.setContent(hbox);
+        this.setContent(contentBox);
         this.setVisible(true);
         this.setAnimated(true);
 
@@ -47,5 +48,7 @@ public class ModelControlBar extends TitledPane
     }
 
 
-
+    public HBox getContentBox() {
+        return contentBox;
+    }
 }

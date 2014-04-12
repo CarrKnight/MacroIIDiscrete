@@ -16,6 +16,8 @@ import model.utilities.ActionOrder;
 import model.utilities.dummies.Customer;
 import model.utilities.geography.HasLocation;
 import model.utilities.geography.Location;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -51,6 +53,7 @@ public class GeographicalCustomer extends Customer implements HasLocation{
      */
     private SimpleObjectProperty<GeographicalFirm> lastSupplier;
 
+    private double distanceExponent =1;
 
 
     public GeographicalCustomer(@Nonnull MacroII model, long maxPrice, double x, double y, GeographicalMarket market) {
@@ -58,11 +61,14 @@ public class GeographicalCustomer extends Customer implements HasLocation{
         location.setxLocation(x);
         location.setyLocation(y);
 
-        model.scheduleSoon(ActionOrder.DAWN, simState -> {
-            if(!isActive())
-                return;
-            lastSupplier.setValue(null);
-            model.scheduleTomorrow(ActionOrder.DAWN,this);
+        model.scheduleSoon(ActionOrder.DAWN, new Steppable() {
+            @Override
+            public void step(SimState simState) {
+                if (!GeographicalCustomer.this.isActive())
+                    return;
+                lastSupplier.setValue(null);
+                model.scheduleTomorrow(ActionOrder.DAWN, this);
+            }
         });
 
     }
@@ -132,7 +138,7 @@ public class GeographicalCustomer extends Customer implements HasLocation{
         double xDistance = Math.pow(customer.getxLocation() - seller.getxLocation(),2);
         double yDistance = Math.pow(customer.getxLocation() - seller.getxLocation(),2);
 
-        double distance =  Math.pow(Math.sqrt(xDistance + yDistance),1);
+        double distance =  Math.pow(Math.sqrt(xDistance + yDistance), distanceExponent);
         assert distance >= 0;
         return distance;
     }
@@ -197,7 +203,12 @@ public class GeographicalCustomer extends Customer implements HasLocation{
         return lastSupplier;
     }
 
+    public double getDistanceExponent() {
+        return distanceExponent;
+    }
 
-
-
+    public void setDistanceExponent(double distanceExponent) {
+        System.out.println(distanceExponent);
+        this.distanceExponent = distanceExponent;
+    }
 }

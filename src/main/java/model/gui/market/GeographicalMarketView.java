@@ -84,7 +84,7 @@ public class GeographicalMarketView extends TabPane implements Deactivatable {
 
         //create price-tab
         Tab prices = new Tab("Prices");
-        prices.setContent(new FirmChartPresentation(colors,market.getGoodType(), SalesDataType.CLOSING_PRICES));
+        prices.setContent(new FirmChartPresentation(colors,market.getGoodType(), SalesDataType.LAST_ASKED_PRICE));
         this.getTabs().add(prices);
 
     }
