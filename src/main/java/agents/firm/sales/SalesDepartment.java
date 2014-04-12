@@ -362,6 +362,9 @@ public abstract class  SalesDepartment  implements Department {
         todayOutflow = 0;
         sumClosingPrice = 0;
         lastAskedPrice= -1;
+        //if you still have a quote active, use it as your "last asked price"
+        if(quotesCurrentlyPlaced > 0)
+            lastAskedPrice = goodsQuotedOnTheMarket.values().iterator().next().getPriceQuoted();
 
         model.scheduleTomorrow(ActionOrder.DAWN,new Steppable() {
             @Override
