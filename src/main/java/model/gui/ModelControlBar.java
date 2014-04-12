@@ -6,17 +6,10 @@
 
 package model.gui;
 
-import com.google.common.base.Preconditions;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import model.MacroII;
-
-import java.util.concurrent.Semaphore;
 
 /**
  * A simple accordion where I store my play/pause button and maybe one day also parameter control
@@ -45,8 +38,9 @@ public class ModelControlBar extends TitledPane
         play = new PlayButton(modelToRun);
         hbox.getChildren().add(play);
 
-        this.getChildren().add(hbox);
+        this.setContent(hbox);
         this.setVisible(true);
+        this.setAnimated(true);
 
 
 

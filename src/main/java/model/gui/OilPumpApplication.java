@@ -9,6 +9,7 @@ package model.gui;
 import goods.GoodType;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.MacroII;
 import model.gui.market.GeographicalMarketView;
@@ -35,18 +36,14 @@ public class OilPumpApplication extends Application
 
         //////////////////////////////////
         GeographicalMarketView view = new GeographicalMarketView((financial.market.GeographicalMarket) model.getMarket(GoodType.OIL),model);
-        stage.setScene(new Scene(view));
+        BorderPane mainPane = new BorderPane();
+        mainPane.setCenter(view);
+        mainPane.setBottom(new ModelControlBar(model));
+        stage.setScene(new Scene(mainPane));
         stage.setMaximized(true);
         stage.show();
 
         ///////////////////////////////////////////
-        Thread thread = new Thread(() -> {
-            while(model.schedule.getTime()<5000) {
-                model.schedule.step(model);
-                System.out.println(model.getMarket(GoodType.OIL).getTodayVolume());
-            }
-        });
-        thread.start();
 
     }
 
