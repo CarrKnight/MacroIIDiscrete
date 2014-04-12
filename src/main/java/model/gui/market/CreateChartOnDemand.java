@@ -10,7 +10,6 @@ import agents.firm.Firm;
 import com.google.common.base.Preconditions;
 import goods.GoodType;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.scene.CacheHint;
@@ -18,8 +17,6 @@ import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.effect.ColorInput;
-import javafx.scene.shape.Path;
 import model.utilities.stats.collectors.SalesData;
 import model.utilities.stats.collectors.enums.SalesDataType;
 
