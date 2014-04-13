@@ -1,0 +1,38 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="Oil Distribution">
+    <output-path>$PROJECT_DIR$/out/artifacts/Oil_Distribution</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="model.gui.OilPumpApplication" />
+        <option name="description" value="" />
+        <option name="height" value="480" />
+        <option name="htmlParamFile" value="" />
+        <option name="paramFile" value="" />
+        <option name="title" value="Oil Distribution Sample, Alpha 1" />
+        <option name="vendor" value="Ernesto Carrella" />
+        <option name="width" value="854" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="MacroIIDiscrete.jar">
+        <element id="module-output" name="MacroIIDiscrete" />
+        <element id="library" level="project" name="ch.qos.logback:logback-classic:1.0.13" />
+        <element id="library" level="project" name="com.google.guava:guava:16.0.1" />
+        <element id="library" level="project" name="commons-math3-3.2-javadoc" />
+        <element id="library" level="project" name="gov.nist.math:jama:1.0.3" />
+        <element id="library" level="project" name="jfree:jfreechart:1.0.13" />
+        <element id="library" level="project" name="lifelines" />
+        <element id="library" level="project" name="net.sf.jung:jung-algorithms:2.0.1" />
+        <element id="library" level="project" name="net.sf.jung:jung-graph-impl:2.0.1" />
+        <element id="library" level="project" name="net.sf.jung:jung-visualization:2.0.1" />
+        <element id="library" level="project" name="net.sf.opencsv:opencsv:2.3" />
+        <element id="library" level="project" name="org.reflections:reflections:0.9.8" />
+        <element id="library" level="project" name="watchmaker-swing-0.7.1" />
+        <element id="library" level="project" name="mason.16" />
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

@@ -1,15 +1,29 @@
 package model.utilities.geography;
 
 import agents.firm.GeographicalFirm;
+import goods.GoodType;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableObjectValue;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.effect.Blend;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import model.MacroII;
+import model.utilities.ActionOrder;
+import model.utilities.Deactivatable;
+import sim.engine.SimState;
+import sim.engine.Steppable;
 
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -28,15 +42,16 @@ import java.nio.file.Paths;
  * @version 2013-11-08
  * @see
  */
-public class GeographicalFirmPortrait extends HasLocationPortrait {
+public class GeographicalFirmPortrait extends HasLocationPortrait implements Deactivatable {
 
 
+    private boolean active = true;
 
     //load the image once statically and be done with it
     private final static Image oilImage;
     static {
-        Path imageLink = Paths.get("resources", "gas-pump.png");
-        oilImage = new Image(imageLink.toUri().toString());
+        InputStream input = GeographicalCustomerPortrait.class.getClassLoader().getResourceAsStream("resources/gas-pump.png");
+        oilImage = new Image(input);
     }
 
     /**
@@ -50,20 +65,44 @@ public class GeographicalFirmPortrait extends HasLocationPortrait {
 
     }
 
-    public GeographicalFirmPortrait(HasLocation agent,
-                                      Color firmColor) {
+    public GeographicalFirmPortrait(final GeographicalFirm agent,
+                                      Color firmColor, GoodType goodSold, MacroII model) {
         super(agent);
-        assert agent instanceof GeographicalFirm;
         color.setValue(firmColor);
-        this.firm = (GeographicalFirm) agent;
+        this.firm = agent;
         //add a glow effect
         Glow glow = new Glow(3);
         Blend blend = new Blend(BlendMode.SRC_OVER, glow,icon.effectProperty().getValue());
 
         icon.setEffect(blend);
+
+
+
+        //schedule yourself to update your text
+        StackPane.setAlignment(priceText, Pos.CENTER);
+        priceText.setFont(Font.font("Verdana", FontWeight.BOLD,10));
+        model.scheduleSoon(ActionOrder.GUI_PHASE,new Steppable() {
+            @Override
+            public void step(SimState state) {
+                if(!active)
+                    return;
+                long price = agent.getSalesDepartment(goodSold).getLastAskedPrice();
+                Platform.runLater(() -> priceText.setText(String.valueOf(price)));
+                //reschedule
+                model.scheduleTomorrow(ActionOrder.GUI_PHASE,this);
+            }
+        });
+        //register as deactivable with the model
+        model.registerDeactivable(this);
+
     }
 
     public GeographicalFirm getFirm() {
         return firm;
+    }
+
+    @Override
+    public void turnOff() {
+        active = false;
     }
 }

@@ -1,8 +1,11 @@
 package model.utilities.geography;
 
+import com.google.common.base.Preconditions;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableObjectValue;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.CacheHint;
 import javafx.scene.effect.Blend;
 import javafx.scene.effect.BlendMode;
@@ -12,6 +15,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 /**
  * <h4>Description</h4>
@@ -31,6 +37,8 @@ import javafx.scene.paint.Color;
 public abstract class HasLocationPortrait extends StackPane {
 
     protected final ImageView icon;
+
+    protected final Text priceText;
 
     abstract protected Image initImage(HasLocation agent);
 
@@ -54,8 +62,7 @@ public abstract class HasLocationPortrait extends StackPane {
         ColorAdjust monochrome = new ColorAdjust(); //this is the first effect
         //monochrome.setBrightness(-1.0);
         //keep the color
-        color= new SimpleObjectProperty<>(Color.WHITE);
-
+        color= new SimpleObjectProperty<>(Color.BLACK);
 
 
         ColorInput input = new ColorInput(); //this is the second effect, the coloring proper
@@ -71,6 +78,14 @@ public abstract class HasLocationPortrait extends StackPane {
 
         setCache(true);
         setCacheHint(CacheHint.SPEED);
+
+
+        //now set the text
+        priceText = new Text();
+        this.getChildren().add(priceText );
+        priceText.setFont(Font.font("Verdana", 10));
+
+        priceText.setFill(Color.BLACK);
 
     }
 
@@ -105,5 +120,9 @@ public abstract class HasLocationPortrait extends StackPane {
 
     public void setColor(Color color) {
         this.color.set(color);
+    }
+
+    public Text getPriceText() {
+        return priceText;
     }
 }

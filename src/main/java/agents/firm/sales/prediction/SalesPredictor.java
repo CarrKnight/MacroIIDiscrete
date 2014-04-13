@@ -154,8 +154,8 @@ public interface SalesPredictor {
                 @Nonnull Class<SP> rule, SalesDepartment department)
         {
 
-            if(!rules.contains(rule) || Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )
-                throw new IllegalArgumentException("The rule given is either abstract or just not recognized");
+            if(Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )
+                throw new IllegalArgumentException("The rule  -->"+  rule.getName() +"given is either abstract or just not recognized");
 
 
             try {

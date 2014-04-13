@@ -57,9 +57,9 @@ public class GeographicalMarketView extends TabPane implements Deactivatable {
                 System.out.println("scroll-event!");
                 int zoom = presentation.getOneUnitInModelEqualsHowManyPixels();
                 if (scrollEvent.getDeltaY() > 0)
-                    presentation.setOneUnitInModelEqualsHowManyPixels((int) Math.max(10,zoom+scrollEvent.getDeltaY()/2));
+                    presentation.setOneUnitInModelEqualsHowManyPixels((int) Math.max(10,zoom+scrollEvent.getDeltaY()/5));
                 if (scrollEvent.getDeltaY() < 0)
-                    presentation.setOneUnitInModelEqualsHowManyPixels((int) (zoom+scrollEvent.getDeltaY()/2));
+                    presentation.setOneUnitInModelEqualsHowManyPixels((int) (zoom+scrollEvent.getDeltaY()/5));
 
             }
         });

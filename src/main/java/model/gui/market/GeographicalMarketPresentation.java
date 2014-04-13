@@ -11,6 +11,7 @@ import agents.firm.GeographicalFirm;
 import com.google.common.base.Preconditions;
 import financial.market.GeographicalMarket;
 import financial.market.Market;
+import goods.GoodType;
 import javafx.application.Platform;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.binding.NumberBinding;
@@ -60,31 +61,7 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
      */
     private final static int defaultOneUnitInModelEqualsHowManyPixels = 50;
 
-    private final SetChangeListener<EconomicAgent> buyerSetListener = change -> {
-        if (change.wasAdded()) {
-            EconomicAgent agent = change.getElementAdded();
-            if (agent instanceof GeographicalCustomer)
-                addBuyerToMap((GeographicalCustomer) agent);
-        }
-        if (change.wasRemoved()) {
-            EconomicAgent agent = change.getElementAdded();
-            if (agent instanceof GeographicalCustomer) {
-                removeBuyerFromMap((GeographicalCustomer) agent);
-            }
-        }
-    };
 
-    private final MapChangeListener<GeographicalFirm, Color> sellerListener = change -> {
-        if (change.wasAdded()) {
-            GeographicalFirm seller = change.getKey();
-            addSellerToMap(seller, change.getValueAdded());
-        }
-        if (change.wasRemoved()) {
-            GeographicalFirm seller = change.getKey();
-            removeAgentFromMap(seller);
-        }
-
-    };
 
     /**
      * the zoom/conversion between model space and pixels!
@@ -119,12 +96,31 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
      */
     private final Market market;
 
+    /**
+     * a reference to the market is needed to turn off properly
+     */
+    private final MacroII model;
 
     /**
      * the map where all the agents are
      */
     private final Pane canvasMap;
 
+    private final SetChangeListener<EconomicAgent> buyerSetListener = change -> {
+        if (change.wasAdded()) {
+            EconomicAgent agent = change.getElementAdded();
+            if (agent instanceof GeographicalCustomer)
+                addBuyerToMap((GeographicalCustomer) agent);
+        }
+        if (change.wasRemoved()) {
+            EconomicAgent agent = change.getElementAdded();
+            if (agent instanceof GeographicalCustomer) {
+                removeBuyerFromMap((GeographicalCustomer) agent);
+            }
+        }
+    };
+
+    private final MapChangeListener<GeographicalFirm, Color> sellerListener;
 
 
     //todo make this have some sense!
@@ -146,11 +142,26 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
 
     public GeographicalMarketPresentation(SellingFirmToColorMap colorMap, GeographicalMarket market, MacroII macroII) {
         this.market = market;
+        this.model = macroII;
         portraitList = new HashMap<>();
         buyerPortraits = new HashMap<>();
         canvasMap = new Pane();
-        canvasMap.setBackground(new Background(new BackgroundFill(Color.GRAY,null,null)));
+        canvasMap.setBackground(new Background(new BackgroundFill(Color.CYAN,null,null)));
         this.colorMap = colorMap;
+
+
+        //create the seller listener (it needs to be created after getting references to MacroII and so on)
+        sellerListener = change -> {
+            if (change.wasAdded()) {
+                GeographicalFirm seller = change.getKey();
+                addSellerToMap(seller, change.getValueAdded(),model,market.getGoodType());
+            }
+            if (change.wasRemoved()) {
+                GeographicalFirm seller = change.getKey();
+                removeAgentFromMap(seller);
+            }
+
+        };
 
 
         //initialize buyer list
@@ -164,7 +175,7 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
 
         for(Map.Entry<GeographicalFirm,Color> entry : colorMap.getColorMap().entrySet())
         {
-                 addSellerToMap(entry.getKey(),entry.getValue());
+                 addSellerToMap(entry.getKey(),entry.getValue(),macroII,market.getGoodType());
         }
         //initialize the seller list!
         colorMap.getColorMap().addListener(sellerListener);
@@ -213,11 +224,11 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
     /**
      * adds seller to map and list
      */
-    private void addSellerToMap(GeographicalFirm seller, Color color)
+    private void addSellerToMap(GeographicalFirm seller, Color color,MacroII model, GoodType goodSold)
     {
 
         //create proper portrait
-        GeographicalFirmPortrait portrait = new GeographicalFirmPortrait(seller,color);
+        GeographicalFirmPortrait portrait = new GeographicalFirmPortrait(seller,color,goodSold,model);
         addAgentToMap(seller, portrait);
 
 
@@ -226,19 +237,6 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
     private void addBuyerToMap(final GeographicalCustomer buyer)
     {
         GeographicalCustomerPortrait portrait = new GeographicalCustomerPortrait(buyer);
-        buyer.lastSupplierProperty().addListener(new ChangeListener<GeographicalFirm>() {
-            @Override
-            public void changed(ObservableValue<? extends GeographicalFirm> observableValue, GeographicalFirm geographicalFirm, GeographicalFirm geographicalFirm2) {
-                Color color;
-                if(buyer.lastSupplierProperty().get()==null)
-                    color= Color.WHITE;
-                else
-                    color = colorMap.getFirmColor(buyer.lastSupplierProperty().get());
-                Platform.runLater(() -> {
-                    portrait.colorProperty().setValue(color);
-                });
-            }
-        });
         addAgentToMap(buyer, portrait);
         //second copy in specialized map
         buyerPortraits.put(buyer, portrait);
@@ -339,7 +337,7 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
         Platform.runLater(() -> {
             for(Map.Entry<GeographicalCustomer,GeographicalCustomerPortrait> buyer : buyerPortraits.entrySet())
             {
-                Color color = buyer.getKey().getLastSupplier() == null ? Color.WHITE : colorMap.getFirmColor(buyer.getKey().getLastSupplier());
+                Color color = buyer.getKey().getLastSupplier() == null ? Color.BLACK : colorMap.getFirmColor(buyer.getKey().getLastSupplier());
                 buyer.getValue().setColor(color);
             }
         });

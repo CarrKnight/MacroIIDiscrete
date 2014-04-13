@@ -21,15 +21,12 @@ import goods.Good;
 import goods.GoodType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
-import javafx.collections.ObservableSet;
 import model.MacroII;
 import model.scenario.oil.GeographicalCustomer;
 import model.utilities.ActionOrder;
-import model.utilities.geography.GeographicalClearLastMarketSwingView;
 import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import sim.portrayal.inspector.TabbedInspector;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -661,15 +658,6 @@ public class GeographicalMarket extends Market implements Steppable{
         isActive = false;
     }
 
-
-    @Override
-    public TabbedInspector buildInspector() {
-
-        return new GeographicalClearLastMarketSwingView(this);
-
-
-
-    }
 
 
     public ObservableMap<GeographicalCustomer, Collection<Quote>> getBuyerBackerMap() {
