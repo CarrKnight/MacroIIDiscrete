@@ -3,10 +3,6 @@ package model.utilities.geography;
 import agents.firm.GeographicalFirm;
 import goods.GoodType;
 import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableObjectValue;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.effect.Blend;
 import javafx.scene.effect.BlendMode;
@@ -16,7 +12,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
@@ -24,8 +19,6 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * <h4>Description</h4>
@@ -50,7 +43,8 @@ public class GeographicalFirmPortrait extends HasLocationPortrait implements Dea
     //load the image once statically and be done with it
     private final static Image oilImage;
     static {
-        InputStream input = GeographicalCustomerPortrait.class.getClassLoader().getResourceAsStream("resources/gas-pump.png");
+        InputStream input = GeographicalCustomerPortrait.class.getClassLoader().
+                getResourceAsStream("images/gas-pump.png");
         oilImage = new Image(input);
     }
 

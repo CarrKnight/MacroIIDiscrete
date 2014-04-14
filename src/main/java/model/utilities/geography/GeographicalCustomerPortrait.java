@@ -30,7 +30,8 @@ public class GeographicalCustomerPortrait extends HasLocationPortrait
     //load the image once statically and be done with it
     private final static Image customerImage;
     static {
-        InputStream input = GeographicalCustomerPortrait.class.getClassLoader().getResourceAsStream("resources/homeIcon.png");
+        InputStream input = GeographicalCustomerPortrait.class.getClassLoader().
+                getResourceAsStream("images/homeIcon.png");
         customerImage = new Image(input);
     }
 

@@ -14,6 +14,8 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
 import model.MacroII;
 import model.gui.market.MarketView;
@@ -55,6 +57,9 @@ public class MarketApplication extends Application implements Steppable, Deactiv
     @Override
     public void start(Stage stage) throws Exception
     {
+
+
+        System.out.println("Starting up the scenario!");
         //////////////////
         SimpleSellerScenario scenario = new SimpleSellerScenario(model);
         scenario.setSellerStrategy(SimpleFlowSellerPID.class);
@@ -64,15 +69,18 @@ public class MarketApplication extends Application implements Steppable, Deactiv
         model.setScenario(scenario);
 
 
+        System.out.println("Starting the model");
 
         //////////////////////////////////
         model.start();
+        System.out.println("Creating the view");
         MarketView marketView = new MarketView(model.getMarket(GoodType.GENERIC),model);
 
         //make a scene
         stage.setScene(new Scene(marketView));
         stage.show();
 
+        stage.setOnCloseRequest(windowEvent -> Platform.exit());
 
         ///////////////////////////////////////////
         Thread thread = new Thread(() -> {

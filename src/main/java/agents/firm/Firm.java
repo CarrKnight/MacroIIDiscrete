@@ -15,7 +15,10 @@ import agents.firm.production.Plant;
 import agents.firm.production.PlantStatus;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.sales.SalesDepartment;
-import agents.firm.utilities.*;
+import agents.firm.utilities.DailyProfitReport;
+import agents.firm.utilities.DummyProfitReport;
+import agents.firm.utilities.NumberOfPlantsListener;
+import agents.firm.utilities.ProfitReport;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -23,13 +26,9 @@ import ec.util.MersenneTwisterFast;
 import financial.MarketEvents;
 import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
-import financial.utilities.TimelineManager;
 import goods.Good;
 import goods.GoodType;
 import javafx.beans.value.ObservableDoubleValue;
-import lifelines.LifelinesPanel;
-import lifelines.data.DataManager;
-import lifelines.data.GlobalEventData;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.enums.PlantDataType;
@@ -42,12 +41,9 @@ import sim.portrayal.inspector.TabbedInspector;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.*;
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created with IntelliJ IDEA.
@@ -133,18 +129,8 @@ public class Firm extends EconomicAgent {
         //create the timeline manager
 
         if(MacroII.hasGUI()){
-            //create the panel holding the timeline
-            GlobalEventData.getInstance().reset();
-
-            //the record panel where we will hold the gui
-            recordPanel = new LifelinesPanel(null,new Dimension(500,500));
-            //the records where will hold the lifelines data
-            records = new TimelineManager(recordPanel);
             //build the inspector
             buildInspector();
-
-            //register profit report
-            addAgentToLog(profitReport);
         }
 
     }
@@ -608,8 +594,8 @@ public class Firm extends EconomicAgent {
             dividendStrategy.payDividends(profitReport.getAggregateProfits(),this,owner);
 
         //if you have GUI do update it
-        if(MacroII.hasGUI() && records != null) //the non-null check is there for dummy buyers/sellers
-            records.weekEnd();
+        //todo logtodo
+
 
     }
 
@@ -782,15 +768,6 @@ public class Firm extends EconomicAgent {
 
 
 
-    /**
-     * the JPanel containing the lifeline and all its utilities.
-     */
-    private LifelinesPanel recordPanel;
-
-    /**
-     * the manager containing timeline data.
-     */
-    private TimelineManager records;
 
     private TabbedInspector firmInspector;
 
@@ -814,47 +791,6 @@ public class Firm extends EconomicAgent {
 
 
 
-        /****************************************************
-         * Timeline
-         ***************************************************/
-
-
-        // marketRecord = new Record(toString());
-        Inspector firmTimelineInspector = new Inspector() {
-            @Override
-            public void updateInspector() {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        repaint();
-                    }
-                });
-            }
-        };
-        firmTimelineInspector.setLayout(new BorderLayout());
-        //register the events globally
-
-
-        //get the data manager for records so we can build a jpanel that displays it
-        DataManager recordManager = records.getRecordManager();
-        assert recordManager != null;
-        //register all possible events names
-        GlobalEventData.getInstance().reset();
-        for(MarketEvents event : MarketEvents.values()){
-            GlobalEventData.getInstance().registerEventName(event.name());
-        }
-        for(MarketEvents event : MarketEvents.values()){
-            recordManager.addEventName(event.ordinal());
-        }
-
-
-
-        //initialize teh panel
-        recordPanel.openData(recordManager);
-        //add the panel to the inspector
-        firmTimelineInspector.add(recordPanel);
-        //add it as a tab!
-        firmInspector.addInspector(firmTimelineInspector,"Timeline");
-
 
 
     }
@@ -875,8 +811,8 @@ public class Firm extends EconomicAgent {
      * @param annotations additional information to display!
      */
     public void logEvent(Object agent, MarketEvents action, long time, String annotations) {
-        if(MacroII.hasGUI())
-            records.event(agent, action, time, annotations);
+        //todo logtodo
+
     }
 
     /**
@@ -886,8 +822,8 @@ public class Firm extends EconomicAgent {
      * @param time the "real" time when this occurred
      */
     public void logEvent(Object agent, MarketEvents action, long time) {
-        if(MacroII.hasGUI())
-            records.event(agent, action, time);
+        //todo logtodo
+
     }
 
     /**
@@ -895,8 +831,7 @@ public class Firm extends EconomicAgent {
      * It's not acceptable to add an logEvent for an agent that wasn't added
      */
     public void addAgentToLog(Object newAgent) {
-        if(MacroII.hasGUI())
-            records.addAgent(newAgent);
+        //todo logtodo
     }
 
     /**

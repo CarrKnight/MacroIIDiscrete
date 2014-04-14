@@ -15,7 +15,6 @@ import goods.Good;
 import goods.GoodType;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.embed.swing.JFXPanel;
@@ -23,11 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import lifelines.LifelinesPanel;
-import lifelines.data.DataManager;
-import lifelines.data.GlobalEventData;
 import model.MacroII;
-import model.MacroIIGUI;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
 import model.utilities.ExchangeNetwork;
@@ -128,10 +123,6 @@ public abstract class Market implements Deactivatable{
      */
     Inspector closingPriceInspector;
 
-    /**
-     * If the gui is on and we want the timeline this object keeps its data
-     */
-    private TimelineManager records;
 
     /**
      *if the GUI is on, here we'll keep information/visualization info regarding the exchange network
@@ -239,9 +230,8 @@ public abstract class Market implements Deactivatable{
         //record it, if necessary
         if(MacroII.hasGUI())
         {
-            records.addAgent(buyer);
-            records.event(buyer, MarketEvents.REGISTERED_AS_BUYER,
-                    buyer.getModel().getCurrentSimulationTimeInMillis());
+            //todo logtodo
+
 
 
             network.addAgent(buyer);
@@ -265,8 +255,8 @@ public abstract class Market implements Deactivatable{
 
         if(MacroII.hasGUI())
         {
-            records.event(buyer, MarketEvents.DEREGISTERED_AS_BUYER,
-                    buyer.getModel().getCurrentSimulationTimeInMillis());
+            //todo logtodo
+
 
             network.removeAgent(buyer);
 
@@ -302,9 +292,8 @@ public abstract class Market implements Deactivatable{
         //record it, if necessary
         if(MacroII.hasGUI())
         {
-            records.addAgent(seller);
-            records.event(seller,MarketEvents.REGISTERED_AS_SELLER,
-                    seller.getModel().getCurrentSimulationTimeInMillis());
+            //todo logtodo
+
 
             //add agent to the network
             network.addAgent(seller);
@@ -325,8 +314,7 @@ public abstract class Market implements Deactivatable{
 
         if(MacroII.hasGUI())
         {
-            records.event(seller, MarketEvents.DEREGISTERED_AS_SELLER,
-                    seller.getModel().getCurrentSimulationTimeInMillis());
+            //todo logtodo
 
 
             //remove agent to the network
@@ -458,8 +446,8 @@ public abstract class Market implements Deactivatable{
             {
                 //record it on the timeline
                 long time = (long) buyer.getModel().getMainScheduleTime();
-                records.event(buyer,MarketEvents.BOUGHT,time,"price: " + price + ", seller: " +seller );
-                records.event(seller, MarketEvents.SOLD, time, "price: " + price + ", buyer: " + buyer);
+                //todo logtodo
+
                 //register it on the network!
                 registerTradeOnNetwork(seller, buyer, good.getType(), 1);
             }
@@ -484,7 +472,7 @@ public abstract class Market implements Deactivatable{
         //if there is GUI, clear the network
         if(MacroII.hasGUI()){
             network.weekEnd();
-            records.weekEnd();
+            //todo logtodo
         }
     }
 
@@ -626,10 +614,6 @@ public abstract class Market implements Deactivatable{
     private TabbedInspector marketInspector;
 
 
-    /**
-     * the JPanel containing the lifeline and all the utilities.
-     */
-    private LifelinesPanel recordPanel;
 
 
     /**
@@ -693,13 +677,8 @@ public abstract class Market implements Deactivatable{
     }
 
     protected TabbedInspector buildInspector(){
-        //create the panel holding the timeline
-        GlobalEventData.getInstance().reset();
 
-        //create the panel that will hold the records
-        recordPanel = new LifelinesPanel(null,new Dimension(500,500));
 
-        records = new TimelineManager(recordPanel);
 
 
         //create the network
@@ -810,40 +789,7 @@ public abstract class Market implements Deactivatable{
         /*********************************************
          * TIMELINE
          ********************************************/
-        // marketRecord = new Record(toString());
-        Inspector marketRecordsInspector = new Inspector() {
-            @Override
-            public void updateInspector() {
-                SwingUtilities.invokeLater(new Runnable() { public void run() {
-                    repaint();
-                }});
-            }
-        };
-        marketRecordsInspector.setLayout(new BorderLayout());
-        //register the events globally
-
-
-        //get the data manager for records so we can build a jpanel that displays it
-        DataManager recordManager = records.getRecordManager();
-        assert recordManager != null;
-        //register all possible events names
-        GlobalEventData.getInstance().reset();
-        for(MarketEvents event : MarketEvents.values()){
-            GlobalEventData.getInstance().registerEventName(event.name());
-        }
-        for(MarketEvents event : MarketEvents.values()){
-            recordManager.addEventName(event.ordinal());
-        }
-
-
-
-        //initialize teh panel
-        recordPanel.openData(recordManager);
-        //add the panel to the inspector
-        marketRecordsInspector.add(recordPanel);
-        //add it as a tab!
-        toReturn.addInspector(marketRecordsInspector, "Timeline");
-
+        //todo logtodo
 
 
 
@@ -874,13 +820,6 @@ public abstract class Market implements Deactivatable{
         return marketInspector;
     }
 
-    /**
-     * Get the timeline data structure manager
-     * @return
-     */
-    protected TimelineManager getRecords() {
-        return records;
-    }
 
 
     /**

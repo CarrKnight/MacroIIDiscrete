@@ -161,12 +161,9 @@ public class OrderBookMarket extends Market {
 
         asks.add(q); //addSalesDepartmentListener it to the asks
 
-        //tell the GUI!
-        if(MacroII.hasGUI())
-        {
-            getRecords().event(seller, MarketEvents.SUBMIT_SELL_QUOTE, seller.getModel().getCurrentSimulationTimeInMillis()
-                    ,"price: " + q.getPriceQuoted());
-        }
+        //tell the log
+        //todo logtodo
+
 
 
         orderHandler.reactToNewQuote(asks,bids,this);
@@ -205,12 +202,9 @@ public class OrderBookMarket extends Market {
             throw new IllegalArgumentException("Removed a quote we didn't have. Error");
 
 
-        //tell the GUI
-        if(MacroII.hasGUI()){
-            getRecords().event(q.getAgent(),MarketEvents.REMOVE_SELL_QUOTE,
-                    q.getAgent().getModel().getCurrentSimulationTimeInMillis()
-                    ,"price: " + q.getPriceQuoted());
-        }
+        //tell the logs
+        //todo logtodo
+
 
     }
 
@@ -245,12 +239,10 @@ public class OrderBookMarket extends Market {
 
 
         //tell the GUI
-        if(MacroII.hasGUI())
-        {
-            getRecords().event(buyer,MarketEvents.SUBMIT_BUY_QUOTE,
-                    buyer.getModel().getCurrentSimulationTimeInMillis()
-                    ,"price: " + q.getPriceQuoted());
-        }
+
+            //todo logtodo
+
+
 
 
         orderHandler.reactToNewQuote(asks, bids, this);
@@ -300,7 +292,7 @@ public class OrderBookMarket extends Market {
     /**
      * Cancel a list of buy quotes
      *
-     * @param q quote to cancel
+     * @param quotes quotes to cancel
      */
     @Override
     public void removeBuyQuotes(@Nonnull Collection<Quote> quotes) {
@@ -334,11 +326,8 @@ public class OrderBookMarket extends Market {
 
 
         //tell the GUI
-        if(MacroII.hasGUI()){
-            getRecords().event(q.getAgent(), MarketEvents.REMOVE_BUY_QUOTE,
-                    q.getAgent().getModel().getCurrentSimulationTimeInMillis()
-                    ,"price: " + q.getPriceQuoted());
-        }
+        //todo logtodo
+
     }
 
 
