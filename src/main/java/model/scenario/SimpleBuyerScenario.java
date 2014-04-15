@@ -26,7 +26,6 @@ import model.utilities.pid.Controller;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
 import java.util.LinkedList;
 
 /**
@@ -217,7 +216,7 @@ public class SimpleBuyerScenario extends Scenario {
         //add a "thing" that consume X units of input as soon as they are available each week
         firm.addInventoryListener(new InventoryListener() {
             @Override
-            public void inventoryIncreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity,final  int delta) {
+            public void inventoryIncreaseEvent( HasInventory source,  GoodType type, int quantity,final  int delta) {
                 System.out.println("about to consume: " + firm.hasHowMany(GoodType.GENERIC) + ", consumedThisWeek: " + consumedThisWeek);
                 if(consumedThisWeek<consumptionRate)
                 {
@@ -239,12 +238,12 @@ public class SimpleBuyerScenario extends Scenario {
             }
 
             @Override
-            public void inventoryDecreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity, int delta) {
+            public void inventoryDecreaseEvent( HasInventory source,  GoodType type, int quantity, int delta) {
             }
 
             //ignored
             @Override
-            public void failedToConsumeEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int numberNeeded) {
+            public void failedToConsumeEvent( HasInventory source,  GoodType type, int numberNeeded) {
 
 
             }

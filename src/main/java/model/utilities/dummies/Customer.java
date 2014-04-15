@@ -19,7 +19,6 @@ import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.function.Predicate;
@@ -237,9 +236,9 @@ public class Customer extends EconomicAgent{
      * @param sellerQuote the quote (including the offer price) of the seller; I expect the buyer to have achieved this through asked for an offer function
      * @return a purchaseResult including whether the trade was succesful and if so the final price
      */
-    @Nonnull
+
     @Override
-    public PurchaseResult shopHere(@Nonnull Quote buyerQuote, @Nonnull Quote sellerQuote) {
+    public PurchaseResult shopHere( Quote buyerQuote,  Quote sellerQuote) {
         return PurchaseResult.NO_MATCH_AVAILABLE;
 
     }

@@ -11,8 +11,6 @@ import agents.firm.purchases.PurchasesDepartment;
 import goods.GoodType;
 import model.utilities.pid.ControllerInput;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
@@ -38,7 +36,7 @@ import javax.annotation.Nullable;
  */
 public abstract class AbstractInventoryControl implements InventoryControl{
 
-    @Nonnull
+
     private PurchasesDepartment purchasesDepartment;
 
     private final GoodType goodTypeToControl;
@@ -52,7 +50,7 @@ public abstract class AbstractInventoryControl implements InventoryControl{
      * Basic inventory control needs a link to the purchase department it needs to control (from where it can access the firm and the inventory).
      * IT also sets itself up to adjust at the next possible moment
      */
-    public AbstractInventoryControl(@Nonnull final PurchasesDepartment purchasesDepartment) {
+    public AbstractInventoryControl( final PurchasesDepartment purchasesDepartment) {
         this.purchasesDepartment = purchasesDepartment;
         this.goodTypeToControl = purchasesDepartment.getGoodType();
         purchasesDepartment.addInventoryListener(this);  //addSalesDepartmentListener yourself as inventory listener
@@ -68,7 +66,7 @@ public abstract class AbstractInventoryControl implements InventoryControl{
      * If it is  it calls inventoryRating which is an abstract method implemented by subclasses
      * @return the rating on the inventory conditions or null if the department is not active.
      */
-    @Nullable
+
     final public Level rateCurrentLevel(){
 
         if(!isActive)
@@ -83,7 +81,7 @@ public abstract class AbstractInventoryControl implements InventoryControl{
      * This is the method to be overriden by the subclasses so that the public method rateCurrentLevel is meaningful
      * @return the inventory level rating
      */
-    @Nonnull
+
     abstract protected Level rateInventory();
 
 
@@ -95,7 +93,7 @@ public abstract class AbstractInventoryControl implements InventoryControl{
      * @param delta the difference from the previous quantity owned (always a positive number)
      */
     @Override
-    public void inventoryIncreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity, int delta) {
+    public void inventoryIncreaseEvent( HasInventory source,  GoodType type, int quantity, int delta) {
 
         if(!isActive || type != goodTypeToControl) //if you have been turned off or this isn't the good you are controlling for, don't bother
             return;
@@ -121,7 +119,7 @@ public abstract class AbstractInventoryControl implements InventoryControl{
      * @param delta the difference from the previous quantity owned (always a positive number)
      */
     @Override
-    public void inventoryDecreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity, int delta) {
+    public void inventoryDecreaseEvent( HasInventory source,  GoodType type, int quantity, int delta) {
 
         if(!isActive || type != goodTypeToControl) //if you have been turned off, don't bother
             return;
@@ -146,7 +144,7 @@ public abstract class AbstractInventoryControl implements InventoryControl{
      * @param numberNeeded how many goods were needed
      */
     @Override
-    public void failedToConsumeEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int numberNeeded) {
+    public void failedToConsumeEvent( HasInventory source,  GoodType type, int numberNeeded) {
         //nothing happens here. It is counted by the InflowOutflowCounter in the purchase department
     }
 
@@ -182,7 +180,7 @@ public abstract class AbstractInventoryControl implements InventoryControl{
 
     }
 
-    @Nonnull
+
     protected PurchasesDepartment getPurchasesDepartment() {
         return purchasesDepartment;
     }

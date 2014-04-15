@@ -20,7 +20,6 @@ import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
 import goods.GoodType;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -48,7 +47,7 @@ public class MarginalPlantControl implements PlantControl, PlantListener {
 
     private final PeriodicMaximizer maximizer;
 
-    public MarginalPlantControl(@Nonnull HumanResources hr)
+    public MarginalPlantControl( HumanResources hr)
     {
         final FactoryProducedTargetAndMaximizePlantControl<PIDTargeterWithQuickFiring,? extends PeriodicMaximizer> produced =
                 TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeterWithQuickFiring.class, PeriodicMaximizer.class,
@@ -163,7 +162,7 @@ public class MarginalPlantControl implements PlantControl, PlantListener {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(@Nonnull GoodType type) {
+    public long maxPrice( GoodType type) {
         return control.maxPrice(type);
     }
 
@@ -174,7 +173,7 @@ public class MarginalPlantControl implements PlantControl, PlantListener {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(@Nonnull Good good) {
+    public long maxPrice( Good good) {
         return control.maxPrice(good);
     }
 

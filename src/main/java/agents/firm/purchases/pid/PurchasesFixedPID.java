@@ -24,7 +24,6 @@ import model.utilities.pid.decorator.MovingAverageFilterInputDecorator;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -60,7 +59,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      * This is the standard constructor needed to generate at random this strategy.
      * @param purchasesDepartment the department controlled by this strategy
      */
-    public PurchasesFixedPID(@Nonnull PurchasesDepartment purchasesDepartment) {
+    public PurchasesFixedPID( PurchasesDepartment purchasesDepartment) {
         super(purchasesDepartment);                                                                                //.5f,2f,.05f
         float proportionalGain = (float) (.5f + purchasesDepartment.getRandom().nextGaussian()*.01f);
         float integralGain = (float) (.5f + purchasesDepartment.getRandom().nextGaussian()*.05f);
@@ -74,7 +73,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      * This is the standard constructor needed to generate at random this strategy.
      * @param purchasesDepartment the department controlled by this strategy
      */
-    public PurchasesFixedPID(@Nonnull PurchasesDepartment purchasesDepartment, int specificTarget) {
+    public PurchasesFixedPID( PurchasesDepartment purchasesDepartment, int specificTarget) {
         super(purchasesDepartment,specificTarget);                                                                                //.5f,2f,.05f
         float proportionalGain = (float) (.5f + purchasesDepartment.getRandom().nextGaussian()*.01f);
         float integralGain = (float) (.5f + purchasesDepartment.getRandom().nextGaussian()*.05f);
@@ -91,7 +90,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      * @param specificTarget the specific target
      * @param controllerType the type of control to use
      */
-    public PurchasesFixedPID(@Nonnull PurchasesDepartment purchasesDepartment, int specificTarget,
+    public PurchasesFixedPID( PurchasesDepartment purchasesDepartment, int specificTarget,
                              Class<? extends Controller> controllerType, MacroII model)
     {
         super(purchasesDepartment,specificTarget);
@@ -108,7 +107,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      * Constructor that specifies gains
      * @param purchasesDepartment the department controlled by this strategy
      */
-    public PurchasesFixedPID(@Nonnull PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
+    public PurchasesFixedPID( PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
                              float derivativeGain, int specificTarget) {
         super(purchasesDepartment,specificTarget);
         rootController = new PIDController(proportionalGain,integralGain,derivativeGain,purchasesDepartment.getRandom()); //instantiate the controller
@@ -122,7 +121,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      * Constructor that specifies gains
      * @param purchasesDepartment the department controlled by this strategy
      */
-    public PurchasesFixedPID(@Nonnull PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
+    public PurchasesFixedPID( PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
                              float derivativeGain) {
         super(purchasesDepartment);
         rootController = new PIDController(proportionalGain,integralGain,derivativeGain,purchasesDepartment.getRandom()); //instantiate the controller

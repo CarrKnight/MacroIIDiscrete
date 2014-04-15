@@ -14,8 +14,6 @@ import agents.firm.sales.pricing.AskPricingStrategy;
 import financial.market.Market;
 import goods.GoodType;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class SalesDepartmentFactory {
     /**
@@ -26,7 +24,7 @@ public class SalesDepartmentFactory {
      * @param market the market the sales department markets
      * @return a new sales department
      */
-    public static SalesDepartment incompleteSalesDepartment(@Nonnull Firm firm, @Nonnull Market market) {
+    public static SalesDepartment incompleteSalesDepartment( Firm firm,  Market market) {
         return new SalesDepartmentAllAtOnce(firm, market);
     }
 
@@ -40,8 +38,8 @@ public class SalesDepartmentFactory {
      * @param SalesDepartmentType
      * @return a new sales department
      */
-    public static SalesDepartment incompleteSalesDepartment(@Nonnull Firm firm, @Nonnull Market market,
-                                                            @Nonnull BuyerSearchAlgorithm buyerSearchAlgorithm, @Nonnull SellerSearchAlgorithm sellerSearchAlgorithm,
+    public static SalesDepartment incompleteSalesDepartment( Firm firm,  Market market,
+                                                             BuyerSearchAlgorithm buyerSearchAlgorithm,  SellerSearchAlgorithm sellerSearchAlgorithm,
                                                             Class<? extends SalesDepartment> SalesDepartmentType) {
         if(SalesDepartmentType.equals(SalesDepartmentAllAtOnce.class))
             return new SalesDepartmentAllAtOnce(firm, market, buyerSearchAlgorithm, sellerSearchAlgorithm);
@@ -63,9 +61,9 @@ public class SalesDepartmentFactory {
      * @return a new sales department
      */
     public static <BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm, AP extends AskPricingStrategy, SP extends SalesPredictor>
-    FactoryProducedSalesDepartment<BS, SS, AP, SP> newSalesDepartment(@Nonnull Firm firm, @Nonnull Market market,
-                                                                      @Nullable Class<BS> buyerSearch, @Nullable Class<SS> sellerSearch,
-                                                                      @Nullable Class<AP> priceStrategy, @Nullable Class<SP> predictionStrategy,
+    FactoryProducedSalesDepartment<BS, SS, AP, SP> newSalesDepartment( Firm firm,  Market market,
+                                                                       Class<BS> buyerSearch,  Class<SS> sellerSearch,
+                                                                       Class<AP> priceStrategy,  Class<SP> predictionStrategy,
                                                                       Class<? extends SalesDepartment> salesDepartmentType) {
         //create the search algorithms
         BS buyerSearchAlgorithm;

@@ -12,7 +12,6 @@ import com.sun.istack.internal.Nullable;
 import goods.Good;
 import goods.GoodType;
 
-import javax.annotation.Nonnull;
 
 /**
  * A quote is a price promise for one good type
@@ -30,19 +29,19 @@ public class Quote {
     /**
      * Bid quotes want a general kind of good, this is it.
      */
-    @Nullable
+
     private GoodType type;
 
     /**
      * Ask quotes sell a SPECIFIC good, this is it
      */
-    @Nullable
+
     private Good good;
 
     /**
      * If this quote was originated by a department within the economic agent, you can record it here
      */
-    @Nullable
+
     private Department originator = null;
 
 
@@ -52,7 +51,7 @@ public class Quote {
     }
 
 
-    public static Quote newSellerQuote(@Nonnull EconomicAgent seller, long priceQuoted,@Nonnull Good good){
+    public static Quote newSellerQuote( EconomicAgent seller, long priceQuoted, Good good){
         Quote ask = new Quote(seller,priceQuoted);
         ask.good = good;
         ask.type = good.getType();

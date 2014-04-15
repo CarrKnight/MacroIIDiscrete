@@ -22,8 +22,6 @@ import sim.engine.SimState;
 import sim.portrayal.Inspector;
 import sim.portrayal.SimpleInspector;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -71,7 +69,7 @@ public abstract class EconomicAgent implements Agent, HasInventory{
 
 
 
-    protected EconomicAgent(@Nonnull final MacroII model) {
+    protected EconomicAgent( final MacroII model) {
 
         this(model, 0l);
 
@@ -82,7 +80,7 @@ public abstract class EconomicAgent implements Agent, HasInventory{
 
 
 
-    protected EconomicAgent(@Nonnull final MacroII model,final long cash) {
+    protected EconomicAgent( final MacroII model,final long cash) {
         this.model = model;
         this.cash = cash;
         this.counter = new DailyProductionAndConsumptionCounter();
@@ -122,7 +120,7 @@ public abstract class EconomicAgent implements Agent, HasInventory{
      * @param reason the market in which the transaction occurs, can be null
      * @throws financial.Bankruptcy if you end up with negative money. If thrown the receiver received nothing!
      */
-    public void pay(long money,@Nonnull EconomicAgent receiver,@Nullable Market reason) throws Bankruptcy {
+    public void pay(long money, EconomicAgent receiver, Market reason) throws Bankruptcy {
         cash -= money;  //money is gone!
         if(cash < 0 )
             throw new Bankruptcy(this);
@@ -275,7 +273,7 @@ public abstract class EconomicAgent implements Agent, HasInventory{
      * @param sender who sent it?
      */
     @Override
-    public void receive(Good g, @Nullable HasInventory sender) {
+    public void receive(Good g,  HasInventory sender) {
         counter.countNewReceive(g.getType());
         getInventory().receive(g, sender);
     }
@@ -334,7 +332,7 @@ public abstract class EconomicAgent implements Agent, HasInventory{
      * @return true if it has in inventory (owned and not consumed)
      */
     @Override
-    public boolean has(@Nonnull Good g) {
+    public boolean has( Good g) {
         return getInventory().has(g);
     }
 
@@ -389,8 +387,8 @@ public abstract class EconomicAgent implements Agent, HasInventory{
      * peek at the topmost good of a specific type in your inventory.
      * @return the first good found or null if there are none
      */
-    @Override @Nullable
-    public Good peekGood(@Nonnull GoodType type) {
+    @Override 
+    public Good peekGood( GoodType type) {
         return getInventory().peekGood(type);
 
     }
@@ -401,8 +399,8 @@ public abstract class EconomicAgent implements Agent, HasInventory{
      * @param sellerQuote the quote (including the offer price) of the seller; I expect the buyer to have achieved this through asked for an offer function
      * @return a purchaseResult including whether the trade was succesful and if so the final price
      */
-    @Nonnull
-    public abstract PurchaseResult shopHere(@Nonnull Quote buyerQuote,@Nonnull Quote sellerQuote);
+    
+    public abstract PurchaseResult shopHere( Quote buyerQuote, Quote sellerQuote);
 
 
     /**

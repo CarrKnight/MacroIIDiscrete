@@ -21,7 +21,6 @@ import model.utilities.pid.PIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -50,7 +49,7 @@ public class PurchasesSimplePID extends SimpleInventoryControl implements BidPri
      * This is the standard constructor needed to generate at random this strategy.
      * @param purchasesDepartment the department controlled by this strategy
      */
-    public PurchasesSimplePID(@Nonnull PurchasesDepartment purchasesDepartment) {
+    public PurchasesSimplePID( PurchasesDepartment purchasesDepartment) {
         super(purchasesDepartment);                                                                                //.5f,2f,.05f
         float proportionalGain = (float) (.5f + purchasesDepartment.getRandom().nextGaussian()*.01f);
         float integralGain = (float) (2f + purchasesDepartment.getRandom().nextGaussian()*.05f);
@@ -58,7 +57,7 @@ public class PurchasesSimplePID extends SimpleInventoryControl implements BidPri
         controller = new PIDController(proportionalGain,integralGain,derivativeGain,purchasesDepartment.getRandom()); //instantiate the controller
     }
 
-    public PurchasesSimplePID(@Nonnull PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
+    public PurchasesSimplePID( PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
                               float derivativeGain) {
         super(purchasesDepartment);
         controller = new PIDController(proportionalGain,integralGain,derivativeGain,purchasesDepartment.getRandom()); //instantiate the controller
@@ -70,8 +69,8 @@ public class PurchasesSimplePID extends SimpleInventoryControl implements BidPri
      * @param controllerType the controller type to use
      * @param macroII a link to the model
      */
-    public PurchasesSimplePID(@Nonnull PurchasesDepartment purchasesDepartment,
-                              @Nonnull Class<? extends Controller > controllerType,
+    public PurchasesSimplePID( PurchasesDepartment purchasesDepartment,
+                               Class<? extends Controller > controllerType,
                               MacroII macroII)
     {
         super(purchasesDepartment);

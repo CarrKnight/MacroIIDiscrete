@@ -22,8 +22,6 @@ import sim.portrayal.Inspector;
 import sim.portrayal.inspector.TabbedInspector;
 import sim.util.media.chart.HistogramGenerator;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.*;
 import java.util.Queue;
@@ -125,7 +123,7 @@ public class OrderBookMarket extends Market {
     /**
      * Order book with limit orders only!
      */
-    @Nonnull
+
     @Override
     public ActionsAllowed getSellerRole() {
 
@@ -140,9 +138,9 @@ public class OrderBookMarket extends Market {
      * @param good   the good to sell
      * @return the quote made; returns a null quote if the quote is immediately filled.
      */
-    @Nonnull
+
     @Override
-    public Quote submitSellQuote(@Nonnull EconomicAgent seller, long price, @Nonnull Good good, @Nullable Department department) {
+    public Quote submitSellQuote( EconomicAgent seller, long price,  Good good,  Department department) {
 
         assert getSellers().contains(seller);  //you should be registered if you are here
         if(MacroII.SAFE_MODE) //double check the good isn't already on sale
@@ -183,9 +181,9 @@ public class OrderBookMarket extends Market {
      * @param good   the good to sell
      * @return the quote made
      */
-    @Nonnull
+
     @Override
-    public Quote submitSellQuote(@Nonnull EconomicAgent seller, long price, @Nonnull Good good) {
+    public Quote submitSellQuote( EconomicAgent seller, long price,  Good good) {
         return submitSellQuote(seller,price,good,null);
     }
 
@@ -217,9 +215,9 @@ public class OrderBookMarket extends Market {
      * @param price the price at/below which the agent is willing to buy
      * @return quote made
      */
-    @Nonnull
+
     @Override
-    public Quote submitBuyQuote(@Nonnull EconomicAgent buyer, long price, @Nullable Department department) {
+    public Quote submitBuyQuote( EconomicAgent buyer, long price,  Department department) {
         assert getBuyers().contains(buyer) : buyer + " ---- " + getBuyers() + " ---- " + this.getGoodType();  //you should be registered if you are here
         if(MacroII.SAFE_MODE) //double check the good isn't already on sale
             Preconditions.checkState(buyer.getModel().getCurrentPhase().equals(ActionOrder.TRADE));
@@ -265,9 +263,9 @@ public class OrderBookMarket extends Market {
      * @param price the price at/below which the agent is willing to buy
      * @return quote made
      */
-    @Nonnull
+
     @Override
-    public Quote submitBuyQuote(@Nonnull EconomicAgent buyer, long price) {
+    public Quote submitBuyQuote( EconomicAgent buyer, long price) {
         return submitBuyQuote(buyer,price,null);
     }
 
@@ -295,7 +293,7 @@ public class OrderBookMarket extends Market {
      * @param quotes quotes to cancel
      */
     @Override
-    public void removeBuyQuotes(@Nonnull Collection<Quote> quotes) {
+    public void removeBuyQuotes( Collection<Quote> quotes) {
 
         Preconditions.checkArgument(!quotes.isEmpty());
         bids.removeAll(quotes);

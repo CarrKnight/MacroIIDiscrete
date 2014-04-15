@@ -13,8 +13,6 @@ import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -39,7 +37,7 @@ public class DecentralizedMarket extends Market {
      *
      * @return the actions allowed to the seller in this market
      */
-    @Nonnull
+
     @Override
     public ActionsAllowed getSellerRole() {
         return ActionsAllowed.SEARCH;
@@ -58,18 +56,18 @@ public class DecentralizedMarket extends Market {
     /**
      * Decentralized markets take no quotes
      */
-    @Nonnull
+
     @Override
-    public Quote submitSellQuote(@Nonnull EconomicAgent seller, long price, @Nonnull Good good) {
+    public Quote submitSellQuote( EconomicAgent seller, long price,  Good good) {
         throw new IllegalStateException("Decentralized markets take no quotes!");
     }
 
     /**
      * Decentralized markets take no quotes
      */
-    @Nonnull
+
     @Override
-    public Quote submitSellQuote(@Nonnull EconomicAgent seller, long price, @Nonnull Good good, @Nullable Department department) {
+    public Quote submitSellQuote( EconomicAgent seller, long price,  Good good,  Department department) {
         throw new IllegalStateException("Decentralized markets take no quotes!");
     }
 
@@ -84,18 +82,18 @@ public class DecentralizedMarket extends Market {
     /**
      * Decentralized markets take no quotes
      */
-    @Nonnull
+
     @Override
-    public Quote submitBuyQuote(@Nonnull EconomicAgent buyer, long price, @Nullable Department department) {
+    public Quote submitBuyQuote( EconomicAgent buyer, long price,  Department department) {
         throw new IllegalStateException("Decentralized markets take no quotes!");
     }
 
     /**
      * Decentralized markets take no quotes
      */
-    @Nonnull
+
     @Override
-    public Quote submitBuyQuote(@Nonnull EconomicAgent buyer, long price) {
+    public Quote submitBuyQuote( EconomicAgent buyer, long price) {
         throw new IllegalStateException("Decentralized markets take no quotes!");
     }
 

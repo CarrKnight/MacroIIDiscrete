@@ -29,8 +29,8 @@ import agents.firm.sales.exploration.SellerSearchAlgorithm;
  * @see
  */
 /*
-@Nullable Class<? extends WorkforceTargeter> targeter,
-@Nullable Class<? extends WorkforceMaximizer> maximizer,
+ Class<? extends WorkforceTargeter> targeter,
+ Class<? extends WorkforceMaximizer> maximizer,
  */
 
 public class FactoryProducedHumanResourcesWithMaximizerAndTargeter<PC extends PlantControl,

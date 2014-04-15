@@ -15,7 +15,6 @@ import model.MacroII;
 import model.utilities.DelayException;
 import model.utilities.pid.PIDController;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -41,7 +40,7 @@ public class MarginalAndPIDMaximizer extends MarginalMaximizer {
     /**
      * constructor that generates PID parameters from the model
      */
-    public MarginalAndPIDMaximizer(@Nonnull HumanResources hr, PlantControl control, Plant p, Firm owner, MacroII model) {
+    public MarginalAndPIDMaximizer( HumanResources hr, PlantControl control, Plant p, Firm owner, MacroII model) {
         this(hr, control, p, owner,
                 model.drawProportionalGain()/100f,model.drawIntegrativeGain()/100f,
                 model.drawDerivativeGain()/100f,
@@ -51,8 +50,8 @@ public class MarginalAndPIDMaximizer extends MarginalMaximizer {
     /**
      * constructor that generates PID parameters from the model
      */
-    public MarginalAndPIDMaximizer(@Nonnull HumanResources hr, @Nonnull PlantControl control, @Nonnull Plant p,
-                                   @Nonnull Firm owner, float proportional, float integral, float derivative,
+    public MarginalAndPIDMaximizer( HumanResources hr,  PlantControl control,  Plant p,
+                                    Firm owner, float proportional, float integral, float derivative,
                                    MersenneTwisterFast random) {
         super(hr, control, p, owner);
         pid = new PIDController(proportional,integral,derivative,random);

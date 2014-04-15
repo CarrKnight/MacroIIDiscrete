@@ -14,7 +14,6 @@ import financial.utilities.Quote;
 import goods.Good;
 import agents.firm.production.control.PlantControl;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -152,7 +151,7 @@ public class MatchBestControlDecorator extends PlantControlDecorator implements 
      * @param bestAsk the best ask when the bid was made
      */
     @Override
-    public void newBidEvent(@Nonnull EconomicAgent buyer, long price, Quote bestAsk) {
+    public void newBidEvent( EconomicAgent buyer, long price, Quote bestAsk) {
         //record the new market offer
         updateBestMarketOffer();
         //if you did have to match it then stop buying until you receive confirmation
@@ -170,7 +169,7 @@ public class MatchBestControlDecorator extends PlantControlDecorator implements 
      * @param quote the removed quote
      */
     @Override
-    public void removedBidEvent(@Nonnull EconomicAgent buyer, @Nonnull Quote quote) {
+    public void removedBidEvent( EconomicAgent buyer,  Quote quote) {
         updateBestMarketOffer();
     }
 

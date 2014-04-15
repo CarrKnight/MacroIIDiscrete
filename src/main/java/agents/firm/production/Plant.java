@@ -26,7 +26,6 @@ import model.utilities.stats.collectors.enums.PlantDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -52,13 +51,13 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
     /**
      * Minimal constructor
      */
-    public Plant(@Nonnull Blueprint blueprint,@Nonnull Firm owner) {
+    public Plant( Blueprint blueprint, Firm owner) {
         this(blueprint,owner,1,100,0,100000);
     }
 
 
-    public Plant(@Nonnull Blueprint blueprint,
-                 @Nonnull Firm owner, int minWorkers, int maxWorkers, long buildingCosts, long usefulLife) {
+    public Plant( Blueprint blueprint,
+                  Firm owner, int minWorkers, int maxWorkers, long buildingCosts, long usefulLife) {
         this.blueprint = blueprint;
         this.owner = owner;
         this.minWorkers = minWorkers;
@@ -547,7 +546,7 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
      * Remove a specific worker
      * @return the worker fired
      */
-    public Person removeWorker(@Nonnull Person w){
+    public Person removeWorker( Person w){
         if(getNumberOfWorkers() <=0)
             throw new IllegalStateException("Trying to fire a worker from an empty plant!");
 
@@ -792,7 +791,7 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
      * @param delta the difference from the previous quantity owned (always a positive number)
      */
     @Override
-    public void inventoryIncreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity, int delta) {
+    public void inventoryIncreaseEvent( HasInventory source,  GoodType type, int quantity, int delta) {
 
 
     }
@@ -806,7 +805,7 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
      * @param delta the difference from the previous quantity owned (always a positive number)
      */
     @Override
-    public void inventoryDecreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity, int delta) {
+    public void inventoryDecreaseEvent( HasInventory source,  GoodType type, int quantity, int delta) {
 
 
 
@@ -1012,7 +1011,7 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
      * @param type the goodtype
      * @return
      */
-    public float hypotheticalThroughput(int workers, @Nonnull GoodType type) {
+    public float hypotheticalThroughput(int workers,  GoodType type) {
         return plantMachinery.hypotheticalThroughput(workers, type);
     }
 
@@ -1025,7 +1024,7 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
      * @param numberNeeded how many goods were needed
      */
     @Override
-    public void failedToConsumeEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int numberNeeded) {
+    public void failedToConsumeEvent( HasInventory source,  GoodType type, int numberNeeded) {
 
 
     }
@@ -1076,7 +1075,7 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
     /**
      * utility method to analyze only specific days
      */
-    public double[] getObservationsRecordedTheseDays(PlantDataType type, @Nonnull int[] days) {
+    public double[] getObservationsRecordedTheseDays(PlantDataType type,  int[] days) {
         return dataStorage.getObservationsRecordedTheseDays(type, days);
     }
 
@@ -1123,7 +1122,7 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
     /**
      * utility method to analyze only specific days
      */
-    public double[] getProductionObservationsRecordedTheseDays(GoodType type, @Nonnull int[] days) {
+    public double[] getProductionObservationsRecordedTheseDays(GoodType type,  int[] days) {
         return productionData.getObservationsRecordedTheseDays(type, days);
     }
 
@@ -1172,7 +1171,7 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
     /**
      * utility method to analyze only specific days
      */
-    public double[] getConsumptionObservationsRecordedTheseDays(GoodType type, @Nonnull int[] days) {
+    public double[] getConsumptionObservationsRecordedTheseDays(GoodType type,  int[] days) {
         return consumptionData.getObservationsRecordedTheseDays(type, days);
     }
 

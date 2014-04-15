@@ -22,10 +22,7 @@ import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * <h4>Description</h4>
@@ -85,7 +82,7 @@ public class Person extends EconomicAgent {
         this(model,cash,0,null);
     }
 
-    public Person(@Nonnull MacroII model, long cash, int minimumDailyWagesRequired,@Nullable Market laborMarket) {
+    public Person( MacroII model, long cash, int minimumDailyWagesRequired, Market laborMarket) {
         super(model, cash);
         this.minimumDailyWagesRequired = minimumDailyWagesRequired;
         this.laborMarket = laborMarket;
@@ -173,7 +170,7 @@ public class Person extends EconomicAgent {
     }
 
 
-    public void changeInWage(long newWage,@Nonnull EconomicAgent employer1){
+    public void changeInWage(long newWage, EconomicAgent employer1){
 
         wage = newWage;
         assert this.employer != null;
@@ -236,7 +233,7 @@ public class Person extends EconomicAgent {
      * Call this when the firm lays the person off.
      * @param employer  the firm that hired this worker.
      */
-    public void fired(@Nonnull final EconomicAgent employer){
+    public void fired( final EconomicAgent employer){
         checkNotNull(employer); //make sure it's not null
         assert this.employer == employer;
         this.employer = null;
@@ -477,9 +474,9 @@ public class Person extends EconomicAgent {
      * @param sellerQuote the quote (including the offer price) of the seller; I expect the buyer to have achieved this through asked for an offer function
      * @return a purchaseResult including whether the trade was succesful and if so the final price
      */
-    @Nonnull
+
     @Override
-    public PurchaseResult shopHere(@Nonnull Quote buyerQuote, @Nonnull Quote sellerQuote) {
+    public PurchaseResult shopHere( Quote buyerQuote,  Quote sellerQuote) {
         throw new RuntimeException("not implemented yet!");
     }
 

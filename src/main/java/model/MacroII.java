@@ -23,14 +23,12 @@ import model.utilities.scheduler.PhaseScheduler;
 import model.utilities.scheduler.Priority;
 import model.utilities.scheduler.TrueRandomScheduler;
 import org.jfree.data.time.Day;
-import sim.display.GUIState;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.portrayal.Inspector;
 import sim.portrayal.inspector.TabbedInspector;
 import sim.util.media.chart.HistogramGenerator;
 
-import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
@@ -776,7 +774,7 @@ public class MacroII extends SimState{
      * @param priority the action priority
      *
      */
-    public void scheduleSoon(@Nonnull ActionOrder phase, @Nonnull Steppable action, Priority priority) {
+    public void scheduleSoon( ActionOrder phase,  Steppable action, Priority priority) {
         phaseScheduler.scheduleSoon(phase, action, priority);
     }
 
@@ -787,7 +785,7 @@ public class MacroII extends SimState{
      * @param daysAway how many days into the future should this happen
      * @param priority the action priority
      */
-    public void scheduleAnotherDay(@Nonnull ActionOrder phase, @Nonnull Steppable action, int daysAway, Priority priority) {
+    public void scheduleAnotherDay( ActionOrder phase,  Steppable action, int daysAway, Priority priority) {
         phaseScheduler.scheduleAnotherDay(phase, action, daysAway, priority);
     }
 
@@ -797,7 +795,7 @@ public class MacroII extends SimState{
      * @param action the steppable that should be called
      * @param
      */
-    public void scheduleAnotherDayWithFixedProbability(@Nonnull ActionOrder phase, @Nonnull Steppable action, float probability, Priority priority) {
+    public void scheduleAnotherDayWithFixedProbability( ActionOrder phase,  Steppable action, float probability, Priority priority) {
         phaseScheduler.scheduleAnotherDayWithFixedProbability(phase, action, probability, priority);
     }
 
@@ -807,7 +805,7 @@ public class MacroII extends SimState{
      * @param action the action to schedule
      * @param daysAway how many days from now should it be scheduled
      */
-    public void scheduleAnotherDay(@Nonnull ActionOrder phase, @Nonnull Steppable action, int daysAway) {
+    public void scheduleAnotherDay( ActionOrder phase,  Steppable action, int daysAway) {
         phaseScheduler.scheduleAnotherDay(phase, action, daysAway);
     }
 
@@ -857,7 +855,7 @@ public class MacroII extends SimState{
      * @param action the action to schedule
      * @param probability the daily probability of this action happening. So if you pass 15% then each day has a probability of 15% of triggering this action
      */
-    public void scheduleAnotherDayWithFixedProbability(@Nonnull ActionOrder phase, @Nonnull Steppable action, float probability) {
+    public void scheduleAnotherDayWithFixedProbability( ActionOrder phase,  Steppable action, float probability) {
         phaseScheduler.scheduleAnotherDayWithFixedProbability(phase, action, probability);
     }
 

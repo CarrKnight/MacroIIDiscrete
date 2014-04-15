@@ -19,8 +19,6 @@ import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
 import goods.GoodType;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
@@ -47,7 +45,7 @@ public class DiscreteMatcherPlantControl  implements PlantControl
      * Creates a TargetAndMaximizePlantControl with PIDTargeterWithQuickFiring and HillClimber
      * @param hr
      */
-    public DiscreteMatcherPlantControl(@Nonnull HumanResources hr) {
+    public DiscreteMatcherPlantControl( HumanResources hr) {
         //instantiate the real control
         control = TargetAndMaximizePlantControl.PlantControlFactory(hr,
                 PIDTargeterWithQuickFiring.class, SetTargetThenTryAgainMaximizer.class,
@@ -112,7 +110,7 @@ public class DiscreteMatcherPlantControl  implements PlantControl
      * @return the rating on the current stock conditions or null if the department is not active.
      */
     @Override
-    @Nullable
+
     public Level rateCurrentLevel() {
         return control.rateCurrentLevel();
     }

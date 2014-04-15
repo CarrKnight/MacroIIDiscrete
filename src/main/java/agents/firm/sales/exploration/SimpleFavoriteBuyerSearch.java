@@ -29,7 +29,7 @@ import financial.utilities.PurchaseResult;
 public class SimpleFavoriteBuyerSearch extends SimpleBuyerSearch {
 
 
-    @Nullable
+
     private EconomicAgent favorite = null;
 
     public SimpleFavoriteBuyerSearch(Market market, EconomicAgent firm) {

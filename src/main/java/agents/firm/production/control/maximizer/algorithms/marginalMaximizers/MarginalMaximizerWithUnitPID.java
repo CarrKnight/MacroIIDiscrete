@@ -16,7 +16,6 @@ import goods.GoodType;
 import model.utilities.DelayException;
 import model.utilities.pid.PIDController;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -58,8 +57,8 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
      * @param hr the human resources
      * @param control the plant control.
      */
-    public MarginalMaximizerWithUnitPID(@Nonnull HumanResources hr, @Nonnull PlantControl control,
-                                        @Nonnull Plant p, @Nonnull Firm owner, @Nonnull MersenneTwisterFast random,
+    public MarginalMaximizerWithUnitPID( HumanResources hr,  PlantControl control,
+                                         Plant p,  Firm owner,  MersenneTwisterFast random,
                                         int currentWorkerSize) {
         this(hr, control, p, owner, random, currentWorkerSize,
                 0f,	4.6f,	0.1f
@@ -73,8 +72,8 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
      * @param hr the human resources
      * @param control the plant control.
      */
-    public MarginalMaximizerWithUnitPID(@Nonnull HumanResources hr, @Nonnull PlantControl control,
-                                        @Nonnull Plant p, @Nonnull Firm owner, @Nonnull MersenneTwisterFast random,
+    public MarginalMaximizerWithUnitPID( HumanResources hr,  PlantControl control,
+                                         Plant p,  Firm owner,  MersenneTwisterFast random,
                                         int currentWorkerSize,float proportional,
                                         float integral, float derivative) {
         super(hr, control, p, owner);

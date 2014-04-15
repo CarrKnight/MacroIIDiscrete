@@ -14,7 +14,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -162,7 +161,7 @@ public class DailyObservations implements Iterable<Double> {
     /**
      * utility method to analyze only specific days
      */
-    public double[] getObservationsRecordedTheseDays(@Nonnull int[] days)
+    public double[] getObservationsRecordedTheseDays( int[] days)
     {
         Preconditions.checkArgument(days.length > 0);
         double[] toReturn = new double[days.length];
@@ -178,7 +177,7 @@ public class DailyObservations implements Iterable<Double> {
     /**
      * utility method to analyze only specific days in an interval( the beginningDay and lastDay are INCLUDED, if possible)
      */
-    public double[] getObservationsRecordedTheseDays(@Nonnull int beginningDay, int lastDay)
+    public double[] getObservationsRecordedTheseDays( int beginningDay, int lastDay)
     {
         Preconditions.checkArgument(beginningDay <= lastDay);
         if(beginningDay == lastDay)

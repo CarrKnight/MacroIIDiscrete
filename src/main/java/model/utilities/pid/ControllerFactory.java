@@ -9,7 +9,6 @@ package model.utilities.pid;
 import com.google.common.base.Preconditions;
 import model.MacroII;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -38,7 +37,7 @@ public class ControllerFactory
      * @param controllerType the type of controller you want
      * @return the controller object you get
      */
-    public static <C extends Controller> C buildController(@Nonnull Class<C> controllerType, @Nonnull MacroII model)
+    public static <C extends Controller> C buildController( Class<C> controllerType,  MacroII model)
     {
         Preconditions.checkArgument(controllerType != null && model != null,"Don't pass nulls!");
 

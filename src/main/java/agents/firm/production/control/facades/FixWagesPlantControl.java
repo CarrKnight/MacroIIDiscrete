@@ -19,8 +19,6 @@ import agents.firm.production.control.maximizer.algorithms.hillClimbers.HillClim
 import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.Machinery;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
@@ -46,7 +44,7 @@ public class FixWagesPlantControl implements PlantControl {
      * Creates a TargetAndMaximizePlantControl with PIDTargeterWithQuickFiring and HillClimber
      * @param hr
      */
-    public FixWagesPlantControl(@Nonnull HumanResources hr) {
+    public FixWagesPlantControl( HumanResources hr) {
         //instantiate the real control
         control = TargetAndMaximizePlantControl.
                 PlantControlFactory(hr, PIDTargeterWithQuickFiring.class,SetTargetThenTryAgainMaximizer.class,
@@ -111,7 +109,7 @@ public class FixWagesPlantControl implements PlantControl {
      * @return the rating on the current stock conditions or null if the department is not active.
      */
     @Override
-    @Nullable
+
     public Level rateCurrentLevel() {
         return control.rateCurrentLevel();
     }

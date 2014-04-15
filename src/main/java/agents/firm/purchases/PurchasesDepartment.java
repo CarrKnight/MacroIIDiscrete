@@ -37,8 +37,6 @@ import model.utilities.stats.collectors.enums.PurchasesDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 
 /**
@@ -171,7 +169,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
     protected boolean startWasCalled=false;
 
 
-    protected PurchasesDepartment(long budgetGiven,@Nonnull Firm firm,@Nonnull Market market,
+    protected PurchasesDepartment(long budgetGiven, Firm firm, Market market,
                                   MacroII model) {
         //initialize objects
         this.budgetGiven = budgetGiven;
@@ -204,7 +202,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * @param firm the firm owning the department
      * @param market the market to buy from
      */
-    protected PurchasesDepartment(long budgetGiven,@Nonnull Firm firm,@Nonnull Market market) {
+    protected PurchasesDepartment(long budgetGiven, Firm firm, Market market) {
         this(budgetGiven,firm,market,firm.getModel());
 
 
@@ -219,7 +217,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * @param  model the reference to the model object
      *
      */
-    public static PurchasesDepartment getEmptyPurchasesDepartment(long budgetGiven,@Nonnull Firm firm,@Nonnull Market market,
+    public static PurchasesDepartment getEmptyPurchasesDepartment(long budgetGiven, Firm firm, Market market,
                                                                   MacroII model){
         //create the simple purchases department
         //return it
@@ -234,7 +232,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * @param firm the firm owning the department
      * @param market the market the department belongs to
      */
-    public static PurchasesDepartment getEmptyPurchasesDepartment(long budgetGiven,@Nonnull Firm firm,@Nonnull Market market){
+    public static PurchasesDepartment getEmptyPurchasesDepartment(long budgetGiven, Firm firm, Market market){
         //create the simple purchases department
         //return it
         return getEmptyPurchasesDepartment(budgetGiven, firm, market,firm.getModel());
@@ -251,7 +249,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     public static
     FactoryProducedPurchaseDepartment<InventoryControl,BidPricingStrategy,BuyerSearchAlgorithm,SellerSearchAlgorithm>
-    getRandomPurchaseDepartment(long budgetGiven, @Nonnull Firm firm, @Nonnull Market market){
+    getRandomPurchaseDepartment(long budgetGiven,  Firm firm,  Market market){
         //create the simple purchases department
         PurchasesDepartment instance = new PurchasesDepartment(budgetGiven,firm,market); //call the constructor
         //create random inventory control and assign it
@@ -297,8 +295,8 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     public static <IC extends InventoryControl & BidPricingStrategy,BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm>
     FactoryProducedPurchaseDepartment<IC,IC,BS,SS> getPurchasesDepartmentIntegrated
-    (long budgetGiven, @Nonnull Firm firm, @Nonnull Market market,
-     @Nullable Class<IC> integratedControl, @Nullable Class<BS> buyerSearchAlgorithmType, @Nullable Class<SS> sellerSearchAlgorithmType )
+    (long budgetGiven,  Firm firm,  Market market,
+      Class<IC> integratedControl,  Class<BS> buyerSearchAlgorithmType,  Class<SS> sellerSearchAlgorithmType )
     {
 
         //create the simple purchases department
@@ -364,11 +362,11 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     public static
     <IC extends InventoryControl, BP extends BidPricingStrategy,BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm>
-    FactoryProducedPurchaseDepartment<IC,BP,BS,SS> getPurchasesDepartment(long budgetGiven, @Nonnull Firm firm, @Nonnull Market market,
-                                                                          @Nullable Class<IC> inventoryControlType,
-                                                                          @Nullable Class<BP> bidPricingStrategyType,
-                                                                          @Nullable Class<BS> buyerSearchAlgorithmType,
-                                                                          @Nullable Class<SS> sellerSearchAlgorithmType){
+    FactoryProducedPurchaseDepartment<IC,BP,BS,SS> getPurchasesDepartment(long budgetGiven,  Firm firm,  Market market,
+                                                                           Class<IC> inventoryControlType,
+                                                                           Class<BP> bidPricingStrategyType,
+                                                                           Class<BS> buyerSearchAlgorithmType,
+                                                                           Class<SS> sellerSearchAlgorithmType){
         //create the simple purchases department
         PurchasesDepartment instance = new PurchasesDepartment(budgetGiven,firm,market); //call the constructor
 
@@ -435,9 +433,9 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     public static
     FactoryProducedPurchaseDepartment<InventoryControl,BidPricingStrategy,BuyerSearchAlgorithm,SellerSearchAlgorithm>
-    getPurchasesDepartment(long budgetGiven,@Nonnull Firm firm,@Nonnull Market market,
-                           @Nonnull String inventoryControlType, @Nonnull String bidPricingStrategyType,
-                           @Nonnull String buyerSearchAlgorithmType,@Nonnull String sellerSearchAlgorithmType){
+    getPurchasesDepartment(long budgetGiven, Firm firm, Market market,
+                            String inventoryControlType,  String bidPricingStrategyType,
+                            String buyerSearchAlgorithmType, String sellerSearchAlgorithmType){
         //create the simple purchases department
         PurchasesDepartment instance = new PurchasesDepartment(budgetGiven,firm,market); //call the constructor
         //create random inventory control and assign it
@@ -634,7 +632,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
     }
 
 
-    private void buy(@Nonnull GoodType type,@Nonnull Market market)
+    private void buy( GoodType type, Market market)
     {
 
         assert !queuedBuy; //as we call this there can't be any additional order to buy in queue. But this flag might be turned on later as we trade.
@@ -727,7 +725,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
         return firm;
     }
 
-    public void setControl(@Nonnull Control control) {
+    public void setControl( Control control) {
         if(this.control != null) //if there was one before, turn it off
             this.control.turnOff();
         this.control = control;
@@ -736,7 +734,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
 
 
-    public void setPricingStrategy(@Nonnull BidPricingStrategy pricingStrategy) {
+    public void setPricingStrategy( BidPricingStrategy pricingStrategy) {
         if(this.pricingStrategy != null)   //if you had one before, turn it off
             this.pricingStrategy.turnOff();
         this.pricingStrategy = pricingStrategy;
@@ -746,7 +744,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * Generate a new pricing strategy of this specific type!
      * @param pricingStrategyType  the class of which the new pricing strategy will be
      */
-    public void setPricingStrategy(@Nonnull Class<? extends BidPricingStrategy> pricingStrategyType) {
+    public void setPricingStrategy( Class<? extends BidPricingStrategy> pricingStrategyType) {
         if(this.pricingStrategy != null)   //if you had one before, turn it off
             this.pricingStrategy.turnOff();
         this.pricingStrategy = PurchasesRuleFactory.newBidPricingStrategy(pricingStrategyType,this);
@@ -754,13 +752,13 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
 
 
-    public void setOpponentSearch(@Nonnull BuyerSearchAlgorithm opponentSearch) {
+    public void setOpponentSearch( BuyerSearchAlgorithm opponentSearch) {
         if(this.opponentSearch != null)
             opponentSearch.turnOff();
         this.opponentSearch = opponentSearch;
     }
 
-    public void setSupplierSearch(@Nonnull SellerSearchAlgorithm supplierSearch) {
+    public void setSupplierSearch( SellerSearchAlgorithm supplierSearch) {
         if(this.supplierSearch != null)
             supplierSearch.turnOff();
         this.supplierSearch = supplierSearch;
@@ -873,7 +871,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * This method returns the inventory control rating on the level of inventories. <br>
      * @return the rating on the inventory conditions or null if the department is not active.
      */
-    @Nullable
+
     public Level rateCurrentLevel() {
         assert control != null;
         return control.rateCurrentLevel();
@@ -936,7 +934,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * look into the seller registry and return what the search algorithm deems the best
      * @return the best seller available or null if you can't find any
      */
-    @Nullable
+
     public EconomicAgent getBestSupplierFound() {
         return supplierSearch.getBestInSampleSeller();
     }
@@ -1039,7 +1037,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
      * changes the way the purchases department makes prediction about future prices
      * @param predictor the predictor
      */
-    public void setPredictor(@Nonnull PurchasesPredictor predictor) {
+    public void setPredictor( PurchasesPredictor predictor) {
         if(this.predictor != null)
             this.predictor.turnOff();
         this.predictor = predictor;
@@ -1165,7 +1163,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
     /**
      *  check the time series of a specific datum between on an array of days
      */
-    public double[] getObservationsRecordedTheseDays(PurchasesDataType type, @Nonnull int[] days) {
+    public double[] getObservationsRecordedTheseDays(PurchasesDataType type,  int[] days) {
         return purchasesData.getObservationsRecordedTheseDays(type, days);
     }
 

@@ -11,7 +11,6 @@ import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
 import goods.GoodType;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -30,7 +29,7 @@ import javax.annotation.Nonnull;
 public class UrgentPriceFollowerStrategy implements BidPricingStrategy {
 
 
-    @Nonnull
+
     private final PurchasesDepartment dept;
 
     public UrgentPriceFollowerStrategy(PurchasesDepartment dept) {
@@ -46,7 +45,7 @@ public class UrgentPriceFollowerStrategy implements BidPricingStrategy {
      * This is used internally by urgent price follower to ask the inventory control what's the status of our inventory
      * @return
      */
-    @Nonnull
+
     private Level getInventoryLevel(){
 
         Level level = dept.rateCurrentLevel();

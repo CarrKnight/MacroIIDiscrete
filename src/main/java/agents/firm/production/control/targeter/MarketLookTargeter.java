@@ -18,7 +18,6 @@ import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -78,7 +77,7 @@ public class MarketLookTargeter implements WorkforceTargeter {
      * Creates a new market-look targeter. Throws an state exception if the market doesn't allow for the best ask to be visible!
      * @param hr the human resources
      */
-    public MarketLookTargeter(@Nonnull HumanResources hr,@Nonnull PlantControl control, int speed ) {
+    public MarketLookTargeter( HumanResources hr, PlantControl control, int speed ) {
 
         Preconditions.checkState(hr.getMarket().isBestSalePriceVisible()); //this can't work without looking at prices
         Preconditions.checkArgument(speed >= 0);

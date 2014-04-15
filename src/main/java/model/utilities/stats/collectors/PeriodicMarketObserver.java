@@ -21,7 +21,6 @@ import org.apache.commons.collections15.Transformer;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -78,21 +77,21 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
     /**
      * A function we can put in to transform the observed price before reading it in
      */
-    @Nullable
+
     private Transformer<Double, Double> priceTransformer;
 
 
     /**
      *  The inverse function of price transform, required for prediction
      */
-    @Nullable
+
     private Transformer<Double, Double> priceInverseTransformer;
 
 
     /**
      * A function we can put in to transform the observed price before reading it in
      */
-    @Nullable
+
     private Transformer<Double, Double> quantityTransformer;
 
 
@@ -450,8 +449,8 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
      *
      * @param priceTransformer New value of A function we can put in to transform the observed price before reading it in.
      */
-    public void setPriceTransformer(@Nonnull Transformer<Double, Double> priceTransformer,
-                                    @Nonnull Transformer<Double, Double> priceInverseTransformer) {
+    public void setPriceTransformer( Transformer<Double, Double> priceTransformer,
+                                     Transformer<Double, Double> priceInverseTransformer) {
         this.priceTransformer = priceTransformer;
         this.priceInverseTransformer  = priceInverseTransformer;
     }

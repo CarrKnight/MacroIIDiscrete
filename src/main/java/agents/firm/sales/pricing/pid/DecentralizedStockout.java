@@ -13,7 +13,6 @@ import financial.market.Market;
 import financial.utilities.Quote;
 import goods.Good;
 
-import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -70,7 +69,7 @@ public class DecentralizedStockout implements StockoutEstimator {
      * @param bestAsk the best ask when the bid was made
      */
     @Override
-    public void newBidEvent(@Nonnull EconomicAgent buyer, long price, Quote bestAsk) {
+    public void newBidEvent( EconomicAgent buyer, long price, Quote bestAsk) {
         //probably never called
 
     }
@@ -82,7 +81,7 @@ public class DecentralizedStockout implements StockoutEstimator {
      * @param quote the removed quote
      */
     @Override
-    public void removedBidEvent(@Nonnull EconomicAgent buyer, @Nonnull Quote quote) {
+    public void removedBidEvent( EconomicAgent buyer,  Quote quote) {
         //probably never called
     }
 
@@ -94,7 +93,7 @@ public class DecentralizedStockout implements StockoutEstimator {
      * @param good  the good being sold
      */
     @Override
-    public void sellThisEvent(@Nonnull Firm owner, @Nonnull SalesDepartment dept, @Nonnull Good good) {
+    public void sellThisEvent( Firm owner,  SalesDepartment dept,  Good good) {
         //not our problem
     }
 
@@ -105,7 +104,7 @@ public class DecentralizedStockout implements StockoutEstimator {
      * @param price
      */
     @Override
-    public void goodSoldEvent(@Nonnull SalesDepartment dept, Good good, Long price) {
+    public void goodSoldEvent( SalesDepartment dept, Good good, Long price) {
         //good, I guess
     }
 
@@ -116,7 +115,7 @@ public class DecentralizedStockout implements StockoutEstimator {
      * @param dept  the sales department asked
      */
     @Override
-    public void stockOutEvent(@Nonnull Firm owner, @Nonnull SalesDepartment dept, @Nonnull EconomicAgent buyer) {
+    public void stockOutEvent( Firm owner,  SalesDepartment dept,  EconomicAgent buyer) {
         displeasedCustomers.add(buyer); //the buyer won't be happy!
     }
 

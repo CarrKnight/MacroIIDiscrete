@@ -46,7 +46,6 @@ import model.utilities.pid.PIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nullable;
 import java.util.LinkedList;
 
 
@@ -581,7 +580,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
      *
      * @return Value of The filter to attach to the beef ask pricing strategy.
      */
-    public @Nullable ExponentialFilter<Integer> getBeefPriceFilterer() {
+    public  ExponentialFilter<Integer> getBeefPriceFilterer() {
         return beefPriceFilterer;
     }
 
@@ -591,7 +590,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
      *
      * @param beefPriceFilterer New value of The filter to attach to the beef ask pricing strategy.
      */
-    public void setBeefPriceFilterer(@Nullable ExponentialFilter<Integer> beefPriceFilterer) {
+    public void setBeefPriceFilterer( ExponentialFilter<Integer> beefPriceFilterer) {
         this.beefPriceFilterer = beefPriceFilterer;
     }
 

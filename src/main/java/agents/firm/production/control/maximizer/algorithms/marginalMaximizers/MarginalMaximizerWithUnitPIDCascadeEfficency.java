@@ -15,7 +15,6 @@ import financial.market.Market;
 import financial.utilities.changeLooker.ChangeLookupMAMarket;
 import model.utilities.pid.PIDController;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -52,7 +51,7 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficency extends MarginalMaximi
      * @param hr      the human resources
      * @param control the plant control.
      */
-    public MarginalMaximizerWithUnitPIDCascadeEfficency(@Nonnull HumanResources hr, @Nonnull PlantControl control, @Nonnull Plant p, @Nonnull Firm owner, @Nonnull MersenneTwisterFast random, int currentWorkerSize) {
+    public MarginalMaximizerWithUnitPIDCascadeEfficency( HumanResources hr,  PlantControl control,  Plant p,  Firm owner,  MersenneTwisterFast random, int currentWorkerSize) {
         super(hr, control, p, owner, random, currentWorkerSize);
     }
 
@@ -63,7 +62,7 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficency extends MarginalMaximi
      * @param hr      the human resources
      * @param control the plant control.
      */
-    public MarginalMaximizerWithUnitPIDCascadeEfficency(@Nonnull HumanResources hr, @Nonnull PlantControl control, @Nonnull Plant p, @Nonnull Firm owner, @Nonnull MersenneTwisterFast random, int currentWorkerSize, float proportional, float integral, float derivative) {
+    public MarginalMaximizerWithUnitPIDCascadeEfficency( HumanResources hr,  PlantControl control,  Plant p,  Firm owner,  MersenneTwisterFast random, int currentWorkerSize, float proportional, float integral, float derivative) {
         super(hr, control, p, owner, random, currentWorkerSize, proportional, integral, derivative);
     }
 

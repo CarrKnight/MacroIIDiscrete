@@ -19,7 +19,6 @@ import agents.firm.production.PlantListener;
 import agents.firm.production.control.maximizer.algorithms.hillClimbers.HillClimberMaximizer;
 import agents.firm.production.technology.Machinery;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -46,7 +45,7 @@ public class DiscreteSlowPlantControl  implements PlantControl, PlantListener {
      * Creates a TargetAndMaximizePlantControl with PIDTargeterWithQuickFiring and HillClimber
      * @param hr
      */
-    public DiscreteSlowPlantControl(@Nonnull HumanResources hr) {
+    public DiscreteSlowPlantControl( HumanResources hr) {
         //instantiate the real control
         control = TargetAndMaximizePlantControl.PlantControlFactory(hr,
                 PIDTargeterWithQuickFiring.class,SetTargetThenTryAgainMaximizer.class,
@@ -187,7 +186,7 @@ public class DiscreteSlowPlantControl  implements PlantControl, PlantListener {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(@Nonnull GoodType type) {
+    public long maxPrice( GoodType type) {
         return control.maxPrice(type);
     }
 
@@ -198,7 +197,7 @@ public class DiscreteSlowPlantControl  implements PlantControl, PlantListener {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(@Nonnull Good good) {
+    public long maxPrice( Good good) {
         return control.maxPrice(good);
     }
 

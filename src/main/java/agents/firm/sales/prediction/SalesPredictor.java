@@ -11,9 +11,7 @@ import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import model.MacroII;
 import model.utilities.NonDrawable;
-import org.reflections.Reflections;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -90,8 +88,24 @@ public interface SalesPredictor {
 
         //static clause to fill the set names
         static {
-            Reflections strategyReader = new Reflections("agents.firm.sales.prediction");
-            rules = new ArrayList<>(strategyReader.getSubTypesOf(SalesPredictor.class)); //read all the rules
+            rules = new ArrayList<>(); //read all the rules
+            rules.add(AroundShockLinearRegressionSalesPredictor.class);
+            rules.add(FixedDecreaseSalesPredictor.class);
+            rules.add(FixedFormulaFakePredictor.class);
+            rules.add(LearningDecreaseSalesPredictor.class);
+            rules.add(LearningDecreaseWithTimeSeriesSalesPredictor .class);
+            rules.add(LearningFixedElasticitySalesPredictor  .class);
+            rules.add(LinearExtrapolationPredictor.class);
+            rules.add(LookupSalesPredictor.class);
+            rules.add(MarketSalesPredictor.class);
+            rules.add(MemorySalesPredictor.class);
+            rules.add(OpenLoopRecursiveSalesPredictor .class);
+            rules.add(PricingSalesPredictor.class);
+            rules.add(RecursiveSalePredictor.class);
+            rules.add(RegressionSalePredictor.class);
+            rules.add(RegressionWeightedSalePredictor.class);
+            rules.add(SamplingLearningDecreaseSalesPredictor.class);
+            rules.add(SurveySalesPredictor.class);
             assert rules.size() > 0; // there should be at least one!!
         }
 
@@ -101,7 +115,7 @@ public interface SalesPredictor {
          * @param rule the simpleName of the class!
          * @return the new rule to follow
          */
-        public static SalesPredictor newSalesPredictor(@Nonnull String rule) {
+        public static SalesPredictor newSalesPredictor( String rule) {
             for (Class<? extends SalesPredictor> c : rules) {
                 if (c.getSimpleName().equals(rule)) //if the name matches
                 {
@@ -151,7 +165,7 @@ public interface SalesPredictor {
          * @return the new rule to follow
          */
         public static <SP extends SalesPredictor> SP newSalesPredictor(
-                @Nonnull Class<SP> rule, SalesDepartment department)
+                 Class<SP> rule, SalesDepartment department)
         {
 
             if(Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )

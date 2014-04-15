@@ -9,7 +9,6 @@ package agents;
 import goods.Good;
 import goods.GoodType;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -105,7 +104,7 @@ public interface HasInventory {
     public List<Good> getTotalInventory();
 
 
-    @Nullable
+
     /**
      * peek at the topmost good of a specific type in your inventory.
      * @return the first good found or null if there are none

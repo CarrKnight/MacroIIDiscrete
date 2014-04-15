@@ -36,8 +36,6 @@ import sim.engine.Steppable;
 import sim.portrayal.Inspector;
 import sim.portrayal.inspector.TabbedInspector;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
@@ -177,7 +175,7 @@ public abstract class Market implements Deactivatable{
      * What is the seller role in this market?
      * @return the actions allowed to the seller in this market
      */
-    @Nonnull
+
     abstract public ActionsAllowed getSellerRole();
 
     /**
@@ -193,7 +191,7 @@ public abstract class Market implements Deactivatable{
      * Get an unmodifiable view of  all agents that belong in the market as buyers
      * @return all people who somehow can buy in this market
      */
-    @Nonnull
+
     public ObservableSet<EconomicAgent> getBuyers(){
         return FXCollections.unmodifiableObservableSet(buyers);
     }
@@ -275,7 +273,7 @@ public abstract class Market implements Deactivatable{
      * Get all agents that belong in the market as buyers
      * @return all people who somehow can buy in this market
      */
-    @Nonnull
+
     public ObservableSet<EconomicAgent> getSellers(){
 
         return FXCollections.unmodifiableObservableSet(sellers);
@@ -285,7 +283,7 @@ public abstract class Market implements Deactivatable{
      * Add a seller to the registry as they enter the market
      * @param seller buyer entering the market
      */
-    public void registerSeller(@Nonnull EconomicAgent seller){
+    public void registerSeller( EconomicAgent seller){
         boolean isNew = sellers.add(seller);   //addSalesDepartmentListener it to the set
         assert isNew;   //make sure it wasn't there before!
 
@@ -306,7 +304,7 @@ public abstract class Market implements Deactivatable{
      * Remove a seller from the registry as they exit the market
      * @param seller seller exiting the market
      */
-    public void deregisterSeller(@Nonnull EconomicAgent seller){
+    public void deregisterSeller( EconomicAgent seller){
         boolean isNew = sellers.remove(seller);
         assert isNew;   //make sure it wasn't there before!
 
@@ -334,8 +332,8 @@ public abstract class Market implements Deactivatable{
      * @return the quote made
      */
 
-    @Nonnull
-    abstract public Quote submitSellQuote(@Nonnull EconomicAgent seller, long price,@Nonnull Good good );
+
+    abstract public Quote submitSellQuote( EconomicAgent seller, long price, Good good );
 
     /**
      * Submit a sell quote on a specific good
@@ -346,8 +344,8 @@ public abstract class Market implements Deactivatable{
      * @return the quote made
      */
 
-    @Nonnull
-    abstract public Quote submitSellQuote(@Nonnull EconomicAgent seller, long price,@Nonnull Good good, @Nullable Department department );
+
+    abstract public Quote submitSellQuote( EconomicAgent seller, long price, Good good,  Department department );
 
 
 
@@ -367,8 +365,8 @@ public abstract class Market implements Deactivatable{
      * @param department the department making the order or null if it was done by the economic agent himself
      * @return quote made
      */
-    @Nonnull
-    abstract public Quote submitBuyQuote(@Nonnull EconomicAgent buyer, long price, @Nullable Department department);
+
+    abstract public Quote submitBuyQuote( EconomicAgent buyer, long price,  Department department);
 
     /**
      * Submit a buy quote
@@ -376,8 +374,8 @@ public abstract class Market implements Deactivatable{
      * @param price the price at/below which the agent is willing to buy
      * @return quote made
      */
-    @Nonnull
-    abstract public Quote submitBuyQuote(@Nonnull EconomicAgent buyer, long price);
+
+    abstract public Quote submitBuyQuote( EconomicAgent buyer, long price);
 
     /**
      * If the buyer changes its mind and wants to remove its purchase quote, call this
@@ -414,8 +412,8 @@ public abstract class Market implements Deactivatable{
      * @param good the good being exchanged
      * @param price the price
      */
-    public PurchaseResult trade(@Nonnull EconomicAgent buyer,@Nonnull EconomicAgent seller,@Nonnull Good good, long price,
-                                @Nonnull Quote buyerQuote,@Nonnull Quote sellerQuote)
+    public PurchaseResult trade( EconomicAgent buyer, EconomicAgent seller, Good good, long price,
+                                 Quote buyerQuote, Quote sellerQuote)
     {
         assert getBuyers().contains(buyer) : buyer.toString() + " ----- " + buyers;
         assert getSellers().contains(seller);
@@ -495,7 +493,7 @@ public abstract class Market implements Deactivatable{
      * @return the best price or -1 if there are none
      * @throws IllegalAccessException thrown by markets that do not allow such information.
      */
-    @Nullable
+
     abstract public EconomicAgent getBestSeller() throws IllegalAccessException;
 
 
@@ -827,8 +825,8 @@ public abstract class Market implements Deactivatable{
      * @param employer the employer
      * @param employee the employee
      */
-    public void registerFiring(@Nonnull EconomicAgent employer,
-                               @Nonnull EconomicAgent employee){
+    public void registerFiring( EconomicAgent employer,
+                                EconomicAgent employee){
         //with no GUI, forget about it
         if(!MacroII.hasGUI())
             return;
@@ -848,9 +846,9 @@ public abstract class Market implements Deactivatable{
      * @param g what kind of good?
      * @param quantity how much is exchanged?
      */
-    private void registerTradeOnNetwork(@Nonnull EconomicAgent sender,
-                                        @Nonnull EconomicAgent receiver,
-                                        @Nonnull GoodType g, int quantity)
+    private void registerTradeOnNetwork( EconomicAgent sender,
+                                         EconomicAgent receiver,
+                                         GoodType g, int quantity)
     {
         //if graphing is not active, don't bother
         assert MacroII.hasGUI();
@@ -1080,7 +1078,7 @@ public abstract class Market implements Deactivatable{
     /**
      * check which days have observations that are okay with the acceptor!
      */
-    public int[] getAcceptableDays(@Nonnull int[] days, MarketData.MarketDataAcceptor acceptor) {
+    public int[] getAcceptableDays( int[] days, MarketData.MarketDataAcceptor acceptor) {
         return marketData.getAcceptableDays(days, acceptor);
     }
 
@@ -1094,7 +1092,7 @@ public abstract class Market implements Deactivatable{
     /**
      * utility method to analyze only specific days
      */
-    public double[] getObservationsRecordedTheseDays(MarketDataType type, @Nonnull int[] days) {
+    public double[] getObservationsRecordedTheseDays(MarketDataType type,  int[] days) {
         return marketData.getObservationsRecordedTheseDays(type, days);
     }
 
@@ -1115,7 +1113,7 @@ public abstract class Market implements Deactivatable{
     /**
      * return the latest price observed
      */
-    @Nonnull
+
     public  Double getLatestObservation(MarketDataType type) {
         return marketData.getLatestObservation(type);
     }

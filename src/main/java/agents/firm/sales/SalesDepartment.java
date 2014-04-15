@@ -35,8 +35,6 @@ import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -151,7 +149,7 @@ public abstract class  SalesDepartment  implements Department {
 
     private SalesData data;
 
-    public SalesDepartment(SellerSearchAlgorithm sellerSearchAlgorithm, Market market, @Nonnull MacroII model, Firm firm, BuyerSearchAlgorithm buyerSearchAlgorithm) {
+    public SalesDepartment(SellerSearchAlgorithm sellerSearchAlgorithm, Market market,  MacroII model, Firm firm, BuyerSearchAlgorithm buyerSearchAlgorithm) {
         data = new SalesData();
         this.sellerSearchAlgorithm = sellerSearchAlgorithm;
         this.market = market;
@@ -605,7 +603,7 @@ public abstract class  SalesDepartment  implements Department {
 
 
 
-    @Nullable
+
     protected Quote removeFromToSellMasterlist(Good g) {
         assert !firm.has(g); //we should have sold
         Preconditions.checkState(goodsQuotedOnTheMarket.containsKey(g),"Removed a good I didn't have!");
@@ -1194,7 +1192,7 @@ public abstract class  SalesDepartment  implements Department {
     /**
      * utility method to analyze only specific days
      */
-    public double[] getObservationsRecordedTheseDays(SalesDataType type, @Nonnull int[] days) {
+    public double[] getObservationsRecordedTheseDays(SalesDataType type,  int[] days) {
         return data.getObservationsRecordedTheseDays(type, days);
     }
 

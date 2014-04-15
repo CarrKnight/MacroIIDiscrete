@@ -9,7 +9,6 @@ package goods;
 import agents.EconomicAgent;
 import model.MacroII;
 
-import javax.annotation.Nonnull;
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,7 +40,7 @@ public class Good implements Comparable<Good>{
 
 
 
-    public Good(@Nonnull GoodType type,@Nonnull EconomicAgent producer, long costOfProduction) {
+    public Good( GoodType type, EconomicAgent producer, long costOfProduction) {
         this.type = type;
         this.producer = producer;
         this.costOfProduction = costOfProduction;

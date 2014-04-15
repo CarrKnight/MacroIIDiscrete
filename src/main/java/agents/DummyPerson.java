@@ -22,8 +22,6 @@ import model.MacroII;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Set;
 
@@ -77,7 +75,7 @@ public class DummyPerson extends Person{
      * @param minimumWageRequired how much wage is needed to accept a job offer
      * @param laborMarket a link to the labor market
      */
-    public DummyPerson(@Nonnull MacroII model, long cash, int minimumWageRequired,@Nonnull Market laborMarket) {
+    public DummyPerson( MacroII model, long cash, int minimumWageRequired, Market laborMarket) {
         super(model, cash, minimumWageRequired, laborMarket);
         //create a demand table
         demand = TreeBasedTable.create();
@@ -97,7 +95,7 @@ public class DummyPerson extends Person{
      * @param shoppingSpeed how much time it takes to try again at shopping if there can't be quotes
      * @param market the market in which the good should be bought
      */
-    public void addDemand(@Nonnull GoodType type,long price,long consumptionTime,long shoppingSpeed,@Nonnull Market market)
+    public void addDemand( GoodType type,long price,long consumptionTime,long shoppingSpeed, Market market)
     {
 
         this.addDemand(type,price,consumptionTime,shoppingSpeed,market,new SimpleSellerSearch(market,this));
@@ -113,7 +111,7 @@ public class DummyPerson extends Person{
      * @param market the market in which the good should be bought
      * @param shopSearch the search algorithm to use to search for a good
      */
-    public void addDemand(@Nonnull GoodType type,long price,long consumptionTime,long shoppingSpeed, @Nonnull Market market,@Nonnull SellerSearchAlgorithm shopSearch)
+    public void addDemand( GoodType type,long price,long consumptionTime,long shoppingSpeed,  Market market, SellerSearchAlgorithm shopSearch)
     {
 
         assert price >= 0; assert consumptionTime >=0;
@@ -227,7 +225,7 @@ public class DummyPerson extends Person{
      * This is called by the person if he can't place quotes
      * @param type the good type to use
      */
-    private void shop(@Nonnull final GoodType type){
+    private void shop( final GoodType type){
         //todo this is just a modified code from PurchaseDepartent, I don't like code duplication
 
         //make sure we are called at the right status
@@ -309,7 +307,7 @@ public class DummyPerson extends Person{
      * Place a new quote to buy a good, if you have the money
      * @param type the good you are trying to buy
      */
-    public void placeQuote(@Nonnull GoodType type)
+    public void placeQuote( GoodType type)
     {
         //there shouldn't be a previous quote
         assert !quotesMade.containsKey(type) || quotesMade.get(type) == null;
@@ -364,7 +362,7 @@ public class DummyPerson extends Person{
      * Tell the buyer to either shop/place quote
      * @param goodType the good to buy
      */
-    public void buy(@Nonnull GoodType goodType)
+    public void buy( GoodType goodType)
     {
         //get the market
         Market m = markets.get(goodType);
@@ -439,7 +437,7 @@ public class DummyPerson extends Person{
      * @param seller who sold it to us!
      */
     @Override
-    public void reactToFilledBidQuote(@Nonnull Good g, long price,@Nonnull EconomicAgent seller) {
+    public void reactToFilledBidQuote( Good g, long price, EconomicAgent seller) {
 
         //you should have been waiting for the good!
         assert status.get(g.getType()) == ShoppingStatus.WAITING_FOR_QUOTE;
@@ -458,7 +456,7 @@ public class DummyPerson extends Person{
     /**
      * How much time to wait between one shopping spree and another?
      */
-    public float tryAgainNextTime(@Nonnull GoodType type)
+    public float tryAgainNextTime( GoodType type)
     {
         float shoppingSpeed = demand.get(type, DemandComponent.SHOPPING_SPEED);
 
@@ -469,7 +467,7 @@ public class DummyPerson extends Person{
     /**
      * Returns the shopping status of the agent for this particular good
      */
-    public @Nullable ShoppingStatus getStatus(@Nonnull GoodType type){
+    public  ShoppingStatus getStatus( GoodType type){
         return status.get(type);
 
     }
@@ -477,7 +475,7 @@ public class DummyPerson extends Person{
     /**
      * Returns a cell of the demand table
      */
-    public @Nullable Long getDemand(@Nonnull GoodType goodType, @Nonnull DemandComponent component)
+    public  Long getDemand( GoodType goodType,  DemandComponent component)
     {
         return  demand.get(goodType,component);
     }
@@ -486,7 +484,7 @@ public class DummyPerson extends Person{
     /**
      * Returns the quote in memory we are waiting for
      */
-    public @Nullable Quote getQuote(GoodType goodType)
+    public  Quote getQuote(GoodType goodType)
     {
         Quote q = quotesMade.get(goodType);
         assert q == null || status.get(goodType) == ShoppingStatus.WAITING_FOR_QUOTE;
@@ -564,7 +562,7 @@ public class DummyPerson extends Person{
      * @throws financial.Bankruptcy if you end up with negative money. If thrown the receiver received nothing!
      */
     @Override
-    public void pay(long money, @Nonnull EconomicAgent receiver,Market reason) throws Bankruptcy {
+    public void pay(long money,  EconomicAgent receiver,Market reason) throws Bankruptcy {
         super.pay(money, receiver, reason);
         if(reason != null)
             checkForTooHighQuotes(reason.getGoodType());

@@ -6,17 +6,20 @@
 
 package agents.firm.purchases;
 
+import agents.firm.purchases.inventoryControl.DailyInventoryControl;
+import agents.firm.purchases.inventoryControl.FixedInventoryControl;
 import agents.firm.purchases.inventoryControl.InventoryControl;
-import agents.firm.purchases.pricing.BidPricingStrategy;
+import agents.firm.purchases.inventoryControl.SimpleInventoryControl;
+import agents.firm.purchases.pid.PurchasesDailyPID;
+import agents.firm.purchases.pid.PurchasesFixedPID;
+import agents.firm.purchases.pid.PurchasesSimplePID;
+import agents.firm.purchases.pricing.*;
 import ec.util.MersenneTwisterFast;
 import model.utilities.NonDrawable;
-import org.reflections.Reflections;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * <h4>Description</h4>
@@ -51,26 +54,33 @@ public class PurchasesRuleFactory {
 
     //static clause to fill the set names
     static {
-        Reflections strategyReader = new Reflections("agents.firm.purchases");
-        bidPricingRules = new ArrayList<>(strategyReader.getSubTypesOf(BidPricingStrategy.class)); //read all the bidPricingRules
+        bidPricingRules = new ArrayList<>(); //read all the bidPricingRules
+        bidPricingRules.add(CheaterPricing.class);
+        bidPricingRules.add(SurveyMaxPricing .class);
+        bidPricingRules.add(UrgentPriceFollowerStrategy .class);
+        bidPricingRules.add(ZeroIntelligenceBidPricing .class);
         assert bidPricingRules.size() > 0; // there should be at least one!!
-        inventoryControlRules = new ArrayList<>(strategyReader.getSubTypesOf(InventoryControl.class)); //read all the inventoryControlRules
+
+        inventoryControlRules = new ArrayList<>(); //read all the inventoryControlRules
+        inventoryControlRules.add(DailyInventoryControl.class);
+        inventoryControlRules.add(FixedInventoryControl .class);
+        inventoryControlRules.add(SimpleInventoryControl .class);
         assert inventoryControlRules.size() > 0; // there should be at least one!!
-        integratedRules = new ArrayList<>(bidPricingRules);
-        boolean changed = integratedRules.retainAll(inventoryControlRules);
-        assert changed;
+
+        integratedRules = new ArrayList<>();
+        integratedRules.add(PurchasesDailyPID.class);
+        integratedRules.add(PurchasesFixedPID .class);
+        integratedRules.add(PurchasesSimplePID .class);
+
+        assert integratedRules.size() > 0;
         //remove it from the other lists
-        changed = bidPricingRules.removeAll(integratedRules);
-        assert changed;
-        changed = inventoryControlRules.removeAll(integratedRules);
-        assert changed;
+
 
         //remove not drawables
-        Collection<Class<?>> nondrawables = strategyReader.getTypesAnnotatedWith(NonDrawable.class);
 
-        bidPricingRules.removeAll(nondrawables);
-        inventoryControlRules.removeAll(nondrawables);
-        integratedRules.removeAll(nondrawables);
+        bidPricingRules.removeIf(aClass -> aClass.isAnnotationPresent(NonDrawable.class));
+        inventoryControlRules.removeIf(aClass -> aClass.isAnnotationPresent(NonDrawable.class));
+        integratedRules.removeIf(aClass -> aClass.isAnnotationPresent(NonDrawable.class));
 
 
 
@@ -83,7 +93,7 @@ public class PurchasesRuleFactory {
      * @param department  the department owning the rule
      * @return the new rule to follow
      */
-    public static BidPricingStrategy newBidPricingStrategy(@Nonnull String rule,@Nonnull PurchasesDepartment department) {
+    public static BidPricingStrategy newBidPricingStrategy( String rule, PurchasesDepartment department) {
         for (Class<? extends BidPricingStrategy> c : bidPricingRules) {
             if (c.getSimpleName().equals(rule)) //if the name matches
             {
@@ -105,7 +115,7 @@ public class PurchasesRuleFactory {
 
     }
 
-    public static BidPricingStrategy randomBidPricingStrategy(@Nonnull PurchasesDepartment department)
+    public static BidPricingStrategy randomBidPricingStrategy( PurchasesDepartment department)
     {
         Class<? extends BidPricingStrategy> bidPricingStrategy= null;
         MersenneTwisterFast randomizer = department.getFirm().getRandom(); //get the randomizer
@@ -123,7 +133,7 @@ public class PurchasesRuleFactory {
     }
 
     public static <BP extends  BidPricingStrategy>
-    BP newBidPricingStrategy( @Nonnull Class<BP> rule,@Nonnull PurchasesDepartment department )
+    BP newBidPricingStrategy(  Class<BP> rule, PurchasesDepartment department )
     {
 
         if(!bidPricingRules.contains(rule) || Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )
@@ -150,7 +160,7 @@ public class PurchasesRuleFactory {
      * @param department  the department owning the rule
      * @return the new rule to follow
      */
-    public static InventoryControl newInventoryControl(@Nonnull String rule,@Nonnull PurchasesDepartment department) {
+    public static InventoryControl newInventoryControl( String rule, PurchasesDepartment department) {
         for (Class<? extends InventoryControl> c : inventoryControlRules) {
             if (c.getSimpleName().equals(rule)) //if the name matches
             {
@@ -172,7 +182,7 @@ public class PurchasesRuleFactory {
 
     }
 
-    public static InventoryControl randomInventoryControl(@Nonnull PurchasesDepartment department)
+    public static InventoryControl randomInventoryControl( PurchasesDepartment department)
     {
         Class<? extends InventoryControl > inventoryControl = null;
         MersenneTwisterFast randomizer = department.getFirm().getRandom(); //get the randomizer
@@ -192,7 +202,7 @@ public class PurchasesRuleFactory {
     }
 
     public static <IC extends InventoryControl>
-    IC newInventoryControl( @Nonnull Class<IC> rule,@Nonnull PurchasesDepartment department )
+    IC newInventoryControl(  Class<IC> rule, PurchasesDepartment department )
     {
         assert rule != null;
 
@@ -222,7 +232,7 @@ public class PurchasesRuleFactory {
      * @param department  the department owning the rule
      * @return the new rule to follow
      */
-    public static BidPricingStrategy newIntegratedRule(@Nonnull String rule,@Nonnull PurchasesDepartment department) {
+    public static BidPricingStrategy newIntegratedRule( String rule, PurchasesDepartment department) {
         for (Class<? extends BidPricingStrategy> c : integratedRules) {
             if (c.getSimpleName().equals(rule)) //if the name matches
             {
@@ -246,7 +256,7 @@ public class PurchasesRuleFactory {
     }
 
     public static <IC extends BidPricingStrategy & InventoryControl>
-    BidPricingStrategy randomIntegratedRule(@Nonnull PurchasesDepartment department)
+    BidPricingStrategy randomIntegratedRule( PurchasesDepartment department)
     {
         Class<? extends IC> bidPricingStrategy= null;
         MersenneTwisterFast randomizer = department.getFirm().getRandom(); //get the randomizer
@@ -265,7 +275,7 @@ public class PurchasesRuleFactory {
     }
 
     public static <IC extends InventoryControl & BidPricingStrategy>
-    IC newIntegratedRule( @Nonnull Class<IC> rule,@Nonnull PurchasesDepartment department )
+    IC newIntegratedRule(  Class<IC> rule, PurchasesDepartment department )
     {
 
         if(!integratedRules.contains(rule) || Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )

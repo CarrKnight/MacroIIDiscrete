@@ -14,7 +14,6 @@ import model.utilities.stats.collectors.PeriodicMarketObserver;
 import model.utilities.stats.regression.LinearRegression;
 import org.apache.commons.collections15.Transformer;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -207,7 +206,7 @@ public class RegressionSalePredictor implements SalesPredictor{
      *
      * @param priceTransformer New value of A function we can put in to transform the observed price before reading it in.
      */
-    public void setPriceTransformer(@Nonnull Transformer<Double, Double> priceTransformer, @Nonnull Transformer<Double, Double> priceInverseTransformer) {
+    public void setPriceTransformer( Transformer<Double, Double> priceTransformer,  Transformer<Double, Double> priceInverseTransformer) {
         observer.setPriceTransformer(priceTransformer, priceInverseTransformer);
     }
 

@@ -50,7 +50,7 @@ public class LinearRegression implements UnivariateRegression
      * @param y an array of observations of the dependent variable
      */
     @Override
-    public void estimateModel(double[] x, double[] y,@Nullable double[] weights)
+    public void estimateModel(double[] x, double[] y, double[] weights)
     {
         Preconditions.checkArgument(x.length == y.length, "number of observations are not the same!");
         Preconditions.checkArgument(x.length > 0, "no observations in x!");

@@ -11,9 +11,8 @@ import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import financial.utilities.PurchaseResult;
 import model.utilities.Deactivatable;
-import org.reflections.Reflections;
+import model.utilities.NonDrawable;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -79,8 +78,11 @@ public interface BuyerSearchAlgorithm extends Deactivatable {
 
         //static clause to fill the set names
         static {
-            Reflections strategyReader = new Reflections("agents.firm.sales.exploration");
-            rules = new ArrayList<>(strategyReader.getSubTypesOf(BuyerSearchAlgorithm.class)); //read all the rules
+            rules = new ArrayList<>(); //read all the rules
+            rules.add(SimpleBuyerSearch.class);
+            rules.add(SimpleFavoriteBuyerSearch.class);
+            rules.removeIf(aClass -> aClass.isAnnotationPresent(NonDrawable.class));
+
             assert rules.size() > 0; // there should be at least one!!
         }
 
@@ -92,7 +94,7 @@ public interface BuyerSearchAlgorithm extends Deactivatable {
          * @param firm the firm that is doing the search (so we avoid sampling ourselves)
          * @return the new rule to follow
          */
-        public static BuyerSearchAlgorithm newBuyerSearchAlgorithm(@Nonnull String rule,@Nonnull Market market, @Nonnull EconomicAgent firm) {
+        public static BuyerSearchAlgorithm newBuyerSearchAlgorithm( String rule, Market market,  EconomicAgent firm) {
             for (Class<? extends BuyerSearchAlgorithm> c : rules) {
                 if (c.getSimpleName().equals(rule)) //if the name matches
                 {
@@ -121,7 +123,7 @@ public interface BuyerSearchAlgorithm extends Deactivatable {
          * @param firm the firm that is doing the search (so we avoid sampling ourselves)
          * @return the new rule to follow
          */
-        public static @Nonnull BuyerSearchAlgorithm randomBuyerSearchAlgorithm(@Nonnull Market market, @Nonnull EconomicAgent firm)
+        public static  BuyerSearchAlgorithm randomBuyerSearchAlgorithm( Market market,  EconomicAgent firm)
         {
             Class<? extends BuyerSearchAlgorithm > buyerSearchAlgorithm = null;
             MersenneTwisterFast randomizer = firm.getRandom(); //get the randomizer
@@ -147,7 +149,7 @@ public interface BuyerSearchAlgorithm extends Deactivatable {
          * @return the new rule to follow
          */
         public static <BS extends  BuyerSearchAlgorithm> BS newBuyerSearchAlgorithm(
-                @Nonnull Class<BS> rule,@Nonnull Market market, @Nonnull EconomicAgent firm )
+                 Class<BS> rule, Market market,  EconomicAgent firm )
         {
 
             if(!rules.contains(rule) || Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )

@@ -12,7 +12,6 @@ import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -42,6 +41,6 @@ public interface TradePolicy {
      * @param market in which the trade is recorded/happening
      * @return a PurchaseResult describing the results
      */
-    public PurchaseResult trade(@Nonnull EconomicAgent buyer,@Nonnull EconomicAgent seller,@Nonnull Good good, long price,
-                                @Nonnull Quote buyerQuote,@Nonnull Quote sellerQuote, Market market);
+    public PurchaseResult trade( EconomicAgent buyer, EconomicAgent seller, Good good, long price,
+                                 Quote buyerQuote, Quote sellerQuote, Market market);
 }

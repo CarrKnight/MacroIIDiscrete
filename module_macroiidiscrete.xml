@@ -19,7 +19,6 @@
     <path refid="${module.jdk.classpath.macroiidiscrete}"/>
     <path refid="library.net.sf.opencsv:opencsv:2.3.classpath"/>
     <path refid="library.com.google.guava:guava:16.0.1.classpath"/>
-    <path refid="library.org.reflections:reflections:0.9.8.classpath"/>
     <path refid="library.net.sf.jung:jung-algorithms:2.0.1.classpath"/>
     <path refid="library.net.sf.jung:jung-graph-impl:2.0.1.classpath"/>
     <path refid="library.net.sf.jung:jung-visualization:2.0.1.classpath"/>
@@ -35,7 +34,6 @@
     <pathelement location="${macroiidiscrete.output.dir}"/>
     <path refid="library.net.sf.opencsv:opencsv:2.3.classpath"/>
     <path refid="library.com.google.guava:guava:16.0.1.classpath"/>
-    <path refid="library.org.reflections:reflections:0.9.8.classpath"/>
     <path refid="library.net.sf.jung:jung-algorithms:2.0.1.classpath"/>
     <path refid="library.net.sf.jung:jung-graph-impl:2.0.1.classpath"/>
     <path refid="library.net.sf.jung:jung-visualization:2.0.1.classpath"/>
@@ -54,7 +52,6 @@
     <path refid="library.junit:junit:4.11.classpath"/>
     <path refid="library.net.sf.opencsv:opencsv:2.3.classpath"/>
     <path refid="library.com.google.guava:guava:16.0.1.classpath"/>
-    <path refid="library.org.reflections:reflections:0.9.8.classpath"/>
     <path refid="library.net.sf.jung:jung-algorithms:2.0.1.classpath"/>
     <path refid="library.net.sf.jung:jung-graph-impl:2.0.1.classpath"/>
     <path refid="library.net.sf.jung:jung-visualization:2.0.1.classpath"/>
@@ -81,7 +78,6 @@
     <path refid="library.junit:junit:4.11.classpath"/>
     <path refid="library.net.sf.opencsv:opencsv:2.3.classpath"/>
     <path refid="library.com.google.guava:guava:16.0.1.classpath"/>
-    <path refid="library.org.reflections:reflections:0.9.8.classpath"/>
     <path refid="library.net.sf.jung:jung-algorithms:2.0.1.classpath"/>
     <path refid="library.net.sf.jung:jung-graph-impl:2.0.1.classpath"/>
     <path refid="library.net.sf.jung:jung-visualization:2.0.1.classpath"/>

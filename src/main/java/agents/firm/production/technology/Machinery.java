@@ -12,7 +12,6 @@ import goods.Good;
 import goods.GoodType;
 import agents.firm.production.Plant;
 
-import javax.annotation.Nonnull;
 import java.util.Map;
 
 /**
@@ -33,7 +32,7 @@ import java.util.Map;
 public abstract class Machinery extends Good {
 
 
-    protected Machinery(@Nonnull GoodType type,@Nonnull EconomicAgent producer, long costOfProduction) {
+    protected Machinery( GoodType type, EconomicAgent producer, long costOfProduction) {
         super(type, producer, costOfProduction);
         assert type.isMachinery();
     }
@@ -97,7 +96,7 @@ public abstract class Machinery extends Good {
      *
      * @param outputType the specific good we want to know how much we completeProductionRunNow of
      */
-    public int totalProductionPerRun(@Nonnull GoodType outputType) {
+    public int totalProductionPerRun( GoodType outputType) {
         Preconditions.checkArgument(getPlant().getBlueprint().getOutputs().containsKey(outputType), "can't have production for goods that aren't output");
         return (int) (getPlant().getBlueprint().getOutputs().get(outputType) * getOutputMultiplier(outputType));
 
@@ -109,7 +108,7 @@ public abstract class Machinery extends Good {
      * @param workerSize the hypothetical size of the workforce
      * @return the number of inputs we will consume in a week
      */
-    public int hypotheticalWeeklyInputNeeds(@Nonnull GoodType inputType, int workerSize)
+    public int hypotheticalWeeklyInputNeeds( GoodType inputType, int workerSize)
     {
         Preconditions.checkArgument(getPlant().getBlueprint().getInputs().containsKey(inputType), "the type provided is not even an input!");
         //this is easy: just number of production runs times the amount of input burned each run.
@@ -120,7 +119,7 @@ public abstract class Machinery extends Good {
     /**
      * Total amount of weekly production expected by this technology
      */
-    public abstract float weeklyThroughput(@Nonnull GoodType outputType);
+    public abstract float weeklyThroughput( GoodType outputType);
 
     /**
      * How much of a specific good will be produced in a week given this many workers
@@ -128,7 +127,7 @@ public abstract class Machinery extends Good {
      * @param type the goodtype
      * @return
      */
-    public float hypotheticalThroughput(int workers,@Nonnull GoodType type)
+    public float hypotheticalThroughput(int workers, GoodType type)
     {
         Preconditions.checkArgument(getPlant().getBlueprint().getOutputs().containsKey(type), "can't have production for goods that aren't output");
         return hypotheticalWeeklyProductionRuns(workers) * totalProductionPerRun(type);

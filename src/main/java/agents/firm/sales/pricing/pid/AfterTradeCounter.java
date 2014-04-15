@@ -17,7 +17,6 @@ import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
 import java.util.Iterator;
 
 /**
@@ -105,7 +104,7 @@ public class AfterTradeCounter implements StockoutEstimator, Steppable {
      * @param bestAsk the best ask when the bid was made
      */
     @Override
-    public void newBidEvent(@Nonnull EconomicAgent buyer, long price, Quote bestAsk) {
+    public void newBidEvent( EconomicAgent buyer, long price, Quote bestAsk) {
     }
 
     /**
@@ -115,7 +114,7 @@ public class AfterTradeCounter implements StockoutEstimator, Steppable {
      * @param quote the removed quote
      */
     @Override
-    public void removedBidEvent(@Nonnull EconomicAgent buyer, @Nonnull Quote quote) {
+    public void removedBidEvent( EconomicAgent buyer,  Quote quote) {
     }
 
     /**
@@ -126,7 +125,7 @@ public class AfterTradeCounter implements StockoutEstimator, Steppable {
      * @param good  the good being sold
      */
     @Override
-    public void sellThisEvent(@Nonnull Firm owner, @Nonnull SalesDepartment dept, @Nonnull Good good) {
+    public void sellThisEvent( Firm owner,  SalesDepartment dept,  Good good) {
     }
 
     /**
@@ -136,7 +135,7 @@ public class AfterTradeCounter implements StockoutEstimator, Steppable {
      * @param price
      */
     @Override
-    public void goodSoldEvent(@Nonnull SalesDepartment dept, Good good, Long price) {
+    public void goodSoldEvent( SalesDepartment dept, Good good, Long price) {
     }
 
     /**
@@ -147,7 +146,7 @@ public class AfterTradeCounter implements StockoutEstimator, Steppable {
      * @param buyer
      */
     @Override
-    public void stockOutEvent(@Nonnull Firm owner, @Nonnull SalesDepartment dept, @Nonnull EconomicAgent buyer) {
+    public void stockOutEvent( Firm owner,  SalesDepartment dept,  EconomicAgent buyer) {
     }
 
     /**

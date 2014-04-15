@@ -61,7 +61,7 @@ public class SimpleBuyerSearch implements BuyerSearchAlgorithm {
      * look into the buyer registry and return what the search algorithm deems the best
      * @return the best buyer available or null if there were none
      */
-    @Override  @Nullable
+    @Override
     public EconomicAgent getBestInSampleBuyer() {
 
         EconomicAgent[] sample = sampleBuyers(); //sample buyers

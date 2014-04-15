@@ -10,7 +10,6 @@ import agents.EconomicAgent;
 import agents.firm.Firm;
 import goods.Good;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -35,7 +34,7 @@ public interface SalesDepartmentListener {
      * @param dept the sales department asked
      * @param good the good being sold
      */
-    public void sellThisEvent(@Nonnull final Firm owner,@Nonnull final SalesDepartment dept,@Nonnull final Good good);
+    public void sellThisEvent( final Firm owner, final SalesDepartment dept, final Good good);
 
     /**
      * This logEvent is fired whenever the sales department managed to sell a good!
@@ -43,14 +42,14 @@ public interface SalesDepartmentListener {
      * @param good the good being sold
      * @param price the price sold for
      */
-    public void goodSoldEvent(@Nonnull final SalesDepartment dept, Good good, Long price);
+    public void goodSoldEvent( final SalesDepartment dept, Good good, Long price);
 
     /**
      * Tell the listener a peddler just came by and we couldn't service him because we have no goods
      * @param owner the owner of the sales department
      * @param dept the sales department asked
      */
-    public void stockOutEvent(@Nonnull final Firm owner,@Nonnull final SalesDepartment dept, @Nonnull final EconomicAgent buyer);
+    public void stockOutEvent( final Firm owner, final SalesDepartment dept,  final EconomicAgent buyer);
 
 
 }

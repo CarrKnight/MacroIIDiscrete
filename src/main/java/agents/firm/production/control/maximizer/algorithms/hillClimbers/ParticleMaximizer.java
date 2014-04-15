@@ -13,7 +13,6 @@ import agents.firm.production.Plant;
 import ec.util.MersenneTwisterFast;
 import goods.GoodType;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -78,7 +77,7 @@ public class ParticleMaximizer extends  HillClimberMaximizer {
 
 
     public ParticleMaximizer(long weeklyFixedCosts, int minimumWorkers, int maximumWorkers,
-                             @Nonnull MersenneTwisterFast random,@Nonnull HumanResources hr) {
+                              MersenneTwisterFast random, HumanResources hr) {
         super(weeklyFixedCosts, minimumWorkers, maximumWorkers);
         this.random = random;
         this.hr = hr;

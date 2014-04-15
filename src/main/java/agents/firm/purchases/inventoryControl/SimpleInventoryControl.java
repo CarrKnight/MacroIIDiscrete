@@ -13,7 +13,6 @@ import agents.firm.purchases.PurchasesDepartment;
 import goods.GoodType;
 import agents.firm.production.Plant;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -41,7 +40,7 @@ public class SimpleInventoryControl extends AbstractInventoryControl implements 
     private int singleProductionRunNeed;
 
 
-    public SimpleInventoryControl(@Nonnull PurchasesDepartment purchasesDepartment) {
+    public SimpleInventoryControl( PurchasesDepartment purchasesDepartment) {
         super(purchasesDepartment);
         purchasesDepartment.getFirm().addPlantCreationListener(this); //addSalesDepartmentListener yourself as a plant creation listener
 
@@ -60,7 +59,7 @@ public class SimpleInventoryControl extends AbstractInventoryControl implements 
      *
      * @return the inventory level rating
      */
-    @Nonnull
+
     @Override
     protected Level rateInventory() {
         //how much do we have?
@@ -74,7 +73,7 @@ public class SimpleInventoryControl extends AbstractInventoryControl implements 
      * @param currentLevel  how much I have right now
      * @return the inventory level given what I have
      */
-    @Nonnull
+
     private Level rateInventory(int currentLevel){
         if(currentLevel < singleProductionRunNeed)
             return Level.DANGER;

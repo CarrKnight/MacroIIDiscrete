@@ -15,7 +15,6 @@ import agents.firm.production.Plant;
 import agents.firm.production.PlantListener;
 import agents.firm.production.technology.Machinery;
 
-import javax.annotation.Nonnull;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -61,7 +60,7 @@ public class DailyInventoryControl extends AbstractInventoryControl implements P
      * Creates the inventory control and sets up its listeners. Also, as inherited, it sets itself to adjust as soon as possible to check whether to buy or not
      * @param purchasesDepartment the purchases department
      */
-    public DailyInventoryControl(@Nonnull PurchasesDepartment purchasesDepartment) {
+    public DailyInventoryControl( PurchasesDepartment purchasesDepartment) {
         super(purchasesDepartment);
         purchasesDepartment.getFirm().addPlantCreationListener(this); //addSalesDepartmentListener yourself as a plant creation listener
         //listen to each initial plant
@@ -145,7 +144,7 @@ public class DailyInventoryControl extends AbstractInventoryControl implements P
      *
      * @return the inventory level rating
      */
-    @Nonnull
+
     @Override
     protected Level rateInventory() {
         int inventoryAmount = getPurchasesDepartment().getCurrentInventory(); //get inventory
@@ -157,7 +156,7 @@ public class DailyInventoryControl extends AbstractInventoryControl implements P
      * @param currentLevel  how much I have right now
      * @return the inventory level given what I have
      */
-    @Nonnull
+
     private Level rateInventory(int currentLevel){
 
         int dangerLevel = (int) Math.min(singleProductionRunNeed, dailyTarget+ 1);

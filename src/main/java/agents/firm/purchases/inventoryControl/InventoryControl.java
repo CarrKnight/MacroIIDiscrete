@@ -10,7 +10,6 @@ import agents.InventoryListener;
 import model.utilities.Control;
 import model.utilities.Deactivatable;
 
-import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
@@ -40,7 +39,7 @@ public interface InventoryControl extends InventoryListener, Deactivatable, Cont
      * This method returns the inventory control rating on the level of inventories. <br>
      * @return the rating on the inventory conditions or null if the department is not active.
      */
-    @Nullable
+
     public Level rateCurrentLevel();
 
 

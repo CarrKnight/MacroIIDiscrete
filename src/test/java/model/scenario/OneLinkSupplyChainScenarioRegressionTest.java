@@ -14,7 +14,6 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -992,7 +991,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     }
 
     private OneLinkSupplyChainResult testFoodMonopolistWithFixedProductionRun(long random, final boolean competitorsLearned, int speed, float divideGainsByThis,
-                                                                              @Nullable File csvFileToWrite) {
+                                                                               File csvFileToWrite) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 =
                 new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.FOOD)

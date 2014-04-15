@@ -19,7 +19,6 @@ import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
 import goods.GoodType;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -51,7 +50,7 @@ public class MaxCapacityControl implements PlantControl, PlantListener {
      * Creates a TargetAndMaximizePlantControl with PIDTargeterWithQuickFiring and GradientMaximizer
      * @param hr human resources
      */
-    public MaxCapacityControl(@Nonnull HumanResources hr) {
+    public MaxCapacityControl( HumanResources hr) {
         //instantiate the real control
         control = TargetAndMaximizePlantControl.PlantControlFactory(hr, PIDTargeterWithQuickFiring.class,
                 FullCapacityMaximizer.class, HillClimberMaximizer.class).getControl();
@@ -194,7 +193,7 @@ public class MaxCapacityControl implements PlantControl, PlantListener {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(@Nonnull GoodType type) {
+    public long maxPrice( GoodType type) {
         return control.maxPrice(type);
     }
 
@@ -205,7 +204,7 @@ public class MaxCapacityControl implements PlantControl, PlantListener {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(@Nonnull Good good) {
+    public long maxPrice( Good good) {
         return control.maxPrice(good);
     }
 

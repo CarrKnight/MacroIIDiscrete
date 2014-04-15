@@ -31,9 +31,9 @@ import agents.firm.sales.exploration.SellerSearchAlgorithm;
 
 
 /*
-                                                             @Nullable Class<? extends PlantControl> integratedControl,
-                                                             @Nullable Class<? extends BuyerSearchAlgorithm> buyerSearchAlgorithmType,
-                                                             @Nullable Class<? extends SellerSearchAlgorithm> sellerSearchAlgorithmType
+                                                              Class<? extends PlantControl> integratedControl,
+                                                              Class<? extends BuyerSearchAlgorithm> buyerSearchAlgorithmType,
+                                                              Class<? extends SellerSearchAlgorithm> sellerSearchAlgorithmType
  */
 
 public class FactoryProducedHumanResources<PC extends PlantControl, BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm> {

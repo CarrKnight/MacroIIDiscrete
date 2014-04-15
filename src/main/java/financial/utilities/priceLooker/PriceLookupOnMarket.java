@@ -8,7 +8,6 @@ package financial.utilities.priceLooker;
 
 import financial.market.Market;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -37,7 +36,7 @@ public class PriceLookupOnMarket implements PriceLookup {
      */
     final private boolean isVisible;
 
-    public PriceLookupOnMarket(@Nonnull Market market) {
+    public PriceLookupOnMarket( Market market) {
         this.market = market;
         isVisible = market.isBestBuyPriceVisible() && market.isBestSalePriceVisible(); //both have to be visible
     }

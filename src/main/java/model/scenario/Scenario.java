@@ -10,7 +10,6 @@ import agents.EconomicAgent;
 import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
-import org.reflections.Reflections;
 import sim.portrayal.Inspector;
 import sim.portrayal.SimpleInspector;
 
@@ -100,9 +99,27 @@ public abstract class Scenario {
 
     static{
         //turn on the reader
-        Reflections reflections = new Reflections("model.scenario");
         //read all the allScenarios
-        allScenarios = reflections.getSubTypesOf(Scenario.class);
+        allScenarios = new LinkedHashSet<>();
+        allScenarios.add(DummyMacroScenario.class);
+        allScenarios.add(MonopolistScenario .class);
+        allScenarios.add(MultiProduction .class);
+        allScenarios.add(MultiProductionMonopolist .class);
+        allScenarios.add(OilDistributorScenario .class);
+        allScenarios.add(OneLinkSupplyChainScenario.class);
+        allScenarios.add(OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist .class);
+        allScenarios.add(OneLinkSupplyChainScenarioWithCheatingBuyingPrice .class);
+        allScenarios.add(SimpleBuyerScenario.class);
+        allScenarios.add(SimpleBuyerSellerScenario .class);
+        allScenarios.add(SimpleDecentralizedSellerScenario .class);
+        allScenarios.add(SimpleHiringScenario .class);
+        allScenarios.add(SimpleSellerScenario .class);
+        allScenarios.add(SimpleSellerScenarioUsingFlowSellerPID .class);
+        allScenarios.add(SimpleSellerWithSellerDelayScenario .class);
+        allScenarios.add(SupplyChainScenario .class);
+        allScenarios.add(TestScenario .class);
+        allScenarios.add(TripolistScenario  .class);
+        allScenarios.add(TripolistWithInputScenario   .class);
 
 
     }

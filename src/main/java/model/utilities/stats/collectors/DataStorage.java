@@ -13,7 +13,6 @@ import javafx.collections.ListChangeListener;
 import model.utilities.Deactivatable;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -132,7 +131,7 @@ public abstract class DataStorage<T extends  Enum<T>> implements Steppable, Deac
     /**
      * utility method to analyze only specific days
      */
-    public double[] getObservationsRecordedTheseDays(T type,@Nonnull int[] days)
+    public double[] getObservationsRecordedTheseDays(T type, int[] days)
     {
         return data.get(type).getObservationsRecordedTheseDays(days);
 
@@ -160,7 +159,7 @@ public abstract class DataStorage<T extends  Enum<T>> implements Steppable, Deac
     /**
      * return the latest price observed
      */
-    @Nonnull
+
     public Double getLatestObservation(T type)
     {
         checkThatThereIsAtLeastOneObservation();

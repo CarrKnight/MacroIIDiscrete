@@ -13,7 +13,6 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import sim.engine.SimState;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -54,7 +53,7 @@ public class ProductionData extends DataStorage<GoodType>
      * called when the data gathering is supposed to start. It schedules itself to start at next CLEANUP phase. It grabs the Firm
      * reference from getOwner() of the plant
      */
-    public void start(@Nonnull MacroII state,@Nonnull Plant plant) {
+    public void start( MacroII state, Plant plant) {
         this.plant = plant;
         //we are going to set the starting day at -1 and then change it at our first step()
         setStartingDay(-1);

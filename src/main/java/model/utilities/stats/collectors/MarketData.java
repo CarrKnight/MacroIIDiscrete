@@ -14,7 +14,6 @@ import model.utilities.stats.collectors.enums.MarketDataType;
 import org.jfree.data.time.TimeSeries;
 import sim.engine.SimState;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
 /**
@@ -95,7 +94,7 @@ public class MarketData extends DataStorage<MarketDataType>
     /**
      * called when the agent has to start acting!
      */
-    public void start(@Nonnull MacroII state, @Nonnull Market marketToFollow) {
+    public void start( MacroII state,  Market marketToFollow) {
         if(!active)
             return;
 
@@ -144,7 +143,7 @@ public class MarketData extends DataStorage<MarketDataType>
     /**
      * check which days have observations that are okay with the acceptor!
      */
-    public int[] getAcceptableDays(@Nonnull int[] days, MarketDataAcceptor acceptor)
+    public int[] getAcceptableDays( int[] days, MarketDataAcceptor acceptor)
     {
 
         ArrayList<Integer> acceptedDays = new ArrayList<>();

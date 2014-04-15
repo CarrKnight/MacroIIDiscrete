@@ -20,7 +20,6 @@ import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -108,9 +107,9 @@ public class DummySeller extends Firm {
      * @param sellerQuote the quote (including the offer price) of the seller; I expect the buyer to have achieved this through asked for an offer function
      * @return a purchaseResult including whether the trade was succesful and if so the final price
      */
-    @Nonnull
+
     @Override
-    public PurchaseResult shopHere(@Nonnull Quote buyerQuote, @Nonnull Quote sellerQuote) {
+    public PurchaseResult shopHere( Quote buyerQuote,  Quote sellerQuote) {
         long finalPrice = market.price(sellerQuote.getPriceQuoted(),buyerQuote.getPriceQuoted());
         assert sellerQuote.getGood() != null;
         assert this.has(sellerQuote.getGood());

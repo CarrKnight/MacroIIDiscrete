@@ -13,7 +13,6 @@ import model.utilities.ActionOrder;
 import model.utilities.pid.decorator.ExponentialFilterTargetDecorator;
 import sim.engine.Steppable;
 
-import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
@@ -95,7 +94,7 @@ public class CascadePToPIDController implements Controller {
      * @param user     the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)
      */
     @Override
-    public void adjust(ControllerInput input, boolean isActive, @Nullable MacroII simState, @Nullable Steppable user,
+    public void adjust(ControllerInput input, boolean isActive,  MacroII simState,  Steppable user,
                        ActionOrder phase){
 
             float targetInventory = input.getTarget(0);
@@ -121,7 +120,7 @@ public class CascadePToPIDController implements Controller {
      * @param user     the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)     * @param firstTarget
      */
     public void adjust(float firstTarget,float firstInput, float secondInput, boolean isActive,
-                       @Nullable MacroII state, @Nullable Steppable user,  ActionOrder phase)
+                        MacroII state,  Steppable user,  ActionOrder phase)
     {
         //master
         pid1.adjust(firstTarget,Math.min(firstInput,firstTarget*5),isActive,state,user,phase);

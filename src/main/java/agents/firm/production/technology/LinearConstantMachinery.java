@@ -10,7 +10,6 @@ import agents.EconomicAgent;
 import goods.GoodType;
 import agents.firm.production.Plant;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -30,14 +29,14 @@ import javax.annotation.Nonnull;
 public class LinearConstantMachinery extends Machinery {
 
 
-    @Nonnull
+
     final private Plant plant;
 
     private float oneWorkerThroughput;
 
     private float oneWorkerProductionTime = 7f;
 
-    public LinearConstantMachinery(@Nonnull GoodType type, @Nonnull EconomicAgent producer, long costOfProduction, @Nonnull Plant plant) {
+    public LinearConstantMachinery( GoodType type,  EconomicAgent producer, long costOfProduction,  Plant plant) {
         super(type, producer, costOfProduction);
         this.plant = plant;
         oneWorkerThroughput = ((float)plant.getModel().getWeekLength()) / oneWorkerProductionTime;
@@ -181,7 +180,7 @@ public class LinearConstantMachinery extends Machinery {
         this.oneWorkerThroughput = oneWorkerThroughput;
     }
 
-    @Nonnull
+
     public Plant getPlant() {
         return plant;
     }

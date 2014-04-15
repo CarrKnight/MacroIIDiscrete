@@ -6,7 +6,6 @@ import model.utilities.ActionOrder;
 import org.junit.Test;
 import sim.engine.Steppable;
 
-import javax.annotation.Nullable;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -138,8 +137,8 @@ public class ControllerFactoryTest {
              * @param user     the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)
              */
             @Override
-            public void adjust(ControllerInput input, boolean isActive, @Nullable MacroII simState,
-                               @Nullable Steppable user, ActionOrder phase) {
+            public void adjust(ControllerInput input, boolean isActive,  MacroII simState,
+                                Steppable user, ActionOrder phase) {
                 throw new RuntimeException("not implemented yet!");
             }
 

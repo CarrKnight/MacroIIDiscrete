@@ -14,7 +14,6 @@ import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.technology.Machinery;
 
-import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
@@ -98,7 +97,7 @@ public abstract class PlantControlDecorator implements PlantControl{
      * @return the rating on the current stock conditions or null if the department is not active.
      */
     @Override
-    @Nullable
+
     public Level rateCurrentLevel() {
         return toDecorate.rateCurrentLevel();
     }

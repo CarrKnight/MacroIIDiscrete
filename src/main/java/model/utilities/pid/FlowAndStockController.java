@@ -12,7 +12,6 @@ import model.utilities.ActionOrder;
 import model.utilities.filters.ExponentialFilter;
 import sim.engine.Steppable;
 
-import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
@@ -69,13 +68,13 @@ public class FlowAndStockController implements Controller{
     /**
      * If our period is incorrect or our flows are not constant we'll need smoothing
      */
-    @Nullable
+
     private ExponentialFilter<Integer> inflowFilterer;
 
     /**
      * If our period is incorrect or our flows are not constant we'll need smoothing
      */
-    @Nullable
+
     private ExponentialFilter<Integer> outflowFilterer;
 
 
@@ -180,7 +179,7 @@ public class FlowAndStockController implements Controller{
 
     public void adjust(int inflow, int outflow, float currentStock,
                        float targetStock, boolean stockAcceptable,
-                       boolean isActive,@Nullable MacroII state, @Nullable Steppable user, ActionOrder phase)
+                       boolean isActive, MacroII state,  Steppable user, ActionOrder phase)
     {
 
         //record inflow and outflow

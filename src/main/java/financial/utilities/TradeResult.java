@@ -9,7 +9,6 @@ package financial.utilities;
 import agents.EconomicAgent;
 import com.sun.istack.internal.Nullable;
 
-import javax.annotation.Nonnull;
 
 /**
  * This is a struct class that contains the information of the last trade. It returns:
@@ -25,13 +24,13 @@ import javax.annotation.Nonnull;
  */
 public class TradeResult {
 
-    @Nonnull
+
     private final PurchaseResult result;
 
-    @Nullable
+
     private final EconomicAgent match;
 
-    @Nullable
+
     private final long price;
 
 
@@ -39,14 +38,14 @@ public class TradeResult {
      * Return a trade result involving failure ( no need to specify the match)
      * @param result the result of trading.
      */
-    public TradeResult(@Nonnull PurchaseResult result) {
+    public TradeResult( PurchaseResult result) {
         assert result!=PurchaseResult.SUCCESS;
         this.result = result;
         match = null;
         price = -1;
     }
 
-    public TradeResult(PurchaseResult result,@Nonnull EconomicAgent match,@Nonnull long price) {
+    public TradeResult(PurchaseResult result, EconomicAgent match, long price) {
         if(price < 0)
             throw new IllegalArgumentException("Negative price can't be a result!");
         assert result != PurchaseResult.NO_MATCH_AVAILABLE; //if no match was available, what is the match you are passing to the constructor?

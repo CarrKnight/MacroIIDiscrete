@@ -16,7 +16,6 @@ import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import model.utilities.DelayException;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -74,8 +73,8 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
      * @param control The plant control
      * @
      */
-    public MarginalMaximizer(@Nonnull HumanResources hr, @Nonnull PlantControl control,
-                             @Nonnull Plant p, @Nonnull Firm owner) {
+    public MarginalMaximizer( HumanResources hr,  PlantControl control,
+                              Plant p,  Firm owner) {
         this.hr = hr;
         this.plantControl = control;
         this.p = p;

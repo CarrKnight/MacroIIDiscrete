@@ -13,7 +13,6 @@ import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.maximizer.WorkforceMaximizer;
 import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
 
-import javax.annotation.Nonnull;
 import java.util.logging.FileHandler;
 
 /**
@@ -58,7 +57,7 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
      * @param control The plant control
      * @
      */
-    public RobustMarginalMaximizer(@Nonnull HumanResources hr, @Nonnull PlantControl control, @Nonnull Plant p, @Nonnull Firm owner) {
+    public RobustMarginalMaximizer( HumanResources hr,  PlantControl control,  Plant p,  Firm owner) {
         maximizer = new MarginalMaximizer(hr,control,p,owner);
     }
 

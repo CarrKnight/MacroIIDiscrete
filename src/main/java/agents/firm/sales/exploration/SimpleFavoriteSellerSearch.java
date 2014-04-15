@@ -31,7 +31,7 @@ public class SimpleFavoriteSellerSearch extends SimpleSellerSearch{
     /**
      * Here we keep in memory the favorite seller.
      */
-    @Nullable
+
     private EconomicAgent favorite = null;
 
     /**

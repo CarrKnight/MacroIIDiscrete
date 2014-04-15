@@ -7,17 +7,18 @@
 package agents.firm.sales.pricing;
 
 import agents.firm.sales.SalesDepartment;
+import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
+import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
+import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
+import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
 import ec.util.MersenneTwisterFast;
 import goods.Good;
 import model.utilities.Deactivatable;
 import model.utilities.NonDrawable;
-import org.reflections.Reflections;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * <h4>Description</h4>
@@ -90,11 +91,21 @@ public interface AskPricingStrategy extends Deactivatable {
 
         //static clause to fill the set names
         static {
-            Reflections strategyReader = new Reflections("agents.firm.sales.pricing");
-            rules = new ArrayList<>(strategyReader.getSubTypesOf(AskPricingStrategy.class)); //read all the rules
+            rules = new ArrayList<>(); //read all the rules
+            rules.add(CostAskPricing.class);
+            rules.add(EverythingMustGoAdaptive.class);
+            rules.add(MarkupFollower.class);
+            rules.add(PriceFollower.class);
+            rules.add(PriceImitator.class);
+            rules.add(UndercuttingAskPricing .class);
+            rules.add(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
+            rules.add(SalesControlWithFixedInventoryAndPID.class);
+            rules.add(SmoothedDailyInventoryPricingStrategy.class);
+            rules.add(SimpleFlowSellerPID.class);
+
+
             //remove not drawables
-            Collection<Class<?>> nondrawables = strategyReader.getTypesAnnotatedWith(NonDrawable.class);
-            rules.removeAll(nondrawables);
+            rules.removeIf(aClass -> aClass.isAnnotationPresent(NonDrawable.class));
             assert rules.size() > 0; // there should be at least one!!
         }
 
@@ -105,7 +116,7 @@ public interface AskPricingStrategy extends Deactivatable {
          * @param sales the sales department that will use this pricing strategy
          * @return the new rule to follow
          */
-        public static AskPricingStrategy newAskPricingStrategy(@Nonnull String rule,@Nonnull SalesDepartment sales) {
+        public static AskPricingStrategy newAskPricingStrategy( String rule, SalesDepartment sales) {
             for (Class<? extends AskPricingStrategy> c : rules) {
                 if (c.getSimpleName().equals(rule)) //if the name matches
                 {
@@ -133,7 +144,7 @@ public interface AskPricingStrategy extends Deactivatable {
          * @param sales the sales department that will use this pricing strategy
          * @return the new rule to follow
          */
-        public static AskPricingStrategy randomAskPricingStrategy(@Nonnull SalesDepartment sales)
+        public static AskPricingStrategy randomAskPricingStrategy( SalesDepartment sales)
         {
             Class<? extends AskPricingStrategy > askPricingStrategy = null;
             MersenneTwisterFast randomizer = sales.getFirm().getRandom(); //get the randomizer
@@ -158,7 +169,7 @@ public interface AskPricingStrategy extends Deactivatable {
          * @param sales the sales department that will use this pricing strategy
          * @return the new rule to follow
          */
-        public static <AP extends AskPricingStrategy> AP newAskPricingStrategy( @Nonnull Class<AP> rule,@Nonnull SalesDepartment sales )
+        public static <AP extends AskPricingStrategy> AP newAskPricingStrategy(  Class<AP> rule, SalesDepartment sales )
         {
 
             if(!rules.contains(rule) || Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )

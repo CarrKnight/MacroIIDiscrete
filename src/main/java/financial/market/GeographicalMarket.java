@@ -28,8 +28,6 @@ import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -168,7 +166,7 @@ public class GeographicalMarket extends Market implements Steppable{
      * @param seller buyer entering the market
      */
     @Override
-    public void registerSeller(@Nonnull EconomicAgent seller) {
+    public void registerSeller( EconomicAgent seller) {
         Preconditions.checkArgument(seller instanceof GeographicalFirm, "only geographical agents accepted!");
         super.registerSeller(seller);
     }
@@ -177,7 +175,7 @@ public class GeographicalMarket extends Market implements Steppable{
     /**
      * Sellers are supposed to quote
      */
-    @Nonnull
+
     @Override
     public ActionsAllowed getSellerRole() {
         return ActionsAllowed.QUOTE;
@@ -199,9 +197,9 @@ public class GeographicalMarket extends Market implements Steppable{
      * @param good   the good to sell
      * @return the quote made
      */
-    @Nonnull
+
     @Override
-    public Quote submitSellQuote(@Nonnull EconomicAgent seller, long price, @Nonnull Good good)
+    public Quote submitSellQuote( EconomicAgent seller, long price,  Good good)
     {
         return submitSellQuote(seller, price, good,null);
 
@@ -217,9 +215,9 @@ public class GeographicalMarket extends Market implements Steppable{
      * @param department the department making the order or null if it's done by the agent himself
      * @return the quote made
      */
-    @Nonnull
+
     @Override
-    public Quote submitSellQuote(@Nonnull EconomicAgent seller, long price, @Nonnull Good good, @Nullable Department department)
+    public Quote submitSellQuote( EconomicAgent seller, long price,  Good good,  Department department)
     {
         assert getSellers().contains(seller);
         assert seller instanceof GeographicalFirm;
@@ -297,9 +295,9 @@ public class GeographicalMarket extends Market implements Steppable{
      * @param department the department making the order or null if it was done by the economic agent himself
      * @return quote made
      */
-    @Nonnull
+
     @Override
-    public Quote submitBuyQuote(@Nonnull EconomicAgent buyer, long price, @Nullable Department department) {
+    public Quote submitBuyQuote( EconomicAgent buyer, long price,  Department department) {
         assert getBuyers().contains(buyer);
         assert buyer instanceof GeographicalCustomer;
         if(MacroII.SAFE_MODE) //double check the good isn't already on sale
@@ -351,9 +349,9 @@ public class GeographicalMarket extends Market implements Steppable{
      * @param price the price at/below which the agent is willing to buy
      * @return quote made
      */
-    @Nonnull
+
     @Override
-    public Quote submitBuyQuote(@Nonnull EconomicAgent buyer, long price) {
+    public Quote submitBuyQuote( EconomicAgent buyer, long price) {
         return this.submitBuyQuote(buyer,price,null);
 
     }
@@ -471,7 +469,7 @@ public class GeographicalMarket extends Market implements Steppable{
      * @return the best seller or null if there are none
      * @throws IllegalAccessException thrown by markets that do not allow such information.
      */
-    @Nullable
+
     @Override
     public EconomicAgent getBestSeller() throws IllegalAccessException {
         if(sellersWhoPlacedAQuote.isEmpty())

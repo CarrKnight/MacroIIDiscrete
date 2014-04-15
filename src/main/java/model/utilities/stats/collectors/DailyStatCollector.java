@@ -19,7 +19,6 @@ import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -62,7 +61,7 @@ public class DailyStatCollector implements Steppable{
     /**
      * If this is given, calls it to write a csv file
      */
-    @Nullable
+
     private CSVWriter writer = null;
 
     /**
@@ -357,7 +356,7 @@ public class DailyStatCollector implements Steppable{
      * @param csvFile  the csv file
      * @param macroII the model reference
      */
-    public static void addDailyStatCollectorToModel(@Nonnull File csvFile,@Nonnull MacroII macroII)
+    public static void addDailyStatCollectorToModel( File csvFile, MacroII macroII)
     {
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(csvFile));

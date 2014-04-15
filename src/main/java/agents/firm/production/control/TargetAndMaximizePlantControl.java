@@ -17,7 +17,6 @@ import agents.firm.purchases.inventoryControl.Level;
 import com.google.common.base.Preconditions;
 import model.utilities.NonDrawable;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
@@ -130,7 +129,7 @@ public class TargetAndMaximizePlantControl extends AbstractPlantControl {
      * Completely default target and maximizer, to be filled by the factory.
      * @param hr the human resources object
      */
-    private TargetAndMaximizePlantControl(@Nonnull final HumanResources hr) {
+    private TargetAndMaximizePlantControl( final HumanResources hr) {
         super(hr);
     }
 
@@ -139,7 +138,7 @@ public class TargetAndMaximizePlantControl extends AbstractPlantControl {
      * @param hr the human resource
      * @return the target and maximize control
      */
-    public static TargetAndMaximizePlantControl emptyTargetAndMaximizePlantControl(@Nonnull final HumanResources hr)
+    public static TargetAndMaximizePlantControl emptyTargetAndMaximizePlantControl( final HumanResources hr)
     {
         return new  TargetAndMaximizePlantControl(hr);
     }
@@ -150,7 +149,7 @@ public class TargetAndMaximizePlantControl extends AbstractPlantControl {
      */
     public static <WT extends WorkforceTargeter, ALG extends WorkerMaximizationAlgorithm, WM extends WorkforceMaximizer<ALG>>
     FactoryProducedTargetAndMaximizePlantControl<WT,WM> PlantControlFactory(
-            @Nonnull final HumanResources hr, Class<WT> targeterClass,Class<WM> maximizerClass,
+             final HumanResources hr, Class<WT> targeterClass,Class<WM> maximizerClass,
             Class<ALG> algorithmType) {
 
         //todo switch to generator so I can do it by string too.
@@ -190,7 +189,7 @@ public class TargetAndMaximizePlantControl extends AbstractPlantControl {
     @SafeVarargs
     public static <WT extends WorkforceTargeter, ALG extends WorkerMaximizationAlgorithm, WM extends WorkforceMaximizer<ALG> >
     PlantControl
-    PlantControlFactory(@Nonnull final HumanResources hr,
+    PlantControlFactory( final HumanResources hr,
                         Class<WT> targeterClass,
                         Class<WM> maximizerClass,
                         Class<ALG> algorithmType,

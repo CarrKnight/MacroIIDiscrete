@@ -8,7 +8,6 @@ package agents.firm.production;
 
 import goods.GoodType;
 
-import javax.annotation.Nonnull;
 import java.util.EnumMap;
 
 /**
@@ -49,8 +48,8 @@ public class Blueprint {
      * @param outputQuantity how much of it will be produced
      * @return a blueprint object
      */
-    @Nonnull
-    public static Blueprint simpleBlueprint(@Nonnull GoodType input,int inputQuantity,@Nonnull GoodType output,int outputQuantity){
+
+    public static Blueprint simpleBlueprint( GoodType input,int inputQuantity, GoodType output,int outputQuantity){
         Blueprint b = new Blueprint();
         b.inputs = new EnumMap<GoodType, Integer>(GoodType.class);
         b.inputs.put(input,inputQuantity);
@@ -75,7 +74,7 @@ public class Blueprint {
             b.outputs = new EnumMap<>(GoodType.class);
         }
 
-        public @Nonnull Builder input(@Nonnull GoodType input,@Nonnull int inputQuantity){
+        public  Builder input( GoodType input, int inputQuantity){
             assert !b.inputs.containsKey(input);
             b.inputs.put(input,inputQuantity);
 
@@ -83,7 +82,7 @@ public class Blueprint {
 
         }
 
-        public @Nonnull Builder output(@Nonnull GoodType output,@Nonnull int outputQuantity){
+        public  Builder output( GoodType output, int outputQuantity){
             assert !b.outputs.containsKey(output);
             b.outputs.put(output,outputQuantity);
 

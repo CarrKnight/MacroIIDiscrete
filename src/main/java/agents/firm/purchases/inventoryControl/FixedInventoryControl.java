@@ -11,7 +11,6 @@ import agents.firm.purchases.PurchasesDepartment;
 import com.google.common.base.Preconditions;
 import goods.GoodType;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -48,7 +47,7 @@ public class FixedInventoryControl extends AbstractInventoryControl {
      * return rates in respect to the inventory the firm has
      * @return the inventory level rating
      */
-    @Nonnull
+
     @Override
     protected Level rateInventory() {
         //how much do we have?
@@ -62,7 +61,7 @@ public class FixedInventoryControl extends AbstractInventoryControl {
      * @param currentLevel  how much I have right now
      * @return the inventory level given what I have
      */
-    @Nonnull
+
     private Level rateInventory(int currentLevel){
         if(currentLevel < .5f * inventoryTarget)
             return Level.DANGER;
@@ -107,7 +106,7 @@ public class FixedInventoryControl extends AbstractInventoryControl {
      * Basic inventory control needs a link to the purchase department it needs to control (from where it can access the firm and the inventory).
      * IT also sets itself up to adjust at the next possible moment
      */
-    public FixedInventoryControl(@Nonnull final PurchasesDepartment purchasesDepartment) {
+    public FixedInventoryControl( final PurchasesDepartment purchasesDepartment) {
         this(purchasesDepartment,purchasesDepartment.getFirm().getModel().drawFixedInventoryTarget());
 
     }
@@ -116,7 +115,7 @@ public class FixedInventoryControl extends AbstractInventoryControl {
      * Basic inventory control needs a link to the purchase department it needs to control (from where it can access the firm and the inventory).
      * IT also sets itself up to adjust at the next possible moment
      */
-    public FixedInventoryControl(@Nonnull final PurchasesDepartment purchasesDepartment, int specificTarget) {
+    public FixedInventoryControl( final PurchasesDepartment purchasesDepartment, int specificTarget) {
         super(purchasesDepartment);
         inventoryTarget = specificTarget;
 

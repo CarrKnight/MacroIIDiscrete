@@ -12,7 +12,6 @@ import goods.GoodType;
 import agents.firm.production.Plant;
 import agents.firm.production.technology.Machinery;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -61,7 +60,7 @@ public abstract class AbstractPlantControl implements  PlantControl{
      */
     private long currentWage;
 
-    protected AbstractPlantControl(@Nonnull final HumanResources hr) {
+    protected AbstractPlantControl( final HumanResources hr) {
         this.hr = hr;
         plant = hr.getPlant();
 
@@ -82,7 +81,7 @@ public abstract class AbstractPlantControl implements  PlantControl{
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(@Nonnull final GoodType type){
+    public long maxPrice( final GoodType type){
 
 
 
@@ -98,7 +97,7 @@ public abstract class AbstractPlantControl implements  PlantControl{
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(@Nonnull final Good good){
+    public long maxPrice( final Good good){
         return maxPrice(good.getType());
     }
 

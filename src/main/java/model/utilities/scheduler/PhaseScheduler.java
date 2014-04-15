@@ -9,8 +9,6 @@ package model.utilities.scheduler;
 import model.utilities.ActionOrder;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
-
 /**
  * <h4>Description</h4>
  * <p/>
@@ -33,7 +31,7 @@ public interface PhaseScheduler extends Steppable {
      * @param phase the phase i want the action to occur in
      * @param action the steppable that should be called
      */
-    void scheduleSoon(@Nonnull ActionOrder phase, @Nonnull Steppable action);
+    void scheduleSoon(ActionOrder phase, Steppable action);
 
 
     /**
@@ -43,7 +41,7 @@ public interface PhaseScheduler extends Steppable {
      * @param priority the action priority
      *
      */
-    void scheduleSoon(@Nonnull ActionOrder phase, @Nonnull Steppable action, Priority priority);
+    void scheduleSoon(ActionOrder phase, Steppable action, Priority priority);
 
     /**
      * Schedule tomorrow assuming the phase passed is EXACTLY the current phase (at priority STANDARD)
@@ -66,7 +64,7 @@ public interface PhaseScheduler extends Steppable {
      * @param action the steppable that should be called
      * @param daysAway how many days into the future should this happen
      */
-    void scheduleAnotherDay(@Nonnull ActionOrder phase, @Nonnull Steppable action,
+    void scheduleAnotherDay( ActionOrder phase, Steppable action,
                             int daysAway);
 
     /**
@@ -76,7 +74,7 @@ public interface PhaseScheduler extends Steppable {
      * @param daysAway how many days into the future should this happen
      * @param priority the action priority
      */
-    void scheduleAnotherDay(@Nonnull ActionOrder phase, @Nonnull Steppable action,
+    void scheduleAnotherDay( ActionOrder phase, Steppable action,
                             int daysAway,Priority priority);
 
     /**
@@ -85,7 +83,7 @@ public interface PhaseScheduler extends Steppable {
      * @param probability each day we check against this fixed probability to know if we will step on this action today
      * @param action the steppable that should be called
      */
-    void scheduleAnotherDayWithFixedProbability(@Nonnull ActionOrder phase, @Nonnull Steppable action,
+    void scheduleAnotherDayWithFixedProbability( ActionOrder phase,  Steppable action,
                                                 float probability);
 
     /**
@@ -94,7 +92,7 @@ public interface PhaseScheduler extends Steppable {
      * @param action the steppable that should be called
      * @param
      */
-    void scheduleAnotherDayWithFixedProbability(@Nonnull ActionOrder phase, @Nonnull Steppable action,
+    void scheduleAnotherDayWithFixedProbability( ActionOrder phase,  Steppable action,
                                                 float probability, Priority priority);
 
     /**

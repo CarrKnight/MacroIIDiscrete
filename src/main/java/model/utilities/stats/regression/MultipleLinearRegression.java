@@ -47,7 +47,7 @@ public class MultipleLinearRegression implements MultivariateRegression {
      * @param x       each array is a column containing all the observations of one regressor.
      */
     @Override
-    public void estimateModel(double[] y, @Nullable double[] weights, double[]... x) throws LinearRegression.CollinearityException {
+    public void estimateModel(double[] y,  double[] weights, double[]... x) throws LinearRegression.CollinearityException {
 
         //   Preconditions.checkArgument(x.length==numberOfRegressorsBesidesIntercept);
         if(y.length > x.length + 2)

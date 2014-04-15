@@ -12,7 +12,6 @@ import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
 import sim.engine.Steppable;
 
-import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
@@ -156,7 +155,7 @@ public class PIDController implements Controller{
      * @param phase at which phase should this controller be rescheduled
      */
     public void adjust(float residual, boolean isActive,
-                       @Nullable MacroII simState, @Nullable Steppable user,ActionOrder phase, Priority priority)
+                        MacroII simState,  Steppable user,ActionOrder phase, Priority priority)
     {
         //delegate the PID itself to adjustOnce, and worry about refactoring
         if (!adjustOnce(residual, isActive))
@@ -192,7 +191,7 @@ public class PIDController implements Controller{
      *
      */
     public void adjust(float target, float current, boolean isActive,
-                       @Nullable MacroII simState, @Nullable Steppable user,ActionOrder phase) {
+                        MacroII simState,  Steppable user,ActionOrder phase) {
 
         adjust(target, current, isActive, simState, user, phase,Priority.STANDARD);
 
@@ -211,7 +210,7 @@ public class PIDController implements Controller{
      *
      */
     public void adjust(float target, float current, boolean isActive,
-                       @Nullable MacroII simState, @Nullable Steppable user,ActionOrder phase, Priority priority) {
+                        MacroII simState,  Steppable user,ActionOrder phase, Priority priority) {
         //get the residual and delegate to the residual method
         float residual = target - current;
         adjust(residual,isActive,simState,user,phase,priority);

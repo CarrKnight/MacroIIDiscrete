@@ -13,7 +13,6 @@ import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.engine.SimState;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -57,7 +56,7 @@ public class SalesData extends DataStorage<SalesDataType> {
     /**
      * called when the data gathering is supposed to start. It schedules itself to start at next CLEANUP phase
      */
-    public void start(@Nonnull MacroII state, @Nonnull SalesDepartment departmentToFollow) {
+    public void start( MacroII state,  SalesDepartment departmentToFollow) {
         if(!active)
             return;
 

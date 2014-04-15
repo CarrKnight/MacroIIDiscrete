@@ -24,7 +24,6 @@ import model.utilities.pid.PIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -115,7 +114,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
      * Constructor that generates at random the seller PID from the model randomizer
      * @param sales
      */
-    public SimpleFlowSellerPID(@Nonnull SalesDepartment sales) {
+    public SimpleFlowSellerPID( SalesDepartment sales) {
         this(sales, sales.getFirm().getModel().drawProportionalGain()/5,  sales.getFirm().getModel().drawIntegrativeGain()/5,
                 sales.getFirm().getModel().drawDerivativeGain(),sales.getFirm().getModel().drawPIDSpeed()  );
     }
@@ -219,7 +218,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
      * @param good  the good being sold
      */
     @Override
-    public void sellThisEvent(@Nonnull Firm owner, @Nonnull SalesDepartment dept, @Nonnull Good good) {
+    public void sellThisEvent( Firm owner,  SalesDepartment dept,  Good good) {
         assert dept == sales;
         assert sales.getFirm() == owner;
         assert owner.has(good);
@@ -249,7 +248,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
      * @param price
      */
     @Override
-    public void goodSoldEvent(@Nonnull SalesDepartment dept, Good good, Long price) {
+    public void goodSoldEvent( SalesDepartment dept, Good good, Long price) {
         goodsSold++;
         stockOuts.goodSoldEvent(dept, good,price );
 
@@ -361,7 +360,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
      * @param price the price of the good
      */
     @Override
-    public void newBidEvent(@Nonnull EconomicAgent buyer, long price,Quote bestAsk) {
+    public void newBidEvent( EconomicAgent buyer, long price,Quote bestAsk) {
 
         stockOuts.newBidEvent(buyer,price, bestAsk);
 
@@ -375,7 +374,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
      * @param quote the removed quote
      */
     @Override
-    public void removedBidEvent(@Nonnull EconomicAgent buyer, @Nonnull Quote quote) {
+    public void removedBidEvent( EconomicAgent buyer,  Quote quote) {
         stockOuts.removedBidEvent(buyer,quote);
     }
 
@@ -412,7 +411,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
      * @param dept  the sales department asked
      */
     @Override
-    public void stockOutEvent(@Nonnull Firm owner, @Nonnull SalesDepartment dept, @Nonnull EconomicAgent buyer) {
+    public void stockOutEvent( Firm owner,  SalesDepartment dept,  EconomicAgent buyer) {
         stockOuts.stockOutEvent(owner,dept,buyer);
     }
 

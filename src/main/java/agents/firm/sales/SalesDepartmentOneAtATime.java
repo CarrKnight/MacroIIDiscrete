@@ -16,7 +16,6 @@ import financial.utilities.ActionsAllowed;
 import goods.Good;
 import model.MacroII;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -49,7 +48,7 @@ public class SalesDepartmentOneAtATime extends SalesDepartment
 
     public SalesDepartmentOneAtATime(Firm firm, Market market, BuyerSearchAlgorithm buyerSearchAlgorithm,
                                      SellerSearchAlgorithm sellerSearchAlgorithm,
-                                     @Nonnull MacroII model) {
+                                      MacroII model) {
         super(sellerSearchAlgorithm, market, model, firm, buyerSearchAlgorithm);
     }
 
@@ -65,7 +64,7 @@ public class SalesDepartmentOneAtATime extends SalesDepartment
      * @param firm The firm where the sales department belongs
      * @param market The market the sales department deals in
      */
-    private SalesDepartmentOneAtATime(@Nonnull Firm firm, @Nonnull Market market) {
+    private SalesDepartmentOneAtATime( Firm firm,  Market market) {
         this(firm,market,null,null,firm.getModel());
 
 
@@ -79,7 +78,7 @@ public class SalesDepartmentOneAtATime extends SalesDepartment
      * @param g the good to quote
      */
     @Override
-    protected void prepareToPlaceAQuote(@Nonnull Good g) {
+    protected void prepareToPlaceAQuote( Good g) {
         Preconditions.checkNotNull(g);
         //lock the department from selling anything else in the mean time
         lock = true;

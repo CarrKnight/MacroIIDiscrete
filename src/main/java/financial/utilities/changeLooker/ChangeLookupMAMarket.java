@@ -14,7 +14,6 @@ import model.utilities.ActionOrder;
 import model.utilities.filters.MovingAverage;
 import sim.engine.SimState;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -56,7 +55,7 @@ public class ChangeLookupMAMarket implements ChangeLookup
      * @param movingAverageSize the size of the MA buffer
      * @param model a link to the model to schedule itself
      */
-    public ChangeLookupMAMarket(@Nonnull Market market, int movingAverageSize,@Nonnull MacroII model) {
+    public ChangeLookupMAMarket( Market market, int movingAverageSize, MacroII model) {
         Preconditions.checkNotNull(market);
         Preconditions.checkNotNull(model);
         this.active = true;

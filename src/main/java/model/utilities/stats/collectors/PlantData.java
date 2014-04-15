@@ -14,7 +14,6 @@ import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.enums.PlantDataType;
 import sim.engine.SimState;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -72,7 +71,7 @@ public class PlantData extends DataStorage<PlantDataType> {
     /**
      * called when the data gathering is supposed to start. It schedules itself to start at next CLEANUP phase
      */
-    public void start(@Nonnull MacroII state,@Nonnull Plant plant, @Nonnull Firm plantOwner) {
+    public void start( MacroII state, Plant plant,  Firm plantOwner) {
         if(!active)
             return;
 
@@ -91,7 +90,7 @@ public class PlantData extends DataStorage<PlantDataType> {
      * called when the data gathering is supposed to start. It schedules itself to start at next CLEANUP phase. It grabs the Firm
      * reference from getOwner() of the plant
      */
-    public void start(@Nonnull MacroII state,@Nonnull Plant plant) {
+    public void start( MacroII state, Plant plant) {
         this.start(state,plant,plant.getOwner());
 
     }

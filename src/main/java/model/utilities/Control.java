@@ -8,7 +8,6 @@ package model.utilities;
 
 import agents.firm.purchases.inventoryControl.Level;
 
-import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
@@ -32,7 +31,7 @@ public interface Control {
      * This method returns the control rating on current stock held <br>
      * @return the rating on the current stock conditions or null if the department is not active.
      */
-    @Nullable
+
     public Level rateCurrentLevel();
 
 

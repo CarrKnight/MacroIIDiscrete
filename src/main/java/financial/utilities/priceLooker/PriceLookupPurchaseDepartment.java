@@ -9,7 +9,6 @@ package financial.utilities.priceLooker;
 import agents.firm.purchases.PurchasesDepartment;
 import com.google.common.base.Preconditions;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -35,7 +34,7 @@ public class PriceLookupPurchaseDepartment implements PriceLookup {
     private final PurchasesDepartment department;
 
 
-    public PriceLookupPurchaseDepartment(@Nonnull PurchasesDepartment department)
+    public PriceLookupPurchaseDepartment( PurchasesDepartment department)
     {
         Preconditions.checkNotNull(department);
         this.department = department;

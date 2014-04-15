@@ -14,7 +14,6 @@ import financial.utilities.ActionsAllowed;
 import goods.Good;
 import model.MacroII;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -58,7 +57,7 @@ public class SalesDepartmentAllAtOnce extends SalesDepartment{
      * @param firm The firm where the sales department belongs
      * @param market The market the sales department deals in
      */
-    public SalesDepartmentAllAtOnce(@Nonnull Firm firm, @Nonnull Market market) {
+    public SalesDepartmentAllAtOnce( Firm firm,  Market market) {
         this(firm,market,null,null,firm.getModel());
 
 
@@ -70,7 +69,7 @@ public class SalesDepartmentAllAtOnce extends SalesDepartment{
      * @param firm The firm where the sales department belongs
      * @param market The market the sales department deals in
      */
-    private SalesDepartmentAllAtOnce(@Nonnull Firm firm, @Nonnull Market market, @Nonnull MacroII model) {
+    private SalesDepartmentAllAtOnce( Firm firm,  Market market,  MacroII model) {
         this(firm,market,null,null,model);
 
 
@@ -102,7 +101,7 @@ public class SalesDepartmentAllAtOnce extends SalesDepartment{
      */
     private SalesDepartmentAllAtOnce(Firm firm, Market market, BuyerSearchAlgorithm buyerSearchAlgorithm,
                                      SellerSearchAlgorithm sellerSearchAlgorithm,
-                                     @Nonnull MacroII model) {
+                                      MacroII model) {
         super(sellerSearchAlgorithm, market, model, firm, buyerSearchAlgorithm);
 
 

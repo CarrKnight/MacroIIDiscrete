@@ -13,7 +13,6 @@
     <orderEntry type="library" scope="TEST" name="junit:junit:4.11" level="project" />
     <orderEntry type="library" name="net.sf.opencsv:opencsv:2.3" level="project" />
     <orderEntry type="library" name="com.google.guava:guava:16.0.1" level="project" />
-    <orderEntry type="library" name="org.reflections:reflections:0.9.8" level="project" />
     <orderEntry type="library" name="net.sf.jung:jung-algorithms:2.0.1" level="project" />
     <orderEntry type="library" name="net.sf.jung:jung-graph-impl:2.0.1" level="project" />
     <orderEntry type="library" name="net.sf.jung:jung-visualization:2.0.1" level="project" />

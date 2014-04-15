@@ -10,9 +10,8 @@ import agents.firm.purchases.PurchasesDepartment;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import model.MacroII;
-import org.reflections.Reflections;
+import model.utilities.NonDrawable;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -78,8 +77,23 @@ public interface PurchasesPredictor
 
         //static clause to fill the set names
         static {
-            Reflections strategyReader = new Reflections("agents.firm.purchases.prediction");
-            rules = new ArrayList<>(strategyReader.getSubTypesOf(PurchasesPredictor.class)); //read all the rules
+            rules = new ArrayList<>(); //read all the rules
+            rules.add(AroundShockLinearRegressionPurchasePredictor .class);
+            rules.add(FixedIncreasePurchasesPredictor  .class);
+            rules.add(LearningIncreasePurchasesPredictor  .class);
+            rules.add(LearningIncreaseWithTimeSeriesPurchasePredictor  .class);
+            rules.add(LinearExtrapolatorPurchasePredictor  .class);
+            rules.add(LookAheadPredictor  .class);
+            rules.add(MarketPurchasesPredictor  .class);
+            rules.add(OpenLoopRecursivePurchasesPredictor   .class);
+            rules.add(PricingPurchasesPredictor   .class);
+            rules.add(RecursivePurchasesPredictor   .class);
+            rules.add(MemoryPurchasesPredictor  .class);
+            rules.add(SamplingLearningIncreasePurchasePredictor   .class);
+            rules.add(SurveyPurchasesPredictor   .class);
+
+
+            rules.removeIf(aClass -> aClass.isAnnotationPresent(NonDrawable.class));
             assert rules.size() > 0; // there should be at least one!!
         }
 
@@ -89,7 +103,7 @@ public interface PurchasesPredictor
          * @param rule the simpleName of the class!
          * @return the new rule to follow
          */
-        public static PurchasesPredictor newPurchasesPredictor(@Nonnull String rule, PurchasesDepartment purchasesDepartment) {
+        public static PurchasesPredictor newPurchasesPredictor( String rule, PurchasesDepartment purchasesDepartment) {
             for (Class<? extends PurchasesPredictor> c : rules) {
                 if (c.getSimpleName().equals(rule)) //if the name matches
                 {
@@ -140,7 +154,7 @@ public interface PurchasesPredictor
          * @return the new rule to follow
          */
         public static <PP extends PurchasesPredictor> PP newPurchasesPredictor(
-                @Nonnull Class<PP> rule, PurchasesDepartment department)
+                 Class<PP> rule, PurchasesDepartment department)
         {
 
             if(!rules.contains(rule) || Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )

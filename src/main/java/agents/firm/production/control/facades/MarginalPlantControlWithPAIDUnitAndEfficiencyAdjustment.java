@@ -20,8 +20,6 @@ import financial.market.Market;
 import goods.Good;
 import goods.GoodType;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
@@ -55,7 +53,7 @@ public class MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment implements 
      * A facade for a marginal plant control with PID used as a way to select the step size
      * @param hr the human resources we are collaborating with
      */
-    public MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment(@Nonnull HumanResources hr)
+    public MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment( HumanResources hr)
     {
         control = TargetAndMaximizePlantControl.emptyTargetAndMaximizePlantControl(hr);
         targeter = new PIDTargeterWithQuickFiring(hr,control);
@@ -174,7 +172,7 @@ public class MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment implements 
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(@Nonnull GoodType type) {
+    public long maxPrice( GoodType type) {
         return control.maxPrice(type);
     }
 
@@ -185,7 +183,7 @@ public class MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment implements 
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(@Nonnull Good good) {
+    public long maxPrice( Good good) {
         return control.maxPrice(good);
     }
 
@@ -250,7 +248,7 @@ public class MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment implements 
      *
      * @return the rating on the current stock conditions or null if the department is not active.
      */
-    @Nullable
+
     @Override
     public Level rateCurrentLevel() {
         return control.rateCurrentLevel();

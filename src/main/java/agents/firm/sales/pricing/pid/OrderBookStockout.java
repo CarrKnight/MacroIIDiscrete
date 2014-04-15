@@ -13,7 +13,6 @@ import financial.market.Market;
 import financial.utilities.Quote;
 import goods.Good;
 
-import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -111,7 +110,7 @@ public class OrderBookStockout implements StockoutEstimator {
      * @param price the price of the good
      */
     @Override
-    public void newBidEvent(@Nonnull final EconomicAgent buyer, final long price, final Quote bestAsk) {
+    public void newBidEvent( final EconomicAgent buyer, final long price, final Quote bestAsk) {
         //if we are empty
         if(!strategy.getSales().hasAnythingToSell())
         {
@@ -146,7 +145,7 @@ public class OrderBookStockout implements StockoutEstimator {
      * @param quote the removed quote
      */
     @Override
-    public void removedBidEvent(@Nonnull EconomicAgent buyer, @Nonnull Quote quote) {
+    public void removedBidEvent( EconomicAgent buyer,  Quote quote) {
         //if the quote was something we wanted something to do with the opportunity is not there anymore but not really foregone
         if(quote.getPriceQuoted() >= strategy.getTargetPrice())
         {
@@ -163,7 +162,7 @@ public class OrderBookStockout implements StockoutEstimator {
      * @param good  the good being sold
      */
     @Override
-    public void sellThisEvent(@Nonnull Firm owner, @Nonnull SalesDepartment dept, @Nonnull Good good) {
+    public void sellThisEvent( Firm owner,  SalesDepartment dept,  Good good) {
         //we don't care.
     }
 
@@ -174,7 +173,7 @@ public class OrderBookStockout implements StockoutEstimator {
      * @param price
      */
     @Override
-    public void goodSoldEvent(@Nonnull SalesDepartment dept, Good good, Long price) {
+    public void goodSoldEvent( SalesDepartment dept, Good good, Long price) {
         //if we sold to somebody we were eyeing (that is, he was listed among opportunities) then we are going to deal with it in tradeEvent
 
     }
@@ -186,7 +185,7 @@ public class OrderBookStockout implements StockoutEstimator {
      * @param dept  the sales department asked
      */
     @Override
-    public void stockOutEvent(@Nonnull Firm owner, @Nonnull SalesDepartment dept, @Nonnull EconomicAgent buyer) {
+    public void stockOutEvent( Firm owner,  SalesDepartment dept,  EconomicAgent buyer) {
         //i guess this is classic foregone opportunity
         foregoneOpportunities.add(buyer);
     }

@@ -26,7 +26,6 @@ import model.utilities.dummies.DummySeller;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,7 +77,7 @@ public class SalesDepartmentTest2 {
             DummyBuyer buyer = new DummyBuyer(model,10+i*10,market){
 
                 @Override
-                public void pay(long money,@Nonnull EconomicAgent receiver,Market market1) throws Bankruptcy {
+                public void pay(long money, EconomicAgent receiver,Market market1) throws Bankruptcy {
                     super.pay(money, receiver,null);    //To change body of overridden methods use File | Settings | File Templates.
                     market.deregisterBuyer(this);
                 }

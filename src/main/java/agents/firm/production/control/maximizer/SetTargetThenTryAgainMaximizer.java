@@ -18,7 +18,6 @@ import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -375,7 +374,7 @@ public class SetTargetThenTryAgainMaximizer<ALG extends WorkerMaximizationAlgori
      *
      * @param maximizationAlgorithm New value of The maximization algorithm that chooses the new workers given the results.
      */
-    protected void setMaximizationAlgorithm(@Nonnull ALG maximizationAlgorithm) {
+    protected void setMaximizationAlgorithm( ALG maximizationAlgorithm) {
         if(this.maximizationAlgorithm != null)
             this.maximizationAlgorithm.turnOff();
 

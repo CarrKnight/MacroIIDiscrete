@@ -32,8 +32,6 @@ import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -81,8 +79,8 @@ public class HumanResources extends PurchasesDepartment implements Steppable {
      * @param firm the firm owning the department
      * @param market the labor market
      */
-    private HumanResources(long budgetGiven, @Nonnull Firm firm, @Nonnull Market market,
-                           @Nonnull Plant plant) {
+    private HumanResources(long budgetGiven,  Firm firm,  Market market,
+                            Plant plant) {
         super(budgetGiven, firm, market);
         assert market.getGoodType().isLabor(); //must be a labor market!
         this.plant = plant; //record the plant to supply.
@@ -101,8 +99,8 @@ public class HumanResources extends PurchasesDepartment implements Steppable {
      * @param firm the firm owning the department
      * @param market the labor market
      */
-    public static HumanResources getEmptyHumanResources(long budgetGiven, @Nonnull Firm firm, @Nonnull Market market,
-                                                        @Nonnull Plant plant)
+    public static HumanResources getEmptyHumanResources(long budgetGiven,  Firm firm,  Market market,
+                                                         Plant plant)
     {
         HumanResources hr =  new HumanResources(budgetGiven, firm, market, plant);
         firm.registerHumanResources(plant, hr);
@@ -122,11 +120,11 @@ public class HumanResources extends PurchasesDepartment implements Steppable {
      * @return a new instance of PurchasesDepartment
      */
     public static <PC extends PlantControl, BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm>
-    FactoryProducedHumanResources<PC,BS,SS> getHumanResourcesIntegrated(long budgetGiven, @Nonnull Firm firm,
-                                                                        @Nonnull Market market, @Nonnull Plant plant,
-                                                                        @Nullable Class<PC> integratedControl,
-                                                                        @Nullable Class<BS> buyerSearchAlgorithmType,
-                                                                        @Nullable Class<SS> sellerSearchAlgorithmType )
+    FactoryProducedHumanResources<PC,BS,SS> getHumanResourcesIntegrated(long budgetGiven,  Firm firm,
+                                                                         Market market,  Plant plant,
+                                                                         Class<PC> integratedControl,
+                                                                         Class<BS> buyerSearchAlgorithmType,
+                                                                         Class<SS> sellerSearchAlgorithmType )
     {
 
         //create the new human resources
@@ -193,13 +191,13 @@ public class HumanResources extends PurchasesDepartment implements Steppable {
     <PC extends PlantControl,
             BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm, WT extends WorkforceTargeter,
             WM extends WorkforceMaximizer<ALG>, ALG extends WorkerMaximizationAlgorithm>
-    FactoryProducedHumanResourcesWithMaximizerAndTargeter getHumanResourcesIntegrated(long budgetGiven, @Nonnull Firm firm,
-                                                                                      @Nonnull Market market, @Nonnull Plant plant,
-                                                                                      @Nullable Class<WT> targeter,
-                                                                                      @Nullable Class<WM> maximizer,
-                                                                                      @Nullable Class<ALG> maximizationAlgorithm,
-                                                                                      @Nullable Class<BS> buyerSearchAlgorithmType,
-                                                                                      @Nullable Class<SS> sellerSearchAlgorithmType )
+    FactoryProducedHumanResourcesWithMaximizerAndTargeter getHumanResourcesIntegrated(long budgetGiven,  Firm firm,
+                                                                                       Market market,  Plant plant,
+                                                                                       Class<WT> targeter,
+                                                                                       Class<WM> maximizer,
+                                                                                       Class<ALG> maximizationAlgorithm,
+                                                                                       Class<BS> buyerSearchAlgorithmType,
+                                                                                       Class<SS> sellerSearchAlgorithmType )
     {
 
         //create the new human resources
@@ -348,7 +346,7 @@ public class HumanResources extends PurchasesDepartment implements Steppable {
      * @param price price of the good.
      */
     @Override
-    public void reactToFilledQuote(Good g, long price, @Nonnull EconomicAgent seller) {
+    public void reactToFilledQuote(Good g, long price,  EconomicAgent seller) {
         assert seller instanceof Person && plant.getWorkers().contains(seller);
         counter.inventoryIncreaseEvent(getFirm(),getGoodType(),getNumberOfWorkers(),1); //call the counter yourself because workers aren't really an inventory item
         super.reactToFilledQuote(g, price, seller);

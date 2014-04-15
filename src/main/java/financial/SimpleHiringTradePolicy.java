@@ -15,7 +15,6 @@ import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -36,8 +35,8 @@ public class SimpleHiringTradePolicy implements TradePolicy {
 
 
 
-    public PurchaseResult trade(@Nonnull Firm buyer,@Nonnull Person seller,@Nonnull Good good, long price,
-                                @Nonnull Quote buyerQuote)
+    public PurchaseResult trade( Firm buyer, Person seller, Good good, long price,
+                                 Quote buyerQuote)
     {
 
 
@@ -54,8 +53,8 @@ public class SimpleHiringTradePolicy implements TradePolicy {
     }
 
     @Override
-    public PurchaseResult trade(@Nonnull EconomicAgent buyer, @Nonnull EconomicAgent seller, @Nonnull Good good, long price,
-                                @Nonnull Quote buyerQuote,@Nonnull Quote sellerQuote, Market market) {
+    public PurchaseResult trade( EconomicAgent buyer,  EconomicAgent seller,  Good good, long price,
+                                 Quote buyerQuote, Quote sellerQuote, Market market) {
         Preconditions.checkArgument(market.getGoodType().isLabor());
         //make sure arguments make sense
         if(!(buyer instanceof Firm))

@@ -27,8 +27,6 @@ import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -233,7 +231,7 @@ public class HillClimberThroughPredictionControl implements PlantControl, PlantL
      *
      * @return the rating on the current stock conditions or null if the department is not active.
      */
-    @Nullable
+
     @Override
     public Level rateCurrentLevel() {
         return delegate.rateCurrentLevel();
@@ -280,7 +278,7 @@ public class HillClimberThroughPredictionControl implements PlantControl, PlantL
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(@Nonnull GoodType type) {
+    public long maxPrice( GoodType type) {
         return delegate.maxPrice(type);
     }
 
@@ -292,7 +290,7 @@ public class HillClimberThroughPredictionControl implements PlantControl, PlantL
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(@Nonnull Good good) {
+    public long maxPrice( Good good) {
         return delegate.maxPrice(good);
     }
 

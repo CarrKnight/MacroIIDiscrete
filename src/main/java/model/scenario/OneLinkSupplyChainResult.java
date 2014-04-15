@@ -24,7 +24,6 @@ import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.nio.file.Paths;
 
@@ -64,7 +63,7 @@ public class OneLinkSupplyChainResult {
 
     public static OneLinkSupplyChainResult beefMonopolistOneRun(long random, float divideMonopolistGainsByThis, int monopolistSpeed,
                                                                 final boolean beefLearned, final boolean foodLearned,
-                                                                @Nullable File csvFileToWrite) {
+                                                                 File csvFileToWrite) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
 
@@ -178,7 +177,7 @@ public class OneLinkSupplyChainResult {
 
     public static OneLinkSupplyChainResult beefMonopolistFixedProductionsOneRun(long seed,
                                                                           float divideMonopolistGainsByThis, int monopolistSpeed, final boolean foodLearned,
-                                                                          @Nullable File csvFileToWrite) {
+                                                                           File csvFileToWrite) {
         final MacroII macroII = new MacroII(seed);
         final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 = new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.BEEF){
             @Override
@@ -254,7 +253,7 @@ public class OneLinkSupplyChainResult {
     }
 
     public static OneLinkSupplyChainResult everybodyLearnedCompetitivePIDRun(long random, final float dividePIByThis, final int beefPricingSpeed,
-                                                                       @Nullable File csvFileToWrite) {
+                                                                        File csvFileToWrite) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
 
@@ -407,7 +406,7 @@ public class OneLinkSupplyChainResult {
 
     public static OneLinkSupplyChainResult foodMonopolistOneRun(long random, float divideMonopolistGainsByThis, int beefSpeed,
                                                                 final boolean beefLearned, final boolean foodLearned,
-                                                                @Nullable File csvFileToWrite) {
+                                                                 File csvFileToWrite) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
 

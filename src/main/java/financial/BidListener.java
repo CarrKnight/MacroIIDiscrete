@@ -9,7 +9,6 @@ package financial;
 import agents.EconomicAgent;
 import financial.utilities.Quote;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -35,7 +34,7 @@ public interface BidListener {
      * @param price the price of the good
      * @param bestAsk the best ask when the bid was made
      */
-    public void newBidEvent(@Nonnull final EconomicAgent buyer, final long price, final Quote bestAsk);
+    public void newBidEvent( final EconomicAgent buyer, final long price, final Quote bestAsk);
 
 
     /**
@@ -43,6 +42,6 @@ public interface BidListener {
      * @param buyer the agent placing the bid
      * @param quote the removed quote
      */
-    public void removedBidEvent(@Nonnull final EconomicAgent buyer, @Nonnull final Quote quote);
+    public void removedBidEvent( final EconomicAgent buyer,  final Quote quote);
 
 }

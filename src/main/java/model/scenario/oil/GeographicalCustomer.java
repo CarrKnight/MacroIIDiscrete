@@ -4,7 +4,6 @@ import agents.HasInventory;
 import agents.firm.GeographicalFirm;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
-import com.sun.istack.internal.Nullable;
 import financial.market.GeographicalMarket;
 import financial.market.Market;
 import financial.utilities.Quote;
@@ -19,7 +18,6 @@ import model.utilities.geography.Location;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -56,7 +54,7 @@ public class GeographicalCustomer extends Customer implements HasLocation{
     private double distanceExponent =1;
 
 
-    public GeographicalCustomer(@Nonnull MacroII model, long maxPrice, double x, double y, GeographicalMarket market) {
+    public GeographicalCustomer( MacroII model, long maxPrice, double x, double y, GeographicalMarket market) {
         super(model, maxPrice,market);
         location.setxLocation(x);
         location.setyLocation(y);
@@ -89,8 +87,8 @@ public class GeographicalCustomer extends Customer implements HasLocation{
      * @param firmsToChooseFrom The list of available firms
      * @return The firm chosen, or null if none is chosen
      */
-    @Nullable
-    public GeographicalFirm chooseSupplier(@Nonnull final Multimap<GeographicalFirm,Quote> firmsToChooseFrom)
+
+    public GeographicalFirm chooseSupplier( final Multimap<GeographicalFirm,Quote> firmsToChooseFrom)
     {
         Preconditions.checkArgument(!firmsToChooseFrom.isEmpty());
 
@@ -181,7 +179,7 @@ public class GeographicalCustomer extends Customer implements HasLocation{
      * @param sender who sent it?
      */
     @Override
-    public void receive(Good g, @javax.annotation.Nullable HasInventory sender) {
+    public void receive(Good g,  HasInventory sender) {
         super.receive(g, sender);
         if(sender!=null && g.getType().equals(getMarket().getGoodType()) && sender instanceof GeographicalFirm)
             lastSupplier.setValue((GeographicalFirm) sender);

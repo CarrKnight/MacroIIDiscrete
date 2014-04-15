@@ -12,7 +12,6 @@ import agents.firm.production.control.maximizer.algorithms.hillClimbers.*;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.*;
 import agents.firm.production.control.maximizer.algorithms.otherMaximizers.FixedTargetMaximizationAlgorithm;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -35,9 +34,9 @@ public class WorkerMaximizationAlgorithmFactory
 
 
     public static
-    <T extends WorkerMaximizationAlgorithm> T buildMaximizationAlgorithm(@Nonnull HumanResources hr,
-                                                                         @Nonnull PlantControl plantControl,
-                                                                         @Nonnull Class<T> tClass)
+    <T extends WorkerMaximizationAlgorithm> T buildMaximizationAlgorithm( HumanResources hr,
+                                                                          PlantControl plantControl,
+                                                                          Class<T> tClass)
     {
         //hill-climbers
         if(tClass.equals(AlwaysMovingHillClimber.class))

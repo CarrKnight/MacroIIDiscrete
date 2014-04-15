@@ -36,7 +36,6 @@ import model.utilities.stats.collectors.enums.MarketDataType;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -1364,7 +1363,7 @@ public class StickyPricesCSVPrinter {
 
     public static double[] beefMonopolistOneRun(long seed, float divideMonopolistGainsByThis, int monopolistSpeed,
                                                 final boolean beefLearned, final boolean foodLearned,  int maximizationSpeed,
-                                                @Nullable File csvFileToWrite) {
+                                                 File csvFileToWrite) {
         SummaryStatistics distance = new SummaryStatistics();
         SummaryStatistics last1000Distance = new SummaryStatistics();
 

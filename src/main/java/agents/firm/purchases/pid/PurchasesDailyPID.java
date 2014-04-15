@@ -19,7 +19,6 @@ import model.utilities.pid.*;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -48,7 +47,7 @@ public class PurchasesDailyPID extends DailyInventoryControl implements BidPrici
      * This is the standard constructor needed to generate at random this strategy.
      * @param purchasesDepartment the department controlled by this strategy
      */
-    public PurchasesDailyPID(@Nonnull PurchasesDepartment purchasesDepartment) {
+    public PurchasesDailyPID( PurchasesDepartment purchasesDepartment) {
         super(purchasesDepartment);
         controller = ControllerFactory.buildController(CascadePToPIDController.class,purchasesDepartment.getModel());
         //if you have a pid controller, play a bit with it
@@ -68,7 +67,7 @@ public class PurchasesDailyPID extends DailyInventoryControl implements BidPrici
 
 
 
-    public PurchasesDailyPID(@Nonnull PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
+    public PurchasesDailyPID( PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
                              float derivativeGain) {
         super(purchasesDepartment);
         controller = ControllerFactory.buildController(CascadePToPIDController.class,purchasesDepartment.getModel());

@@ -194,14 +194,6 @@
     <pathelement location="${basedir}/lib/powermock-junit4/powermock-reflect-1.5.jar"/>
   </path>
   
-  <path id="library.org.reflections:reflections:0.9.8.classpath">
-    <pathelement location="${basedir}/lib/reflections/dom4j-1.6.1.jar"/>
-    <pathelement location="${basedir}/lib/reflections/javassist-3.12.1.GA.jar"/>
-    <pathelement location="${basedir}/lib/reflections/jsr305-1.3.9.jar"/>
-    <pathelement location="${basedir}/lib/reflections/reflections-0.9.8.jar"/>
-    <pathelement location="${basedir}/lib/reflections/xml-apis-1.0.b2.jar"/>
-  </path>
-  
   <path id="library.watchmaker-swing-0.7.1.classpath">
     <pathelement location="${basedir}/lib/watchmaker-framework-0.7.1/lib/google-collect-1.0.jar"/>
     <pathelement location="${basedir}/lib/watchmaker-framework-0.7.1/lib/jcommon-1.0.16.jar"/>
@@ -263,11 +255,6 @@
     <copy file="${basedir}/lib/jung/colt-1.2.0.jar" tofile="${artifact.temp.output.MacroIIDiscrete}/colt-1.2.0.jar"/>
     <copy file="${basedir}/lib/jung/concurrent-1.3.4.jar" tofile="${artifact.temp.output.MacroIIDiscrete}/concurrent-1.3.4.jar"/>
     <copy file="${basedir}/lib/opencsv/opencsv-2.3.jar" tofile="${artifact.temp.output.MacroIIDiscrete}/opencsv-2.3.jar"/>
-    <copy file="${basedir}/lib/reflections/reflections-0.9.8.jar" tofile="${artifact.temp.output.MacroIIDiscrete}/reflections-0.9.8.jar"/>
-    <copy file="${basedir}/lib/reflections/jsr305-1.3.9.jar" tofile="${artifact.temp.output.MacroIIDiscrete}/jsr305-1.3.9.jar"/>
-    <copy file="${basedir}/lib/reflections/javassist-3.12.1.GA.jar" tofile="${artifact.temp.output.MacroIIDiscrete}/javassist-3.12.1.GA.jar"/>
-    <copy file="${basedir}/lib/reflections/dom4j-1.6.1.jar" tofile="${artifact.temp.output.MacroIIDiscrete}/dom4j-1.6.1.jar"/>
-    <copy file="${basedir}/lib/reflections/xml-apis-1.0.b2.jar" tofile="${artifact.temp.output.MacroIIDiscrete}/xml-apis-1.0.b2.jar"/>
     <copy file="${basedir}/lib/watchmaker-framework-0.7.1/watchmaker-swing-0.7.1.jar" tofile="${artifact.temp.output.MacroIIDiscrete}/watchmaker-swing-0.7.1.jar"/>
     <copy file="${basedir}/lib/watchmaker-framework-0.7.1/watchmaker-framework-0.7.1.jar" tofile="${artifact.temp.output.MacroIIDiscrete}/watchmaker-framework-0.7.1.jar"/>
     <copy file="${basedir}/lib/watchmaker-framework-0.7.1/lib/google-collect-1.0.jar" tofile="${artifact.temp.output.MacroIIDiscrete}/google-collect-1.0.jar"/>
@@ -288,11 +275,9 @@
       <fx:resources>
         <fx:fileset refid="all_but_MacroIIDiscrete"/>
       </fx:resources>
-        <manifest>
-            <attribute name="Permissions" value="sandbox"/>
-        </manifest>
-    </fx:jar>
-    <fx:deploy width="854" height="480" embeddedWidth="60%" embeddedHeight="80%" updatemode="background" outdir="${artifact.temp.output.MacroIIDiscrete}/deploy" outfile="MacroIIDiscrete">
+   </fx:jar>
+    <fx:deploy width="854" height="480" updatemode="background" outdir="${artifact.temp.output.MacroIIDiscrete}/deploy" outfile="MacroIIDiscrete">
+      <fx:permissions elevated="true"/>
       <fx:application refid="MacroIIDiscrete_id"/>
       <fx:info title="Oil Distribution Sample, Alpha 1" vendor="Ernesto Carrella"/>
       <fx:resources>

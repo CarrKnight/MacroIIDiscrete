@@ -11,10 +11,8 @@ import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import financial.utilities.PurchaseResult;
 import model.utilities.Deactivatable;
-import org.reflections.Reflections;
+import model.utilities.NonDrawable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -42,7 +40,7 @@ public interface SellerSearchAlgorithm extends Deactivatable {
      * look into the seller registry and return what the search algorithm deems the best
      * @return the best seller available or null if you can't find any
      */
-    @Nullable
+
     public EconomicAgent getBestInSampleSeller();
 
 
@@ -85,9 +83,13 @@ public interface SellerSearchAlgorithm extends Deactivatable {
 
         //static clause to fill the set names
         static {
-            Reflections strategyReader = new Reflections("agents.firm.sales.exploration");
-            rules = new ArrayList<>(strategyReader.getSubTypesOf(SellerSearchAlgorithm.class)); //read all the rules
+            rules = new ArrayList<>(); //read all the rules
             assert rules.size() > 0; // there should be at least one!!
+
+            rules.add(SimpleSellerSearch.class);
+            rules.add(SimpleFavoriteSellerSearch.class);
+            rules.removeIf(aClass -> aClass.isAnnotationPresent(NonDrawable.class));
+
         }
 
         /**
@@ -98,7 +100,7 @@ public interface SellerSearchAlgorithm extends Deactivatable {
          * @param agent the agent that is doing the search (so we avoid sampling ourselves)
          * @return the new rule to follow
          */
-        public static SellerSearchAlgorithm newSellerSearchAlgorithm(@Nonnull String rule,@Nonnull Market market, @Nonnull EconomicAgent agent) {
+        public static SellerSearchAlgorithm newSellerSearchAlgorithm( String rule, Market market,  EconomicAgent agent) {
             for (Class<? extends SellerSearchAlgorithm> c : rules) {
                 if (c.getSimpleName().equals(rule)) //if the name matches
                 {
@@ -127,7 +129,7 @@ public interface SellerSearchAlgorithm extends Deactivatable {
          * @param agent the agent that is doing the search (so we avoid sampling ourselves)
          * @return the new rule to follow
          */
-        public static SellerSearchAlgorithm randomSellerSearchAlgorithm(@Nonnull Market market, @Nonnull EconomicAgent agent)
+        public static SellerSearchAlgorithm randomSellerSearchAlgorithm( Market market,  EconomicAgent agent)
         {
             Class<? extends SellerSearchAlgorithm > sellerSearchAlgorithm = null;
             MersenneTwisterFast randomizer = agent.getRandom(); //get the randomizer
@@ -152,7 +154,7 @@ public interface SellerSearchAlgorithm extends Deactivatable {
          * @param agent the agent that is doing the search (so we avoid sampling ourselves)
          * @return the new rule to follow
          */
-        public static <SS extends SellerSearchAlgorithm> SS newSellerSearchAlgorithm( @Nonnull Class<SS> rule,@Nonnull Market market, @Nonnull EconomicAgent agent )
+        public static <SS extends SellerSearchAlgorithm> SS newSellerSearchAlgorithm(  Class<SS> rule, Market market,  EconomicAgent agent )
         {
 
             if(!rules.contains(rule) || Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )

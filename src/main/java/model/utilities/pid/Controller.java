@@ -10,7 +10,6 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import sim.engine.Steppable;
 
-import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
@@ -40,7 +39,7 @@ public interface Controller {
      * @param phase at which phase should this controller be rescheduled
      *
      */
-    public void adjust(ControllerInput input, boolean isActive, @Nullable MacroII simState, @Nullable Steppable user,
+    public void adjust(ControllerInput input, boolean isActive,  MacroII simState,  Steppable user,
                        ActionOrder phase);
 
 

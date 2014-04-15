@@ -11,7 +11,6 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import sim.engine.Steppable;
 
-import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
@@ -87,7 +86,7 @@ public class CascadePIDController implements Controller{
      * @param user     the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)
      */
     @Override
-    public void adjust(ControllerInput input, boolean isActive, @Nullable MacroII simState, @Nullable Steppable user,
+    public void adjust(ControllerInput input, boolean isActive,  MacroII simState,  Steppable user,
                        ActionOrder phase){
 
         this.adjust(input.getTarget(0),input.getInput(0),input.getInput(1),isActive,simState,user, phase);
@@ -107,7 +106,7 @@ public class CascadePIDController implements Controller{
      * @param user     the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)     * @param firstTarget
      */
     public void adjust(float firstTarget,float firstInput, float secondInput, boolean isActive,
-                       @Nullable MacroII state, @Nullable Steppable user,  ActionOrder phase)
+                        MacroII state,  Steppable user,  ActionOrder phase)
     {
         //master
         pid1.adjust(firstTarget,firstInput,isActive,state,user,phase); //to avoid exxaggerating in disinvesting, the recorded inventory is never more than twice the target

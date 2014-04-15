@@ -13,7 +13,6 @@ import model.utilities.ActionOrder;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedList;
@@ -210,7 +209,7 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
      * @param action the action taken!
      */
     @Override
-    public void scheduleSoon(@Nonnull ActionOrder phase, @Nonnull Steppable action){
+    public void scheduleSoon( ActionOrder phase,  Steppable action){
 
         scheduleSoon(phase, action,Priority.STANDARD);
 
@@ -225,7 +224,7 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
      * @param priority the action priority
      */
     @Override
-    public void scheduleSoon(@Nonnull ActionOrder phase, @Nonnull Steppable action, Priority priority) {
+    public void scheduleSoon( ActionOrder phase,  Steppable action, Priority priority) {
 
         steppablesByPhase.get(phase)[priority.ordinal()].add(action);
 
@@ -268,7 +267,7 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
      * @param daysAway how many days from now should it be scheduled
      */
     @Override
-    public void scheduleAnotherDay(@Nonnull ActionOrder phase, @Nonnull Steppable action,
+    public void scheduleAnotherDay( ActionOrder phase,  Steppable action,
                                    int daysAway)
     {
         scheduleAnotherDay(phase, action, daysAway,Priority.STANDARD);
@@ -285,7 +284,7 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
      * @param priority the action priority
      */
     @Override
-    public void scheduleAnotherDay(@Nonnull ActionOrder phase, @Nonnull Steppable action, int daysAway, Priority priority) {
+    public void scheduleAnotherDay( ActionOrder phase,  Steppable action, int daysAway, Priority priority) {
         Preconditions.checkArgument(daysAway > 0, "Days away must be positive");
         futureActions.add(new FutureAction(phase,action,priority,daysAway));
 
@@ -299,7 +298,7 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
      * @param probability the daily probability of this action happening. So if you pass 15% then each day has a probability of 15% of triggering this action
      */
     @Override
-    public void scheduleAnotherDayWithFixedProbability(@Nonnull ActionOrder phase, @Nonnull Steppable action,
+    public void scheduleAnotherDayWithFixedProbability( ActionOrder phase,  Steppable action,
                                                        float probability)
     {
 
@@ -316,7 +315,7 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
      * @param
      */
     @Override
-    public void scheduleAnotherDayWithFixedProbability(@Nonnull ActionOrder phase, @Nonnull Steppable action,
+    public void scheduleAnotherDayWithFixedProbability( ActionOrder phase,  Steppable action,
                                                        float probability, Priority priority) {
         Preconditions.checkArgument(probability > 0f && probability <=1f, "probability has to be in (0,1]");
         int daysAway = 0;

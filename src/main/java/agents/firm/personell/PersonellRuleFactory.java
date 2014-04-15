@@ -6,15 +6,15 @@
 
 package agents.firm.personell;
 
+import agents.firm.production.control.HillClimberThroughPredictionControl;
+import agents.firm.production.control.ParticleControl;
+import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.TargetAndMaximizePlantControl;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
-import agents.firm.production.control.PlantControl;
-import agents.firm.production.control.decorators.PlantControlDecorator;
 import model.utilities.NonDrawable;
-import org.reflections.Reflections;
 
-import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -47,11 +47,15 @@ public class PersonellRuleFactory {
 
     //static clause to fill the set names
     static {
-        Reflections strategyReader = new Reflections("agents.firm.production");
-        plantControlRules = new ArrayList<>(strategyReader.getSubTypesOf(PlantControl.class)); //read all the inventoryControlRules
+        plantControlRules = new ArrayList<>(); //read all the inventoryControlRules
+        plantControlRules.add(HillClimberThroughPredictionControl.class);
+        plantControlRules.add(ParticleControl .class);
+        plantControlRules.add(TargetAndMaximizePlantControl .class);
+
+
         assert plantControlRules.size() > 0; // there should be at least one!!
         //do not let the decorators in the rule
-        plantControlRules.removeAll(strategyReader.getSubTypesOf(PlantControlDecorator.class));
+        plantControlRules.removeIf(aClass -> aClass.isAnnotationPresent(NonDrawable.class));
 
 
     }
@@ -65,7 +69,7 @@ public class PersonellRuleFactory {
      * @param hr  the human resources owning the rule
      * @return the new rule to follow
      */
-    public static PlantControl newPlantControl(@Nonnull String rule, @Nonnull HumanResources hr) {
+    public static PlantControl newPlantControl( String rule,  HumanResources hr) {
         for (Class<? extends PlantControl> c : plantControlRules) {
             if (c.getSimpleName().equals(rule)) //if the name matches
             {
@@ -87,7 +91,7 @@ public class PersonellRuleFactory {
 
     }
 
-    public static PlantControl randomPlantControl(@Nonnull HumanResources hr)
+    public static PlantControl randomPlantControl( HumanResources hr)
     {
         Class<? extends PlantControl > plantControl = null;
         MersenneTwisterFast randomizer = hr.getFirm().getRandom(); //get the randomizer
@@ -108,7 +112,7 @@ public class PersonellRuleFactory {
     }
 
     public static <PC extends  PlantControl & BidPricingStrategy>
-    PC newPlantControl(@Nonnull Class<PC> rule, @Nonnull HumanResources hr)
+    PC newPlantControl( Class<PC> rule,  HumanResources hr)
     {
         Preconditions.checkNotNull(rule);
 

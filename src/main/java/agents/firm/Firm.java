@@ -39,8 +39,7 @@ import sim.engine.Steppable;
 import sim.portrayal.Inspector;
 import sim.portrayal.inspector.TabbedInspector;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
 import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -157,7 +156,7 @@ public class Firm extends EconomicAgent {
     /**
      * Add a new plant creation listener to the list of people to be notified when a new plant opens or closes
      */
-    public void addPlantCreationListener(@Nonnull NumberOfPlantsListener listener)
+    public void addPlantCreationListener( NumberOfPlantsListener listener)
     {
         //addSalesDepartmentListener to the list
         numberOfPlantsListeners.add(listener);
@@ -201,7 +200,7 @@ public class Firm extends EconomicAgent {
     /**
      * Remove the creation listener to the list of people to be notified when a new plant opens or closes
      */
-    public boolean removePlantCreationListener(@Nonnull NumberOfPlantsListener listener)
+    public boolean removePlantCreationListener( NumberOfPlantsListener listener)
     {
         //addSalesDepartmentListener to the list
         return numberOfPlantsListeners.remove(listener);
@@ -211,7 +210,7 @@ public class Firm extends EconomicAgent {
      * Add a new plant to this firm's management
      * @param p the new plant
      */
-    public void addPlant(@Nonnull Plant p)
+    public void addPlant( Plant p)
     {
         plants.add(p);
         for(NumberOfPlantsListener l : numberOfPlantsListeners)
@@ -231,7 +230,7 @@ public class Firm extends EconomicAgent {
      * Remove the plant from this firm's management
      * @param p the old plant
      */
-    public void removePlant(@Nonnull Plant p)
+    public void removePlant( Plant p)
     {
         boolean removed = plants.remove(p);
         assert removed;
@@ -257,7 +256,7 @@ public class Firm extends EconomicAgent {
      * Returns a list containing all the plants using a specific good type as input
      * @param type the type of good the plants use as inputs. (if none found it returns an empty list)
      */
-    public List<Plant> getListOfPlantsUsingSpecificInput(@Nonnull GoodType type)
+    public List<Plant> getListOfPlantsUsingSpecificInput( GoodType type)
     {
 
         if(plants.isEmpty())
@@ -291,7 +290,7 @@ public class Firm extends EconomicAgent {
      * Returns a list of all plants producing a specific output
      * @param type the type of good the plants use as inputs. (if none found it returns an empty list)
      */
-    public List<Plant> getListOfPlantsProducingSpecificOutput(@Nonnull GoodType type)
+    public List<Plant> getListOfPlantsProducingSpecificOutput( GoodType type)
     {
 
         if(plants.isEmpty())
@@ -487,8 +486,8 @@ public class Firm extends EconomicAgent {
      * Get the sales department that sells a specific good
      * @return
      */
-    @Nonnull
-    public SalesDepartment getSalesDepartment(@Nonnull GoodType good) {
+    
+    public SalesDepartment getSalesDepartment( GoodType good) {
         return salesDepartments.get(good);
     }
 
@@ -603,7 +602,7 @@ public class Firm extends EconomicAgent {
      * It'll probably have to be assigned to a plant by react to quote
      * @param p
      */
-    public void hire(@Nonnull Person p, @Nullable Department department){
+    public void hire( Person p,  Department department){
 
 
         if(department != null)
@@ -878,7 +877,7 @@ public class Firm extends EconomicAgent {
      * @param goodType the type of good
      * @return a purchase department
      */
-    public PurchasesDepartment getPurchaseDepartment(@Nonnull GoodType goodType) {
+    public PurchasesDepartment getPurchaseDepartment( GoodType goodType) {
         return purchaseDepartments.get(goodType);
     }
 
@@ -886,7 +885,7 @@ public class Firm extends EconomicAgent {
     /**
      * An horrible utility method, returns a plant owned by this firm that produces a specific good. It throws an IllegalArgument exception if there is no plant producing this
      */
-    @Nonnull
+    
     public Plant getRandomPlantProducingThis(GoodType g)
     {
         //dumps the Plants in a list
@@ -931,8 +930,8 @@ public class Firm extends EconomicAgent {
      * @param sellerQuote the quote (including the offer price) of the seller; I expect the buyer to have achieved this through asked for an offer function
      * @return a purchaseResult including whether the trade was succesful and if so the final price
      */
-    @Nonnull
-    public PurchaseResult shopHere(@Nonnull Quote buyerQuote,@Nonnull Quote sellerQuote)
+    
+    public PurchaseResult shopHere( Quote buyerQuote, Quote sellerQuote)
     {
         //make sure it's us
         assert sellerQuote.getAgent().equals(this);
@@ -1133,7 +1132,7 @@ public class Firm extends EconomicAgent {
      * @param salesDataType the kind of datum you are looking form
      * @return an observable (and so listeneable) object updating
      */
-    public ObservableDoubleValue getLatestObservableObservation(@Nonnull GoodType goodType,@Nonnull SalesDataType salesDataType)
+    public ObservableDoubleValue getLatestObservableObservation( GoodType goodType, SalesDataType salesDataType)
     {
         SalesDepartment department = getSalesDepartment(goodType);
         Preconditions.checkState(department != null);

@@ -3,13 +3,16 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Oil_Distribution</output-path>
     <properties id="javafx-properties">
       <options>
-        <option name="alias" value="" />
+        <option name="alias" value="carrknight" />
         <option name="appClass" value="model.gui.OilPumpApplication" />
         <option name="description" value="" />
         <option name="height" value="480" />
         <option name="htmlParamFile" value="" />
-        <option name="keystore" value="" />
+        <option name="keypass" value="SzBhaTB0bGc=" />
+        <option name="keystore" value="$PROJECT_DIR$/../key/store" />
         <option name="paramFile" value="" />
+        <option name="selfSigning" value="false" />
+        <option name="storepass" value="SzBhaTB0bGc=" />
         <option name="title" value="Oil Distribution Sample, Alpha 1" />
         <option name="vendor" value="Ernesto Carrella" />
         <option name="width" value="854" />
@@ -27,7 +30,6 @@
         <element id="library" level="project" name="net.sf.jung:jung-graph-impl:2.0.1" />
         <element id="library" level="project" name="net.sf.jung:jung-visualization:2.0.1" />
         <element id="library" level="project" name="net.sf.opencsv:opencsv:2.3" />
-        <element id="library" level="project" name="org.reflections:reflections:0.9.8" />
         <element id="library" level="project" name="watchmaker-swing-0.7.1" />
         <element id="library" level="project" name="mason.16" />
         <element id="directory" name="META-INF">

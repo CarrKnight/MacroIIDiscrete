@@ -10,8 +10,6 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -228,7 +226,7 @@ public class Inventory {
      * @param g good to check for
      * @return true if it has in inventory (owned and not consumed)
      */
-    public boolean has(@Nonnull Good g){
+    public boolean has( Good g){
         assert g != null;
         PriorityQueue<Good> set = inventory.get(g.getType());
         return set.contains(g);
@@ -285,7 +283,7 @@ public class Inventory {
      * @param type the type of good
      * @return a good or -1 if you have none
      */
-    @Nullable
+
     public Good peekGood(GoodType type){
         return inventory.get(type).peek();
     }

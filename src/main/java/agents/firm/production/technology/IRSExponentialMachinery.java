@@ -10,7 +10,6 @@ import agents.EconomicAgent;
 import goods.GoodType;
 import agents.firm.production.Plant;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -32,12 +31,12 @@ public class IRSExponentialMachinery extends ExponentialMachinery {
 
     private float alpha = 0.1f;
 
-    public IRSExponentialMachinery(@Nonnull GoodType type, @Nonnull EconomicAgent producer, long costOfProduction, @Nonnull Plant plant, float outputMultiplier, float alpha) {
+    public IRSExponentialMachinery( GoodType type,  EconomicAgent producer, long costOfProduction,  Plant plant, float outputMultiplier, float alpha) {
         super(type, producer, costOfProduction, plant, outputMultiplier);
         this.alpha = alpha;
     }
 
-    public IRSExponentialMachinery(@Nonnull GoodType type, @Nonnull EconomicAgent producer, long costOfProduction, @Nonnull Plant plant, float alpha) {
+    public IRSExponentialMachinery( GoodType type,  EconomicAgent producer, long costOfProduction,  Plant plant, float alpha) {
         super(type, producer, costOfProduction, plant);
         this.alpha = alpha;
     }

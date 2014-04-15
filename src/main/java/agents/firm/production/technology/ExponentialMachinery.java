@@ -12,7 +12,6 @@ import ec.util.MersenneTwisterFast;
 import goods.GoodType;
 import agents.firm.production.Plant;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -34,16 +33,16 @@ public abstract class ExponentialMachinery extends Machinery {
 
     private float outputMultiplier = 1f;
 
-    @Nonnull
+
     final private Plant plant;
 
-    protected ExponentialMachinery(@Nonnull GoodType type, @Nonnull EconomicAgent producer, long costOfProduction, @Nonnull Plant plant, float outputMultiplier) {
+    protected ExponentialMachinery( GoodType type,  EconomicAgent producer, long costOfProduction,  Plant plant, float outputMultiplier) {
         super(type, producer, costOfProduction);
         this.plant = plant;
         this.outputMultiplier = outputMultiplier;
     }
 
-    protected ExponentialMachinery(@Nonnull GoodType type, @Nonnull EconomicAgent producer, long costOfProduction, @Nonnull Plant plant) {
+    protected ExponentialMachinery( GoodType type,  EconomicAgent producer, long costOfProduction,  Plant plant) {
         this(type,producer,costOfProduction,plant,1f);
     }
 
@@ -196,7 +195,7 @@ public abstract class ExponentialMachinery extends Machinery {
     }
 
 
-    @Nonnull
+
     public Plant getPlant() {
         return plant;
     }

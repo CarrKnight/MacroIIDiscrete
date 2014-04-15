@@ -18,7 +18,6 @@ import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -152,7 +151,7 @@ public class InflowOutflowCounter implements Deactivatable, InventoryListener, S
      * @param delta change in inventory (always positive)
      */
     @Override
-    public void inventoryIncreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity, int delta) {
+    public void inventoryIncreaseEvent( HasInventory source,  GoodType type, int quantity, int delta) {
 
         if(this.type.equals(type))
         {
@@ -170,7 +169,7 @@ public class InflowOutflowCounter implements Deactivatable, InventoryListener, S
      * @param delta change in inventory (always positive)
      */
     @Override
-    public void inventoryDecreaseEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int quantity,int delta) {
+    public void inventoryDecreaseEvent( HasInventory source,  GoodType type, int quantity,int delta) {
         if(this.type.equals(type)) {
             Preconditions.checkArgument(delta > 0);
             todayOutflow+= delta;
@@ -185,7 +184,7 @@ public class InflowOutflowCounter implements Deactivatable, InventoryListener, S
      * @param numberNeeded how many goods were needed
      */
     @Override
-    public void failedToConsumeEvent(@Nonnull HasInventory source, @Nonnull GoodType type, int numberNeeded) {
+    public void failedToConsumeEvent( HasInventory source,  GoodType type, int numberNeeded) {
         if(this.type.equals(type))
             todayFailuresToConsume += numberNeeded;
 

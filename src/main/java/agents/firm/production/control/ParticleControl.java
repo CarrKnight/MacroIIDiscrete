@@ -16,7 +16,6 @@ import agents.firm.purchases.inventoryControl.Level;
 import goods.Good;
 import goods.GoodType;
 
-import javax.annotation.Nullable;
 
 /**
  * <h4>Description</h4>
@@ -127,7 +126,7 @@ public class ParticleControl implements PlantControl
      * @return the rating on the current stock conditions or null if the department is not active.
      */
     @Override
-    @Nullable
+
     public Level rateCurrentLevel() {
         return control.rateCurrentLevel();
     }

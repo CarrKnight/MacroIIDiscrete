@@ -54,7 +54,7 @@ public class GeneticLinearRegression implements MultivariateRegression
      * @param x       each array is a column containing all the observations of one regressor.
      */
     @Override
-    public void estimateModel(double[] y, @Nullable double[] weights, double[]... x) throws LinearRegression.CollinearityException
+    public void estimateModel(double[] y,  double[] weights, double[]... x) throws LinearRegression.CollinearityException
     {
         GenerationalEvolutionEngine<RegressionCandidate> evolutionEngine = new GenerationalEvolutionEngine<>(
                 new RegressionCandidateFactory(x.length+1),new AverageAndMutateOperator(),
@@ -206,7 +206,7 @@ public class GeneticLinearRegression implements MultivariateRegression
 
         private final double[] ys;
 
-        @Nullable
+
         private final double[] weights;
 
         private final double[][] xs;

@@ -34,7 +34,7 @@ public interface UnivariateRegression
      * @param weights an array of weights to apply to each observation
      *
      */
-    public void estimateModel(double[] x, double[] y, @Nullable double[] weights);
+    public void estimateModel(double[] x, double[] y,  double[] weights);
 
 
     /**

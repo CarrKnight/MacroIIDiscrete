@@ -8,7 +8,6 @@ package agents.firm.production.control.maximizer.algorithms.hillClimbers;
 
 import ec.util.MersenneTwisterFast;
 
-import javax.annotation.Nonnull;
 
 /**
  * <h4>Description</h4>
@@ -31,7 +30,7 @@ public class AnnealingReactingMaximizer extends AnnealingMaximizer {
 
 
     public AnnealingReactingMaximizer(long weeklyFixedCosts, int minimumWorkers, int maximumWorkers,
-                                      @Nonnull MersenneTwisterFast random) {
+                                       MersenneTwisterFast random) {
         super(weeklyFixedCosts, minimumWorkers, maximumWorkers, random);
     }
 
