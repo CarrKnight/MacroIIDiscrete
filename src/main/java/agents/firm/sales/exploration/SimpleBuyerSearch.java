@@ -7,7 +7,7 @@
 package agents.firm.sales.exploration;
 
 import agents.EconomicAgent;
-import com.sun.istack.internal.Nullable;
+import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import financial.utilities.PurchaseResult;
@@ -119,11 +119,13 @@ public class SimpleBuyerSearch implements BuyerSearchAlgorithm {
     public static EconomicAgent[] registrySubsample(Market market,
                                                     EconomicAgent doNotDraw, int searchDepth, boolean buyers){
 
+
         Set<EconomicAgent> toSample;
         if(buyers)
             toSample = market.getBuyers();  //get all the buyers
         else
             toSample = market.getSellers();
+        Preconditions.checkNotNull(toSample);
         MersenneTwisterFast random = doNotDraw.getModel().random; //get the randomizer
 
         int searchSize;

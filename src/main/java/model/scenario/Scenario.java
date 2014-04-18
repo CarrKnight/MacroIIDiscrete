@@ -101,7 +101,6 @@ public abstract class Scenario {
         //turn on the reader
         //read all the allScenarios
         allScenarios = new LinkedHashSet<>();
-        allScenarios.add(DummyMacroScenario.class);
         allScenarios.add(MonopolistScenario .class);
         allScenarios.add(MultiProduction .class);
         allScenarios.add(MultiProductionMonopolist .class);

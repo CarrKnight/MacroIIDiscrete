@@ -7,6 +7,7 @@
 package agents.firm.sales.exploration;
 
 import agents.EconomicAgent;
+import com.google.common.base.Preconditions;
 import financial.market.Market;
 import financial.utilities.PurchaseResult;
 
@@ -33,6 +34,10 @@ public class SimpleSellerSearch implements SellerSearchAlgorithm{
     private int searchDepth;
 
     public SimpleSellerSearch( Market market, EconomicAgent agent) {
+
+        Preconditions.checkNotNull(agent);
+        Preconditions.checkNotNull(market);
+
         this.market = market;
         this.agent = agent;
         searchDepth = agent.getModel().drawNewSimpleSellerSearchSize(agent,market); //draw your search size

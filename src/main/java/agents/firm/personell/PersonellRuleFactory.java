@@ -10,6 +10,7 @@ import agents.firm.production.control.HillClimberThroughPredictionControl;
 import agents.firm.production.control.ParticleControl;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.TargetAndMaximizePlantControl;
+import agents.firm.production.control.facades.*;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
@@ -51,6 +52,17 @@ public class PersonellRuleFactory {
         plantControlRules.add(HillClimberThroughPredictionControl.class);
         plantControlRules.add(ParticleControl .class);
         plantControlRules.add(TargetAndMaximizePlantControl .class);
+        plantControlRules.add(DiscreteMatcherPlantControl.class);
+        plantControlRules.add(DiscreteSlowPlantControl.class);
+        plantControlRules.add(DumbClimberControl.class);
+        plantControlRules.add(FixWagesPlantControl.class);
+        plantControlRules.add(LookAheadAnnealingControl.class);
+        plantControlRules.add(MarginalPlantControl.class);
+        plantControlRules.add(MarginalPlantControl.class);
+        plantControlRules.add(MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment.class);
+        plantControlRules.add(MarginalPlantControlWithPIDUnit.class);
+        plantControlRules.add(MaxCapacityControl.class);
+        plantControlRules.add(ProfitCheckPlantControl.class);
 
 
         assert plantControlRules.size() > 0; // there should be at least one!!
@@ -117,7 +129,7 @@ public class PersonellRuleFactory {
         Preconditions.checkNotNull(rule);
 
         if(!plantControlRules.contains(rule) || Modifier.isAbstract(rule.getModifiers()) || rule.isInterface() )
-            throw new IllegalArgumentException("The rule given is either abstract or just not recognized");
+            throw new IllegalArgumentException("The rule " + rule + " given is either abstract or just not recognized");
 
 
         try {
