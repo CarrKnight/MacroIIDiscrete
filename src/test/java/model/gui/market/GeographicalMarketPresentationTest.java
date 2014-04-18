@@ -31,9 +31,7 @@ import org.junit.Test;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
 
 /**
  * Created by carrknight on 4/7/14.
@@ -224,14 +222,14 @@ public class GeographicalMarketPresentationTest {
         {
             Assert.assertEquals(0, farCustomer.hasHowMany(GoodType.OIL));
             Assert.assertNull(farCustomer.getLastSupplier());
-            Assert.assertEquals(presentation.getPortraitList().get(farCustomer).getColor(), Color.WHITE);
+            Assert.assertEquals(presentation.getPortraitList().get(farCustomer).getColor(), Color.BLACK);
         }
         //cheap people got nothing
         for(int i=0; i<90; i++)
         {
             Assert.assertEquals(0, customers[i].hasHowMany(GoodType.OIL));
             Assert.assertNull(customers[i].getLastSupplier());
-            Assert.assertEquals(presentation.getPortraitList().get(customers[i]).getColor(), Color.WHITE);
+            Assert.assertEquals(presentation.getPortraitList().get(customers[i]).getColor(), Color.BLACK);
 
         }
 
