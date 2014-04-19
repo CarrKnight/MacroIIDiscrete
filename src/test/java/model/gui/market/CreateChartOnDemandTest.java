@@ -22,7 +22,7 @@ import javafx.embed.swing.JFXPanel;
 import javafx.scene.chart.LineChart;
 import model.MacroII;
 import model.scenario.Scenario;
-import model.scenario.oil.GeographicalCustomer;
+import model.utilities.dummies.GeographicalCustomer;
 import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import model.utilities.stats.collectors.enums.SalesDataType;

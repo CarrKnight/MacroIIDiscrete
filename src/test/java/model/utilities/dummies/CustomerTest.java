@@ -14,7 +14,6 @@ import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
-import model.scenario.oil.GeographicalCustomer;
 import model.utilities.ActionOrder;
 import org.junit.Assert;
 import org.junit.Before;

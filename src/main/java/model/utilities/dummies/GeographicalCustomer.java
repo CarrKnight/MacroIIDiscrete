@@ -1,4 +1,4 @@
-package model.scenario.oil;
+package model.utilities.dummies;
 
 import agents.HasInventory;
 import agents.firm.GeographicalFirm;
@@ -12,7 +12,6 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.dummies.Customer;
 import model.utilities.geography.HasLocation;
 import model.utilities.geography.Location;
 import sim.engine.SimState;

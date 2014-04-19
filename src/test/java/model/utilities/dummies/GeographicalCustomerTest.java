@@ -1,4 +1,4 @@
-package model.scenario.oil;
+package model.utilities.dummies;
 
 import agents.EconomicAgent;
 import agents.firm.GeographicalFirm;

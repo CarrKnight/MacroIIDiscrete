@@ -23,7 +23,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import model.MacroII;
 import model.scenario.Scenario;
-import model.scenario.oil.GeographicalCustomer;
+import model.utilities.dummies.GeographicalCustomer;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
 import model.utilities.stats.collectors.enums.MarketDataType;

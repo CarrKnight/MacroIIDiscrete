@@ -4,7 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
-import model.scenario.oil.GeographicalCustomer;
+import model.utilities.dummies.GeographicalCustomer;
 
 import java.io.InputStream;
 

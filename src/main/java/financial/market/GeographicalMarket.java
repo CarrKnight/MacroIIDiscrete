@@ -22,7 +22,7 @@ import goods.GoodType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import model.MacroII;
-import model.scenario.oil.GeographicalCustomer;
+import model.utilities.dummies.GeographicalCustomer;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
 import sim.engine.SimState;

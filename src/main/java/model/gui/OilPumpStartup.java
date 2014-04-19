@@ -18,7 +18,7 @@ import javafx.scene.layout.BorderPane;
 import model.MacroII;
 import model.gui.market.GeographicalMarketView;
 import model.scenario.OilDistributorScenario;
-import model.scenario.oil.GeographicalCustomer;
+import model.utilities.dummies.GeographicalCustomer;
 
 /**
  * Starts the scenario, starts the model and creates the main GUI scene. Then it returns it and we are doooone.
