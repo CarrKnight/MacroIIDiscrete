@@ -18,8 +18,8 @@ import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.prediction.SamplingLearningDecreaseSalesPredictor;
 import com.google.common.base.Preconditions;
 import financial.market.Market;
-import goods.GoodType;
 import model.MacroII;
+import model.scenario.OneLinkSupplyChainScenario;
 import model.scenario.OneLinkSupplyChainScenarioWithCheatingBuyingPrice;
 import org.uncommons.maths.random.MersenneTwisterRNG;
 import org.uncommons.watchmaker.framework.*;
@@ -315,7 +315,7 @@ public class OneLinkPredictorGeneticAlgorithm
                     @Override
                     protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
                         SalesDepartment department = super.createSalesDepartment(firm, goodmarket);    //To change body of overridden methods use File | Settings | File Templates.
-                        if(goodmarket.getGoodType().equals(GoodType.FOOD))
+                        if(goodmarket.getGoodType().equals(OneLinkSupplyChainScenario.OUTPUT_GOOD))
                             department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
                         return department;
                     }
@@ -323,7 +323,7 @@ public class OneLinkPredictorGeneticAlgorithm
                     @Override
                     protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
                         HumanResources hr = super.createPlant(blueprint, firm, laborMarket);    //To change body of overridden methods use File | Settings | File Templates.
-                        if(!blueprint.getOutputs().containsKey(GoodType.BEEF))
+                        if(!blueprint.getOutputs().containsKey(OneLinkSupplyChainScenario.INPUT_GOOD))
                             hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
                         return hr;
                     }
@@ -353,10 +353,10 @@ public class OneLinkPredictorGeneticAlgorithm
                 }
 
 
-                Preconditions.checkState(scenario1.getMarkets().get(GoodType.BEEF).getSellers().size() == 1);
-                Firm beefMonopolist = (Firm) scenario1.getMarkets().get(GoodType.BEEF).getSellers().iterator().next();
+                Preconditions.checkState(scenario1.getMarkets().get(OneLinkSupplyChainScenario.INPUT_GOOD).getSellers().size() == 1);
+                Firm beefMonopolist = (Firm) scenario1.getMarkets().get(OneLinkSupplyChainScenario.INPUT_GOOD).getSellers().iterator().next();
                 SamplingLearningDecreaseSalesPredictor predictorStrategy =
-                        (SamplingLearningDecreaseSalesPredictor) beefMonopolist.getSalesDepartment(GoodType.BEEF).getPredictorStrategy();
+                        (SamplingLearningDecreaseSalesPredictor) beefMonopolist.getSalesDepartment(OneLinkSupplyChainScenario.INPUT_GOOD).getPredictorStrategy();
 
 
                 totalError += Math.pow(predictorStrategy.getDecrementDelta() - 1.714285714,2);

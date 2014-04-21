@@ -6,12 +6,16 @@
 
 package agents.firm.production;
 
-import agents.*;
+import agents.EconomicAgent;
+import agents.HasInventory;
+import agents.InventoryListener;
+import agents.Person;
 import agents.firm.Department;
 import agents.firm.Firm;
 import agents.firm.cost.PlantCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.technology.Machinery;
+import agents.firm.utilities.DailyProductionAndConsumptionCounter;
 import ec.util.MersenneTwisterFast;
 import financial.MarketEvents;
 import goods.Good;
@@ -46,7 +50,7 @@ import java.util.*;
 public class Plant implements Department, Steppable, Deactivatable, InventoryListener {
 
 
-    private final PlantProductionAndConsumptionCounter counter;
+    private final DailyProductionAndConsumptionCounter counter;
 
     /**
      * Minimal constructor
@@ -75,7 +79,7 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         owner.addAgentToLog(this);
 
 
-        counter = new PlantProductionAndConsumptionCounter(this);
+        counter = new DailyProductionAndConsumptionCounter();
 
 
     }
@@ -297,7 +301,7 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
             {
                 Good consumed = owner.consume(input.getKey()); //consume it!
                 totalCostOfInputs += consumed.getLastValidPrice(); //the price for which the input was bought is added to the sum of costs
-                counter.newConsumption(consumed.getType());
+                counter.countNewConsumption(consumed.getType());
             }
 
         }
@@ -311,18 +315,22 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
             //addSalesDepartmentListener the multiplier
             int totalOutput = (int)Math.floor(output.getValue() * plantMachinery.getOutputMultiplier(output.getKey()));
             assert totalOutput >= output.getValue(); //can't have REDUCED production!
+            //tell the counter first
+            if(totalOutput > 0)
+            {
+                counter.countNewProduction(output.getKey(),totalOutput);//tell the plant counter
+                owner.countNewProduction(output.getKey(), totalOutput); //tell the firm counter
+
+            }
             for(int i=0; i < totalOutput; i++)
             {
 
                 Good newProduct = new Good(output.getKey(),owner,costStrategy.unitOutputCost(output.getKey(), totalCostOfInputs));  //BUILD!
                 owner.receive(newProduct, null);
                 owner.reactToPlantProduction(newProduct); //tell the owner!
-                counter.newProduction(newProduct.getType());//tell the counter
             }
             //tell the firm it is a new production!
-            if(totalOutput > 0)
-                //this goes to the FIRM's total production counter, rather than the local plant one
-                owner.countNewProduction(output.getKey(),totalOutput);
+
 
         }
 
@@ -870,25 +878,25 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
             listener.changeInWageEvent(this, getNumberOfWorkers(),wage);
     }
 
-    public int[] getLastWeekThroughput() {
-        return counter.getProducedLastWeek();
+    public int getLastWeekThroughput(GoodType produced) {
+
+        return counter.getLastWeekProduction(produced);
     }
 
-    public int[] getThisWeekThroughput() {
-        return counter.getProducedThisWeek();
+    public int getThisWeekThroughput(GoodType produced) {
+        return counter.getThisWeekProduction(produced);
     }
 
-    public int[] getProducedYesterday() {
-        return counter.getProducedYesterday();
+    public int getProducedYesterday(GoodType produced) {
+
+        return counter.getYesterdayProduction(produced);
     }
 
-    public int[] getProducedToday() {
-        return counter.getProducedToday();
-    }
+
 
 
     public int getProducedToday(GoodType produced) {
-        return counter.getProducedToday()[produced.ordinal()];
+        return counter.getTodayProduction(produced);
     }
 
 
@@ -1230,23 +1238,15 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         return getHr().getWorkerTarget();
     }
 
-    public int[] getConsumedLastWeek() {
-        return counter.getConsumedLastWeek();
+
+
+    public int getConsumedYesterday(GoodType consumed) {
+        return counter.getYesterdayConsumption(consumed);
     }
 
-    public int[] getConsumedThisWeek() {
-        return counter.getConsumedThisWeek();
-    }
-
-    public int[] getConsumedYesterday() {
-        return counter.getConsumedYesterday();
-    }
-
-    public int[] getConsumedToday() {
-        return counter.getConsumedToday();
-    }
     public int getConsumedToday(GoodType type) {
-        return counter.getConsumedToday()[type.ordinal()];
+
+        return counter.getTodayConsumption(type);
     }
 
     /**

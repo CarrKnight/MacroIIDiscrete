@@ -19,8 +19,8 @@ import agents.firm.sales.prediction.RecursiveSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import au.com.bytecode.opencsv.CSVWriter;
 import financial.market.Market;
-import goods.GoodType;
 import model.MacroII;
+import model.scenario.OneLinkSupplyChainScenario;
 import model.scenario.OneLinkSupplyChainScenarioWithCheatingBuyingPrice;
 import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.enums.MarketDataType;
@@ -90,7 +90,7 @@ public class LearningSupplyChainExperiment {
             @Override
             protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
                 SalesDepartment department = super.createSalesDepartment(firm, goodmarket);
-                if(goodmarket.getGoodType().equals(GoodType.FOOD))  {
+                if(goodmarket.getGoodType().equals(OneLinkSupplyChainScenario.OUTPUT_GOOD))  {
                     if(foodLearned)
                         department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
                 }
@@ -100,13 +100,13 @@ public class LearningSupplyChainExperiment {
             @Override
             protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
                 HumanResources hr = super.createPlant(blueprint, firm, laborMarket);
-                if(blueprint.getOutputs().containsKey(GoodType.BEEF))
+                if(blueprint.getOutputs().containsKey(OneLinkSupplyChainScenario.INPUT_GOOD))
                 {
                     if(beefLearned){
                         hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
                     }
                 }
-                if(blueprint.getOutputs().containsKey(GoodType.FOOD))
+                if(blueprint.getOutputs().containsKey(OneLinkSupplyChainScenario.OUTPUT_GOOD))
                 {
                     if(foodLearned)
                         hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
@@ -161,14 +161,14 @@ public class LearningSupplyChainExperiment {
         {
             //make the model run one more day:
             macroII.schedule.step(macroII);
-            averageFoodPrice.addValue(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
-            averageBeefProduced.addValue(macroII.getMarket(GoodType.BEEF).getYesterdayVolume());
-            averageBeefPrice.addValue(macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+            averageFoodPrice.addValue(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+            averageBeefProduced.addValue(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getYesterdayVolume());
+            averageBeefPrice.addValue(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
         }
 
 
 
-        ((Firm)macroII.getMarket(GoodType.FOOD).getSellers().iterator().next()).getPurchaseDepartment(GoodType.BEEF).getPurchasesData().writeToCSVFile(Paths.get("runs","supplychai","beefBuying.csv").toFile());
+        ((Firm)macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getSellers().iterator().next()).getPurchaseDepartment(OneLinkSupplyChainScenario.INPUT_GOOD).getPurchasesData().writeToCSVFile(Paths.get("runs","supplychai","beefBuying.csv").toFile());
 
         System.out.println("beef price: " +averageBeefPrice.getMean() );
         System.out.println("food price: " +averageFoodPrice.getMean() );

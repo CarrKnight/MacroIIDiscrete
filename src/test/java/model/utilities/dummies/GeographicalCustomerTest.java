@@ -35,12 +35,15 @@ import static org.mockito.Mockito.*;
  */
 public class GeographicalCustomerTest {
 
+    final public static GoodType INPUT = new GoodType("testInput","Input");
+
+
 
     private final GeographicalMarket market = mock(GeographicalMarket.class);
 
     @Before
     public void setUp() throws Exception {
-        when(market.getGoodType()).thenReturn(GoodType.OIL);
+        when(market.getGoodType()).thenReturn(INPUT);
         when(market.submitBuyQuote(any(EconomicAgent.class),anyLong())).thenReturn(mock(Quote.class));
 
     }
@@ -53,15 +56,15 @@ public class GeographicalCustomerTest {
         //create the customer
         GeographicalCustomer customer = new GeographicalCustomer(macroII,10,2,2, market);
         //give it two units of oil
-        customer.receive(new Good(GoodType.OIL,null,0),null);
-        customer.receive(new Good(GoodType.OIL,null,0),null);
-        Assert.assertEquals(customer.hasHowMany(GoodType.OIL),2);
+        customer.receive(new Good(INPUT,null,0),null);
+        customer.receive(new Good(INPUT,null,0),null);
+        Assert.assertEquals(customer.hasHowMany(INPUT),2);
 
         //make one day pass
         macroII.start();
         macroII.schedule.step(macroII);
         //it should have consumed them both!
-        Assert.assertEquals(customer.hasHowMany(GoodType.OIL),0);
+        Assert.assertEquals(customer.hasHowMany(INPUT),0);
 
 
 
@@ -171,7 +174,7 @@ public class GeographicalCustomerTest {
         when(firm2.getxLocation()).thenReturn(1d);
         when(firm2.getyLocation()).thenReturn(1d);
         quote = Quote.newSellerQuote(firm2, 1000, mock(Good.class));
-        when(firm2.askedForASaleQuote(customer, GoodType.OIL)).thenReturn(quote);
+        when(firm2.askedForASaleQuote(customer, INPUT)).thenReturn(quote);
         firms.put(firm2,quote);
 
         Assert.assertEquals(null,customer.chooseSupplier(firms));
@@ -207,7 +210,7 @@ public class GeographicalCustomerTest {
         model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
             @Override
             public void step(SimState state) {
-                customer.receive(new Good(GoodType.OIL,mock(EconomicAgent.class),100l),null);
+                customer.receive(new Good(INPUT,mock(EconomicAgent.class),100l),null);
 
             }
         });

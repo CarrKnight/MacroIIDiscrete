@@ -22,10 +22,7 @@ import sim.engine.Steppable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -67,56 +64,56 @@ public class DailyStatCollector implements Steppable{
     /**
      * How much was produced today
      */
-    private EnumMap<GoodType,Integer> productionPerSector;
+    private HashMap<GoodType,Integer> productionPerSector;
 
 
     /**
      * How much was consumed today
      */
-    private EnumMap<GoodType,Integer> consumptionPerSector;
+    private HashMap<GoodType,Integer> consumptionPerSector;
 
     /**
      * How many workers were working today
      */
-    private EnumMap<GoodType,Integer> workersPerSector;
+    private HashMap<GoodType,Integer> workersPerSector;
 
     /**
      * What's the current market price for this good
      */
-    private EnumMap<GoodType,Float> marketPrice;
+    private HashMap<GoodType,Float> marketPrice;
 
     /**
      * The amount traded in the market
      */
-    private EnumMap<GoodType,Integer> marketVolume;
+    private HashMap<GoodType,Integer> marketVolume;
 
     /**
      * How much of the good is owned by the sellers
      */
-    private EnumMap<GoodType,Integer> sellerTotalInventory;
+    private HashMap<GoodType,Integer> sellerTotalInventory;
 
     /**
      * How much of the good is owned by the buyers
      */
-    private EnumMap<GoodType,Integer> buyerTotalInventory;
+    private HashMap<GoodType,Integer> buyerTotalInventory;
 
 
     /**
      * The flag is true for the output if at least one producing plant had its production halted
      */
-    private EnumMap<GoodType,Boolean> wereThereShortages;
+    private HashMap<GoodType,Boolean> wereThereShortages;
 
 
     /**
      * The flag is true for the output if at least one producing plant had its production halted
      */
-    private EnumMap<GoodType,Integer> sumDemandGap;
+    private HashMap<GoodType,Integer> sumDemandGap;
 
 
     /**
      * The flag is true for the output if at least one producing plant had its production halted
      */
-    private EnumMap<GoodType,Integer> sumSupplyGap;
+    private HashMap<GoodType,Integer> sumSupplyGap;
 
 
 
@@ -127,16 +124,16 @@ public class DailyStatCollector implements Steppable{
      */
     public DailyStatCollector(MacroII model) {
         this.model = model;
-        productionPerSector = new EnumMap<>(GoodType.class);
-        consumptionPerSector = new EnumMap<>(GoodType.class);
-        workersPerSector = new EnumMap<>(GoodType.class);
-        marketPrice  = new EnumMap<>(GoodType.class);
-        marketVolume  = new EnumMap<>(GoodType.class);
-        sellerTotalInventory = new EnumMap<>(GoodType.class);
-        buyerTotalInventory = new EnumMap<>(GoodType.class);
-        wereThereShortages = new EnumMap<>(GoodType.class);
-        sumDemandGap = new EnumMap<>(GoodType.class);
-        sumSupplyGap = new EnumMap<>(GoodType.class);
+        productionPerSector = new HashMap<>();
+        consumptionPerSector = new HashMap<>();
+        workersPerSector = new HashMap<>();
+        marketPrice  = new HashMap<>();
+        marketVolume  = new HashMap<>();
+        sellerTotalInventory = new HashMap<>();
+        buyerTotalInventory = new HashMap<>();
+        wereThereShortages = new HashMap<>();
+        sumDemandGap =new HashMap<>();
+        sumSupplyGap = new HashMap<>();
 
     }
 
@@ -165,7 +162,9 @@ public class DailyStatCollector implements Steppable{
         assert state == model;
 
 
-        for(GoodType output : GoodType.values() ) //for each sector
+        final Set<GoodType> sectorList = model.getGoodTypeMasterList().getListOfAllSectors();
+
+        for(GoodType output : sectorList) //for each sector
         {
             final Market market = model.getMarket(output);
             if(output.isMachinery() || market==null) //don't bother with non existing markets or non-goods
@@ -305,16 +304,16 @@ public class DailyStatCollector implements Steppable{
                 continue;
 
 
-            todayRow.add(type.name() + '_' + "production");
-            todayRow.add(type.name() + '_' + "consumption");
-            todayRow.add(type.name() + '_' + "workers");
-            todayRow.add(type.name() + '_' + "price");
-            todayRow.add(type.name() + '_' + "volume");
-            todayRow.add(type.name() + '_' + "outputInventory");
-            todayRow.add(type.name() + '_' + "inputInventory");
-            todayRow.add(type.name() + '_' + "shortages");
-            todayRow.add(type.name() + '_' + "demandGap");
-            todayRow.add(type.name() + '_' + "supplyGap");
+            todayRow.add(type.getName() + '_' + "production");
+            todayRow.add(type.getName() + '_' + "consumption");
+            todayRow.add(type.getName() + '_' + "workers");
+            todayRow.add(type.getName() + '_' + "price");
+            todayRow.add(type.getName() + '_' + "volume");
+            todayRow.add(type.getName() + '_' + "outputInventory");
+            todayRow.add(type.getName() + '_' + "inputInventory");
+            todayRow.add(type.getName() + '_' + "shortages");
+            todayRow.add(type.getName() + '_' + "demandGap");
+            todayRow.add(type.getName() + '_' + "supplyGap");
 
         }
 
@@ -322,31 +321,31 @@ public class DailyStatCollector implements Steppable{
     }
 
 
-    public EnumMap<GoodType, Integer> getProductionPerSector() {
+    public HashMap<GoodType, Integer> getProductionPerSector() {
         return productionPerSector;
     }
 
-    public EnumMap<GoodType, Integer> getWorkersPerSector() {
+    public HashMap<GoodType, Integer> getWorkersPerSector() {
         return workersPerSector;
     }
 
-    public EnumMap<GoodType, Float> getMarketPrice() {
+    public HashMap<GoodType, Float> getMarketPrice() {
         return marketPrice;
     }
 
-    public EnumMap<GoodType, Integer> getMarketVolume() {
+    public HashMap<GoodType, Integer> getMarketVolume() {
         return marketVolume;
     }
 
-    public EnumMap<GoodType, Integer> getSellerTotalInventory() {
+    public HashMap<GoodType, Integer> getSellerTotalInventory() {
         return sellerTotalInventory;
     }
 
-    public EnumMap<GoodType, Integer> getBuyerTotalInventory() {
+    public HashMap<GoodType, Integer> getBuyerTotalInventory() {
         return buyerTotalInventory;
     }
 
-    public EnumMap<GoodType, Boolean> getWereThereShortages() {
+    public HashMap<GoodType, Boolean> getWereThereShortages() {
         return wereThereShortages;
     }
 

@@ -11,6 +11,7 @@ import agents.firm.Firm;
 import agents.firm.cost.EmptyCostStrategy;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.technology.LinearConstantMachinery;
+import agents.firm.utilities.DailyProductionAndConsumptionCounter;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
@@ -47,7 +48,7 @@ public class PlantProductionAndConsumptionCounterTest {
     {
         //MODELLO
         MacroII model = mock(MacroII.class);
-        PlantProductionAndConsumptionCounter counter = new PlantProductionAndConsumptionCounter(mock(Plant.class));
+        DailyProductionAndConsumptionCounter counter = new DailyProductionAndConsumptionCounter();
         //doesn't schedule till start
         verify(model,never()).scheduleSoon(ActionOrder.DAWN, counter);
 
@@ -74,42 +75,43 @@ public class PlantProductionAndConsumptionCounterTest {
     public void testItCountsAndResetsDaily() throws Exception
     {
         MacroII model = mock(MacroII.class);
-        PlantProductionAndConsumptionCounter counter = new PlantProductionAndConsumptionCounter(mock(Plant.class));
+        DailyProductionAndConsumptionCounter counter = new DailyProductionAndConsumptionCounter();
 
-        counter.newProduction(GoodType.GENERIC);
-        counter.newProduction(GoodType.GENERIC);
-        counter.newProduction(GoodType.OIL);
+        counter.countNewProduction(GoodType.GENERIC);
+        counter.countNewProduction(GoodType.GENERIC);
+        counter.countNewProduction(GoodType.CAPITAL);
         //today
-        Assert.assertEquals(counter.getProducedToday()[GoodType.GENERIC.ordinal()], 2);
-        Assert.assertEquals(counter.getProducedToday()[GoodType.OIL.ordinal()], 1);
-        Assert.assertEquals(counter.getProducedToday()[GoodType.LABOR.ordinal()], 0);
+        Assert.assertEquals(counter.getTodayProduction(GoodType.GENERIC), 2);
+        Assert.assertEquals(counter.getTodayProduction(GoodType.CAPITAL), 1);
+        Assert.assertEquals(counter.getTodayProduction(GoodType.LABOR), 0);
         //yesterday
-        Assert.assertEquals(counter.getProducedYesterday()[GoodType.GENERIC.ordinal()],0);
-        Assert.assertEquals(counter.getProducedYesterday()[GoodType.OIL.ordinal()],0);
-        Assert.assertEquals(counter.getProducedYesterday()[GoodType.LABOR.ordinal()],0);
+        Assert.assertEquals(counter.getYesterdayProduction(GoodType.GENERIC), 0);
+        Assert.assertEquals(counter.getYesterdayProduction(GoodType.CAPITAL), 0);
+        Assert.assertEquals(counter.getYesterdayProduction(GoodType.LABOR), 0);
+
 
         //next day...
         counter.step(model);
         //today
-        Assert.assertEquals(counter.getProducedToday()[GoodType.GENERIC.ordinal()],0);
-        Assert.assertEquals(counter.getProducedToday()[GoodType.OIL.ordinal()],0);
-        Assert.assertEquals(counter.getProducedToday()[GoodType.LABOR.ordinal()],0);
+        Assert.assertEquals(counter.getTodayProduction(GoodType.GENERIC), 0);
+        Assert.assertEquals(counter.getTodayProduction(GoodType.CAPITAL), 0);
+        Assert.assertEquals(counter.getTodayProduction(GoodType.LABOR), 0);
         //yesterday
-        Assert.assertEquals(counter.getProducedYesterday()[GoodType.GENERIC.ordinal()],2);
-        Assert.assertEquals(counter.getProducedYesterday()[GoodType.OIL.ordinal()],1);
-        Assert.assertEquals(counter.getProducedYesterday()[GoodType.LABOR.ordinal()],0);
+        Assert.assertEquals(counter.getYesterdayProduction(GoodType.GENERIC), 2);
+        Assert.assertEquals(counter.getYesterdayProduction(GoodType.CAPITAL), 1);
+        Assert.assertEquals(counter.getYesterdayProduction(GoodType.LABOR), 0);
 
 
         //next day
         counter.step(model);
         //today
-        Assert.assertEquals(counter.getProducedToday()[GoodType.GENERIC.ordinal()],0);
-        Assert.assertEquals(counter.getProducedToday()[GoodType.OIL.ordinal()],0);
-        Assert.assertEquals(counter.getProducedToday()[GoodType.LABOR.ordinal()],0);
+        Assert.assertEquals(counter.getTodayProduction(GoodType.GENERIC), 0);
+        Assert.assertEquals(counter.getTodayProduction(GoodType.CAPITAL), 0);
+        Assert.assertEquals(counter.getTodayProduction(GoodType.LABOR), 0);
         //yesterday
-        Assert.assertEquals(counter.getProducedYesterday()[GoodType.GENERIC.ordinal()],0);
-        Assert.assertEquals(counter.getProducedYesterday()[GoodType.OIL.ordinal()],0);
-        Assert.assertEquals(counter.getProducedYesterday()[GoodType.LABOR.ordinal()],0);
+        Assert.assertEquals(counter.getYesterdayProduction(GoodType.GENERIC), 0);
+        Assert.assertEquals(counter.getYesterdayProduction(GoodType.CAPITAL), 0);
+        Assert.assertEquals(counter.getYesterdayProduction(GoodType.LABOR), 0);
 
 
 
@@ -120,43 +122,42 @@ public class PlantProductionAndConsumptionCounterTest {
     @Test
     public void testItCountsAndResetsWeekly() throws Exception {
 
-        PlantProductionAndConsumptionCounter counter = new PlantProductionAndConsumptionCounter(mock(Plant.class));
+        DailyProductionAndConsumptionCounter counter = new DailyProductionAndConsumptionCounter();
 
-        counter.newProduction(GoodType.GENERIC);
-        counter.newProduction(GoodType.GENERIC);
-        counter.step(mock(MacroII.class)); //not important
-        counter.newProduction(GoodType.OIL);
-        //today
-        Assert.assertEquals(counter.getProducedThisWeek()[GoodType.GENERIC.ordinal()],2);
-        Assert.assertEquals(counter.getProducedThisWeek()[GoodType.OIL.ordinal()],1);
-        Assert.assertEquals(counter.getProducedThisWeek()[GoodType.LABOR.ordinal()],0);
-        //yesterday
-        Assert.assertEquals(counter.getProducedLastWeek()[GoodType.GENERIC.ordinal()],0);
-        Assert.assertEquals(counter.getProducedLastWeek()[GoodType.OIL.ordinal()],0);
-        Assert.assertEquals(counter.getProducedLastWeek()[GoodType.LABOR.ordinal()],0);
+        counter.countNewProduction(GoodType.GENERIC);
+        counter.countNewProduction(GoodType.GENERIC);
+        counter.countNewProduction(GoodType.CAPITAL);
+        //ThisWeek
+        Assert.assertEquals(counter.getThisWeekProduction(GoodType.GENERIC), 2);
+        Assert.assertEquals(counter.getThisWeekProduction(GoodType.CAPITAL), 1);
+        Assert.assertEquals(counter.getThisWeekProduction(GoodType.LABOR), 0);
+        //LastWeek
+        Assert.assertEquals(counter.getLastWeekProduction(GoodType.GENERIC), 0);
+        Assert.assertEquals(counter.getLastWeekProduction(GoodType.CAPITAL), 0);
+        Assert.assertEquals(counter.getLastWeekProduction(GoodType.LABOR), 0);
 
         //next day...
         counter.weekEnd();
-        //today
-        Assert.assertEquals(counter.getProducedThisWeek()[GoodType.GENERIC.ordinal()],0);
-        Assert.assertEquals(counter.getProducedThisWeek()[GoodType.OIL.ordinal()],0);
-        Assert.assertEquals(counter.getProducedThisWeek()[GoodType.LABOR.ordinal()],0);
-        //yesterday
-        Assert.assertEquals(counter.getProducedLastWeek()[GoodType.GENERIC.ordinal()],2);
-        Assert.assertEquals(counter.getProducedLastWeek()[GoodType.OIL.ordinal()],1);
-        Assert.assertEquals(counter.getProducedLastWeek()[GoodType.LABOR.ordinal()],0);
+        //ThisWeek
+        Assert.assertEquals(counter.getThisWeekProduction(GoodType.GENERIC), 0);
+        Assert.assertEquals(counter.getThisWeekProduction(GoodType.CAPITAL), 0);
+        Assert.assertEquals(counter.getThisWeekProduction(GoodType.LABOR), 0);
+        //LastWeek
+        Assert.assertEquals(counter.getLastWeekProduction(GoodType.GENERIC), 2);
+        Assert.assertEquals(counter.getLastWeekProduction(GoodType.CAPITAL), 1);
+        Assert.assertEquals(counter.getLastWeekProduction(GoodType.LABOR), 0);
 
 
         //next day
         counter.weekEnd();
-        //today
-        Assert.assertEquals(counter.getProducedThisWeek()[GoodType.GENERIC.ordinal()],0);
-        Assert.assertEquals(counter.getProducedThisWeek()[GoodType.OIL.ordinal()],0);
-        Assert.assertEquals(counter.getProducedThisWeek()[GoodType.LABOR.ordinal()],0);
-        //yesterday
-        Assert.assertEquals(counter.getProducedLastWeek()[GoodType.GENERIC.ordinal()],0);
-        Assert.assertEquals(counter.getProducedLastWeek()[GoodType.OIL.ordinal()],0);
-        Assert.assertEquals(counter.getProducedLastWeek()[GoodType.LABOR.ordinal()],0);
+        //ThisWeek
+        Assert.assertEquals(counter.getThisWeekProduction(GoodType.GENERIC), 0);
+        Assert.assertEquals(counter.getThisWeekProduction(GoodType.CAPITAL), 0);
+        Assert.assertEquals(counter.getThisWeekProduction(GoodType.LABOR), 0);
+        //LastWeek
+        Assert.assertEquals(counter.getLastWeekProduction(GoodType.GENERIC), 0);
+        Assert.assertEquals(counter.getLastWeekProduction(GoodType.CAPITAL), 0);
+        Assert.assertEquals(counter.getLastWeekProduction(GoodType.LABOR), 0);
 
     }
 
@@ -172,7 +173,7 @@ public class PlantProductionAndConsumptionCounterTest {
         MacroII model = new MacroII(1l);
         Firm owner = mock(Firm.class);
         when(owner.getModel()).thenReturn(model);
-        Plant plant = new Plant(Blueprint.simpleBlueprint(GoodType.BEEF,0,GoodType.GENERIC,5),owner);
+        Plant plant = new Plant(Blueprint.simpleBlueprint(new GoodType("fake","useless"),0,GoodType.GENERIC,5),owner);
         plant.addWorker(mock(Person.class));
         TrueRandomScheduler scheduler = new TrueRandomScheduler(100, model.getRandom());
         model.setPhaseScheduler(scheduler);
@@ -185,11 +186,11 @@ public class PlantProductionAndConsumptionCounterTest {
 
 
         //today
-        Assert.assertEquals(plant.getProducedToday()[GoodType.GENERIC.ordinal()],5);
-        Assert.assertEquals(plant.getProducedToday()[GoodType.LABOR.ordinal()],0);
+        Assert.assertEquals(plant.getProducedToday(GoodType.GENERIC),5);
+        Assert.assertEquals(plant.getProducedToday(GoodType.LABOR),0);
         //yesterday
-        Assert.assertEquals(plant.getProducedYesterday()[GoodType.GENERIC.ordinal()],0);
-        Assert.assertEquals(plant.getProducedYesterday()[GoodType.LABOR.ordinal()],0);
+        Assert.assertEquals(plant.getProducedYesterday(GoodType.GENERIC),0);
+        Assert.assertEquals(plant.getProducedYesterday(GoodType.LABOR),0);
 
         //remove the worker
         plant.removeLastWorker();
@@ -197,21 +198,21 @@ public class PlantProductionAndConsumptionCounterTest {
         //next day...
         model.schedule.step(model);
         //today
-        Assert.assertEquals(plant.getProducedToday()[GoodType.GENERIC.ordinal()],0);
-        Assert.assertEquals(plant.getProducedToday()[GoodType.LABOR.ordinal()],0);
+        Assert.assertEquals(plant.getProducedToday(GoodType.GENERIC),0);
+        Assert.assertEquals(plant.getProducedToday(GoodType.LABOR),0);
         //yesterday
-        Assert.assertEquals(plant.getProducedYesterday()[GoodType.GENERIC.ordinal()],5);
-        Assert.assertEquals(plant.getProducedYesterday()[GoodType.LABOR.ordinal()],0);
+        Assert.assertEquals(plant.getProducedYesterday(GoodType.GENERIC),5);
+        Assert.assertEquals(plant.getProducedYesterday(GoodType.LABOR),0);
 
 
         //next day...
         model.schedule.step(model);
         //today
-        Assert.assertEquals(plant.getProducedToday()[GoodType.GENERIC.ordinal()],0);
-        Assert.assertEquals(plant.getProducedToday()[GoodType.LABOR.ordinal()],0);
+        Assert.assertEquals(plant.getProducedToday(GoodType.GENERIC),0);
+        Assert.assertEquals(plant.getProducedToday(GoodType.LABOR),0);
         //yesterday
-        Assert.assertEquals(plant.getProducedYesterday()[GoodType.GENERIC.ordinal()],0);
-        Assert.assertEquals(plant.getProducedYesterday()[GoodType.LABOR.ordinal()],0);
+        Assert.assertEquals(plant.getProducedYesterday(GoodType.GENERIC),0);
+        Assert.assertEquals(plant.getProducedYesterday(GoodType.LABOR),0);
 
 
 
@@ -227,7 +228,7 @@ public class PlantProductionAndConsumptionCounterTest {
         when(model.getCurrentPhase()).thenReturn(ActionOrder.PRODUCTION); when(model.getWeekLength()).thenReturn(7f); //set the model up
         Firm owner = mock(Firm.class);
         when(owner.getModel()).thenReturn(model);
-        Plant plant = new Plant(Blueprint.simpleBlueprint(GoodType.BEEF,0,GoodType.GENERIC,5),owner);
+        Plant plant = new Plant(Blueprint.simpleBlueprint(new GoodType("fake","useless"),0,GoodType.GENERIC,5),owner);
         plant.addWorker(mock(Person.class));
         TrueRandomScheduler scheduler = new TrueRandomScheduler(100, model.getRandom());
         model.setPhaseScheduler(scheduler);
@@ -239,31 +240,31 @@ public class PlantProductionAndConsumptionCounterTest {
 
 
 
-        //today
-        Assert.assertEquals(plant.getThisWeekThroughput()[GoodType.GENERIC.ordinal()],5);
-        Assert.assertEquals(plant.getThisWeekThroughput()[GoodType.LABOR.ordinal()],0);
-        //yesterday
-        Assert.assertEquals(plant.getLastWeekThroughput()[GoodType.GENERIC.ordinal()],0);
-        Assert.assertEquals(plant.getLastWeekThroughput()[GoodType.LABOR.ordinal()],0);
+        Assert.assertEquals(plant.getThisWeekThroughput(GoodType.GENERIC),5);
+        Assert.assertEquals(plant.getThisWeekThroughput(GoodType.LABOR),0);
+        //LastWEek
+        Assert.assertEquals(plant.getLastWeekThroughput(GoodType.GENERIC),0);
+        Assert.assertEquals(plant.getLastWeekThroughput(GoodType.LABOR),0);
 
         //next week
         plant.weekEnd(1);
-        //today
-        Assert.assertEquals(plant.getThisWeekThroughput()[GoodType.GENERIC.ordinal()],0);
-        Assert.assertEquals(plant.getThisWeekThroughput()[GoodType.LABOR.ordinal()],0);
-        //yesterday
-        Assert.assertEquals(plant.getLastWeekThroughput()[GoodType.GENERIC.ordinal()],5);
-        Assert.assertEquals(plant.getLastWeekThroughput()[GoodType.LABOR.ordinal()],0);
+        //ThisWeek
+        //ThisWeek
+        Assert.assertEquals(plant.getThisWeekThroughput(GoodType.GENERIC),0);
+        Assert.assertEquals(plant.getThisWeekThroughput(GoodType.LABOR),0);
+        //LastWEek
+        Assert.assertEquals(plant.getLastWeekThroughput(GoodType.GENERIC),5);
+        Assert.assertEquals(plant.getLastWeekThroughput(GoodType.LABOR),0);
 
 
         //next week
         plant.weekEnd(2);
-        //today
-        Assert.assertEquals(plant.getThisWeekThroughput()[GoodType.GENERIC.ordinal()],0);
-        Assert.assertEquals(plant.getThisWeekThroughput()[GoodType.LABOR.ordinal()],0);
-        //yesterday
-        Assert.assertEquals(plant.getLastWeekThroughput()[GoodType.GENERIC.ordinal()],0);
-        Assert.assertEquals(plant.getLastWeekThroughput()[GoodType.LABOR.ordinal()],0);
+        //ThisWeek
+        Assert.assertEquals(plant.getThisWeekThroughput(GoodType.GENERIC),0);
+        Assert.assertEquals(plant.getThisWeekThroughput(GoodType.LABOR),0);
+        //LastWEek
+        Assert.assertEquals(plant.getLastWeekThroughput(GoodType.GENERIC),0);
+        Assert.assertEquals(plant.getLastWeekThroughput(GoodType.LABOR),0);
 
     }
 }

@@ -44,6 +44,9 @@ public class PlantTest {
     Plant drs;
     MacroII macro;
 
+    final public static GoodType BEEF = new GoodType("testInput","Input");
+
+
 
     @Before
     public void setUp() throws Exception {
@@ -346,7 +349,7 @@ public class PlantTest {
     public void testTotalInputs()
     {
 
-        Blueprint b = Blueprint.simpleBlueprint(GoodType.GENERIC, 1, GoodType.BEEF, 1);
+        Blueprint b = Blueprint.simpleBlueprint(GoodType.GENERIC, 1, BEEF, 1);
         MacroII localMacroII =  mock(MacroII.class);
         PhaseScheduler scheduler = mock(RandomQueuePhaseScheduler.class); when(localMacroII.getCurrentPhase()).thenReturn(ActionOrder.PRODUCTION);
         when(localMacroII.getPhaseScheduler()).thenReturn(scheduler);  when(localMacroII.getWeekLength()).thenReturn(7f);
@@ -355,7 +358,7 @@ public class PlantTest {
         f.addPlant(localCRS);
         localCRS.addWorker(new Person(localCRS.getModel()));
         localCRS.addWorker(new Person(localCRS.getModel()));
-        localCRS.getOwner().registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class),GoodType.BEEF); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+        localCRS.getOwner().registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class),BEEF); //fake sales department so that you don't sell the stuff you completeProductionRunNow
         localCRS.setCostStrategy(new InputCostStrategy(localCRS));
 
 

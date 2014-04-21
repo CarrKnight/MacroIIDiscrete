@@ -38,6 +38,10 @@ import static org.mockito.Mockito.*;
  */
 public class GeographicalMarketPresentationTest {
 
+    final static private GoodType OIL = new GoodType("oiltest","oil");
+
+
+
     @Before
     public void setUp() throws Exception {
         //should start the Platform
@@ -140,9 +144,9 @@ public class GeographicalMarketPresentationTest {
             public void start() {
 
                 //geographical market for oil!
-                final GeographicalMarket market = new GeographicalMarket(GoodType.OIL);
+                final GeographicalMarket market = new GeographicalMarket(OIL);
                 market.setPricePolicy(new ShopSetPricePolicy());
-                getMarkets().put(GoodType.OIL,market);
+                getMarkets().put(OIL,market);
 
                 //create the seller
                 final GeographicalFirm seller =new GeographicalFirm(getModel(),0,0);
@@ -153,7 +157,7 @@ public class GeographicalMarketPresentationTest {
                 //give the sale department a simple PID
                 salesDepartment.setAskPricingStrategy(new SalesControlWithFixedInventoryAndPID(salesDepartment,50));
                 //finally register it!
-                seller.registerSaleDepartment(salesDepartment, GoodType.OIL);
+                seller.registerSaleDepartment(salesDepartment, OIL);
 
                 //receive 10 units a day!
 
@@ -162,7 +166,7 @@ public class GeographicalMarketPresentationTest {
                     @Override
                     public void step(SimState state) {
                         for (int i = 0; i < 10; i++) {
-                            Good toSell = new Good(GoodType.OIL, seller, 0);
+                            Good toSell = new Good(OIL, seller, 0);
                             seller.receive(toSell,null);
                             seller.reactToPlantProduction(toSell);
 
@@ -192,7 +196,7 @@ public class GeographicalMarketPresentationTest {
         };
         macroII.setScenario(simpleSellerOilScenario);
         macroII.start();
-        GeographicalMarket market = (GeographicalMarket) macroII.getMarket(GoodType.OIL);
+        GeographicalMarket market = (GeographicalMarket) macroII.getMarket(OIL);
 
 
         //CREATE GUI OBJECTS!
@@ -220,14 +224,14 @@ public class GeographicalMarketPresentationTest {
         //all distant agents bought nothing SO THEIR COLOR IS WHITE!
         for(GeographicalCustomer farCustomer : farCustomers)
         {
-            Assert.assertEquals(0, farCustomer.hasHowMany(GoodType.OIL));
+            Assert.assertEquals(0, farCustomer.hasHowMany(OIL));
             Assert.assertNull(farCustomer.getLastSupplier());
             Assert.assertEquals(presentation.getPortraitList().get(farCustomer).getColor(), Color.BLACK);
         }
         //cheap people got nothing
         for(int i=0; i<90; i++)
         {
-            Assert.assertEquals(0, customers[i].hasHowMany(GoodType.OIL));
+            Assert.assertEquals(0, customers[i].hasHowMany(OIL));
             Assert.assertNull(customers[i].getLastSupplier());
             Assert.assertEquals(presentation.getPortraitList().get(customers[i]).getColor(), Color.BLACK);
 
@@ -236,7 +240,7 @@ public class GeographicalMarketPresentationTest {
         //rich people got everything
         for(int i=90; i<customers.length; i++)
         {
-            Assert.assertEquals(1,customers[i].hasHowMany(GoodType.OIL));
+            Assert.assertEquals(1,customers[i].hasHowMany(OIL));
             Assert.assertEquals(customers[i].getLastSupplier(),seller);
             Assert.assertEquals(presentation.getPortraitList().get(customers[i]).getColor(), firmExpectedColor);
 

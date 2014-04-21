@@ -56,6 +56,9 @@ import static org.mockito.Mockito.*;
 public class GeographicalMarketTest
 {
 
+    final public static GoodType INPUT = new GoodType("testInput","Input");
+
+
     //make sure it schedule itself correctly
     @Test
     public void testMakeSureItSchedules() throws Exception
@@ -63,7 +66,7 @@ public class GeographicalMarketTest
 
         //make sure start() puts it on the schedule
         MacroII mocked = mock(MacroII.class);
-        GeographicalMarket market = new GeographicalMarket(GoodType.OIL);
+        GeographicalMarket market = new GeographicalMarket(INPUT);
 
         market.start(mocked);
         verify(mocked,times(1)).scheduleSoon(ActionOrder.TRADE,market, Priority.FINAL);
@@ -90,7 +93,7 @@ public class GeographicalMarketTest
         MacroII macroII = new MacroII(1l);
 
         //geographical market for oil!
-        final GeographicalMarket market = new GeographicalMarket(GoodType.OIL);
+        final GeographicalMarket market = new GeographicalMarket(INPUT);
         market.setPricePolicy(new ShopSetPricePolicy());
         market.start(macroII);
 
@@ -103,7 +106,7 @@ public class GeographicalMarketTest
             @Override
             public void step(SimState state) {
                 for (int i = 0; i < 2; i++) {
-                    Good toSell = new Good(GoodType.OIL, seller, 5l);
+                    Good toSell = new Good(INPUT, seller, 5l);
                     Quote quote = market.submitSellQuote(seller, 10l, toSell);
                     when(seller.has(toSell)).thenReturn(true);
                     //it should not have been cleared!
@@ -164,7 +167,7 @@ public class GeographicalMarketTest
         MacroII macroII = new MacroII(1l);
 
         //geographical market for oil!
-        final GeographicalMarket market = new GeographicalMarket(GoodType.OIL);
+        final GeographicalMarket market = new GeographicalMarket(INPUT);
         market.setPricePolicy(new ShopSetPricePolicy());
         market.start(macroII);
 
@@ -177,7 +180,7 @@ public class GeographicalMarketTest
             @Override
             public void step(SimState state) {
                 for (int i = 0; i < 2; i++) {
-                    Good toSell = new Good(GoodType.OIL, seller, 5l);
+                    Good toSell = new Good(INPUT, seller, 5l);
                     Quote quote = market.submitSellQuote(seller, 10l, toSell);
                     when(seller.has(toSell)).thenReturn(true);
                     //it should not have been cleared!
@@ -250,7 +253,7 @@ public class GeographicalMarketTest
         MacroII macroII = new MacroII(1l);
 
         //geographical market for oil!
-        final GeographicalMarket market = new GeographicalMarket(GoodType.OIL);
+        final GeographicalMarket market = new GeographicalMarket(INPUT);
         market.setPricePolicy(new ShopSetPricePolicy());
         market.start(macroII);
 
@@ -263,7 +266,7 @@ public class GeographicalMarketTest
             @Override
             public void step(SimState state) {
                 for (int i = 0; i < 2; i++) {
-                    Good toSell = new Good(GoodType.OIL, seller, 5l);
+                    Good toSell = new Good(INPUT, seller, 5l);
                     Quote quote = market.submitSellQuote(seller, 10000l, toSell);
                     when(seller.has(toSell)).thenReturn(true);
                     //it should not have been cleared!
@@ -331,9 +334,9 @@ public class GeographicalMarketTest
             public void start() {
 
                 //geographical market for oil!
-                final GeographicalMarket market = new GeographicalMarket(GoodType.OIL);
+                final GeographicalMarket market = new GeographicalMarket(INPUT);
                 market.setPricePolicy(new ShopSetPricePolicy());
-                getMarkets().put(GoodType.OIL,market);
+                getMarkets().put(INPUT,market);
 
                 //create the seller
                 final GeographicalFirm seller =new GeographicalFirm(getModel(),0,0);
@@ -344,7 +347,7 @@ public class GeographicalMarketTest
                 //give the sale department a simple PID
                 salesDepartment.setAskPricingStrategy(new SalesControlWithFixedInventoryAndPID(salesDepartment,50));
                 //finally register it!
-                seller.registerSaleDepartment(salesDepartment, GoodType.OIL);
+                seller.registerSaleDepartment(salesDepartment, INPUT);
 
                 //receive 10 units a day!
 
@@ -353,7 +356,7 @@ public class GeographicalMarketTest
                     @Override
                     public void step(SimState state) {
                         for (int i = 0; i < 10; i++) {
-                            Good toSell = new Good(GoodType.OIL, seller, 0);
+                            Good toSell = new Good(INPUT, seller, 0);
                             seller.receive(toSell,null);
                             seller.reactToPlantProduction(toSell);
 
@@ -383,7 +386,7 @@ public class GeographicalMarketTest
         };
         macroII.setScenario(simpleSellerOilScenario);
         macroII.start();
-        Market market = macroII.getMarket(GoodType.OIL);
+        Market market = macroII.getMarket(INPUT);
         for(int i=0; i< 3000; i++)
         {
             macroII.schedule.step(macroII); //make 3000 step pass
@@ -395,18 +398,18 @@ public class GeographicalMarketTest
 
         //all distant agents bought nothing
         for(GeographicalCustomer farCustomer : farCustomers)
-            Assert.assertEquals(0,farCustomer.hasHowMany(GoodType.OIL));
+            Assert.assertEquals(0,farCustomer.hasHowMany(INPUT));
 
         //cheap people got nothing
         for(int i=0; i<90; i++)
         {
-            Assert.assertEquals(0,customers[i].hasHowMany(GoodType.OIL));
+            Assert.assertEquals(0,customers[i].hasHowMany(INPUT));
         }
 
         //rich people got everything
         for(int i=90; i<customers.length; i++)
         {
-            Assert.assertEquals(1,customers[i].hasHowMany(GoodType.OIL));
+            Assert.assertEquals(1,customers[i].hasHowMany(INPUT));
         }
 
 
@@ -421,7 +424,7 @@ public class GeographicalMarketTest
     {
         JFrame jFrame = new JFrame("lame example");
         jFrame.setSize(500,500);
-        GeographicalMarket market = new GeographicalMarket(GoodType.OIL);
+        GeographicalMarket market = new GeographicalMarket(INPUT);
         System.out.println(market.getBuyers().size());
         GeographicalCustomer customer = new GeographicalCustomer(mock(MacroII.class),10,10,10,market);
         System.out.println(market.getBuyers().size());

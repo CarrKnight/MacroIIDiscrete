@@ -43,9 +43,12 @@ public class CustomerTest
 
     private final GeographicalMarket market = mock(GeographicalMarket.class);
 
+    final static private GoodType OIL = new GoodType("oiltest","oil");
+
+
     @Before
     public void setUp() throws Exception {
-        when(market.getGoodType()).thenReturn(GoodType.OIL);
+        when(market.getGoodType()).thenReturn(OIL);
 
 
         when(market.submitBuyQuote(any(EconomicAgent.class), anyLong())).thenAnswer(invocation ->
@@ -62,15 +65,15 @@ public class CustomerTest
         //create the customer
         Customer customer = new Customer(macroII,10,market);
         //give it two units of oil
-        customer.receive(new Good(GoodType.OIL,null,0),null);
-        customer.receive(new Good(GoodType.OIL,null,0),null);
-        Assert.assertEquals(customer.hasHowMany(GoodType.OIL), 2);
+        customer.receive(new Good(OIL,null,0),null);
+        customer.receive(new Good(OIL,null,0),null);
+        Assert.assertEquals(customer.hasHowMany(OIL), 2);
 
         //make one day pass
         macroII.start();
         macroII.schedule.step(macroII);
         //it should have consumed them both!
-        Assert.assertEquals(customer.hasHowMany(GoodType.OIL),0);
+        Assert.assertEquals(customer.hasHowMany(OIL),0);
 
 
 
@@ -147,7 +150,7 @@ public class CustomerTest
         model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
             @Override
             public void step(SimState state) {
-                customer.receive(new Good(GoodType.OIL,mock(EconomicAgent.class),100l),null);
+                customer.receive(new Good(OIL,mock(EconomicAgent.class),100l),null);
 
             }
         });

@@ -8,7 +8,7 @@ package agents.firm.production;
 
 import goods.GoodType;
 
-import java.util.EnumMap;
+import java.util.HashMap;
 
 /**
  * <h4>Description</h4>
@@ -28,9 +28,9 @@ import java.util.EnumMap;
  */
 public class Blueprint {
 
-    EnumMap<GoodType,Integer> inputs;
+    HashMap<GoodType,Integer> inputs;
 
-    EnumMap<GoodType,Integer> outputs;
+    HashMap<GoodType,Integer> outputs;
 
     /**
      * Private constructor so I am forced to use the builder/factory methods
@@ -51,9 +51,9 @@ public class Blueprint {
 
     public static Blueprint simpleBlueprint( GoodType input,int inputQuantity, GoodType output,int outputQuantity){
         Blueprint b = new Blueprint();
-        b.inputs = new EnumMap<GoodType, Integer>(GoodType.class);
+        b.inputs = new HashMap<>();
         b.inputs.put(input,inputQuantity);
-        b.outputs = new EnumMap<GoodType, Integer>(GoodType.class);
+        b.outputs = new HashMap<>();
         b.outputs.put(output,outputQuantity);
 
         return  b;
@@ -70,8 +70,8 @@ public class Blueprint {
 
         public Builder(){
             b = new Blueprint();
-            b.inputs = new EnumMap<>(GoodType.class);
-            b.outputs = new EnumMap<>(GoodType.class);
+            b.inputs = new HashMap<>();
+            b.outputs = new HashMap<>();
         }
 
         public  Builder input( GoodType input, int inputQuantity){
@@ -101,11 +101,11 @@ public class Blueprint {
     }
 
 
-    public EnumMap<GoodType, Integer> getInputs() {
+    public HashMap<GoodType, Integer> getInputs() {
         return inputs;
     }
 
-    public EnumMap<GoodType, Integer> getOutputs() {
+    public HashMap<GoodType, Integer> getOutputs() {
         return outputs;
     }
 }

@@ -103,8 +103,8 @@ public class TripolistWithInputScenarioTest {
             System.err.println(macroII.seed());
             while(macroII.schedule.getTime()<3500)
             {
-         /*       System.out.println(scenario1.getMonopolist().getPurchaseDepartment(GoodType.LEATHER).getLastOfferedPrice() + " - " +
-                scenario1.getMonopolist().getPurchaseDepartment(GoodType.LEATHER).maxPrice(GoodType.LEATHER,scenario1.getMonopolist().getPurchaseDepartment(GoodType.LEATHER).getMarket()));
+         /*       System.out.println(scenario1.getMonopolist().getPurchaseDepartment(TripolistWithInputScenario.INPUT).getLastOfferedPrice() + " - " +
+                scenario1.getMonopolist().getPurchaseDepartment(TripolistWithInputScenario.INPUT).maxPrice(TripolistWithInputScenario.INPUT,scenario1.getMonopolist().getPurchaseDepartment(TripolistWithInputScenario.INPUT).getMarket()));
                 */
                 macroII.schedule.step(macroII);
             }
@@ -179,12 +179,12 @@ public class TripolistWithInputScenarioTest {
                 protected void addPurchaseDepartmentToFirms(){
                     FactoryProducedPurchaseDepartment<FixedInventoryControl,CheaterPricing,BuyerSearchAlgorithm,SellerSearchAlgorithm>
                             factoryProducedPurchaseDepartment =
-                            PurchasesDepartment.getPurchasesDepartment(Long.MAX_VALUE, monopolist, getMarkets().get(GoodType.LEATHER), FixedInventoryControl.class,
+                            PurchasesDepartment.getPurchasesDepartment(Long.MAX_VALUE, monopolist, getMarkets().get(TripolistWithInputScenario.INPUT), FixedInventoryControl.class,
                                     CheaterPricing.class, null, null);
 
                     factoryProducedPurchaseDepartment.getInventoryControl().setInventoryTarget(100);
                     factoryProducedPurchaseDepartment.getInventoryControl().setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(1.1f);
-                    monopolist.registerPurchasesDepartment(factoryProducedPurchaseDepartment.getDepartment(), GoodType.LEATHER);
+                    monopolist.registerPurchasesDepartment(factoryProducedPurchaseDepartment.getDepartment(), TripolistWithInputScenario.INPUT);
                 }
 
             };
@@ -205,7 +205,7 @@ public class TripolistWithInputScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            scenario1.getMonopolist().getPurchaseDepartment(GoodType.LEATHER).getPurchasesData().writeToCSVFile(Paths.get("runs","test.csv").toFile());
+            scenario1.getMonopolist().getPurchaseDepartment(TripolistWithInputScenario.INPUT).getPurchasesData().writeToCSVFile(Paths.get("runs","test.csv").toFile());
             System.out.println(i + " ----- " + scenario1.monopolist.getTotalWorkers() + " ... " + macroII.getMarket(GoodType.GENERIC).getLastPrice() + " ----> " + macroII.seed());
             assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
             assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
@@ -252,7 +252,7 @@ public class TripolistWithInputScenarioTest {
                 for(Firm f : scenario1.getCompetitors())
                 {
                     f.getSalesDepartment(GoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
-                    f.getPurchaseDepartment(GoodType.LEATHER).setPredictor(new FixedIncreasePurchasesPredictor(0));
+                    f.getPurchaseDepartment(TripolistWithInputScenario.INPUT).setPredictor(new FixedIncreasePurchasesPredictor(0));
                     f.getHRs().iterator().next().setPredictor(new FixedIncreasePurchasesPredictor(0));
                 }
 
@@ -381,7 +381,7 @@ public class TripolistWithInputScenarioTest {
             for(Firm f : scenario1.getCompetitors())
             {
                 f.getSalesDepartment(GoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(1));
-                f.getPurchaseDepartment(GoodType.LEATHER).setPredictor(new FixedIncreasePurchasesPredictor(1));
+                f.getPurchaseDepartment(TripolistWithInputScenario.INPUT).setPredictor(new FixedIncreasePurchasesPredictor(1));
                 //without this overproduction
                 f.getHRs().iterator().next().setPredictor(new FixedIncreasePurchasesPredictor(1));
             }
@@ -441,7 +441,7 @@ public class TripolistWithInputScenarioTest {
         for(Firm f : scenario1.getCompetitors())
         {
             f.getSalesDepartment(GoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(1));
-            f.getPurchaseDepartment(GoodType.LEATHER).setPredictor(new FixedIncreasePurchasesPredictor(1));
+            f.getPurchaseDepartment(TripolistWithInputScenario.INPUT).setPredictor(new FixedIncreasePurchasesPredictor(1));
             //without this overproduction
             f.getHRs().iterator().next().setPredictor(new FixedIncreasePurchasesPredictor(1));
         }

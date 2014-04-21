@@ -66,7 +66,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
         super(model);
         monopolistGoodType = monopolistGood;
 
-        if(monopolistGood.equals(GoodType.BEEF))
+        if(monopolistGood.equals(OneLinkSupplyChainScenario.INPUT_GOOD))
         {
             //make beef a monopolist
             setNumberOfBeefProducers(1);
@@ -74,7 +74,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
         }
         else
         {
-            assert monopolistGood.equals(GoodType.FOOD);
+            assert monopolistGood.equals(OneLinkSupplyChainScenario.OUTPUT_GOOD);
             setNumberOfBeefProducers(5);
             setNumberOfFoodProducers(1);
 
@@ -138,7 +138,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
 
         final MacroII macroII = new MacroII(System.currentTimeMillis());
         final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 =
-                new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.BEEF);
+                new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, OneLinkSupplyChainScenario.INPUT_GOOD);
         scenario1.setControlType(MarginalMaximizer.class);
         scenario1.setMaximizerType(PeriodicMaximizer.class);
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
@@ -161,7 +161,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
 
             final CSVWriter prices = new CSVWriter(new FileWriter("runs/supplychai/forcedmonopolistTestprices.csv"));
             final CSVWriter quantities = new CSVWriter(new FileWriter("runs/supplychai/forcedmonopolistTestQuantities.csv"));
-            ProducersStatCollector collector2 = new ProducersStatCollector(macroII,GoodType.BEEF,prices,quantities);
+            ProducersStatCollector collector2 = new ProducersStatCollector(macroII,OneLinkSupplyChainScenario.INPUT_GOOD,prices,quantities);
             collector2.start();
         } catch (IOException e) {
             System.err.println("failed to create the file!");
@@ -177,7 +177,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
                 public void step(SimState state) {
                     try {
                         writer2.writeNext(new String[]{String.valueOf(
-                                macroII.getMarket(GoodType.BEEF).getBestBuyPrice()),
+                                macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getBestBuyPrice()),
                                 String.valueOf(scenario1.strategy2.getTargetInventory()),
                                 String.valueOf(scenario1.strategy2.getDepartment().getLatestObservation(SalesDataType.HOW_MANY_TO_SELL))});
                         writer2.flush();
@@ -216,7 +216,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
 
         final MacroII macroII = new MacroII(System.currentTimeMillis());
         final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 =
-                new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.BEEF)
+                new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, OneLinkSupplyChainScenario.INPUT_GOOD)
                 {
 
 
@@ -231,11 +231,11 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
                     @Override
                     protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
                         final SalesDepartment department = super.createSalesDepartment(firm, goodmarket);
-                        if(goodmarket.getGoodType().equals(GoodType.FOOD))
+                        if(goodmarket.getGoodType().equals(OneLinkSupplyChainScenario.OUTPUT_GOOD))
                             department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
 
 
-                        if(goodmarket.getGoodType().equals(GoodType.BEEF))
+                        if(goodmarket.getGoodType().equals(OneLinkSupplyChainScenario.INPUT_GOOD))
                         {
                             SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly askPricingStrategy =
                                     new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(department);
@@ -257,7 +257,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
                     @Override
                     protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
                         HumanResources hr = super.createPlant(blueprint, firm, laborMarket);    //To change body of overridden methods use File | Settings | File Templates.
-                        if(blueprint.getOutputs().containsKey(GoodType.BEEF))
+                        if(blueprint.getOutputs().containsKey(OneLinkSupplyChainScenario.INPUT_GOOD))
                             hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
                         else
                             hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
@@ -294,7 +294,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
 
             final CSVWriter prices = new CSVWriter(new FileWriter("runs/supplychai/forcedmonopolistTestprices.csv"));
             final CSVWriter quantities = new CSVWriter(new FileWriter("runs/supplychai/forcedmonopolistTestQuantities.csv"));
-            ProducersStatCollector collector2 = new ProducersStatCollector(macroII,GoodType.BEEF,prices,quantities);
+            ProducersStatCollector collector2 = new ProducersStatCollector(macroII,OneLinkSupplyChainScenario.INPUT_GOOD,prices,quantities);
             collector2.start();
         } catch (IOException e) {
             System.err.println("failed to create the file!");
@@ -325,7 +325,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
 
         final MacroII macroII = new MacroII(System.currentTimeMillis());
         final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 =
-                new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.BEEF)
+                new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, OneLinkSupplyChainScenario.INPUT_GOOD)
         {
             @Override
             public void buildFoodPurchasesPredictor(PurchasesDepartment department) {
@@ -335,8 +335,8 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
             @Override
             protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
                 SalesDepartment department = super.createSalesDepartment(firm, goodmarket);
-                if(goodmarket.getGoodType().equals(GoodType.FOOD))
-                    firm.getSalesDepartment(GoodType.FOOD).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+                if(goodmarket.getGoodType().equals(OneLinkSupplyChainScenario.OUTPUT_GOOD))
+                    firm.getSalesDepartment(OneLinkSupplyChainScenario.OUTPUT_GOOD).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
                 return department;
             }
         };
@@ -370,7 +370,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
 
             final CSVWriter prices = new CSVWriter(new FileWriter("runs/supplychai/forcedmonopolistTestprices.csv"));
             final CSVWriter quantities = new CSVWriter(new FileWriter("runs/supplychai/forcedmonopolistTestQuantities.csv"));
-            ProducersStatCollector collector2 = new ProducersStatCollector(macroII,GoodType.BEEF,prices,quantities);
+            ProducersStatCollector collector2 = new ProducersStatCollector(macroII,OneLinkSupplyChainScenario.INPUT_GOOD,prices,quantities);
             collector2.start();
         } catch (IOException e) {
             System.err.println("failed to create the file!");
@@ -389,7 +389,7 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
                                 scenario1.strategy2.getDepartment().getLatestObservation(SalesDataType.HOW_MANY_TO_SELL) : 0
                                 ;
                         writer2.writeNext(new String[]{String.valueOf(
-                                macroII.getMarket(GoodType.BEEF).getBestBuyPrice()),
+                                macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getBestBuyPrice()),
                                 String.valueOf(scenario1.strategy2.getTargetInventory()),
                                 String.valueOf(inventory)});
                         writer2.flush();

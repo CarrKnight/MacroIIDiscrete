@@ -14,6 +14,7 @@ import agents.firm.Firm;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import goods.GoodType;
+import goods.GoodTypeMasterList;
 import model.scenario.Scenario;
 import model.scenario.TestScenario;
 import model.scenario.TripolistScenario;
@@ -57,6 +58,7 @@ public class MacroII extends SimState{
         phaseScheduler = new TrueRandomScheduler(200000,random);
         scenario = new TestScenario(this);
         toTurnOffAtFinish = new HashSet<>();
+        goodTypeMasterList = new GoodTypeMasterList();
     }
 
     /**
@@ -147,6 +149,11 @@ public class MacroII extends SimState{
      */
     private boolean hasStarted = false;
 
+    /**
+     * the model's goodtype/sector masterlist. This way, as long as you know the code and a reference to the model you can get a reference to any goodtype
+     */
+    private final GoodTypeMasterList goodTypeMasterList;
+
 
     /********************
      * Parameters of ProfitCheckPlantControl
@@ -163,7 +170,7 @@ public class MacroII extends SimState{
 
     private float plantControlSpeedDeviation = 5f;
 
-    private EnumMap<GoodType,Market> markets;
+    private HashMap<GoodType,Market> markets;
 
     /**
      * The scenario to use
@@ -223,14 +230,18 @@ public class MacroII extends SimState{
 
         //get the agents set
         markets = scenario.getMarkets();
+        //for all goodtypes that weren't registerd before, register them now
+        goodTypeMasterList.addNewSectors(markets.keySet());
+
+
         agents.addAll(scenario.getAgents());
 
         //go through all the agents and call their start!
         for(Agent a : agents)
-                a.start(this);
+            a.start(this);
 
         for(Market m : markets.values())
-                m.start(this);
+            m.start(this);
 
         //schedule weekends for everyone
         scheduleAnotherDay(ActionOrder.DAWN, new Steppable() {
@@ -332,8 +343,8 @@ public class MacroII extends SimState{
         TripolistScenario scenario1 = new TripolistScenario(macroII);
         scenario1.setAdditionalCompetitors(4);
         scenario1.setFixedPayStructure(true);
-    //    scenario1.setAlwaysMoving(true);
-     //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
+        //    scenario1.setAlwaysMoving(true);
+        //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
         macroII.setScenario(scenario1);
 
         macroII.start();
@@ -391,7 +402,7 @@ public class MacroII extends SimState{
     public void weekEnd(){
         weeksPassed++;
 
-    //    Collections.shuffle(agents,new Random(random.nextLong())); //todo make this shuffled by the MersenneTwisterFast
+        //    Collections.shuffle(agents,new Random(random.nextLong())); //todo make this shuffled by the MersenneTwisterFast
 
         //agents on weekend!
         for(EconomicAgent agent : agents)
@@ -400,7 +411,7 @@ public class MacroII extends SimState{
             market.weekEnd(this);
 
 
-     //   printOutWorkers();
+        //   printOutWorkers();
         scheduleAnotherDay(ActionOrder.DAWN, new Steppable() {
             @Override
             public void step(SimState state) {
@@ -710,13 +721,13 @@ public class MacroII extends SimState{
         for(EconomicAgent a : agents)
         {
             try{
-            if( a instanceof Firm && ((Firm) a).hasPlants())
-            {
-                int workers =  ((Firm) a).getRandomPlantProducingThis(GoodType.GENERIC).getNumberOfWorkers();
-                sum += workers;
-                builder.append( Integer.toString(workers)).append(",");
+                if( a instanceof Firm && ((Firm) a).hasPlants())
+                {
+                    int workers =  ((Firm) a).getRandomPlantProducingThis(GoodType.GENERIC).getNumberOfWorkers();
+                    sum += workers;
+                    builder.append( Integer.toString(workers)).append(",");
 
-            }
+                }
             }
             catch (Exception ignored){}
         }
@@ -836,7 +847,7 @@ public class MacroII extends SimState{
         this.agents = agents;
     }
 
-    public void setMarkets(EnumMap<GoodType, Market> markets) {
+    public void setMarkets(HashMap<GoodType, Market> markets) {
         this.markets = markets;
     }
 
@@ -890,4 +901,7 @@ public class MacroII extends SimState{
     }
 
 
+    public GoodTypeMasterList getGoodTypeMasterList() {
+        return goodTypeMasterList;
+    }
 }

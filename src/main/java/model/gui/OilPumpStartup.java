@@ -8,7 +8,6 @@ package model.gui;
 
 import agents.EconomicAgent;
 import financial.market.GeographicalMarket;
-import goods.GoodType;
 import javafx.concurrent.Task;
 import javafx.scene.Parent;
 import javafx.scene.control.ContentDisplay;
@@ -46,7 +45,8 @@ public class OilPumpStartup extends Task<Parent>
 
         //gui building
         updateMessage("Building GUI");
-        final GeographicalMarket market = (financial.market.GeographicalMarket)model.getMarket(GoodType.OIL);
+        assert model.getGoodTypeMasterList().getGoodTypeCorrespondingToThisCode(OilDistributorScenario.oilGoodType.getCode()) != null; //make sure oil is properly registered.
+        final GeographicalMarket market = (financial.market.GeographicalMarket)model.getMarket(OilDistributorScenario.oilGoodType);
         GeographicalMarketView view = new GeographicalMarketView(market ,model);
         BorderPane mainPane = new BorderPane();
         mainPane.setCenter(view);

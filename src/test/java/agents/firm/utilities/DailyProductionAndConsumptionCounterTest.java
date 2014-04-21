@@ -37,6 +37,9 @@ import static org.mockito.Mockito.*;
  */
 public class DailyProductionAndConsumptionCounterTest {
 
+    private static GoodType FOOD = new GoodType("testFood","food");
+    
+    
     @Test
     public void testMakeSureItSchedules() throws Exception
     {
@@ -128,14 +131,14 @@ public class DailyProductionAndConsumptionCounterTest {
         counter.countNewConsumption(GoodType.LABOR, 2);
         counter.countNewConsumption(GoodType.LABOR);
         Assert.assertEquals(counter.getTodayConsumption(GoodType.LABOR), 3);
-        Assert.assertEquals(counter.getTodayConsumption(GoodType.FOOD), 0);
+        Assert.assertEquals(counter.getTodayConsumption(FOOD), 0);
         Assert.assertEquals(counter.getYesterdayConsumption(GoodType.LABOR), 0);
-        Assert.assertEquals(counter.getYesterdayConsumption(GoodType.FOOD),0);
+        Assert.assertEquals(counter.getYesterdayConsumption(FOOD),0);
         counter.step(mock(MacroII.class));
         Assert.assertEquals(counter.getTodayConsumption(GoodType.LABOR), 0);
-        Assert.assertEquals(counter.getTodayConsumption(GoodType.FOOD),0);
+        Assert.assertEquals(counter.getTodayConsumption(FOOD),0);
         Assert.assertEquals(counter.getYesterdayConsumption(GoodType.LABOR), 3);
-        Assert.assertEquals(counter.getYesterdayConsumption(GoodType.FOOD),0);
+        Assert.assertEquals(counter.getYesterdayConsumption(FOOD),0);
 
 
     }
@@ -152,18 +155,18 @@ public class DailyProductionAndConsumptionCounterTest {
         agent.consume(GoodType.LABOR);
         agent.consume(GoodType.LABOR);
         Assert.assertEquals(agent.getTodayConsumption(GoodType.LABOR), 3);
-        Assert.assertEquals(agent.getTodayConsumption(GoodType.FOOD), 0);
+        Assert.assertEquals(agent.getTodayConsumption(FOOD), 0);
         Assert.assertEquals(agent.getYesterdayConsumption(GoodType.LABOR), 0);
-        Assert.assertEquals(agent.getYesterdayConsumption(GoodType.FOOD),0);
+        Assert.assertEquals(agent.getYesterdayConsumption(FOOD),0);
 
         Field field = EconomicAgent.class.getDeclaredField("counter");
         field.setAccessible(true);
         DailyProductionAndConsumptionCounter counter = (DailyProductionAndConsumptionCounter) field.get(agent);
         counter.step(mock(MacroII.class));
         Assert.assertEquals(agent.getTodayConsumption(GoodType.LABOR), 0);
-        Assert.assertEquals(agent.getTodayConsumption(GoodType.FOOD),0);
+        Assert.assertEquals(agent.getTodayConsumption(FOOD),0);
         Assert.assertEquals(agent.getYesterdayConsumption(GoodType.LABOR), 3);
-        Assert.assertEquals(agent.getYesterdayConsumption(GoodType.FOOD),0);
+        Assert.assertEquals(agent.getYesterdayConsumption(FOOD),0);
 
 
     }
@@ -179,20 +182,20 @@ public class DailyProductionAndConsumptionCounterTest {
         Assert.assertEquals(counter.getTodayAcquisitions(GoodType.LABOR), 4);
         Assert.assertEquals(counter.getYesterdayProduction(GoodType.LABOR), 0);
         Assert.assertEquals(counter.getYesterdayAcquisitions(GoodType.LABOR),0);
-        Assert.assertEquals(counter.getTodayProduction(GoodType.FOOD), 0);
-        Assert.assertEquals(counter.getTodayAcquisitions(GoodType.FOOD), 0);
-        Assert.assertEquals(counter.getYesterdayProduction(GoodType.FOOD), 0);
-        Assert.assertEquals(counter.getYesterdayAcquisitions(GoodType.FOOD),0);
+        Assert.assertEquals(counter.getTodayProduction(FOOD), 0);
+        Assert.assertEquals(counter.getTodayAcquisitions(FOOD), 0);
+        Assert.assertEquals(counter.getYesterdayProduction(FOOD), 0);
+        Assert.assertEquals(counter.getYesterdayAcquisitions(FOOD),0);
 
         counter.step(mock(MacroII.class));
         Assert.assertEquals(counter.getTodayProduction(GoodType.LABOR), 0);
         Assert.assertEquals(counter.getTodayAcquisitions(GoodType.LABOR), 0);
         Assert.assertEquals(counter.getYesterdayProduction(GoodType.LABOR), 1);
         Assert.assertEquals(counter.getYesterdayAcquisitions(GoodType.LABOR), 4);
-        Assert.assertEquals(counter.getTodayProduction(GoodType.FOOD), 0);
-        Assert.assertEquals(counter.getTodayAcquisitions(GoodType.FOOD), 0);
-        Assert.assertEquals(counter.getYesterdayProduction(GoodType.FOOD), 0);
-        Assert.assertEquals(counter.getYesterdayAcquisitions(GoodType.FOOD),0);
+        Assert.assertEquals(counter.getTodayProduction(FOOD), 0);
+        Assert.assertEquals(counter.getTodayAcquisitions(FOOD), 0);
+        Assert.assertEquals(counter.getYesterdayProduction(FOOD), 0);
+        Assert.assertEquals(counter.getYesterdayAcquisitions(FOOD),0);
 
 
     }
@@ -211,10 +214,10 @@ public class DailyProductionAndConsumptionCounterTest {
         Assert.assertEquals(agent.getTodayAcquisitions(GoodType.LABOR), 4);
         Assert.assertEquals(agent.getYesterdayProduction(GoodType.LABOR), 0);
         Assert.assertEquals(agent.getYesterdayAcquisitions(GoodType.LABOR),0);
-        Assert.assertEquals(agent.getTodayProduction(GoodType.FOOD), 0);
-        Assert.assertEquals(agent.getTodayAcquisitions(GoodType.FOOD), 0);
-        Assert.assertEquals(agent.getYesterdayProduction(GoodType.FOOD), 0);
-        Assert.assertEquals(agent.getYesterdayAcquisitions(GoodType.FOOD),0);
+        Assert.assertEquals(agent.getTodayProduction(FOOD), 0);
+        Assert.assertEquals(agent.getTodayAcquisitions(FOOD), 0);
+        Assert.assertEquals(agent.getYesterdayProduction(FOOD), 0);
+        Assert.assertEquals(agent.getYesterdayAcquisitions(FOOD),0);
 
         Field field = EconomicAgent.class.getDeclaredField("counter");
         field.setAccessible(true);
@@ -224,10 +227,10 @@ public class DailyProductionAndConsumptionCounterTest {
         Assert.assertEquals(agent.getTodayAcquisitions(GoodType.LABOR), 0);
         Assert.assertEquals(agent.getYesterdayProduction(GoodType.LABOR), 1);
         Assert.assertEquals(agent.getYesterdayAcquisitions(GoodType.LABOR), 4);
-        Assert.assertEquals(agent.getTodayProduction(GoodType.FOOD), 0);
-        Assert.assertEquals(agent.getTodayAcquisitions(GoodType.FOOD), 0);
-        Assert.assertEquals(agent.getYesterdayProduction(GoodType.FOOD), 0);
-        Assert.assertEquals(agent.getYesterdayAcquisitions(GoodType.FOOD),0);
+        Assert.assertEquals(agent.getTodayProduction(FOOD), 0);
+        Assert.assertEquals(agent.getTodayAcquisitions(FOOD), 0);
+        Assert.assertEquals(agent.getYesterdayProduction(FOOD), 0);
+        Assert.assertEquals(agent.getYesterdayAcquisitions(FOOD),0);
 
 
     }

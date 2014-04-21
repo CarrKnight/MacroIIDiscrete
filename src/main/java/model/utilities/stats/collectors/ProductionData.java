@@ -11,7 +11,11 @@ import com.google.common.base.Preconditions;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.stats.collectors.enums.DataStorageSkeleton;
 import sim.engine.SimState;
+
+import java.util.HashMap;
+import java.util.Set;
 
 
 /**
@@ -30,7 +34,7 @@ import sim.engine.SimState;
  * @version 2013-11-02
  * @see
  */
-public class ProductionData extends DataStorage<GoodType>
+public class ProductionData extends DataStorageSkeleton<GoodType>
 {
 
     /**
@@ -45,7 +49,8 @@ public class ProductionData extends DataStorage<GoodType>
 
 
     public ProductionData() {
-        super(GoodType.class);
+        data = new HashMap<>();
+
     }
 
 
@@ -54,6 +59,14 @@ public class ProductionData extends DataStorage<GoodType>
      * reference from getOwner() of the plant
      */
     public void start( MacroII state, Plant plant) {
+        //fill it as much as possible
+        final Set<GoodType> listOfAllSectors = state.getGoodTypeMasterList().getListOfAllSectors();
+        for(GoodType type : listOfAllSectors)
+        {
+            data.put(type,new DailyObservations());
+        }
+
+
         this.plant = plant;
         //we are going to set the starting day at -1 and then change it at our first step()
         setStartingDay(-1);
@@ -86,7 +99,8 @@ public class ProductionData extends DataStorage<GoodType>
 
         //memorize
         //grab the production vector
-        for(GoodType type : GoodType.values())  //record all production
+        final Set<GoodType> listOfAllSectors = model.getGoodTypeMasterList().getListOfAllSectors();
+        for(GoodType type : listOfAllSectors)
             data.get(type).add((double) plant.getProducedToday(type));
 
         //reschedule

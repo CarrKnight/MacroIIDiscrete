@@ -66,6 +66,31 @@ import java.util.LinkedList;
  */
 public class OneLinkSupplyChainScenario extends Scenario {
 
+
+    /**
+     * what used to be "beef" and now is wood. The input good for the final output
+     */
+    public static final GoodType INPUT_GOOD = new GoodType("inputTest","wood");
+
+
+    /**
+     * what used to be "beef" and now is wood. The input good for the final output
+     */
+    public static final GoodType INPUT_LABOR = new GoodType("inputLaborTest","Lumberjacks",false,true);
+
+    /**
+     * the final outpu!
+     */
+    public static final GoodType OUTPUT_GOOD = new GoodType("outputTest","furniture");
+
+    /**
+     * what used to be "beef" and now is wood. The input good for the final output
+     */
+    public static final GoodType OUTPUT_LABOR = new GoodType("outputLaborTest","Carpenters",false,true);
+
+
+
+
     private int beefTargetInventory = 100;
     private int foodTargetInventory = 100;
     /**
@@ -153,7 +178,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         populateMarkets();
 
         //create consumers
-        buildFoodDemand(0,101,1,getMarkets().get(GoodType.FOOD));
+        buildFoodDemand(0,101,1,getMarkets().get(OUTPUT_GOOD));
 
         //create workers
         buildLaborSupplies();
@@ -163,39 +188,39 @@ public class OneLinkSupplyChainScenario extends Scenario {
     }
 
     private void buildLaborSupplies() {
-        addWorkers(getMarkets().get(GoodType.LABOR_BEEF),1,120,1);
-        addWorkers(getMarkets().get(GoodType.LABOR_FOOD),1,120,1);
+        addWorkers(getMarkets().get(INPUT_LABOR),1,120,1);
+        addWorkers(getMarkets().get(OUTPUT_LABOR),1,120,1);
     }
 
     private void populateMarkets() {
         for(int i=0; i < numberOfBeefProducers; i++)
-            createFirm(getMarkets().get(GoodType.BEEF),getMarkets().get(GoodType.LABOR_BEEF));
+            createFirm(getMarkets().get(INPUT_GOOD),getMarkets().get(INPUT_LABOR));
         //food
         for(int i=0; i < numberOfFoodProducers; i++)
-            createFirm(getMarkets().get(GoodType.FOOD),getMarkets().get(GoodType.LABOR_FOOD));
+            createFirm(getMarkets().get(OUTPUT_GOOD),getMarkets().get(OUTPUT_LABOR));
     }
 
     /**
      * Instantiate all the markets
      */
     private void instantiateMarkets() {
-        OrderBookMarket beef = new OrderBookMarket(GoodType.BEEF);
+        OrderBookMarket beef = new OrderBookMarket(INPUT_GOOD);
         beef.setPricePolicy(new ShopSetPricePolicy());
         beef.setOrderHandler(new EndOfPhaseOrderHandler(),model);
         getMarkets().put(beef.getGoodType(), beef);
-        OrderBookMarket food = new OrderBookMarket(GoodType.FOOD);
+        OrderBookMarket food = new OrderBookMarket(OUTPUT_GOOD);
         food.setPricePolicy(new ShopSetPricePolicy());
         getMarkets().put(food.getGoodType(), food);
         food.setOrderHandler(new EndOfPhaseOrderHandler(),model);
 
 
 
-        OrderBookMarket beefLabor = new OrderBookMarket(GoodType.LABOR_BEEF);
+        OrderBookMarket beefLabor = new OrderBookMarket(INPUT_LABOR);
         beefLabor.setPricePolicy(new BuyerSetPricePolicy());
         getMarkets().put(beefLabor.getGoodType(),beefLabor);
         beefLabor.setOrderHandler(new EndOfPhaseOrderHandler(),model);
 
-        OrderBookMarket foodLabor = new OrderBookMarket(GoodType.LABOR_FOOD);
+        OrderBookMarket foodLabor = new OrderBookMarket(OUTPUT_LABOR);
         beefLabor.setPricePolicy(new BuyerSetPricePolicy());
         getMarkets().put(foodLabor.getGoodType(),foodLabor);
         foodLabor.setOrderHandler(new EndOfPhaseOrderHandler(),model);
@@ -206,7 +231,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
     {
         final Firm firm = new Firm(getModel());
         firm.earn(Integer.MAX_VALUE);
-        firm.setName(goodmarket.getGoodType().name() + " producer " + getModel().random.nextInt());
+        firm.setName(goodmarket.getGoodType().getName() + " producer " + getModel().random.nextInt());
         //give it a seller department at time 1
 
         //set up the firm at time 1
@@ -240,7 +265,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
 
 
-        if(!goodmarket.getGoodType().equals(GoodType.FOOD))
+        if(!goodmarket.getGoodType().equals(OUTPUT_GOOD))
         {
 
             strategy2 = new SalesControlWithFixedInventoryAndPID(dept, beefTargetInventory);
@@ -300,7 +325,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
             firm.registerPurchasesDepartment(department, input);
 
 
-            if(input.equals(GoodType.BEEF))
+            if(input.equals(INPUT_GOOD))
                 buildFoodPurchasesPredictor(department);
 
 
@@ -375,16 +400,14 @@ public class OneLinkSupplyChainScenario extends Scenario {
      */
     private Blueprint getBluePrint(GoodType output)
     {
-        switch (output)
-        {
-            case BEEF:
-                return new Blueprint.Builder().output(GoodType.BEEF,1).build();
-            case FOOD:
-                return Blueprint.simpleBlueprint(GoodType.BEEF,1,GoodType.FOOD,foodMultiplier);
-            default:
-                assert false;
-                return null;
+        if(output.equals(INPUT_GOOD)) {
+            return new Blueprint.Builder().output(INPUT_GOOD, 1).build();
         }
+        else {
+            assert output.equals(OUTPUT_GOOD);
+            return Blueprint.simpleBlueprint(INPUT_GOOD, 1, OUTPUT_GOOD, foodMultiplier);
+        }
+
     }
 
 

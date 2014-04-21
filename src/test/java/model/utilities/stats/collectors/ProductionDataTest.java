@@ -9,6 +9,7 @@ package model.utilities.stats.collectors;
 import agents.firm.Firm;
 import agents.firm.production.Plant;
 import goods.GoodType;
+import goods.GoodTypeMasterList;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import org.junit.Assert;
@@ -34,11 +35,14 @@ import static org.mockito.Mockito.*;
 public class ProductionDataTest
 {
 
+    final static private GoodType OIL = new GoodType("oiltest","oil");
+
     @Test
     public void rescheduleItself()
     {
         MacroII model = mock(MacroII.class);
         ProductionData data = new ProductionData();
+        when(model.getGoodTypeMasterList()).thenReturn(new GoodTypeMasterList());
 
         data.start(model,mock(Plant.class));
         verify(model).scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING, data);
@@ -60,6 +64,7 @@ public class ProductionDataTest
     {
 
 
+
         Plant plant = mock(Plant.class);
         Firm owner = mock(Firm.class);
         MacroII model = mock(MacroII.class);
@@ -67,6 +72,11 @@ public class ProductionDataTest
         when(model.getMainScheduleTime()).thenReturn(-1d);
         ProductionData data = new ProductionData();
 
+        //initialize master-list
+        GoodTypeMasterList list = new GoodTypeMasterList();
+        list.addNewSectors(GoodType.GENERIC);
+        list.addNewSectors(OIL);
+        when(model.getGoodTypeMasterList()).thenReturn(list);
 
         data.start(model,plant);
         //put in price data
@@ -89,7 +99,7 @@ public class ProductionDataTest
                 new double[]{1d,2d},.0001d);
 
 
-        type = GoodType.OIL;
+        type = OIL;
         Assert.assertEquals(data.numberOfObservations(), 3);
         Assert.assertEquals(data.getObservationRecordedThisDay(type,0),0,.00001d);
         Assert.assertEquals(data.getLatestObservation(type),0,.00001d);

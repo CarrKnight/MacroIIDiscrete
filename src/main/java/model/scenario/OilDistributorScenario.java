@@ -33,6 +33,8 @@ import sim.engine.Steppable;
 public class OilDistributorScenario extends Scenario
 {
 
+
+    public static final GoodType oilGoodType = new GoodType("oilTest","Oil",false,false);
     /**
      * each neighborhood is 30 people
      */
@@ -71,8 +73,10 @@ public class OilDistributorScenario extends Scenario
 
     @Override
     public void start() {
-        GeographicalMarket market = new GeographicalMarket(GoodType.OIL);
-        getMarkets().put(GoodType.OIL,market);
+        model.getGoodTypeMasterList().addNewSector(oilGoodType);
+
+        GeographicalMarket market = new GeographicalMarket(oilGoodType);
+        getMarkets().put(oilGoodType,market);
         //poor neighborhood
         createNeighborhood(new Location(-10,-2),1.5,minPricePoorNeighborhood,maxPricePoorNeighborhood,
                 neighborhoodSize,market,model.getRandom());
@@ -117,7 +121,7 @@ public class OilDistributorScenario extends Scenario
         //give the sale department a simple PID
         salesDepartment.setAskPricingStrategy(new SalesControlWithFixedInventoryAndPID(salesDepartment,100));
         //finally register it!
-        oilPump.registerSaleDepartment(salesDepartment, GoodType.OIL);
+        oilPump.registerSaleDepartment(salesDepartment, oilGoodType);
         getAgents().add(oilPump);
 
 
@@ -127,7 +131,7 @@ public class OilDistributorScenario extends Scenario
                     public void step(SimState simState) {
                         for(int i=0;i<productionRate; i++)
                         {
-                            Good barrel = new Good(GoodType.OIL, oilPump, 0);
+                            Good barrel = new Good(oilGoodType, oilPump, 0);
                             oilPump.receive(barrel,null);
                             oilPump.reactToPlantProduction(barrel);
                         }

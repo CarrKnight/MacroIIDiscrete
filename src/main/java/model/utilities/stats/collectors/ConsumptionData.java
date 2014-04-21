@@ -12,6 +12,8 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import sim.engine.SimState;
 
+import java.util.Set;
+
 /**
  * <h4>Description</h4>
  * <p/> like production plant data, but counting consumption instead
@@ -32,27 +34,29 @@ public class ConsumptionData extends ProductionData {
 
     @Override
     public void step(SimState state) {
-            Preconditions.checkState(plant != null);
-            if(!active)
-                return;
+        Preconditions.checkState(plant != null);
+        if(!active)
+            return;
 
-            //make sure it's the right time
-            assert state instanceof MacroII;
-            MacroII model = (MacroII) state;
-            assert model.getCurrentPhase().equals(ActionOrder.CLEANUP_DATA_GATHERING);
-            //set starting day if needed
-            if(getStartingDay()==-1)
-                setCorrectStartingDate(model);
-            assert getStartingDay() >=0;
+        //make sure it's the right time
+        assert state instanceof MacroII;
+        MacroII model = (MacroII) state;
+        assert model.getCurrentPhase().equals(ActionOrder.CLEANUP_DATA_GATHERING);
+        //set starting day if needed
+        if(getStartingDay()==-1)
+            setCorrectStartingDate(model);
+        assert getStartingDay() >=0;
 
 
-            //memorize
-            //grab the production vector
-            for(GoodType type : GoodType.values())  //record all production
-                data.get(type).add((double) plant.getConsumedToday(type));
+        //memorize
+        //grab the production vector
 
-            //reschedule
-            model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
+        final Set<GoodType> sectorList = model.getGoodTypeMasterList().getListOfAllSectors();
+        for(GoodType type : sectorList)  //record all production
+            data.get(type).add((double) plant.getConsumedToday(type));
+
+        //reschedule
+        model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
 
 
 

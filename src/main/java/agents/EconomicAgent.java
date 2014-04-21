@@ -23,6 +23,7 @@ import sim.portrayal.Inspector;
 import sim.portrayal.SimpleInspector;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class is abstract and basically takes care of having cash,
@@ -188,7 +189,7 @@ public abstract class EconomicAgent implements Agent, HasInventory{
 
     @Override
     public void weekEnd(double time) {
-
+            counter.weekEnd();
     }
 
     @Override
@@ -318,7 +319,7 @@ public abstract class EconomicAgent implements Agent, HasInventory{
      */
     @Override
     public void consumeAll() {
-        for(GoodType g : GoodType.values())
+        for(GoodType g : getInventory().goodTypesEncountered())
             if(hasHowMany(g) > 0){
                 countNewConsumption(g,getInventory().hasHowMany(g));
             }
@@ -517,4 +518,11 @@ public abstract class EconomicAgent implements Agent, HasInventory{
     }
 
 
+    /**
+     * A set of all goods consumed/produced/glimpsed by the agent
+     */
+    @Override
+    public Set<GoodType> goodTypesEncountered() {
+        return inventory.goodTypesEncountered();
+    }
 }

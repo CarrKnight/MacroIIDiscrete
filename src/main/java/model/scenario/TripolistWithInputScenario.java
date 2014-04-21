@@ -38,6 +38,9 @@ import model.utilities.pid.CascadePToPIDController;
  */
 public class TripolistWithInputScenario extends TripolistScenario {
 
+    final public static GoodType INPUT = new GoodType("testInput","Input");
+
+
     public TripolistWithInputScenario(MacroII macroII) {
         super(macroII);
     }
@@ -48,18 +51,19 @@ public class TripolistWithInputScenario extends TripolistScenario {
      */
     @Override
     public void start() {
+        model.getGoodTypeMasterList().addNewSectors(INPUT);
         //change the blueprint so that it's done with inputs
-        blueprint = Blueprint.simpleBlueprint(GoodType.LEATHER,1,GoodType.GENERIC,1);
+        blueprint = Blueprint.simpleBlueprint(INPUT,1,GoodType.GENERIC,1);
 
         super.start();    //create the monopolist
         monopolist.setName("Monopolist");
 
 
         //market for input
-        OrderBookMarket inputMarket = new OrderBookMarket(GoodType.LEATHER);
+        OrderBookMarket inputMarket = new OrderBookMarket(INPUT);
         inputMarket.setOrderHandler(new EndOfPhaseOrderHandler(),model);
         inputMarket.setPricePolicy(new ShopSetPricePolicy());
-        getMarkets().put(GoodType.LEATHER,inputMarket);
+        getMarkets().put(INPUT,inputMarket);
 
         //create the sellers
         createSuppliers();
@@ -78,8 +82,8 @@ public class TripolistWithInputScenario extends TripolistScenario {
 
             PurchasesDepartment department = PurchasesDepartment.
                     getEmptyPurchasesDepartment(Long.MAX_VALUE, f,
-                            getMarkets().get(GoodType.LEATHER));
-            Market market = getMarkets().get(GoodType.LEATHER);
+                            getMarkets().get(INPUT));
+            Market market = getMarkets().get(INPUT);
 
 
             department.setOpponentSearch(new SimpleBuyerSearch(market, f));
@@ -90,7 +94,7 @@ public class TripolistWithInputScenario extends TripolistScenario {
             department.setControl(control);
             department.setPricingStrategy(control);
             // department.setPredictor(new LookAheadPredictor());
-            f.registerPurchasesDepartment(department, GoodType.LEATHER);
+            f.registerPurchasesDepartment(department, INPUT);
         }
     }
 
@@ -99,7 +103,7 @@ public class TripolistWithInputScenario extends TripolistScenario {
         //min price = 2, max price = 50, increments of 1. Each of them sells one a day
         for(long price=2;price<50; price++)
         {
-            final DailyGoodTree seller = new DailyGoodTree(model,price,getMarkets().get(GoodType.LEATHER));
+            final DailyGoodTree seller = new DailyGoodTree(model,price,getMarkets().get(INPUT));
 
 
             getAgents().add(seller);

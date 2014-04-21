@@ -31,6 +31,9 @@ import static org.mockito.Mockito.*;
  */
 public class InflowOutflowCounterTest {
 
+    final public static GoodType LEATHER = new GoodType("testInput","Input");
+
+
     //raw, test the listener by calling its step and so on
     @Test
     public void rawCountTest()
@@ -45,10 +48,10 @@ public class InflowOutflowCounterTest {
 
         firm.receive(new Good(GoodType.GENERIC,mock(Firm.class),1l),null); //this is counted
         firm.receive(new Good(GoodType.GENERIC,mock(Firm.class),1l),null); //this is counted
-        firm.receive(new Good(GoodType.LEATHER,mock(Firm.class),1l),null); //this is NOT counted
+        firm.receive(new Good(LEATHER,mock(Firm.class),1l),null); //this is NOT counted
         firm.deliver(GoodType.GENERIC,mock(Firm.class),2l); //counted
         firm.consume(GoodType.GENERIC); //yesss
-        firm.consume(GoodType.LEATHER); //not
+        firm.consume(LEATHER); //not
         assertEquals(toTest.getTodayInflow(),2);
         assertEquals(toTest.getTodayOutflow(),2);
 
@@ -83,10 +86,10 @@ public class InflowOutflowCounterTest {
 
         firm.receive(new Good(GoodType.GENERIC,mock(Firm.class),1l),null); //this is counted
         firm.receive(new Good(GoodType.GENERIC,mock(Firm.class),1l),null); //this is counted
-        firm.receive(new Good(GoodType.LEATHER,mock(Firm.class),1l),null); //this is NOT counted
+        firm.receive(new Good(LEATHER,mock(Firm.class),1l),null); //this is NOT counted
         firm.deliver(GoodType.GENERIC,mock(Firm.class),2l); //counted
         firm.consume(GoodType.GENERIC); //yesss
-        firm.consume(GoodType.LEATHER); //not
+        firm.consume(LEATHER); //not
         assertEquals(toTest.getTodayInflow(),2);
         assertEquals(toTest.getTodayOutflow(),2);
 
@@ -146,10 +149,10 @@ public class InflowOutflowCounterTest {
 
         firm.receive(new Good(GoodType.GENERIC,mock(Firm.class),1l),null); //this is counted
         firm.receive(new Good(GoodType.GENERIC,mock(Firm.class),1l),null); //this is counted
-        firm.receive(new Good(GoodType.LEATHER,mock(Firm.class),1l),null); //this is NOT counted
+        firm.receive(new Good(LEATHER,mock(Firm.class),1l),null); //this is NOT counted
         firm.deliver(GoodType.GENERIC,mock(Firm.class),2l); //counted
         firm.consume(GoodType.GENERIC); //yesss
-        firm.consume(GoodType.LEATHER); //not
+        firm.consume(LEATHER); //not
         assertEquals(toTest.getTodayInflow(),2);
         assertEquals(toTest.getTodayOutflow(),2);
 

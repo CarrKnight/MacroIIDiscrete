@@ -10,62 +10,41 @@ package goods;
  *
  *
  */
-public enum GoodType {
+public class GoodType implements Comparable<GoodType> {
 
     /**
-     * Generic good, useful
+     * something like the NAICS code or some other made-up id. Goodtypes are "equal" if they have the same code, so this ought to be unique!
+     * It's a string rather than a number because NAICS like to add letters for no reason whatsoever.
+     *
      */
-    GENERIC(false,false),
+    private final String code;
 
     /**
-     * Generic capital
+     * the name of the string
      */
-    CAPITAL(true,false),
+    private final String name;
+
 
     /**
-     * Toil and sweat.
+     * a "test"/madeup goodtype, representing generic homogeneous goods. Imagine macro's "c" (consumption good)
      */
-    LABOR(false,true),
+    public static final GoodType GENERIC = new GoodType("testGeneric","Test good",false,false);
+
 
     /**
-     * Yummie
+     * a "test"/madeup goodtype, representing generic capital. Imagine micro's "k"
      */
-    BEEF(false,false),
+    public static final GoodType CAPITAL = new GoodType("testCapital","Test Capital",true,false);
 
     /**
-     * swanky
+     * a "test"/madeup goodtype, representing generic labor. Imagine micro's "L"
      */
-    LEATHER(false,false),
+    public static final GoodType LABOR = new GoodType("testLabor","Test Labor",false,true);
 
-    /**
-     * processed
-     */
-    FOOD(false,false),
-
-    /**
-     * where it all starts
-     */
-    CATTLE(false,false),
-
-    /**
-     * Toil and sweat.
-     */
-    LABOR_FOOD(false,true),
 
 
     /**
-     * Toil and sweat.
-     */
-    LABOR_BEEF(false,true),
-
-    /**
-     * runs cars
-     */
-    OIL(false,false);
-
-
-    /**
-     * Is this type of good a machinery?
+     * Is this type of good a machinery? (production plants can be made of this)
      */
     private final boolean isMachinery;
 
@@ -74,12 +53,31 @@ public enum GoodType {
      */
     private final boolean isLabor;
 
-
-    private GoodType(boolean machinery,boolean  labor) {
-        isMachinery = machinery;
-        isLabor = labor;
+    /**
+     * create a good-type specifying whether it's a capital-good or a labor-good (or neither)
+     * @param code the industry code
+     * @param name the full name of the goodtype
+     * @param isMachinery whether it can be used as capital
+     * @param isLabor whether it can be used as labor
+     */
+    public GoodType(String code, String name, boolean isMachinery, boolean isLabor) {
+        this.code = code;
+        this.name = name;
+        this.isMachinery = isMachinery;
+        this.isLabor = isLabor;
     }
 
+    /**
+     * create a good-type assuming it's a consumption good
+     * @param code the industry code
+     * @param name the full name of the goodtype
+     */
+    public GoodType(String code,String name ) {
+        this.name = name;
+        this.code = code;
+        isLabor=false;
+        isMachinery=false;
+    }
 
     public boolean isMachinery() {
         return isMachinery;
@@ -87,5 +85,48 @@ public enum GoodType {
 
     public boolean isLabor() {
         return isLabor;
+
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+
+    /**
+     * Goodtypes are equal if their industry code is equal!
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GoodType goodType = (GoodType) o;
+
+        return code.equals(goodType.code);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return code.hashCode();
+    }
+
+
+    @Override
+    public String toString() {
+        return code + ": " + name ;
+    }
+
+    /**
+     * Compares the industry code
+     */
+    @Override
+    public int compareTo(GoodType o) {
+        return code.compareTo(o.getCode());
     }
 }

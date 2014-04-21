@@ -36,6 +36,10 @@ import sim.engine.Steppable;
  * Created by carrknight on 4/9/14.
  */
 public class CreateChartOnDemandTest {
+
+    final static private GoodType OIL = new GoodType("oiltest","oil");
+
+
     @Before
     public void setUp() throws Exception {
         //should start the Platform
@@ -58,9 +62,9 @@ public class CreateChartOnDemandTest {
             public void start() {
 
                 //geographical market for oil!
-                final GeographicalMarket market = new GeographicalMarket(GoodType.OIL);
+                final GeographicalMarket market = new GeographicalMarket(OIL);
                 market.setPricePolicy(new ShopSetPricePolicy());
-                getMarkets().put(GoodType.OIL,market);
+                getMarkets().put(OIL,market);
 
                 //create the seller
                 seller[0] =new GeographicalFirm(getModel(),0,0);
@@ -72,7 +76,7 @@ public class CreateChartOnDemandTest {
                 //give the sale department a simple PID
                 salesDepartment.setAskPricingStrategy(new SalesControlWithFixedInventoryAndPID(salesDepartment,50));
                 //finally register it!
-                seller[0].registerSaleDepartment(salesDepartment, GoodType.OIL);
+                seller[0].registerSaleDepartment(salesDepartment, OIL);
 
                 //receive 10 units a day!
 
@@ -81,7 +85,7 @@ public class CreateChartOnDemandTest {
                     @Override
                     public void step(SimState state) {
                         for (int i = 0; i < 10; i++) {
-                            Good toSell = new Good(GoodType.OIL, seller[0], 0);
+                            Good toSell = new Good(OIL, seller[0], 0);
                             seller[0].receive(toSell, null);
                             seller[0].reactToPlantProduction(toSell);
 
@@ -111,7 +115,7 @@ public class CreateChartOnDemandTest {
         };
         macroII.setScenario(simpleSellerOilScenario);
         macroII.start();
-        GeographicalMarket market = (GeographicalMarket) macroII.getMarket(GoodType.OIL);
+        GeographicalMarket market = (GeographicalMarket) macroII.getMarket(OIL);
 
 
         //CREATE GUI OBJECTS!
@@ -127,12 +131,12 @@ public class CreateChartOnDemandTest {
         Assert.assertEquals(91d, market.getLatestObservation(MarketDataType.CLOSING_PRICE), .0001d);
 
 
-        CreateChartOnDemand task = new CreateChartOnDemand(map,GoodType.OIL,SalesDataType.CLOSING_PRICES);
+        CreateChartOnDemand task = new CreateChartOnDemand(map,OIL,SalesDataType.CLOSING_PRICES);
         LineChart<Number, Number> chart = task.call();
         Assert.assertEquals(1,chart.getData().size()); //one seller
         Assert.assertEquals("Seller",chart.getData().get(0).getName()); //correct name
-        Assert.assertEquals(seller[0].getSalesDepartment(GoodType.OIL).numberOfObservations(),chart.getData().get(0).getData().size()); //correct name
-        double[] correctObservations = seller[0].getSalesDepartment(GoodType.OIL).getAllRecordedObservations(SalesDataType.CLOSING_PRICES);
+        Assert.assertEquals(seller[0].getSalesDepartment(OIL).numberOfObservations(),chart.getData().get(0).getData().size()); //correct name
+        double[] correctObservations = seller[0].getSalesDepartment(OIL).getAllRecordedObservations(SalesDataType.CLOSING_PRICES);
         for(int i=0; i<correctObservations.length; i++)
             Assert.assertEquals(correctObservations[i],chart.getData().get(0).getData().get(i).getYValue().doubleValue(),.00001d); //correct name
 

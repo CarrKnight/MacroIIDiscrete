@@ -50,6 +50,10 @@ public class MarginalMaximizerStaticsTest
 {
 
 
+    final static private GoodType BEEF = new GoodType("beeftest","testy");
+
+
+
     //--------------------------------------------------------------------------------
     // marginal revenue
     //--------------------------------------------------------------------------------
@@ -178,15 +182,15 @@ public class MarginalMaximizerStaticsTest
         Plant plant = mock(Plant.class);
         when(plant.hypotheticalThroughput(1, GoodType.GENERIC)).thenReturn(10f);
         when(plant.hypotheticalThroughput(2, GoodType.GENERIC)).thenReturn(11f);
-        when(plant.hypotheticalThroughput(1, GoodType.BEEF)).thenReturn(10f);
-        when(plant.hypotheticalThroughput(2, GoodType.BEEF)).thenReturn(11f);
-        HashSet<GoodType> outputs = new HashSet<>(); outputs.add(GoodType.GENERIC);  outputs.add(GoodType.BEEF);
+        when(plant.hypotheticalThroughput(1, BEEF)).thenReturn(10f);
+        when(plant.hypotheticalThroughput(2, BEEF)).thenReturn(11f);
+        HashSet<GoodType> outputs = new HashSet<>(); outputs.add(GoodType.GENERIC);  outputs.add(BEEF);
         when(plant.getOutputs()).thenReturn(outputs);
 
         Firm owner = mock(Firm.class);
         SalesDepartment department = mock(SalesDepartment.class);
         when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(owner.getSalesDepartment(GoodType.BEEF)).thenReturn(department);
+        when(owner.getSalesDepartment(BEEF)).thenReturn(department);
         when(department.predictSalePriceWhenNotChangingPoduction()).thenReturn(60l);
         when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59l);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
@@ -455,18 +459,18 @@ public class MarginalMaximizerStaticsTest
         Plant plant = mock(Plant.class);
 
 
-        HashSet<GoodType> inputs = new HashSet<>(); inputs.add(GoodType.GENERIC);inputs.add(GoodType.BEEF);
+        HashSet<GoodType> inputs = new HashSet<>(); inputs.add(GoodType.GENERIC);inputs.add(BEEF);
         when(plant.getInputs()).thenReturn(inputs);
         when(plant.hypotheticalWeeklyInputNeeds(GoodType.GENERIC,1)).thenReturn(1);
         when(plant.hypotheticalWeeklyInputNeeds(GoodType.GENERIC,2)).thenReturn(2);
-        when(plant.hypotheticalWeeklyInputNeeds(GoodType.BEEF,1)).thenReturn(1);
-        when(plant.hypotheticalWeeklyInputNeeds(GoodType.BEEF,2)).thenReturn(2);
+        when(plant.hypotheticalWeeklyInputNeeds(BEEF,1)).thenReturn(1);
+        when(plant.hypotheticalWeeklyInputNeeds(BEEF,2)).thenReturn(2);
 
 
         Firm owner = mock(Firm.class);
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         when(owner.getPurchaseDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(owner.getPurchaseDepartment(GoodType.BEEF)).thenReturn(department);
+        when(owner.getPurchaseDepartment(BEEF)).thenReturn(department);
         when(department.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5l);
         when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
 

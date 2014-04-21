@@ -892,7 +892,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
     @Override
     public String toString() {
-        return  market.getGoodType().name() + "-Purchases" +
+        return  market.getGoodType().getName() + "-Purchases" +
                 "opponentSearch=" + opponentSearch +
                 ", supplierSearch=" + supplierSearch +
                 ", control=" + control +

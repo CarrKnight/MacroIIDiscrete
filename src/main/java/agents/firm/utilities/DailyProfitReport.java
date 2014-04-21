@@ -44,7 +44,7 @@ public class DailyProfitReport implements ProfitReport
             if(p.numberOfProductionObservations()==0)
                 continue;
             //get how much was produced by the plant
-            int producedByPlant = p.getProducedYesterday()[type.ordinal()];
+            int producedByPlant = p.getProducedYesterday(type);
             if(producedByPlant == 0)
                 continue;
 
@@ -114,7 +114,7 @@ public class DailyProfitReport implements ProfitReport
             if(type.isLabor() || p.numberOfProductionObservations() == 0)
                 continue;
             //get how much was produced by the plant
-            int consumedByPlant = p.getConsumedYesterday()[type.ordinal()];
+            int consumedByPlant = p.getConsumedYesterday(type);
             if(consumedByPlant == 0)
                 continue;
 

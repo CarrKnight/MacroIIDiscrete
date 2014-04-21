@@ -2,23 +2,14 @@ package model.scenario;
 
 import agents.firm.Firm;
 import agents.firm.production.Blueprint;
-import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.RobustMarginalMaximizer;
 import agents.firm.purchases.FactoryProducedPurchaseDepartment;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.inventoryControl.FixedInventoryControl;
 import agents.firm.purchases.pricing.CheaterPricing;
-import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
-import au.com.bytecode.opencsv.CSVWriter;
 import goods.GoodType;
 import model.MacroII;
-import model.utilities.stats.collectors.DailyStatCollector;
-
-import java.io.FileWriter;
-import java.io.IOException;
-
-import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 
 /**
  * <h4>Description</h4>
@@ -67,7 +58,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
             department = factoryProducedPurchaseDepartment.getDepartment();
             firm.registerPurchasesDepartment(department, input);
 
-            if(input.equals(GoodType.BEEF))
+            if(input.equals(OneLinkSupplyChainScenario.INPUT_GOOD))
                 buildFoodPurchasesPredictor(department);
 
 

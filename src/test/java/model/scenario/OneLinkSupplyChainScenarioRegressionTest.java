@@ -5,7 +5,6 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import ec.util.MersenneTwisterFast;
-import goods.GoodType;
 import model.MacroII;
 import model.utilities.filters.ExponentialFilter;
 import model.utilities.stats.collectors.DailyStatCollector;
@@ -116,12 +115,12 @@ public class OneLinkSupplyChainScenarioRegressionTest
             printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
         }
 
-        System.out.println("done with price: " +macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE) );
+        System.out.println("done with price: " +macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE) );
         System.out.println();
         //the beef price is in the ballpark
         System.out.println("done!");
-        return new OneLinkSupplyChainResult(macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),
-                macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),macroII.getMarket(GoodType.BEEF).getYesterdayVolume(), macroII);
+        return new OneLinkSupplyChainResult(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),
+                macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getYesterdayVolume(), macroII);
     }
 
 
@@ -192,11 +191,11 @@ public class OneLinkSupplyChainScenarioRegressionTest
             printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
         }
 
-        System.out.println("done with price: " +macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE) );
+        System.out.println("done with price: " +macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE) );
         System.out.println();
         System.out.println("done!");
-        return new OneLinkSupplyChainResult(macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),
-                macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),macroII.getMarket(GoodType.BEEF).getYesterdayVolume(), macroII);
+        return new OneLinkSupplyChainResult(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),
+                macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getYesterdayVolume(), macroII);
         //the beef price is in the ballpark
     }
 
@@ -994,7 +993,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                                                                                File csvFileToWrite) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 =
-                new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, GoodType.FOOD)
+                new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, OneLinkSupplyChainScenario.OUTPUT_GOOD)
                 {
                     @Override
                     protected void buildBeefSalesPredictor(SalesDepartment dept) {
@@ -1031,7 +1030,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
         //I used to assert this:
-        //Assert.assertEquals(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),85l,6l );
+        //Assert.assertEquals(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),85l,6l );
         //but that's too hard because while on average the price hovers there, competition is noisy. Sometimes a lot.
         //so what I did was to attach a daily stat collector and then check the average of the last 10 prices
         SummaryStatistics averageFoodPrice = new SummaryStatistics();
@@ -1041,9 +1040,9 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //make the model run one more day:
             macroII.schedule.step(macroII);
-            averageFoodPrice.addValue(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
-            averageBeefProduced.addValue(macroII.getMarket(GoodType.BEEF).getYesterdayVolume());
-            averageBeefPrice.addValue(macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+            averageFoodPrice.addValue(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+            averageBeefProduced.addValue(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getYesterdayVolume());
+            averageBeefPrice.addValue(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
         }
 
 
@@ -1377,7 +1376,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
         //I used to assert this:
-        //Assert.assertEquals(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),85l,6l );
+        //Assert.assertEquals(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),85l,6l );
         //but that's too hard because while on average the price hovers there, competition is noisy. Sometimes a lot.
         //so what I did was to attach a daily stat collector and then check the average of the last 10 prices
         float averageFoodPrice = 0;
@@ -1387,9 +1386,9 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //make the model run one more day:
             macroII.schedule.step(macroII);
-            averageFoodPrice += macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
-            averageBeefProduced+= macroII.getMarket(GoodType.BEEF).getYesterdayVolume();
-            averageBeefPrice+= macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+            averageFoodPrice += macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+            averageBeefProduced+= macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getYesterdayVolume();
+            averageBeefPrice+= macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
 
         }
 

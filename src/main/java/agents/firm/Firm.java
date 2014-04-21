@@ -54,14 +54,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class Firm extends EconomicAgent {
 
 
-    private final EnumMap<GoodType,SalesDepartment> salesDepartments;
+    private final HashMap<GoodType,SalesDepartment> salesDepartments;
 
     /**
      * The name, if any, of the firm
      */
     private String name = null;
 
-    private final EnumMap<GoodType,PurchasesDepartment> purchaseDepartments;
+    private final HashMap<GoodType,PurchasesDepartment> purchaseDepartments;
 
     /**
      * This bilinear map (guava) links each plant to its human resources (and viceversa)
@@ -120,8 +120,8 @@ public class Firm extends EconomicAgent {
     public Firm(MacroII model) {
         super(model);
 
-        salesDepartments = new EnumMap<>(GoodType.class);
-        purchaseDepartments = new EnumMap<>(GoodType.class);
+        salesDepartments = new HashMap<>();
+        purchaseDepartments = new HashMap<>();
         humanResources = HashBiMap.create(1); //factory method for this
         numberOfPlantsListeners = new HashSet<>(); //prepare for listeners
         profitReport = new DailyProfitReport(this);
@@ -141,8 +141,8 @@ public class Firm extends EconomicAgent {
     public Firm(MacroII model,boolean ignored) {
         super(model);
 
-        salesDepartments = new EnumMap<>(GoodType.class);
-        purchaseDepartments = new EnumMap<>(GoodType.class);
+        salesDepartments = new HashMap<>();
+        purchaseDepartments = new HashMap<>();
         humanResources = HashBiMap.create(1); //factory method for this
         numberOfPlantsListeners = new HashSet<>(); //prepare for listeners
         profitReport = new DummyProfitReport();
@@ -329,7 +329,7 @@ public class Firm extends EconomicAgent {
 
     @Override
     public void consumeAll() {
-        for(GoodType type : GoodType.values())
+        for(GoodType type : goodTypesEncountered())
             while(!type.isLabor() && this.hasAny(type))
                 this.consume(type);
 

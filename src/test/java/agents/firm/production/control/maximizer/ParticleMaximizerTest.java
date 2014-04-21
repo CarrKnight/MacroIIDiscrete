@@ -24,12 +24,10 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.lang.reflect.Method;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 /**
@@ -52,6 +50,8 @@ import static org.mockito.Mockito.*;
 public class ParticleMaximizerTest {
 
 
+    static private final GoodType BEEF = new GoodType("testBeef","beef");
+
     @Test
     public void testCurrentOrNeighborTarget(){
 
@@ -67,7 +67,7 @@ public class ParticleMaximizerTest {
 
 
         Set<EconomicAgent> employers = new LinkedHashSet<>(); employers.add(firm);
-        when(firm.getRandomPlantProducingThis(GoodType.BEEF)).thenReturn(plant);
+        when(firm.getRandomPlantProducingThis(BEEF)).thenReturn(plant);
         when(firm.getPlantProfits(plant)).thenReturn(1f);
         //add 2 competitors
         Firm competitor1 = mock(Firm.class); Plant plant1 = mock(Plant.class); when(plant1.getNumberOfWorkers()).thenReturn(100);
@@ -80,7 +80,7 @@ public class ParticleMaximizerTest {
 
         //other mocking initialization, my good look at what I have done!
         when(hr.getAllEmployers()).thenReturn(employers);
-        when(plant.getBlueprint()).thenReturn(Blueprint.simpleBlueprint(GoodType.GENERIC,1,GoodType.BEEF,1));
+        when(plant.getBlueprint()).thenReturn(Blueprint.simpleBlueprint(GoodType.GENERIC,1,BEEF,1));
         when(pc.getHr()).thenReturn(hr); when(plant.maximumWorkersPossible()).thenReturn(100); when(plant.minimumWorkersNeeded()).thenReturn(0);
         when(plant.getNumberOfWorkers()).thenReturn(1);
         when(random.nextGaussian()).thenReturn(0d);
@@ -130,7 +130,7 @@ public class ParticleMaximizerTest {
 
 
         Set<EconomicAgent> employers = new LinkedHashSet<>(); employers.add(firm);
-        when(firm.getRandomPlantProducingThis(GoodType.BEEF)).thenReturn(plant);
+        when(firm.getRandomPlantProducingThis(BEEF)).thenReturn(plant);
         when(firm.getPlantProfits(plant)).thenReturn(1f);
         //add 2 competitors
         Firm competitor1 = mock(Firm.class); Plant plant1 = mock(Plant.class); when(plant1.getNumberOfWorkers()).thenReturn(100);
@@ -143,7 +143,7 @@ public class ParticleMaximizerTest {
 
         //other mocking initialization, my good look at what I have done!
         when(hr.getAllEmployers()).thenReturn(employers);
-        when(plant.getBlueprint()).thenReturn(Blueprint.simpleBlueprint(GoodType.GENERIC,1,GoodType.BEEF,1));
+        when(plant.getBlueprint()).thenReturn(Blueprint.simpleBlueprint(GoodType.GENERIC,1,BEEF,1));
         when(pc.getHr()).thenReturn(hr); when(plant.maximumWorkersPossible()).thenReturn(100); when(plant.minimumWorkersNeeded()).thenReturn(0);
         when(plant.getNumberOfWorkers()).thenReturn(1);
         when(random.nextGaussian()).thenReturn(0d);

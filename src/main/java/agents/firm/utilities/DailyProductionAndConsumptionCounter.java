@@ -14,7 +14,7 @@ import model.utilities.Deactivatable;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -49,17 +49,31 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DailyProductionAndConsumptionCounter implements Steppable, Deactivatable
 {
-    private AtomicInteger[] consumedToday;
+    private HashMap<GoodType,AtomicInteger> consumedToday;
 
-    private AtomicInteger[] boughtOrProducedToday;
+    private HashMap<GoodType,AtomicInteger> boughtOrProducedToday;
 
-    private AtomicInteger[] producedToday;
+    private HashMap<GoodType,AtomicInteger> producedToday;
 
-    private AtomicInteger[] consumedYesterday;
+    private HashMap<GoodType,AtomicInteger> consumedYesterday;
 
-    private AtomicInteger[] boughtOrProducedYesterday;
+    private HashMap<GoodType,AtomicInteger> boughtOrProducedYesterday;
 
-    private AtomicInteger[] producedYesterday;
+    private HashMap<GoodType,AtomicInteger> producedYesterday;
+
+    private HashMap<GoodType,AtomicInteger> producedThisWeek;
+
+    private HashMap<GoodType,AtomicInteger> producedLastWeek;
+
+    private HashMap<GoodType,AtomicInteger> boughtOrProducedThisWeek;
+
+    private HashMap<GoodType,AtomicInteger> boughtOrProducedLastWeek;
+
+
+    private HashMap<GoodType,AtomicInteger> consumedThisWeek;
+
+    private HashMap<GoodType,AtomicInteger> consumedLastWeek;
+
 
     private boolean active = true;
     private boolean startWasCalled = false;
@@ -71,12 +85,19 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     public DailyProductionAndConsumptionCounter()
     {
         //instantiate all the lists
-        consumedToday = new AtomicInteger[GoodType.values().length];
-        boughtOrProducedToday= new AtomicInteger[GoodType.values().length];
-        producedToday = new AtomicInteger[GoodType.values().length];
-        consumedYesterday = new AtomicInteger[GoodType.values().length];
-        boughtOrProducedYesterday = new AtomicInteger[GoodType.values().length];
-        producedYesterday = new AtomicInteger[GoodType.values().length];
+        consumedToday = new HashMap<>();
+        boughtOrProducedToday= new HashMap<>();
+        producedToday = new HashMap<>();
+        consumedYesterday = new HashMap<>();
+        boughtOrProducedYesterday = new HashMap<>();
+        producedYesterday = new HashMap<>();
+        //weekly too
+        producedThisWeek = new HashMap<>();
+        producedLastWeek = new HashMap<>();
+        consumedThisWeek = new HashMap<>();
+        consumedLastWeek = new HashMap<>();
+        boughtOrProducedLastWeek = new HashMap<>();
+        boughtOrProducedThisWeek = new HashMap<>();
 
     }
 
@@ -118,9 +139,21 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
         boughtOrProducedYesterday = boughtOrProducedToday;
         producedYesterday = producedToday;
 
-        consumedToday = new AtomicInteger[GoodType.values().length];
-        boughtOrProducedToday = new AtomicInteger[GoodType.values().length];
-        producedToday = new AtomicInteger[GoodType.values().length];
+        consumedToday = new HashMap<>();
+        boughtOrProducedToday = new HashMap<>();
+        producedToday = new HashMap<>();
+    }
+
+
+    public void weekEnd()
+    {
+        consumedLastWeek = consumedThisWeek;
+        producedLastWeek = producedThisWeek;
+        boughtOrProducedLastWeek = boughtOrProducedThisWeek;
+
+        consumedThisWeek = new HashMap<>();
+        producedThisWeek = new HashMap<>();
+        boughtOrProducedThisWeek = new HashMap<>();
     }
 
 
@@ -130,6 +163,7 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     public void countNewConsumption(GoodType type)
     {
         increaseByOne(consumedToday,type);
+        increaseByOne(consumedThisWeek,type);
     }
 
     /**
@@ -138,6 +172,7 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     public void countNewConsumption(GoodType type, Integer n)
     {
         increaseByN(consumedToday,type,n);
+        increaseByN(consumedThisWeek,type,n);
     }
 
     /**
@@ -146,6 +181,7 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     public void countNewProduction(GoodType type)
     {
         increaseByOne(producedToday,type);
+        increaseByOne(producedThisWeek,type);
     }
 
     /**
@@ -154,6 +190,7 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     public void countNewProduction(GoodType type, Integer n)
     {
         increaseByN(producedToday,type,n);
+        increaseByN(producedThisWeek,type,n);
     }
 
     /**
@@ -162,6 +199,7 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     public void countNewReceive(GoodType type)
     {
         increaseByOne(boughtOrProducedToday,type);
+        increaseByOne(boughtOrProducedThisWeek,type);
     }
 
     /**
@@ -170,6 +208,7 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     public void countNewReceive(GoodType type, Integer n)
     {
         increaseByN(boughtOrProducedToday,type,n);
+        increaseByN(boughtOrProducedThisWeek,type,n);
     }
 
     /**
@@ -178,6 +217,14 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     public int getTodayConsumption(GoodType type)
     {
         return lookupMap(consumedToday,type);
+
+    }
+    /**
+     * get this week consumption
+     */
+    public int getThisWeekConsumption(GoodType type)
+    {
+        return lookupMap(consumedThisWeek,type);
 
     }
 
@@ -192,11 +239,29 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
 
 
     /**
+     * get yesterday consumption
+     */
+    public int getLastWeekConsumption(GoodType type)
+    {
+        return lookupMap(consumedLastWeek,type);
+
+    }
+
+
+    /**
      * get today Production
      */
     public int getTodayProduction(GoodType type)
     {
         return lookupMap(producedToday,type);
+
+    }
+    /**
+     * get this week Production
+     */
+    public int getThisWeekProduction(GoodType type)
+    {
+        return lookupMap(producedThisWeek,type);
 
     }
 
@@ -209,9 +274,18 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
 
     }
 
+    /**
+     * get lastweek Production
+     */
+    public int getLastWeekProduction(GoodType type)
+    {
+        return lookupMap(producedLastWeek,type);
+
+    }
+
 
     /**
-     * get today Production
+     * get # of goods bought (not produced) today
      */
     public int getTodayAcquisitions(GoodType type)
     {
@@ -222,7 +296,18 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     }
 
     /**
-     * get yesterday Production
+     * get # of goods bought (not produced) this week
+     */
+    public int getThisWeekAcquisitions(GoodType type)
+    {
+        int acquisitions = lookupMap(boughtOrProducedThisWeek,type) -  lookupMap(producedThisWeek,type);
+        assert acquisitions >= 0;
+        return acquisitions;
+
+    }
+
+    /**
+     * get # of goods bought (not produced) yesterday
      */
     public int getYesterdayAcquisitions(GoodType type)
     {
@@ -233,12 +318,24 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
 
 
     /**
+     * get # of goods bought (not produced) last week
+     */
+    public int getLastWeekAcquisitions(GoodType type)
+    {
+        int acquisitions = lookupMap(boughtOrProducedLastWeek,type) -  lookupMap(producedLastWeek,type);
+        assert acquisitions >= 0;
+        return acquisitions;
+
+    }
+
+
+    /**
      * a simple lookup that returns 0 every time the map doesn't actually map the type you are looking for
      */
-    private int lookupMap(AtomicInteger[] map, GoodType type)
+    private int lookupMap(HashMap<GoodType,AtomicInteger> map, GoodType type)
     {
 
-        AtomicInteger toReturn = map[type.ordinal()];
+        AtomicInteger toReturn = map.get(type);
         if(toReturn == null)
             return 0;
         else
@@ -250,28 +347,32 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     /**
      * a simple way to increase by one an entry in the map
      */
-    private void increaseByOne(AtomicInteger[] map, GoodType type)
+    private void increaseByOne(HashMap<GoodType,AtomicInteger> map, GoodType type)
     {
-
-        increaseByN(map,type,1);
+        increaseByN(map, type, 1);
     }
 
     /**
      * a simple way to increase by n an entry in the map
      */
-    private void increaseByN(AtomicInteger[] map, GoodType type, int n)
+    private void increaseByN(HashMap<GoodType,AtomicInteger> map, GoodType type, int n)
     {
 
         Preconditions.checkArgument(n >0);
-        if(map[type.ordinal()]== null)
-            map[type.ordinal()] = new AtomicInteger(n);
-        else
-        {
-            AtomicInteger toChange =  map[type.ordinal()];
-            assert toChange.get() > 0;
-            toChange.addAndGet(n);
-            assert toChange.get() == map[type.ordinal()].get();
-        }
+        //grab the counter
+        AtomicInteger counter = map.get(type);
+        //create one if you don't have it
+        if(counter == null)
+            counter = new AtomicInteger(0);
+        counter.addAndGet(n);
+        assert counter.get() > 0;
+
+        map.put(type, counter);
+
+
+
+        assert counter.equals(map.get(type));
+
 
     }
 

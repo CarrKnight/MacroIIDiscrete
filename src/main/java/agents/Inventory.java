@@ -22,7 +22,7 @@ public class Inventory {
     /**
      * The inventory is a map, for each good type to a Queue
      */
-    final private EnumMap<GoodType,PriorityQueue<Good>> inventory;
+    final private HashMap<GoodType,PriorityQueue<Good>> inventory;
 
     /**
      * link to the simulation proper; useful for graphing and stuff
@@ -66,12 +66,8 @@ public class Inventory {
     public Inventory(MacroII model, HasInventory owner) {
         this.model = model;
         this.owner = owner;
-        inventory = new EnumMap<>(GoodType.class);
+        inventory = new HashMap<>();
 
-        for(GoodType t : GoodType.values())
-        {
-            inventory.put(t,new PriorityQueue<Good>());
-        }
 
         listeners = new LinkedHashSet<>(); //instantiate the listeners
 
@@ -85,6 +81,15 @@ public class Inventory {
 
     public void receive(Good g, HasInventory sender) {
         PriorityQueue<Good> rightInventory =   inventory.get(g.getType());
+        //if you there is no priority queue yet, create it!
+        if(rightInventory == null)
+        {
+            PriorityQueue<Good> inventoryQueue = new PriorityQueue<>();
+            inventory.put(g.getType(),inventoryQueue);
+            rightInventory = inventoryQueue;
+        }
+
+
         //put the new element in!
         boolean isThisSomethingIDidntOwned = !rightInventory.contains(g);
         rightInventory.add(g);
@@ -198,10 +203,11 @@ public class Inventory {
 
 
     /**
-     * Eat all
+     * Consume all and return total consumption
      */
-    public void consumeAll()
+    public int consumeAll()
     {
+        int totalConsumption = 0;
         //go through each goodType
         for(Map.Entry<GoodType,PriorityQueue<Good>> inventorySection : inventory.entrySet())
         {
@@ -213,10 +219,12 @@ public class Inventory {
                 inventorySection.getValue().clear();
                 for(InventoryListener l : listeners) //then tell the listeners about it
                     l.inventoryDecreaseEvent(owner, inventorySection.getKey(), 0,size);
+                totalConsumption+=size;
             }
         }
 
-       assert getTotalInventory().size() == 0;
+        assert getTotalInventory().size() == 0;
+        return totalConsumption;
 
 
     }
@@ -229,7 +237,7 @@ public class Inventory {
     public boolean has( Good g){
         assert g != null;
         PriorityQueue<Good> set = inventory.get(g.getType());
-        return set.contains(g);
+        return set != null && set.contains(g);
 
     }
 
@@ -240,7 +248,7 @@ public class Inventory {
      */
     public boolean hasAny(GoodType t){
         PriorityQueue<Good> list = inventory.get(t); //open the right inventory
-        return !list.isEmpty(); //is it not empty?
+        return list != null && !list.isEmpty(); //is it not empty?
 
 
     }
@@ -251,7 +259,9 @@ public class Inventory {
      * @return how many do you have.
      */
     public int hasHowMany(GoodType t){
-        return inventory.get(t).size(); //open the right inventory
+        final PriorityQueue<Good> goods = inventory.get(t);
+
+        return goods==null? 0 : goods.size(); //open the right inventory
 
 
     }
@@ -266,9 +276,9 @@ public class Inventory {
     public List<Good> getTotalInventory() {
 
         List<Good> totalStuff = new LinkedList<>();
-        for(GoodType t : GoodType.values())
+        for(PriorityQueue<Good> inventoryQueue : inventory.values())
         {
-            totalStuff.addAll(inventory.get(t));
+            totalStuff.addAll(inventoryQueue);
         }
 
         //return an unmodifiable list. Don't want foreign objects to call consume or the listeners will not know about it!!!!
@@ -300,6 +310,14 @@ public class Inventory {
 
         for(InventoryListener l : listeners)
             l.failedToConsumeEvent(owner,type,numberNeeded);
+    }
+
+    /**
+     * Everytime we encounter a goodtype we record it, here we return them all
+     */
+    public Set<GoodType> goodTypesEncountered()
+    {
+        return inventory.keySet();
     }
 
 }

@@ -32,7 +32,6 @@ import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
-import au.com.bytecode.opencsv.CSVWriter;
 import financial.market.EndOfPhaseOrderHandler;
 import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
@@ -42,16 +41,11 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.dummies.Customer;
 import model.utilities.dummies.CustomerWithDelay;
-import model.utilities.stats.collectors.DailyStatCollector;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-
-import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 
 /**
  * <h4>Description</h4>
@@ -170,6 +164,7 @@ public class MonopolistScenario extends Scenario {
     @Override
     public void start() {
         maximizers.clear();
+        model.getGoodTypeMasterList().addNewSectors(GoodType.GENERIC,GoodType.LABOR,GoodType.CAPITAL);
 
         //create and record a new market!
         goodMarket= new OrderBookMarket(GoodType.GENERIC);
@@ -462,50 +457,6 @@ public class MonopolistScenario extends Scenario {
     }
 
 
-
-
-
-
-    public static void main(String[] args)
-    {
-        //set up
-        final MacroII macroII = new MacroII(System.currentTimeMillis());
-        MonopolistScenario scenario1 = new MonopolistScenario(macroII);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-        scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
-        scenario1.setControlType(MonopolistScenarioIntegratedControlEnum.MARGINAL_WITH_UNIT_PID);
-
-        //   scenario1.setSalesPricePreditorStrategy(PricingSalesPredictor.class);
-
-
-
-        //assign scenario
-        macroII.setScenario(scenario1);
-
-        macroII.start();
-
-
-
-        //CSV writer set up
-        try {
-            CSVWriter writer = new CSVWriter(new FileWriter("runs/monopolist/"+"marginalNoPredictor"+".csv"));
-            DailyStatCollector collector = new DailyStatCollector(macroII,writer);
-            collector.start();
-
-        } catch (IOException e) {
-            System.err.println("failed to create the file!");
-        }
-
-
-        //run!
-        while(macroII.schedule.getTime()<3000)
-        {
-            macroII.schedule.step(macroII);
-            printProgressBar(3001,(int)macroII.schedule.getSteps(),100);
-        }
-
-
-    }
 
 
 

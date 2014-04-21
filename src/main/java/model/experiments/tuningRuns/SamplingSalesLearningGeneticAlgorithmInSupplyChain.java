@@ -16,8 +16,8 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.SamplingLearningDecreaseSalesPredictor;
 import com.google.common.base.Preconditions;
 import financial.market.Market;
-import goods.GoodType;
 import model.MacroII;
+import model.scenario.OneLinkSupplyChainScenario;
 import model.scenario.OneLinkSupplyChainScenarioWithCheatingBuyingPrice;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import org.uncommons.maths.random.MersenneTwisterRNG;
@@ -414,7 +414,7 @@ public class SamplingSalesLearningGeneticAlgorithmInSupplyChain
 
 
                 //I used to assert this:
-                //Assert.assertEquals(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),85l,6l );
+                //Assert.assertEquals(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),85l,6l );
                 //but that's too hard because while on average the price hovers there, competition is noisy. Sometimes a lot.
                 //so what I did was to attach a daily stat collector and then check the average of the last 10 prices
                 float averageFoodPrice = 0;
@@ -424,9 +424,9 @@ public class SamplingSalesLearningGeneticAlgorithmInSupplyChain
                 {
                     //make the model run one more day:
                     macroII.schedule.step(macroII);
-                    averageFoodPrice += macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
-                    averageBeefProduced+= macroII.getMarket(GoodType.BEEF).countTodayProductionByRegisteredSellers();
-                    averageBeefPrice+= macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+                    averageFoodPrice += macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+                    averageBeefProduced+= macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).countTodayProductionByRegisteredSellers();
+                    averageBeefPrice+= macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
                 }
 
                 totalError *= Math.sqrt(Math.pow(20.794-averageBeefProduced/1000f,2)+1);

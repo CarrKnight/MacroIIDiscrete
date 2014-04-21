@@ -800,7 +800,7 @@ public class StickyPricesCSVPrinter {
             @Override
             protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
                 SalesDepartment department = super.createSalesDepartment(firm, goodmarket);
-                if(goodmarket.getGoodType().equals(GoodType.FOOD))  {
+                if(goodmarket.getGoodType().equals(OneLinkSupplyChainScenario.OUTPUT_GOOD))  {
                     department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
                 }
                 else
@@ -816,11 +816,11 @@ public class StickyPricesCSVPrinter {
             @Override
             protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
                 HumanResources hr = super.createPlant(blueprint, firm, laborMarket);
-                if(blueprint.getOutputs().containsKey(GoodType.BEEF))
+                if(blueprint.getOutputs().containsKey(OneLinkSupplyChainScenario.INPUT_GOOD))
                 {
                     hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
                 }
-                if(blueprint.getOutputs().containsKey(GoodType.FOOD))
+                if(blueprint.getOutputs().containsKey(OneLinkSupplyChainScenario.OUTPUT_GOOD))
                 {
                     hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
                 }
@@ -862,9 +862,9 @@ public class StickyPricesCSVPrinter {
         {
             //make the model run one more day:
             macroII.schedule.step(macroII);
-            averageFoodPrice.addValue(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
-            averageBeefProduced.addValue(macroII.getMarket(GoodType.BEEF).getYesterdayVolume());
-            averageBeefPrice.addValue(macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+            averageFoodPrice.addValue(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+            averageBeefProduced.addValue(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getYesterdayVolume());
+            averageBeefPrice.addValue(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
         }
 
 
@@ -1396,7 +1396,7 @@ public class StickyPricesCSVPrinter {
             @Override
             protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
                 SalesDepartment department = super.createSalesDepartment(firm, goodmarket);
-                if(goodmarket.getGoodType().equals(GoodType.FOOD))  {
+                if(goodmarket.getGoodType().equals(OneLinkSupplyChainScenario.OUTPUT_GOOD))  {
                     if(foodLearned)
                         department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
                 }
@@ -1406,13 +1406,13 @@ public class StickyPricesCSVPrinter {
             @Override
             protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
                 HumanResources hr = super.createPlant(blueprint, firm, laborMarket);
-                if(blueprint.getOutputs().containsKey(GoodType.BEEF))
+                if(blueprint.getOutputs().containsKey(OneLinkSupplyChainScenario.INPUT_GOOD))
                 {
                     if(beefLearned){
                         hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
                     }
                 }
-                if(blueprint.getOutputs().containsKey(GoodType.FOOD))
+                if(blueprint.getOutputs().containsKey(OneLinkSupplyChainScenario.OUTPUT_GOOD))
                 {
                     if(foodLearned)
                         hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
@@ -1454,7 +1454,7 @@ public class StickyPricesCSVPrinter {
         {
             macroII.schedule.step(macroII);
             printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
-            long price = macroII.getMarket(GoodType.BEEF).getLastPrice();
+            long price = macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLastPrice();
             if(price<0)
                 price=0;
             distance.addValue(Math.pow(68 - price,2));
@@ -1468,11 +1468,11 @@ public class StickyPricesCSVPrinter {
         {
             //make the model run one more day:
             macroII.schedule.step(macroII);
-            averageFoodPrice.addValue(macroII.getMarket(GoodType.FOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
-            averageBeefProduced.addValue(macroII.getMarket(GoodType.BEEF).getYesterdayVolume());
-            averageBeefPrice.addValue(macroII.getMarket(GoodType.BEEF).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+            averageFoodPrice.addValue(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+            averageBeefProduced.addValue(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getYesterdayVolume());
+            averageBeefPrice.addValue(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
 
-            long price = macroII.getMarket(GoodType.BEEF).getLastPrice();
+            long price = macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLastPrice();
             if(price<0)
                 price=0;
             distance.addValue(Math.pow(68 - price,2));

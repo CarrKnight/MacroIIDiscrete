@@ -10,6 +10,7 @@ import goods.Good;
 import goods.GoodType;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * This is an interface that I assume everybody who has an inventory will implement. The idea is simply to delegate all these methods to the inventory object you have
@@ -110,6 +111,11 @@ public interface HasInventory {
      * @return the first good found or null if there are none
      */
     public Good peekGood(GoodType type);
+
+    /**
+     * A set of all goods consumed/produced/glimpsed by the agent
+     */
+    public Set<GoodType> goodTypesEncountered();
 
 
 }

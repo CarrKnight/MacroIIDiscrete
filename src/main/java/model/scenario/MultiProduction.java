@@ -50,6 +50,11 @@ import model.utilities.dummies.DummyBuyer;
 public class MultiProduction extends Scenario{
 
 
+    final public static GoodType LEATHER = new GoodType("leatherTest","Leather");
+
+    final public static GoodType BEEF = new GoodType("beefTest","Beef");
+
+
     public MultiProduction(MacroII model) {
         super(model);
     }
@@ -60,16 +65,17 @@ public class MultiProduction extends Scenario{
     @Override
     public void start() {
 
+        model.getGoodTypeMasterList().addNewSectors(LEATHER, BEEF,GoodType.LABOR);
 
-        //leather market
-        final OrderBookMarket leatherMarket= new OrderBookMarket(GoodType.LEATHER);
+        //LEATHER market
+        final OrderBookMarket leatherMarket= new OrderBookMarket(LEATHER);
         leatherMarket.setPricePolicy(new ShopSetPricePolicy()); //make the seller price matter
-        getMarkets().put(GoodType.LEATHER,leatherMarket);
+        getMarkets().put(LEATHER,leatherMarket);
 
         //Beef Market
-        final OrderBookMarket beefMarket= new OrderBookMarket(GoodType.BEEF);
+        final OrderBookMarket beefMarket= new OrderBookMarket(BEEF);
         beefMarket.setPricePolicy(new ShopSetPricePolicy()); //make the seller price matter
-        getMarkets().put(GoodType.BEEF,beefMarket);
+        getMarkets().put(BEEF,beefMarket);
 
         //create and record the labor market!
         final OrderBookMarket laborMarket= new OrderBookMarket(GoodType.LABOR);
@@ -202,19 +208,19 @@ public class MultiProduction extends Scenario{
                     SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(seller, beefMarket,
                             new SimpleBuyerSearch(beefMarket, seller), new SimpleSellerSearch(beefMarket, seller),
                             SalesDepartmentAllAtOnce.class);
-                    seller.registerSaleDepartment(dept,GoodType.BEEF);
+                    seller.registerSaleDepartment(dept, BEEF);
                     dept.setAskPricingStrategy(new SimpleFlowSellerPID(dept)); //set strategy to PID
 
                     //sales department
                     SalesDepartment dept2 =SalesDepartmentFactory.incompleteSalesDepartment(seller, leatherMarket,
                             new SimpleBuyerSearch(leatherMarket, seller), new SimpleSellerSearch(leatherMarket, seller),
                             SalesDepartmentAllAtOnce.class);
-                    seller.registerSaleDepartment(dept2,GoodType.LEATHER);
+                    seller.registerSaleDepartment(dept2, LEATHER);
                     dept2.setAskPricingStrategy(new SimpleFlowSellerPID(dept2)); //set strategy to PID
 
 
                     //add the plant
-                    Blueprint blueprint = new Blueprint.Builder().output(GoodType.BEEF,1).output(GoodType.LEATHER,2).build();
+                    Blueprint blueprint = new Blueprint.Builder().output(BEEF,1).output(LEATHER,2).build();
                     Plant plant = new Plant(blueprint,seller);
                     plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL,seller,0,plant));
                     plant.setCostStrategy(new InputCostStrategy(plant));

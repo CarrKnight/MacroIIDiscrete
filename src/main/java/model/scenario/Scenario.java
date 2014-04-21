@@ -47,7 +47,7 @@ public abstract class Scenario {
     /**
      * A map for each good type to one markets
      */
-    private EnumMap<GoodType,Market> markets;
+    private HashMap<GoodType,Market> markets;
 
     /**
      * the list of ALL agents. Notice it's an arraylist so it's faster to shuffle
@@ -60,7 +60,7 @@ public abstract class Scenario {
     protected Scenario(MacroII model) {
         this.model = model;
         //instantiate the collections!
-        markets = new EnumMap<>(GoodType.class);
+        markets = new HashMap<>();
         agents = new ArrayList<>();
     }
 
@@ -72,7 +72,7 @@ public abstract class Scenario {
     /**
      * A map for each good type to one markets
      */
-    public EnumMap<GoodType, Market> getMarkets() {
+    public HashMap<GoodType, Market> getMarkets() {
         return markets;
     }
 
@@ -115,7 +115,6 @@ public abstract class Scenario {
         allScenarios.add(SimpleSellerScenario .class);
         allScenarios.add(SimpleSellerScenarioUsingFlowSellerPID .class);
         allScenarios.add(SimpleSellerWithSellerDelayScenario .class);
-        allScenarios.add(SupplyChainScenario .class);
         allScenarios.add(TestScenario .class);
         allScenarios.add(TripolistScenario  .class);
         allScenarios.add(TripolistWithInputScenario   .class);
