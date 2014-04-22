@@ -420,6 +420,7 @@ public abstract class EconomicAgent implements Agent, HasInventory{
     public void turnOff() {
         isActive=false;
         counter.turnOff();
+        model.removeAgent(this);
     }
 
 

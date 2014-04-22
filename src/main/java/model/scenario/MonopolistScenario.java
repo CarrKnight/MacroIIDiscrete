@@ -32,7 +32,9 @@ import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
+import com.google.common.base.Preconditions;
 import financial.market.EndOfPhaseOrderHandler;
+import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
 import financial.utilities.ShopSetPricePolicy;
@@ -44,6 +46,7 @@ import model.utilities.dummies.CustomerWithDelay;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -206,13 +209,38 @@ public class MonopolistScenario extends Scenario {
     }
 
     private void createLaborSupply() {
+        Collection<Person> workersCreated = fillLaborSupply(dailyWageIntercept,dailyWageSlope,workersToBeRehiredEveryDay,
+                lookForBetterOffers,120,laborMarket,getModel());
+        workers.addAll(workersCreated);
+
+    }
+
+    /**
+     * A simple utility method that takes a market and fills it with workers. It also adds them to the model.
+     * @param dailyWageIntercept the intercept of the labor supply
+     * @param dailyWageSlope the slope of the labor supply
+     * @param workersToBeRehiredEveryDay are workers changing job automatically every day?
+     * @param lookForBetterOffers do workers quit their jobs if a better offer comes along?
+     * @param totalNumberOfWorkers the total number of workers in the labor supply curve
+     * @param laborMarket the market to fill
+     * @param model the model (to schedule workers)
+     * @return a list with all the new
+     */
+    public static Collection<Person> fillLaborSupply(int dailyWageIntercept, int dailyWageSlope, boolean workersToBeRehiredEveryDay,
+                                                     boolean lookForBetterOffers, int totalNumberOfWorkers,
+                                                     Market laborMarket, MacroII model) {
+        Preconditions.checkState(dailyWageIntercept >= 0);
+        Preconditions.checkState(dailyWageSlope > 0);
+        Preconditions.checkState(totalNumberOfWorkers > 0);
+
+        LinkedList<Person> workers = new LinkedList<>();
         //with minimum wage from 15 to 65
-        for(int i=1; i<120; i++)
+        for(int i=1; i<=totalNumberOfWorkers; i++)
         {
 
             int dailyWage = dailyWageIntercept + dailyWageSlope * i;
             //dummy worker, really
-            final Person p = new Person(getModel(),0l,(dailyWage),laborMarket);
+            final Person p = new Person(model,0l,(dailyWage),laborMarket);
             p.setPrecario(workersToBeRehiredEveryDay);
 
 
@@ -222,6 +250,7 @@ public class MonopolistScenario extends Scenario {
             model.addAgent(p);
 
         }
+        return workers;
     }
 
     /**

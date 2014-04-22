@@ -101,8 +101,9 @@ public class ProductionData extends DataStorageSkeleton<GoodType>
         //grab the production vector
         final Set<GoodType> listOfAllSectors = model.getGoodTypeMasterList().getListOfAllSectors();
         for(GoodType type : listOfAllSectors)
+        {
             data.get(type).add((double) plant.getProducedToday(type));
-
+        }
         //reschedule
         model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
 

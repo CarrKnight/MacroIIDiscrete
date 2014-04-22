@@ -605,6 +605,17 @@ public class MacroII extends SimState{
         }
     }
 
+
+    /**
+     * remove an agent from the masterlist
+     */
+    public void removeAgent(final EconomicAgent a)
+    {
+
+        agents.remove(a);
+
+    }
+
     /**
      * An inspector with histograms of wealth and so on. It sets itself to adjust periodically
      * @return a
@@ -886,6 +897,8 @@ public class MacroII extends SimState{
     {
         toTurnOffAtFinish.add(d);
     }
+
+
 
 
     /**

@@ -284,6 +284,16 @@
         <fx:fileset refid="all_MacroIIDiscrete"/>
       </fx:resources>
     </fx:deploy>
+    <property name="artifact.sign.vendor.MacroIIDiscrete" value="CN=Ernesto Carrella"/>
+    <property name="artifact.sign.alias.MacroIIDiscrete" value="carrknight"/>
+    <property name="artifact.sign.keystore.MacroIIDiscrete" value="/home/carrknight/code/key/store"/>
+    <property name="artifact.sign.storepass.MacroIIDiscrete" value="K0ai0tlg"/>
+    <property name="artifact.sign.keypass.MacroIIDiscrete" value="K0ai0tlg"/>
+    <signjar alias="${artifact.sign.alias.MacroIIDiscrete}" keystore="${artifact.sign.keystore.MacroIIDiscrete}" storepass="${artifact.sign.storepass.MacroIIDiscrete}" keypass="${artifact.sign.keypass.MacroIIDiscrete}">
+      <fileset dir="${artifact.temp.output.MacroIIDiscrete}/deploy">
+        <include name="*.jar"/>
+      </fileset>
+    </signjar>
     <copy todir="${artifact.output.oil_distribution}">
       <fileset dir="${artifact.temp.output.MacroIIDiscrete}/deploy"/>
     </copy>

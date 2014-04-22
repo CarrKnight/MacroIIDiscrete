@@ -30,10 +30,21 @@ import model.scenario.OilDistributorScenario;
 public interface OilLaborMarketScenarioStrategy {
 
 
+    /**
+     * Called at the start() of scenario. It's called before firms are initialized.
+     * @param scenario the scenario whose start() is currently proceeding
+     * @param oilMarket the geographical market this strategy focuses on
+     * @param model the model of the scenario, for scheduling and such.
+     */
     public void initializeLaborMarkets(OilDistributorScenario scenario, GeographicalMarket oilMarket, MacroII model);
 
-
-    public Market assignLaborMarketToPlant(GeographicalFirm oilStation);
+    /**
+     * Called every-time a new firm is created so that it is returned the labor market it has to hire from
+     * @param scenario the scenario whose start() is currently proceeding
+     * @param oilMarket the geographical market this strategy focuses on
+     * @param model the model of the scenario, for scheduling and such.
+     */
+    public Market assignLaborMarketToFirm(GeographicalFirm oilStation, OilDistributorScenario scenario, MacroII model);
 
 
 
