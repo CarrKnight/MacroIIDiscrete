@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
  * Make sure the unified labor market works properly
  * Created by carrknight on 4/22/14.
  */
-public class UnifiedLaborMarketForOilScenarioTest {
+public class SingleLaborMarketStrategyTest {
 
 
     @Test
@@ -37,7 +37,7 @@ public class UnifiedLaborMarketForOilScenarioTest {
         when(scenario.getMarkets()).thenReturn(marketMap);
 
 
-        UnifiedLaborMarketForOilScenario marketStrategy = new UnifiedLaborMarketForOilScenario();
+        SingleLaborMarketStrategy marketStrategy = new SingleLaborMarketStrategy();
         marketStrategy.initializeLaborMarkets(scenario,
                 mock(GeographicalMarket.class), model);
 

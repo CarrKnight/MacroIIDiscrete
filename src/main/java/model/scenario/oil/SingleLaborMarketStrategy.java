@@ -20,7 +20,7 @@ import model.scenario.OilDistributorScenario;
  * A single labor market, created at initialization.
  * Created by carrknight on 4/21/14.
  */
-public class UnifiedLaborMarketForOilScenario implements OilLaborMarketScenarioStrategy {
+public class SingleLaborMarketStrategy implements OilLaborMarketScenarioStrategy {
 
     private final OrderBookMarket laborMarket;
 
@@ -33,12 +33,12 @@ public class UnifiedLaborMarketForOilScenario implements OilLaborMarketScenarioS
 
 
 
-    public UnifiedLaborMarketForOilScenario() {
+    public SingleLaborMarketStrategy() {
         this(1,0,50);
     }
 
 
-    public UnifiedLaborMarketForOilScenario(int laborSupplySlope, int laborSupplyIntercept, int totalNumberOfWorkers)
+    public SingleLaborMarketStrategy(int laborSupplySlope, int laborSupplyIntercept, int totalNumberOfWorkers)
     {
         this.laborMarket = new OrderBookMarket(GoodType.LABOR);
         this.laborSupplySlope = new SimpleIntegerProperty(laborSupplySlope);

@@ -46,6 +46,8 @@ public class GoodTypeMasterList {
     public GoodTypeMasterList() {
 
         addToListAndMap(GoodType.LABOR);
+        addToListAndMap(GoodType.GENERIC);
+        addToListAndMap(GoodType.CAPITAL);
     }
 
     /**
