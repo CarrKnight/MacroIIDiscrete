@@ -27,7 +27,7 @@ import model.scenario.OilDistributorScenario;
  * @version 2014-04-19
  * @see
  */
-public interface OilLaborMarketScenarioStrategy {
+public interface LaborMarketOilScenarioStrategy {
 
 
     /**

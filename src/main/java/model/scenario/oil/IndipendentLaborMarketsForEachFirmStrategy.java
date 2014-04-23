@@ -23,7 +23,7 @@ import java.util.HashMap;
  * Each firm that requests it, gets its own labor market
  * Created by carrknight on 4/22/14.
  */
-public class IndipendentLaborMarketsForEachFirmStrategy implements OilLaborMarketScenarioStrategy {
+public class IndipendentLaborMarketsForEachFirmStrategy implements LaborMarketOilScenarioStrategy {
 
     public final static int defaultSupplySlope = 1 ;
 

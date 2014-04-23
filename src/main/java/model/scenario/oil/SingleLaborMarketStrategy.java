@@ -20,7 +20,7 @@ import model.scenario.OilDistributorScenario;
  * A single labor market, created at initialization.
  * Created by carrknight on 4/21/14.
  */
-public class SingleLaborMarketStrategy implements OilLaborMarketScenarioStrategy {
+public class SingleLaborMarketStrategy implements LaborMarketOilScenarioStrategy {
 
     private final OrderBookMarket laborMarket;
 

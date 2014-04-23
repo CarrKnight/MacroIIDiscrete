@@ -235,7 +235,7 @@ public class MonopolistScenario extends Scenario {
 
         LinkedList<Person> workers = new LinkedList<>();
         //with minimum wage from 15 to 65
-        for(int i=1; i<=totalNumberOfWorkers; i++)
+        for(int i=1; i<totalNumberOfWorkers; i++)
         {
 
             int dailyWage = dailyWageIntercept + dailyWageSlope * i;
@@ -319,12 +319,13 @@ public class MonopolistScenario extends Scenario {
         //human resources
         HumanResources hr;
 
-        final FactoryProducedHumanResources<? extends PlantControl,BuyerSearchAlgorithm,SellerSearchAlgorithm> factoryMadeHR = HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, built,
+        final FactoryProducedHumanResources<? extends PlantControl,BuyerSearchAlgorithm,SellerSearchAlgorithm> factoryMadeHR =
+                HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, built,
                 laborMarket, plant, controlType.getController(), null, null);
 
         hr = factoryMadeHR.getDepartment();
 
-        //       seller.registerHumanResources(plant, hr);
+        //seller.registerHumanResources(plant, hr);
         hr.setFixedPayStructure(fixedPayStructure);
 
 

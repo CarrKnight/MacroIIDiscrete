@@ -12,10 +12,13 @@ import agents.InventoryListener;
 import agents.Person;
 import agents.firm.Department;
 import agents.firm.Firm;
+import agents.firm.cost.InputCostStrategy;
 import agents.firm.cost.PlantCostStrategy;
 import agents.firm.personell.HumanResources;
+import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.production.technology.Machinery;
 import agents.firm.utilities.DailyProductionAndConsumptionCounter;
+import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.MarketEvents;
 import goods.Good;
@@ -1257,4 +1260,20 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
     public boolean hasTradedAtLeastOnce() {
         return false;
     }
+
+    /**
+     * a utility method to quickly build a very simple (linear machinery) plant for a given firm
+     */
+    public static Plant buildSimplePlantToFirm(Firm firm, Blueprint blueprint)
+    {
+        Preconditions.checkNotNull(firm);
+        Preconditions.checkNotNull(blueprint);
+        //add the plant
+        Plant plant = new Plant(blueprint, firm);
+        plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, firm, 0, plant));
+        plant.setCostStrategy(new InputCostStrategy(plant));
+        firm.addPlant(plant);
+        return plant;
+    }
+
 }

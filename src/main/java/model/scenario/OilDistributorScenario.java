@@ -7,23 +7,15 @@
 package model.scenario;
 
 import agents.firm.GeographicalFirm;
-import agents.firm.sales.SalesDepartment;
-import agents.firm.sales.SalesDepartmentFactory;
-import agents.firm.sales.SalesDepartmentOneAtATime;
-import agents.firm.sales.exploration.SimpleBuyerSearch;
-import agents.firm.sales.exploration.SimpleSellerSearch;
-import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.market.GeographicalMarket;
-import goods.Good;
+import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
+import model.scenario.oil.*;
 import model.utilities.dummies.GeographicalCustomer;
-import model.utilities.ActionOrder;
 import model.utilities.geography.Location;
-import sim.engine.SimState;
-import sim.engine.Steppable;
 
 /**
  * Simple Geographical Model, two neighborhoods, the rich one around 5,5 the poor one around -5,-5 and 3 distributors at 5,5 0,0 and -5,-5.
@@ -67,6 +59,12 @@ public class OilDistributorScenario extends Scenario
     private int dailyProductionPerFirm = 10;
 
 
+    private LaborMarketOilScenarioStrategy laborMarketStrategy = new IndipendentLaborMarketsForEachFirmStrategy();
+
+
+    private OilFirmsScenarioStrategy oilFirmsStrategy = new ProducingOilFirmsScenarioStrategy();
+
+
     public OilDistributorScenario(MacroII model) {
         super(model);
     }
@@ -84,10 +82,13 @@ public class OilDistributorScenario extends Scenario
         createNeighborhood(new Location(10,2),1.5,minPriceRichNeighborhood,maxPriceRichNeighborhood,
                 neighborhoodSize,market,model.getRandom());
 
+        //labor market, if needed
+        laborMarketStrategy.initializeLaborMarkets(this,market,getModel());
+
         //three pumps
-        createOilPump(new Location(-10,-2), 10,market,"poor");
-        createOilPump(new Location(0,0), 10,market,"middle");
-        createOilPump(new Location(10,2), 10,market,"rich");
+        createOilPump(new Location(-10, -2), market, "poor");
+        createOilPump(new Location(0,0),market,"middle");
+        createOilPump(new Location(10,2),market,"rich");
     }
 
     public void createNeighborhood(Location center, double centerStandardDeviation, int minPrice, int maxPrice,
@@ -109,35 +110,9 @@ public class OilDistributorScenario extends Scenario
 
     }
 
-    public void createOilPump(Location location, int productionRate,GeographicalMarket market, String name)
+    public void createOilPump(Location location,GeographicalMarket market, String name)
     {
-        Preconditions.checkState(productionRate >0, "min price can't be negative");
-
-        final GeographicalFirm oilPump = new GeographicalFirm(getModel(),location.getxLocation(),location.getyLocation());
-        oilPump.setName(name);
-        //create a salesDepartment
-        SalesDepartment salesDepartment = SalesDepartmentFactory.incompleteSalesDepartment(oilPump, market,
-                new SimpleBuyerSearch(market, oilPump), new SimpleSellerSearch(market, oilPump), SalesDepartmentOneAtATime.class);
-        //give the sale department a simple PID
-        salesDepartment.setAskPricingStrategy(new SalesControlWithFixedInventoryAndPID(salesDepartment,100));
-        //finally register it!
-        oilPump.registerSaleDepartment(salesDepartment, oilGoodType);
-        getAgents().add(oilPump);
-
-
-        //create a steppable refilling oilPump every day
-        getModel().scheduleSoon(ActionOrder.PRODUCTION,new Steppable() {
-                    @Override
-                    public void step(SimState simState) {
-                        for(int i=0;i<productionRate; i++)
-                        {
-                            Good barrel = new Good(oilGoodType, oilPump, 0);
-                            oilPump.receive(barrel,null);
-                            oilPump.reactToPlantProduction(barrel);
-                        }
-                        getModel().scheduleTomorrow(ActionOrder.PRODUCTION,this);
-                    }
-        });
+        oilFirmsStrategy.createOilPump(location,market,name,this,getModel());
 
     }
 
@@ -191,6 +166,7 @@ public class OilDistributorScenario extends Scenario
         this.dailyProductionPerFirm = dailyProductionPerFirm;
     }
 
-
-
+    public Market assignLaborMarketToFirm(GeographicalFirm oilStation) {
+        return laborMarketStrategy.assignLaborMarketToFirm(oilStation, this, model);
+    }
 }

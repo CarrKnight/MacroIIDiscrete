@@ -88,7 +88,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
      */
     private BidPricingStrategy pricingStrategy;
 
-    /**                                            pred
+    /**
      * The strategy we are using to choose how to control the inventory
      */
     private Control control;
