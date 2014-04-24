@@ -76,23 +76,16 @@ public class ProducingOilFirmsScenarioStrategy implements OilFirmsScenarioStrate
         Market laborMarket = scenario.assignLaborMarketToFirm(oilPump);
         HumanResources hr = buildHumanResources(oilPump, plant, laborMarket);
 
-        //seller.registerHumanResources(plant, hr);
         model.addAgent(oilPump);
 
-
-
-
-
-
-
-        return null;
+        return oilPump;
     }
 
     protected SalesDepartment buildSalesDepartment(GeographicalMarket market, GeographicalFirm oilPump) {
         SalesDepartment salesDepartment = SalesDepartmentFactory.incompleteSalesDepartment(oilPump, market,
                 new SimpleBuyerSearch(market, oilPump), new SimpleSellerSearch(market, oilPump), SalesDepartmentOneAtATime.class);
         //give the sale department a simple PID
-        salesDepartment.setAskPricingStrategy(new SalesControlWithFixedInventoryAndPID(salesDepartment,100));
+        salesDepartment.setAskPricingStrategy(new SalesControlWithFixedInventoryAndPID(salesDepartment,500));
         salesDepartment.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(salesPredictor,salesDepartment));
         //finally register it!
         final GoodType goodTypeSold = market.getGoodType();

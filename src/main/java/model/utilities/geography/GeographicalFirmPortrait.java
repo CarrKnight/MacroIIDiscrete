@@ -1,6 +1,7 @@
 package model.utilities.geography;
 
 import agents.firm.GeographicalFirm;
+import com.google.common.base.Preconditions;
 import goods.GoodType;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -41,7 +42,7 @@ public class GeographicalFirmPortrait extends HasLocationPortrait implements Dea
     private boolean active = true;
 
     //load the image once statically and be done with it
-    private final static Image oilImage;
+    public final static Image oilImage;
     static {
         InputStream input = GeographicalCustomerPortrait.class.getClassLoader().
                 getResourceAsStream("images/gas-pump.png");

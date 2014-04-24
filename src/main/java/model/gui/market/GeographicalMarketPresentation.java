@@ -173,7 +173,7 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
 
         for(Map.Entry<GeographicalFirm,Color> entry : colorMap.getColorMap().entrySet())
         {
-                 addSellerToMap(entry.getKey(),entry.getValue(),macroII,market.getGoodType());
+            addSellerToMap(entry.getKey(),entry.getValue(),macroII,market.getGoodType());
         }
         //initialize the seller list!
         colorMap.getColorMap().addListener(sellerListener);
@@ -332,6 +332,8 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
      * update all colors of the buyers
      */
     public void step(SimState state){
+        if(!isActive)
+            return;
         Platform.runLater(() -> {
             for(Map.Entry<GeographicalCustomer,GeographicalCustomerPortrait> buyer : buyerPortraits.entrySet())
             {

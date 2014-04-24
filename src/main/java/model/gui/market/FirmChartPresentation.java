@@ -7,17 +7,17 @@
 package model.gui.market;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import goods.GoodType;
 import javafx.application.Platform;
-import javafx.concurrent.WorkerStateEvent;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import model.utilities.stats.collectors.enums.SalesDataType;
 
@@ -37,13 +37,25 @@ public class FirmChartPresentation extends BorderPane implements EventHandler<Ac
     /**
      * the data type to chart
      */
-    private final SalesDataType dataType;
+    private SalesDataType currentDataType;
+
+    private ChoiceBox<String> choiceBox;
+
+    private final static BiMap<String,SalesDataType> dataTypesAllowed = HashBiMap.create(5);
+    static {
+        dataTypesAllowed.put("Price",SalesDataType.LAST_ASKED_PRICE);
+        dataTypesAllowed.put("Inventory",SalesDataType.HOW_MANY_TO_SELL);
+        dataTypesAllowed.put("Output Produced",SalesDataType.INFLOW);
+        dataTypesAllowed.put("Output Sold",SalesDataType.OUTFLOW);
+        dataTypesAllowed.put("Workers Hired",SalesDataType.WORKERS_PRODUCING_THIS_GOOD);
+        dataTypesAllowed.put("Estimated Demand Slope",SalesDataType.PREDICTED_DEMAND_SLOPE);
+    }
 
 
-    public FirmChartPresentation(SellingFirmToColorMap sellerMap, GoodType goodBeingTraded, SalesDataType dataType) {
+    public FirmChartPresentation(SellingFirmToColorMap sellerMap, GoodType goodBeingTraded, SalesDataType initialDataType) {
         this.sellerMap = sellerMap;
         this.goodBeingTraded = goodBeingTraded;
-        this.dataType = dataType;
+        this.currentDataType = initialDataType;
 
         //create a box with the "chart me" sign
         HBox hbox = new HBox();
@@ -52,22 +64,45 @@ public class FirmChartPresentation extends BorderPane implements EventHandler<Ac
         hbox.setStyle("-fx-background-color: #336699;");
 
         Button chartButton = new Button("Update Chart");
-        chartButton.setPrefSize(100, 20);
+        chartButton.setPrefSize(200, 20);
 
         chartButton.setDefaultButton(true);
         chartButton.addEventHandler(ActionEvent.ACTION,this);
         hbox.getChildren().add(chartButton);
+
+        //create the choice box to decide what to chart
+
+        choiceBox= new ChoiceBox<>(FXCollections.observableArrayList(dataTypesAllowed.keySet()));
+        choiceBox.setPrefSize(200, 20);
+        choiceBox.setValue(dataTypesAllowed.inverse().get(initialDataType));
+        choiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, s, s2) -> {
+            currentDataType = dataTypesAllowed.get(s2);
+            Preconditions.checkNotNull(currentDataType);
+        });
+
+        Platform.runLater(() -> Tooltip.install(choiceBox, new Tooltip("Data to plot")));
+
+        hbox.getChildren().add(choiceBox);
+
+
+
+        //put the box in place
         setTop(hbox);
+
+
     }
 
     @Override
     public void handle(ActionEvent actionEvent) {
         Preconditions.checkState(Platform.isFxApplicationThread());
-        CreateChartOnDemand task = new CreateChartOnDemand(sellerMap,goodBeingTraded,dataType);
+        CreateChartOnDemand task = new CreateChartOnDemand(sellerMap,goodBeingTraded, currentDataType);
         //the progress bar
         ProgressBar bar = new ProgressBar();
         bar.progressProperty().bind(task.progressProperty());
-        this.setCenter(new StackPane(bar));
+        Label barLabel = new Label("Loading",bar);
+        barLabel.textProperty().bind(task.messageProperty());
+        barLabel.setContentDisplay(ContentDisplay.BOTTOM);
+        this.setCenter(new StackPane(bar,barLabel));
         //start it in his own thread!
         new Thread(task).start();
         //when done paste it
