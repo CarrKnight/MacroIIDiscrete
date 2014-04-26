@@ -6,7 +6,7 @@
 
 package model.gui;
 
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.ObjectProperty;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -19,7 +19,7 @@ import model.utilities.geography.NewFirmPortrait;
 public class AddAgentsToMapAccordion extends Accordion{
 
 
-    ObservableValue<MouseMode> currentMouseMode;
+    ObjectProperty<MouseMode> currentMouseMode;
 
 
 
@@ -37,10 +37,6 @@ public class AddAgentsToMapAccordion extends Accordion{
 
         //default to normal selection
         mouseSelection.selectToggle(normalSelection);
-
-
-
-
 
 
 

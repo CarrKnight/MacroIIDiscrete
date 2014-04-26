@@ -95,11 +95,11 @@ public enum MouseMode {
                 return;
             else
             {
-                //all the adds consume (don't allow nodes below to see this)
+                //all the adds consume the event(don't allow nodes below to see this)
                 mouseEvent.consume();
                 //convert to model x-y
                 double x = geographicalMarketPresentation.convertXPixelCoordinateToXModelCoordinate(mouseEvent.getX());
-                double y = geographicalMarketPresentation.convertXPixelCoordinateToXModelCoordinate(mouseEvent.getY());
+                double y = geographicalMarketPresentation.convertYPixelCoordinateToYModelCoordinate(mouseEvent.getY());
                 if(currentMode.equals(ADD_FIRM))
                     scenario.createNewProducer(new Location(x,y),geographicalMarketPresentation.getMarket(),"UserCreated"+id);
                 else
