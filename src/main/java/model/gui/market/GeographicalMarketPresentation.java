@@ -10,7 +10,6 @@ import agents.EconomicAgent;
 import agents.firm.GeographicalFirm;
 import com.google.common.base.Preconditions;
 import financial.market.GeographicalMarket;
-import financial.market.Market;
 import goods.GoodType;
 import javafx.application.Platform;
 import javafx.beans.binding.IntegerBinding;
@@ -25,16 +24,15 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import model.MacroII;
-import model.utilities.dummies.GeographicalCustomer;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
+import model.utilities.dummies.GeographicalCustomer;
 import model.utilities.geography.GeographicalCustomerPortrait;
 import model.utilities.geography.GeographicalFirmPortrait;
 import model.utilities.geography.HasLocation;
 import model.utilities.geography.HasLocationPortrait;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-
 
 import java.util.*;
 
@@ -92,7 +90,7 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
     /**
      * a reference to the market is needed to turn off properly
      */
-    private final Market market;
+    private final GeographicalMarket market;
 
     /**
      * a reference to the market is needed to turn off properly
@@ -102,7 +100,7 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
     /**
      * the map where all the agents are
      */
-    private final Pane canvasMap;
+    private final Pane geographicalMap;
 
     private final SetChangeListener<EconomicAgent> buyerSetListener = change -> {
         if (change.wasAdded()) {
@@ -143,8 +141,8 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
         this.model = macroII;
         portraitList = new HashMap<>();
         buyerPortraits = new HashMap<>();
-        canvasMap = new Pane();
-        canvasMap.setBackground(new Background(new BackgroundFill(Color.CYAN,null,null)));
+        geographicalMap = new Pane();
+        geographicalMap.setBackground(new Background(new BackgroundFill(Color.CYAN, null, null)));
         this.colorMap = colorMap;
 
 
@@ -198,6 +196,16 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
                 return newValue;
             }
         };
+    }
+
+    public double convertXPixelCoordinateToXModelCoordinate(double pixelX)
+    {
+        return  (pixelX-pixelOffsetToSimulateNegativeXCoordinate.doubleValue())/oneUnitInModelEqualsHowManyPixels.get();
+    }
+
+    public double convertYPixelCoordinateToYModelCoordinate(double pixelY)
+    {
+        return  (pixelY-pixelOffsetToSimulateNegativeYCoordinate.doubleValue())/oneUnitInModelEqualsHowManyPixels.get();
     }
 
 
@@ -261,7 +269,7 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
         //add it to the big list
         portraitList.put(seller, portrait);
         //add it to canvas!
-        canvasMap.getChildren().add(portrait);
+        geographicalMap.getChildren().add(portrait);
     }
 
 
@@ -285,15 +293,15 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
         //make sure it's the right portrait
         assert portrait.getAgent().equals(seller);
 
-        //remove it from the canvasMap
-        canvasMap.getChildren().remove(portrait);
+        //remove it from the geographicalMap
+        geographicalMap.getChildren().remove(portrait);
         portrait.layoutXProperty().unbind();
         portrait.layoutYProperty().unbind();
         portrait.prefHeightProperty().unbind();
         portrait.prefWidthProperty().unbind();
 
         assert !portraitList.containsKey(seller);
-        assert !canvasMap.getChildren().contains(portrait);
+        assert !geographicalMap.getChildren().contains(portrait);
 
     }
 
@@ -323,7 +331,7 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
             removeAgentFromMap(agent);
         portraitList.clear();
         //they should all be gone!
-        assert canvasMap.getChildren().isEmpty();
+        assert geographicalMap.getChildren().isEmpty();
 
 
     }
@@ -351,8 +359,8 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
         return Collections.unmodifiableMap(portraitList);
     }
 
-    public Pane getCanvasMap() {
-        return canvasMap;
+    public Pane getGeographicalMap() {
+        return geographicalMap;
     }
 
 
@@ -370,5 +378,9 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
 
     public IntegerProperty minimumModelXProperty() {
         return minimumModelX;
+    }
+
+    public GeographicalMarket getMarket() {
+        return market;
     }
 }

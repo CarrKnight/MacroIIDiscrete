@@ -10,7 +10,6 @@ import agents.firm.GeographicalFirm;
 import financial.market.GeographicalMarket;
 import financial.market.Market;
 import model.MacroII;
-import model.scenario.OilDistributorScenario;
 
 /**
  * <h4>Description</h4>

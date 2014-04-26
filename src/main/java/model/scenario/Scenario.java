@@ -10,6 +10,7 @@ import agents.EconomicAgent;
 import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
+import model.scenario.oil.OilDistributorScenario;
 import sim.portrayal.Inspector;
 import sim.portrayal.SimpleInspector;
 
@@ -104,7 +105,7 @@ public abstract class Scenario {
         allScenarios.add(MonopolistScenario .class);
         allScenarios.add(MultiProduction .class);
         allScenarios.add(MultiProductionMonopolist .class);
-        allScenarios.add(OilDistributorScenario .class);
+        allScenarios.add(OilDistributorScenario.class);
         allScenarios.add(OneLinkSupplyChainScenario.class);
         allScenarios.add(OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist .class);
         allScenarios.add(OneLinkSupplyChainScenarioWithCheatingBuyingPrice .class);

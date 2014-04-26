@@ -14,7 +14,6 @@ import goods.GoodType;
 import javafx.beans.property.SimpleIntegerProperty;
 import model.MacroII;
 import model.scenario.MonopolistScenario;
-import model.scenario.OilDistributorScenario;
 
 /**
  * A single labor market, created at initialization.

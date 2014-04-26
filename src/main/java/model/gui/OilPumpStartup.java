@@ -16,7 +16,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
 import model.MacroII;
 import model.gui.market.GeographicalMarketView;
-import model.scenario.OilDistributorScenario;
+import model.scenario.oil.OilDistributorScenario;
 import model.utilities.dummies.GeographicalCustomer;
 
 /**

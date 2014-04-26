@@ -9,7 +9,6 @@ package model.scenario.oil;
 import agents.firm.Firm;
 import financial.market.GeographicalMarket;
 import model.MacroII;
-import model.scenario.OilDistributorScenario;
 import model.utilities.geography.Location;
 
 /**

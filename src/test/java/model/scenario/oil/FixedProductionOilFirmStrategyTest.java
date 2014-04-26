@@ -10,7 +10,6 @@ import agents.firm.Firm;
 import financial.market.GeographicalMarket;
 import goods.GoodType;
 import model.MacroII;
-import model.scenario.OilDistributorScenario;
 import model.utilities.geography.Location;
 import org.junit.Assert;
 import org.junit.Test;

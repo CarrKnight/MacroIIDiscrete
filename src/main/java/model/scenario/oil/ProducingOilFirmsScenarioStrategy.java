@@ -29,7 +29,6 @@ import financial.market.GeographicalMarket;
 import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
-import model.scenario.OilDistributorScenario;
 import model.utilities.geography.Location;
 
 /**

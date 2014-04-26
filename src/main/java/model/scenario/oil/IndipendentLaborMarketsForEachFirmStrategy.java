@@ -15,7 +15,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableIntegerValue;
 import model.MacroII;
 import model.scenario.MonopolistScenario;
-import model.scenario.OilDistributorScenario;
 
 import java.util.HashMap;
 

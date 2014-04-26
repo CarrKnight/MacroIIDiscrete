@@ -12,7 +12,6 @@ import financial.market.Market;
 import goods.GoodType;
 import goods.GoodTypeMasterList;
 import model.MacroII;
-import model.scenario.OilDistributorScenario;
 import org.junit.Assert;
 import org.junit.Test;
 

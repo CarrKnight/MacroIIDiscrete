@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package model.scenario;
+package model.scenario.oil;
 
 import agents.firm.GeographicalFirm;
 import com.google.common.base.Preconditions;
@@ -13,7 +13,7 @@ import financial.market.GeographicalMarket;
 import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
-import model.scenario.oil.*;
+import model.scenario.Scenario;
 import model.utilities.dummies.GeographicalCustomer;
 import model.utilities.geography.Location;
 
@@ -86,9 +86,9 @@ public class OilDistributorScenario extends Scenario
         laborMarketStrategy.initializeLaborMarkets(this,market,getModel());
 
         //three pumps
-        createOilPump(new Location(-10, -2), market, "poor");
-        createOilPump(new Location(0,0),market,"middle");
-        createOilPump(new Location(10,2),market,"rich");
+        createNewProducer(new Location(-10, -2), market, "poor");
+        createNewProducer(new Location(0, 0), market, "middle");
+        createNewProducer(new Location(10, 2), market, "rich");
     }
 
     public void createNeighborhood(Location center, double centerStandardDeviation, int minPrice, int maxPrice,
@@ -103,14 +103,22 @@ public class OilDistributorScenario extends Scenario
             int price = randomizer.nextInt(maxPrice-minPrice)+minPrice;
             assert price >= minPrice;
             assert price <=maxPrice;
-            GeographicalCustomer customer = new GeographicalCustomer(getModel(),price,center.getxLocation()+xNoise,
-                    center.getyLocation()+yNoise,market);
+            final double y = center.getyLocation() + yNoise;
+            final double x = center.getxLocation()+xNoise;
+            GeographicalCustomer customer = new GeographicalCustomer(getModel(),price,x,y,market);
             getAgents().add(customer);
         }
 
     }
 
-    public void createOilPump(Location location,GeographicalMarket market, String name)
+    public void createNewConsumer(Location location, GeographicalMarket market, long price)
+    {
+        GeographicalCustomer customer = new GeographicalCustomer(getModel(),price,
+                location.getxLocation(),location.getyLocation(),market);
+        getAgents().add(customer);
+    }
+
+    public void createNewProducer(Location location, GeographicalMarket market, String name)
     {
         oilFirmsStrategy.createOilPump(location,market,name,this,getModel());
 

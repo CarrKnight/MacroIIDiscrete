@@ -21,7 +21,6 @@ import goods.GoodType;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import model.MacroII;
-import model.scenario.OilDistributorScenario;
 import model.utilities.ActionOrder;
 import model.utilities.geography.Location;
 import sim.engine.SimState;

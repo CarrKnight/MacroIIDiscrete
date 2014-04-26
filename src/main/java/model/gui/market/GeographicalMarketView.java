@@ -41,7 +41,7 @@ public class GeographicalMarketView extends TabPane implements Deactivatable {
         colors = new SellingFirmToColorMap(market,model.getRandom());
         presentation = new GeographicalMarketPresentation(colors,market,model);
         //create a scrollview to hold on to the map
-        ScrollPane pane = new ScrollPane(presentation.getCanvasMap());
+        ScrollPane pane = new ScrollPane(presentation.getGeographicalMap());
         StackPane mapContainer = new StackPane(pane);
         mapTab.setContent(mapContainer);
         this.getTabs().add(mapTab);
@@ -59,7 +59,7 @@ public class GeographicalMarketView extends TabPane implements Deactivatable {
                 if (scrollEvent.getDeltaY() > 0)
                     presentation.setOneUnitInModelEqualsHowManyPixels((int) Math.max(10,zoom+scrollEvent.getDeltaY()/5));
                 if (scrollEvent.getDeltaY() < 0)
-                    presentation.setOneUnitInModelEqualsHowManyPixels((int) (zoom+scrollEvent.getDeltaY()/5));
+                    presentation.setOneUnitInModelEqualsHowManyPixels((int) Math.max(10,(zoom+scrollEvent.getDeltaY()/5)));
 
             }
         });
