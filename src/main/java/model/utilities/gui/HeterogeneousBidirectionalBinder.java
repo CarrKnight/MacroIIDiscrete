@@ -21,8 +21,7 @@ import java.util.function.Function;
  *     <li> We can't extend the original BidirectionalBinding since it has a private constructor </li>
  *     <li> It doesn't use static methods and it's a simple object you want to keep a reference around </li>
  * </ul>
- * Unfortunately it cannot extend bidirectionalbinding because that has a private constructor so we can't leverage all those nice statics
- * like unbind() and such. This is why this is really a "binder" more than just a "binding". You need to keep its reference around when you want to unbind
+ * The bind is effective from the constructor until unbind() is called. It is registered as a weaklistener to both properties.
  * Created by carrknight on 4/26/14.
  */
 public class HeterogeneousBidirectionalBinder<A,B> implements ChangeListener<Object>, WeakListener {

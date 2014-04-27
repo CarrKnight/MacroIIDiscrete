@@ -9,9 +9,10 @@ package model.utilities.gui;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import org.apache.commons.collections15.Transformer;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.function.Function;
 
 /**
  * A simple test to make sure that the binding works and can be turned off
@@ -27,8 +28,8 @@ public class HeterogeneousBidirectionalBinderTest
         //binding an enum and a number
         Property<TestEnum> enumProperty = new SimpleObjectProperty<>(TestEnum.NEGATIVE);
         Property<Number> integerProperty = new SimpleIntegerProperty(10);
-        Transformer<Number,TestEnum> toEnum = number -> number.intValue()>=0 ? TestEnum.POSITIVE : TestEnum.NEGATIVE;
-        Transformer<TestEnum,Number> toNumber = testEnum -> testEnum.equals(TestEnum.POSITIVE) ? 1 : -1;
+        Function<Number,TestEnum> toEnum = number -> number.intValue()>=0 ? TestEnum.POSITIVE : TestEnum.NEGATIVE;
+        Function<TestEnum,Number> toNumber = testEnum -> testEnum.equals(TestEnum.POSITIVE) ? 1 : -1;
         //create the binding
         HeterogeneousBidirectionalBinder<TestEnum,Number> binder =
                 new HeterogeneousBidirectionalBinder<>(enumProperty,integerProperty,toNumber,toEnum);
@@ -41,13 +42,13 @@ public class HeterogeneousBidirectionalBinderTest
         integerProperty.setValue(5);
         Assert.assertEquals(TestEnum.POSITIVE, enumProperty.getValue());
         integerProperty.setValue(-5);
-        Assert.assertEquals(TestEnum.NEGATIVE,enumProperty.getValue());
+        Assert.assertEquals(TestEnum.NEGATIVE, enumProperty.getValue());
 
         //if I change the enum, i will change the integer
         enumProperty.setValue(TestEnum.POSITIVE);
         Assert.assertEquals(integerProperty.getValue().intValue(),1);
         enumProperty.setValue(TestEnum.NEGATIVE);
-        Assert.assertEquals(integerProperty.getValue().intValue(),-1);
+        Assert.assertEquals(integerProperty.getValue().intValue(), -1);
 
         //if i unbind, this stops being true
         binder.unbind(); //notice that it's not the static method that gets called
@@ -65,11 +66,11 @@ public class HeterogeneousBidirectionalBinderTest
         Property<TestEnum> enumProperty = new SimpleObjectProperty<>(TestEnum.NEGATIVE);
         Property<Number> integerProperty = new SimpleIntegerProperty(10);
         //the usual transfomers
-        Transformer<Number, TestEnum> toEnum = number -> number.intValue() >= 0 ? TestEnum.POSITIVE : TestEnum.NEGATIVE;
-        Transformer<TestEnum, Number> toNumber = testEnum -> testEnum.equals(TestEnum.POSITIVE) ? 1 : -1;
+        Function<Number, TestEnum> toEnum = number -> number.intValue() >= 0 ? TestEnum.POSITIVE : TestEnum.NEGATIVE;
+        Function<TestEnum, Number> toNumber = testEnum -> testEnum.equals(TestEnum.POSITIVE) ? 1 : -1;
         //the inverse transformers.
-        Transformer<Number, TestEnum> toEnum2 = number -> number.intValue() < 0 ? TestEnum.POSITIVE : TestEnum.NEGATIVE;
-        Transformer<TestEnum, Number> toNumber2 = testEnum -> testEnum.equals(TestEnum.NEGATIVE) ? 1 : -1;
+        Function<Number, TestEnum> toEnum2 = number -> number.intValue() < 0 ? TestEnum.POSITIVE : TestEnum.NEGATIVE;
+        Function<TestEnum, Number> toNumber2 = testEnum -> testEnum.equals(TestEnum.NEGATIVE) ? 1 : -1;
         //create the binding
         HeterogeneousBidirectionalBinder<TestEnum, Number> binder =
                 new HeterogeneousBidirectionalBinder<>(enumProperty, integerProperty, toNumber, toEnum);
