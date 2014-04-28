@@ -6,12 +6,10 @@
 
 package model.utilities.geography;
 
-import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.effect.BlendMode;
-import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
 
 import java.io.InputStream;
 
@@ -20,7 +18,7 @@ import java.io.InputStream;
  * on it to signify "click here to add a new one"
  * Created by carrknight on 4/24/14.
  */
-public class NewFirmPortrait extends StackPane {
+public class NewFirmPortrait extends Group {
 
 
 
@@ -35,25 +33,27 @@ public class NewFirmPortrait extends StackPane {
      * take the oil pump image and adds a plus to it
      */
     public NewFirmPortrait() {
-
-        //set big enough
-        this.prefWidth(100);
-        this.prefHeight(100);
-
-        ImageView icon = new ImageView(GeographicalFirmPortrait.oilImage);
-        icon.fitWidthProperty().bind(prefWidthProperty());
-        icon.fitHeightProperty().bind(prefHeightProperty());
-        ImageView plus = new ImageView(plusImage);
-        plus.setEffect(new Glow(2));
-        plus.fitWidthProperty().bind(prefWidthProperty().divide(3));
-        plus.fitHeightProperty().bind(prefHeightProperty().divide(3));
+        super();
 
 
-        //we are going to "merge" them using the stackpane trick
-        getChildren().addAll(icon,plus);
-        StackPane.setAlignment(icon, Pos.TOP_LEFT);
-        StackPane.setAlignment(plus, Pos.TOP_LEFT);
-        this.setBlendMode(BlendMode.SRC_OVER);
+        ImageView firm = new ImageView(GeographicalFirmPortrait.oilImage);
+        firm.setFitWidth(100);
+        firm.setPreserveRatio(true);
+        firm.setSmooth(true);
+        firm.setCache(true);
+
+        ImageView addPlus = new ImageView(plusImage);
+        addPlus.fitWidthProperty().bind(firm.fitWidthProperty().divide(2));
+        addPlus.setPreserveRatio(true);
+        addPlus.setSmooth(true);
+        addPlus.setCache(true);
+        addPlus.setBlendMode(BlendMode.SRC_OVER);
+
+        this.getChildren().addAll(firm,addPlus);
+
+
+
+
 
     }
 

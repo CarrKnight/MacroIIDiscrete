@@ -18,12 +18,11 @@ import model.utilities.Deactivatable;
 import model.utilities.geography.NewFirmPortrait;
 
 /**
- * Created by carrknight on 4/24/14.
  * A series of buttons to press to switch mouse mode. Unfortunately because toggleGroup property is readOnly my Heterogeneous Bidirectional Binder
  * doesn't apply and I need to duplicate again a lot of listening code!
  * Created by carrknight on 4/24/14.
  */
-public class AddAgentsToMapAccordion extends TitledPane implements ChangeListener<Object>, Deactivatable {
+public class AddAgentsToMapTitledPane extends TitledPane implements ChangeListener<Object>, Deactivatable {
 
 
     /**
@@ -31,15 +30,6 @@ public class AddAgentsToMapAccordion extends TitledPane implements ChangeListene
      */
     private final ObjectProperty<MouseMode> currentMouseMode;
 
-    /**
-     * A link to the rest of the presentation
-     */
-    private final GeographicalMarketPresentation geographicalMarketPresentation;
-
-    /**
-     * A link to the scenario is needed to produce agents
-     */
-    private final GeographicalScenario scenario;
 
     //all the toggles
     private final ToggleButton normalSelection;
@@ -51,18 +41,19 @@ public class AddAgentsToMapAccordion extends TitledPane implements ChangeListene
 
     private final MouseModeSwitcher mouseModeSwitcher;
 
+    public final static String SELECT_BUTTON_STRING = "Select";
+    public final static String ADD_FIRM_BUTTON_STRING = "Add Firm";
+    public final static String ADD_HOUSEHOLD_BUTTON_STRING = "Add Household";
+    public final static String PANE_TITLE = "Add Agents";
 
 
-    public AddAgentsToMapAccordion(GeographicalMarketPresentation geographicalMarketPresentation, GeographicalScenario scenario) {
-
-        this.geographicalMarketPresentation = geographicalMarketPresentation;
-        this.scenario = scenario;
+    public AddAgentsToMapTitledPane(GeographicalMarketPresentation geographicalMarketPresentation, GeographicalScenario scenario) {
 
 
-
-        normalSelection = new ToggleButton("Normal");
-        addOilPump = new ToggleButton("Add Firm",new NewFirmPortrait());
-        addHousehold = new ToggleButton("Add Household");
+        normalSelection = new ToggleButton(SELECT_BUTTON_STRING);
+        final NewFirmPortrait newFirmPortrait = new NewFirmPortrait();
+        addOilPump = new ToggleButton(ADD_FIRM_BUTTON_STRING, newFirmPortrait);
+        addHousehold = new ToggleButton(ADD_HOUSEHOLD_BUTTON_STRING);
 
         mouseSelection = new ToggleGroup();
         normalSelection.setToggleGroup(mouseSelection);
@@ -82,6 +73,8 @@ public class AddAgentsToMapAccordion extends TitledPane implements ChangeListene
         HBox toggleContainer = new HBox(normalSelection,addOilPump,addHousehold);
         super.setContent(toggleContainer);
 
+        super.setText(PANE_TITLE);
+
 
 
     }
@@ -96,24 +89,9 @@ public class AddAgentsToMapAccordion extends TitledPane implements ChangeListene
 
 
         updating=true;
-        if(sourceProperty.getValue().equals(mouseSelection.selectedToggleProperty()))
+        final Object source = sourceProperty.getValue();
+        if(source.equals(currentMouseMode))
         {
-            Toggle newToggle = (Toggle) newValue;
-            //the toggle has changed
-            if(newToggle.equals(normalSelection))
-                currentMouseMode.setValue(MouseMode.SELECTION);
-            else if(newToggle.equals(addOilPump))
-                currentMouseMode.setValue(MouseMode.ADD_FIRM);
-            else{
-                assert newToggle.equals(addHousehold);
-                currentMouseMode.setValue(MouseMode.ADD_CONSUMER);
-            }
-
-        }
-        else
-        {
-            assert sourceProperty.getValue().equals(currentMouseMode);
-
             MouseMode mode = (MouseMode) newValue;
             switch (mode)
             {
@@ -130,6 +108,25 @@ public class AddAgentsToMapAccordion extends TitledPane implements ChangeListene
             }
 
 
+
+        }
+        else
+        {
+            assert source.equals(mouseSelection.selectedToggleProperty()) ||
+                    mouseSelection.getToggles().contains(source) ;
+
+            Toggle newToggle = (Toggle) newValue;
+            //the toggle has changed
+            if(newToggle.equals(normalSelection))
+                currentMouseMode.setValue(MouseMode.SELECTION);
+            else if(newToggle.equals(addOilPump))
+                currentMouseMode.setValue(MouseMode.ADD_FIRM);
+            else{
+                assert newToggle.equals(addHousehold);
+                currentMouseMode.setValue(MouseMode.ADD_CONSUMER);
+            }
+
+
         }
         updating =false;
 
@@ -141,5 +138,17 @@ public class AddAgentsToMapAccordion extends TitledPane implements ChangeListene
         mouseModeSwitcher.turnOff();
         mouseSelection.selectedToggleProperty().removeListener(this);
         currentMouseMode.removeListener(this);
+    }
+
+    public ToggleButton getAddHousehold() {
+        return addHousehold;
+    }
+
+    public ToggleButton getNormalSelection() {
+        return normalSelection;
+    }
+
+    public ToggleButton getAddOilPump() {
+        return addOilPump;
     }
 }
