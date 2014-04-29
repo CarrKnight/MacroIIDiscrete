@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package model.utilities.gui;
+package model.gui.utilities;
 
 import javafx.beans.WeakListener;
 import javafx.beans.property.Property;

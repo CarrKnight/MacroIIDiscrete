@@ -10,12 +10,18 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.*;
+import javafx.scene.control.TitledPane;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import model.gui.market.GeographicalMarketPresentation;
 import model.scenario.GeographicalScenario;
 import model.utilities.Deactivatable;
-import model.utilities.geography.NewFirmPortrait;
+import model.utilities.geography.GeographicalCustomerPortrait;
+import model.utilities.geography.GeographicalFirmPortrait;
+import model.utilities.geography.NewAgentPortrait;
 
 /**
  * A series of buttons to press to switch mouse mode. Unfortunately because toggleGroup property is readOnly my Heterogeneous Bidirectional Binder
@@ -45,15 +51,14 @@ public class AddAgentsToMapTitledPane extends TitledPane implements ChangeListen
     public final static String ADD_FIRM_BUTTON_STRING = "Add Firm";
     public final static String ADD_HOUSEHOLD_BUTTON_STRING = "Add Household";
     public final static String PANE_TITLE = "Add Agents";
+    public final static int BUTTON_SIZE = 200;
 
 
     public AddAgentsToMapTitledPane(GeographicalMarketPresentation geographicalMarketPresentation, GeographicalScenario scenario) {
 
-
         normalSelection = new ToggleButton(SELECT_BUTTON_STRING);
-        final NewFirmPortrait newFirmPortrait = new NewFirmPortrait();
-        addOilPump = new ToggleButton(ADD_FIRM_BUTTON_STRING, newFirmPortrait);
-        addHousehold = new ToggleButton(ADD_HOUSEHOLD_BUTTON_STRING);
+        addOilPump = initializeButton(ADD_FIRM_BUTTON_STRING, GeographicalFirmPortrait.OIL_IMAGE);
+        addHousehold =  initializeButton(ADD_HOUSEHOLD_BUTTON_STRING, GeographicalCustomerPortrait.CUSTOMER_IMAGE);
 
         mouseSelection = new ToggleGroup();
         normalSelection.setToggleGroup(mouseSelection);
@@ -77,6 +82,15 @@ public class AddAgentsToMapTitledPane extends TitledPane implements ChangeListen
 
 
 
+    }
+
+    private ToggleButton initializeButton(String buttonString, Image buttonImage) {
+        ToggleButton toReturn = new ToggleButton(buttonString);
+        final NewAgentPortrait newFirmPortrait = new NewAgentPortrait(buttonImage);
+        toReturn.setGraphic(newFirmPortrait);
+        toReturn.setPrefWidth(BUTTON_SIZE);
+        newFirmPortrait.sizeProperty().bind(toReturn.prefWidthProperty().divide(3));
+        return toReturn;
     }
 
     @Override

@@ -14,11 +14,9 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
 import model.MacroII;
-import model.gui.market.MarketView;
+import model.gui.market.SimpleMarketView;
 import model.scenario.SimpleSellerScenario;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
@@ -74,10 +72,10 @@ public class MarketApplication extends Application implements Steppable, Deactiv
         //////////////////////////////////
         model.start();
         System.out.println("Creating the view");
-        MarketView marketView = new MarketView(model.getMarket(GoodType.GENERIC),model);
+        SimpleMarketView simpleMarketView = new SimpleMarketView(model.getMarket(GoodType.GENERIC),model);
 
         //make a scene
-        stage.setScene(new Scene(marketView));
+        stage.setScene(new Scene(simpleMarketView));
         stage.show();
 
         stage.setOnCloseRequest(windowEvent -> Platform.exit());

@@ -28,16 +28,16 @@ public class GeographicalCustomerPortrait extends HasLocationPortrait
 {
 
     //load the image once statically and be done with it
-    private final static Image customerImage;
+    public final static Image CUSTOMER_IMAGE;
     static {
         InputStream input = GeographicalCustomerPortrait.class.getClassLoader().
                 getResourceAsStream("images/homeIcon.png");
-        customerImage = new Image(input);
+        CUSTOMER_IMAGE = new Image(input);
     }
 
     @Override
     protected Image initImage(HasLocation agent) {
-        return customerImage;
+        return CUSTOMER_IMAGE;
     }
 
 

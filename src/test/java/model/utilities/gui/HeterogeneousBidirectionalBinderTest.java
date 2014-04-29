@@ -9,6 +9,7 @@ package model.utilities.gui;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import model.gui.utilities.HeterogeneousBidirectionalBinder;
 import org.junit.Assert;
 import org.junit.Test;
 

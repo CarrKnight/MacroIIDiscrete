@@ -17,7 +17,7 @@ public enum MouseMode {
 
     ADD_FIRM,
 
-    ADD_CONSUMER;
+    ADD_CONSUMER
 
 
 }

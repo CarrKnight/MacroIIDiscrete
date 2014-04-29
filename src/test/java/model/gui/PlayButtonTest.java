@@ -6,13 +6,11 @@
 
 package model.gui;
 
-import financial.market.Market;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
 import model.MacroII;
 import model.gui.market.MarketPresentationTest;
-import model.gui.market.MarketView;
 import model.utilities.ActionOrder;
 import org.junit.Assert;
 import org.junit.Before;

@@ -1,11 +1,7 @@
 package model.utilities.geography;
 
-import com.google.common.base.Preconditions;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableObjectValue;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.CacheHint;
 import javafx.scene.effect.Blend;
 import javafx.scene.effect.BlendMode;
@@ -16,7 +12,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 /**
@@ -124,5 +119,13 @@ public abstract class HasLocationPortrait extends StackPane {
 
     public Text getPriceText() {
         return priceText;
+    }
+
+    /**
+     * the original image drawn!
+     * @return
+     */
+    public Image getImage() {
+        return icon.getImage();
     }
 }
