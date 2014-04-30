@@ -17,7 +17,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import model.gui.market.GeographicalMarketPresentation;
-import model.scenario.GeographicalScenario;
+import model.scenario.ControllableGeographicalScenario;
 import model.utilities.Deactivatable;
 import model.utilities.geography.GeographicalCustomerPortrait;
 import model.utilities.geography.GeographicalFirmPortrait;
@@ -54,7 +54,7 @@ public class AddAgentsToMapTitledPane extends TitledPane implements ChangeListen
     public final static int BUTTON_SIZE = 200;
 
 
-    public AddAgentsToMapTitledPane(GeographicalMarketPresentation geographicalMarketPresentation, GeographicalScenario scenario) {
+    public AddAgentsToMapTitledPane(GeographicalMarketPresentation geographicalMarketPresentation, ControllableGeographicalScenario scenario) {
 
         normalSelection = new ToggleButton(SELECT_BUTTON_STRING);
         addOilPump = initializeButton(ADD_FIRM_BUTTON_STRING, GeographicalFirmPortrait.OIL_IMAGE);

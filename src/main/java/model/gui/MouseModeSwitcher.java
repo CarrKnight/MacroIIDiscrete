@@ -12,7 +12,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import model.gui.market.GeographicalMarketPresentation;
-import model.scenario.GeographicalScenario;
+import model.scenario.ControllableGeographicalScenario;
 import model.utilities.Deactivatable;
 import model.utilities.geography.Location;
 
@@ -29,11 +29,11 @@ public class MouseModeSwitcher implements Deactivatable, EventHandler<MouseEvent
     private final GeographicalMarketPresentation geographicalMarketPresentation;
     private final ObservableValue<MouseMode> mouseMode;
 
-    private final GeographicalScenario scenario;
+    private final ControllableGeographicalScenario scenario;
 
     public MouseModeSwitcher(ObservableValue<MouseMode> mouseMode,
                              GeographicalMarketPresentation geographicalMarketPresentation,
-                             GeographicalScenario scenario)
+                             ControllableGeographicalScenario scenario)
     {
         //get a reference to the map and start listening for clicks
         this.geographicalMarketPresentation = geographicalMarketPresentation;

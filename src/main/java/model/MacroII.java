@@ -11,6 +11,7 @@ import agents.EconomicAgent;
 import agents.HasInventory;
 import agents.Person;
 import agents.firm.Firm;
+import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import goods.GoodType;
@@ -916,5 +917,17 @@ public class MacroII extends SimState{
 
     public GoodTypeMasterList getGoodTypeMasterList() {
         return goodTypeMasterList;
+    }
+
+    /**
+     * call this only if the model has started (otherwise just add it to the scenario list)
+     * @param market the new mark
+     */
+    public void addMarket(Market market) {
+        Preconditions.checkState(hasStarted(), "only call this method after the model has started");
+        Preconditions.checkState(!markets.containsKey(market.getGoodType()),"Already has a market for this good type!");
+        markets.put(market.getGoodType(),market);
+        scheduleSoon(ActionOrder.DAWN, state -> market.start(this),Priority.BEFORE_STANDARD);
+
     }
 }

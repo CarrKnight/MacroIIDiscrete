@@ -10,6 +10,7 @@ import javafx.collections.ObservableSet;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TitledPane;
 import model.gui.utilities.TabEventListener;
+import model.utilities.Deactivatable;
 
 import java.util.Collection;
 
@@ -20,7 +21,7 @@ import java.util.Collection;
  * TitlePane/Controls don't need to be broadcasted, rather they are tied to tabs in a map. This means that different tabs can have different controls.
  * Created by carrknight on 4/29/14.
  */
-public interface MarketView {
+public interface MarketView extends Deactivatable {
 
 
     public Collection<Tab> getInitialTabs();

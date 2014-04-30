@@ -13,6 +13,7 @@ import financial.market.GeographicalMarket;
 import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
+import model.scenario.ControllableGeographicalScenario;
 import model.scenario.Scenario;
 import model.utilities.dummies.GeographicalCustomer;
 import model.utilities.geography.Location;
@@ -22,7 +23,7 @@ import model.utilities.geography.Location;
  * As of now each distributor produces fixed 10 units of goods
  * Created by carrknight on 4/8/14.
  */
-public class OilDistributorScenario extends Scenario
+public class OilDistributorScenario extends Scenario implements ControllableGeographicalScenario
 {
 
 

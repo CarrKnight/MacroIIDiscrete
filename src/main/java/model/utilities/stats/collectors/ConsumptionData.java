@@ -52,9 +52,13 @@ public class ConsumptionData extends ProductionData {
         //grab the production vector
 
         final Set<GoodType> sectorList = model.getGoodTypeMasterList().getListOfAllSectors();
-        for(GoodType type : sectorList)  //record all production
-            data.get(type).add((double) plant.getConsumedToday(type));
+        for(GoodType type : sectorList)  //record all consumption
+        {
+            if(data.get(type)== null) //this can happen if a new good sector has been created
+                fillNewSectorObservationsWith0(model, type);
 
+            data.get(type).add((double) plant.getConsumedToday(type));
+        }
         //reschedule
         model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
 

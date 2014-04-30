@@ -102,12 +102,25 @@ public class ProductionData extends DataStorageSkeleton<GoodType>
         final Set<GoodType> listOfAllSectors = model.getGoodTypeMasterList().getListOfAllSectors();
         for(GoodType type : listOfAllSectors)
         {
+            if(data.get(type)== null) //this can happen if a new good sector has been created
+                fillNewSectorObservationsWith0(model, type);
+
+
             data.get(type).add((double) plant.getProducedToday(type));
         }
+        Preconditions.checkState(super.doubleCheckNumberOfObservationsAreTheSameForAllObservations(super.numberOfObservations()));
         //reschedule
         model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
 
 
+    }
+
+    protected void fillNewSectorObservationsWith0(MacroII model, GoodType type) {
+        final DailyObservations newObservations = new DailyObservations();
+        data.put(type, newObservations);
+        int currentDay = (int)model.getMainScheduleTime();
+        for(int i=getStartingDay(); i<currentDay; i++)
+            newObservations.add(0d);
     }
 
     protected void setCorrectStartingDate(MacroII model) {

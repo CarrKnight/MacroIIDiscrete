@@ -13,7 +13,7 @@ import model.utilities.geography.Location;
  * A geographical scenario must be able to add agents on the fly in markets (this plays well with GUI)
  * Created by carrknight on 4/25/14.
  */
-public interface GeographicalScenario {
+public interface ControllableGeographicalScenario {
 
     public void createNewProducer(Location location, GeographicalMarket market, String name);
 

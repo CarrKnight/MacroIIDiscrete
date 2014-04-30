@@ -12,14 +12,12 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.Deactivatable;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -30,24 +28,32 @@ import sim.engine.Steppable;
  * An extension of Market View holding, adding a "map" tab
  * Created by carrknight on 4/8/14.
  */
-public class GeographicalMarketView extends TabPane implements Deactivatable {
+public class GeographicalMarketView extends BaseMarketView  {
 
+    /**
+     * the presentation holds most of the logic, keeping view paper-thin
+     */
     private final GeographicalMarketPresentation presentation;
+    /**
+     * I figured this map would be independent.
+     */
     private final SellingFirmToColorMap colors;
+    /**
+     * the tab holding the geographical map!
+     */
+    private final Tab mapTab;
 
     public GeographicalMarketView(GeographicalMarket market, MacroII model) {
         //create the map
-        Tab mapTab = new Tab("Geography");
+        mapTab = new Tab("Geography");
         colors = new SellingFirmToColorMap(market,model.getRandom());
         presentation = new GeographicalMarketPresentation(colors,market,model);
         //create a scrollview to hold on to the map
         ScrollPane pane = new ScrollPane(presentation.getGeographicalMap());
         StackPane mapContainer = new StackPane(pane);
         mapTab.setContent(mapContainer);
-        this.getTabs().add(mapTab);
-        this.getSelectionModel().select(mapTab);
-        this.setHeight(800);
-        this.setWidth(1024);
+        addToInitialTabs(mapTab);
+        //this.getSelectionModel().select(mapTab);
 
         pane.setPannable(true);
 
@@ -85,7 +91,7 @@ public class GeographicalMarketView extends TabPane implements Deactivatable {
         //create price-tab
         Tab prices = new Tab("Prices");
         prices.setContent(new FirmChartPresentation(colors,market.getGoodType(), SalesDataType.LAST_ASKED_PRICE));
-        this.getTabs().add(prices);
+        addToInitialTabs(prices);
 
     }
 
@@ -94,5 +100,17 @@ public class GeographicalMarketView extends TabPane implements Deactivatable {
         presentation.turnOff();
         colors.turnOff();
 
+    }
+
+    protected GeographicalMarketPresentation getPresentation() {
+        return presentation;
+    }
+
+    protected Tab getMapTab() {
+        return mapTab;
+    }
+
+    public SellingFirmToColorMap getColors() {
+        return colors;
     }
 }

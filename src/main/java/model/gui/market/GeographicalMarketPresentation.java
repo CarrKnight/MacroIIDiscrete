@@ -174,7 +174,7 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
             addSellerToMap(entry.getKey(),entry.getValue(),macroII,market.getGoodType());
         }
         //initialize the seller list!
-        colorMap.getColorMap().addListener(sellerListener);
+        colorMap.addListener(sellerListener);
 
 
         //start the steppable, please

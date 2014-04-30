@@ -61,7 +61,10 @@ public class IndipendentLaborMarketsForEachFirmStrategy implements LaborMarketOi
         assert supplyIntercepts.size() == supplySlopes.size();
         assert supplyNumberOfWorkers.size() == supplySlopes.size();
         new LaborMarketForOilUpdater(slope,intercept,workers,model,laborMarket); //apply an updater to it
-        scenario.getMarkets().put(laborType,laborMarket);
+        if(!model.hasStarted())
+            scenario.getMarkets().put(laborType,laborMarket);
+        else
+            model.addMarket(laborMarket);
 
         //return it!
         return laborMarket;

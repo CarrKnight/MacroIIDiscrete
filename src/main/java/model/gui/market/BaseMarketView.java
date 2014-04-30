@@ -9,6 +9,7 @@ package model.gui.market;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
 import model.gui.utilities.TabEvent;
 import model.gui.utilities.TabEventListener;
@@ -72,6 +73,7 @@ public abstract class BaseMarketView implements MarketView {
         TabEvent event = new TabEvent(this,tab);
         for(TabEventListener listener : listeners)
             listener.getNotifiedOfNewTab(event);
+        TabPane pane = new TabPane();
 
     }
 

@@ -12,7 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import model.gui.market.GeographicalMarketPresentation;
-import model.scenario.GeographicalScenario;
+import model.scenario.ControllableGeographicalScenario;
 import model.utilities.geography.Location;
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,14 +33,14 @@ public class MouseModeSwitcherTest extends GuiTest{
 
     private Pane geographicalPane;
 
-    private GeographicalScenario scenario;
+    private ControllableGeographicalScenario scenario;
 
     @Override
     protected Parent getRootNode() {
         geographicalMarketPresentation = mock(GeographicalMarketPresentation.class);
         geographicalPane = new Pane();
         when(geographicalMarketPresentation.getGeographicalMap()).thenReturn(geographicalPane);
-        scenario = mock(GeographicalScenario.class);
+        scenario = mock(ControllableGeographicalScenario.class);
         //todo try to put this in @Before
         //border pane with titled pane in the bottom
         BorderPane root = new BorderPane();
