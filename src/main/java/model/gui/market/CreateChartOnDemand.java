@@ -60,14 +60,43 @@ public class CreateChartOnDemand extends Task<LineChart<Number,Number>> {
         chart.setAnimated(false);
         chart.setLegendVisible(false); //only because i can't control the stupid colors
 
-        int observationsPerFirm = -1; //while we are updating the chart, it's clearly possible that the model is still running
-        //that would make later sellers' curves longer which is very silly. with this variable we make sure all curves are of the same length
+
 
         chart.getXAxis().setAutoRanging(true);
         chart.getXAxis().setLabel("Day");
         chart.getYAxis().setAutoRanging(true);
         chart.getYAxis().setLabel(dataType.name());
-        //for every seller create a series
+
+        //while we are updating the chart, it's clearly possible that the model is still running
+        //that would make later sellers' curves longer which is very silly. with this variable we make sure all curves are of the same length
+        //grab all the data immediately.
+        final SalesData[] dataMap = new SalesData[sellers.size()];
+        //AND equalize the end date
+        int finalDate = Integer.MAX_VALUE; //get the min starting date
+        int observationsPerFirm = -1;
+        boolean atLeastOneStarted = false;
+        //go through all firms, find a common ending-date and make sure there is some data to plot.
+        for(int firmNumber =0; firmNumber < sellers.size(); firmNumber++)
+        {
+            updateMessage("Collecting " + sellers.get(firmNumber).getName() + " data");
+            final SalesData data = sellers.get(firmNumber).getSalesDepartment(goodBeingTraded).getData();
+            dataMap[firmNumber] = data;
+            if(data.getStartingDay() >=0) //if it has a starting date
+            {
+                atLeastOneStarted = true;
+                finalDate = Math.min(finalDate,data.getLastObservedDay());
+                observationsPerFirm = Math.max(observationsPerFirm,data.numberOfObservations());
+            }
+        }
+        //if there is no data don't bother
+        if(!atLeastOneStarted || observationsPerFirm <=0)
+        {
+            return chart;
+        }
+
+
+
+        //now turn that data into a series
         mainloop:
         for(int firmNumber =0; firmNumber < sellers.size(); firmNumber++)
         {
@@ -79,28 +108,20 @@ public class CreateChartOnDemand extends Task<LineChart<Number,Number>> {
 
             // series.nodeProperty().get().setStyle("-fx-stroke: " + "red;");
 
-            updateMessage("Collecting " + seller.getName() + " data");
+            updateMessage("Processing " + seller.getName() + " data");
             //grab the salesData
-            SalesData salesData = seller.getSalesDepartment(goodBeingTraded).getData();
-            if(salesData.numberOfObservations() ==0) //if there are no observations, don't bother
-            {
-                assert observationsPerFirm == -1;
-                return chart;
-            }
-
+            SalesData salesData = dataMap[firmNumber];
 
             //todo this might not work if firms join at different times
             //gather the observations
             double[] pricesObserved = salesData.getAllRecordedObservations(dataType);
-            if(observationsPerFirm==-1) {
-                observationsPerFirm = pricesObserved.length;
-            }
+
             assert pricesObserved.length>=observationsPerFirm;
             //convert the array into data
-            for(int i=0; i< observationsPerFirm; i++ ) {
+            for(int i=salesData.getStartingDay(); i< finalDate; i++ ) {
                 if (isCancelled())
                     break mainloop;
-                series.getData().add(new XYChart.Data<>(salesData.getStartingDay()+i,pricesObserved[i]));
+                series.getData().add(new XYChart.Data<>(i,pricesObserved[i-salesData.getStartingDay()]));
                 updateProgress(firmNumber*observationsPerFirm+i,sellers.size()*observationsPerFirm);
             }
             //add the series
