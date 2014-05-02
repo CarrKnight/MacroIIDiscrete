@@ -222,7 +222,7 @@ public class MarginalMaximizerWithUnitPIDTuningMultiThreaded {
 
                                 //       seller.registerHumanResources(plant, hr);
                                 hr.setFixedPayStructure(isFixedPayStructure());
-                                hr.start();
+                                hr.start(model);
 
 
                             }

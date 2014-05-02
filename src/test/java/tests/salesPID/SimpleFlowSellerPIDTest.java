@@ -56,7 +56,7 @@ public class SimpleFlowSellerPIDTest {
 
         //register sale department
         firm.registerSaleDepartment(dept,GoodType.GENERIC);
-        dept.start();
+        dept.start(model);
         model.start();
 
 
@@ -128,7 +128,7 @@ public class SimpleFlowSellerPIDTest {
 
 
         firm.registerSaleDepartment(dept,GoodType.GENERIC);
-        dept.start();
+        dept.start(model);
         model.start();
 
         List<Quote> quotes =new LinkedList<>();
@@ -198,7 +198,7 @@ public class SimpleFlowSellerPIDTest {
         SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept);
         strategy.setProductionCostOverride(true);
         dept.setAskPricingStrategy(strategy);
-        dept.start();
+        dept.start(model);
         model.start();
 
         strategy.setInitialPrice(150l);

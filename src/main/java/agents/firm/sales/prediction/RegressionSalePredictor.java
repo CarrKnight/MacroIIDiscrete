@@ -30,7 +30,7 @@ import org.apache.commons.collections15.Transformer;
  * @version 2013-07-11
  * @see
  */
-public class RegressionSalePredictor implements SalesPredictor{
+public class RegressionSalePredictor extends BaseSalesPredictor{
 
 
 
@@ -157,6 +157,8 @@ public class RegressionSalePredictor implements SalesPredictor{
      */
     @Override
     public void turnOff() {
+
+        this.turnOff();
         observer.turnOff();
     }
 

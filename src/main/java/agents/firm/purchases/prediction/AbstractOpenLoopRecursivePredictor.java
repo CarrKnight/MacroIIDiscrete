@@ -4,6 +4,7 @@ import agents.firm.sales.prediction.AbstractRecursivePredictor;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
+import model.utilities.logs.*;
 import model.utilities.stats.regression.ExponentialForgettingRegressionDecorator;
 import model.utilities.stats.regression.GunnarsonRegularizerDecorator;
 import model.utilities.stats.regression.KalmanRecursiveRegression;
@@ -26,7 +27,7 @@ import sim.engine.Steppable;
  * @version 2013-11-20
  * @see
  */
-public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivatable
+public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivatable, LogNode
 {
 
     private final AbstractRecursivePredictor delegate;
@@ -88,20 +89,12 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
             currentBeta = delegate.getRegression().getBeta().clone();
             updateSlopes();
 
+            //log it!
+            String kindOfPredictor = delegate instanceof RecursivePurchasesPredictor ? "purchases" : "sales";
+            handleNewEvent(new LogEvent(this,LogLevel.INFO,"{}: learned downward slope: {}, upward slope: {} , trace: {}",
+                    kindOfPredictor,upwardSlope,downwardSlope,delegate.getRegression().getTrace()));
 
-            /*
 
-            if(delegate instanceof RecursivePurchasesPredictor)
-            {
-                System.out.print(model.getMainScheduleTime() +", purchases ");
-            }
-            else
-            {
-                System.out.print(model.getMainScheduleTime() + ", sales: ");
-            }
-            System.out.println("learned slope: " + (upwardSlope) +" ================ " + (downwardSlope ) + " Trace: "  + delegate.getRegression().getTrace());
-
-              */
 
 
 
@@ -132,6 +125,7 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
     public void turnOff() {
         isActive=false;
         delegate.turnOff();
+
 
     }
 
@@ -164,4 +158,47 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
     public void setTimeDelay(int timeDelay) {
         delegate.setTimeDelay(timeDelay);
     }
+
+
+
+    /***
+     *       __
+     *      / /  ___   __ _ ___
+     *     / /  / _ \ / _` / __|
+     *    / /__| (_) | (_| \__ \
+     *    \____/\___/ \__, |___/
+     *                |___/
+     */
+
+    /**
+     * use delegate
+     */
+
+
+    @Override
+    public boolean addLogEventListener(LogListener toAdd) {
+        return delegate.addLogEventListener(toAdd);
+    }
+
+    @Override
+    public boolean removeLogEventListener(LogListener toRemove) {
+        return delegate.removeLogEventListener(toRemove);
+    }
+
+    @Override
+    public void handleNewEvent(LogEvent logEvent)
+    {
+        delegate.handleNewEvent(logEvent);
+    }
+
+    @Override
+    public boolean stopListeningTo(Loggable branch) {
+        return delegate.stopListeningTo(branch);
+    }
+
+    @Override
+    public boolean listenTo(Loggable branch) {
+        return delegate.listenTo(branch);
+    }
+
 }

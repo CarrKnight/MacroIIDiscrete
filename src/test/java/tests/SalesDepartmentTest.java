@@ -134,7 +134,7 @@ public class SalesDepartmentTest {
 
 
         assertEquals(dept.getMarket().getBestBuyPrice(), 100l); //all the others should have been taken
-        dept.start();
+        dept.start(model);
 
         for(int i=0; i<10; i++){
             Good good = new Good(GoodType.GENERIC,dept.getFirm(),30);
@@ -211,7 +211,7 @@ public class SalesDepartmentTest {
         dept.getFirm().receive(toQuote,null);
         //force it in the toSell list
         dept.setAskPricingStrategy(new PriceFollower(dept));
-        dept.start();
+        dept.start(model);
         dept.sellThis(toQuote);
         model.start();
         model.schedule.step(model);
@@ -287,7 +287,7 @@ public class SalesDepartmentTest {
 
         Good g =new Good(GoodType.GENERIC,dept.getFirm(),200);
         dept.getFirm().receive(g,null);
-        dept.start();
+        dept.start(model);
         dept.sellThis(g);
         model.start();
         model.schedule.step(model);

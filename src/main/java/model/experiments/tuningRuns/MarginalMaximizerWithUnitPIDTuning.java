@@ -121,7 +121,7 @@ public class MarginalMaximizerWithUnitPIDTuning {
 
                                         //       seller.registerHumanResources(plant, hr);
                                         hr.setFixedPayStructure(isFixedPayStructure());
-                                        hr.start();
+                                        hr.start(model);
 
 
                                     }

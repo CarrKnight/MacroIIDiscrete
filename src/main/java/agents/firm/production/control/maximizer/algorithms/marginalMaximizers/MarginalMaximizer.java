@@ -15,6 +15,8 @@ import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlg
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import model.utilities.DelayException;
+import model.utilities.logs.LogEvent;
+import model.utilities.logs.LogLevel;
 
 
 /**
@@ -108,29 +110,28 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
 
 
         //compute profits if we increase
-        MarginalMaximizerStatics.logger.trace("========================================================================================================= \n at time: {} firm {} maximizes",
-                owner.getModel().schedule.getTime(),owner.getName());
 
 
         int newTarget = -1;
 
         try{
-            MarginalMaximizerStatics.logger.trace("---> try to increase worker target to {}!", (currentWorkerTarget+1));
+
             float profitsIfWeIncrease = currentWorkerTarget < p.maximumWorkersPossible() ? //if we can increase production
                     MarginalMaximizerStatics.computeMarginalProfits(owner, p, hr, plantControl, policy, currentWorkerTarget, currentWorkerTarget + 1) //check marginal profits
                     :
                     Float.NEGATIVE_INFINITY; //otherwise don't go there!
-            MarginalMaximizerStatics.logger.trace("<--- profits if we increase {}",profitsIfWeIncrease);
+
 
 
 
             //compute profits if we decrease
-            MarginalMaximizerStatics.logger.trace("---> try to decrease worker target to{}!", (currentWorkerTarget-1));
             float profitsIfWeDecrease = currentWorkerTarget > 0 ?
                     MarginalMaximizerStatics.computeMarginalProfits(owner, p, hr, plantControl, policy, currentWorkerTarget, currentWorkerTarget - 1) :
                     Float.NEGATIVE_INFINITY;//if so check marginal profits
-            MarginalMaximizerStatics.logger.trace("<--- profits if we decrease {}",profitsIfWeDecrease);
 
+            hr.handleNewEvent(new LogEvent(this, LogLevel.INFO,
+                    "FINALLY: current workers{} , profits if we increase {}, profits if we decrease {}",
+                    currentWorkerTarget,profitsIfWeIncrease,profitsIfWeDecrease));
 
             if(profitsIfWeDecrease <= EPSILON && profitsIfWeIncrease <= EPSILON)
             {
@@ -168,7 +169,7 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
             return -1;
         }
         finally {
-            MarginalMaximizerStatics.logger.trace(" new target chosen: {} \n====================================================",newTarget);
+            hr.handleNewEvent(new LogEvent(this,LogLevel.TRACE,"new target chosen: {}",newTarget));
 
         }
 

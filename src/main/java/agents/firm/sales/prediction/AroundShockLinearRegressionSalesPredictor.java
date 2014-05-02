@@ -11,6 +11,8 @@ import agents.firm.production.Plant;
 import agents.firm.sales.SalesDepartment;
 import com.google.common.primitives.Doubles;
 import model.MacroII;
+import model.utilities.logs.LogEvent;
+import model.utilities.logs.LogLevel;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import model.utilities.stats.regression.LinearRegression;
 
@@ -32,7 +34,7 @@ import java.util.List;
  * @version 2013-08-27
  * @see
  */
-public class AroundShockLinearRegressionSalesPredictor implements SalesPredictor {
+public class AroundShockLinearRegressionSalesPredictor extends BaseSalesPredictor {
 
 
     final protected FixedDecreaseSalesPredictor predictor = new FixedDecreaseSalesPredictor();
@@ -181,12 +183,16 @@ public class AroundShockLinearRegressionSalesPredictor implements SalesPredictor
                 if(lastUsedLowerBound == -1) //if this is the first regression
                 {
                     predictor.setDecrementDelta((float) -regression.getSlope());
+                    handleNewEvent(new LogEvent(this, LogLevel.TRACE,
+                            "new regressed slope:{}",(-regression.getSlope())));
                 }
                 else
                 {
                     //combine old and new slope (minuses abound, but that's because I coded the decrementDelta weirdly)
                     float weightedAverage = (float) -(regression.getSlope() * .5f - predictor.getDecrementDelta() * .5f);
                     predictor.setDecrementDelta(weightedAverage);
+                    handleNewEvent(new LogEvent(this, LogLevel.TRACE,
+                            "new regressed slope:{}",weightedAverage));
                 }
 
 
@@ -268,6 +274,7 @@ public class AroundShockLinearRegressionSalesPredictor implements SalesPredictor
      */
     @Override
     public void turnOff() {
+        super.turnOff();
         predictor.turnOff();
     }
 

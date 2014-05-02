@@ -28,7 +28,7 @@ import model.utilities.NonDrawable;
  * @see
  */
 @NonDrawable
-public class FixedFormulaFakePredictor implements SalesPredictor, PurchasesPredictor {
+public class FixedFormulaFakePredictor extends BaseSalesPredictor implements PurchasesPredictor {
 
     private final int slope;
 
@@ -124,6 +124,7 @@ public class FixedFormulaFakePredictor implements SalesPredictor, PurchasesPredi
      */
     @Override
     public void turnOff() {
+        super.turnOff();
         throw new RuntimeException("not implemented yet!");
     }
 }

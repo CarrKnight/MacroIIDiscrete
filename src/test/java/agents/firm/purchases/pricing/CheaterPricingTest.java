@@ -121,7 +121,7 @@ public class CheaterPricingTest {
             factoryMade.getInventoryControl().setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(1f);
             //finally register it back to the firm
             firm.registerPurchasesDepartment(factoryMade.getDepartment(),GoodType.GENERIC);
-            factoryMade.getDepartment().start();
+            factoryMade.getDepartment().start(model);
 
 
             //================================================================================

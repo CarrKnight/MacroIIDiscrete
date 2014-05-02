@@ -7,7 +7,6 @@
 package model.utilities.logs;
 
 import model.utilities.Deactivatable;
-import org.slf4j.Logger;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -30,15 +29,10 @@ public class LogNodeSimple implements LogNode, Deactivatable
      */
     private final Set<Loggable> branches;
 
-    /**
-     * loggers registered here, you broadcast log events there!
-     */
-    private final Set<Logger> outputs;
 
     public LogNodeSimple() {
         roots = new LinkedHashSet<>();
         branches = new LinkedHashSet<>();
-        outputs = new LinkedHashSet<>();
 
     }
 
@@ -50,11 +44,6 @@ public class LogNodeSimple implements LogNode, Deactivatable
     @Override
     public void handleNewEvent(LogEvent logEvent)
     {
-        //tell the outputs to log
-        for(Logger sink : outputs)
-        {
-            LogLevel.log(sink,logEvent.getLevel(),logEvent.getMessage(),logEvent.getAdditionalParameters());
-        }
         //rebroadcast to roots
         for(LogListener root : roots)
         {
@@ -99,17 +88,9 @@ public class LogNodeSimple implements LogNode, Deactivatable
     public void turnOff()
     {
         roots.clear();
-        outputs.clear();
         for(Loggable branch : branches)
             branch.removeLogEventListener(this);
         branches.clear();
     }
 
-    /**
-     * every log event that passes through here will go to this logger
-     */
-    public boolean attachOutput(Logger logger)
-    {
-       return outputs.add(logger);
-    }
 }

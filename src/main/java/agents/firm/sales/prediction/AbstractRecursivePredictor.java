@@ -8,6 +8,7 @@ import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
 import model.utilities.filters.ExponentialFilter;
 import model.utilities.filters.MovingAverage;
+import model.utilities.logs.*;
 import model.utilities.stats.collectors.DataStorage;
 import model.utilities.stats.regression.ExponentialForgettingRegressionDecorator;
 import model.utilities.stats.regression.GunnarsonRegularizerDecorator;
@@ -34,7 +35,7 @@ import java.util.LinkedList;
  * @version 2013-11-12
  * @see
  */
-public abstract class AbstractRecursivePredictor  implements Steppable, Deactivatable
+public abstract class AbstractRecursivePredictor  implements Steppable, Deactivatable, LogNode
 {
 
     public static int defaultPriceLags = 0;
@@ -297,6 +298,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
     @Override
     public void turnOff() {
         isActive = false;
+        logNode.turnOff();
     }
 
 
@@ -503,7 +505,50 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
         y = new MovingAverage<>(movingAverageSize);
         x = new MovingAverage[independentLags];
         for(int i=0; i<x.length; i++)
-            x[i] = new MovingAverage<>(movingAverageSize);    }
+            x[i] = new MovingAverage<>(movingAverageSize);
+    }
+
+
+
+    /***
+     *       __
+     *      / /  ___   __ _ ___
+     *     / /  / _ \ / _` / __|
+     *    / /__| (_) | (_| \__ \
+     *    \____/\___/ \__, |___/
+     *                |___/
+     */
+
+    /**
+     * simple lognode we delegate all loggings to.
+     */
+    private final LogNodeSimple logNode = new LogNodeSimple();
+
+    @Override
+    public boolean addLogEventListener(LogListener toAdd) {
+        return logNode.addLogEventListener(toAdd);
+    }
+
+    @Override
+    public boolean removeLogEventListener(LogListener toRemove) {
+        return logNode.removeLogEventListener(toRemove);
+    }
+
+    @Override
+    public void handleNewEvent(LogEvent logEvent)
+    {
+        logNode.handleNewEvent(logEvent);
+    }
+
+    @Override
+    public boolean stopListeningTo(Loggable branch) {
+        return logNode.stopListeningTo(branch);
+    }
+
+    @Override
+    public boolean listenTo(Loggable branch) {
+        return logNode.listenTo(branch);
+    }
 
 
 }

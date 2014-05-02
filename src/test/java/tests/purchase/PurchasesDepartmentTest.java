@@ -597,7 +597,7 @@ public class PurchasesDepartmentTest {
         field.setAccessible(true);
         field.setLong(dept,100);
         assertTrue(dept.getAvailableBudget() == 100);
-        dept.weekEnd();
+        dept.weekEnd(1);
         //should adjust the budget
         assertTrue(dept.getAvailableBudget() == 100);
         assertEquals(field.get(dept), 0l);
@@ -629,7 +629,7 @@ public class PurchasesDepartmentTest {
         when(pricingStrategy.maxPrice(any(GoodType.class))).thenReturn(150l);
         dept.setPricingStrategy(pricingStrategy);
 
-        dept.start();
+        dept.start(model);
         model.start();
         model.schedule.step(model);
 

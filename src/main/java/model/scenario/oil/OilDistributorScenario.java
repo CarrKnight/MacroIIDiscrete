@@ -6,6 +6,8 @@
 
 package model.scenario.oil;
 
+import agents.EconomicAgent;
+import agents.firm.Firm;
 import agents.firm.GeographicalFirm;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
@@ -17,6 +19,9 @@ import model.scenario.ControllableGeographicalScenario;
 import model.scenario.Scenario;
 import model.utilities.dummies.GeographicalCustomer;
 import model.utilities.geography.Location;
+import model.utilities.logs.LoggerOutputWithTimeStamp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simple Geographical Model, two neighborhoods, the rich one around 5,5 the poor one around -5,-5 and 3 distributors at 5,5 0,0 and -5,-5.
@@ -89,7 +94,9 @@ public class OilDistributorScenario extends Scenario implements ControllableGeog
         //three pumps
         createNewProducer(new Location(-10, -2), market, "poor");
         createNewProducer(new Location(0, 0), market, "middle");
-        createNewProducer(new Location(10, 2), market, "rich");
+        final Firm rich = createNewProducer(new Location(10, 2), market, "rich");
+        Logger logger = LoggerFactory.getLogger(Firm.class);
+        rich.addLogEventListener(new LoggerOutputWithTimeStamp(logger,model));
     }
 
     public void createNeighborhood(Location center, double centerStandardDeviation, int minPrice, int maxPrice,
@@ -112,16 +119,17 @@ public class OilDistributorScenario extends Scenario implements ControllableGeog
 
     }
 
-    public void createNewConsumer(Location location, GeographicalMarket market, long price)
+    public EconomicAgent createNewConsumer(Location location, GeographicalMarket market, long price)
     {
         GeographicalCustomer customer = new GeographicalCustomer(getModel(),price,
                 location.getxLocation(),location.getyLocation(),market);
         getAgents().add(customer);
+        return customer;
     }
 
-    public void createNewProducer(Location location, GeographicalMarket market, String name)
+    public Firm createNewProducer(Location location, GeographicalMarket market, String name)
     {
-        oilFirmsStrategy.createOilPump(location,market,name,this,getModel());
+        return oilFirmsStrategy.createOilPump(location,market,name,this,getModel());
 
     }
 

@@ -24,7 +24,7 @@ import agents.firm.sales.SalesDepartment;
  * @version 2012-07-27
  * @see
  */
-public class SurveySalesPredictor implements SalesPredictor {
+public class SurveySalesPredictor extends BaseSalesPredictor {
 
 
 
@@ -67,14 +67,7 @@ public class SurveySalesPredictor implements SalesPredictor {
 
     }
 
-    /**
-     * Call this to kill the predictor
-     */
-    @Override
-    public void turnOff() {
 
-
-    }
 
     /**
      * This is a little bit weird to predict, but basically you want to know what will be "tomorrow" price if you don't change production.

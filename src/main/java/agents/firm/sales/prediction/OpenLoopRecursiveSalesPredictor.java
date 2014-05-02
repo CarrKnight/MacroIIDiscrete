@@ -96,4 +96,5 @@ public class OpenLoopRecursiveSalesPredictor extends AbstractOpenLoopRecursivePr
     }
 
 
+
 }

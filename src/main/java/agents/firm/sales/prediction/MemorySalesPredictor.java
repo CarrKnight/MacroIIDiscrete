@@ -23,7 +23,7 @@ import agents.firm.sales.SalesDepartment;
  * @version 2012-07-27
  * @see
  */
-public class MemorySalesPredictor implements SalesPredictor {
+public class MemorySalesPredictor extends BaseSalesPredictor {
 
 
     /**
@@ -80,12 +80,6 @@ public class MemorySalesPredictor implements SalesPredictor {
 
     }
 
-    /**
-     * Call this to kill the predictor
-     */
-    @Override
-    public void turnOff() {
 
 
-    }
 }

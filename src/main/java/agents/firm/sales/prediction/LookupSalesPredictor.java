@@ -25,7 +25,7 @@ import model.utilities.stats.collectors.enums.MarketDataType;
  * @version 2013-04-07
  * @see
  */
-public class LookupSalesPredictor implements SalesPredictor {
+public class LookupSalesPredictor extends BaseSalesPredictor {
     /**
      * This is called by the firm when it wants to predict the price they can sell to
      * (usually in order to guide production). <br>
@@ -72,13 +72,7 @@ public class LookupSalesPredictor implements SalesPredictor {
 
     }
 
-    /**
-     * Call this to kill the predictor
-     */
-    @Override
-    public void turnOff() {
 
-    }
 
     /**
      * This is a little bit weird to predict, but basically you want to know what will be "tomorrow" price if you don't change production.

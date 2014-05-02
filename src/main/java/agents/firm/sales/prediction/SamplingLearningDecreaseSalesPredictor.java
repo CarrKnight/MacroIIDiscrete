@@ -134,6 +134,8 @@ public class SamplingLearningDecreaseSalesPredictor extends AbstractWorkerLearni
      */
     @Override
     public void turnOff() {
+
+        super.turnOff();
         predictor.turnOff();
     }
 

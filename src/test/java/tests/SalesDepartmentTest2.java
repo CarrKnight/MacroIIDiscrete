@@ -154,8 +154,8 @@ public class SalesDepartmentTest2 {
     public void testSellThis() throws Exception {
 
         Market.TESTING_MODE = true;
-        dept1.start();
-        dept2.start();
+        dept1.start(model);
+        dept2.start(model);
         market.setPricePolicy(new AveragePricePolicy());
 
         //remove predictors, you don't need them anyway
@@ -306,7 +306,7 @@ public class SalesDepartmentTest2 {
 
         //make sure it throws errors when it's not set up correctly
         Good toQuote = new Good(GoodType.GENERIC,dept1.getFirm(),10);
-        dept1.start();
+        dept1.start(model);
         dept1.getFirm().receive(toQuote,null);
         //force it in the toSell list
         dept1.setAskPricingStrategy(new PriceFollower(dept1));

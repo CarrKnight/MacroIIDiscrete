@@ -33,6 +33,7 @@
     <orderEntry type="library" name="commons-math3-3.2-javadoc" level="project" />
     <orderEntry type="library" name="mason.16" level="project" />
     <orderEntry type="library" scope="TEST" name="org.loadui:testFx:3.1.2" level="project" />
+    <orderEntry type="library" name="org.slf4j:slf4j-simple:1.7.5" level="project" />
   </component>
 </module>
 

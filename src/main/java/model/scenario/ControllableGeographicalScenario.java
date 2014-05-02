@@ -6,6 +6,8 @@
 
 package model.scenario;
 
+import agents.EconomicAgent;
+import agents.firm.Firm;
 import financial.market.GeographicalMarket;
 import model.utilities.geography.Location;
 
@@ -15,9 +17,9 @@ import model.utilities.geography.Location;
  */
 public interface ControllableGeographicalScenario {
 
-    public void createNewProducer(Location location, GeographicalMarket market, String name);
+    public Firm createNewProducer(Location location, GeographicalMarket market, String name);
 
 
-    public void createNewConsumer(Location location, GeographicalMarket market, long price);
+    public EconomicAgent createNewConsumer(Location location, GeographicalMarket market, long price);
 
 }

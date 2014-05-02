@@ -11,6 +11,7 @@ import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import model.MacroII;
 import model.utilities.NonDrawable;
+import model.utilities.logs.LogNode;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
  * @version 2012-07-26
  * @see
  */
-public interface SalesPredictor {
+public interface SalesPredictor extends LogNode {
 
 
 

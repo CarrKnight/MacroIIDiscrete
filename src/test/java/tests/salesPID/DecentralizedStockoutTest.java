@@ -300,7 +300,7 @@ public class DecentralizedStockoutTest {
         Firm firm = new Firm(model);
         SalesDepartment dept = SalesDepartmentFactory.newSalesDepartment(firm, market, null, SimpleSellerSearch.class, SimpleFlowSellerPID.class, null, SalesDepartmentAllAtOnce.class).getSalesDepartment();
         dept.setCanPeddle(false);
-        dept.start();
+        dept.start(model);
         //give the department 1 good to sell
         for(int i=0; i < 1; i++)
         {

@@ -10,6 +10,8 @@ import agents.firm.sales.SalesDepartment;
 import com.google.common.base.Preconditions;
 import financial.market.Market;
 import model.MacroII;
+import model.utilities.logs.LogEvent;
+import model.utilities.logs.LogLevel;
 
 /**
  * <h4>Description</h4>
@@ -28,7 +30,7 @@ import model.MacroII;
  * @version 2013-07-12
  * @see
  */
-public class LearningDecreaseSalesPredictor implements SalesPredictor {
+public class LearningDecreaseSalesPredictor extends BaseSalesPredictor {
 
     /**
      * The regression predictor. It does all the stepping for itself, so just use it rather than duplicate code
@@ -114,10 +116,11 @@ public class LearningDecreaseSalesPredictor implements SalesPredictor {
         //force a regression
         regressor.updateModel();
         //update slope (we need to put the inverse as a sign because the number is subtracted from old price)
-        if(!Double.isNaN(regressor.getSlope()))
-            predictor.setDecrementDelta((int) Math.round(-regressor.getSlope()));
-        else
-            predictor.setDecrementDelta(0);
+        long newSlope = !Double.isNaN(regressor.getSlope()) ? Math.round(-regressor.getSlope()) : 0;
+        predictor.setDecrementDelta(newSlope);
+
+        handleNewEvent(new LogEvent(this, LogLevel.INFO,"New slope: {}",newSlope)); //log it
+
     }
 
     /**
@@ -125,6 +128,7 @@ public class LearningDecreaseSalesPredictor implements SalesPredictor {
      */
     @Override
     public void turnOff() {
+        super.turnOff();
         regressor.turnOff();
         predictor.turnOff();
     }

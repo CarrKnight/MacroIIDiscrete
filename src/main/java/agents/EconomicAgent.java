@@ -18,7 +18,6 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.logs.*;
-import org.slf4j.Logger;
 import sim.display.GUIState;
 import sim.engine.SimState;
 import sim.portrayal.Inspector;
@@ -574,7 +573,4 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
         return logNode.listenTo(branch);
     }
 
-    public boolean attachOutput(Logger logger) {
-        return logNode.attachOutput(logger);
-    }
 }

@@ -32,11 +32,11 @@ public class LogNodeSimpleTest {
         c.listenTo(d);
         //create the loggers
         Logger loggerA = mock(Logger.class);
-        a.attachOutput(loggerA);
+        a.addLogEventListener(new LoggerOutput(loggerA));
         Logger loggerB = mock(Logger.class);
-        b.attachOutput(loggerB);
+        b.addLogEventListener(new LoggerOutput(loggerB));
         Logger loggerD = mock(Logger.class);
-        d.attachOutput(loggerD);
+        d.addLogEventListener(new LoggerOutput(loggerD));
 
         //create the event
         final Object[] additionalParameters = {"A", "B"};

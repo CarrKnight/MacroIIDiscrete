@@ -13,6 +13,9 @@ import goods.Good;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.filters.ExponentialFilter;
+import model.utilities.logs.LogEvent;
+import model.utilities.logs.LogListener;
+import model.utilities.logs.Loggable;
 import model.utilities.pid.CascadePToPIDController;
 import model.utilities.pid.ControllerFactory;
 import sim.engine.SimState;
@@ -313,4 +316,28 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
     }
 
 
+    @Override
+    public boolean addLogEventListener(LogListener toAdd) {
+        return delegate.addLogEventListener(toAdd);
+    }
+
+    @Override
+    public boolean removeLogEventListener(LogListener toRemove) {
+        return delegate.removeLogEventListener(toRemove);
+    }
+
+    @Override
+    public void handleNewEvent(LogEvent logEvent) {
+        delegate.handleNewEvent(logEvent);
+    }
+
+    @Override
+    public boolean stopListeningTo(Loggable branch) {
+        return delegate.stopListeningTo(branch);
+    }
+
+    @Override
+    public boolean listenTo(Loggable branch) {
+        return delegate.listenTo(branch);
+    }
 }

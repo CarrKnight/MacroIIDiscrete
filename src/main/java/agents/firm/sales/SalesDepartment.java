@@ -151,12 +151,14 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
     public SalesDepartment(SellerSearchAlgorithm sellerSearchAlgorithm, Market market,  MacroII model, Firm firm, BuyerSearchAlgorithm buyerSearchAlgorithm) {
         data = new SalesData();
+        this.logNode = new LogNodeSimple();
         this.sellerSearchAlgorithm = sellerSearchAlgorithm;
         this.market = market;
         goodsQuotedOnTheMarket = new LinkedHashMap<>();
         this.model = model;
         this.firm = firm;
         predictorStrategy = RegressionSalePredictor.Factory.newSalesPredictor(defaultPredictorStrategy,this);
+        logNode.listenTo(predictorStrategy);
         this.buyerSearchAlgorithm = buyerSearchAlgorithm;
         salesDepartmentListeners = new LinkedList<>();
         market.registerSeller(firm); //register!
@@ -875,9 +877,13 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
     public void setPredictorStrategy(SalesPredictor predictorStrategy) {
         //turn off the previous one if needed
-        if(this.predictorStrategy != null)
+        if(this.predictorStrategy != null) {
             this.predictorStrategy.turnOff();
+            logNode.stopListeningTo(this.predictorStrategy);
+        }
+
         this.predictorStrategy = predictorStrategy;
+        logNode.listenTo(this.predictorStrategy);
     }
 
 
@@ -1324,7 +1330,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     /**
      * simple lognode we delegate all loggings to.
      */
-    private final LogNodeSimple logNode = new LogNodeSimple();
+    private final LogNodeSimple logNode;
 
     @Override
     public boolean addLogEventListener(LogListener toAdd) {

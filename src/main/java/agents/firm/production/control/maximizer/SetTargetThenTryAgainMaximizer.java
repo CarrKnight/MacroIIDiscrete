@@ -12,9 +12,9 @@ import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
 import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithmFactory;
 import agents.firm.production.technology.Machinery;
-import financial.MarketEvents;
-import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.logs.LogEvent;
+import model.utilities.logs.LogLevel;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -35,7 +35,8 @@ import sim.engine.Steppable;
  * @version 2012-09-23
  * @see
  */
-public class SetTargetThenTryAgainMaximizer<ALG extends WorkerMaximizationAlgorithm> implements WorkforceMaximizer<ALG>, Steppable {
+public class SetTargetThenTryAgainMaximizer<ALG extends WorkerMaximizationAlgorithm> extends BaseWorkforceMaximizer<ALG>
+        implements Steppable {
 
 
 
@@ -230,13 +231,10 @@ public class SetTargetThenTryAgainMaximizer<ALG extends WorkerMaximizationAlgori
         else {
 
 
-            if(MacroII.hasGUI())
-                //log it
-                hr.getFirm().logEvent(hr,
-                        MarketEvents.CHANGE_IN_TARGET,
-                        hr.getFirm().getModel().getCurrentSimulationTimeInMillis(),
-                        "old Profits: " + oldProfits + ", new profits: " + newProfits +
-                                "; old workerTarget:" + oldWorkerTarget + ", new target:" + futureTarget);
+
+            handleNewEvent(new LogEvent(this, LogLevel.INFO,"old Profits:{} , new profits:{}, old target:{}, new target:{}",
+                    oldProfits,newProfits,oldWorkerTarget,futureTarget));
+
 
             //remember
             oldProfits = newProfits;

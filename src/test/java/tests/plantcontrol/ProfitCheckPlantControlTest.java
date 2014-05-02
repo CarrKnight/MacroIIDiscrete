@@ -123,7 +123,7 @@ public class ProfitCheckPlantControlTest {
         assertTrue(p.getNumberOfWorkers()==0);
 
         //start the human resources
-        humanResources.start();
+        humanResources.start(model);
         //some stuff might have happened, but surely the control should have called "schedule in"
         assertTrue(control.toString(),!steppableList.contains(control));
 //        assertTrue(p.getNumberOfWorkers() > 0);
@@ -253,7 +253,7 @@ public class ProfitCheckPlantControlTest {
 
         //start the human resources
         humanResources.setPredictor(new PricingPurchasesPredictor());
-        humanResources.start();
+        humanResources.start(model);
         //some stuff might have happened, but surely the control should have called "schedule in"
         assertTrue(control.toString(),!steppableList.contains(control));
      //   assertTrue(p.getNumberOfWorkers() > 0);

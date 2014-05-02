@@ -63,7 +63,7 @@ public class SalesDepartmentStopConsumingTest {
 
         //give three goods to the firm
         Good[] produced = new Good[3];
-        department.start();
+        department.start(macroII);
         macroII.start();
 
 

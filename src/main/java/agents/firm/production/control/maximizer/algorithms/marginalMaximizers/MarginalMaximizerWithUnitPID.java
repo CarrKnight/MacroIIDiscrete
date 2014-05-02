@@ -11,7 +11,6 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import ec.util.MersenneTwisterFast;
-import financial.MarketEvents;
 import goods.GoodType;
 import model.utilities.DelayException;
 import model.utilities.pid.PIDController;
@@ -156,10 +155,10 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
 
                 }
             }
-            getHr().logEvent(getHr(),
+        /*    getHr().logEvent(getHr(),
                     MarketEvents.CHANGE_IN_TARGET,
                     getHr().getFirm().getModel().getCurrentSimulationTimeInMillis(), toAnnotate);
-
+*/
 
 
 

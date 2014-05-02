@@ -170,7 +170,7 @@ public class FixWagesPlantControlTest {
         assertTrue(p.getNumberOfWorkers()==0);
 
         //start the human resources
-        humanResources.start();
+        humanResources.start(model);
         //some stuff might have happened, but surely the control should have called "schedule in"
         assertEquals(steppableList.size(),2);     //should be 2: both the profit check and the pid adjust
 //        assertTrue(steppableList.contains(control));
@@ -320,7 +320,7 @@ public class FixWagesPlantControlTest {
         assertTrue(p.getNumberOfWorkers()==0);
 
         //start the human resources
-        humanResources.start();
+        humanResources.start(model);
         //some stuff might have happened, but surely the control should have called "schedule in"
         assertEquals(steppableList.size(),2);     //should be 2: both the profit check and the pid adjust
 //        assertTrue(steppableList.contains(control));

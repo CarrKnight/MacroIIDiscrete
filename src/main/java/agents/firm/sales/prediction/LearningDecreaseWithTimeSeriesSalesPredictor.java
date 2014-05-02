@@ -10,6 +10,8 @@ import agents.firm.sales.SalesDepartment;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 import model.utilities.filters.MovingAverage;
+import model.utilities.logs.LogEvent;
+import model.utilities.logs.LogLevel;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import model.utilities.stats.regression.LinearRegression;
 import model.utilities.stats.regression.MultipleLinearRegression;
@@ -33,7 +35,8 @@ import java.util.List;
  * @version 2013-08-07
  * @see
  */
-public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredictor {
+public class LearningDecreaseWithTimeSeriesSalesPredictor
+        extends BaseSalesPredictor {
 
 
     //{usingWeights=false, correctingWithDeltaPrice=false, regressingOnWorkers=true,
@@ -146,8 +149,7 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
                 if(regression.getResultMatrix() != null)
                 {
                     double slope =  extractSlopeOfDemandFromRegression();
-                    //      System.out.println("q= " + extractInterceptOfDemandFromRegression() + " + p * " + extractSlopeOfDemandFromRegression());
-                    //     System.out.println("p= " + intercept + " + q * " + slope);
+                    handleNewEvent(new LogEvent(this, LogLevel.TRACE,"new regressed slope: {}",-slope));
                     predictor.setDecrementDelta((float) -slope);
                 }
 
@@ -183,8 +185,7 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
                 if(regression.getResultMatrix() != null)
                 {
                     double slope = extractSlopeOfDemandFromRegression();
-          //           System.out.println("p= " + extractInterceptOfDemandFromRegression() + " + q * " + slope);
-                    //     System.out.println("p= " + intercept + " + q * " + slope);
+                    handleNewEvent(new LogEvent(this, LogLevel.TRACE,"new regressed slope: {}",-slope));
                     predictor.setDecrementDelta((float) -slope);
                 }
 
@@ -205,6 +206,8 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor implements SalesPredic
      */
     @Override
     public void turnOff() {
+
+        super.turnOff();
         predictor.turnOff();
     }
 

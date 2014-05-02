@@ -255,7 +255,7 @@ public class DiscreteSlowPlantControlTest {
         firm.addPlant(plant);
         HumanResources hr = HumanResources.getHumanResourcesIntegrated(100000000,firm,labor,plant,DiscreteSlowPlantControl.class,null,null).getDepartment();
         //   firm.registerHumanResources(plant, hr);
-        hr.start();
+        hr.start(model);
 
         model.scheduleSoon(ActionOrder.DAWN, new Steppable() {
             @Override
@@ -343,7 +343,7 @@ public class DiscreteSlowPlantControlTest {
         firm.addPlant(plant);
         HumanResources hr = HumanResources.getHumanResourcesIntegrated(100000000,firm,labor,plant,DiscreteSlowPlantControl.class,null,null).getDepartment();
         firm.registerHumanResources(plant, hr);
-        hr.start();
+        hr.start(model);
 
         //2
         final Firm firm2 = new Firm(model); firm2.earn(100000000l);
@@ -360,7 +360,7 @@ public class DiscreteSlowPlantControlTest {
         firm2.addPlant(plant2);
         HumanResources hr2 = HumanResources.getHumanResourcesIntegrated(100000000,firm2,labor,plant2,DiscreteSlowPlantControl.class,null,null).getDepartment();
         firm2.registerHumanResources(plant2, hr2);
-        hr2.start();
+        hr2.start(model);
 
 
         model.schedule.scheduleRepeating(new Steppable() {
@@ -454,7 +454,7 @@ public class DiscreteSlowPlantControlTest {
         firm.registerHumanResources(plant, hr);
         //   control.setProbabilityForgetting(.15f);
 
-        hr.start();
+        hr.start(model);
 
         //2
         final Firm firm2 = new Firm(model); firm2.earn(100000000l);
@@ -475,7 +475,7 @@ public class DiscreteSlowPlantControlTest {
         //   control2.setProbabilityForgetting(.15f);
 
         firm2.registerHumanResources(plant2, hr2);
-        hr2.start();
+        hr2.start(model);
 
         //2
         final Firm firm3 = new Firm(model); firm3.earn(100000000l);
@@ -495,7 +495,7 @@ public class DiscreteSlowPlantControlTest {
         DiscreteSlowPlantControl control3 = (DiscreteSlowPlantControl) field.get(hr3);
         //       control3.setProbabilityForgetting(.15f);
         firm3.registerHumanResources(plant3, hr3);
-        hr3.start();
+        hr3.start(model);
 
 
         model.schedule.scheduleRepeating(new Steppable() {

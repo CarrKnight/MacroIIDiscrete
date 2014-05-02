@@ -27,7 +27,7 @@ import agents.firm.production.technology.Machinery;
  * @version 2012-09-24
  * @see
  */
-public class FullCapacityMaximizer<ALG extends WorkerMaximizationAlgorithm> implements WorkforceMaximizer<ALG> {
+public class FullCapacityMaximizer<ALG extends WorkerMaximizationAlgorithm> extends BaseWorkforceMaximizer<ALG> {
 
 
     /**

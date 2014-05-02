@@ -15,8 +15,9 @@ import agents.firm.sales.SalesDepartment;
 import com.google.common.base.Preconditions;
 import goods.GoodType;
 import model.utilities.DelayException;
+import model.utilities.logs.LogEvent;
+import model.utilities.logs.LogLevel;
 import model.utilities.stats.collectors.enums.PlantDataType;
-import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
@@ -37,10 +38,7 @@ import java.util.Set;
  */
 public final class MarginalMaximizerStatics {
 
-    //public static boolean printOutDiagnostics = false;
 
-    public static ch.qos.logback.classic.Logger logger =
-            (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("maximization");
 
 
 
@@ -91,13 +89,13 @@ public final class MarginalMaximizerStatics {
         float marginalRevenue = computeMarginalRevenue(owner, p, policy, currentWorkers, targetWorkers, inputCosts.getTotalCost(), wageCosts.getTotalCost());
 
 
+        hr.handleNewEvent(new LogEvent(hr, LogLevel.INFO,
+                "total input: {}, total wage costs: {}, targetWorkers: {} \n marginal input: {}, marginal wages:{}, revenue: {}\n old wage costs: {}, today wages: {} ",
+                inputCosts.getTotalCost() ,wageCosts.getTotalCost(), targetWorkers , inputCosts.getMarginalCost(),wageCosts.getMarginalCost(),
+                marginalRevenue , currentWorkers , p.getLatestObservation(PlantDataType.WAGES_PAID_THAT_WEEK) , control.getCurrentWage() ));
 
 
-        logger.trace("total input: {}, total wage costs: {}, targetWorkers: {} \n marginal input: {}, marginal wages:{}, revenue: {}\n old wage costs: {}, today wages: {} "
-                ,new Object[]{inputCosts.getTotalCost() ,wageCosts.getTotalCost(), targetWorkers , inputCosts.getMarginalCost(),wageCosts.getMarginalCost(),
-                marginalRevenue , currentWorkers , p.getLatestObservation(PlantDataType.WAGES_PAID_THAT_WEEK) , control.getCurrentWage()}
 
-        );
 
 
 
@@ -180,8 +178,9 @@ public final class MarginalMaximizerStatics {
         //long oldWage = currentWorkers == 0 ? 0 : control.getCurrentWage();
         float oldWage = currentWorkers == 0 ? 0 : hr.predictPurchasePriceWhenNoChangeInProduction();
 
-        logger.trace("predicte wages: {}, predicted current wage: {}, actual old wage: {}, total labor: {}",
-                new Object[]{futureWage,oldWage,control.getCurrentWage(),hr.getMarket().getYesterdayVolume()});
+        hr.handleNewEvent(new LogEvent(hr, LogLevel.INFO,
+                    "predicte wages: {}, predicted current wage: {}, actual old wage: {}, total labor: {}",
+                futureWage,oldWage,control.getCurrentWage(),hr.getMarket().getYesterdayVolume()));
 
 
         float totalFutureWageCosts = futureWage * targetWorkers;
@@ -230,7 +229,9 @@ public final class MarginalMaximizerStatics {
 
             pricePerUnit = pricePerUnit < 0 ? policy.replaceUnknownPrediction(department.getMarket(), p.getRandom()) : pricePerUnit;
 
-            logger.trace("predicted price with production change: {}, predicted  price without: {}, actual price: {}",new Object[]{pricePerUnit,oldPrice,department.getLastClosingPrice()});
+            department.handleNewEvent(new LogEvent(department, LogLevel.INFO,
+                    "today workers: {}, tomorrow workers:{}, predicted future price: {}, predicted  current price: {}, actual price: {}",
+                    currentWorkers,targetWorkers,pricePerUnit,oldPrice,department.getLastClosingPrice()));
 
 
 
@@ -275,8 +276,10 @@ public final class MarginalMaximizerStatics {
             totalInputCosts +=  (costPerInput*totalInputNeeded);
             marginalInputCosts += (costPerInput*totalInputNeeded - oldCosts*oldNeeds);
 
-            logger.trace("predicte inputCost: {}, predicted current costs: {}, actual old costs: {}, total input: {}",
-                    new Object[]{costPerInput,oldCosts,dept.getAveragedClosingPrice(),totalInputNeeded});
+            dept.handleNewEvent(new LogEvent(dept, LogLevel.INFO,
+                    "today workers: {}, tomorrow workers:{}, predicte inputCost: {}, predicted current costs: {}, actual old costs: {}, total input: {}",
+                    currentWorkers,targetWorkers,costPerInput,oldCosts,dept.getAveragedClosingPrice(),totalInputNeeded));
+
 
             //marginal costs are negative (marginal savings) if we are reducing production
             //       assert (marginalInputCosts >= 0 && targetWorkers > currentWorkers) ^   (marginalInputCosts <= 0 && targetWorkers < currentWorkers);

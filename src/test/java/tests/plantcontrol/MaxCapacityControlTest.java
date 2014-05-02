@@ -99,7 +99,7 @@ public class MaxCapacityControlTest {
         assertTrue(p.getNumberOfWorkers()==0);
 
         //start the human resources
-        humanResources.start();
+        humanResources.start(model);
         //some stuff might have happened, but surely the control should have called "schedule in"
 //        assertEquals(steppableList.size(),1);
      //   assertTrue(steppableList.contains(control));

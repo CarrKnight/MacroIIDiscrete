@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package agents.firm.sales.pricing;
+package agents.firm.sales.prediction;
 
 import model.utilities.logs.LogEvent;
 import model.utilities.logs.LogListener;
@@ -12,11 +12,10 @@ import model.utilities.logs.LogNodeSimple;
 import model.utilities.logs.Loggable;
 
 /**
- * An abstract base class for ask pricing. Only implements the logger
- * Created by carrknight on 5/1/14.
+ * The simple basic abstract class of sales predictor. It only implements logging.
+ * Created by carrknight on 5/2/14.
  */
-public abstract class BaseAskPricingStrategy implements AskPricingStrategy
-{
+public abstract class BaseSalesPredictor implements SalesPredictor{
 
 
     @Override
@@ -65,7 +64,5 @@ public abstract class BaseAskPricingStrategy implements AskPricingStrategy
     public boolean listenTo(Loggable branch) {
         return logNode.listenTo(branch);
     }
-
-    
 
 }

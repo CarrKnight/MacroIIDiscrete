@@ -14,9 +14,10 @@ import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlg
 import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithmFactory;
 import agents.firm.production.technology.Machinery;
 import com.google.common.base.Preconditions;
-import financial.MarketEvents;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.logs.LogEvent;
+import model.utilities.logs.LogLevel;
 import model.utilities.stats.collectors.enums.PlantDataType;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -37,7 +38,7 @@ import sim.engine.Steppable;
  * @version 2013-08-22
  * @see
  */
-public class PeriodicMaximizer<ALG extends WorkerMaximizationAlgorithm> implements WorkforceMaximizer<ALG>, Steppable
+public class PeriodicMaximizer<ALG extends WorkerMaximizationAlgorithm> extends BaseWorkforceMaximizer<ALG> implements Steppable
 {
     /**
      * set to false at turnedOff
@@ -230,14 +231,10 @@ public class PeriodicMaximizer<ALG extends WorkerMaximizationAlgorithm> implemen
         if(futureTarget < 0){
         }
         else {
-            if(MacroII.hasGUI())
 
-                //log it
-                owner.logEvent(hr,
-                        MarketEvents.CHANGE_IN_TARGET,
-                        model.getCurrentSimulationTimeInMillis(),
-                        "old Profits: " + oldProfits + ", new profits: " + newProfits +
-                                "; old workerTarget:" + lastWorkerTarget + ", new target:" + futureTarget);
+            handleNewEvent(new LogEvent(this, LogLevel.INFO,"old Profits:{} , new profits:{}, old target:{}, new target:{}",
+                    oldProfits,newProfits,lastWorkerTarget,futureTarget));
+
 
 
             //tell control/targeter about new target

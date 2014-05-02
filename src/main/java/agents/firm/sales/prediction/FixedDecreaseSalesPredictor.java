@@ -24,7 +24,7 @@ import com.google.common.base.Preconditions;
  * @version 2013-07-01
  * @see
  */
-public class FixedDecreaseSalesPredictor implements SalesPredictor {
+public class FixedDecreaseSalesPredictor extends BaseSalesPredictor {
 
     public static float defaultDecrementDelta = 1;
     /**
@@ -85,6 +85,7 @@ public class FixedDecreaseSalesPredictor implements SalesPredictor {
      */
     @Override
     public void turnOff() {
+        super.turnOff();
         delegate.turnOff();
     }
 

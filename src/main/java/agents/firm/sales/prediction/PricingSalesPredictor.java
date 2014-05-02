@@ -7,6 +7,10 @@
 package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
+import model.utilities.logs.LogEvent;
+import model.utilities.logs.LogListener;
+import model.utilities.logs.LogNodeSimple;
+import model.utilities.logs.Loggable;
 
 /**
  * <h4>Description</h4>
@@ -25,7 +29,7 @@ import agents.firm.sales.SalesDepartment;
  * @version 2012-07-27
  * @see
  */
-public class PricingSalesPredictor implements SalesPredictor {
+public class PricingSalesPredictor extends BaseSalesPredictor {
 
     /**
      * This is called by the firm when it wants to predict the price they can sell to
@@ -69,7 +73,7 @@ public class PricingSalesPredictor implements SalesPredictor {
      */
     @Override
     public void turnOff() {
-
+        logNode.turnOff();
 
     }
 
@@ -84,5 +88,45 @@ public class PricingSalesPredictor implements SalesPredictor {
     public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         return dept.hypotheticalSalePrice();
 
+    }
+
+    /***
+     *       __
+     *      / /  ___   __ _ ___
+     *     / /  / _ \ / _` / __|
+     *    / /__| (_) | (_| \__ \
+     *    \____/\___/ \__, |___/
+     *                |___/
+     */
+
+    /**
+     * simple lognode we delegate all loggings to.
+     */
+    private final LogNodeSimple logNode = new LogNodeSimple();
+
+    @Override
+    public boolean addLogEventListener(LogListener toAdd) {
+        return logNode.addLogEventListener(toAdd);
+    }
+
+    @Override
+    public boolean removeLogEventListener(LogListener toRemove) {
+        return logNode.removeLogEventListener(toRemove);
+    }
+
+    @Override
+    public void handleNewEvent(LogEvent logEvent)
+    {
+        logNode.handleNewEvent(logEvent);
+    }
+
+    @Override
+    public boolean stopListeningTo(Loggable branch) {
+        return logNode.stopListeningTo(branch);
+    }
+
+    @Override
+    public boolean listenTo(Loggable branch) {
+        return logNode.listenTo(branch);
     }
 }

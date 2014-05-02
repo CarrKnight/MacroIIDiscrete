@@ -31,7 +31,7 @@ import sim.engine.Steppable;
  * @version 2013-04-09
  * @see
  */
-public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
+public class LinearExtrapolationPredictor extends BaseSalesPredictor implements Steppable {
 
     /**
      * The department you are linked to
@@ -274,6 +274,7 @@ public class LinearExtrapolationPredictor implements SalesPredictor, Steppable {
      */
     @Override
     public void turnOff() {
+        super.turnOff();
         department = null;
     }
 

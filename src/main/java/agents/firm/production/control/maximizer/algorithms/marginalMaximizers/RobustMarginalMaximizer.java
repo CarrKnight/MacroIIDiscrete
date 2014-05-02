@@ -47,6 +47,7 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
 
     private static FileHandler fh = null;
 
+
    
 
 
@@ -86,22 +87,19 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
      * @param oldProfits          what were the profits back then   @return the new worker targets. Any negative number means to check again!
      */
     public int chooseWorkerTarget(int currentWorkerTarget, float newProfits, float newRevenues, float newCosts, float oldRevenues, float oldCosts, int oldWorkerTarget, float oldProfits) {
-        MarginalMaximizerStatics.logger.trace("----------------------------------------- {}", maximizer.getHr().getFirm());
         numberOfChoices++;
 
 
         int currentWorkerNumber = maximizer.getHr().getNumberOfWorkers();
         int futureTarget = maximizer.chooseWorkerTarget(currentWorkerNumber, newProfits, newRevenues, newCosts, oldRevenues, oldCosts, oldWorkerTarget, oldProfits);    //To change body of overridden methods use File | Settings | File Templates.
+        HumanResources hr = maximizer.getHr();
 
 
-      //  if(MarginalMaximizerStatics.logger.getLevel().isGreaterOrEqual(Level.TRACE))
-        MarginalMaximizerStatics.logger.trace("worker number: {}, actual target: {}, future target: {}",
-                new Object[]{currentWorkerNumber,currentWorkerTarget,futureTarget});
+;
 
         if(futureTarget == currentWorkerNumber)
         {
 
-                MarginalMaximizerStatics.logger.trace("----> unchanged at: {}",currentWorkerTarget);
             return currentWorkerTarget;
 
         }
@@ -109,13 +107,11 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
         {
             if(futureTarget>currentWorkerTarget)
             {
-                MarginalMaximizerStatics.logger.trace("----> increased at at: {}",(currentWorkerTarget+1));
 
                 return currentWorkerTarget+1;
             }
             else
             {
-                MarginalMaximizerStatics.logger.trace("----> unchanged at: {}",currentWorkerTarget);
                 return currentWorkerTarget;
             }
         }
@@ -127,17 +123,14 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
 
                 if(numberOfChoices < 1000)
                 {
-                        MarginalMaximizerStatics.logger.trace("----> decreased at at: {}, too few choices",Math.max(currentWorkerTarget-1,1));
                     return Math.max(currentWorkerTarget-1,1);
 
                 }
                 else
-                    MarginalMaximizerStatics.logger.trace("----> decreased at at: {}",(currentWorkerTarget-1));
                     return currentWorkerTarget-1;
             }
             else
             {
-                    MarginalMaximizerStatics.logger.trace("----> unchanged at: {}",currentWorkerTarget);
                 return currentWorkerTarget;
             }
         }

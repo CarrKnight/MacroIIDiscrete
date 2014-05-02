@@ -9,6 +9,7 @@ package agents.firm.production.control.maximizer;
 import agents.firm.production.PlantListener;
 import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
 import model.utilities.Deactivatable;
+import model.utilities.logs.LogNode;
 
 /**
  * <h4>Description</h4>
@@ -26,7 +27,7 @@ import model.utilities.Deactivatable;
  * @version 2012-09-23
  * @see
  */
-public interface WorkforceMaximizer<ALG extends WorkerMaximizationAlgorithm> extends PlantListener, Deactivatable {
+public interface WorkforceMaximizer<ALG extends WorkerMaximizationAlgorithm> extends PlantListener, Deactivatable, LogNode {
 
     /**
      * Method to start the workforce maximizer

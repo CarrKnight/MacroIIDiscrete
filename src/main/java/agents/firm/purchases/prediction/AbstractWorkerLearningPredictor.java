@@ -8,7 +8,8 @@ package agents.firm.purchases.prediction;
 
 import agents.firm.Department;
 import com.google.common.primitives.Ints;
-import model.MacroII;
+import model.utilities.Deactivatable;
+import model.utilities.logs.*;
 import model.utilities.stats.regression.LinearRegression;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import java.util.Collections;
  * @version 2013-09-15
  * @see
  */
-public abstract class AbstractWorkerLearningPredictor {
+public abstract class AbstractWorkerLearningPredictor implements LogNode, Deactivatable{
 
     /**
      * The object running the regression
@@ -218,5 +219,50 @@ public abstract class AbstractWorkerLearningPredictor {
 
     public void setHowManyShockDaysBackToLookFor(int howManyShockDaysBackToLookFor) {
         this.howManyShockDaysBackToLookFor = howManyShockDaysBackToLookFor;
+    }
+
+    @Override
+    public void turnOff() {
+        logNode.turnOff();
+    }
+
+    /***
+     *       __
+     *      / /  ___   __ _ ___
+     *     / /  / _ \ / _` / __|
+     *    / /__| (_) | (_| \__ \
+     *    \____/\___/ \__, |___/
+     *                |___/
+     */
+
+    /**
+     * simple lognode we delegate all loggings to.
+     */
+    private final LogNodeSimple logNode = new LogNodeSimple();
+
+    @Override
+    public boolean addLogEventListener(LogListener toAdd) {
+        return logNode.addLogEventListener(toAdd);
+    }
+
+    @Override
+    public boolean removeLogEventListener(LogListener toRemove) {
+        return logNode.removeLogEventListener(toRemove);
+    }
+
+    @Override
+    public void handleNewEvent(LogEvent logEvent)
+    {
+        logNode.handleNewEvent(logEvent);
+    }
+
+    @Override
+    public boolean stopListeningTo(Loggable branch) {
+        return logNode.stopListeningTo(branch);
+    }
+
+    @Override
+    public boolean listenTo(Loggable branch) {
+        return logNode.listenTo(branch);
     }
 }

@@ -4,25 +4,20 @@
  * See the file "LICENSE" for more information
  */
 
-package agents.firm.sales.pricing;
+package agents.firm.production.control.maximizer;
 
+import agents.firm.production.control.maximizer.algorithms.WorkerMaximizationAlgorithm;
 import model.utilities.logs.LogEvent;
 import model.utilities.logs.LogListener;
 import model.utilities.logs.LogNodeSimple;
 import model.utilities.logs.Loggable;
 
 /**
- * An abstract base class for ask pricing. Only implements the logger
- * Created by carrknight on 5/1/14.
+ * Simple abstract class, implementing the logging part
+ * Created by carrknight on 5/2/14.
  */
-public abstract class BaseAskPricingStrategy implements AskPricingStrategy
-{
-
-
-    @Override
-    public void turnOff() {
-        logNode.turnOff();
-    }
+public abstract class BaseWorkforceMaximizer<ALG extends WorkerMaximizationAlgorithm>
+        implements WorkforceMaximizer<ALG> {
 
 
 
@@ -66,6 +61,5 @@ public abstract class BaseAskPricingStrategy implements AskPricingStrategy
         return logNode.listenTo(branch);
     }
 
-    
 
 }
