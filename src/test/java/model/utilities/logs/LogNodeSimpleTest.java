@@ -13,19 +13,19 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-public class LogNodeTest {
+public class LogNodeSimpleTest {
 
 
-    //log node A listens to B which listens to C which listens to D. LogNode A,B and D have attached loggers.
+    //log node A listens to B which listens to C which listens to D. LogNodeSimple A,B and D have attached loggers.
     // New event happens in C, do both logger A and B receive it?
 
 
     @Test
     public void simpleTree() throws Exception {
-        LogNode a = new LogNode();
-        LogNode b = new LogNode();
-        LogNode c = new LogNode();
-        LogNode d = new LogNode();
+        LogNodeSimple a = new LogNodeSimple();
+        LogNodeSimple b = new LogNodeSimple();
+        LogNodeSimple c = new LogNodeSimple();
+        LogNodeSimple d = new LogNodeSimple();
         //create the tree
         a.listenTo(b);
         b.listenTo(c);

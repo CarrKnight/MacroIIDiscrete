@@ -6,10 +6,7 @@
 
 package agents.firm.production;
 
-import agents.EconomicAgent;
-import agents.HasInventory;
-import agents.InventoryListener;
-import agents.Person;
+import agents.*;
 import agents.firm.Department;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
@@ -20,18 +17,16 @@ import agents.firm.production.technology.Machinery;
 import agents.firm.utilities.DailyProductionAndConsumptionCounter;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
-import financial.MarketEvents;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.Deactivatable;
+import model.utilities.logs.*;
 import model.utilities.stats.collectors.ConsumptionData;
 import model.utilities.stats.collectors.PlantData;
 import model.utilities.stats.collectors.ProductionData;
 import model.utilities.stats.collectors.enums.PlantDataType;
 import sim.engine.SimState;
-import sim.engine.Steppable;
 
 import java.util.*;
 
@@ -50,7 +45,7 @@ import java.util.*;
  * @version %I%, %G%
  * @see
  */
-public class Plant implements Department, Steppable, Deactivatable, InventoryListener {
+public class Plant implements Department, Agent, InventoryListener, LogNode {
 
 
     private final DailyProductionAndConsumptionCounter counter;
@@ -79,7 +74,6 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
 
         //add yourself as an inventory listener AND log
         owner.addInventoryListener(this);
-        owner.addAgentToLog(this);
 
 
         counter = new DailyProductionAndConsumptionCounter();
@@ -216,12 +210,12 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
     /**
      * start for the plant simply starts collecting data. Nothing more
      */
-    public void start()
+    public void start(MacroII model)
     {
-        counter.start(getModel());
-        productionData.start(getModel(),this);
-        consumptionData.start(getModel(),this);
-        dataStorage.start(getModel(),this);
+        counter.start(model);
+        productionData.start(model,this);
+        consumptionData.start(model,this);
+        dataStorage.start(model,this);
     }
 
     /**
@@ -332,10 +326,11 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
                 owner.receive(newProduct, null);
                 owner.reactToPlantProduction(newProduct); //tell the owner!
             }
-            //tell the firm it is a new production!
+
 
 
         }
+
 
         status = PlantStatus.READY;   //ready!
 
@@ -373,10 +368,8 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         if(!check) //if it failed
         {
             status = PlantStatus.WAITING_FOR_INPUT;
-            if(MacroII.hasGUI())
+            handleNewEvent(new LogEvent(this, LogLevel.TRACE,"production halted for lack of inputs"));
 
-                getOwner().logEvent(this, MarketEvents.PRODUCTION_HALTED, getOwner().getModel().getCurrentSimulationTimeInMillis(),
-                        "missing inputs");
             return false;
         }
 
@@ -385,10 +378,8 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         if(!check) //if it failed
         {
             status = PlantStatus.WAITING_FOR_WORKERS;
-            if(MacroII.hasGUI())
+            handleNewEvent(new LogEvent(this, LogLevel.TRACE,"production halted for lack of workers"));
 
-                getOwner().logEvent(this, MarketEvents.PRODUCTION_HALTED, getOwner().getModel().getCurrentSimulationTimeInMillis(),
-                        "lack of labor");
             return false;
         }
 
@@ -397,7 +388,6 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
 
 
         //register production has started!
-        getOwner().logEvent(this, MarketEvents.PRODUCTION_STARTED, getOwner().getModel().getCurrentSimulationTimeInMillis());
         completeProductionRunNow();     //BUILD the thing
         return true;
 
@@ -470,13 +460,14 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         }
         if(howManyProductionRunsWereSuccessful>0)
         {
-            if(MacroII.hasGUI())
+            //logging it
+            handleNewEvent(new LogEvent(this, LogLevel.TRACE,
+                    "Planned production: {}, actual production{}\n new inventory Output1:{}, oldinventory:{}",
+                    howManyProductionRunsToday,howManyProductionRunsWereSuccessful,
+                    getOwner().hasHowMany(blueprint.getOutputs().keySet().iterator().next()),
+                    inventoryPreProductionOfOutput1));
 
-                getOwner().logEvent(this, MarketEvents.PRODUCTION_COMPLETE, getOwner().getModel().getCurrentSimulationTimeInMillis(),
-                        " Planned productions: " + howManyProductionRunsToday + " , actual production "
-                                + howManyProductionRunsWereSuccessful + '\n' + "new inventory Output1: " +
-                                getOwner().hasHowMany(blueprint.getOutputs().keySet().iterator().next()) + " , old inventory: "+
-                                inventoryPreProductionOfOutput1);
+
         }
 
         model.scheduleTomorrow(ActionOrder.PRODUCTION,this);
@@ -573,14 +564,13 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
                 l.changeInWorkforceEvent(this, getNumberOfWorkers(),originalNumberOfWorkers );
 
             //log it
-            if(MacroII.hasGUI())
-                getOwner().logEvent(this, MarketEvents.LOST_WORKER, getOwner().getModel().getCurrentSimulationTimeInMillis(),
-                        " Total workers: " + getNumberOfWorkers());
+            handleNewEvent(new LogEvent(this,LogLevel.TRACE,"Worker left, total workers:{}",getNumberOfWorkers()));
+
             //tell the market about it
-            if(MacroII.hasGUI()){
-                if(getHr() != null) //it might be null if we are turning off
-                    getHr().getMarket().registerFiring(owner,w);
-            }
+
+            if(getHr() != null) //it might be null if we are turning off
+                getHr().getMarket().registerFiring(owner,w);
+
 
 
             return w;
@@ -627,9 +617,8 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         for(PlantListener l : listeners)
             l.changeInWorkforceEvent(this, getNumberOfWorkers(), originalNumberOfWorkers);
         //tell the gui, if needed
-        if(MacroII.hasGUI())
-            getOwner().logEvent(this, MarketEvents.HIRED_WORKER,getModel().getCurrentSimulationTimeInMillis(),
-                    "Hired " + newHires.length + ", new total: " + getNumberOfWorkers());
+        handleNewEvent(new LogEvent(this,LogLevel.TRACE,"hired {} workers, total workers{}",
+                newHires.length,getNumberOfWorkers()));
 
 
         //if you were waiting for a worker, try again
@@ -683,8 +672,7 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
             l.changeInMachineryEvent(this,plantMachinery);
 
         //machinery has changed
-        if(MacroII.hasGUI())
-            getOwner().logEvent(this, MarketEvents.MACHINERY_CHANGE, getOwner().getModel().getCurrentSimulationTimeInMillis(), plantMachinery.toString());
+        handleNewEvent(new LogEvent(this,LogLevel.TRACE,"Change in machinery"));
     }
 
     public Firm getOwner() {
@@ -851,6 +839,8 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         productionData.turnOff();
         consumptionData.turnOff();
         counter.turnOff();
+        //log off
+        logNode.turnOff();
 
     }
 
@@ -1276,4 +1266,44 @@ public class Plant implements Department, Steppable, Deactivatable, InventoryLis
         return plant;
     }
 
+
+    /***
+     *       __
+     *      / /  ___   __ _ ___
+     *     / /  / _ \ / _` / __|
+     *    / /__| (_) | (_| \__ \
+     *    \____/\___/ \__, |___/
+     *                |___/
+     */
+
+    /**
+     * simple lognode we delegate all loggings to.
+     */
+    private final LogNodeSimple logNode = new LogNodeSimple();
+
+    @Override
+    public boolean addLogEventListener(LogListener toAdd) {
+        return logNode.addLogEventListener(toAdd);
+    }
+
+    @Override
+    public boolean removeLogEventListener(LogListener toRemove) {
+        return logNode.removeLogEventListener(toRemove);
+    }
+
+    @Override
+    public void handleNewEvent(LogEvent logEvent)
+    {
+        logNode.handleNewEvent(logEvent);
+    }
+
+    @Override
+    public boolean stopListeningTo(Loggable branch) {
+        return logNode.stopListeningTo(branch);
+    }
+
+    @Override
+    public boolean listenTo(Loggable branch) {
+        return logNode.listenTo(branch);
+    }
 }

@@ -15,6 +15,7 @@ import ec.util.MersenneTwisterFast;
 import goods.Good;
 import model.utilities.Deactivatable;
 import model.utilities.NonDrawable;
+import model.utilities.logs.LogNode;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -35,7 +36,7 @@ import java.util.ArrayList;
  * @version 2012-07-22
  * @see
  */
-public interface AskPricingStrategy extends Deactivatable {
+public interface AskPricingStrategy extends Deactivatable, LogNode {
 
     /**
      * The sales department is asked at what should be the sale price for a specific good; this, I guess, is the fundamental

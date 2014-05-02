@@ -17,6 +17,8 @@ import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
 import model.MacroII;
+import model.utilities.logs.*;
+import org.slf4j.Logger;
 import sim.display.GUIState;
 import sim.engine.SimState;
 import sim.portrayal.Inspector;
@@ -37,7 +39,8 @@ import java.util.Set;
  * Time: 12:47 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class EconomicAgent implements Agent, HasInventory{
+public abstract class EconomicAgent implements Agent, HasInventory, LogNode
+{
 
 
     private long cash = 0;
@@ -420,6 +423,7 @@ public abstract class EconomicAgent implements Agent, HasInventory{
     public void turnOff() {
         isActive=false;
         counter.turnOff();
+        logNode.turnOff();
         model.removeAgent(this);
     }
 
@@ -525,5 +529,52 @@ public abstract class EconomicAgent implements Agent, HasInventory{
     @Override
     public Set<GoodType> goodTypesEncountered() {
         return inventory.goodTypesEncountered();
+    }
+
+
+
+
+    /***
+     *       __
+     *      / /  ___   __ _ ___
+     *     / /  / _ \ / _` / __|
+     *    / /__| (_) | (_| \__ \
+     *    \____/\___/ \__, |___/
+     *                |___/
+     */
+
+    /**
+     * simple lognode we delegate all loggings to.
+     */
+    private final LogNodeSimple logNode = new LogNodeSimple();
+
+    @Override
+    public boolean addLogEventListener(LogListener toAdd) {
+        return logNode.addLogEventListener(toAdd);
+    }
+
+    @Override
+    public boolean removeLogEventListener(LogListener toRemove) {
+        return logNode.removeLogEventListener(toRemove);
+    }
+
+    @Override
+    public void handleNewEvent(LogEvent logEvent)
+    {
+        logNode.handleNewEvent(logEvent);
+    }
+
+    @Override
+    public boolean stopListeningTo(Loggable branch) {
+        return logNode.stopListeningTo(branch);
+    }
+
+    @Override
+    public boolean listenTo(Loggable branch) {
+        return logNode.listenTo(branch);
+    }
+
+    public boolean attachOutput(Logger logger) {
+        return logNode.attachOutput(logger);
     }
 }

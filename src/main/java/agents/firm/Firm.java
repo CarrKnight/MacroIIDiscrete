@@ -51,7 +51,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Time: 8:27 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Firm extends EconomicAgent {
+public class Firm extends EconomicAgent  {
 
 
     private final HashMap<GoodType,SalesDepartment> salesDepartments;
@@ -177,7 +177,7 @@ public class Firm extends EconomicAgent {
         if(oldHR != null)
             oldHR.turnOff();
         //log it
-        addAgentToLog(hr);
+        listenTo(hr);
 
         //put it in.
         humanResources.put(p,hr);
@@ -188,7 +188,7 @@ public class Firm extends EconomicAgent {
             model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
                 @Override
                 public void step(SimState state) {
-                    hr.start();
+                    hr.start(model);
                 }
             });
         }
@@ -217,7 +217,7 @@ public class Firm extends EconomicAgent {
             l.plantCreatedEvent(this,p);
 
         //log it
-        addAgentToLog(p);
+        listenTo(p);
 
         //if it's ready start it!
         if(p.getStatus() == PlantStatus.READY)
@@ -497,7 +497,7 @@ public class Firm extends EconomicAgent {
     public void registerSaleDepartment(final SalesDepartment newSales, GoodType type){
         assert !salesDepartments.containsKey(type);
         //log it
-        addAgentToLog(newSales);
+        listenTo(newSales);
         //add it
         salesDepartments.put(type,newSales);
 
@@ -507,7 +507,7 @@ public class Firm extends EconomicAgent {
             model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
                 @Override
                 public void step(SimState state) {
-                    newSales.start();
+                    newSales.start(model);
                 }
             });
         }
@@ -522,7 +522,7 @@ public class Firm extends EconomicAgent {
     public void registerPurchasesDepartment(final PurchasesDepartment newPurchases, GoodType type){
         assert !purchaseDepartments.containsKey(type);
         //log it
-        addAgentToLog(newPurchases);
+        listenTo(newPurchases);
         //add it
         purchaseDepartments.put(type,newPurchases);
 
@@ -532,7 +532,7 @@ public class Firm extends EconomicAgent {
             model.scheduleSoon(ActionOrder.DAWN,new Steppable() {
                 @Override
                 public void step(SimState state) {
-                    newPurchases.start();
+                    newPurchases.start(model);
                 }
             });
         }
@@ -574,16 +574,16 @@ public class Firm extends EconomicAgent {
 
         //weekend for purchases departments
         for(PurchasesDepartment pDept : purchaseDepartments.values())
-            pDept.weekEnd();
+            pDept.weekEnd(time);
 
 
         //weekend for sales departments
         for(SalesDepartment sDept : salesDepartments.values())
-            sDept.weekEnd();
+            sDept.weekEnd(time);
 
         //weekend for human resources
         for(HumanResources hr : humanResources.values())
-            hr.weekEnd();
+            hr.weekEnd(time);
 
         //profit report!
         profitReport.weekEnd();
@@ -682,11 +682,11 @@ public class Firm extends EconomicAgent {
     public void start(MacroII state){
         super.start(state);
         for(PurchasesDepartment dept : purchaseDepartments.values())
-            dept.start();
+            dept.start(state);
         for(HumanResources hr : humanResources.values())
-            hr.start();
+            hr.start(state);
         for(SalesDepartment sales : salesDepartments.values())
-            sales.start();
+            sales.start(state);
 
     }
 
@@ -825,13 +825,6 @@ public class Firm extends EconomicAgent {
 
     }
 
-    /**
-     * When a (possibly) new agent enters the market call this to create a record for him.
-     * It's not acceptable to add an logEvent for an agent that wasn't added
-     */
-    public void addAgentToLog(Object newAgent) {
-        //todo logtodo
-    }
 
     /**
      * The standard inspector is just a simpleInspector, but it can be overriden.

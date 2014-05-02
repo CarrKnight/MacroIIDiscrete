@@ -180,7 +180,7 @@ public class PlantProductionAndConsumptionCounterTest {
         plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL,mock(Firm.class),0,plant));
         plant.setCostStrategy(new EmptyCostStrategy());   when(owner.getHR(plant)).thenReturn(mock(HumanResources.class));
 
-        model.start(); plant.start(); //need to start the plant separetely because it isn't registered as an agent
+        model.start(); plant.start(model); //need to start the plant separetely because it isn't registered as an agent
         model.scheduleSoon(ActionOrder.PRODUCTION,plant);
         model.schedule.step(model);
 

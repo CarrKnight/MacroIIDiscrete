@@ -10,16 +10,17 @@ import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentListener;
-import agents.firm.sales.pricing.AskPricingStrategy;
+import agents.firm.sales.pricing.BaseAskPricingStrategy;
 import com.google.common.base.Preconditions;
 import financial.BidListener;
-import financial.MarketEvents;
 import financial.TradeListener;
 import financial.market.Market;
 import financial.utilities.Quote;
 import goods.Good;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.logs.LogEvent;
+import model.utilities.logs.LogLevel;
 import model.utilities.pid.PIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -43,7 +44,7 @@ import sim.engine.Steppable;
  * @version 2012-08-27
  * @see
  */
-public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDepartmentListener, AskPricingStrategy,
+public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements TradeListener, BidListener, SalesDepartmentListener,
         Steppable{
 
     /**
@@ -199,6 +200,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
      */
     @Override
     public void turnOff() {
+        super.turnOff();
         //make sure we were active before!
         assert active;
         active = false;
@@ -272,11 +274,11 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         goodsToSell = sales.getHowManyToSell();
 
 
-
+        final int stockouts = stockOuts.getStockouts();
         if(flowTargeting) {
 
             float inflow = sales.getTodayInflow();
-            float outflow = sales.getTodayOutflow() + stockOuts.getStockouts();
+            float outflow = sales.getTodayOutflow() + stockouts;
             gap = -(outflow-inflow);
 
 
@@ -288,7 +290,7 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         else
         {
             //gap =  (float) (goodsToSell - ((float) goodsSold + (float) stockOuts.getStockouts()));
-            gap = goodsToSell - stockOuts.getStockouts();
+            gap = goodsToSell - stockouts;
             controller.adjust(0, gap,    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
                     active, (MacroII)simState, this,ActionOrder.ADJUST_PRICES);
         }
@@ -298,8 +300,10 @@ public class SimpleFlowSellerPID implements TradeListener, BidListener, SalesDep
         //get the new price
         price = Math.round(controller.getCurrentMV());
         //log the change in policy
-        getSales().getFirm().logEvent(getSales(), MarketEvents.CHANGE_IN_POLICY, getSales().getFirm().getModel().getCurrentSimulationTimeInMillis(), "toSell: " + goodsToSell + ", customers:"
-                + (goodsSold + stockOuts.getStockouts()) + "of which, stockouts: " + stockOuts.getStockouts() + "\n oldprice:" + oldPrice + ", newprice:" + price + " || MV: " + controller.getCurrentMV() );
+        handleNewEvent(new LogEvent(this, LogLevel.INFO,
+                "PID policy change, toSell: {}, customers:{}, of which, stockouts: {}\n oldprice:{} newprice:{} , MV:{}",
+        goodsToSell,(goodsSold+ stockouts), stockouts,oldPrice,price,controller.getCurrentMV()));
+
 
 
 

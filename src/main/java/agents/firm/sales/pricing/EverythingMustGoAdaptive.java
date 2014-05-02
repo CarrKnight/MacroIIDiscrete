@@ -28,7 +28,7 @@ import sim.engine.Steppable;
  * @version 2012-07-24
  * @see
  */
-public class EverythingMustGoAdaptive implements AskPricingStrategy {
+public class EverythingMustGoAdaptive extends  BaseAskPricingStrategy {
 
     float markup;
 
@@ -52,12 +52,7 @@ public class EverythingMustGoAdaptive implements AskPricingStrategy {
         return (long) (g.getLastValidPrice() * (1+ markup));
     }
 
-    /**
-     * When the pricing strategy is changed or the firm is shutdown this is called. It's useful to kill off steppables and so on
-     */
-    @Override
-    public void turnOff() {
-    }
+
 
     /**
      * if the firm managed to sell 95% or more of its merchandise, then raise markup. Otherwise decrease it

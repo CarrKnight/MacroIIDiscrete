@@ -19,7 +19,6 @@ import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.decorators.AskReservationPriceDecorator;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
-import financial.MarketEvents;
 import financial.market.Market;
 import financial.utilities.ActionsAllowed;
 import financial.utilities.PurchaseResult;
@@ -30,6 +29,7 @@ import javafx.beans.value.ObservableDoubleValue;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.filters.WeightedMovingAverage;
+import model.utilities.logs.*;
 import model.utilities.stats.collectors.SalesData;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import sim.engine.SimState;
@@ -58,7 +58,7 @@ import java.util.*;
  * @version 2013-04-07
  * @see
  */
-public abstract class  SalesDepartment  implements Department {
+public abstract class  SalesDepartment  implements Department, LogNode {
 
     /**
      * a map associating to each good to sell the quote submitted for it at a centralized market
@@ -306,7 +306,8 @@ public abstract class  SalesDepartment  implements Department {
 
 
         todayInflow++;
-        getFirm().logEvent(SalesDepartment.this, MarketEvents.TASKED_TO_SELL, getFirm().getModel().getCurrentSimulationTimeInMillis());
+        handleNewEvent(new LogEvent(this, LogLevel.TRACE,"Tasked to sell"));
+
 
 
 
@@ -316,7 +317,7 @@ public abstract class  SalesDepartment  implements Department {
     }
 
 
-    public void start()
+    public void start(MacroII model)
     {
         started = true;
         data.start(model,this);
@@ -429,9 +430,7 @@ public abstract class  SalesDepartment  implements Department {
 
         long price = price(g);
         lastAskedPrice = price;
-        if(MacroII.hasGUI())
-            getFirm().logEvent(this, MarketEvents.SUBMIT_SELL_QUOTE,getFirm().getModel().getCurrentSimulationTimeInMillis(),
-                    "price:" + price);
+        handleNewEvent(new LogEvent(this, LogLevel.TRACE,"submitted a sell quote at price:{}",price));
         Quote q = market.submitSellQuote(firm,price,g, this); //put a quote into the market
         if(q.getPriceQuoted() != -1) //if the quote is not null
         {
@@ -513,8 +512,7 @@ public abstract class  SalesDepartment  implements Department {
 
         //exchange hostages
         market.trade(buyerQuote.getAgent(),getFirm(),g,finalPrice,buyerQuote,sellerQuote);
-        getFirm().logEvent(SalesDepartment.this, MarketEvents.SOLD, getFirm().getModel().getCurrentSimulationTimeInMillis(), "price: " + finalPrice + ", through buyFromHere()"); //sold a good
-
+        handleNewEvent(new LogEvent(this, LogLevel.TRACE,"Sold good at price:{} through buyFromHere()",finalPrice));
         /********************************************************************
          * Record information
          *******************************************************************/
@@ -630,8 +628,8 @@ public abstract class  SalesDepartment  implements Department {
         fireGoodSoldEvent(g,price);
 
         //log it
-        getFirm().logEvent(SalesDepartment.this, MarketEvents.SOLD
-                , getFirm().getModel().getCurrentSimulationTimeInMillis(), "price ");
+        handleNewEvent(new LogEvent(this, LogLevel.TRACE, "sold at price:{}", price));
+
 
         todayOutflow++;
 
@@ -744,7 +742,7 @@ public abstract class  SalesDepartment  implements Department {
     /**
      * Weekend is a magical time when we record all quoted but unsold goods as unsold and then compute statistics and move on.
      */
-    public void weekEnd(){
+    public void weekEnd(double time){
 
 
         if(MacroII.SAFE_MODE) //if safe mode is on
@@ -811,10 +809,12 @@ public abstract class  SalesDepartment  implements Department {
      */
     public void setAskPricingStrategy(AskPricingStrategy askPricingStrategy) {
 
-        if(this.askPricingStrategy != null)
+        if(this.askPricingStrategy != null) {
             this.askPricingStrategy.turnOff();
-
+            this.stopListeningTo(askPricingStrategy);
+        }
         this.askPricingStrategy = askPricingStrategy;
+        this.listenTo(askPricingStrategy);
 
     }
 
@@ -956,6 +956,8 @@ public abstract class  SalesDepartment  implements Department {
         assert salesDepartmentListeners.isEmpty(); //hopefully it is clear by now!
         salesDepartmentListeners.clear();
         salesDepartmentListeners = null;
+
+        logNode.turnOff();
 
     }
 
@@ -1306,6 +1308,48 @@ public abstract class  SalesDepartment  implements Department {
 
     public boolean isStarted() {
         return started;
+    }
+
+
+
+    /***
+     *       __
+     *      / /  ___   __ _ ___
+     *     / /  / _ \ / _` / __|
+     *    / /__| (_) | (_| \__ \
+     *    \____/\___/ \__, |___/
+     *                |___/
+     */
+
+    /**
+     * simple lognode we delegate all loggings to.
+     */
+    private final LogNodeSimple logNode = new LogNodeSimple();
+
+    @Override
+    public boolean addLogEventListener(LogListener toAdd) {
+        return logNode.addLogEventListener(toAdd);
+    }
+
+    @Override
+    public boolean removeLogEventListener(LogListener toRemove) {
+        return logNode.removeLogEventListener(toRemove);
+    }
+
+    @Override
+    public void handleNewEvent(LogEvent logEvent)
+    {
+        logNode.handleNewEvent(logEvent);
+    }
+
+    @Override
+    public boolean stopListeningTo(Loggable branch) {
+        return logNode.stopListeningTo(branch);
+    }
+
+    @Override
+    public boolean listenTo(Loggable branch) {
+        return logNode.listenTo(branch);
     }
 }
 

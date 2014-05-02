@@ -6,6 +6,7 @@
 
 package agents.firm.personell;
 
+import agents.Agent;
 import agents.EconomicAgent;
 import agents.Person;
 import agents.firm.Firm;
@@ -22,7 +23,6 @@ import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
-import financial.MarketEvents;
 import financial.market.Market;
 import goods.Good;
 import goods.GoodType;
@@ -49,7 +49,7 @@ import java.util.*;
  * @version 2012-08-21
  * @see
  */
-public class HumanResources extends PurchasesDepartment implements Steppable {
+public class HumanResources extends PurchasesDepartment implements Agent {
 
     /**
      * The plant to manage.
@@ -259,9 +259,9 @@ public class HumanResources extends PurchasesDepartment implements Steppable {
      * Adds to the purchase department start the start of the plant
      */
     @Override
-    public void start() {
-        super.start();
-        plant.start();
+    public void start(MacroII model) {
+        super.start(model);
+        plant.start(model);
 
 
         getModel().scheduleSoon(ActionOrder.PRODUCTION,new Steppable() {
@@ -335,9 +335,12 @@ public class HumanResources extends PurchasesDepartment implements Steppable {
      * In addition to checking the budget, hr also pays everybody's wages.
      */
     @Override
-    public void weekEnd() {
-        super.weekEnd();
+    public void weekEnd(double time) {
+        super.weekEnd(time);
     }
+
+
+
 
     /**
      * React to a bid filled quote  (just calls super after asserting that we did in fact hire the guy)
@@ -486,26 +489,6 @@ public class HumanResources extends PurchasesDepartment implements Steppable {
     }
 
 
-    /**
-     * If an logEvent worth to be put in the timeline occurred, call this!
-     * @param agent the one who performed the logEvent
-     * @param action the action that has occurred
-     * @param time the "real" time when this occurred
-     * @param annotations additional information to display!
-     */
-    public void logEvent(Object agent, MarketEvents action, long time, String annotations) {
-        getFirm().logEvent(agent, action, time, annotations);
-    }
-
-    /**
-     * If an logEvent worth to be put in the timeline occurred, call this!
-     * @param agent the one who performed the logEvent
-     * @param action the action that has occurred
-     * @param time the "real" time when this occurred
-     */
-    public void logEvent(Object agent, MarketEvents action, long time) {
-        getFirm().logEvent(agent, action, time);
-    }
 
 
 

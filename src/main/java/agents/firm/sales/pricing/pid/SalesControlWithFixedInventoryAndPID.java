@@ -7,13 +7,18 @@
 package agents.firm.sales.pricing.pid;
 
 import agents.firm.sales.SalesDepartment;
-import agents.firm.sales.pricing.AskPricingStrategy;
+import agents.firm.sales.pricing.BaseAskPricingStrategy;
 import com.google.common.base.Preconditions;
 import financial.MarketEvents;
 import goods.Good;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.pid.*;
+import model.utilities.logs.LogEvent;
+import model.utilities.logs.LogLevel;
+import model.utilities.pid.CascadePToPIDController;
+import model.utilities.pid.Controller;
+import model.utilities.pid.ControllerFactory;
+import model.utilities.pid.ControllerInput;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -34,7 +39,7 @@ import sim.engine.Steppable;
  * @version 2013-02-06
  * @see
  */
-public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy, Steppable
+public class SalesControlWithFixedInventoryAndPID extends BaseAskPricingStrategy implements Steppable
 {
 
 
@@ -150,12 +155,6 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
 
     }
 
-    /**
-     * When the pricing strategy is changed or the firm is shutdown this is called. It's useful to kill off steppables and so on
-     */
-    @Override
-    public void turnOff() {
-    }
 
     /**
      * After computing all statistics the sales department calls the weekEnd method. This might come in handy
@@ -187,20 +186,14 @@ public class SalesControlWithFixedInventoryAndPID implements AskPricingStrategy,
         slavePIDOriginalError = input.getTarget(1)-input.getInput(1);
         controller.adjust(input,
                 department.getFirm().isActive(), macroII, this, ActionOrder.ADJUST_PRICES);
-
-
-        getDepartment().getFirm().logEvent(getDepartment(),
-                MarketEvents.CHANGE_IN_POLICY,getDepartment().getFirm().getModel().getCurrentSimulationTimeInMillis(),
-                "old-new price: " + oldPrice + " - " + (long)Math.round(controller.getCurrentMV()) + "\n"+
-                        "howManyToSell-Target Inventory- Total Inventory: " + department.getHowManyToSell() + " - " +
-                        targetInventory + " - " +
-                        getDepartment().getFirm().hasHowMany(department.getMarket().getGoodType()) + "\n" +
-                        "inflow-outflow: " + department.getTodayInflow() + " - " + department.getTodayOutflow() + "\n"
-
-        );
-
-
         roundedPrice = (long)Math.round(controller.getCurrentMV());
+
+        //log it
+        handleNewEvent(new LogEvent(this, LogLevel.INFO, "old price:{} newprice:{}\n inventory:{} targetInventory{}\n inflow:{} outflow{}",
+                oldPrice,roundedPrice,department.getHowManyToSell(),targetInventory,department.getTodayInflow(),department.getTodayOutflow()));
+
+
+
         if(oldPrice != roundedPrice )
             department.updateQuotes();
 

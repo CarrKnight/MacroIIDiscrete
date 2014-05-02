@@ -24,7 +24,7 @@ import goods.Good;
  * @version 2012-07-23
  * @see
  */
-public class PriceFollower implements AskPricingStrategy {
+public class PriceFollower extends BaseAskPricingStrategy {
 
 
     SalesDepartment sales;
@@ -53,12 +53,7 @@ public class PriceFollower implements AskPricingStrategy {
             return Math.max(priceToFollow,g.getLastValidPrice());
     }
 
-    /**
-     * When the pricing strategy is changed or the firm is shutdown this is called. It's useful to kill off steppables and so on
-     */
-    @Override
-    public void turnOff() {
-    }
+
 
     /**
      * After computing all statistics the sales department calls the weekEnd method. This might come in handy

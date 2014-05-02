@@ -24,7 +24,7 @@ import goods.Good;
  * @version 2012-07-22
  * @see
  */
-public class CostAskPricing implements AskPricingStrategy {
+public class CostAskPricing extends BaseAskPricingStrategy {
 
     private final SalesDepartment sales;
 
@@ -38,12 +38,6 @@ public class CostAskPricing implements AskPricingStrategy {
 
     }
 
-    /**
-     * Turnoff doesn't really affect CostAskPricing
-     */
-    @Override
-    public void turnOff() {
-    }
 
     /**
      * Week end doesn't bother the cost pricing strategy

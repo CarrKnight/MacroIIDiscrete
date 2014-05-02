@@ -20,7 +20,6 @@ import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
-import financial.MarketEvents;
 import financial.market.Market;
 import financial.utilities.ActionsAllowed;
 import financial.utilities.PurchaseResult;
@@ -31,6 +30,7 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.Control;
 import model.utilities.Deactivatable;
+import model.utilities.logs.*;
 import model.utilities.scheduler.Priority;
 import model.utilities.stats.collectors.PurchasesDepartmentData;
 import model.utilities.stats.collectors.enums.PurchasesDataType;
@@ -53,7 +53,7 @@ import sim.engine.Steppable;
  </ul>
  * </p>
  */
-public class PurchasesDepartment implements Deactivatable, Department {
+public class PurchasesDepartment implements Deactivatable, Department, LogNode {
 
 
     public static Class<? extends PurchasesPredictor> defaultPurchasePredictor =
@@ -530,10 +530,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
         }
 
         averagePriceCounter.getNotifiedOfFilledQuote(price);
-        if(MacroII.hasGUI())
-
-            getFirm().logEvent(this, MarketEvents.BOUGHT, getFirm().getModel().getCurrentSimulationTimeInMillis(), "price: " + price);
-
+        handleNewEvent(new LogEvent(this, LogLevel.TRACE,"Bought at price:{}",price));
     }
 
     /**
@@ -576,9 +573,8 @@ public class PurchasesDepartment implements Deactivatable, Department {
 
                         //record info
                         budgetSpent += result.getPriceTrade(); lastClosingPrice = result.getPriceTrade(); //spent!
-                        if(MacroII.hasGUI())
+                        handleNewEvent(new LogEvent(this, LogLevel.TRACE,"Bought at price:{}",finalPrice));
 
-                            getFirm().logEvent(this, MarketEvents.BOUGHT, getFirm().getModel().getCurrentSimulationTimeInMillis(), "price: " + finalPrice);
                         status = PurchasesDepartmentStatus.IDLE; //you are done!
                         supplierSearch.reactToSuccess(seller,PurchaseResult.SUCCESS);
 
@@ -625,7 +621,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
         }
 
         //log it
-        getFirm().logEvent(this, MarketEvents.TASKED_TO_BUY, getFirm().getModel().getCurrentSimulationTimeInMillis());
+        handleNewEvent(new LogEvent(this, LogLevel.TRACE,"Tasked to buy"));
 
 
 
@@ -788,7 +784,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
     /**
      * At weekend remove budget spent from total budget; purely accounting trick
      */
-    public void weekEnd() {
+    public void weekEnd(double time) {
         assert budgetGiven >= budgetSpent;
         budgetGiven -= budgetSpent;
         budgetSpent = 0;
@@ -916,6 +912,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
         predictor.turnOff(); //turn off the predictor
         counter.turnOff();
         purchasesData.turnOff();
+        logNode.turnOff();
 
 
 
@@ -995,7 +992,7 @@ public class PurchasesDepartment implements Deactivatable, Department {
     /**
      * Start the inventory control and make the purchaseDepartment, if needed, buy stuff
      */
-    public void start(){
+    public void start(MacroII model){
         Preconditions.checkArgument(!startWasCalled);
         startWasCalled = true;
 
@@ -1254,5 +1251,46 @@ public class PurchasesDepartment implements Deactivatable, Department {
     public boolean hasTradedAtLeastOnce() {
         return getLastClosingPrice() >=0;
 
+    }
+
+
+    /***
+     *       __
+     *      / /  ___   __ _ ___
+     *     / /  / _ \ / _` / __|
+     *    / /__| (_) | (_| \__ \
+     *    \____/\___/ \__, |___/
+     *                |___/
+     */
+
+    /**
+     * simple lognode we delegate all loggings to.
+     */
+    private final LogNodeSimple logNode = new LogNodeSimple();
+
+    @Override
+    public boolean addLogEventListener(LogListener toAdd) {
+        return logNode.addLogEventListener(toAdd);
+    }
+
+    @Override
+    public boolean removeLogEventListener(LogListener toRemove) {
+        return logNode.removeLogEventListener(toRemove);
+    }
+
+    @Override
+    public void handleNewEvent(LogEvent logEvent)
+    {
+        logNode.handleNewEvent(logEvent);
+    }
+
+    @Override
+    public boolean stopListeningTo(Loggable branch) {
+        return logNode.stopListeningTo(branch);
+    }
+
+    @Override
+    public boolean listenTo(Loggable branch) {
+        return logNode.listenTo(branch);
     }
 }

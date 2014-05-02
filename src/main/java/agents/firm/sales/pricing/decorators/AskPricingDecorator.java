@@ -9,6 +9,9 @@ package agents.firm.sales.pricing.decorators;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import goods.Good;
 import model.utilities.NonDrawable;
+import model.utilities.logs.LogEvent;
+import model.utilities.logs.LogListener;
+import model.utilities.logs.Loggable;
 
 /**
  * <h4>Description</h4>
@@ -92,5 +95,30 @@ public abstract class AskPricingDecorator implements AskPricingStrategy{
      */
     public AskPricingStrategy getDecorated() {
         return toDecorate;
+    }
+
+    @Override
+    public void handleNewEvent(LogEvent logEvent) {
+        toDecorate.handleNewEvent(logEvent);
+    }
+
+    @Override
+    public boolean listenTo(Loggable eventSource) {
+        return toDecorate.listenTo(eventSource);
+    }
+
+    @Override
+    public boolean stopListeningTo(Loggable branch) {
+        return toDecorate.stopListeningTo(branch);
+    }
+
+    @Override
+    public boolean addLogEventListener(LogListener toAdd) {
+        return toDecorate.addLogEventListener(toAdd);
+    }
+
+    @Override
+    public boolean removeLogEventListener(LogListener toRemove) {
+        return toDecorate.removeLogEventListener(toRemove);
     }
 }

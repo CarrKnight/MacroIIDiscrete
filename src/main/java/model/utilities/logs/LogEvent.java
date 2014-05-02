@@ -21,7 +21,6 @@ public class LogEvent extends EventObject
 
     private final String message;
 
-
     public LogEvent(Object source, LogLevel level, String message,
                     Object... additionalParameters) {
         super(source);

@@ -7,14 +7,15 @@
 package agents.firm.sales.pricing.pid;
 
 import agents.firm.sales.SalesDepartment;
-import agents.firm.sales.pricing.AskPricingStrategy;
+import agents.firm.sales.pricing.BaseAskPricingStrategy;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
-import financial.MarketEvents;
 import goods.Good;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.filters.Filter;
+import model.utilities.logs.LogEvent;
+import model.utilities.logs.LogLevel;
 import model.utilities.pid.PIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -39,7 +40,7 @@ import sim.engine.Steppable;
  * @version 2013-03-19
  * @see
  */
-public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly implements AskPricingStrategy, Steppable {
+public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends BaseAskPricingStrategy implements Steppable {
 
     private final SalesDepartment department;
 
@@ -136,6 +137,8 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly implemen
      */
     @Override
     public void turnOff() {
+
+        super.turnOff();
         isActive=false;
     }
 
@@ -194,11 +197,9 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly implemen
 
         controller.adjustOnce(outflow-getTarget(),isActive);
 
-        department.getFirm().logEvent(department, MarketEvents.CHANGE_IN_POLICY, department.getFirm().getModel().getCurrentSimulationTimeInMillis(),
-                "inventory: " + department.getHowManyToSell() + ", outflow:"
-                        + outflow + ", target: "
-                        + getTarget() + "\n whichphase? :" + phase + ", oldPrice:"
-                        + oldprice + " || newPrice: " + controller.getCurrentMV() );
+        handleNewEvent(new LogEvent(this, LogLevel.INFO, "inventory: {}, outlow:{}, target:{}\n whichphase? {}, oldPrice: {}, newprice{}",
+                department.getHowManyToSell(),outflow,getTarget(),phase,oldprice,controller.getCurrentMV()));
+
 
 
         if(getSpeed()==0)

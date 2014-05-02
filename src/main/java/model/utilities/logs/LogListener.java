@@ -19,5 +19,10 @@ public interface LogListener
     public void handleNewEvent(LogEvent logEvent);
 
 
+    public boolean listenTo(Loggable eventSource);
+
+    public boolean stopListeningTo(Loggable branch);
+
+
 
 }

@@ -28,7 +28,7 @@ import sim.engine.Steppable;
  * @version 2012-07-22
  * @see
  */
-public class UndercuttingAskPricing implements AskPricingStrategy,Steppable{
+public class UndercuttingAskPricing extends BaseAskPricingStrategy implements Steppable{
 
     /**
      * By how much to reduce the best offer made by your opponent?
@@ -118,6 +118,8 @@ public class UndercuttingAskPricing implements AskPricingStrategy,Steppable{
      */
     @Override
     public void turnOff() {
+
+        super.turnOff();
         strategyActivated = false;
     }
 
