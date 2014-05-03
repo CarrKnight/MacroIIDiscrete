@@ -65,7 +65,7 @@ public class OilDistributorScenario extends Scenario implements ControllableGeog
     private int dailyProductionPerFirm = 10;
 
 
-    private LaborMarketOilScenarioStrategy laborMarketStrategy = new IndipendentLaborMarketsForEachFirmStrategy();
+    private LaborMarketOilScenarioStrategy laborMarketStrategy = new SingleLaborMarketStrategy();
 
 
     private OilFirmsScenarioStrategy oilFirmsStrategy = new ProducingOilFirmsScenarioStrategy();

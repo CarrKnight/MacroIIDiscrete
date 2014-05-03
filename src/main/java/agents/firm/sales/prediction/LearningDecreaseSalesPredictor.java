@@ -119,7 +119,7 @@ public class LearningDecreaseSalesPredictor extends BaseSalesPredictor {
         long newSlope = !Double.isNaN(regressor.getSlope()) ? Math.round(-regressor.getSlope()) : 0;
         predictor.setDecrementDelta(newSlope);
 
-        handleNewEvent(new LogEvent(this, LogLevel.INFO,"New slope: {}",newSlope)); //log it
+        handleNewEvent(new LogEvent(this, LogLevel.DEBUG,"New slope: {}",newSlope)); //log it
 
     }
 

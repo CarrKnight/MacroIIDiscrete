@@ -8,6 +8,7 @@ package model.utilities.logs;
 
 import model.MacroII;
 import org.slf4j.Logger;
+import org.slf4j.helpers.MessageFormatter;
 
 /**
  * Appends date and phase to each log line. Done poorly. Very slow.
@@ -35,10 +36,11 @@ public class LoggerOutputWithTimeStamp implements LogListener {
     public void handleNewEvent(LogEvent logEvent) {
         String newMessage = "date:" + model.getMainScheduleTime() + ", phase: " + model.getCurrentPhase() + logEvent.getMessage();
         LogLevel.log(output,logEvent.getLevel(),newMessage,logEvent.getAdditionalParameters());
-     /*   if(logEvent.getLevel().compareTo(LogLevel.INFO)>=0)
-            System.out.println(MessageFormatter.format(logEvent.getMessage(),logEvent.getAdditionalParameters()).getMessage() +
-                            "date:" + model.getMainScheduleTime() + ", phase: " + model.getCurrentPhase()
+        if(logEvent.getLevel().compareTo(LogLevel.INFO)>=0)
+            System.out.println(
+                    "date:" + model.getMainScheduleTime() + ", phase: " + model.getCurrentPhase() + " " +
+                    MessageFormatter.arrayFormat(logEvent.getMessage(), logEvent.getAdditionalParameters()).getMessage()
             );
-            */
+
     }
 }

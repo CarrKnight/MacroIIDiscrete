@@ -197,7 +197,7 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
 
         controller.adjustOnce(outflow-getTarget(),isActive);
 
-        handleNewEvent(new LogEvent(this, LogLevel.INFO, "inventory: {}, outlow:{}, target:{}\n whichphase? {}, oldPrice: {}, newprice{}",
+        handleNewEvent(new LogEvent(this, LogLevel.DEBUG, "inventory: {}, outlow:{}, target:{}\n whichphase? {}, oldPrice: {}, newprice{}",
                 department.getHowManyToSell(),outflow,getTarget(),phase,oldprice,controller.getCurrentMV()));
 
 

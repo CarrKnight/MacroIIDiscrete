@@ -300,7 +300,7 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
         //get the new price
         price = Math.round(controller.getCurrentMV());
         //log the change in policy
-        handleNewEvent(new LogEvent(this, LogLevel.INFO,
+        handleNewEvent(new LogEvent(this, LogLevel.DEBUG,
                 "PID policy change, toSell: {}, customers:{}, of which, stockouts: {}\n oldprice:{} newprice:{} , MV:{}",
         goodsToSell,(goodsSold+ stockouts), stockouts,oldPrice,price,controller.getCurrentMV()));
 

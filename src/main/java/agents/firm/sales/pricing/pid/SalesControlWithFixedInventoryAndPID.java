@@ -189,7 +189,7 @@ public class SalesControlWithFixedInventoryAndPID extends BaseAskPricingStrategy
         roundedPrice = (long)Math.round(controller.getCurrentMV());
 
         //log it
-        handleNewEvent(new LogEvent(this, LogLevel.INFO, "old price:{} newprice:{}\n inventory:{} targetInventory{}\n inflow:{} outflow{}",
+        handleNewEvent(new LogEvent(this, LogLevel.DEBUG, "old price:{} newprice:{}\n inventory:{} targetInventory{}\n inflow:{} outflow{}",
                 oldPrice,roundedPrice,department.getHowManyToSell(),targetInventory,department.getTodayInflow(),department.getTodayOutflow()));
 
 

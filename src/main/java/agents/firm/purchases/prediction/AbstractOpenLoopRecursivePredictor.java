@@ -91,7 +91,7 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
 
             //log it!
             String kindOfPredictor = delegate instanceof RecursivePurchasesPredictor ? "purchases" : "sales";
-            handleNewEvent(new LogEvent(this,LogLevel.INFO,"{}: learned downward slope: {}, upward slope: {} , trace: {}",
+            handleNewEvent(new LogEvent(this,LogLevel.DEBUG,"{}: learned downward slope: {}, upward slope: {} , trace: {}",
                     kindOfPredictor,upwardSlope,downwardSlope,delegate.getRegression().getTrace()));
 
 
