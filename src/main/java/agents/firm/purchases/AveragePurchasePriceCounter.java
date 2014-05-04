@@ -119,7 +119,6 @@ public class AveragePurchasePriceCounter implements Steppable, Deactivatable
     @Override
     public void turnOff() {
         active = false;
-        (new RuntimeException("nooooooooooooooooo")).printStackTrace();
 
     }
 }

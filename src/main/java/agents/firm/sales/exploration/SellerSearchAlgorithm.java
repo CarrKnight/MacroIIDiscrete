@@ -84,11 +84,12 @@ public interface SellerSearchAlgorithm extends Deactivatable {
         //static clause to fill the set names
         static {
             rules = new ArrayList<>(); //read all the rules
-            assert rules.size() > 0; // there should be at least one!!
 
             rules.add(SimpleSellerSearch.class);
             rules.add(SimpleFavoriteSellerSearch.class);
             rules.removeIf(aClass -> aClass.isAnnotationPresent(NonDrawable.class));
+            assert rules.size() > 0; // there should be at least one!!
+
 
         }
 

@@ -552,7 +552,8 @@ public class MacroII extends SimState{
 
         markets.clear();
         markets = null;
-        for(EconomicAgent a : agents)
+        Collection<EconomicAgent> copy = new LinkedList<>(agents); //make a copy to avoid concurrent modification
+        for(EconomicAgent a : copy)
         {
             a.turnOff();
         }

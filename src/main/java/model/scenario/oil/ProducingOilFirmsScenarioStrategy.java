@@ -84,7 +84,10 @@ public class ProducingOilFirmsScenarioStrategy implements OilFirmsScenarioStrate
         SalesDepartment salesDepartment = SalesDepartmentFactory.incompleteSalesDepartment(oilPump, market,
                 new SimpleBuyerSearch(market, oilPump), new SimpleSellerSearch(market, oilPump), SalesDepartmentOneAtATime.class);
         //give the sale department a simple PID
-        salesDepartment.setAskPricingStrategy(new SalesControlWithFixedInventoryAndPID(salesDepartment,500));
+        final SalesControlWithFixedInventoryAndPID askPricingStrategy = new SalesControlWithFixedInventoryAndPID(salesDepartment, 10);
+        askPricingStrategy.setInitialPrice(200);
+        salesDepartment.setAskPricingStrategy(askPricingStrategy);
+
         salesDepartment.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(salesPredictor,salesDepartment));
         //finally register it!
         final GoodType goodTypeSold = market.getGoodType();

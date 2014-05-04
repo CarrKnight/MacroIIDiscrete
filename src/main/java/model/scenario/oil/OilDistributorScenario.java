@@ -13,6 +13,7 @@ import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.market.GeographicalMarket;
 import financial.market.Market;
+import financial.utilities.ShopSetPricePolicy;
 import goods.GoodType;
 import model.MacroII;
 import model.scenario.ControllableGeographicalScenario;
@@ -65,7 +66,7 @@ public class OilDistributorScenario extends Scenario implements ControllableGeog
     private int dailyProductionPerFirm = 10;
 
 
-    private LaborMarketOilScenarioStrategy laborMarketStrategy = new SingleLaborMarketStrategy();
+    private LaborMarketOilScenarioStrategy laborMarketStrategy = new IndipendentLaborMarketsForEachFirmStrategy();
 
 
     private OilFirmsScenarioStrategy oilFirmsStrategy = new ProducingOilFirmsScenarioStrategy();
@@ -80,6 +81,7 @@ public class OilDistributorScenario extends Scenario implements ControllableGeog
         model.getGoodTypeMasterList().addNewSector(oilGoodType);
 
         GeographicalMarket market = new GeographicalMarket(oilGoodType);
+        market.setPricePolicy(new ShopSetPricePolicy());
         getMarkets().put(oilGoodType,market);
         //poor neighborhood
         createNeighborhood(new Location(-10,-2),1.5,minPricePoorNeighborhood,maxPricePoorNeighborhood,
