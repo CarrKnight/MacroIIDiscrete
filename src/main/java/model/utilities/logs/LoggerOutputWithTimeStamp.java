@@ -6,11 +6,8 @@
 
 package model.utilities.logs;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.util.StatusPrinter;
 import model.MacroII;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Appends date and phase to each log line. Done poorly. Very slow.
@@ -37,11 +34,7 @@ public class LoggerOutputWithTimeStamp implements LogListener {
     @Override
     public void handleNewEvent(LogEvent logEvent) {
 
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        StatusPrinter.print(lc);
-
-
-        String newMessage = "date:" + model.getMainScheduleTime() + ", phase: " + model.getCurrentPhase() + logEvent.getMessage();
+       String newMessage = "date:" + model.getMainScheduleTime() + ", phase: " + model.getCurrentPhase() + logEvent.getMessage();
         LogLevel.log(output,logEvent.getLevel(),newMessage,logEvent.getAdditionalParameters());
    /*     if(logEvent.getLevel().compareTo(LogLevel.INFO)>=0)
             System.out.println(

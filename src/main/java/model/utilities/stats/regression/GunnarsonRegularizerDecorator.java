@@ -11,7 +11,7 @@ import Jama.Matrix;
 /**
  * <h4>Description</h4>
  * <p/> A simple decorator that normalizes the P covariance of the function, from:
- * Combining Tracking and Regularization in Recursive Least Squares Identication
+ * Combining Tracking and Regularization in Recursive Least Squares Identification
  * <p/>
  * <p/>
  * <h4>Notes</h4>

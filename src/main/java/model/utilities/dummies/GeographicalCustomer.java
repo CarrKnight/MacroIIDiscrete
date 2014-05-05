@@ -14,6 +14,8 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.geography.HasLocation;
 import model.utilities.geography.Location;
+import model.utilities.logs.LogEvent;
+import model.utilities.logs.LogLevel;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -90,6 +92,7 @@ public class GeographicalCustomer extends Customer implements HasLocation{
     public GeographicalFirm chooseSupplier( final Multimap<GeographicalFirm,Quote> firmsToChooseFrom)
     {
         Preconditions.checkArgument(!firmsToChooseFrom.isEmpty());
+        handleNewEvent(new LogEvent(this, LogLevel.TRACE,"was given these firms to choose from: {}",firmsToChooseFrom));
 
 
 
@@ -112,7 +115,13 @@ public class GeographicalCustomer extends Customer implements HasLocation{
 
         assert best != null;
         //is the minimum price distance okay?
-        double bestPricePlusDistance = firmsToChooseFrom.get(best).iterator().next().getPriceQuoted() + distance(GeographicalCustomer.this,best);
+
+        final long bestPriceAtSource = firmsToChooseFrom.get(best).iterator().next().getPriceQuoted();
+        double bestPricePlusDistance = bestPriceAtSource + distance(GeographicalCustomer.this,best);
+        //log it!
+        handleNewEvent(new LogEvent(this, LogLevel.TRACE,"the best firm found was {}, pricing {}, total personal cost {}",
+                best,bestPriceAtSource,bestPricePlusDistance));
+
         if(bestPricePlusDistance <= getMaxPrice())
             return best;
         else

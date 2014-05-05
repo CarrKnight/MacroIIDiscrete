@@ -32,4 +32,6 @@ public interface MarketView extends Deactivatable {
 
     public ObservableSet<TitledPane> getControls(Tab tab);
 
+
+
 }

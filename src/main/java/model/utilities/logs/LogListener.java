@@ -13,6 +13,7 @@ public interface LogListener
 {
 
 
+
     /**
      * get notified of a log event!
      */

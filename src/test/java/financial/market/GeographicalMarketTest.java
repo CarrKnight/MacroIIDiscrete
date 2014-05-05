@@ -19,12 +19,10 @@ import financial.utilities.Quote;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
 import goods.GoodType;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import model.MacroII;
 import model.scenario.Scenario;
-import model.utilities.dummies.GeographicalCustomer;
 import model.utilities.ActionOrder;
+import model.utilities.dummies.GeographicalCustomer;
 import model.utilities.scheduler.Priority;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import org.junit.Assert;
@@ -33,8 +31,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-
-import javax.swing.*;
 
 import static org.mockito.Mockito.*;
 
@@ -419,33 +415,7 @@ public class GeographicalMarketTest
     }
 
 
-    //testing GUI
-    public static void main(String[] args)
-    {
-        JFrame jFrame = new JFrame("lame example");
-        jFrame.setSize(500,500);
-        GeographicalMarket market = new GeographicalMarket(INPUT);
-        System.out.println(market.getBuyers().size());
-        GeographicalCustomer customer = new GeographicalCustomer(mock(MacroII.class),10,10,10,market);
-        System.out.println(market.getBuyers().size());
-        jFrame.setContentPane(market.buildInspector());
-        jFrame.setVisible(true);
-
-        //create customer
-        System.out.println(market.getBuyers().size());
-        customer = mock(GeographicalCustomer.class);
-        when(customer.xLocationProperty()).thenReturn(new SimpleDoubleProperty(40));
-        when(customer.yLocationProperty()).thenReturn(new SimpleDoubleProperty(40));
-        when(customer.lastSupplierProperty()).thenReturn(mock(SimpleObjectProperty.class));
-        final SimpleObjectProperty<javafx.scene.paint.Color> color = new SimpleObjectProperty<>(javafx.scene.paint.Color.BLUE);
-
-                //register the fake customer
-        market.registerBuyer(customer);
-        System.out.println(market.getBuyers().size());
-
-
-
-    }
+    
 
 
 

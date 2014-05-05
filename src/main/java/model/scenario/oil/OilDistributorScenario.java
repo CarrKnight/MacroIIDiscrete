@@ -95,10 +95,10 @@ public class OilDistributorScenario extends Scenario implements ControllableGeog
 
         //three pumps
         createNewProducer(new Location(-10, -2), market, "poor");
-        createNewProducer(new Location(0, 0), market, "middle");
-        final Firm rich = createNewProducer(new Location(10, 2), market, "rich");
+        final Firm middle =  createNewProducer(new Location(0, 0), market, "middle");
+        createNewProducer(new Location(10, 2), market, "rich");
         Logger logger = LoggerFactory.getLogger(Firm.class);
-        rich.addLogEventListener(new LoggerOutputWithTimeStamp(logger,model));
+        middle.addLogEventListener(new LoggerOutputWithTimeStamp(logger,model));
     }
 
     public void createNeighborhood(Location center, double centerStandardDeviation, int minPrice, int maxPrice,
