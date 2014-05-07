@@ -1,8 +1,6 @@
 package agents.firm;
 
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.paint.*;
 import model.MacroII;
 import model.utilities.geography.HasLocation;
 import model.utilities.geography.Location;
@@ -23,7 +21,7 @@ import model.utilities.geography.Location;
  * @version 2013-10-27
  * @see
  */
-public class GeographicalFirm extends Firm implements HasLocation{
+public class GeographicalFirm extends Firm implements HasLocation {
 
 
     private final Location location;

@@ -23,7 +23,7 @@ public class ControllableGeographicalMarketView extends GeographicalMarketView {
 
         //create an add/remove agents panel!
         AddAgentsToMapTitledPane control = new AddAgentsToMapTitledPane(getPresentation(),scenario);
-        associateControlToTab(control,getMapTab());
+        getMapTab().getControls().add(control);
 
 
 

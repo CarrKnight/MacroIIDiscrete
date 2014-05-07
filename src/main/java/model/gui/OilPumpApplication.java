@@ -8,6 +8,7 @@ package model.gui;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -41,7 +42,7 @@ public class OilPumpApplication extends Application
         stage.show();
 
         //initialize
-        final OilPumpStartup startup = new OilPumpStartup();
+        final Task<ModelViewDemo> startup = ModelViewDemo.getInitializer();
         loadingBar.progressProperty().bind(startup.progressProperty());
         loadingLabel.textProperty().bind(startup.messageProperty());
         startup.onSucceededProperty().setValue(workerStateEvent -> {

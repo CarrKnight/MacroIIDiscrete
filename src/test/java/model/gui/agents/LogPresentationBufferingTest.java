@@ -56,8 +56,8 @@ public class LogPresentationBufferingTest {
         listenerForGUI.step(model);
         MarketPresentationTest.waitForRunLater();
 
-        //should be filled
-        Assert.assertEquals(listenerForGUI.getLogView().getItems().size(),5);
+        //should be filled (the 5 events + the header "I started to listen")
+        Assert.assertEquals(listenerForGUI.getLogView().getItems().size(),6);
 
 
     }

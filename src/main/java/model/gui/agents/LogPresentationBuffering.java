@@ -17,10 +17,7 @@ import javafx.scene.control.TableView;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
-import model.utilities.logs.LogEventForGUI;
-import model.utilities.logs.LogLevel;
-import model.utilities.logs.LogListenerForGUI;
-import model.utilities.logs.Loggable;
+import model.utilities.logs.*;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -59,16 +56,6 @@ public class LogPresentationBuffering implements Steppable, Deactivatable, ListC
 
     private final TableView<LogEventForGUI> logView;
 
-    private final TableColumn<LogEventForGUI,Number> day;
-
-    private final TableColumn<LogEventForGUI,ActionOrder> phase;
-
-    private final TableColumn<LogEventForGUI,LogLevel> level;
-
-    private final TableColumn<LogEventForGUI,Object> source;
-
-    private final TableColumn<LogEventForGUI,String> message;
-
     private boolean active = true;
 
     public LogPresentationBuffering(MacroII model, Loggable agent) {
@@ -81,18 +68,18 @@ public class LogPresentationBuffering implements Steppable, Deactivatable, ListC
 
         //create the table and columns
         logView = new TableView<>(log);
-        day = new TableColumn<>("Day");
+        TableColumn<LogEventForGUI, Number> day = new TableColumn<>("Day");
         day.setCellValueFactory(cell -> cell.getValue().dayProperty());
-        phase = new TableColumn<>("Phase");
+        TableColumn<LogEventForGUI, ActionOrder> phase = new TableColumn<>("Phase");
         phase.setCellValueFactory(cell -> cell.getValue().phaseProperty());
-        level = new TableColumn<>("Level");
+        TableColumn<LogEventForGUI, LogLevel> level = new TableColumn<>("Level");
         level.setCellValueFactory(cell -> cell.getValue().logLevelProperty());
-        source = new TableColumn<>("Source");
+        TableColumn<LogEventForGUI, Object> source = new TableColumn<>("Source");
         source.setCellValueFactory(cell -> cell.getValue().sourceProperty());
-        message = new TableColumn<>("Message");
+        TableColumn<LogEventForGUI, String> message = new TableColumn<>("Message");
         message.setCellValueFactory(cell -> cell.getValue().messageProperty());
         //add all the columns
-        logView.getColumns().addAll(day,phase,level,source,message);
+        logView.getColumns().addAll(day, phase, level, source, message);
 
         //create the listener
         listener = new LogListenerForGUI(model);
@@ -100,6 +87,8 @@ public class LogPresentationBuffering implements Steppable, Deactivatable, ListC
         //we are going to listen to the listener
         listener.getEventList().addListener(this);
 
+        //log the beginning of recording
+        listener.handleNewEvent(new LogEvent(this,LogLevel.INFO,"Started Listening"));
         //let the listener tune in the agent
         listeningTo.addLogEventListener(listener);
 
@@ -111,20 +100,19 @@ public class LogPresentationBuffering implements Steppable, Deactivatable, ListC
     public void onChanged(Change<? extends LogEventForGUI> change) {
 
         change.next();
-        Preconditions.checkArgument(change.getRemovedSize()==0,"One log at a time!");
+        Preconditions.checkArgument(change.getRemovedSize()==0,"I never expect logs to be deleted");
         Preconditions.checkArgument(change.getAddedSize()==1,"One log at a time!");
         Preconditions.checkArgument(change.wasAdded(),"I never expect logs to be deleted!!!");
         buffer.add(change.getAddedSubList().get(0));
         //if this is the first buffer addition, schedule yourself!
         if(buffer.size()==1)
             model.scheduleSoon(ActionOrder.GUI_PHASE,this);
-        Preconditions.checkArgument(!change.next());
+        Preconditions.checkArgument(!change.next(),"One log at a time!");
     }
 
 
     /**
      * our step is when we bother the FXPlatform to update our buffer.
-     * @param state
      */
     @Override
     public void step(SimState state)
@@ -142,8 +130,9 @@ public class LogPresentationBuffering implements Steppable, Deactivatable, ListC
     public void turnOff() {
         active=false;
         //stop listening
-        listener.getEventList().remove(this);
+        listener.getEventList().removeListener(this);
         listeningTo.removeLogEventListener(listener);
+
     }
 
 

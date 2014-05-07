@@ -38,7 +38,7 @@ import java.util.Comparator;
  * @version 2013-10-27
  * @see
  */
-public class GeographicalCustomer extends Customer implements HasLocation{
+public class GeographicalCustomer extends Customer implements HasLocation {
 
 
 
@@ -122,8 +122,10 @@ public class GeographicalCustomer extends Customer implements HasLocation{
         handleNewEvent(new LogEvent(this, LogLevel.TRACE,"the best firm found was {}, pricing {}, total personal cost {}",
                 best,bestPriceAtSource,bestPricePlusDistance));
 
-        if(bestPricePlusDistance <= getMaxPrice())
+        if(bestPricePlusDistance <= getMaxPrice()) {
+            handleNewEvent(new LogEvent(this, LogLevel.TRACE,"decided to buy from chosen best"));
             return best;
+        }
         else
             return null;
 

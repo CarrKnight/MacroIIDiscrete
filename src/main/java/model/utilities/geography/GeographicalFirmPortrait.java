@@ -1,5 +1,6 @@
 package model.utilities.geography;
 
+import agents.EconomicAgent;
 import agents.firm.GeographicalFirm;
 import goods.GoodType;
 import javafx.application.Platform;
@@ -54,14 +55,14 @@ public class GeographicalFirmPortrait extends HasLocationPortrait implements Dea
     final private GeographicalFirm firm;
 
     @Override
-    protected Image initImage(HasLocation agent) {
+    protected Image initImage(EconomicAgent agent) {
         return OIL_IMAGE;
 
     }
 
     public GeographicalFirmPortrait(final GeographicalFirm agent,
                                       Color firmColor, GoodType goodSold, MacroII model) {
-        super(agent);
+        super(agent,agent.xLocationProperty(),agent.yLocationProperty());
         color.setValue(firmColor);
         this.firm = agent;
         //add a glow effect

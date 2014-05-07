@@ -101,6 +101,8 @@ public class AddAgentsToMapTitledPane extends TitledPane implements ChangeListen
         assert (mouseSelection.selectedToggleProperty()) != null;
         assert (currentMouseMode.getValue()) != null;
 
+        if(sourceProperty.getValue() == null) //if you click out
+            return;
 
         updating=true;
         final Object source = sourceProperty.getValue();

@@ -8,7 +8,7 @@ package financial.utilities;
 
 import agents.EconomicAgent;
 import agents.firm.Department;
-import com.sun.istack.internal.Nullable;
+import com.google.common.base.Objects;
 import goods.Good;
 import goods.GoodType;
 
@@ -110,5 +110,13 @@ public class Quote {
 
     public void setOriginator(Department originator) {
         this.originator = originator;
+    }
+
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("priceQuoted", priceQuoted)
+                .toString();
     }
 }

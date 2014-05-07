@@ -15,13 +15,13 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.logs.LogEvent;
+import model.utilities.logs.LogLevel;
 import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import java.util.Collection;
 import java.util.LinkedList;
-import java.util.function.Predicate;
 
 /**
  * <h4>Description</h4>
@@ -203,6 +203,7 @@ public class Customer extends EconomicAgent{
     @Override
     public void reactToFilledBidQuote(Good g, long price, EconomicAgent seller) {
 
+        handleNewEvent(new LogEvent(this, LogLevel.TRACE,"Filled bid quote. Price {}, Seller {}, Good {}",price,seller,g));
         if(!bidsMade.isEmpty())
             bidsMade.remove(); //doesn't matter which you remove, they are all the same.
     }

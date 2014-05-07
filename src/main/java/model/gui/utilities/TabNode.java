@@ -7,11 +7,14 @@
 package model.gui.utilities;
 
 /**
+ * Tab node represents a node in the chain of responsibility to deal with the created tab
  * Created by carrknight on 4/29/14.
  */
-public interface TabEventListener {
+public interface TabNode {
 
 
-    public void getNotifiedOfNewTab(TabEvent event);
+    public void handleNewTab(TabEvent event);
+
+
 
 }

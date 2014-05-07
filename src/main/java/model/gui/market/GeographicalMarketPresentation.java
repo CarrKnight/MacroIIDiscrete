@@ -6,7 +6,6 @@
 
 package model.gui.market;
 
-import agents.EconomicAgent;
 import agents.firm.GeographicalFirm;
 import com.google.common.base.Preconditions;
 import financial.market.GeographicalMarket;
@@ -24,12 +23,16 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import model.MacroII;
+import model.gui.utilities.GUINode;
+import model.gui.utilities.GUINodeSimple;
+import model.gui.utilities.SelectionEvent;
+import model.gui.utilities.TabEvent;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
 import model.utilities.dummies.GeographicalCustomer;
+import model.utilities.geography.HasLocation;
 import model.utilities.geography.GeographicalCustomerPortrait;
 import model.utilities.geography.GeographicalFirmPortrait;
-import model.utilities.geography.HasLocation;
 import model.utilities.geography.HasLocationPortrait;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -39,10 +42,10 @@ import java.util.*;
 /**
  *
  * Collecting data "map" to show who's selling to whom on top of the usual market presentation.
- * The step updates the color of all buyers
+ * The step updates the color of all buyers.
  * Created by carrknight on 4/5/14.
  */
-public class GeographicalMarketPresentation implements Steppable, Deactivatable{
+public class GeographicalMarketPresentation implements Steppable, Deactivatable, GUINode{
 
 
     /**
@@ -102,14 +105,20 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
      */
     private final Pane geographicalMap;
 
-    private final SetChangeListener<EconomicAgent> buyerSetListener = change -> {
+    /**
+     * the delegate that pushes up all the gui events
+     *
+     */
+    GUINodeSimple delegate;
+
+    private final SetChangeListener<agents.EconomicAgent> buyerSetListener = change -> {
         if (change.wasAdded()) {
-            EconomicAgent agent = change.getElementAdded();
+            agents.EconomicAgent agent = change.getElementAdded();
             if (agent instanceof GeographicalCustomer)
                 addBuyerToMap((GeographicalCustomer) agent);
         }
         if (change.wasRemoved()) {
-            EconomicAgent agent = change.getElementAdded();
+            agents.EconomicAgent agent = change.getElementAdded();
             if (agent instanceof GeographicalCustomer) {
                 removeBuyerFromMap((GeographicalCustomer) agent);
             }
@@ -145,6 +154,8 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
         geographicalMap.setBackground(new Background(new BackgroundFill(Color.CYAN, null, null)));
         this.colorMap = colorMap;
 
+        delegate = new GUINodeSimple();
+
 
         //create the seller listener (it needs to be created after getting references to MacroII and so on)
         sellerListener = change -> {
@@ -161,7 +172,7 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
 
 
         //initialize buyer list
-        for(EconomicAgent agent : market.getBuyers())
+        for(agents.EconomicAgent agent : market.getBuyers())
         {
             if(agent instanceof GeographicalCustomer)
                 addBuyerToMap((GeographicalCustomer) agent);
@@ -251,25 +262,28 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
 
     }
 
-    private void addAgentToMap(HasLocation seller, HasLocationPortrait portrait) {
+    private void addAgentToMap(HasLocation agent, HasLocationPortrait portrait) {
         //see if there is a need to change the minimums
-        if(seller.getxLocation() < minimumModelX.get())
-            minimumModelX.setValue(Math.floor(seller.getxLocation()-0.5d));
-        if(seller.getyLocation() < minimumModelY.get())
-            minimumModelY.setValue(Math.floor(seller.getyLocation()-0.5d));
+        if(agent.getxLocation() < minimumModelX.get())
+            minimumModelX.setValue(Math.floor(agent.getxLocation()-0.5d));
+        if(agent.getyLocation() < minimumModelY.get())
+            minimumModelY.setValue(Math.floor(agent.getyLocation()-0.5d));
 
 
         //set Coordinates
-        portrait.layoutXProperty().bind(convertXModelCoordinateToXPixelCoordinate(seller.xLocationProperty()));
-        portrait.layoutYProperty().bind(convertYModelCoordinateToYPixelCoordinate(seller.yLocationProperty()));
+        portrait.layoutXProperty().bind(convertXModelCoordinateToXPixelCoordinate(agent.xLocationProperty()));
+        portrait.layoutYProperty().bind(convertYModelCoordinateToYPixelCoordinate(agent.yLocationProperty()));
         //resize image
         portrait.prefHeightProperty().bind(portraitSize);
         portrait.prefWidthProperty().bind(portraitSize);
 
         //add it to the big list
-        portraitList.put(seller, portrait);
+        portraitList.put(agent, portrait);
         //add it to canvas!
         geographicalMap.getChildren().add(portrait);
+
+        //start listening to it
+        portrait.setGUINodeParent(this);
     }
 
 
@@ -291,7 +305,7 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
         //make sure it's not null
         Preconditions.checkNotNull(portrait);
         //make sure it's the right portrait
-        assert portrait.getAgent().equals(seller);
+        assert portrait.getRepresentedAgent().equals(seller);
 
         //remove it from the geographicalMap
         geographicalMap.getChildren().remove(portrait);
@@ -300,6 +314,8 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
         portrait.prefHeightProperty().unbind();
         portrait.prefWidthProperty().unbind();
 
+        //stop listening it
+        portrait.setGUINodeParent(null);
         assert !portraitList.containsKey(seller);
         assert !geographicalMap.getChildren().contains(portrait);
 
@@ -322,6 +338,7 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
     @Override
     public void turnOff() {
         isActive = false;
+        delegate.setGUINodeParent(null);
 
         market.removeListenerFromBuyerSet(buyerSetListener);
         colorMap.removeListener(sellerListener);
@@ -382,5 +399,20 @@ public class GeographicalMarketPresentation implements Steppable, Deactivatable{
 
     public GeographicalMarket getMarket() {
         return market;
+    }
+
+    @Override
+    public void handleNewTab(TabEvent event) {
+        delegate.handleNewTab(event);
+    }
+
+    @Override
+    public void setGUINodeParent(GUINode parent) {
+        delegate.setGUINodeParent(parent);
+    }
+
+    @Override
+    public void representSelectedObject(SelectionEvent event) {
+        delegate.representSelectedObject(event);
     }
 }

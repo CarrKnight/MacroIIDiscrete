@@ -6,34 +6,22 @@
 
 package model.gui.utilities;
 
-import javafx.scene.control.Tab;
-import model.gui.market.MarketView;
-
-import java.util.EventObject;
-
 /**
  * Not really a javafx event, much simpler. It basically says a new tab wants to be created.
  * Created by carrknight on 4/29/14.
  */
-public class TabEvent extends EventObject {
+public class TabEvent {
 
-    private final MarketView source;
-
-    private final Tab newTab;
+    private final InformationTab newTab;
 
 
-    public TabEvent(MarketView source, Tab newTab) {
-        super(source);
-        this.source = source;
+    public TabEvent(InformationTab newTab) {
         this.newTab = newTab;
     }
 
 
-    public MarketView getSource() {
-        return source;
-    }
 
-    public Tab getNewTab() {
+    public InformationTab getNewTab() {
         return newTab;
     }
 }

@@ -1,5 +1,6 @@
 package model.utilities.geography;
 
+import agents.EconomicAgent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
@@ -36,13 +37,13 @@ public class GeographicalCustomerPortrait extends HasLocationPortrait
     }
 
     @Override
-    protected Image initImage(HasLocation agent) {
+    protected Image initImage(EconomicAgent agent) {
         return CUSTOMER_IMAGE;
     }
 
 
     public GeographicalCustomerPortrait(GeographicalCustomer agent) {
-        super(agent);
+        super(agent,agent.xLocationProperty(),agent.yLocationProperty());
 
 
         priceText.setText(Long.toString(agent.getMaxPrice())+ "$");

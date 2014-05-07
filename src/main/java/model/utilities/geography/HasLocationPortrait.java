@@ -1,5 +1,6 @@
 package model.utilities.geography;
 
+import agents.EconomicAgent;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.CacheHint;
@@ -13,11 +14,16 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import model.gui.agents.AgentRepresentation;
+import model.gui.utilities.GUINode;
+import model.gui.utilities.GUINodeSimple;
+import model.gui.utilities.SelectionEvent;
+import model.gui.utilities.TabEvent;
 
 /**
  * <h4>Description</h4>
- * <p/> A "stackpane" made of an icon and a tex on top of it
- * <p/>
+ * <p/> A "stackpane" made of an icon and a tex on top of it.
+ * <p/> It is a GUINode mostly to shoot up representation events whenever it is clicked on
  * <p/>
  * <h4>Notes</h4>
  * Created with IntelliJ
@@ -29,21 +35,35 @@ import javafx.scene.text.Text;
  * @version 2013-11-08
  * @see
  */
-public abstract class HasLocationPortrait extends StackPane {
+public abstract class HasLocationPortrait extends StackPane implements AgentRepresentation, GUINode {
 
     protected final ImageView icon;
 
     protected final Text priceText;
 
-    abstract protected Image initImage(HasLocation agent);
+    abstract protected Image initImage(EconomicAgent agent);
 
     protected final SimpleObjectProperty<Color> color;
 
-    protected final HasLocation agent;
+    protected final EconomicAgent agent;
 
-    protected HasLocationPortrait(HasLocation agent)
+    protected final DoubleProperty xLocationProperty;
+
+    protected final DoubleProperty yLocationProperty;
+    /**
+     * delegate to pass around representation events
+     */
+    private final GUINodeSimple nodeDelegate;
+
+    protected HasLocationPortrait(EconomicAgent agent, DoubleProperty xLocationProperty,
+                                  DoubleProperty yLocationProperty)
     {
         this.agent =agent;
+        this.xLocationProperty = xLocationProperty;
+        this.yLocationProperty = yLocationProperty;
+
+        nodeDelegate = new GUINodeSimple();
+
         //load the image
         icon = new ImageView();
         icon.setImage(initImage(agent));
@@ -82,6 +102,8 @@ public abstract class HasLocationPortrait extends StackPane {
 
         priceText.setFill(Color.BLACK);
 
+
+
     }
 
 
@@ -90,7 +112,7 @@ public abstract class HasLocationPortrait extends StackPane {
      * @return
      */
     public DoubleProperty agentXLocationProperty() {
-        return agent.xLocationProperty();
+        return xLocationProperty;
     }
 
     /**
@@ -98,12 +120,9 @@ public abstract class HasLocationPortrait extends StackPane {
      * @return
      */
     public DoubleProperty agentYLocationProperty() {
-        return agent.yLocationProperty();
+        return yLocationProperty;
     }
 
-    public HasLocation getAgent() {
-        return agent;
-    }
 
     public Color getColor() {
         return color.get();
@@ -127,5 +146,39 @@ public abstract class HasLocationPortrait extends StackPane {
      */
     public Image getImage() {
         return icon.getImage();
+    }
+
+    @Override
+    public agents.EconomicAgent getRepresentedAgent() {
+        return agent;
+    }
+
+    @Override
+    public void handleNewTab(TabEvent event) {
+        nodeDelegate.handleNewTab(event);
+    }
+
+    //this one doubles: whenever the parent is not null we start listening to our own clicks to start pushing up representation events
+    @Override
+    public void setGUINodeParent(GUINode parent) {
+        nodeDelegate.setGUINodeParent(parent);
+
+        if(nodeDelegate.getGUINodeParent() == null)
+            setOnMouseClicked(null);
+        else
+        {
+            //become clickable whenever we have a parent
+            setOnMouseClicked(mouseEvent -> representSelectedObject(new SelectionEvent(getRepresentedAgent())));
+
+
+
+
+
+        }
+    }
+
+    @Override
+    public void representSelectedObject(SelectionEvent event) {
+        nodeDelegate.representSelectedObject(event);
     }
 }

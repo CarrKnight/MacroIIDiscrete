@@ -8,7 +8,10 @@ package model.gui;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import model.MacroII;
 
 /**
@@ -43,6 +46,8 @@ public class ModelControlBar extends TitledPane
         this.setVisible(true);
         this.setAnimated(true);
 
+        this.setBackground(new Background(new BackgroundFill(Color.RED,null,null)));
+        this.setTextFill(Color.WHITE);
 
 
     }
