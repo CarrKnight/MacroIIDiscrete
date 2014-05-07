@@ -144,7 +144,7 @@ public class GeographicalCustomer extends Customer implements HasLocation {
     {
         //for now just pitagorean distance
         double xDistance = Math.pow(customer.getxLocation() - seller.getxLocation(),2);
-        double yDistance = Math.pow(customer.getxLocation() - seller.getxLocation(),2);
+        double yDistance = Math.pow(customer.getyLocation() - seller.getyLocation(),2);
 
         double distance =  Math.pow(Math.sqrt(xDistance + yDistance), distanceExponent);
         assert distance >= 0;
@@ -193,6 +193,9 @@ public class GeographicalCustomer extends Customer implements HasLocation {
         super.receive(g, sender);
         if(sender!=null && g.getType().equals(getMarket().getGoodType()) && sender instanceof GeographicalFirm)
             lastSupplier.setValue((GeographicalFirm) sender);
+        handleNewEvent(new LogEvent(this,LogLevel.TRACE,"Received {} from {}, consequently my last supplier is {}",
+                g,sender,lastSupplier.get()));
+
     }
 
 
