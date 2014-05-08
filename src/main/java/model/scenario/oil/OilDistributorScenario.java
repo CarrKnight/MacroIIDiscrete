@@ -20,9 +20,6 @@ import model.scenario.ControllableGeographicalScenario;
 import model.scenario.Scenario;
 import model.utilities.dummies.GeographicalCustomer;
 import model.utilities.geography.Location;
-import model.utilities.logs.LoggerOutputWithTimeStamp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Simple Geographical Model, two neighborhoods, the rich one around 5,5 the poor one around -5,-5 and 3 distributors at 5,5 0,0 and -5,-5.
@@ -95,10 +92,9 @@ public class OilDistributorScenario extends Scenario implements ControllableGeog
 
         //three pumps
         createNewProducer(new Location(-10, -2), market, "poor");
-        final Firm middle =  createNewProducer(new Location(0, 0), market, "middle");
+        createNewProducer(new Location(0, 0), market, "middle");
         createNewProducer(new Location(10, 2), market, "rich");
-        Logger logger = LoggerFactory.getLogger(Firm.class);
-        middle.addLogEventListener(new LoggerOutputWithTimeStamp(logger,model));
+
     }
 
     public void createNeighborhood(Location center, double centerStandardDeviation, int minPrice, int maxPrice,

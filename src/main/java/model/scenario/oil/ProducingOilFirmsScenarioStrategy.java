@@ -85,7 +85,7 @@ public class ProducingOilFirmsScenarioStrategy implements OilFirmsScenarioStrate
                 new SimpleBuyerSearch(market, oilPump), new SimpleSellerSearch(market, oilPump), SalesDepartmentOneAtATime.class);
         //give the sale department a simple PID
         final SalesControlWithFixedInventoryAndPID askPricingStrategy =
-                new SalesControlWithFixedInventoryAndPID(salesDepartment, 10);
+                new SalesControlWithFixedInventoryAndPID(salesDepartment, 5);
         askPricingStrategy.setInitialPrice(200);
         salesDepartment.setAskPricingStrategy(askPricingStrategy);
 

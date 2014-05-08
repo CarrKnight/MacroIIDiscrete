@@ -105,7 +105,11 @@ public class GeographicalMarket extends Market implements Steppable{
         TreeMap<GeographicalCustomer, Collection<Quote>> backingBuyerTreeMapPOJO = new TreeMap<>(new Comparator<GeographicalCustomer>() {
             @Override
             public int compare(GeographicalCustomer o1, GeographicalCustomer o2) {
-                return -Long.compare(o1.getMaxPrice(), o2.getMaxPrice());
+                int priceComparison =  -Long.compare(o1.getMaxPrice(), o2.getMaxPrice());
+                if(priceComparison != 0)
+                    return priceComparison;
+                else
+                    return Integer.compare(o1.hashCode(),o2.hashCode()); //otherwise just order them by hash
 
             }
         });

@@ -19,6 +19,7 @@ import model.utilities.logs.LogLevel;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -202,7 +203,9 @@ public class GeographicalCustomer extends Customer implements HasLocation {
     //i override this to call removeAllBuyQuoteByBuyer because it's faster for geographical markets
     @Override
     protected void removeAllQuotes(Market market) {
-        market.removeAllBuyQuoteByBuyer(this);
+        final Collection<Quote> quotesRemoved = market.removeAllBuyQuoteByBuyer(this);
+        handleNewEvent(new LogEvent(this,LogLevel.TRACE,"removed {} quotes",quotesRemoved.size()));
+        assert (quotesRemoved.size() <= getDailyDemand());
         bidsMade.clear();
     }
 

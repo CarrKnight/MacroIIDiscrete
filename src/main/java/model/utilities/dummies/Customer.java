@@ -125,8 +125,10 @@ public class Customer extends EconomicAgent{
     {
         //cancel all previous quotes
         //place all the orders you need
+        Preconditions.checkState(dailyDemand-hasHowMany(market.getGoodType()) == 1);
         for(int i=0; i<dailyDemand-hasHowMany(market.getGoodType()); i++)
             if(maxPrice >= 0) {
+                handleNewEvent(new LogEvent(this,LogLevel.TRACE,"Placing a bid"));
                 Quote bidMade = market.submitBuyQuote(this, maxPrice);
                 if(!(bidMade.getAgent() == null))
                 {
@@ -142,10 +144,16 @@ public class Customer extends EconomicAgent{
     }
 
     protected void removeAllQuotes(Market market) {
-        if(bidsMade.size() == 1)
+        if(bidsMade.size() == 1) {
             market.removeBuyQuote(bidsMade.iterator().next());
-        if(bidsMade.size() > 1)
+            handleNewEvent(new LogEvent(this,LogLevel.TRACE,"Removed a quote"));
+
+        }
+        if(bidsMade.size() > 1) {
+            handleNewEvent(new LogEvent(this,LogLevel.TRACE,"Removed multiple quotes"));
+
             market.removeBuyQuotes(bidsMade);
+        }
         bidsMade.clear();
     }
 

@@ -415,7 +415,31 @@ public class GeographicalMarketTest
     }
 
 
-    
+
+    //treemap consistency errors
+    @Test
+    public void samePriceDoesNotMeanSamePerson()
+    {
+        MacroII macroII = new MacroII(1l);
+        macroII.start();
+
+        final GeographicalMarket market = new GeographicalMarket(INPUT);
+        market.setPricePolicy(new ShopSetPricePolicy());
+        market.start(macroII);
+
+        //add two customers with the same price. then remove one. If the backing tree map is done correctly it will not remove both quotes
+        final GeographicalCustomer customers[] = new GeographicalCustomer[2];
+        customers[0] = new GeographicalCustomer(macroII,100,0,0,market);
+        customers[1] = new GeographicalCustomer(macroII,100,0,0,market);
+        customers[0].start(macroII);
+        customers[1].start(macroII);
+
+        macroII.schedule.step(macroII); //one step
+
+        Assert.assertEquals(1,market.removeAllBuyQuoteByBuyer(customers[0]).size());
+
+    }
+
 
 
 
