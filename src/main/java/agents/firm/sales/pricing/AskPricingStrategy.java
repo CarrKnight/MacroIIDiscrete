@@ -10,7 +10,7 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
-import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
+import agents.firm.sales.pricing.pid.salesControlWithSmoothedinventoryAndPID;
 import ec.util.MersenneTwisterFast;
 import goods.Good;
 import model.utilities.Deactivatable;
@@ -101,7 +101,7 @@ public interface AskPricingStrategy extends Deactivatable, LogNode {
             rules.add(UndercuttingAskPricing .class);
             rules.add(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
             rules.add(SalesControlWithFixedInventoryAndPID.class);
-            rules.add(SmoothedDailyInventoryPricingStrategy.class);
+            rules.add(salesControlWithSmoothedinventoryAndPID.class);
             rules.add(SimpleFlowSellerPID.class);
 
 

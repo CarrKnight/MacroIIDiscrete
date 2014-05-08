@@ -10,6 +10,7 @@ import agents.firm.GeographicalFirm;
 import financial.market.GeographicalMarket;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
+import financial.utilities.BuyerSetPricePolicy;
 import goods.GoodType;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableIntegerValue;
@@ -26,7 +27,7 @@ public class IndipendentLaborMarketsForEachFirmStrategy implements LaborMarketOi
 
     public final static int defaultSupplySlope = 1 ;
 
-    public final static int defaultSupplyIntercept = 0 ;
+    public final static int defaultSupplyIntercept = 20 ;
 
     public final static int defaultNumberOfWorkers = 50 ;
 
@@ -54,6 +55,7 @@ public class IndipendentLaborMarketsForEachFirmStrategy implements LaborMarketOi
 
         //create the market
         Market laborMarket = new OrderBookMarket(laborType);
+        laborMarket.setPricePolicy(new BuyerSetPricePolicy());
         MonopolistScenario.fillLaborSupply(defaultSupplyIntercept,defaultSupplySlope,true,false,defaultNumberOfWorkers,laborMarket,model);
         ObservableIntegerValue slope = new SimpleIntegerProperty(defaultSupplySlope); supplySlopes.put(laborMarket,slope);
         ObservableIntegerValue intercept = new SimpleIntegerProperty(defaultSupplyIntercept);supplyIntercepts.put(laborMarket,intercept);

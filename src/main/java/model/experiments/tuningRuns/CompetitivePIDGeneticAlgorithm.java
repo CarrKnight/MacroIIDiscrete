@@ -9,7 +9,7 @@ package model.experiments.tuningRuns;
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
-import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
+import agents.firm.sales.pricing.pid.salesControlWithSmoothedinventoryAndPID;
 import goods.GoodType;
 import model.MacroII;
 import model.scenario.MonopolistScenario;
@@ -124,7 +124,7 @@ public class CompetitivePIDGeneticAlgorithm {
                     final MacroII macroII = new MacroII(seed);
                     final TripolistScenario scenario1 = new TripolistScenario(macroII);
                     scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-                    scenario1.setAskPricingStrategy(SmoothedDailyInventoryPricingStrategy.class);
+                    scenario1.setAskPricingStrategy(salesControlWithSmoothedinventoryAndPID.class);
                     scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
                     scenario1.setAdditionalCompetitors(competitors);
 
@@ -137,7 +137,7 @@ public class CompetitivePIDGeneticAlgorithm {
                     macroII.schedule.step(macroII);
                     for(Firm f : scenario1.getCompetitors()){
                         SalesDepartment department = f.getSalesDepartment(GoodType.GENERIC);
-                        SmoothedDailyInventoryPricingStrategy strategy =new SmoothedDailyInventoryPricingStrategy(department);
+                        salesControlWithSmoothedinventoryAndPID strategy =new salesControlWithSmoothedinventoryAndPID(department);
                         strategy.setMasterProportionalGain((float) (averageMasterP + macroII.random.nextGaussian()/100f));
                         strategy.setGainsSlavePID(averageSlaveP + ((float)macroII.random.nextGaussian()) / 100f
                                 , averageSlaveI + ((float)macroII.random.nextGaussian()/100f),

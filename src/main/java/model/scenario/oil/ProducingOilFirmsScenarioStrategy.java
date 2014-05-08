@@ -24,12 +24,15 @@ import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.SalesPredictor;
-import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
+import agents.firm.sales.pricing.AskPricingStrategy;
+import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import financial.market.GeographicalMarket;
 import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.geography.Location;
+
+import java.util.function.Function;
 
 /**
  * Something of an abstract class, building sales department/purchases department/human resources, but allows subclass to define how exactly.
@@ -38,23 +41,41 @@ import model.utilities.geography.Location;
  */
 public class ProducingOilFirmsScenarioStrategy implements OilFirmsScenarioStrategy {
 
-    Class<? extends PlantControl> plantControl;
+    private Class<? extends PlantControl> plantControl;
 
-    Class<? extends PurchasesPredictor> hrPredictor;
+    private Function<HumanResources,? extends PurchasesPredictor> hrPredictorGenerator;
 
-    Class<? extends SalesPredictor> salesPredictor;
+    private Function<SalesDepartment,? extends SalesPredictor> salesPredictorGenerator;
 
+    private Function<SalesDepartment,? extends AskPricingStrategy> askPricingGenerator;
+
+    private final static Function<HumanResources, ? extends PurchasesPredictor> DEFAULT_HR_PREDICTOR =
+            hr -> PurchasesPredictor.Factory.newPurchasesPredictor(PurchasesDepartment.defaultPurchasePredictor,hr);
+
+    private final static Function<SalesDepartment, ? extends SalesPredictor> DEFAULT_SALES_PREDICTOR =
+            dept -> SalesPredictor.Factory.newSalesPredictor(SalesDepartment.defaultPredictorStrategy,dept);
+
+    private final static Function<SalesDepartment,? extends AskPricingStrategy> DEFAULT_ASK_PRICING_STRATEGY =
+            (t) ->{
+                final SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly toReturn =
+                        new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(t, 10,20);
+                return toReturn;
+
+            };
 
     public ProducingOilFirmsScenarioStrategy(){
-        this(MarginalPlantControl.class, PurchasesDepartment.defaultPurchasePredictor,SalesDepartment.defaultPredictorStrategy);
+        this(MarginalPlantControl.class, DEFAULT_HR_PREDICTOR,DEFAULT_SALES_PREDICTOR,
+                DEFAULT_ASK_PRICING_STRATEGY);
     }
 
     public ProducingOilFirmsScenarioStrategy(Class<? extends PlantControl> plantControl,
-                                             Class<? extends PurchasesPredictor> hrPredictor,
-                                             Class<? extends SalesPredictor> salesPredictor) {
+                                             Function<HumanResources,? extends PurchasesPredictor> hrPredictorGenerator,
+                                             Function<SalesDepartment,? extends SalesPredictor> salesPredictorGenerator,
+                                             Function<SalesDepartment,? extends AskPricingStrategy> askPricingGenerator) {
         this.plantControl = plantControl;
-        this.hrPredictor = hrPredictor;
-        this.salesPredictor = salesPredictor;
+        this.hrPredictorGenerator = hrPredictorGenerator;
+        this.salesPredictorGenerator = salesPredictorGenerator;
+        this.askPricingGenerator = askPricingGenerator;
     }
 
     @Override
@@ -84,12 +105,10 @@ public class ProducingOilFirmsScenarioStrategy implements OilFirmsScenarioStrate
         SalesDepartment salesDepartment = SalesDepartmentFactory.incompleteSalesDepartment(oilPump, market,
                 new SimpleBuyerSearch(market, oilPump), new SimpleSellerSearch(market, oilPump), SalesDepartmentOneAtATime.class);
         //give the sale department a simple PID
-        final SalesControlWithFixedInventoryAndPID askPricingStrategy =
-                new SalesControlWithFixedInventoryAndPID(salesDepartment, 5);
-        askPricingStrategy.setInitialPrice(200);
-        salesDepartment.setAskPricingStrategy(askPricingStrategy);
+        final AskPricingStrategy strategy = askPricingGenerator.apply(salesDepartment);
+        salesDepartment.setAskPricingStrategy(strategy);
 
-        salesDepartment.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(salesPredictor,salesDepartment));
+        salesDepartment.setPredictorStrategy(salesPredictorGenerator.apply(salesDepartment));
         //finally register it!
         final GoodType goodTypeSold = market.getGoodType();
         oilPump.registerSaleDepartment(salesDepartment, goodTypeSold);
@@ -100,9 +119,9 @@ public class ProducingOilFirmsScenarioStrategy implements OilFirmsScenarioStrate
         HumanResources hr;
         final FactoryProducedHumanResources<? extends PlantControl,BuyerSearchAlgorithm,SellerSearchAlgorithm> factoryMadeHR =
                 HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, oilPump,
-                        laborMarket, plant,plantControl, null, null);
+                        laborMarket, plant, plantControl, null, null);
         hr = factoryMadeHR.getDepartment();
-        hr.setPredictor(PurchasesPredictor.Factory.newPurchasesPredictor(hrPredictor,hr));
+        hr.setPredictor(hrPredictorGenerator.apply(hr));
         hr.setFixedPayStructure(true);
         return hr;
     }

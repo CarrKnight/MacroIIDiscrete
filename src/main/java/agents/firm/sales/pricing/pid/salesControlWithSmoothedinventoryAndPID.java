@@ -42,7 +42,7 @@ import sim.engine.Steppable;
  * @version 2013-02-08
  * @see
  */
-public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy, Steppable
+public class salesControlWithSmoothedinventoryAndPID implements AskPricingStrategy, Steppable
 {
 
     /**
@@ -73,7 +73,7 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
      * Also starts stepping itself
      * @param salesDepartment the sales department to price for
      */
-    public SmoothedDailyInventoryPricingStrategy(SalesDepartment salesDepartment) {
+    public salesControlWithSmoothedinventoryAndPID(SalesDepartment salesDepartment) {
         this.salesDepartment = salesDepartment;
 
         //I am creating the PID controller here so that I can set the gains; I am sure it's a PID controller so I am sure the setGains() method exists
@@ -118,8 +118,8 @@ public class SmoothedDailyInventoryPricingStrategy implements AskPricingStrategy
     /**
      * the gains refer to the SLAVE (velocity) PID
      */
-    public SmoothedDailyInventoryPricingStrategy(SalesDepartment salesDepartment, float proportionalGain,
-                                                 float integrativeGain, float derivativeGain)
+    public salesControlWithSmoothedinventoryAndPID(SalesDepartment salesDepartment, float proportionalGain,
+                                                   float integrativeGain, float derivativeGain)
     {
         this(salesDepartment);
         //scale the master proportional too

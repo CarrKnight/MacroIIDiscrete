@@ -13,7 +13,7 @@ import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
-import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
+import agents.firm.sales.pricing.pid.salesControlWithSmoothedinventoryAndPID;
 import ec.util.MersenneTwisterFast;
 import financial.market.DecentralizedMarket;
 import financial.market.Market;
@@ -73,7 +73,7 @@ public class SimpleDecentralizedSellerScenario extends Scenario
         seller.registerSaleDepartment(dept,GoodType.GENERIC);
 
         //create a seller PID with the right speed
-        SmoothedDailyInventoryPricingStrategy sellerPID = new SmoothedDailyInventoryPricingStrategy(dept);
+        salesControlWithSmoothedinventoryAndPID sellerPID = new salesControlWithSmoothedinventoryAndPID(dept);
         dept.setAskPricingStrategy(sellerPID);
 
         dept.setCanPeddle(false);

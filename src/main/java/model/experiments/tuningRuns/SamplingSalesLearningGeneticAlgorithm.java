@@ -8,7 +8,7 @@ package model.experiments.tuningRuns;
 
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.SamplingLearningDecreaseSalesPredictor;
-import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
+import agents.firm.sales.pricing.pid.salesControlWithSmoothedinventoryAndPID;
 import goods.GoodType;
 import model.MacroII;
 import model.scenario.MonopolistScenario;
@@ -98,7 +98,7 @@ public class SamplingSalesLearningGeneticAlgorithm {
             macroII.setScenario(scenario1);
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
             //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
-            scenario1.setAskPricingStrategy(SmoothedDailyInventoryPricingStrategy.class);
+            scenario1.setAskPricingStrategy(salesControlWithSmoothedinventoryAndPID.class);
 
 
             scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);

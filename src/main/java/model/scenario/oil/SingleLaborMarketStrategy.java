@@ -10,6 +10,7 @@ import agents.firm.GeographicalFirm;
 import financial.market.GeographicalMarket;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
+import financial.utilities.BuyerSetPricePolicy;
 import goods.GoodType;
 import javafx.beans.property.SimpleIntegerProperty;
 import model.MacroII;
@@ -33,13 +34,15 @@ public class SingleLaborMarketStrategy implements LaborMarketOilScenarioStrategy
 
 
     public SingleLaborMarketStrategy() {
-        this(1,0,50);
+        this(1,20,50);
     }
 
 
     public SingleLaborMarketStrategy(int laborSupplySlope, int laborSupplyIntercept, int totalNumberOfWorkers)
     {
         this.laborMarket = new OrderBookMarket(GoodType.LABOR);
+        laborMarket.setPricePolicy(new BuyerSetPricePolicy());
+
         this.laborSupplySlope = new SimpleIntegerProperty(laborSupplySlope);
         this.laborSupplyIntercept = new SimpleIntegerProperty(laborSupplyIntercept);
         this.totalNumberOfWorkers = new SimpleIntegerProperty(totalNumberOfWorkers);

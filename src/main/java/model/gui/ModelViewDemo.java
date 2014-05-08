@@ -195,7 +195,7 @@ public class ModelViewDemo extends BorderPane implements GUINode
                 //create model and agents
                 updateProgress(0,4);
                 updateMessage("Creating Agents");
-                MacroII model = new MacroII(System.currentTimeMillis());
+                MacroII model = new MacroII(0);
                 OilDistributorScenario scenario = new OilDistributorScenario(model);
                 ModelViewDemo demo = new ModelViewDemo(model,scenario);
                 updateProgress(1,4);

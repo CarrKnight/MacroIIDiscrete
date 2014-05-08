@@ -7,7 +7,7 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
-import agents.firm.sales.pricing.pid.SmoothedDailyInventoryPricingStrategy;
+import agents.firm.sales.pricing.pid.salesControlWithSmoothedinventoryAndPID;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
@@ -232,7 +232,7 @@ public class SimpleSellerScenarioTest {
             //to sell 4 you need to price them between 60 and 51 everytime, even when you stock up some inventory initially
             final MacroII macroII = new MacroII(System.currentTimeMillis());
             SimpleSellerScenario scenario = new SimpleSellerScenario(macroII);
-            scenario.setSellerStrategy(SmoothedDailyInventoryPricingStrategy.class);
+            scenario.setSellerStrategy(salesControlWithSmoothedinventoryAndPID.class);
             scenario.setDemandShifts(false);
             scenario.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
             scenario.setDemandSlope(-10);
@@ -264,7 +264,7 @@ public class SimpleSellerScenarioTest {
             //to sell 4 you need to price them between 60 and 51 everytime, even when you stock up some inventory initially
             final MacroII macroII = new MacroII(System.currentTimeMillis());
             SimpleSellerScenario scenario = new SimpleSellerScenario(macroII);
-            scenario.setSellerStrategy(SmoothedDailyInventoryPricingStrategy.class);
+            scenario.setSellerStrategy(salesControlWithSmoothedinventoryAndPID.class);
             scenario.setDemandShifts(true);
             scenario.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
             scenario.setDemandSlope(-10);
@@ -491,7 +491,7 @@ public class SimpleSellerScenarioTest {
             //to sell 4 you need to price them between 60 and 51 everytime, even when you stock up some inventory initially
             final MacroII macroII = new MacroII(System.currentTimeMillis());
             SimpleSellerScenario scenario = new SimpleSellerScenario(macroII);
-            scenario.setSellerStrategy(SmoothedDailyInventoryPricingStrategy.class);
+            scenario.setSellerStrategy(salesControlWithSmoothedinventoryAndPID.class);
             scenario.setDemandShifts(false);
             scenario.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
@@ -522,7 +522,7 @@ public class SimpleSellerScenarioTest {
             //to sell 4 you need to price them between 60 and 51 everytime, even when you stock up some inventory initially
             final MacroII macroII = new MacroII(System.currentTimeMillis());
             SimpleSellerScenario scenario = new SimpleSellerScenario(macroII);
-            scenario.setSellerStrategy(SmoothedDailyInventoryPricingStrategy.class);
+            scenario.setSellerStrategy(salesControlWithSmoothedinventoryAndPID.class);
             scenario.setDemandShifts(true);
             scenario.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
@@ -659,7 +659,7 @@ public class SimpleSellerScenarioTest {
         {
             final MacroII macroII = new MacroII(System.currentTimeMillis());
             SimpleSellerScenario scenario = setup102minusq(macroII,1);
-            scenario.setSellerStrategy(SmoothedDailyInventoryPricingStrategy.class);
+            scenario.setSellerStrategy(salesControlWithSmoothedinventoryAndPID.class);
 
 
 
@@ -745,7 +745,7 @@ public class SimpleSellerScenarioTest {
         {
             final MacroII macroII = new MacroII(System.currentTimeMillis());
             SimpleSellerScenario scenario = setup102minusq(macroII,4);
-            scenario.setSellerStrategy(SmoothedDailyInventoryPricingStrategy.class);
+            scenario.setSellerStrategy(salesControlWithSmoothedinventoryAndPID.class);
 
 
 
@@ -854,7 +854,7 @@ public class SimpleSellerScenarioTest {
         {
             final MacroII macroII = new MacroII(System.currentTimeMillis());
             SimpleSellerScenario scenario = setup102minusqUnequal(macroII);
-            scenario.setSellerStrategy(SmoothedDailyInventoryPricingStrategy.class);
+            scenario.setSellerStrategy(salesControlWithSmoothedinventoryAndPID.class);
 
 
 

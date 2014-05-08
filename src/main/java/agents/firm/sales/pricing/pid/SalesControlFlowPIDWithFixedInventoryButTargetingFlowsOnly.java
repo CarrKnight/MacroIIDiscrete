@@ -95,6 +95,15 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
                 department.getRandom());
     }
 
+    public SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(SalesDepartment department,
+                                                                      int minimumInventory, int acceptableInventory) {
+        this(department,minimumInventory,acceptableInventory,department.getFirm().getModel(),
+                department.getFirm().getModel().drawProportionalGain()/5f,
+                department.getFirm().getModel().drawIntegrativeGain()/5f,
+                department.getFirm().getModel().drawDerivativeGain(),
+                department.getRandom());
+    }
+
     /**
      * The same constructor as above, just with everything spelled out. The sales department starts its price at a random number between 50 and 100
      * @param department the sales department to use

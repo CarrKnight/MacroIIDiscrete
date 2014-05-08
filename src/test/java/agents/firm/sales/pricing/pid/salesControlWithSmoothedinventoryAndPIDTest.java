@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
  * @version 2013-02-08
  * @see
  */
-public class SmoothedDailyInventoryPricingStrategyTest {
+public class salesControlWithSmoothedinventoryAndPIDTest {
 
     /**
      * check that moving average is actually occurring
@@ -49,7 +49,7 @@ public class SmoothedDailyInventoryPricingStrategyTest {
 
 
 
-        SmoothedDailyInventoryPricingStrategy strategy = new SmoothedDailyInventoryPricingStrategy(department);
+        salesControlWithSmoothedinventoryAndPID strategy = new salesControlWithSmoothedinventoryAndPID(department);
         strategy.setHowManyTimesTheDailyInflowShouldTheInventoryBe(7);
         //force MA to be of length 10
 
