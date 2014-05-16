@@ -7,6 +7,8 @@
 package goods;
 
 
+import model.utilities.Deactivatable;
+
 import java.util.*;
 
 /**
@@ -24,7 +26,7 @@ import java.util.*;
  * @version 2014-04-19
  * @see
  */
-public class GoodTypeMasterList {
+public class GoodTypeMasterList implements Deactivatable {
 
     /**
      * I store all the industry codes in a map so that I can always get the
@@ -45,9 +47,10 @@ public class GoodTypeMasterList {
 
     public GoodTypeMasterList() {
 
-        addToListAndMap(GoodType.LABOR);
-        addToListAndMap(GoodType.GENERIC);
-        addToListAndMap(GoodType.CAPITAL);
+        addToListAndMap(UndifferentiatedGoodType.LABOR);
+        addToListAndMap(UndifferentiatedGoodType.GENERIC);
+        addToListAndMap(DifferentiatedGoodType.CAPITAL);
+        addToListAndMap(UndifferentiatedGoodType.MONEY);
     }
 
     /**
@@ -70,6 +73,12 @@ public class GoodTypeMasterList {
             notifyObservers();
 
         return added;
+    }
+
+    @Override
+    public void turnOff() {
+        observers.clear();
+        clearMasterList();
     }
 
     /**

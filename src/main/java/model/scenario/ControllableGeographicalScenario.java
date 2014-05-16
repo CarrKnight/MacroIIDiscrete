@@ -20,6 +20,6 @@ public interface ControllableGeographicalScenario {
     public Firm createNewProducer(Location location, GeographicalMarket market, String name);
 
 
-    public EconomicAgent createNewConsumer(Location location, GeographicalMarket market, long price);
+    public EconomicAgent createNewConsumer(Location location, GeographicalMarket market, int price);
 
 }

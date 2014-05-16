@@ -10,7 +10,7 @@ import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class SurveyMaxPricingTest {
 
     @Before
     public void setup(){
-        model = new MacroII(1l);
+        model = new MacroII(1);
     }
 
 
@@ -55,7 +55,7 @@ public class SurveyMaxPricingTest {
         //when there is nobody to search just go at random.
         PurchasesDepartment dept = mock(PurchasesDepartment.class);
         //search will always return null
-        when(dept.getAvailableBudget()).thenReturn(100l);
+        when(dept.getAvailableBudget()).thenReturn(100);
         MersenneTwisterFast random = new MersenneTwisterFast(0);
         when(dept.getRandom()).thenReturn(random);
 
@@ -63,7 +63,7 @@ public class SurveyMaxPricingTest {
         BidPricingStrategy pricing = new SurveyMaxPricing(dept);
         for(int i=0; i < 10000; i++)
         {
-            long maxPrice =pricing.maxPrice(GoodType.GENERIC);
+            int maxPrice =pricing.maxPrice(UndifferentiatedGoodType.GENERIC);
             assertTrue(maxPrice>=0);
             assertTrue(maxPrice<=100);
 
@@ -73,7 +73,7 @@ public class SurveyMaxPricingTest {
         int decile =0;
         for(int i=0; i < 10000; i++)
         {
-            long maxPrice =pricing.maxPrice(GoodType.GENERIC);
+            int maxPrice =pricing.maxPrice(UndifferentiatedGoodType.GENERIC);
             if(maxPrice >= 40 && maxPrice < 50)
                 decile++;
 
@@ -86,7 +86,7 @@ public class SurveyMaxPricingTest {
     public void testPricingSeparateTest() throws NoSuchFieldException, IllegalAccessException {
 
         Firm f = new Firm(model);
-        Market market = new OrderBookMarket(GoodType.GENERIC);
+        Market market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
 
 
 
@@ -102,14 +102,14 @@ public class SurveyMaxPricingTest {
         {
             DummySeller seller = new DummySeller(model,100-i*10);
             market.registerSeller(seller);
-            seller.receive(new Good(GoodType.GENERIC,seller,0l),null); //get a good to sell
+            seller.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null); //get a good to sell
 
 
         }
 
         for(int i=0; i < 100; i++)
         {
-            long price = pricingStrategy.maxPrice(GoodType.GENERIC);
+            int price = pricingStrategy.maxPrice(UndifferentiatedGoodType.GENERIC);
             assertTrue("price found: " + price ,price == 50 ||price == 60);
         }
 
@@ -123,7 +123,7 @@ public class SurveyMaxPricingTest {
     public void testPricingFullTest() throws NoSuchFieldException, IllegalAccessException {
 
         Firm f = new Firm(model);
-        Market market = new OrderBookMarket(GoodType.GENERIC);
+        Market market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
 
 
 
@@ -139,29 +139,29 @@ public class SurveyMaxPricingTest {
         {
             seller = new DummySeller(model,100-i*10);
             market.registerSeller(seller);
-            seller.receive(new Good(GoodType.GENERIC,seller,0l),null); //get a good to sell!
+            seller.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null); //get a good to sell!
 
 
         }
 
         //test that purchase department overrides the strategic price when there is a lower market bet
-        Quote q =market.submitSellQuote(seller, 20, new Good(GoodType.GENERIC, seller, 0l)); //notice here the quote is only 20
+        Quote q =market.submitSellQuote(seller, 20,Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC)); //notice here the quote is only 20
 
         for(int i=0; i < 100; i++){
-            long price = dept.maxPrice(GoodType.GENERIC,market);
+            int price = dept.maxPrice(UndifferentiatedGoodType.GENERIC,market);
             assertTrue("price found: " + price ,price == 20);
         }
 
 
         //remove the quote
         market.removeSellQuote(q);
-        q =market.submitSellQuote(seller, 90, new Good(GoodType.GENERIC, seller, 0l)); //notice here the quote is 100, so it doesn't override the pricing strategy
+        q =market.submitSellQuote(seller, 90, Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC)); //notice here the quote is 100, so it doesn't override the pricing strategy
 
 
 
 
         for(int i=0; i < 100; i++){
-            long price = dept.maxPrice(GoodType.GENERIC,market);
+            int price = dept.maxPrice(UndifferentiatedGoodType.GENERIC,market);
             assertTrue("price found: " + price ,price == 50 || price == 60 );
         }
 

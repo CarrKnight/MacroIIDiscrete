@@ -13,6 +13,7 @@ import financial.*;
 import financial.utilities.*;
 import goods.Good;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
@@ -61,7 +62,7 @@ public abstract class Market implements Deactivatable{
      */
     protected LinkedList<BidListener> bidListeners = new LinkedList<>();
 
-    private Filter<Long> averagePrice = new ExponentialFilter<>(.1f);
+    private Filter<Integer> averagePrice = new ExponentialFilter<>(.1f);
 
     /**
      * How many goods were traded this week
@@ -82,12 +83,12 @@ public abstract class Market implements Deactivatable{
     /**
      * What was the last closing price yesterday?
      */
-    protected long yesterdayLastPrice = 0;
+    protected int yesterdayLastPrice = 0;
 
     /**
      * last price sold
      */
-    protected long lastPrice = -1;
+    protected int lastPrice = -1;
 
     protected float todaySumOfClosingPrices = 0;
 
@@ -97,12 +98,12 @@ public abstract class Market implements Deactivatable{
     /**
      * last filled bid
      */
-    protected long lastFilledBid = -1;
+    protected int lastFilledBid = -1;
 
     /**
      * last filled ask
      */
-    protected long lastFilledAsk = -1;
+    protected int lastFilledAsk = -1;
 
 
 
@@ -144,6 +145,13 @@ public abstract class Market implements Deactivatable{
     private XYChart.Series<Number, Number> priceSeries;
     private XYChart.Series<Number, Number> volumeSeries;
     private JFXPanel panel;
+
+    /**
+     * what kind of good is used as money. Can be changed but by default it is UndifferentiatedGoodType.Money
+     */
+    private UndifferentiatedGoodType money = UndifferentiatedGoodType.MONEY;
+
+
 
     protected Market(GoodType goodType) {
         this.goodType = goodType;
@@ -333,7 +341,7 @@ public abstract class Market implements Deactivatable{
      */
 
 
-    abstract public Quote submitSellQuote( EconomicAgent seller, long price, Good good );
+    abstract public Quote submitSellQuote( EconomicAgent seller, int price, Good good );
 
     /**
      * Submit a sell quote on a specific good
@@ -345,7 +353,7 @@ public abstract class Market implements Deactivatable{
      */
 
 
-    abstract public Quote submitSellQuote( EconomicAgent seller, long price, Good good,  Department department );
+    abstract public Quote submitSellQuote( EconomicAgent seller, int price, Good good,  Department department );
 
 
 
@@ -366,7 +374,7 @@ public abstract class Market implements Deactivatable{
      * @return quote made
      */
 
-    abstract public Quote submitBuyQuote( EconomicAgent buyer, long price,  Department department);
+    abstract public Quote submitBuyQuote( EconomicAgent buyer, int price,  Department department);
 
     /**
      * Submit a buy quote
@@ -375,7 +383,7 @@ public abstract class Market implements Deactivatable{
      * @return quote made
      */
 
-    abstract public Quote submitBuyQuote( EconomicAgent buyer, long price);
+    abstract public Quote submitBuyQuote( EconomicAgent buyer, int price);
 
     /**
      * If the buyer changes its mind and wants to remove its purchase quote, call this
@@ -412,7 +420,7 @@ public abstract class Market implements Deactivatable{
      * @param good the good being exchanged
      * @param price the price
      */
-    public PurchaseResult trade( EconomicAgent buyer, EconomicAgent seller, Good good, long price,
+    public PurchaseResult trade( EconomicAgent buyer, EconomicAgent seller, Good good, int price,
                                  Quote buyerQuote, Quote sellerQuote)
     {
         assert getBuyers().contains(buyer) : buyer.toString() + " ----- " + buyers;
@@ -443,7 +451,6 @@ public abstract class Market implements Deactivatable{
             if(MacroII.hasGUI())
             {
                 //record it on the timeline
-                long time = (long) buyer.getModel().getMainScheduleTime();
                 //todo logtodo
 
                 //register it on the network!
@@ -485,7 +492,7 @@ public abstract class Market implements Deactivatable{
      * @return the best price or -1 if there are none
      * @throws IllegalAccessException thrown by markets that do not allow such information.
      */
-    abstract public long getBestSellPrice() throws IllegalAccessException;
+    abstract public int getBestSellPrice() throws IllegalAccessException;
 
 
     /**
@@ -508,7 +515,7 @@ public abstract class Market implements Deactivatable{
      * @return the best price or -1 if there are none
      * @throws IllegalAccessException thrown by markets that do not allow such information.
      */
-    abstract public long getBestBuyPrice() throws IllegalAccessException;
+    abstract public int getBestBuyPrice() throws IllegalAccessException;
 
     public int getWeeklyVolume() {
         return weeklyVolume;
@@ -524,7 +531,7 @@ public abstract class Market implements Deactivatable{
      * The last closing price in the market
      * @return the last closing price or -1 if there is no history
      */
-    public long getLastPrice() {
+    public int getLastPrice() {
         return lastPrice;
     }
 
@@ -878,7 +885,7 @@ public abstract class Market implements Deactivatable{
      * @param buyerPrice buyer max price
      * @return the price
      */
-    public long price(long sellerPrice, long buyerPrice) {
+    public int price(int sellerPrice, int buyerPrice) {
         assert buyerPrice>=sellerPrice;
         return pricePolicy.price(sellerPrice, buyerPrice);
     }
@@ -903,7 +910,7 @@ public abstract class Market implements Deactivatable{
      *
      * @return Value of last filled ask.
      */
-    public long getLastFilledAsk() {
+    public int getLastFilledAsk() {
 
         if(isBestSalePriceVisible())
             return lastFilledAsk;
@@ -1144,5 +1151,13 @@ public abstract class Market implements Deactivatable{
 
     public float getLastDaysAveragePrice() {
         return averagePrice.getSmoothedObservation();
+    }
+
+    public UndifferentiatedGoodType getMoney() {
+        return money;
+    }
+
+    public void setMoney(UndifferentiatedGoodType money) {
+        this.money = money;
     }
 }

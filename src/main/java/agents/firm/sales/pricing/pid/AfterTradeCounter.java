@@ -119,23 +119,21 @@ public class AfterTradeCounter implements StockoutEstimator, Steppable {
 
     /**
      * Tell the listener the firm just tasked the salesdepartment to sell a new good
-     *
-     * @param owner the owner of the sales department
+     *  @param owner the owner of the sales department
      * @param dept  the sales department asked
-     * @param good  the good being sold
+     * @param amount
      */
     @Override
-    public void sellThisEvent( Firm owner,  SalesDepartment dept,  Good good) {
+    public void sellThisEvent(Firm owner, SalesDepartment dept, int amount) {
     }
 
     /**
      * This logEvent is fired whenever the sales department managed to sell a good!
-     *  @param dept   The department
-     * @param good
+     * @param dept   The department
      * @param price
      */
     @Override
-    public void goodSoldEvent( SalesDepartment dept, Good good, Long price) {
+    public void goodSoldEvent(SalesDepartment dept, int price) {
     }
 
     /**

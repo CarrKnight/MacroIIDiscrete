@@ -9,7 +9,8 @@ import agents.firm.production.technology.DRSExponentialMachinery;
 import agents.firm.production.technology.ExponentialMachinery;
 import agents.firm.production.technology.IRSExponentialMachinery;
 import financial.market.Market;
-import goods.GoodType;
+import goods.DifferentiatedGoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,15 +39,15 @@ public class ExponentialTechnologyTest {
         Market.TESTING_MODE =true;
 
 
-        Blueprint b = new Blueprint.Builder().output(GoodType.GENERIC,2).build(); //create a simple output
-        MacroII macro = new MacroII(1l);
+        Blueprint b = new Blueprint.Builder().output(UndifferentiatedGoodType.GENERIC,2).build(); //create a simple output
+        MacroII macro = new MacroII(1);
         Firm f = new Firm(macro); //used as the "producer of the capital goods"
 
 
         p = new Plant(b,new Firm(macro));
-        crs = new CRSExponentialMachinery(GoodType.CAPITAL,f,0l,p,1f,1f);
-        irs = new IRSExponentialMachinery(GoodType.CAPITAL,f,0l,p,1f,1f);
-        drs = new DRSExponentialMachinery(GoodType.CAPITAL,f,0l,p,1f,1f);
+        crs = new CRSExponentialMachinery(DifferentiatedGoodType.CAPITAL,f,0,p,1f,1f);
+        irs = new IRSExponentialMachinery(DifferentiatedGoodType.CAPITAL,f,0,p,1f,1f);
+        drs = new DRSExponentialMachinery(DifferentiatedGoodType.CAPITAL,f,0,p,1f,1f);
 
 
         //addSalesDepartmentListener two workers
@@ -123,9 +124,9 @@ public class ExponentialTechnologyTest {
     public void testExpectedWeeklyProduction() throws Exception {
         Market.TESTING_MODE =true;
 
-        assertEquals(2f * 2.0f * p.getModel().getWeekLength(), crs.weeklyThroughput(GoodType.GENERIC), .0001f);
-        assertEquals(2f * 4.0f * p.getModel().getWeekLength(), irs.weeklyThroughput(GoodType.GENERIC), .0001f);
-        assertEquals(2f * 1.41421356f * p.getModel().getWeekLength(), drs.weeklyThroughput(GoodType.GENERIC), .0001f);
+        assertEquals(2f * 2.0f * p.getModel().getWeekLength(), crs.weeklyThroughput(UndifferentiatedGoodType.GENERIC), .0001f);
+        assertEquals(2f * 4.0f * p.getModel().getWeekLength(), irs.weeklyThroughput(UndifferentiatedGoodType.GENERIC), .0001f);
+        assertEquals(2f * 1.41421356f * p.getModel().getWeekLength(), drs.weeklyThroughput(UndifferentiatedGoodType.GENERIC), .0001f);
 
     }
 
@@ -134,9 +135,9 @@ public class ExponentialTechnologyTest {
 
         Market.TESTING_MODE =true;
 
-        assertEquals(2f * p.getModel().getWeekLength(), crs.marginalProductOfWorker(GoodType.GENERIC), .0001f);
-        assertEquals(2f * 5.0f * p.getModel().getWeekLength(), irs.marginalProductOfWorker(GoodType.GENERIC), .0001f);
-        assertEquals(2f * 0.317837245 * p.getModel().getWeekLength(), drs.marginalProductOfWorker(GoodType.GENERIC), .0001f);
+        assertEquals(2f * p.getModel().getWeekLength(), crs.marginalProductOfWorker(UndifferentiatedGoodType.GENERIC), .0001f);
+        assertEquals(2f * 5.0f * p.getModel().getWeekLength(), irs.marginalProductOfWorker(UndifferentiatedGoodType.GENERIC), .0001f);
+        assertEquals(2f * 0.317837245 * p.getModel().getWeekLength(), drs.marginalProductOfWorker(UndifferentiatedGoodType.GENERIC), .0001f);
 
 
 

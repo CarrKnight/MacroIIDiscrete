@@ -44,19 +44,19 @@ public enum PurchaseResult {
     /**
      * Just a little variable attached to each purchase result telling what's the price of trade. I expect this to be used only if the state is success
      */
-    private long priceTrade = -1;
+    private int priceTrade = -1;
 
     /**
      * Just a little variable attached to each purchase result telling what's the price of trade. I expect this to be used only if the state is success
      */
-    public long getPriceTrade() {
+    public int getPriceTrade() {
         return priceTrade;
     }
 
     /**
      * Just a little variable attached to each purchase result telling what's the price of trade. I expect this to be used only if the state is success
      */
-    public void setPriceTrade(long priceTrade) {
+    public void setPriceTrade(int priceTrade) {
         this.priceTrade = priceTrade;
     }
 }

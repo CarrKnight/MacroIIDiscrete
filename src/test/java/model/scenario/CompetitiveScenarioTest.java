@@ -18,7 +18,7 @@ import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -84,8 +84,8 @@ public class CompetitiveScenarioTest {
             for(int j=0; j<500; j++)
             {
                 macroII.schedule.step(macroII);
-                averagePrice += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
-                averageQ += macroII.getMarket(GoodType.GENERIC).countTodayProductionByRegisteredSellers();
+                averagePrice += macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice();
+                averageQ += macroII.getMarket(UndifferentiatedGoodType.GENERIC).countTodayProductionByRegisteredSellers();
 
             }
             averagePrice = averagePrice/500f;
@@ -150,21 +150,21 @@ public class CompetitiveScenarioTest {
                 for(int j=0; j<500; j++)
                 {
                     macroII.schedule.step(macroII);
-                    assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
-                    prices.addValue(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
-                    quantities.addValue(macroII.getMarket(GoodType.GENERIC).getTodayVolume());
+                    assert !Float.isNaN(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice());
+                    prices.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice());
+                    quantities.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume());
 
-                    for(EconomicAgent agent : macroII.getMarket(GoodType.GENERIC).getSellers())
+                    for(EconomicAgent agent : macroII.getMarket(UndifferentiatedGoodType.GENERIC).getSellers())
                     {
-                        SalesDepartment department = ((Firm) agent).getSalesDepartment(GoodType.GENERIC);
-                        target.addValue(macroII.getMarket(GoodType.GENERIC).getTodayVolume());
+                        SalesDepartment department = ((Firm) agent).getSalesDepartment(UndifferentiatedGoodType.GENERIC);
+                        target.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume());
                     }
 
 
                 }
 
 
-                System.out.println(prices.getMean() + " - " + quantities.getMean() +"/" +target.getMean()+ "----" + macroII.seed() + " | " + macroII.getMarket(GoodType.GENERIC).getLastDaysAveragePrice());
+                System.out.println(prices.getMean() + " - " + quantities.getMean() +"/" +target.getMean()+ "----" + macroII.seed() + " | " + macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastDaysAveragePrice());
                 System.out.println("standard deviations: price : " + prices.getStandardDeviation() + " , quantity: " + quantities.getStandardDeviation());
                 if(competitors>=4)
                 {
@@ -173,6 +173,7 @@ public class CompetitiveScenarioTest {
                     assertEquals(quantities.getMean(), 44,5);
                     assertTrue(quantities.getStandardDeviation() < 5);
                 }
+                macroII.finish();
             }
 
 
@@ -204,7 +205,7 @@ public class CompetitiveScenarioTest {
             {
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
 
-                final MacroII macroII = new MacroII(System.currentTimeMillis());   //1387582416533l
+                final MacroII macroII = new MacroII(System.currentTimeMillis());   //1387582416533
                 final TripolistScenario scenario1 = new TripolistScenario(macroII);
 
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
@@ -247,21 +248,21 @@ public class CompetitiveScenarioTest {
                 for(int j=0; j<500; j++)
                 {
                     macroII.schedule.step(macroII);
-                    assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
-                    prices.addValue(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
-                    quantities.addValue(macroII.getMarket(GoodType.GENERIC).getTodayVolume());
+                    assert !Float.isNaN(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice());
+                    prices.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice());
+                    quantities.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume());
 
-                    for(EconomicAgent agent : macroII.getMarket(GoodType.GENERIC).getSellers())
+                    for(EconomicAgent agent : macroII.getMarket(UndifferentiatedGoodType.GENERIC).getSellers())
                     {
-                        SalesDepartment department = ((Firm) agent).getSalesDepartment(GoodType.GENERIC);
-                        target.addValue(macroII.getMarket(GoodType.GENERIC).getTodayVolume());
+                        SalesDepartment department = ((Firm) agent).getSalesDepartment(UndifferentiatedGoodType.GENERIC);
+                        target.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume());
                     }
 
 
                 }
 
 
-                System.out.println(prices.getMean() + " - " + quantities.getMean() +"/" +target.getMean()+ "----" + macroII.seed() + " | " + macroII.getMarket(GoodType.GENERIC).getLastDaysAveragePrice());
+                System.out.println(prices.getMean() + " - " + quantities.getMean() +"/" +target.getMean()+ "----" + macroII.seed() + " | " + macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastDaysAveragePrice());
                 System.out.println("standard deviations: price : " + prices.getStandardDeviation() + " , quantity: " + quantities.getStandardDeviation());
 
                 averageResultingPrice += prices.getMean();
@@ -329,7 +330,7 @@ public class CompetitiveScenarioTest {
                     for(HumanResources hr : firm.getHRs())
                         hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
 
-                    firm.getSalesDepartment(GoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+                    firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
                 }
 
 
@@ -347,21 +348,21 @@ public class CompetitiveScenarioTest {
                 for(int j=0; j<500; j++)
                 {
                     macroII.schedule.step(macroII);
-                    assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
-                    prices.addValue(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
-                    quantities.addValue(macroII.getMarket(GoodType.GENERIC).getTodayVolume());
+                    assert !Float.isNaN(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice());
+                    prices.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice());
+                    quantities.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume());
 
-                    for(EconomicAgent agent : macroII.getMarket(GoodType.GENERIC).getSellers())
+                    for(EconomicAgent agent : macroII.getMarket(UndifferentiatedGoodType.GENERIC).getSellers())
                     {
-                        SalesDepartment department = ((Firm) agent).getSalesDepartment(GoodType.GENERIC);
-                        target.addValue(macroII.getMarket(GoodType.GENERIC).getTodayVolume());
+                        SalesDepartment department = ((Firm) agent).getSalesDepartment(UndifferentiatedGoodType.GENERIC);
+                        target.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume());
                     }
 
 
                 }
 
 
-                System.out.println(prices.getMean() + " - " + quantities.getMean() +"/" +target.getMean()+ "----" + macroII.seed() + " | " + macroII.getMarket(GoodType.GENERIC).getLastDaysAveragePrice());
+                System.out.println(prices.getMean() + " - " + quantities.getMean() +"/" +target.getMean()+ "----" + macroII.seed() + " | " + macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastDaysAveragePrice());
                 System.out.println("standard deviations: price : " + prices.getStandardDeviation() + " , quantity: " + quantities.getStandardDeviation());
 
                 assertEquals(prices.getMean(), 58, 5);
@@ -383,7 +384,7 @@ public class CompetitiveScenarioTest {
     public void tooManyLearnedCompetitors()
     {
 
-        int competitors = 80;
+        int competitors = 20;
 
         //  System.out.println("FORCED COMPETITIVE FIRMS: " + (competitors+1));
         Class<? extends AskPricingStrategy> strategies[] = new Class[2];
@@ -428,7 +429,7 @@ public class CompetitiveScenarioTest {
                     for(HumanResources hr : firm.getHRs())
                         hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
 
-                    firm.getSalesDepartment(GoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+                    firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
                 }
 
 
@@ -450,10 +451,10 @@ public class CompetitiveScenarioTest {
                     macroII.schedule.step(macroII);
                     for(Firm f : scenario1.getCompetitors() )
                         workers += f.getHRs().iterator().next().getWorkerTarget();
-                    assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
-                    averagePrice += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
-                    averageQ += macroII.getMarket(GoodType.GENERIC).countTodayProductionByRegisteredSellers();
-                    averageInventory += macroII.getMarket(GoodType.GENERIC).getLatestObservation(MarketDataType.SELLERS_INVENTORY);
+                    assert !Float.isNaN(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice());
+                    averagePrice += macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice();
+                    averageQ += macroII.getMarket(UndifferentiatedGoodType.GENERIC).countTodayProductionByRegisteredSellers();
+                    averageInventory += macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLatestObservation(MarketDataType.SELLERS_INVENTORY);
 
 
                 }
@@ -518,7 +519,7 @@ public class CompetitiveScenarioTest {
                 macroII.schedule.step(macroII);
                 for(Firm firm : scenario1.getCompetitors())
                 {
-                    SalesDepartment department = firm.getSalesDepartment(GoodType.GENERIC);
+                    SalesDepartment department = firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
                     final SimpleFlowSellerPID askPricingStrategy = new SimpleFlowSellerPID(department);
                    // askPricingStrategy.setTargetInventory(1000);
                     askPricingStrategy.setSpeed(0); //stickiness!
@@ -541,20 +542,20 @@ public class CompetitiveScenarioTest {
                 {
                     macroII.schedule.step(macroII);
  //                   assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
-                    prices.addValue(macroII.getMarket(GoodType.GENERIC).getLastPrice());
-                    quantities.addValue(macroII.getMarket(GoodType.GENERIC).getTodayVolume());
+                    prices.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice());
+                    quantities.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume());
 
-                    for(EconomicAgent agent : macroII.getMarket(GoodType.GENERIC).getSellers())
+                    for(EconomicAgent agent : macroII.getMarket(UndifferentiatedGoodType.GENERIC).getSellers())
                     {
-                        SalesDepartment department = ((Firm) agent).getSalesDepartment(GoodType.GENERIC);
-                        target.addValue(macroII.getMarket(GoodType.GENERIC).getTodayVolume());
+                        SalesDepartment department = ((Firm) agent).getSalesDepartment(UndifferentiatedGoodType.GENERIC);
+                        target.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume());
                     }
 
 
                 }
 
 
-                System.out.println(prices.getMean() + " - " + quantities.getMean() +"/" +target.getMean()+ "----" + macroII.seed() + " | " + macroII.getMarket(GoodType.GENERIC).getLastDaysAveragePrice());
+                System.out.println(prices.getMean() + " - " + quantities.getMean() +"/" +target.getMean()+ "----" + macroII.seed() + " | " + macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastDaysAveragePrice());
                 System.out.println("standard deviations: price : " + prices.getStandardDeviation() + " , quantity deviation: " + quantities.getStandardDeviation());
                 if(competitors>=4)
                 {

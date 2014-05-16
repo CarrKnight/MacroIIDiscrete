@@ -118,8 +118,8 @@ public class SalesControlFlowPIDWithFixedInventoryTest {
         when(department.getTodayInflow()).thenReturn(5);
         when(department.getHowManyToSell()).thenReturn(50);
         pricing.step(state);
-        assertTrue(Long.toString(pricing.getPrice()),pricing.getPrice() < 100); //price should have gone down!!!!
-        long newPrice = pricing.getPrice();
+        assertTrue(Integer.toString(pricing.getPrice()),pricing.getPrice() < 100); //price should have gone down!!!!
+        int newPrice = pricing.getPrice();
 
 
         //inventory goes down, but we should still be in sell phase

@@ -42,7 +42,7 @@ public class PricingSalesPredictor extends BaseSalesPredictor {
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
+    public int predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
         //imagine a good with the right conditions
 
         //what would the pricing section do?
@@ -62,7 +62,7 @@ public class PricingSalesPredictor extends BaseSalesPredictor {
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
+    public int predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
 
         return dept.hypotheticalSalePrice();
 
@@ -85,7 +85,7 @@ public class PricingSalesPredictor extends BaseSalesPredictor {
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+    public int predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         return dept.hypotheticalSalePrice();
 
     }

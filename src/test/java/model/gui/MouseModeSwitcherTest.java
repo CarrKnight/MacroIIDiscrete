@@ -64,7 +64,7 @@ public class MouseModeSwitcherTest extends GuiTest{
         //if I click on the map, I should be able to run the scenario command for adding firms!
         click(geographicalPane.localToScene(90, 10));
         verify(scenario,times(1)).createNewProducer(any(Location.class), any(GeographicalMarket.class), anyString());
-        verify(scenario,never()).createNewConsumer(any(Location.class), any(GeographicalMarket.class), anyLong());
+        verify(scenario,never()).createNewConsumer(any(Location.class), any(GeographicalMarket.class), anyInt());
 
         //click on selection
         click(underTest.getNormalSelection());
@@ -72,7 +72,7 @@ public class MouseModeSwitcherTest extends GuiTest{
         //clicks do nothing
         click(geographicalPane.localToScene(90,10));
         verify(scenario,times(1)).createNewProducer(any(Location.class),any(GeographicalMarket.class),anyString());
-        verify(scenario,never()).createNewConsumer(any(Location.class),any(GeographicalMarket.class),anyLong());
+        verify(scenario,never()).createNewConsumer(any(Location.class),any(GeographicalMarket.class),anyInt());
 
         //click on add consumer
         click(underTest.getAddHousehold());
@@ -80,7 +80,7 @@ public class MouseModeSwitcherTest extends GuiTest{
         //clicks to add consumer
         click(geographicalPane.localToScene(90,10));
         verify(scenario,times(1)).createNewProducer(any(Location.class),any(GeographicalMarket.class),anyString());
-        verify(scenario,times(1)).createNewConsumer(any(Location.class),any(GeographicalMarket.class),anyLong()); //this happened
+        verify(scenario,times(1)).createNewConsumer(any(Location.class),any(GeographicalMarket.class),anyInt()); //this happened
 
         //once more back to selection
         click(underTest.getNormalSelection());
@@ -88,7 +88,7 @@ public class MouseModeSwitcherTest extends GuiTest{
         //clicks do nothing
         click(geographicalPane.localToScene(90,10));
         verify(scenario,times(1)).createNewProducer(any(Location.class),any(GeographicalMarket.class),anyString());
-        verify(scenario,times(1)).createNewConsumer(any(Location.class),any(GeographicalMarket.class),anyLong()); //this happened
+        verify(scenario,times(1)).createNewConsumer(any(Location.class),any(GeographicalMarket.class),anyInt()); //this happened
 
     }
     @Test
@@ -98,7 +98,7 @@ public class MouseModeSwitcherTest extends GuiTest{
         //if I click on the map, I should be able to run the scenario command for adding firms!
         click(geographicalPane.localToScene(90,10));
         verify(scenario,times(1)).createNewProducer(any(Location.class),any(GeographicalMarket.class),anyString());
-        verify(scenario,never()).createNewConsumer(any(Location.class),any(GeographicalMarket.class),anyLong());
+        verify(scenario,never()).createNewConsumer(any(Location.class),any(GeographicalMarket.class),anyInt());
 
         //click on selection
         click(AddAgentsToMapTitledPane.SELECT_BUTTON_STRING);
@@ -106,7 +106,7 @@ public class MouseModeSwitcherTest extends GuiTest{
         //clicks do nothing
         click(geographicalPane.localToScene(90,10));
         verify(scenario,times(1)).createNewProducer(any(Location.class),any(GeographicalMarket.class),anyString());
-        verify(scenario,never()).createNewConsumer(any(Location.class),any(GeographicalMarket.class),anyLong());
+        verify(scenario,never()).createNewConsumer(any(Location.class),any(GeographicalMarket.class),anyInt());
 
         //click on add consumer
         click(AddAgentsToMapTitledPane.ADD_HOUSEHOLD_BUTTON_STRING);
@@ -114,7 +114,7 @@ public class MouseModeSwitcherTest extends GuiTest{
         //clicks to add consumer
         click(geographicalPane.localToScene(90,10));
         verify(scenario,times(1)).createNewProducer(any(Location.class),any(GeographicalMarket.class),anyString());
-        verify(scenario,times(1)).createNewConsumer(any(Location.class),any(GeographicalMarket.class),anyLong()); //this happened
+        verify(scenario,times(1)).createNewConsumer(any(Location.class),any(GeographicalMarket.class),anyInt()); //this happened
 
         //once more back to selection
         click(AddAgentsToMapTitledPane.SELECT_BUTTON_STRING);
@@ -122,6 +122,6 @@ public class MouseModeSwitcherTest extends GuiTest{
         //clicks do nothing
         click(geographicalPane.localToScene(90,10));
         verify(scenario,times(1)).createNewProducer(any(Location.class),any(GeographicalMarket.class),anyString());
-        verify(scenario,times(1)).createNewConsumer(any(Location.class),any(GeographicalMarket.class),anyLong()); //this happened
+        verify(scenario,times(1)).createNewConsumer(any(Location.class),any(GeographicalMarket.class),anyInt()); //this happened
     }
 }

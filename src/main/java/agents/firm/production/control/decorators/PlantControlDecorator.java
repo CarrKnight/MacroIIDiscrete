@@ -64,7 +64,7 @@ public abstract class PlantControlDecorator implements PlantControl{
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(Good good) {
+    public int maxPrice(Good good) {
         return toDecorate.maxPrice(good);
 
     }
@@ -79,7 +79,7 @@ public abstract class PlantControlDecorator implements PlantControl{
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(GoodType type) {
+    public int maxPrice(GoodType type) {
         return toDecorate.maxPrice(type);
     }
 
@@ -88,7 +88,7 @@ public abstract class PlantControlDecorator implements PlantControl{
      * @param newWage the new wage
      */
     @Override
-    public void setCurrentWage(long newWage) {
+    public void setCurrentWage(int newWage) {
         toDecorate.setCurrentWage(newWage);
     }
 

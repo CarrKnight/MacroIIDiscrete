@@ -49,7 +49,7 @@ public class SalesControlWithFixedInventoryAndPID extends BaseAskPricingStrategy
     private int targetInventory = defaultTargetInventory;
 
 
-    private long roundedPrice;
+    private int roundedPrice;
 
     private float slavePIDOriginalError = 0;
 
@@ -141,7 +141,7 @@ public class SalesControlWithFixedInventoryAndPID extends BaseAskPricingStrategy
      * @return the price given to that good
      */
     @Override
-    public long price(Good g) {
+    public int price(Good g) {
         return price();
     }
 
@@ -150,7 +150,7 @@ public class SalesControlWithFixedInventoryAndPID extends BaseAskPricingStrategy
      * the PID MV rounded to the nearest integer
      *
      */
-    public long price(){
+    public int price(){
         return roundedPrice;
 
     }
@@ -186,7 +186,7 @@ public class SalesControlWithFixedInventoryAndPID extends BaseAskPricingStrategy
         slavePIDOriginalError = input.getTarget(1)-input.getInput(1);
         controller.adjust(input,
                 department.getFirm().isActive(), macroII, this, ActionOrder.ADJUST_PRICES);
-        roundedPrice = (long)Math.round(controller.getCurrentMV());
+        roundedPrice = Math.round(controller.getCurrentMV());
 
         //log it
         handleNewEvent(new LogEvent(this, LogLevel.DEBUG, "old price:{} newprice:{}\n inventory:{} targetInventory{}\n inflow:{} outflow{}",

@@ -51,7 +51,7 @@ public class FixedFormulaFakePredictor extends BaseSalesPredictor implements Pur
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
+    public int predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
         return formula();
     }
 
@@ -64,7 +64,7 @@ public class FixedFormulaFakePredictor extends BaseSalesPredictor implements Pur
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
+    public int predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
         return formula();
     }
 
@@ -76,7 +76,7 @@ public class FixedFormulaFakePredictor extends BaseSalesPredictor implements Pur
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+    public int predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         return formula();
     }
 
@@ -88,7 +88,7 @@ public class FixedFormulaFakePredictor extends BaseSalesPredictor implements Pur
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
         return formula();
 
     }
@@ -100,7 +100,7 @@ public class FixedFormulaFakePredictor extends BaseSalesPredictor implements Pur
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         return formula();
     }
 
@@ -111,11 +111,11 @@ public class FixedFormulaFakePredictor extends BaseSalesPredictor implements Pur
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
         return formula();
     }
 
-    private long formula() {
+    private int formula() {
         return intercept + slope * market.getYesterdayVolume();
     }
 

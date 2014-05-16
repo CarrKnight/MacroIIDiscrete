@@ -19,7 +19,7 @@ import financial.market.DecentralizedMarket;
 import financial.market.Market;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.dummies.DummyBuyer;
@@ -59,10 +59,10 @@ public class SimpleDecentralizedSellerScenario extends Scenario
     public void start() {
 
         //create the market
-        final DecentralizedMarket market = new DecentralizedMarket(GoodType.GENERIC);
+        final DecentralizedMarket market = new DecentralizedMarket(UndifferentiatedGoodType.GENERIC);
         market.setPricePolicy(new ShopSetPricePolicy());
 
-        getMarkets().put(GoodType.GENERIC,market);
+        getMarkets().put(UndifferentiatedGoodType.GENERIC,market);
 
 
         //only one seller
@@ -70,7 +70,7 @@ public class SimpleDecentralizedSellerScenario extends Scenario
         //give it a seller department at time 1
         SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(seller, market, new SimpleBuyerSearch(market, seller), new SimpleSellerSearch(market, seller),
                 SalesDepartmentAllAtOnce.class);
-        seller.registerSaleDepartment(dept,GoodType.GENERIC);
+        seller.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
 
         //create a seller PID with the right speed
         salesControlWithSmoothedinventoryAndPID sellerPID = new salesControlWithSmoothedinventoryAndPID(dept);
@@ -85,7 +85,7 @@ public class SimpleDecentralizedSellerScenario extends Scenario
             public void step(SimState simState) {
                 //sell 4 goods!
                 for(int i=0; i<4; i++){
-                    Good good = new Good(GoodType.GENERIC,seller,10l);
+                    Good good = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
                     seller.receive(good,null);
                     seller.reactToPlantProduction(good);
                 }
@@ -115,12 +115,13 @@ public class SimpleDecentralizedSellerScenario extends Scenario
 
 
 
-    private void createBuyer(final EconomicAgent seller, Market market, long price, float time){
+    private void createBuyer(final EconomicAgent seller, Market market, int price, float time){
 
         /**
          * For this scenario we use dummy buyers that shop only once every "period"
          */
-        final DummyBuyer buyer = new DummyBuyer(getModel(),price,market);  market.registerBuyer(buyer); buyer.earn(1000000l);
+        final DummyBuyer buyer = new DummyBuyer(getModel(),price,market);  market.registerBuyer(buyer);
+        buyer.receiveMany(UndifferentiatedGoodType.MONEY,1000000);
 
         //Make it shop once a day for one good only!
         getModel().scheduleSoon(ActionOrder.TRADE,
@@ -129,7 +130,7 @@ public class SimpleDecentralizedSellerScenario extends Scenario
                     public void step(SimState simState) {
 
 
-                        DummyBuyer.goShopping(buyer,seller,GoodType.GENERIC);
+                        DummyBuyer.goShopping(buyer,seller, UndifferentiatedGoodType.GENERIC);
                         getModel().scheduleTomorrow(ActionOrder.TRADE,this);
                     }
                 }

@@ -104,7 +104,7 @@ public class MarketLookTargeter implements WorkforceTargeter {
 
         try {
             //compute the wage needed to get a new worker
-            long lowestWage = hr.getMarket().getBestSellPrice();
+            int lowestWage = hr.getMarket().getBestSellPrice();
 
             if(lowestWage == -1 ) //if there is no worker available check back in a while!
             {
@@ -212,7 +212,7 @@ public class MarketLookTargeter implements WorkforceTargeter {
 
 
         //set the wage and fire the workers
-        long newWage = workers.get(workers.size() - workersToFire -1).getMinimumDailyWagesRequired();
+        int newWage = workers.get(workers.size() - workersToFire -1).getMinimumDailyWagesRequired();
         control.setCurrentWage( newWage );
         //if it's not a fixed pay structure you have to remove them yourself
         if(!control.getHr().isFixedPayStructure())

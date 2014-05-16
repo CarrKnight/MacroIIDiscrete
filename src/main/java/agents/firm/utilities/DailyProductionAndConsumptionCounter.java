@@ -15,7 +15,6 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <h4>Description</h4>
@@ -49,30 +48,30 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DailyProductionAndConsumptionCounter implements Steppable, Deactivatable
 {
-    private HashMap<GoodType,AtomicInteger> consumedToday;
+    private HashMap<GoodType,Integer> consumedToday;
 
-    private HashMap<GoodType,AtomicInteger> boughtOrProducedToday;
+    private HashMap<GoodType,Integer> boughtOrProducedToday;
 
-    private HashMap<GoodType,AtomicInteger> producedToday;
+    private HashMap<GoodType,Integer> producedToday;
 
-    private HashMap<GoodType,AtomicInteger> consumedYesterday;
+    private HashMap<GoodType,Integer> consumedYesterday;
 
-    private HashMap<GoodType,AtomicInteger> boughtOrProducedYesterday;
+    private HashMap<GoodType,Integer> boughtOrProducedYesterday;
 
-    private HashMap<GoodType,AtomicInteger> producedYesterday;
+    private HashMap<GoodType,Integer> producedYesterday;
 
-    private HashMap<GoodType,AtomicInteger> producedThisWeek;
+    private HashMap<GoodType,Integer> producedThisWeek;
 
-    private HashMap<GoodType,AtomicInteger> producedLastWeek;
+    private HashMap<GoodType,Integer> producedLastWeek;
 
-    private HashMap<GoodType,AtomicInteger> boughtOrProducedThisWeek;
+    private HashMap<GoodType,Integer> boughtOrProducedThisWeek;
 
-    private HashMap<GoodType,AtomicInteger> boughtOrProducedLastWeek;
+    private HashMap<GoodType,Integer> boughtOrProducedLastWeek;
 
 
-    private HashMap<GoodType,AtomicInteger> consumedThisWeek;
+    private HashMap<GoodType,Integer> consumedThisWeek;
 
-    private HashMap<GoodType,AtomicInteger> consumedLastWeek;
+    private HashMap<GoodType,Integer> consumedLastWeek;
 
 
     private boolean active = true;
@@ -332,14 +331,14 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     /**
      * a simple lookup that returns 0 every time the map doesn't actually map the type you are looking for
      */
-    private int lookupMap(HashMap<GoodType,AtomicInteger> map, GoodType type)
+    private int lookupMap(HashMap<GoodType,Integer> map, GoodType type)
     {
 
-        AtomicInteger toReturn = map.get(type);
+        Integer toReturn = map.get(type);
         if(toReturn == null)
             return 0;
         else
-            return toReturn.get();
+            return toReturn;
 
 
     }
@@ -347,7 +346,7 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     /**
      * a simple way to increase by one an entry in the map
      */
-    private void increaseByOne(HashMap<GoodType,AtomicInteger> map, GoodType type)
+    private void increaseByOne(HashMap<GoodType,Integer> map, GoodType type)
     {
         increaseByN(map, type, 1);
     }
@@ -355,17 +354,17 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     /**
      * a simple way to increase by n an entry in the map
      */
-    private void increaseByN(HashMap<GoodType,AtomicInteger> map, GoodType type, int n)
+    private void increaseByN(HashMap<GoodType,Integer> map, GoodType type, int n)
     {
 
         Preconditions.checkArgument(n >0);
         //grab the counter
-        AtomicInteger counter = map.get(type);
+        Integer counter = map.get(type);
         //create one if you don't have it
         if(counter == null)
-            counter = new AtomicInteger(0);
-        counter.addAndGet(n);
-        assert counter.get() > 0;
+            counter = 0;
+        counter+=n;
+        assert counter > 0;
 
         map.put(type, counter);
 
@@ -379,6 +378,12 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     @Override
     public void turnOff() {
         active=false;
+        consumedYesterday = null;
+        boughtOrProducedYesterday = null;
+        producedYesterday = null;
 
+        consumedToday = null;
+        boughtOrProducedToday = null;
+        producedToday = null;
     }
 }

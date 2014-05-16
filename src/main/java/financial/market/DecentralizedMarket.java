@@ -58,7 +58,7 @@ public class DecentralizedMarket extends Market {
      */
 
     @Override
-    public Quote submitSellQuote( EconomicAgent seller, long price,  Good good) {
+    public Quote submitSellQuote( EconomicAgent seller, int price,  Good good) {
         throw new IllegalStateException("Decentralized markets take no quotes!");
     }
 
@@ -67,7 +67,7 @@ public class DecentralizedMarket extends Market {
      */
 
     @Override
-    public Quote submitSellQuote( EconomicAgent seller, long price,  Good good,  Department department) {
+    public Quote submitSellQuote( EconomicAgent seller, int price,  Good good,  Department department) {
         throw new IllegalStateException("Decentralized markets take no quotes!");
     }
 
@@ -84,7 +84,7 @@ public class DecentralizedMarket extends Market {
      */
 
     @Override
-    public Quote submitBuyQuote( EconomicAgent buyer, long price,  Department department) {
+    public Quote submitBuyQuote( EconomicAgent buyer, int price,  Department department) {
         throw new IllegalStateException("Decentralized markets take no quotes!");
     }
 
@@ -93,7 +93,7 @@ public class DecentralizedMarket extends Market {
      */
 
     @Override
-    public Quote submitBuyQuote( EconomicAgent buyer, long price) {
+    public Quote submitBuyQuote( EconomicAgent buyer, int price) {
         throw new IllegalStateException("Decentralized markets take no quotes!");
     }
 
@@ -143,7 +143,7 @@ public class DecentralizedMarket extends Market {
      * @throws IllegalAccessException thrown by markets that do not allow such information.
      */
     @Override
-    public long getBestSellPrice() throws IllegalAccessException {
+    public int getBestSellPrice() throws IllegalAccessException {
         throw new IllegalAccessException("Not visible! Should have checked!");
     }
 
@@ -173,7 +173,7 @@ public class DecentralizedMarket extends Market {
      * @throws IllegalAccessException thrown by markets that do not allow such information.
      */
     @Override
-    public long getBestBuyPrice() throws IllegalAccessException {
+    public int getBestBuyPrice() throws IllegalAccessException {
         throw new IllegalAccessException("Not visible! Should have checked!");
     }
 

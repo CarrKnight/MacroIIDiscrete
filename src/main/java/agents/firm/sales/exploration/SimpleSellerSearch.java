@@ -10,6 +10,7 @@ import agents.EconomicAgent;
 import com.google.common.base.Preconditions;
 import financial.market.Market;
 import financial.utilities.PurchaseResult;
+import financial.utilities.Quote;
 
 /**
  * <h4>Description</h4>
@@ -43,6 +44,8 @@ public class SimpleSellerSearch implements SellerSearchAlgorithm{
         searchDepth = agent.getModel().drawNewSimpleSellerSearchSize(agent,market); //draw your search size
     }
 
+
+
     /**
      * look into the seller registry and return what the search algorithm deems the best
      *
@@ -57,7 +60,10 @@ public class SimpleSellerSearch implements SellerSearchAlgorithm{
         long lowestOffer = Long.MAX_VALUE; //lowest price
         for(EconomicAgent a : sample)
         {
-            long offer = a.askedForASaleQuote(agent, market.getGoodType()).getPriceQuoted();
+            final Quote quote = a.askedForASaleQuote(agent, market.getGoodType());
+            if(quote==null)
+                continue;
+            long offer = quote.getPriceQuoted();
             if(offer < lowestOffer && offer >=0)
             {
                 lowestSeller = a; //record the best bid so far

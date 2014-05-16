@@ -28,6 +28,7 @@ import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import javafx.beans.value.ObservableDoubleValue;
 import model.MacroII;
 import model.utilities.ActionOrder;
@@ -78,7 +79,7 @@ public class Firm extends EconomicAgent  {
      * If we are ever asked to rank our departments by the wages they offer we store here the best wage offered
      * The computation occurs in maximumOffer()
      */
-    private long bestWageOffer;
+    private int bestWageOffer;
 
     /**
      * The object that computes profits for each plant
@@ -314,13 +315,22 @@ public class Firm extends EconomicAgent  {
 
 
     /**
-     * Whenever the plant produces a good, it asks the firm what to do about it!
+     * Whenever the plant produces goods, it asks the firm what to do about it!
      * @param g  the good that was produced!
      */
     public void reactToPlantProduction(Good g){
         salesDepartments.get(g.getType()).sellThis(g);
     }
 
+
+    /**
+     * Whenever the plant produces a number of goods, it asks the firm what to do about it!
+     * @param g  the good that was produced!
+     */
+    public void reactToPlantProduction(UndifferentiatedGoodType undifferentiated, int amount)
+    {
+        salesDepartments.get(undifferentiated).sellThese(amount);
+    }
 
     @Override
     public MersenneTwisterFast getRandom() {
@@ -364,14 +374,14 @@ public class Firm extends EconomicAgent  {
     }
 
     @Override
-    public void reactToFilledAskedQuote(Good g, long price, EconomicAgent buyer) {
+    public void reactToFilledAskedQuote(Quote quoteFilled, Good g, int price, EconomicAgent buyer) {
         assert !g.getType().isLabor(); //hopefull you aren't selling labor, or this is weird.
         assert salesDepartments.containsKey(g.getType());       //you should have a sales department for it
-        salesDepartments.get(g.getType()).reactToFilledQuote(g,price,buyer);  //tell the sales department that the deed is done!
+        salesDepartments.get(g.getType()).reactToFilledQuote(quoteFilled, g, price, buyer);  //tell the sales department that the deed is done!
     }
 
     @Override
-    public void reactToFilledBidQuote(Good g, long price, EconomicAgent seller) {
+    public void reactToFilledBidQuote(Quote quoteFilled, Good g, int price, EconomicAgent seller) {
         checkNotNull(seller); //not null!
 
         if(!g.getType().isLabor()) //if it's not labor...
@@ -396,7 +406,7 @@ public class Firm extends EconomicAgent  {
      * @return the maximum price willing to pay or -1 if no price is good.
      */
     @Override
-    public long maximumOffer(Good g) {
+    public int maximumOffer(Good g) {
 
         if(!g.getType().isLabor()){
             //get the right department
@@ -415,7 +425,7 @@ public class Firm extends EconomicAgent  {
             bestWageOffer = -1;
 
             for(HumanResources hr: hrs){
-                long offer = hr.maximumOffer(g);
+                int offer = hr.maximumOffer(g);
                 if(offer>bestWageOffer)
                 {
                     bestWageOffer = offer;
@@ -435,7 +445,7 @@ public class Firm extends EconomicAgent  {
      * @param g the good the peddler/survey is pushing
      * @return the maximum price willing to pay or -1 if no price is good.
      */
-    public long expectedInputPrice(GoodType g) {
+    public int expectedInputPrice(GoodType g) {
         //get the right department
         PurchasesDepartment department = purchaseDepartments.get(g);
         assert department != null;
@@ -454,7 +464,7 @@ public class Firm extends EconomicAgent  {
      * @return the maximum price willing to pay or -1 if no price is good.
      */
     @Override
-    public long askedForABuyOffer(GoodType t) {
+    public int askedForABuyOffer(GoodType t) {
         return 0;
     }
 
@@ -990,7 +1000,7 @@ public class Firm extends EconomicAgent  {
      * @param goodType the good type the sales department deals with
      * @return
      */
-    public long hypotheticalSellPrice(GoodType goodType)
+    public int hypotheticalSellPrice(GoodType goodType)
     {
         Preconditions.checkArgument(salesDepartments.containsKey(goodType));
 

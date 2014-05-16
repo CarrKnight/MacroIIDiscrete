@@ -19,8 +19,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Preconditions;
 import financial.market.OrderBookMarket;
 import financial.utilities.ShopSetPricePolicy;
-import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.dummies.Customer;
@@ -109,7 +108,7 @@ public class SimpleSellerScenario extends Scenario {
     /**
      * how much inflow each firm gets
      */
-    private LinkedHashMap<Firm, Integer> sellerToInflowMap = new LinkedHashMap<>();
+    private LinkedHashMap<Firm, Integer> sellerToInflowMap = new LinkedHashMap< >();
 
     /**
      * the strategy used by the seller, after it has been instantiated
@@ -128,10 +127,10 @@ public class SimpleSellerScenario extends Scenario {
         pricingStrategies = new LinkedList<>();
 
         //create and record a new market!
-        final OrderBookMarket market= new OrderBookMarket(GoodType.GENERIC);
+        final OrderBookMarket market= new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         market.setPricePolicy(new ShopSetPricePolicy()); //make the seller price matter
 
-        getMarkets().put(GoodType.GENERIC,market);
+        getMarkets().put(UndifferentiatedGoodType.GENERIC,market);
 
 
         //create sellers
@@ -208,11 +207,9 @@ public class SimpleSellerScenario extends Scenario {
 
                 //sell 4 goods!
                 int inflow = sellerToInflowMap.get(seller);
-                for(int i=0; i<inflow; i++){
-                    Good good = new Good(GoodType.GENERIC,seller,10l);
-                    seller.receive(good,null);
-                    seller.reactToPlantProduction(good);
-                }
+                seller.receiveMany(UndifferentiatedGoodType.GENERIC,inflow);
+                seller.reactToPlantProduction(UndifferentiatedGoodType.GENERIC,inflow);
+
                 //every day
                 getModel().scheduleTomorrow(ActionOrder.PRODUCTION,this);
             }
@@ -228,7 +225,7 @@ public class SimpleSellerScenario extends Scenario {
 
         SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(seller, market, new SimpleBuyerSearch(market, seller),
                 new SimpleSellerSearch(market, seller), salesDepartmentType);
-        seller.registerSaleDepartment(dept, GoodType.GENERIC);
+        seller.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
 
         strategy = AskPricingStrategy.Factory.newAskPricingStrategy(sellerStrategy,dept);
 
@@ -243,7 +240,7 @@ public class SimpleSellerScenario extends Scenario {
         return seller;
     }
 
-    protected void buildBuyer(final OrderBookMarket market, final long price) {
+    protected void buildBuyer(final OrderBookMarket market, final int price) {
         if(buyerDelay == 0 )
         {
             final Customer buyer = new Customer(getModel(),Math.max((price),1),market);

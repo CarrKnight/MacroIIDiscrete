@@ -6,18 +6,13 @@
 
 package model.scenario;
 
-import agents.EconomicAgent;
 import agents.firm.Firm;
-import agents.firm.personell.HumanResources;
-import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
-import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.prediction.PricingSalesPredictor;
-import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.DailyStatCollector;
@@ -181,12 +176,12 @@ public class TripolistScenario extends MonopolistScenario{
                         for(int i=0; i <scenario1.competitors.size(); i++)
                         {
                             Firm competitor = scenario1.competitors.get(i);
-                            SalesDepartment dept = competitor.getSalesDepartment(GoodType.GENERIC);
+                            SalesDepartment dept = competitor.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
 
 
 
                             quantityline[i]=Long.toString(dept.getTodayOutflow());
-                            priceline[i] = Long.toString(competitor.hypotheticalSellPrice(GoodType.GENERIC));
+                            priceline[i] = Long.toString(competitor.hypotheticalSellPrice(UndifferentiatedGoodType.GENERIC));
                         }
                         writer2.writeNext(priceline);    writer3.writeNext(quantityline);
                         writer2.flush(); writer3.flush();

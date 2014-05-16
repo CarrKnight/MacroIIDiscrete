@@ -22,7 +22,8 @@ import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
-import goods.GoodType;
+import goods.DifferentiatedGoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.scenario.MonopolistScenario;
 import model.utilities.ActionOrder;
@@ -127,7 +128,7 @@ public class MarginalMaximizerPIDTuning {
                     public Firm buildFirm() {
                         //only one seller
                         final Firm built = new Firm(getModel());
-                        built.earn(1000000000l);
+                        built.receiveMany(UndifferentiatedGoodType.MONEY,1000000000);
                         built.setName("monopolist");
                         //set up the firm at time 1
                         getModel().scheduleSoon(ActionOrder.DAWN, new Steppable() {
@@ -137,12 +138,12 @@ public class MarginalMaximizerPIDTuning {
                                 SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(built, goodMarket,
                                         new SimpleBuyerSearch(goodMarket, built), new SimpleSellerSearch(goodMarket, built),
                                         SalesDepartmentAllAtOnce.class);
-                                built.registerSaleDepartment(dept, GoodType.GENERIC);
+                                built.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
                                 dept.setAskPricingStrategy(new SimpleFlowSellerPID(dept)); //set strategy to PID
 
                                 //add the plant
                                 Plant plant = new Plant(blueprint, built);
-                                plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, built, 0, plant));
+                                plant.setPlantMachinery(new LinearConstantMachinery(DifferentiatedGoodType.CAPITAL, built, 0, plant));
                                 plant.setCostStrategy(new InputCostStrategy(plant));
                                 built.addPlant(plant);
 
@@ -150,7 +151,7 @@ public class MarginalMaximizerPIDTuning {
                                 //human resources
                                 HumanResources hr;
                                 //set up!
-                                hr = HumanResources.getEmptyHumanResources(10000000000l, built, laborMarket, plant);
+                                hr = HumanResources.getEmptyHumanResources(1000000000, built, laborMarket, plant);
                                 TargetAndMaximizePlantControl control = TargetAndMaximizePlantControl.emptyTargetAndMaximizePlantControl(hr);
                                 control.setTargeter(new PIDTargeterWithQuickFiring(hr,control));
                                 MarginalAndPIDMaximizer algorithm = new MarginalAndPIDMaximizer(hr,control,plant,plant.getOwner(),

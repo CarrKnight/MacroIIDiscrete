@@ -10,7 +10,7 @@ import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.pricing.pid.salesControlWithSmoothedinventoryAndPID;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.scenario.MonopolistScenario;
 import model.scenario.TripolistScenario;
@@ -136,7 +136,7 @@ public class CompetitivePIDGeneticAlgorithm {
                     macroII.start();
                     macroII.schedule.step(macroII);
                     for(Firm f : scenario1.getCompetitors()){
-                        SalesDepartment department = f.getSalesDepartment(GoodType.GENERIC);
+                        SalesDepartment department = f.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
                         salesControlWithSmoothedinventoryAndPID strategy =new salesControlWithSmoothedinventoryAndPID(department);
                         strategy.setMasterProportionalGain((float) (averageMasterP + macroII.random.nextGaussian()/100f));
                         strategy.setGainsSlavePID(averageSlaveP + ((float)macroII.random.nextGaussian()) / 100f
@@ -159,10 +159,10 @@ public class CompetitivePIDGeneticAlgorithm {
                     for(int j=0; j<500; j++)
                     {
                         macroII.schedule.step(macroII);
-                        float todayPrice = macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
+                        float todayPrice = macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice();
                         if(Float.isNaN(todayPrice))
                             todayPrice = 0;
-                        int todayVolume = macroII.getMarket(GoodType.GENERIC).getYesterdayVolume();
+                        int todayVolume = macroII.getMarket(UndifferentiatedGoodType.GENERIC).getYesterdayVolume();
                         if(Float.isNaN(todayVolume))
                             todayVolume = 0;
 

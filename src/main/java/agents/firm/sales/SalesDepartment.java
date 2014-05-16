@@ -25,6 +25,7 @@ import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import javafx.beans.value.ObservableDoubleValue;
 import model.MacroII;
 import model.utilities.ActionOrder;
@@ -60,16 +61,13 @@ import java.util.*;
  */
 public abstract class  SalesDepartment  implements Department, LogNode {
 
-    /**
-     * a map associating to each good to sell the quote submitted for it at a centralized market
-     */
-    protected final Map<Good,Quote> goodsQuotedOnTheMarket;
 
 
-    private int quotesCurrentlyPlaced = 0;
+    protected final SaleQuotesManager quotesManager;
+
 
     /**
-     * The firm where the sales department belongs
+     * The firm where the sales department beints
      */
     private final Firm firm;
     private final MacroII model;
@@ -120,25 +118,25 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     /**
      * This is the price of the last good the sales department managed to sell
      */
-    private long lastClosingPrice = -1;
+    private int lastClosingPrice = -1;
 
     /**
      * average last week price weighted by outflow
      */
-    private WeightedMovingAverage<Long,Double> averagedPrice = new WeightedMovingAverage<>(2);
+    private WeightedMovingAverage<Integer,Double> averagedPrice = new WeightedMovingAverage<>(2);
 
 
 
     /**
      * This is the cost of the last good the sales department managed to sell
      */
-    private long lastClosingCost = -1;
+    private int lastClosingCost = -1;
     /**
      * the sum of all the daily closing prices, 0 if there is no trade
      */
     private float sumClosingPrice = 0;
 
-    private long lastAskedPrice = -1;
+    private int lastAskedPrice = -1;
     /**
      * When this is true, the sales department peddles its goods around when it can't make a quote.
      * If this is false and the sales department can't quote, it just passively wait for buyers
@@ -154,7 +152,14 @@ public abstract class  SalesDepartment  implements Department, LogNode {
         this.logNode = new LogNodeSimple();
         this.sellerSearchAlgorithm = sellerSearchAlgorithm;
         this.market = market;
-        goodsQuotedOnTheMarket = new LinkedHashMap<>();
+
+        final GoodType typeSold = market.getGoodType();
+        if(typeSold.isDifferentiated()) //create the proper sale quote manager!
+            quotesManager = new DifferentiatedSaleQuotesManager();
+        else
+            quotesManager = new UndifferentiatedSaleQuotesManager((UndifferentiatedGoodType)typeSold);
+
+
         this.model = model;
         this.firm = firm;
         predictorStrategy = RegressionSalePredictor.Factory.newSalesPredictor(defaultPredictorStrategy,this);
@@ -171,11 +176,11 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      * @return a price quoted or -1 if there are no quotes
      */
     public Quote askedForASalePrice(EconomicAgent buyer){
-        long priceQuoted = Long.MAX_VALUE;
-        if(goodsQuotedOnTheMarket.isEmpty()){ //if you have nothing to sell
+        int priceQuoted = Integer.MAX_VALUE;
+        if(!hasAnythingToSell()){ //if you have nothing to sell
             //was the seller rich enough to buy something if we had any?
             if(lastClosingCost >=0) //if we ever sold something before
-                if(buyer.maximumOffer(new Good(market.getGoodType(),getFirm(),lastClosingCost)) >= lastClosingPrice)
+                if(buyer.maximumOffer(hypotheticalGood(lastClosingCost)) >= lastClosingPrice)
                     //then tell the listeners this is a stockout
                     for(SalesDepartmentListener listener : salesDepartmentListeners)
                         listener.stockOutEvent(getFirm(),this,buyer);
@@ -188,19 +193,14 @@ public abstract class  SalesDepartment  implements Department, LogNode {
         {
             //find your own lowest quote
 
-            return Collections.min(goodsQuotedOnTheMarket.values(), new Comparator<Quote>() {
-                @Override
-                public int compare(Quote o1, Quote o2) {
-                    return Long.compare(o1.getPriceQuoted(), o2.getPriceQuoted());
-                }
-            }); //return lowest quoted price
+            return getCheapestQuote(); //return lowest quoted price
         }
         else
         {
             Good goodQuoted = null;
             //you don't have a list of quotes; go through each toSell and price them
-            for(Good g : goodsQuotedOnTheMarket.keySet()){
-                long price = price(g); //the price of this good
+            for(Good g : listOfGoodsToSell()){
+                int price = price(g); //the price of this good
                 assert price >=0; //can't be -1!
                 if(price < priceQuoted) //if that's the lowest, quote that
                 {
@@ -210,7 +210,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
             }
 
             assert goodQuoted != null; //can't be null because the list toSell is not empty!
-            assert priceQuoted < Long.MAX_VALUE;
+            assert priceQuoted < Integer.MAX_VALUE;
             //return it!
             Quote q = Quote.newSellerQuote(getFirm(),priceQuoted,goodQuoted);
             q.setOriginator(this);
@@ -218,6 +218,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
         }
     }
+
 
     /**
      * This method may be called by the firm to ask the sales department to predict what the sell price for a new good may be (usually to guide production). <br>
@@ -231,7 +232,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      * @param increaseStep by how much does production increase?
      * @return the best offer available or -1 if there are no quotes
      */
-    public long predictSalePriceAfterIncreasingProduction(long expectedProductionCost, int increaseStep)
+    public int predictSalePriceAfterIncreasingProduction(int expectedProductionCost, int increaseStep)
     {
         Preconditions.checkArgument(increaseStep >= 0);
 
@@ -246,10 +247,10 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      * @param decreaseStep by how much daily production will decrease
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
-    public long predictSalePriceAfterDecreasingProduction(long expectedProductionCost, int decreaseStep) {
+    public int predictSalePriceAfterDecreasingProduction(int expectedProductionCost, int decreaseStep) {
         Preconditions.checkArgument(decreaseStep >= 0);
 
-        return predictorStrategy.predictSalePriceAfterDecreasingProduction(this, expectedProductionCost,decreaseStep );
+        return predictorStrategy.predictSalePriceAfterDecreasingProduction(this, expectedProductionCost, decreaseStep);
     }
 
     /**
@@ -262,7 +263,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      * @param g the good to price
      * @return price of the good
      */
-    public long price(Good g){
+    public int price(Good g){
         return askPricingStrategy.price(g);
     }
 
@@ -277,37 +278,63 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
         //preconditions
         assert firm.has(g); //we should be selling something we have!
-        assert !goodsQuotedOnTheMarket.keySet().contains(g);
+        assert !market.getGoodType().isDifferentiated() ||!listOfGoodsToSell().contains(g); //if differentiated, we this good should already be in our sell list
         assert market.getGoodType().equals(g.getType());
-        goodsQuotedOnTheMarket.put(g,null);
+        recordThisGoodAsSellable(g);
 
 
         //log it (this also fires listeners)
-        logInflow(g);
-        newGoodToSell(g);
+        logInflow(1);
+        newGoodsToSellEvent(g);
     }
+
+    public void sellThese(int amount){
+        Preconditions.checkArgument(!market.getGoodType().isDifferentiated());
+
+        recordTheseGoodsAsSellable(amount);
+        logInflow(amount);
+        newGoodsToSellEvent(amount);
+
+
+    }
+
+    private void recordTheseGoodsAsSellable(int amount) {
+        quotesManager.recordTheseGoodsAsSellable(amount);
+    }
+
 
     /**
      * The real difference in sales departments is just how they handle new goods to sell!
      * @param g
      */
-    protected abstract void newGoodToSell(Good g);
+    protected abstract void newGoodsToSellEvent(Good... g);
+
+    /**
+     * The real difference in sales departments is just how they handle new goods to sell!
+     * @param g
+     */
+    protected abstract void newGoodsToSellEvent(int amount);
+
+
+
+
 
     /**
      * Does three things: Logs the event that we were tasked to sell a good, tell the listeners about this event and if this was teh very
      * first good we have to sell, schedule daily a beginningOfTheDayStatistics() call
+     * @param amount
      */
-    private void logInflow(Good g) {
+    private void logInflow(int amount) {
         assert started;
 
         //tell the listeners about it
         for(SalesDepartmentListener listener : salesDepartmentListeners)
-            listener.sellThisEvent(firm,this,g);
+            listener.sellThisEvent(firm,this, amount);
 
 
 
 
-        todayInflow++;
+        todayInflow+=amount;
         handleNewEvent(new LogEvent(this, LogLevel.TRACE,"Tasked to sell"));
 
 
@@ -346,10 +373,10 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
 
         float netflow = todayOutflow - todayInflow;
-        if(goodsQuotedOnTheMarket.size() == 0)   //no inventory, days of inventory is 0
+        if(numberOfGoodsToSell() == 0)   //no inventory, days of inventory is 0
             daysOfInventory = 0;
         else if(netflow > 0) //positive netflow (we sell more than we produce, that's great)
-            daysOfInventory = ((float)goodsQuotedOnTheMarket.size()) / netflow;
+            daysOfInventory = ((float) numberOfGoodsToSell()) / netflow;
         else //negative or 0 netflow, days of inventory is infinite
             daysOfInventory = Float.MAX_VALUE;
 
@@ -364,8 +391,8 @@ public abstract class  SalesDepartment  implements Department, LogNode {
         sumClosingPrice = 0;
         lastAskedPrice= -1;
         //if you still have a quote active, use it as your "last asked price"
-        if(quotesCurrentlyPlaced > 0)
-            lastAskedPrice = goodsQuotedOnTheMarket.values().iterator().next().getPriceQuoted();
+        if(numberOfQuotesPlaced() > 0)
+            lastAskedPrice = getAnyPriceQuoted();
 
         model.scheduleTomorrow(ActionOrder.DAWN,new Steppable() {
             @Override
@@ -377,6 +404,8 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
 
     }
+
+
 
     /**
      * Schedule yourself to peddle when you can
@@ -430,7 +459,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     protected void placeAQuoteNow(Good g) {
         Preconditions.checkState(getFirm().has(g));
 
-        long price = price(g);
+        int price = price(g);
         lastAskedPrice = price;
         handleNewEvent(new LogEvent(this, LogLevel.TRACE,"submitted a sell quote at price:{}",price));
         Quote q = market.submitSellQuote(firm,price,g, this); //put a quote into the market
@@ -438,8 +467,8 @@ public abstract class  SalesDepartment  implements Department, LogNode {
         {
             //if the quote is not null, we quoted but not sold
             assert q.getAgent() == firm; //make sure we got back the right quote
-            goodsQuotedOnTheMarket.put(g,q); //record the quote!
-            quotesCurrentlyPlaced++;
+            recordQuoteAssociatedWithThisGood(g, q);
+
 
             if(shouldIPeddle(q))    //do you want to try and peddle too?
                 peddleNow(q.getGood()); //then peddle!
@@ -452,6 +481,8 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
         }
     }
+
+
 
     /**
      * This is called by a buyer that is shopping at this department. This means that it is not going through quotes and I assume the buyer had a quote from this department to make a choice
@@ -473,17 +504,17 @@ public abstract class  SalesDepartment  implements Department, LogNode {
         {
             //then trade it!
             g = sellerQuote.getGood();
-            assert goodsQuotedOnTheMarket.keySet().contains(g); assert getFirm().has(g); //make sure we own it and we can sell it
+            assert listOfGoodsToSell().contains(g); assert getFirm().has(g); //make sure we own it and we can sell it
 
         }
         else
         {
-            assert false : "This should never happen as long as I don't introduce displayPrice";
+            assert false : "This should never happen as int as I don't introduce displayPrice";
             //if we didn't quote a specific good
 
-            if(goodsQuotedOnTheMarket.isEmpty()) //if we have none, tell them it's a stockout
+            if(!hasAnythingToSell()) //if we have none, tell them it's a stockout
             {
-                assert false : "This should never happen as long as I don't introduce displayPrice";
+                assert false : "This should never happen as int as I don't introduce displayPrice";
 
                 //tell all your listeners
                 for(SalesDepartmentListener listener : salesDepartmentListeners)
@@ -493,10 +524,10 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
             }
             else //otherwise it's the cheapest possible
-                g = Collections.min(goodsQuotedOnTheMarket.keySet(),new Comparator<Good>() {
+                g = Collections.min(listOfGoodsToSell(),new Comparator<Good>() {
                     @Override
                     public int compare(Good o1, Good o2) {
-                        return Long.compare(o1.getLastValidPrice(),o2.getLastValidPrice());
+                        return Integer.compare(o1.getLastValidPrice(),o2.getLastValidPrice());
 
                     }
                 });
@@ -510,7 +541,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
         assert sellerQuote.getPriceQuoted() >= 0 ; //can't be negative!!!
         assert buyerQuote.getPriceQuoted() >= sellerQuote.getPriceQuoted(); //the price offers must cross
 
-        long finalPrice = market.price(sellerQuote.getPriceQuoted(),buyerQuote.getPriceQuoted());
+        int finalPrice = market.price(sellerQuote.getPriceQuoted(),buyerQuote.getPriceQuoted());
 
         //exchange hostages
         market.trade(buyerQuote.getAgent(),getFirm(),g,finalPrice,buyerQuote,sellerQuote);
@@ -518,13 +549,13 @@ public abstract class  SalesDepartment  implements Department, LogNode {
         /********************************************************************
          * Record information
          *******************************************************************/
-        assert goodsQuotedOnTheMarket.containsKey(g);
-        Quote oldQuote = goodsQuotedOnTheMarket.remove(g);
+        assert isThisGoodBeingSold(g);
+        Quote oldQuote = stopSellingThisGoodAndReturnItsAssociatedQuote(g);
         if(oldQuote != null)
         {
             removeQuoteFromMarket(oldQuote);
         }
-        assert !goodsQuotedOnTheMarket.containsKey(g);
+        assert !isThisGoodBeingSold(g);
         logOutflow(g, finalPrice);
         PurchaseResult toReturn =  PurchaseResult.SUCCESS;
         toReturn.setPriceTrade(finalPrice);
@@ -532,6 +563,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
 
     }
+
 
 
     /**
@@ -558,7 +590,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
 
         //make sure there is no trace in the tosell and  wait list
-        assert !goodsQuotedOnTheMarket.containsKey(g);
+        assert !g.getType().isDifferentiated() ||!isThisGoodBeingSold(g);
 
 
 
@@ -574,29 +606,27 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      */
     private void removeQuoteFromMarket(Quote q) {
         market.removeSellQuote(q);
-        quotesCurrentlyPlaced--;
-        assert quotesCurrentlyPlaced >= 0;
+        assert numberOfQuotesPlaced() >= 0;
     }
 
     /**
      * This is called automatically whenever a quote we made was filled
+     * @param filledQuote
      * @param g the good sold
      * @param price the price for which it sold, the price must be positive or 0. If it's negative it is assumed that the good was consumed rather than sold.
      */
-    public void reactToFilledQuote(Good g, long price, EconomicAgent buyer){
+    public void reactToFilledQuote(Quote filledQuote, Good g, int price, EconomicAgent buyer){
 
         Preconditions.checkArgument(price>=0);
 
         //remove it from the masterlist
-        Quote q = removeFromToSellMasterlist(g);
-        if(q!= null)
-            quotesCurrentlyPlaced--;
+        thisQuoteHasBeenFilledSoRemoveItWithItsAssociatedGood(filledQuote);
 
         //if the price is 0 or positive it means it was a sale, so you should register/log it as such
         logOutflow(g, price);
 
         //make sure there is no trace in the tosell and  wait list
-        assert !goodsQuotedOnTheMarket.containsKey(g);
+        assert !g.getType().isDifferentiated() ||!isThisGoodBeingSold(g);
 
 
     }
@@ -605,20 +635,20 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
 
     protected Quote removeFromToSellMasterlist(Good g) {
-        assert !firm.has(g); //we should have sold
-        Preconditions.checkState(goodsQuotedOnTheMarket.containsKey(g),"Removed a good I didn't have!");
-        Quote quoteRemoved = goodsQuotedOnTheMarket.remove(g);//remove it from the list of tosell
-        assert !goodsQuotedOnTheMarket.containsKey(g);
+        assert !g.getType().isDifferentiated() || !firm.has(g); //if it's differentiated then we surely don't have it
+        Preconditions.checkState(isThisGoodBeingSold(g),"Removed a good I didn't have!");
+        Quote quoteRemoved = stopSellingThisGoodAndReturnItsAssociatedQuote(g);//remove it from the list of tosell
+        assert !g.getType().isDifferentiated() || !isThisGoodBeingSold(g);
         return quoteRemoved;
     }
 
     /**
      * After having removed the good from the sales department toSell, this records it as a sale and tell the listeners
      */
-    private void logOutflow(Good g, long price)
+    private void logOutflow(Good g, int price)
     {
-        assert !firm.has(g); //you can't have it if you sold it!
-        assert !goodsQuotedOnTheMarket.containsKey(g); //you should have removed it!!!
+        assert !g.getType().isDifferentiated() ||!firm.has(g); //you can't have it if you sold it!
+        assert !g.getType().isDifferentiated() ||!isThisGoodBeingSold(g); //you should have removed it!!!
 
         //finally, register the sale!!
         //       newResult.setPriceSold(price); //record the price of sale
@@ -659,25 +689,25 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     public boolean peddleNow(Good g)
     {
         assert firm.has(g); //should be owned by us, now
-        assert goodsQuotedOnTheMarket.containsKey(g); //should be owned by us, now
+        assert isThisGoodBeingSold(g); //should be owned by us, now
 
 
 
         //look for a buyer
         EconomicAgent buyer = buyerSearchAlgorithm.getBestInSampleBuyer(); //call the search algorithm for that
-        long priceAsked;
-        if(goodsQuotedOnTheMarket.get(g) == null){   //if it's not quoted, compute its price
+        int priceAsked;
+        if(getQuoteAssociatedWithThisGood(g) == null){   //if it's not quoted, compute its price
             priceAsked = price(g);
         }
         else{
-            priceAsked =  goodsQuotedOnTheMarket.get(g).getPriceQuoted();  //otherwise your asking price will be whatever was in the quote
+            priceAsked =  getQuoteAssociatedWithThisGood(g).getPriceQuoted();  //otherwise your asking price will be whatever was in the quote
         }
 
-        long priceBuyer = buyer.maximumOffer(g);
+        int priceBuyer = buyer.maximumOffer(g);
         if(priceAsked <= priceBuyer )
         {
             //price is somewhere in the middle
-            long finalPrice = market.getPricePolicy().price(priceAsked ,priceBuyer);
+            int finalPrice = market.getPricePolicy().price(priceAsked ,priceBuyer);
             assert finalPrice>=priceAsked;
             assert finalPrice<=priceBuyer;
 
@@ -691,8 +721,8 @@ public abstract class  SalesDepartment  implements Department, LogNode {
             {
                 //we made it!
                 assert !firm.has(g);  //we sold it, right?
-                Quote q = goodsQuotedOnTheMarket.remove(g); //if you had a quote, remove it
-                assert !goodsQuotedOnTheMarket.containsKey(g);
+                Quote q = stopSellingThisGoodAndReturnItsAssociatedQuote(g); //if you had a quote, remove it
+                assert !isThisGoodBeingSold(g);
 
                 //remove it from the market too, if needed
                 if(q!=null)
@@ -731,6 +761,8 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
     }
 
+
+
     /**
      * Whenever we can ONLY peddle and we fail to do so, we call this method to know how much to wait before trying again
      * @param g the good to sell
@@ -760,7 +792,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     }
 
     private void additionalDiagnostics() {
-        for(Good g : goodsQuotedOnTheMarket.keySet())
+        for(Good g : listOfGoodsToSell())
         {
             assert firm.has(g); //unsold should still be in inventory
         }
@@ -771,7 +803,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      * This is a ugly hack utility method until I finally give up and do injection dependency properly <br>
      * It can't be removed.
      */
-    public void addReservationPrice(long reservationPrice){
+    public void addReservationPrice(int reservationPrice){
         Preconditions.checkState(askPricingStrategy != null, "Can't add reservation prices until ");
         askPricingStrategy = new AskReservationPriceDecorator(askPricingStrategy,reservationPrice);
     }
@@ -824,7 +856,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      * Looks for the price of the best competitor this department could find!
      * @return the price found or -1 if there is none
      */
-    public long getLowestOpponentPrice()  {
+    public int getLowestOpponentPrice()  {
 
 
 
@@ -867,7 +899,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      * last closing price
      * @return
      */
-    public long getLastClosingPrice() {
+    public int getLastClosingPrice() {
         return lastClosingPrice;
     }
 
@@ -903,36 +935,41 @@ public abstract class  SalesDepartment  implements Department, LogNode {
         aboutToUpdateQuotes=true;
 
         //get all the quotes to remove
-        final Iterable<Quote> goodsToRequote = new LinkedList<>(goodsQuotedOnTheMarket.values());
+        final List<Quote> goodsToRequote = new LinkedList<>(getAllQuotes());
         //forget the old quotes
         for(Quote q: goodsToRequote)
         {
             if(q != null)
             {
-                goodsQuotedOnTheMarket.put(q.getGood(),null);
+                forgetTheQuoteAssociatedWithThisGood(q.getGood());
                 removeQuoteFromMarket(q);
             }
         }
-        assert quotesCurrentlyPlaced == 0 : "quotesCurrentlyPlaced: " + quotesCurrentlyPlaced;
+        assert numberOfQuotesPlaced() == 0 : "quotesCurrentlyPlaced: " + numberOfQuotesPlaced();
 
         //when you can, requote
-        model.scheduleSoon(ActionOrder.TRADE,new Steppable() {
-            @Override
-            public void step(SimState state) {
-                aboutToUpdateQuotes=false;
-                //go through all the old quotes
-                for(Quote q : goodsToRequote){
-                    if(q!= null && firm.has(q.getGood())) //it might have been consumed it in the process for whatever reason
-                        //resell it tomorrow
-                        newGoodToSell(q.getGood());//sell it again
+        if(goodsToRequote.size() > 0)
+            model.scheduleSoon(ActionOrder.TRADE,new Steppable() {
+                @Override
+                public void step(SimState state) {
+                    aboutToUpdateQuotes=false;
+                    //go through all the old quotes
+                    if(market.getGoodType().isDifferentiated())
+                    {
+                        for (Quote q : goodsToRequote) {
+                            if (q != null && firm.has(q.getGood())) //it might have been consumed it in the process for whatever reason
+                                //resell it tomorrow
+                                newGoodsToSellEvent(q.getGood());//sell it again
+                        }
+                    }
+                    else
+                    {
+                        newGoodsToSellEvent(Math.min(goodsToRequote.size(),quotesManager.numberOfGoodsToSell()));
+                    }
 
 
                 }
-
-
-
-            }
-        });
+            });
 
 
 
@@ -943,7 +980,9 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
     }
 
-    public long getLastClosingCost() {
+
+
+    public int getLastClosingCost() {
         return lastClosingCost;
     }
 
@@ -957,15 +996,18 @@ public abstract class  SalesDepartment  implements Department, LogNode {
         sellerSearchAlgorithm.turnOff(); sellerSearchAlgorithm = null;
         if(predictorStrategy!= null)
             predictorStrategy.turnOff(); predictorStrategy = null;
-        goodsQuotedOnTheMarket.clear();
-        quotesCurrentlyPlaced = 0;
+        removeAllQuotes();
         assert salesDepartmentListeners.isEmpty(); //hopefully it is clear by now!
+        market.deregisterSeller(getFirm());
         salesDepartmentListeners.clear();
         salesDepartmentListeners = null;
+        quotesManager.turnOff();
 
         logNode.turnOff();
 
     }
+
+
 
     /**
      * Get the randomizer of the owner
@@ -1010,31 +1052,24 @@ public abstract class  SalesDepartment  implements Department, LogNode {
         return Collections.unmodifiableList(salesDepartmentListeners);
     }
 
-    /**
-     * Basically asks whether or not the salesDepartment has anything to sell currently.
-     * @return
-     */
-    public boolean hasAnythingToSell(){
-        return !goodsQuotedOnTheMarket.isEmpty();
-    }
 
     /**
      * How many goods are left to be sold by the department
      * @return goods to sell
      */
     public int getHowManyToSell(){
-        return goodsQuotedOnTheMarket.size();
+        return numberOfGoodsToSell();
     }
 
     /**
      * Notify the listeners and the logger/gui that a good was sold! Also count it among the daily goods sold
      */
-    void fireGoodSoldEvent(Good good, Long price){
+    void fireGoodSoldEvent(Good good, int price){
 
 
 
         for(SalesDepartmentListener listener : salesDepartmentListeners)
-            listener.goodSoldEvent(this,good,price);
+            listener.goodSoldEvent(this, price);
 
 
 
@@ -1074,21 +1109,14 @@ public abstract class  SalesDepartment  implements Department, LogNode {
         return todayInflow;
     }
 
-    /**
-     *
-     * @return true if the sales department thinks it has at least one order placed
-     */
-    public boolean hasItPlacedAtLeastOneOrder(){
-        return quotesCurrentlyPlaced >=1;
 
-    }
 
     /**
      * Asks the sale department if its current inventory is where it should be according to the ask pricing strategy
      * @return
      */
     public boolean isInventoryAcceptable() {
-        return askPricingStrategy.isInventoryAcceptable(goodsQuotedOnTheMarket.size());
+        return askPricingStrategy.isInventoryAcceptable(numberOfGoodsToSell());
     }
 
     /**
@@ -1120,7 +1148,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      * @return true if the sales department masterlist contains that good
      */
     public boolean isSelling(Good o) {
-        return goodsQuotedOnTheMarket.containsKey(o);
+        return isThisGoodBeingSold(o);
     }
 
     /**
@@ -1128,7 +1156,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      * and asks for a price. It is no guarantee that the firm actually will charge such price when a real good gets created.
      * @return
      */
-    public long hypotheticalSalePrice(){
+    public int hypotheticalSalePrice(){
         return hypotheticalSalePrice(0);
     }
 
@@ -1141,9 +1169,16 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      * @param productionCost the hypothetical cost of production of this good
      * @return
      */
-    public long hypotheticalSalePrice(long productionCost){
-        Good imaginaryGood =new Good(getGoodType(),getFirm(),productionCost);
+    public int hypotheticalSalePrice(int productionCost){
+        Good imaginaryGood = hypotheticalGood(productionCost);
         return price(imaginaryGood);
+    }
+
+    protected Good hypotheticalGood(int productionCost) {
+        if(getGoodType().isDifferentiated())
+            return Good.getInstanceOfDifferentiatedGood(getGoodType(),getFirm(),productionCost);
+        else
+            return Good.getInstanceOfUndifferentiatedGood(getGoodType());
     }
 
     public MacroII getModel() {
@@ -1233,7 +1268,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     }
 
     /**
-     * basically this is an average of the latest observations of last closing price. As long as we are selling a lot of goods, it shouldn't matter.
+     * basically this is an average of the latest observations of last closing price. As int as we are selling a lot of goods, it shouldn't matter.
      * The idea is that sometimes price goes very high to increase inventory but then there is only one sale or so, which isn't useful to know what the last price is
      * @return
      */
@@ -1256,7 +1291,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      * Most predictors simply return today closing price, because maybe this will be useful in some cases. It's used by Marginal Maximizer Statics
      * @return predicted price
      */
-    public long predictSalePriceWhenNotChangingPoduction() {
+    public int predictSalePriceWhenNotChangingPoduction() {
         return predictorStrategy.predictSalePriceWhenNotChangingProduction(this);
     }
 
@@ -1289,7 +1324,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
         return data;
     }
 
-    public long getLastAskedPrice() {
+    public int getLastAskedPrice() {
         return lastAskedPrice;
     }
 
@@ -1303,7 +1338,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     }
 
 
-    public void setAveragedPrice(WeightedMovingAverage<Long, Double> averagedPrice) {
+    public void setAveragedPrice(WeightedMovingAverage<Integer, Double> averagedPrice) {
         this.averagedPrice = averagedPrice;
     }
 
@@ -1356,6 +1391,72 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     @Override
     public boolean listenTo(Loggable branch) {
         return logNode.listenTo(branch);
+    }
+
+
+    public boolean hasAnythingToSell() {
+        return quotesManager.hasAnythingToSell();
+    }
+
+    public int numberOfGoodsToSell() {
+        return quotesManager.numberOfGoodsToSell();
+    }
+
+    public int numberOfQuotesPlaced() {
+        return quotesManager.numberOfQuotesPlaced();
+    }
+
+    public int getAnyPriceQuoted() {
+        return quotesManager.getAnyPriceQuoted();
+    }
+
+    public Collection<Quote> getAllQuotes() {
+        return quotesManager.getAllQuotes();
+    }
+
+    public void recordQuoteAssociatedWithThisGood(Good g, Quote q) {
+        quotesManager.recordQuoteAssociatedWithThisGood(g, q);
+    }
+
+    public Good peekFirstGoodAvailable() {
+        return quotesManager.peekFirstGoodAvailable();
+    }
+
+    public Quote stopSellingThisGoodAndReturnItsAssociatedQuote(Good g) {
+        return quotesManager.stopSellingThisGoodAndReturnItsAssociatedQuote(g);
+    }
+
+
+    public void thisQuoteHasBeenFilledSoRemoveItWithItsAssociatedGood(Quote q){
+        quotesManager.thisQuoteHasBeenFilledSoRemoveItWithItsAssociatedGood(q);
+    }
+
+    public void removeAllQuotes() {
+        quotesManager.removeAllQuotes();
+    }
+
+    public Collection<Good> listOfGoodsToSell() {
+        return quotesManager.listOfGoodsToSell();
+    }
+
+    public void forgetTheQuoteAssociatedWithThisGood(Good g) {
+        quotesManager.forgetTheQuoteAssociatedWithThisGood(g);
+    }
+
+    public boolean isThisGoodBeingSold(Good g) {
+        return quotesManager.isThisGoodBeingSold(g);
+    }
+
+    public Quote getCheapestQuote() {
+        return quotesManager.getCheapestQuote();
+    }
+
+    public Quote getQuoteAssociatedWithThisGood(Good g) {
+        return quotesManager.getQuoteAssociatedWithThisGood(g);
+    }
+
+    public void recordThisGoodAsSellable(Good g) {
+        quotesManager.recordThisGoodAsSellable(g);
     }
 }
 

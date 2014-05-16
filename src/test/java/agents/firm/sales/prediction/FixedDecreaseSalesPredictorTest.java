@@ -7,7 +7,7 @@
 package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ public class FixedDecreaseSalesPredictorTest {
 
         SalesDepartment department = mock(SalesDepartment.class);
         when(department.getAveragedLastPrice()).thenReturn(100d); //current department pricing 100$
-        when(department.getGoodType()).thenReturn(GoodType.GENERIC); //type of good produced
+        when(department.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC); //type of good produced
 
 
 
@@ -42,11 +42,11 @@ public class FixedDecreaseSalesPredictorTest {
 
         //predicts a price 3 dollar lower
         predictor.setDecrementDelta(3);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 2, 1), 97l);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 2, 1), 97);
 
         //predicts a price 50 dollars lower
         predictor.setDecrementDelta(50);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 2, 1),50l);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 2, 1),50);
 
 
 

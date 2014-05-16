@@ -79,7 +79,7 @@ public class RegressionSalePredictor extends BaseSalesPredictor{
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep)
+    public int predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep)
     {
         Preconditions.checkArgument(increaseStep >= 0);
 
@@ -101,7 +101,7 @@ public class RegressionSalePredictor extends BaseSalesPredictor{
                 y = observer.getPriceInverseTransformer().transform(y);
             }
 
-            return Math.round(y);
+            return (int) Math.round(y);
         }
 
 
@@ -118,7 +118,7 @@ public class RegressionSalePredictor extends BaseSalesPredictor{
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
+    public int predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
         Preconditions.checkArgument(decreaseStep >= 0);
         //regress and return
         updateModel();
@@ -138,7 +138,7 @@ public class RegressionSalePredictor extends BaseSalesPredictor{
                 y = observer.getPriceInverseTransformer().transform(y);
             }
 
-            return Math.round(y);
+            return (int) Math.round(y);
         }
 
     }
@@ -158,7 +158,7 @@ public class RegressionSalePredictor extends BaseSalesPredictor{
     @Override
     public void turnOff() {
 
-        this.turnOff();
+        super.turnOff();
         observer.turnOff();
     }
 
@@ -313,7 +313,7 @@ public class RegressionSalePredictor extends BaseSalesPredictor{
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+    public int predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         //regress and return
         updateModel();
 
@@ -332,7 +332,7 @@ public class RegressionSalePredictor extends BaseSalesPredictor{
                 y = observer.getPriceInverseTransformer().transform(y);
             }
 
-            return Math.round(y);
+            return (int) Math.round(y);
         }
 
     }

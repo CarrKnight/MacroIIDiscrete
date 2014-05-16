@@ -49,7 +49,7 @@ public abstract class AskPricingDecorator implements AskPricingStrategy{
      * @return the price given to that good
      */
     @Override
-    public long price(Good g) {
+    public int price(Good g) {
         return toDecorate.price(g);
     }
 

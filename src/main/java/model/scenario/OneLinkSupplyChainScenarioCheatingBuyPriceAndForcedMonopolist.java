@@ -26,6 +26,7 @@ import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import au.com.bytecode.opencsv.CSVWriter;
 import financial.market.Market;
+import goods.DifferentiatedGoodType;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
@@ -98,11 +99,11 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
 
 
             Plant plant = new Plant(blueprint, firm);
-            plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, firm, 0, plant));
+            plant.setPlantMachinery(new LinearConstantMachinery(DifferentiatedGoodType.CAPITAL, firm, 0, plant));
             plant.setCostStrategy(new InputCostStrategy(plant));
             firm.addPlant(plant);
             FactoryProducedHumanResourcesWithMaximizerAndTargeter produced =
-                    HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, firm,
+                    HumanResources.getHumanResourcesIntegrated(Integer.MAX_VALUE, firm,
                             laborMarket, plant, PIDTargeterWithQuickFiring.class, SetTargetThenTryAgainMaximizer.class,
                             FixedTargetMaximizationAlgorithm.class, null, null);
 

@@ -6,8 +6,11 @@
 
 package goods;
 
-import agents.EconomicAgent;
+import agents.HasInventory;
+import com.google.common.base.Preconditions;
 import model.MacroII;
+
+import java.util.HashMap;
 
 
 /**
@@ -18,12 +21,11 @@ import model.MacroII;
  * To change this template use File | Settings | File Templates.
  */
 public class Good implements Comparable<Good>{
-    
+
     private GoodType type;
-    
-    private EconomicAgent producer;
-    
-    private long costOfProduction;
+
+
+    private int costOfProduction;
 
     private final long id;
 
@@ -31,21 +33,20 @@ public class Good implements Comparable<Good>{
     /**
      * Price this good was last sold for
      */
-    private long lastValidPrice;
+    private int lastValidPrice;
 
     /**
      * The price of the good before it was sold last time
      */
-    private long secondLastValidPrice;
+    private int secondLastValidPrice;
 
 
 
-    public Good( GoodType type, EconomicAgent producer, long costOfProduction) {
+    protected Good(GoodType type, int costOfProduction) {
         this.type = type;
-        this.producer = producer;
         this.costOfProduction = costOfProduction;
         this.id = MacroII.getCounter();
-        
+
         lastValidPrice = costOfProduction;
     }
 
@@ -53,19 +54,16 @@ public class Good implements Comparable<Good>{
         return type;
     }
 
-    public EconomicAgent getProducer() {
-        return producer;
-    }
 
-    public long getCostOfProduction() {
+    public int getCostOfProduction() {
         return costOfProduction;
     }
 
-    public long getLastValidPrice() {
+    public int getLastValidPrice() {
         return lastValidPrice;
     }
 
-    public void setLastValidPrice(long lastValidPrice) {
+    public void setLastValidPrice(int lastValidPrice) {
         secondLastValidPrice = this.lastValidPrice;
         this.lastValidPrice =lastValidPrice;
     }
@@ -78,7 +76,7 @@ public class Good implements Comparable<Good>{
     @Override
     public int compareTo(Good o) {
 
-        int comparison = Long.compare(lastValidPrice,o.getLastValidPrice());
+        int comparison = Long.compare(lastValidPrice, o.getLastValidPrice());
         if(comparison != 0)
             return  comparison;
         else{
@@ -87,6 +85,30 @@ public class Good implements Comparable<Good>{
             return comparison;
         }
 
+
+    }
+
+
+    private static final HashMap<GoodType,Good> undifferentiatedGoods = new HashMap<>();
+
+    public static Good getInstanceOfUndifferentiatedGood(GoodType type)
+    {
+        Preconditions.checkArgument(!type.isDifferentiated(), "this method only works for undifferentiated goods!");
+        Good instance = undifferentiatedGoods.get(type);
+        if(instance == null)
+        {
+            instance = new Good(type, -1);
+            undifferentiatedGoods.put(type,instance);
+        }
+
+        return instance;
+    }
+
+    public static Good getInstanceOfDifferentiatedGood(GoodType type, HasInventory producer, int costOfProduction)
+    {
+        Preconditions.checkArgument(type.isDifferentiated(), "this method only works for differentiated goods!");
+
+        return new Good(type, costOfProduction);
 
     }
 

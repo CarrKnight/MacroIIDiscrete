@@ -9,8 +9,6 @@ package model;
 import agents.Agent;
 import agents.EconomicAgent;
 import agents.HasInventory;
-import agents.Person;
-import agents.firm.Firm;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
@@ -27,14 +25,8 @@ import model.utilities.scheduler.TrueRandomScheduler;
 import org.jfree.data.time.Day;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import sim.portrayal.Inspector;
-import sim.portrayal.inspector.TabbedInspector;
-import sim.util.media.chart.HistogramGenerator;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -236,6 +228,7 @@ public class MacroII extends SimState{
 
 
         agents.addAll(scenario.getAgents());
+        scenario.getAgents().clear();
 
         //go through all the agents and call their start!
         for(Agent a : agents)
@@ -494,7 +487,7 @@ public class MacroII extends SimState{
     /**
      * Returns the list of markets, that's all.
      */
-    protected Collection<Market> getMarkets() {
+    public Collection<Market> getMarkets() {
         return markets.values();
     }
 
@@ -546,6 +539,7 @@ public class MacroII extends SimState{
      */
     @Override
     public void finish() {
+        super.finish();
 
         for(Market m : markets.values())
             m.turnOff();
@@ -565,6 +559,10 @@ public class MacroII extends SimState{
         //turn off when needed
         for(Deactivatable d :toTurnOffAtFinish)
             d.turnOff();
+
+        goodTypeMasterList.turnOff();
+
+        scenario = null;
 
 
     }
@@ -615,138 +613,6 @@ public class MacroII extends SimState{
     {
 
         agents.remove(a);
-
-    }
-
-    /**
-     * An inspector with histograms of wealth and so on. It sets itself to adjust periodically
-     * @return a
-     */
-    public Inspector buildDistributionInspector()
-    {
-        assert hasGUI();
-
-        //this we will return
-        TabbedInspector mainInspector = new TabbedInspector();
-
-        //wealth holding non-firm cash holdings!
-        final HistogramGenerator peopleWealth = new HistogramGenerator();
-
-        //add the name to the series
-        peopleWealth.addSeries(null, 50, "cash held by non-firms", null);
-        //create the inspector holding it
-        Inspector inspector = new Inspector() {
-            @Override
-            public void updateInspector() {
-                peopleWealth.update();
-            }
-        };
-        //set the new layout and put it in
-        inspector.setLayout(new BorderLayout());
-        inspector.add(peopleWealth.getChartPanel());
-        //add the inspector as a tab!
-        mainInspector.addInspector(inspector,"people's cash");
-
-
-
-
-        //wealth holding everyone's cash holdings!
-        final HistogramGenerator agentWealth = new HistogramGenerator();
-
-        //add the name to the series
-        agentWealth.addSeries(null, 50, "cash held by agents", null);
-        //create the inspector holding it
-        inspector = new Inspector() {
-            @Override
-            public void updateInspector() {
-                agentWealth.update();
-            }
-        };
-        //set the new layout and put it in
-        inspector.setLayout(new BorderLayout());
-        inspector.add(agentWealth.getChartPanel());
-        //add the inspector as a tab!
-        mainInspector.addInspector(inspector,"cash held by agents");
-
-
-        schedule.scheduleOnceIn(weekLength/3,new Steppable() {
-            @Override
-            public void step(SimState simState) {
-                List<Long> peopleCash = new ArrayList<>(agents.size());
-                List<Long> agentCash = new ArrayList<>(agents.size());
-                //loop through
-                for(EconomicAgent agent : agents)
-                {
-                    if(agent instanceof Person)
-                        peopleCash.add(agent.getCash());
-                    agentCash.add(agent.getCash());
-                }
-                //now loop again to create arrays (stupid JFreeChart)
-                final double[] people = new double[peopleCash.size()]; int i=0;
-                for(Long l : peopleCash) //cycle
-                {
-                    people[i] = l;
-                    i++;
-                }
-
-                final double[] agents = new double[peopleCash.size()]; i=0;
-                for(Long l : agentCash) //cycle
-                {
-                    agents[i] = l;
-                    i++;
-                }
-
-                //finally put them in. Make sure it's done in the swing thread
-                SwingUtilities.invokeLater( new Runnable() {
-                    @Override
-                    public void run() {
-                        peopleWealth.updateSeries(0,people );
-                        agentWealth.updateSeries(0,agents);
-                    }
-                });
-
-                //and now reschedule
-                schedule.scheduleOnceIn(weekLength/3,this);
-
-            }
-        });
-
-        return mainInspector;
-
-
-
-
-    }
-
-    public void printOutWorkers()
-    {
-        StringBuilder builder = new StringBuilder();
-        int sum=0;
-        //sort it so they are always in the right order
-        LinkedList<EconomicAgent> agents = new LinkedList(this.agents);
-        Collections.sort(agents, new Comparator<EconomicAgent>() {
-            @Override
-            public int compare(EconomicAgent o1, EconomicAgent o2) {
-                return Integer.compare(o1.hashCode(),o2.hashCode());
-
-            }
-        });
-        for(EconomicAgent a : agents)
-        {
-            try{
-                if( a instanceof Firm && ((Firm) a).hasPlants())
-                {
-                    int workers =  ((Firm) a).getRandomPlantProducingThis(GoodType.GENERIC).getNumberOfWorkers();
-                    sum += workers;
-                    builder.append( Integer.toString(workers)).append(",");
-
-                }
-            }
-            catch (Exception ignored){}
-        }
-
-        builder.append(sum);
-        System.out.println(builder.toString());
 
     }
 

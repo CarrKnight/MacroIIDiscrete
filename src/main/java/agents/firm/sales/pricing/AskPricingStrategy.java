@@ -46,7 +46,7 @@ public interface AskPricingStrategy extends Deactivatable, LogNode {
      * @param g the good to price
      * @return the price given to that good
      */
-    public long price(Good g);
+    public int price(Good g);
 
 
 

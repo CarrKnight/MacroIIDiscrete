@@ -13,7 +13,7 @@ import agents.firm.GeographicalFirm;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +41,7 @@ public class SellingFirmToColorMapTest
         GeographicalFirm f2 = mock(GeographicalFirm.class);
         EconomicAgent p1 = mock(Person.class);
         //initialize market
-        Market market = new OrderBookMarket(GoodType.GENERIC);
+        Market market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         market.registerSeller(f1);
         market.registerSeller(f2);
         market.registerSeller(p1);
@@ -74,7 +74,7 @@ public class SellingFirmToColorMapTest
 
         int defaultColorSize = SellingFirmToColorMap.getDefaultColors().size();
         //initialize market
-        Market market = new OrderBookMarket(GoodType.GENERIC);
+        Market market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
 
         //loaded dice
         MersenneTwisterFast loadedRandomizer = PowerMockito.mock(MersenneTwisterFast.class);

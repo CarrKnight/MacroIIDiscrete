@@ -44,7 +44,7 @@ public class DirectCosts implements PlantCostStrategy, PlantListener {
 
     private final Plant plant;
 
-    private long wageCostsPerUnit=0;
+    private int wageCostsPerUnit=0;
 
     private int totalProductionPerRun = 0;
 
@@ -64,7 +64,7 @@ public class DirectCosts implements PlantCostStrategy, PlantListener {
     }
 
     @Override
-    public long unitOutputCost(GoodType t, long totalCostOfInputs) {
+    public int unitOutputCost(GoodType t, int totalCostOfInputs) {
         //throw an exception if the goodtype is not produced!
         if(!plant.getBlueprint().getOutputs().containsKey(t))
             throw new IllegalArgumentException("Can't assign cost to something we don't completeProductionRunNow!");
@@ -75,7 +75,7 @@ public class DirectCosts implements PlantCostStrategy, PlantListener {
 
 
         //divide direct costs by type.
-        long unitInputCost = Math.round((float) totalCostOfInputs / ((float) totalProductionPerRun));
+        int unitInputCost = Math.round((float) totalCostOfInputs / ((float) totalProductionPerRun));
         //add wage direct costs!
         return unitInputCost + wageCostsPerUnit;
     }
@@ -91,10 +91,10 @@ public class DirectCosts implements PlantCostStrategy, PlantListener {
      * @return the cost we assign to this good.
      */
     @Override
-    public long hypotheticalUnitOutputCost(GoodType t, long totalCostOfInputs, int workers, long totalWages) {
+    public int hypotheticalUnitOutputCost(GoodType t, int totalCostOfInputs, int workers, int totalWages) {
 
-        long hypotheticalWageCost = Math.round( ((float)totalWages) / ( plant.hypotheticalTotalThroughput(workers)));
-        long hypotheticalInputCosts =  Math.round((float) totalCostOfInputs  / plant.hypotheticalTotalThroughput(workers) );
+        int hypotheticalWageCost = Math.round( ((float)totalWages) / ( plant.hypotheticalTotalThroughput(workers)));
+        int hypotheticalInputCosts =  Math.round((float) totalCostOfInputs  / plant.hypotheticalTotalThroughput(workers) );
         return hypotheticalInputCosts + hypotheticalWageCost;
     }
 
@@ -104,7 +104,7 @@ public class DirectCosts implements PlantCostStrategy, PlantListener {
      * @return the costs of running the plant
      */
     @Override
-    public long weeklyFixedCosts() {
+    public int weeklyFixedCosts() {
         return Math.round((float) plant.getBuildingCosts() / (float) plant.getUsefulLife());
     }
 

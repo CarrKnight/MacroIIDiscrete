@@ -38,19 +38,19 @@ public class MarkupFollower extends BaseAskPricingStrategy {
      * @return the price given to that good
      */
     @Override
-    public long price(Good g) {
+    public int price(Good g) {
         long priceToFollow =sales.getMarket().getLastPrice();
         double markup = sales.getMarket().getLastMarkup();
         if(priceToFollow == -1)
             //if you know nothing, just act cluelessly
-            return (long) (g.getLastValidPrice() * (1f + sales.getFirm().getModel().getCluelessDefaultMarkup()));
+            return (int) (g.getLastValidPrice() * (1f + sales.getFirm().getModel().getCluelessDefaultMarkup()));
         else
         {//if you you can copy the last markup
             //i hope this works
 
 
 
-            return (long) Math.max(priceToFollow,g.getLastValidPrice()*(1d+markup));
+            return (int) Math.max(priceToFollow,g.getLastValidPrice()*(1d+markup));
         }
     }
 

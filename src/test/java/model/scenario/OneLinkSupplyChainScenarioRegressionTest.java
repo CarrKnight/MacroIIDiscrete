@@ -73,7 +73,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return testWithStickyPriceOneRun(random.nextLong());
+                            return testWithStickyPriceOneRun(random.nextInt());
                         }
                     });
 
@@ -83,7 +83,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         for(Future<OneLinkSupplyChainResult> receipt : testResults)
         {
-            long beefPrice = (long) receipt.get().getBeefPrice();
+            int beefPrice = (int) receipt.get().getBeefPrice();
             Assert.assertTrue(beefPrice >= 27 && beefPrice <= 32);
 
         }
@@ -91,7 +91,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     }
 
-    private OneLinkSupplyChainResult testWithStickyPriceOneRun(long seed) {
+    private OneLinkSupplyChainResult testWithStickyPriceOneRun(int seed) {
         final MacroII macroII = new MacroII(seed);
         final OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
         scenario1.setControlType(MarginalMaximizer.class);
@@ -149,7 +149,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return testWithSlowPidOneRun(random.nextLong());
+                            return testWithSlowPidOneRun(random.nextInt());
                         }
                     });
 
@@ -159,7 +159,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         for(Future<OneLinkSupplyChainResult> receipt : testResults)
         {
-            long beefPrice = (long) receipt.get().getBeefPrice();
+            int beefPrice = (int) receipt.get().getBeefPrice();
             Assert.assertTrue(beefPrice >= 27 && beefPrice <= 32);
 
         }
@@ -167,7 +167,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     }
 
-    private OneLinkSupplyChainResult testWithSlowPidOneRun(long seed) {
+    private OneLinkSupplyChainResult testWithSlowPidOneRun(int seed) {
         final MacroII macroII = new MacroII(seed);
         final OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
         scenario1.setControlType(MarginalMaximizer.class);
@@ -228,7 +228,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextLong(), 1, 100, false, null);
+                            return OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 1, 100, false, null);
                         }
                     });
 
@@ -270,7 +270,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextLong(), 100, 0, false, null);
+                            return OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 100, 0, false, null);
                         }
                     });
 
@@ -296,14 +296,14 @@ public class OneLinkSupplyChainScenarioRegressionTest
      */
     private void checkBeefMonopolistResult(OneLinkSupplyChainResult result) {
         Assert.assertEquals(result.getQuantity(), 17, 3);
-        Assert.assertEquals(result.getBeefPrice(), 68, 5l);
-        Assert.assertEquals(result.getFoodPrice(),85,5l );
+        Assert.assertEquals(result.getBeefPrice(), 68, 5);
+        Assert.assertEquals(result.getFoodPrice(),85,5 );
     }
 
     private void checkCompetitiveResult(OneLinkSupplyChainResult result) {
         Assert.assertEquals(result.getQuantity(), 34, 3);
-        Assert.assertEquals(result.getBeefPrice(), 34, 5l);
-        Assert.assertEquals(result.getFoodPrice(),68,5l );
+        Assert.assertEquals(result.getBeefPrice(), 34, 5);
+        Assert.assertEquals(result.getFoodPrice(),68,5 );
     }
 
     private void checkResultsOfFoodMonopolist(OneLinkSupplyChainResult result) {
@@ -313,8 +313,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
         //the food price is in the ballpark
         //with competition, you are better off testing an MA
 
-        Assert.assertEquals(result.getBeefPrice(),17,4l );
-        Assert.assertEquals(result.getFoodPrice(), 85l, 5l);
+        Assert.assertEquals(result.getBeefPrice(),17,4 );
+        Assert.assertEquals(result.getFoodPrice(), 85, 5);
         Assert.assertEquals(result.getQuantity(),17,3);
     }
 
@@ -342,7 +342,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextLong(), 100, 0, true, null);
+                            return OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 100, 0, true, null);
                         }
                     });
 
@@ -380,7 +380,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextLong(), 1, 100, true, null);
+                            return OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 1, 100, true, null);
                         }
                     });
 
@@ -432,7 +432,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextLong(), 100, 0, true, true, null);
+                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 100, 0, true, true, null);
                         }
                     });
 
@@ -474,7 +474,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextLong(), 1, 100, true, true, null);
+                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 100, true, true, null);
                         }
                     });
 
@@ -518,7 +518,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextLong(), 100, 0, false, true, null);
+                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 100, 0, false, true, null);
                         }
                     });
 
@@ -563,7 +563,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextLong(), 1, 100, false, true, null);
+                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 100, false, true, null);
                         }
                     });
 
@@ -609,7 +609,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextLong(), 100, 0, true, false, null);
+                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 100, 0, true, false, null);
                         }
                     });
 
@@ -652,7 +652,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextLong(), 1, 100, true, false, null);
+                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 100, true, false, null);
                         }
                     });
 
@@ -693,7 +693,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return             OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextLong(), 100, 0, null);
+                            return             OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextInt(), 100, 0, null);
                         }
                     });
 
@@ -736,7 +736,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return             OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextLong(), 1, 100, null);
+                            return             OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextInt(), 1, 100, null);
                         }
                     });
 
@@ -785,7 +785,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.everybodyLearningCompetitiveSlowPIDRun(random.nextLong());
+                            return   OneLinkSupplyChainResult.everybodyLearningCompetitiveSlowPIDRun(random.nextInt());
 
                         }
                     });
@@ -830,7 +830,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return             OneLinkSupplyChainResult.everybodyLearningCompetitiveStickyPIDRun(random.nextLong());
+                            return             OneLinkSupplyChainResult.everybodyLearningCompetitiveStickyPIDRun(random.nextInt());
                         }
                     });
 
@@ -873,7 +873,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return             OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextLong(), 100, 0, false, false, null);
+                            return             OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 100, 0, false, false, null);
                         }
                     });
 
@@ -917,7 +917,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return             OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextLong(), 1, 100, false, false, null);
+                            return             OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 100, false, false, null);
                         }
                     });
 
@@ -973,7 +973,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return testFoodMonopolistWithFixedProductionRun(random.nextLong(), false, 100, 1, null);
+                            return testFoodMonopolistWithFixedProductionRun(random.nextInt(), false, 100, 1, null);
                         }
                     });
 
@@ -989,7 +989,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     }
 
-    private OneLinkSupplyChainResult testFoodMonopolistWithFixedProductionRun(long random, final boolean competitorsLearned, int speed, float divideGainsByThis,
+    private OneLinkSupplyChainResult testFoodMonopolistWithFixedProductionRun(int random, final boolean competitorsLearned, int speed, float divideGainsByThis,
                                                                                File csvFileToWrite) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 =
@@ -1030,7 +1030,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
         //I used to assert this:
-        //Assert.assertEquals(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),85l,6l );
+        //Assert.assertEquals(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),85,6 );
         //but that's too hard because while on average the price hovers there, competition is noisy. Sometimes a lot.
         //so what I did was to attach a daily stat collector and then check the average of the last 10 prices
         SummaryStatistics averageFoodPrice = new SummaryStatistics();
@@ -1081,7 +1081,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return testFoodMonopolistWithFixedProductionRun(random.nextLong(), false, 0, 100, null);
+                            return testFoodMonopolistWithFixedProductionRun(random.nextInt(), false, 0, 100, null);
                         }
                     });
 
@@ -1118,7 +1118,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return testFoodMonopolistWithFixedProductionRun(random.nextLong(),true,0,100, null);//Paths.get("runs","supplychai","foodMonopolist.csv").toFile());
+                            return testFoodMonopolistWithFixedProductionRun(random.nextInt(),true,0,100, null);//Paths.get("runs","supplychai","foodMonopolist.csv").toFile());
                         }
                     });
 
@@ -1158,7 +1158,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return testFoodMonopolistWithFixedProductionRun(random.nextLong(),true,100,1, null);
+                            return testFoodMonopolistWithFixedProductionRun(random.nextInt(),true,100,1, null);
                         }
                     });
 
@@ -1202,7 +1202,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextLong(),100,0,true,true,null);
+                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(),100,0,true,true,null);
                         }
                     });
 
@@ -1242,7 +1242,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextLong(), 1, 100, true, true, null);
+                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(), 1, 100, true, true, null);
                         }
                     });
 
@@ -1290,7 +1290,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextLong(), 100, 0, false, false, null);
+                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(), 100, 0, false, false, null);
                         }
                     });
 
@@ -1331,7 +1331,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextLong(), 1, 100, false, false, Paths.get("runs","noone.csv").toFile());
+                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(), 1, 100, false, false, Paths.get("runs","noone.csv").toFile());
                         }
                     });
 
@@ -1348,7 +1348,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     }
 
-    private OneLinkSupplyChainResult learningFoodMonopolistStickyPIDRun(long random) {
+    private OneLinkSupplyChainResult learningFoodMonopolistStickyPIDRun(int random) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
         scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
@@ -1376,7 +1376,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
         //I used to assert this:
-        //Assert.assertEquals(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),85l,6l );
+        //Assert.assertEquals(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),85,6 );
         //but that's too hard because while on average the price hovers there, competition is noisy. Sometimes a lot.
         //so what I did was to attach a daily stat collector and then check the average of the last 10 prices
         float averageFoodPrice = 0;

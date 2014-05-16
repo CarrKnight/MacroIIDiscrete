@@ -45,12 +45,12 @@ public class PIDHIllClimberTest {
         TargetAndMaximizePlantControl control = mock(TargetAndMaximizePlantControl.class);
         Plant plant = mock(Plant.class);
         Firm firm = mock(Firm.class);  when(hr.getFirm()).thenReturn(firm);
-        when(firm.getModel()).thenReturn(new MacroII(1l));
+        when(firm.getModel()).thenReturn(new MacroII(1));
         when(control.getPlant()).thenReturn(plant);
-        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(1l);
+        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(1);
         when(plant.minimumWorkersNeeded()).thenReturn(1);
         when(hr.getFirm()).thenReturn(firm);
-        when(firm.getModel()).thenReturn(new MacroII(1l));
+        when(firm.getModel()).thenReturn(new MacroII(1));
         when(control.getHr()).thenReturn(hr); when(hr.maximumWorkersPossible()).thenReturn(30);
         when(hr.getPlant()).thenReturn(plant);
         PIDHillClimber maximizer = new PIDHillClimber(hr,2,1,0); //big numbers so that there is an effect!
@@ -85,12 +85,12 @@ public class PIDHIllClimberTest {
         TargetAndMaximizePlantControl control = mock(TargetAndMaximizePlantControl.class);
         Plant plant = mock(Plant.class);
         Firm firm = mock(Firm.class);  when(hr.getFirm()).thenReturn(firm);
-        when(firm.getModel()).thenReturn(new MacroII(1l));
+        when(firm.getModel()).thenReturn(new MacroII(1));
         when(control.getPlant()).thenReturn(plant);
-        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(1l);
+        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(1);
         when(plant.minimumWorkersNeeded()).thenReturn(1);
         when(hr.getFirm()).thenReturn(firm);
-        when(firm.getModel()).thenReturn(new MacroII(1l));
+        when(firm.getModel()).thenReturn(new MacroII(1));
         when(control.getHr()).thenReturn(hr); when(hr.maximumWorkersPossible()).thenReturn(30);
         when(hr.getPlant()).thenReturn(plant);
         PIDHillClimber maximizer = new PIDHillClimber(hr,control);
@@ -113,21 +113,21 @@ public class PIDHIllClimberTest {
         TargetAndMaximizePlantControl control = mock(TargetAndMaximizePlantControl.class);
         Plant plant = mock(Plant.class);
         Firm firm = mock(Firm.class);  when(hr.getFirm()).thenReturn(firm);
-        when(firm.getModel()).thenReturn(new MacroII(1l));
+        when(firm.getModel()).thenReturn(new MacroII(1));
         when(control.getPlant()).thenReturn(plant);
-        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(1l);
+        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(1);
         when(plant.minimumWorkersNeeded()).thenReturn(1);
         when(hr.getFirm()).thenReturn(firm);
-        when(firm.getModel()).thenReturn(new MacroII(1l));
+        when(firm.getModel()).thenReturn(new MacroII(1));
         when(control.getHr()).thenReturn(hr); when(hr.maximumWorkersPossible()).thenReturn(30);
         when(hr.getPlant()).thenReturn(plant);
         PIDHillClimber maximizer = new PIDHillClimber(hr,control);
         //assume you had moved from 10 to 11
 
 
-        long oldRevenue=0;
-        long oldCosts = 0;
-        long oldProfits = 0;
+        int oldRevenue=0;
+        int oldCosts = 0;
+        int oldProfits = 0;
         int oldTarget = 0;
         int currentWorkerTarget = 1;
         //start the parameters
@@ -158,9 +158,9 @@ public class PIDHIllClimberTest {
 
     //use the functions from the monopolist
 
-    private long costPerWorker(int workers)
+    private int costPerWorker(int workers)
     {
-        long wages;
+        int wages;
         if(workers > 0)
             wages = 105 + (workers -1)*7;
         else
@@ -170,7 +170,7 @@ public class PIDHIllClimberTest {
 
     }
 
-    private long revenuePerWorker(int workers)
+    private int revenuePerWorker(int workers)
     {
         int quantity = workers * 7;
         int price = 101 - workers;

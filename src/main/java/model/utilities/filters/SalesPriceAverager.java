@@ -35,7 +35,7 @@ public class SalesPriceAverager implements Steppable, Deactivatable{
 
     final private MovingSum<Integer> denominator;
 
-    final private MovingSum<Long> numerator;
+    final private MovingSum<Integer> numerator;
 
     final private SalesDepartment department;
 

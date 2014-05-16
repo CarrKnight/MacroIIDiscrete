@@ -8,6 +8,7 @@ import financial.market.GeographicalMarket;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import org.junit.Assert;
@@ -35,7 +36,7 @@ import static org.mockito.Mockito.*;
  */
 public class GeographicalCustomerTest {
 
-    final public static GoodType INPUT = new GoodType("testInput","Input");
+    final public static GoodType INPUT = new UndifferentiatedGoodType("testInput","Input");
 
 
 
@@ -44,7 +45,8 @@ public class GeographicalCustomerTest {
     @Before
     public void setUp() throws Exception {
         when(market.getGoodType()).thenReturn(INPUT);
-        when(market.submitBuyQuote(any(EconomicAgent.class),anyLong())).thenReturn(mock(Quote.class));
+        when(market.submitBuyQuote(any(EconomicAgent.class),anyInt())).thenReturn(mock(Quote.class));
+        when(market.getMoney()).thenReturn(UndifferentiatedGoodType.MONEY);
 
     }
 
@@ -52,12 +54,12 @@ public class GeographicalCustomerTest {
     public void testThatTheCustomerEatsOilEveryDay()
     {
         //create the model
-        MacroII macroII = new MacroII(1l);
+        MacroII macroII = new MacroII(1);
         //create the customer
         GeographicalCustomer customer = new GeographicalCustomer(macroII,10,2,2, market);
         //give it two units of oil
-        customer.receive(new Good(INPUT,null,0),null);
-        customer.receive(new Good(INPUT,null,0),null);
+        customer.receive(Good.getInstanceOfUndifferentiatedGood(INPUT),null);
+        customer.receive(Good.getInstanceOfUndifferentiatedGood(INPUT),null);
         Assert.assertEquals(customer.hasHowMany(INPUT),2);
 
         //make one day pass
@@ -77,32 +79,32 @@ public class GeographicalCustomerTest {
         //target higher than what you have
 
         //create the model
-        MacroII macroII = new MacroII(1l);
+        MacroII macroII = new MacroII(1);
         //create the customer
         GeographicalCustomer customer = new GeographicalCustomer(macroII,10,2,2, market);
-        long targetCash = customer.getResetCashTo() + 100;
+        int targetCash = customer.getResetCashTo() + 100;
         customer.setResetCashTo(targetCash);
-        Assert.assertFalse(targetCash == customer.getCash());
+        Assert.assertFalse(targetCash == customer.hasHowMany(UndifferentiatedGoodType.MONEY));
         //make one day pass
         macroII.start();
         macroII.schedule.step(macroII);
         //it should have consumed them both!
-        Assert.assertEquals(customer.getCash(),targetCash);
+        Assert.assertEquals(customer.hasHowMany(UndifferentiatedGoodType.MONEY),targetCash);
 
 
 
         //target lower than what you have
-        macroII = new MacroII(1l);
+        macroII = new MacroII(1);
         //create the customer
         customer = new GeographicalCustomer(macroII,10,2,2, market);
         targetCash = customer.getResetCashTo() -1;
         customer.setResetCashTo(targetCash);
-        Assert.assertFalse(targetCash == customer.getCash());
+        Assert.assertFalse(targetCash == customer.hasHowMany(UndifferentiatedGoodType.MONEY));
         //make one day pass
         macroII.start();
         macroII.schedule.step(macroII);
         //it should have consumed them both!
-        Assert.assertEquals(customer.getCash(),targetCash);
+        Assert.assertEquals(customer.hasHowMany(UndifferentiatedGoodType.MONEY),targetCash);
 
 
     }
@@ -186,7 +188,7 @@ public class GeographicalCustomerTest {
     {
         //daily demand 2, with empty inventory that's 0
         GeographicalMarket geographicalMarket = market;
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         final GeographicalCustomer customer = new GeographicalCustomer(model,100,0,0, geographicalMarket);
         customer.setDailyDemand(2);
         customer.start(model);
@@ -210,7 +212,7 @@ public class GeographicalCustomerTest {
         model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
             @Override
             public void step(SimState state) {
-                customer.receive(new Good(INPUT,mock(EconomicAgent.class),100l),null);
+                customer.receive(Good.getInstanceOfUndifferentiatedGood(INPUT),null);
 
             }
         });

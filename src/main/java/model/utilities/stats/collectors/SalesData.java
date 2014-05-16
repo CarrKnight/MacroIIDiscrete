@@ -32,12 +32,6 @@ import sim.engine.SimState;
 public class SalesData extends DataStorage<SalesDataType> {
 
 
-
-    /**
-     * when it is set to off, it stops rescheduling itself!
-     */
-    private boolean active = true;
-
     /**
      * the department we are documenting
      */
@@ -57,7 +51,7 @@ public class SalesData extends DataStorage<SalesDataType> {
      * called when the data gathering is supposed to start. It schedules itself to start at next CLEANUP phase
      */
     public void start( MacroII state,  SalesDepartment departmentToFollow) {
-        if(!active)
+        if(!isActive())
             return;
 
         Preconditions.checkState(this.departmentToFollow == null, " can't start the gatherer twice!");
@@ -73,7 +67,7 @@ public class SalesData extends DataStorage<SalesDataType> {
 
     @Override
     public void step(SimState state) {
-        if(!active)
+        if(!isActive())
             return;
 
         //make sure it's the right time
@@ -129,7 +123,10 @@ public class SalesData extends DataStorage<SalesDataType> {
 
     @Override
     public void turnOff() {
-        active = false;
+        super.turnOff();
+        departmentToFollow = null;
+
+
     }
 
 

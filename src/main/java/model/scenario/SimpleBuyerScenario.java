@@ -7,7 +7,7 @@
 package model.scenario;
 
 import agents.HasInventory;
-import agents.InventoryListener;
+import goods.InventoryListener;
 import agents.firm.Firm;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pid.PurchasesFixedPID;
@@ -18,6 +18,7 @@ import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.dummies.DailyGoodTree;
@@ -113,8 +114,8 @@ public class SimpleBuyerScenario extends Scenario {
     public void start() {
 
         //markets
-        OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
-        getMarkets().put(GoodType.GENERIC,market);
+        OrderBookMarket market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
+        getMarkets().put(UndifferentiatedGoodType.GENERIC,market);
         market.setPricePolicy(new BuyerSetPricePolicy());
 
         departments = new LinkedList<>();
@@ -139,8 +140,8 @@ public class SimpleBuyerScenario extends Scenario {
 
     private Firm createBuyer(OrderBookMarket market) {
         final Firm firm = new Firm(model);
-        firm.earn(Long.MAX_VALUE);
-        department = PurchasesDepartment.getEmptyPurchasesDepartment(Long.MAX_VALUE, firm, market);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,Integer.MAX_VALUE);
+        department = PurchasesDepartment.getEmptyPurchasesDepartment(Integer.MAX_VALUE, firm, market);
 
         department.setOpponentSearch(new SimpleBuyerSearch(market, firm));
         department.setSupplierSearch(new SimpleSellerSearch(market, firm));
@@ -158,7 +159,7 @@ public class SimpleBuyerScenario extends Scenario {
         department.setControl(control);
         department.setPricingStrategy(control);
 
-        firm.registerPurchasesDepartment(department, GoodType.GENERIC);
+        firm.registerPurchasesDepartment(department, UndifferentiatedGoodType.GENERIC);
 
 
 
@@ -217,7 +218,7 @@ public class SimpleBuyerScenario extends Scenario {
         firm.addInventoryListener(new InventoryListener() {
             @Override
             public void inventoryIncreaseEvent( HasInventory source,  GoodType type, int quantity,final  int delta) {
-                System.out.println("about to consume: " + firm.hasHowMany(GoodType.GENERIC) + ", consumedThisWeek: " + consumedThisWeek);
+                System.out.println("about to consume: " + firm.hasHowMany(UndifferentiatedGoodType.GENERIC) + ", consumedThisWeek: " + consumedThisWeek);
                 if(consumedThisWeek<consumptionRate)
                 {
                     //schedule it to be eaten
@@ -225,8 +226,8 @@ public class SimpleBuyerScenario extends Scenario {
                         @Override
                         public void step(SimState state) {
                             for(int i=0; i< delta ;i++) {
-                                assert firm.hasAny(GoodType.GENERIC);
-                                firm.consume(GoodType.GENERIC);
+                                assert firm.hasAny(UndifferentiatedGoodType.GENERIC);
+                                firm.consume(UndifferentiatedGoodType.GENERIC);
                                 System.out.println("Consumed!");
                                 consumedThisWeek++;
                             }
@@ -258,18 +259,18 @@ public class SimpleBuyerScenario extends Scenario {
                 System.out.println("reset consumed!");
                 //eat leftovers, if needed
                 do{
-                    if(firm.hasAny(GoodType.GENERIC))
+                    if(firm.hasAny(UndifferentiatedGoodType.GENERIC))
                     {
-                        firm.consume(GoodType.GENERIC);
+                        firm.consume(UndifferentiatedGoodType.GENERIC);
                         System.out.println("Consumed!");
                         consumedThisWeek++;
                     }
                     else{
-                        firm.fireFailedToConsumeEvent(GoodType.GENERIC,consumptionRate - consumedThisWeek);
+                        firm.fireFailedToConsumeEvent(UndifferentiatedGoodType.GENERIC,consumptionRate - consumedThisWeek);
                         break;
                     }
 
-                }while (consumedThisWeek<consumptionRate && firm.hasAny(GoodType.GENERIC));
+                }while (consumedThisWeek<consumptionRate && firm.hasAny(UndifferentiatedGoodType.GENERIC));
 
                 getModel().scheduleTomorrow(ActionOrder.PRODUCTION,this);
 
@@ -286,17 +287,17 @@ public class SimpleBuyerScenario extends Scenario {
         getModel().scheduleSoon(ActionOrder.PRODUCTION, new Steppable() {
             @Override
             public void step(SimState state) {
-                int initialInventory = firm.hasHowMany(GoodType.GENERIC);
+                int initialInventory = firm.hasHowMany(UndifferentiatedGoodType.GENERIC);
                 for (int i = 0; i < consumptionRate; i++) {
-                    if (firm.hasAny(GoodType.GENERIC))
-                        firm.consume(GoodType.GENERIC);
+                    if (firm.hasAny(UndifferentiatedGoodType.GENERIC))
+                        firm.consume(UndifferentiatedGoodType.GENERIC);
                     else{
-                        firm.fireFailedToConsumeEvent(GoodType.GENERIC,consumptionRate - i);
+                        firm.fireFailedToConsumeEvent(UndifferentiatedGoodType.GENERIC,consumptionRate - i);
                         break;
                     }
                 }
                 firm.logEvent(department, MarketEvents.EXOGENOUS, getModel().getCurrentSimulationTimeInMillis(), "initialInventory: " + initialInventory
-                        + ",final inventory: " + firm.hasHowMany(GoodType.GENERIC));
+                        + ",final inventory: " + firm.hasHowMany(UndifferentiatedGoodType.GENERIC));
 
                 //do it again tomorrow
                 getModel().scheduleTomorrow(ActionOrder.PRODUCTION,this);

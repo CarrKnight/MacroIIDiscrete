@@ -55,12 +55,12 @@ public class MatchBestControlDecorator extends PlantControlDecorator implements 
     /**
      * the best offer in the market
      */
-    private long bestMarketOffer=-1;
+    private int bestMarketOffer=-1;
 
     /**
      * the offer of the normal plant control
      */
-    private long originalOffer =0;
+    private int originalOffer =0;
 
     /**
      * keeps track of what can buy would be if it wasn't for this decorator
@@ -74,7 +74,7 @@ public class MatchBestControlDecorator extends PlantControlDecorator implements 
      * @param newWage the new wage
      */
     @Override
-    public void setCurrentWage(long newWage) {
+    public void setCurrentWage(int newWage) {
         originalOffer = newWage;
         updateCanBuy();
         updateCurrentWage();

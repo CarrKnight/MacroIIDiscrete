@@ -6,11 +6,13 @@
 
 package goods;
 
+import agents.firm.Firm;
+
 /**
  *
  *
  */
-public class GoodType implements Comparable<GoodType> {
+public abstract class GoodType implements Comparable<GoodType> {
 
     /**
      * something like the NAICS code or some other made-up id. Goodtypes are "equal" if they have the same code, so this ought to be unique!
@@ -23,24 +25,6 @@ public class GoodType implements Comparable<GoodType> {
      * the name of the string
      */
     private final String name;
-
-
-    /**
-     * a "test"/madeup goodtype, representing generic homogeneous goods. Imagine macro's "c" (consumption good)
-     */
-    public static final GoodType GENERIC = new GoodType("testGeneric","Test good",false,false);
-
-
-    /**
-     * a "test"/madeup goodtype, representing generic capital. Imagine micro's "k"
-     */
-    public static final GoodType CAPITAL = new GoodType("testCapital","Test Capital",true,false);
-
-    /**
-     * a "test"/madeup goodtype, representing generic labor. Imagine micro's "L"
-     */
-    public static final GoodType LABOR = new GoodType("testLabor","Test Labor",false,true);
-
 
 
     /**
@@ -60,23 +44,22 @@ public class GoodType implements Comparable<GoodType> {
      * @param isMachinery whether it can be used as capital
      * @param isLabor whether it can be used as labor
      */
-    public GoodType(String code, String name, boolean isMachinery, boolean isLabor) {
+    protected GoodType(String code, String name, boolean isMachinery, boolean isLabor) {
         this.code = code;
         this.name = name;
         this.isMachinery = isMachinery;
         this.isLabor = isLabor;
     }
 
+
+
     /**
      * create a good-type assuming it's a consumption good
      * @param code the industry code
      * @param name the full name of the goodtype
      */
-    public GoodType(String code,String name ) {
-        this.name = name;
-        this.code = code;
-        isLabor=false;
-        isMachinery=false;
+    protected GoodType(String code,String name ) {
+        this(code, name,false,false);
     }
 
     public boolean isMachinery() {
@@ -129,4 +112,15 @@ public class GoodType implements Comparable<GoodType> {
     public int compareTo(GoodType o) {
         return code.compareTo(o.getCode());
     }
+
+
+    public abstract boolean isDifferentiated();
+
+    /**
+     * method to quickly produce a number of units of this goodtype
+     * @param amount the amount
+     * @param receiver who built it/receives it
+     * @return the goods produced if differentiated or null otherwise
+     */
+    public abstract Good[] produceAndDeliver(int amount, Firm receiver, int unitCost);
 }

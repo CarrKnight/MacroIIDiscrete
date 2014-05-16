@@ -10,7 +10,7 @@ import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class UrgentPriceFollowerStrategyTest {
 
     @Before
     public void setup(){
-        model = new MacroII(1l);
+        model = new MacroII(1);
     }
 
 
@@ -53,21 +53,21 @@ public class UrgentPriceFollowerStrategyTest {
         //when there is nobody to search just go at random.
         PurchasesDepartment dept = mock(PurchasesDepartment.class);
         //search will always return null
-        when(dept.getAvailableBudget()).thenReturn(100l);
-        when(dept.getGoodType()).thenReturn(GoodType.GENERIC);
+        when(dept.getAvailableBudget()).thenReturn(100);
+        when(dept.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
 
         MersenneTwisterFast random = new MersenneTwisterFast(0);
         when(dept.getRandom()).thenReturn(random);
         //we need a stub market
         Market market = mock(Market.class);
-        when(market.getLastPrice()).thenReturn(-1l);
+        when(market.getLastPrice()).thenReturn(-1);
         when(dept.getMarket()).thenReturn(market);
 
 
         BidPricingStrategy pricing = new UrgentPriceFollowerStrategy(dept);
         for(int i=0; i < 10000; i++) //because there is no last price in the market we get to randomize
         {
-            long maxPrice =pricing.maxPrice(GoodType.GENERIC);
+            int maxPrice =pricing.maxPrice(UndifferentiatedGoodType.GENERIC);
             assertTrue(maxPrice>=0);
             assertTrue(maxPrice<=100);
 
@@ -77,7 +77,7 @@ public class UrgentPriceFollowerStrategyTest {
         int decile =0;
         for(int i=0; i < 10000; i++)
         {
-            long maxPrice =pricing.maxPrice(GoodType.GENERIC);
+            int maxPrice =pricing.maxPrice(UndifferentiatedGoodType.GENERIC);
             if(maxPrice >= 40 && maxPrice < 50)
                 decile++;
 
@@ -90,7 +90,7 @@ public class UrgentPriceFollowerStrategyTest {
     public void testEmptyPricingNonStub() throws NoSuchFieldException, IllegalAccessException {
         //when there is nobody to search just go at random.
         Firm f = new Firm(model);
-        Market market = new OrderBookMarket(GoodType.GENERIC);
+        Market market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
 
 
 
@@ -104,7 +104,7 @@ public class UrgentPriceFollowerStrategyTest {
         BidPricingStrategy pricingStrategy = (BidPricingStrategy) field.get(dept);
         for(int i=0; i < 10000; i++) //because there is no last price in the market we get to randomize
         {
-            long maxPrice =pricingStrategy.maxPrice(GoodType.GENERIC);
+            int maxPrice =pricingStrategy.maxPrice(UndifferentiatedGoodType.GENERIC);
             assertTrue(maxPrice>=0);
             assertTrue(maxPrice<=100);
 
@@ -114,7 +114,7 @@ public class UrgentPriceFollowerStrategyTest {
         int decile =0;
         for(int i=0; i < 10000; i++)
         {
-            long maxPrice =pricingStrategy.maxPrice(GoodType.GENERIC);
+            int maxPrice =pricingStrategy.maxPrice(UndifferentiatedGoodType.GENERIC);
             if(maxPrice >= 40 && maxPrice < 50)
                 decile++;
 
@@ -129,13 +129,13 @@ public class UrgentPriceFollowerStrategyTest {
         //we are going to check that prices change when urgency chnge
 
         PurchasesDepartment dept = mock(PurchasesDepartment.class);
-        when(dept.getGoodType()).thenReturn(GoodType.GENERIC);
-        when(dept.getAvailableBudget()).thenReturn(100l);
+        when(dept.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
+        when(dept.getAvailableBudget()).thenReturn(100);
         MersenneTwisterFast random = new MersenneTwisterFast(0);
         when(dept.getRandom()).thenReturn(random);
         //we need a stub market
         Market market = mock(Market.class);
-        when(market.getLastPrice()).thenReturn(50l); //so last price is 50
+        when(market.getLastPrice()).thenReturn(50); //so last price is 50
         when(dept.getMarket()).thenReturn(market);
         BidPricingStrategy pricing = new UrgentPriceFollowerStrategy(dept);
 
@@ -144,22 +144,22 @@ public class UrgentPriceFollowerStrategyTest {
         //give fake danger signal!
         when(dept.rateCurrentLevel()).thenReturn(Level.DANGER);
         for(int i=0; i<10; i++)
-            assertEquals(pricing.maxPrice(GoodType.GENERIC),60);
+            assertEquals(pricing.maxPrice(UndifferentiatedGoodType.GENERIC),60);
 
         //give fake barely signal!
         when(dept.rateCurrentLevel()).thenReturn(Level.BARELY);
         for(int i=0; i<10; i++)
-            assertEquals(pricing.maxPrice(GoodType.GENERIC),50);
+            assertEquals(pricing.maxPrice(UndifferentiatedGoodType.GENERIC),50);
 
         //give fake acceptable signal!
         when(dept.rateCurrentLevel()).thenReturn(Level.ACCEPTABLE);
         for(int i=0; i<10; i++)
-            assertEquals(pricing.maxPrice(GoodType.GENERIC),40);
+            assertEquals(pricing.maxPrice(UndifferentiatedGoodType.GENERIC),40);
 
         //give fake too much signal!
         when(dept.rateCurrentLevel()).thenReturn(Level.TOOMUCH);
         for(int i=0; i<10; i++)
-            assertEquals(pricing.maxPrice(GoodType.GENERIC),25);
+            assertEquals(pricing.maxPrice(UndifferentiatedGoodType.GENERIC),25);
 
 
     }
@@ -169,11 +169,11 @@ public class UrgentPriceFollowerStrategyTest {
         //we are going to check that prices change when urgency change
         //the only stub is the market
         Market market = mock(Market.class);
-        when(market.getLastPrice()).thenReturn(50l); //so last price is 50
+        when(market.getLastPrice()).thenReturn(50); //so last price is 50
         model.schedule = mock(Schedule.class); //we also mock the schedule to avoid the inventory control from spamming buy orders in the schedule
 
 
-        when(market.getGoodType()).thenReturn(GoodType.GENERIC);
+        when(market.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
         Firm f = new Firm(model);
 
 
@@ -189,25 +189,25 @@ public class UrgentPriceFollowerStrategyTest {
 
         //right now it's danger
         for(int i=0; i<10; i++)
-            assertEquals(pricing.maxPrice(GoodType.GENERIC),60);
+            assertEquals(pricing.maxPrice(UndifferentiatedGoodType.GENERIC),60);
 
         //barely
         for(int i=0; i<3; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         for(int i=0; i<10; i++)
-            assertEquals(pricing.maxPrice(GoodType.GENERIC),50);
+            assertEquals(pricing.maxPrice(UndifferentiatedGoodType.GENERIC),50);
 
         //acceptable
         for(int i=0; i<3; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         for(int i=0; i<10; i++)
-            assertEquals(pricing.maxPrice(GoodType.GENERIC),40);
+            assertEquals(pricing.maxPrice(UndifferentiatedGoodType.GENERIC),40);
 
         //too much
         for(int i=0; i<30; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         for(int i=0; i<10; i++)
-            assertEquals(pricing.maxPrice(GoodType.GENERIC),25);
+            assertEquals(pricing.maxPrice(UndifferentiatedGoodType.GENERIC),25);
 
 
     }

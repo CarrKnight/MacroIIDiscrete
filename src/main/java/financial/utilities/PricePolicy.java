@@ -23,7 +23,7 @@ package financial.utilities;
  */
 public interface PricePolicy {
 
-    public long price(long sellerPrice, long buyerPrice);
+    public int price(int sellerPrice, int buyerPrice);
 
 }
 

@@ -6,7 +6,7 @@
 
 package model.experiments;
 
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.scenario.SimpleBuyerScenario;
 import sim.engine.SimState;
@@ -67,7 +67,7 @@ public class SimpleBuyerVarianceExperiment {
             @Override
             public void step(SimState state) {
                 distanceFrom10 += Math.pow(10-scenario1.getDepartment().maxPrice(scenario1.getDepartment().getGoodType(),scenario1.getDepartment().getMarket()),2);
-                distanceFromTarget += Math.pow(scenario1.getTargetInventory()-scenario1.getDepartment().getFirm().hasHowMany(GoodType.GENERIC),2);
+                distanceFromTarget += Math.pow(scenario1.getTargetInventory()-scenario1.getDepartment().getFirm().hasHowMany(UndifferentiatedGoodType.GENERIC),2);
             }
         });
         while(macroII.schedule.getTime()<10000)

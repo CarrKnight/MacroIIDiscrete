@@ -11,7 +11,8 @@ import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.PricingPurchasesPredictor;
 import financial.market.Market;
 import financial.market.OrderBookBlindMarket;
-import goods.GoodType;
+import goods.DifferentiatedGoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Test;
 import sim.engine.Schedule;
@@ -58,10 +59,10 @@ public class MaxCapacityControlTest {
     public void hiringTest() throws NoSuchFieldException, IllegalAccessException {
         Market.TESTING_MODE = true;
 
-        MacroII model = new MacroII(10l);
-        Firm firm = new Firm(model); firm.earn(1000000000000l);
-        Plant p = new Plant(Blueprint.simpleBlueprint(GoodType.GENERIC,1,GoodType.GENERIC,1),firm);
-        p.setPlantMachinery(new IRSExponentialMachinery(GoodType.CAPITAL,firm,10,p,1f));
+        MacroII model = new MacroII(10);
+        Firm firm = new Firm(model); firm.receiveMany(UndifferentiatedGoodType.MONEY,1000000000);
+        Plant p = new Plant(Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,1, UndifferentiatedGoodType.GENERIC,1),firm);
+        p.setPlantMachinery(new IRSExponentialMachinery(DifferentiatedGoodType.CAPITAL,firm,10,p,1f));
         firm.addPlant(p);
 
 
@@ -73,7 +74,7 @@ public class MaxCapacityControlTest {
 
 
 
-        Market market = new OrderBookBlindMarket(GoodType.LABOR);
+        Market market = new OrderBookBlindMarket(UndifferentiatedGoodType.LABOR);
         assertEquals(p.maximumWorkersPossible(),100);
         HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000,firm,market,p,MaxCapacityControl.class,null,null).getDepartment(); //create!!!
         humanResources.setPredictor(new PricingPurchasesPredictor());
@@ -112,12 +113,12 @@ public class MaxCapacityControlTest {
             //put the stuff to adjust in its own list
             Set<Steppable> toStep = new HashSet<>(steppableList);
             steppableList.clear();
-            long oldWage = humanResources.maxPrice(GoodType.LABOR,market);
+            int oldWage = humanResources.maxPrice(UndifferentiatedGoodType.LABOR,market);
 
 
             model.getPhaseScheduler().step(model);
 
-            long newWage = humanResources.maxPrice(GoodType.LABOR,market);
+            int newWage = humanResources.maxPrice(UndifferentiatedGoodType.LABOR,market);
 
      //       assertTrue(steppableList.contains(control));
 

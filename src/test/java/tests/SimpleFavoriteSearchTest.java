@@ -5,7 +5,7 @@ import agents.firm.Firm;
 import agents.firm.sales.exploration.SimpleFavoriteBuyerSearch;
 import financial.market.OrderBookMarket;
 import financial.utilities.PurchaseResult;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.dummies.DummyBuyer;
 import org.junit.Before;
@@ -36,8 +36,8 @@ public class SimpleFavoriteSearchTest {
 
 
     SimpleFavoriteBuyerSearch toTest;
-    OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);  //notice that the search algorithm will always ignore the quoted price, if any. That's the sales department business
-    MacroII model = new MacroII(1l);
+    OrderBookMarket market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);  //notice that the search algorithm will always ignore the quoted price, if any. That's the sales department business
+    MacroII model = new MacroII(1);
 
 
     @Before
@@ -69,7 +69,7 @@ public class SimpleFavoriteSearchTest {
 
         EconomicAgent bestBuyer = toTest.getBestInSampleBuyer();
         assertEquals(buyer5, bestBuyer);
-        assertEquals(50, bestBuyer.askedForABuyOffer(GoodType.GENERIC));
+        assertEquals(50, bestBuyer.askedForABuyOffer(UndifferentiatedGoodType.GENERIC));
 
         buyer5.setQuotedPrice(5);
 
@@ -79,13 +79,13 @@ public class SimpleFavoriteSearchTest {
 
         bestBuyer = toTest.getBestInSampleBuyer();
         assertEquals(buyer5, bestBuyer);
-        assertEquals(5, bestBuyer.askedForABuyOffer(GoodType.GENERIC));
+        assertEquals(5, bestBuyer.askedForABuyOffer(UndifferentiatedGoodType.GENERIC));
 
         toTest.reactToFailure(buyer5,PurchaseResult.SUCCESS);
 
         bestBuyer = toTest.getBestInSampleBuyer();
         assertEquals(buyer4, bestBuyer);
-        assertEquals(40, bestBuyer.askedForABuyOffer(GoodType.GENERIC));
+        assertEquals(40, bestBuyer.askedForABuyOffer(UndifferentiatedGoodType.GENERIC));
 
 
 

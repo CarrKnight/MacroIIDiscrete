@@ -11,28 +11,23 @@ import agents.firm.sales.prediction.PricingSalesPredictor;
 import agents.firm.sales.prediction.SurveySalesPredictor;
 import agents.firm.sales.pricing.PriceFollower;
 import agents.firm.sales.pricing.UndercuttingAskPricing;
-import financial.Bankruptcy;
 import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.AveragePricePolicy;
 import financial.utilities.BuyerSetPricePolicy;
 import financial.utilities.Quote;
+import goods.DifferentiatedGoodType;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.dummies.DummyBuyer;
 import model.utilities.dummies.DummySeller;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 /**
  * <h4>Description</h4>
@@ -63,7 +58,7 @@ public class SalesDepartmentTest2 {
     public void simpleScenarioSetup(){
 
         model = new MacroII(0);
-        market = new OrderBookMarket(GoodType.GENERIC);
+        market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
         market.setOrderHandler(new ImmediateOrderHandler(),model);
         Firm firm1 = new Firm(model);
         dept1 = SalesDepartmentFactory.incompleteSalesDepartment(firm1, market, new SimpleBuyerSearch(market, firm1), new SimpleSellerSearch(market, firm1), agents.firm.sales.SalesDepartmentAllAtOnce.class);
@@ -77,12 +72,12 @@ public class SalesDepartmentTest2 {
             DummyBuyer buyer = new DummyBuyer(model,10+i*10,market){
 
                 @Override
-                public void pay(long money, EconomicAgent receiver,Market market1) throws Bankruptcy {
-                    super.pay(money, receiver,null);    //To change body of overridden methods use File | Settings | File Templates.
+                public void reactToFilledBidQuote(Quote quoteFilled, Good g, int price, EconomicAgent seller) {
+                    super.reactToFilledBidQuote(quoteFilled, g, price, seller);
                     market.deregisterBuyer(this);
                 }
             };  //these dummies are modified so that if they do trade once, they quit the market entirely
-            buyer.earn(100);
+            buyer.receiveMany(UndifferentiatedGoodType.MONEY,100);
             market.registerBuyer(buyer);
             market.submitBuyQuote(buyer,buyer.quotedPrice);
         }
@@ -102,35 +97,7 @@ public class SalesDepartmentTest2 {
 
     }
 
-    @Test
-    public void testAskedForASalePrice() throws NoSuchFieldException, IllegalAccessException{
 
-        DummyBuyer dummy = new DummyBuyer(dept1.getFirm().getModel(),100l,market); //just ask stuff
-        assertEquals(-1, dept1.askedForASalePrice(dummy).getPriceQuoted()); //we have no goods, can't answer that question!
-        Good toQuote = new Good(GoodType.GENERIC,dept1.getFirm(),1000l);
-        dept1.getFirm().receive(toQuote,null);
-        assertEquals(-1, dept1.askedForASalePrice(dummy).getPriceQuoted()); //the good is still not in the "toSell" list
-        //force it in the toSell list
-        Field field = SalesDepartment.class.getDeclaredField("goodsQuotedOnTheMarket");
-        field.setAccessible(true);
-        ((HashMap<Good,Quote>)field.get (dept1)).put(toQuote, null);
-        assertNull(dept1.askedForASalePrice(dummy));
-
-
-
-        Quote q = dept1.getMarket().submitSellQuote(dept1.getFirm(),dept1.price(toQuote),toQuote);
-        field = SalesDepartment.class.getDeclaredField("goodsQuotedOnTheMarket");
-        field.setAccessible(true);
-        Map<Good,Quote> quotes = (Map<Good, Quote>) field.get(dept1);
-        quotes.put(toQuote,q);
-        //now it works!
-        assertEquals(1200, dept1.askedForASalePrice(dummy).getPriceQuoted());    //this just returns the quote, since we can't copy the competition we just return 10+ clueless percentage which is 20%
-
-
-
-
-
-    }
 
 
     @Test
@@ -138,7 +105,7 @@ public class SalesDepartmentTest2 {
 
         for(int i=0; i < 10; i++)
         {
-            Good good = new Good(GoodType.GENERIC,dept2.getFirm(),10*i);
+            Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,dept2.getFirm(),10*i);
             dept2.getFirm().receive(good,null);
             if(i==0)
                 assertEquals(0, dept2.price(good));     //defaults to 20% markup for the first
@@ -162,11 +129,11 @@ public class SalesDepartmentTest2 {
         dept1.setPredictorStrategy(new PricingSalesPredictor());
         dept2.setPredictorStrategy(new PricingSalesPredictor());
 
-        assertEquals(dept1.getMarket().getBestBuyPrice(), 100l); //the best offer is visible
-        assertEquals(dept2.getMarket().getBestBuyPrice(), 100l); //the best offer is visible
+        assertEquals(dept1.getMarket().getBestBuyPrice(), 100); //the best offer is visible
+        assertEquals(dept2.getMarket().getBestBuyPrice(), 100); //the best offer is visible
 
 
-        Good good = new Good(GoodType.GENERIC,dept1.getFirm(),10);
+        Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,dept1.getFirm(),10);
         dept1.getFirm().receive(good,null);
         dept1.sellThis(good); //sell this, now!
         model.start();
@@ -174,31 +141,31 @@ public class SalesDepartmentTest2 {
         model.schedule.step(model);
 
 
-        assertEquals(dept1.getMarket().getLastPrice(), 56l);
+        assertEquals(dept1.getMarket().getLastPrice(), 56);
 
 
-        good = new Good(GoodType.GENERIC,dept1.getFirm(),10);
+        good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,dept1.getFirm(),10);
         dept1.getFirm().receive(good,null);
         dept1.sellThis(good); //sell this, now!
         model.getPhaseScheduler().step(model);
 
 
-        assertEquals(dept1.getMarket().getLastPrice(), 73l);
+        assertEquals(dept1.getMarket().getLastPrice(), 73);
 
 
-        good = new Good(GoodType.GENERIC,dept2.getFirm(),10);
+        good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,dept2.getFirm(),10);
         dept2.getFirm().receive(good,null);
         dept2.sellThis(good); //sell this, now!
         model.getPhaseScheduler().step(model);
 
 
 
-        assertEquals(dept1.getMarket().getLastPrice(), 46l);
+        assertEquals(dept1.getMarket().getLastPrice(), 46);
 
 
         //addSalesDepartmentListener dummy
-        DummySeller seller = new DummySeller(dept1.getFirm().getModel(),73l);  dept1.getMarket().registerSeller(seller);
-        Quote q = dept1.getMarket().submitSellQuote(seller,73l,new Good(GoodType.GENERIC,seller,73l));
+        DummySeller seller = new DummySeller(dept1.getFirm().getModel(),73);  dept1.getMarket().registerSeller(seller);
+        Quote q = dept1.getMarket().submitSellQuote(seller,73,Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,seller,73));
 
 
         MacroII fakeModel = mock(MacroII.class);
@@ -208,87 +175,86 @@ public class SalesDepartmentTest2 {
 
 
 
-        good = new Good(GoodType.GENERIC,dept2.getFirm(),10);
+        good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,dept2.getFirm(),10);
         dept2.getFirm().receive(good,null);
         dept2.sellThis(good); //sell this, now!
         model.getPhaseScheduler().step(model);
 
 
-        assertEquals(dept1.getMarket().getLastPrice(), 46l); //UNSOLD
-        assertEquals(dept1.getMarket().getBestBuyPrice(), 70l); //UNSOLD
+        assertEquals(dept1.getMarket().getLastPrice(), 46); //UNSOLD
+        assertEquals(dept1.getMarket().getBestBuyPrice(), 70); //UNSOLD
 
 
 
 
-        good = new Good(GoodType.GENERIC,dept2.getFirm(),10);
+        good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,dept2.getFirm(),10);
         dept2.getFirm().receive(good,null);
         dept2.sellThis(good); //sell this, now!
         model.getPhaseScheduler().step(model);
 
 
-        assertEquals(dept1.getMarket().getLastPrice(), 36l); //should have sold both now!
-        assertEquals(dept1.getMarket().getBestBuyPrice(), 50l);
-        assertEquals(dept1.getMarket().getBestSellPrice(), -1l);
+        assertEquals(dept1.getMarket().getLastPrice(), 36); //should have sold both now!
+        assertEquals(dept1.getMarket().getBestBuyPrice(), 50);
+        assertEquals(dept1.getMarket().getBestSellPrice(), -1);
 
-        good = new Good(GoodType.GENERIC,dept1.getFirm(),10);
+        good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,dept1.getFirm(),10);
         dept1.getFirm().receive(good,null);
         dept1.sellThis(good); //sell this, now!
         model.getPhaseScheduler().step(model);
 
 
-        assertEquals(dept1.getMarket().getLastPrice(), 43l);
-        assertEquals(dept1.getMarket().getBestBuyPrice(), 40l);
-        assertEquals(dept1.getMarket().getBestSellPrice(), -1l);
+        assertEquals(dept1.getMarket().getLastPrice(), 43);
+        assertEquals(dept1.getMarket().getBestBuyPrice(), 40);
+        assertEquals(dept1.getMarket().getBestSellPrice(), -1);
 
-        good = new Good(GoodType.GENERIC,dept1.getFirm(),30);
+        good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,dept1.getFirm(),30);
         dept1.getFirm().receive(good,null);
         dept1.sellThis(good); //sell this, now!
         model.getPhaseScheduler().step(model);
 
 
-        assertEquals(dept1.getMarket().getLastPrice(), 43l);
-        assertEquals(dept1.getMarket().getBestBuyPrice(), 40l);
-        assertEquals(dept1.getMarket().getBestSellPrice(), 43l);
+        assertEquals(dept1.getMarket().getLastPrice(), 43);
+        assertEquals(dept1.getMarket().getBestBuyPrice(), 40);
+        assertEquals(dept1.getMarket().getBestSellPrice(), 43);
 
 
-        assertEquals(43l, dept1.getLastClosingPrice());
-        assertEquals(36l, dept2.getLastClosingPrice());
+        assertEquals(43, dept1.getLastClosingPrice());
+        assertEquals(36, dept2.getLastClosingPrice());
 
-        assertEquals(172l, dept1.getFirm().getCash());
-        assertEquals(123l, dept2.getFirm().getCash());
+        assertEquals(172, dept1.getFirm().hasHowMany(UndifferentiatedGoodType.MONEY));
+        assertEquals(123, dept2.getFirm().hasHowMany(UndifferentiatedGoodType.MONEY));
 
 
 
-        Field field = SalesDepartment.class.getDeclaredField("goodsQuotedOnTheMarket");
-        field.setAccessible(true);
-        int size = ((HashMap<Good,Quote>)field.get (dept1)).size();
+
+        int size = dept1.getFirm().hasHowMany(DifferentiatedGoodType.CAPITAL);
         assertEquals(1, size); //2 things left to sell
 
 
 
 
-        assertEquals(1, dept1.getFirm().getTotalInventory().size());
+        assertEquals(1, dept1.getFirm().hasHowMany(DifferentiatedGoodType.CAPITAL));
 
 
 
 
 
-        assertEquals(0, dept2.getFirm().getTotalInventory().size());
+        assertEquals(0, dept2.getFirm().hasHowMany(DifferentiatedGoodType.CAPITAL));
 
 
 
 
         //NEW BUYER
         DummyBuyer buyer = new DummyBuyer(dept1.getFirm().getModel(),100,market);
-        buyer.earn(100);
+        buyer.receiveMany(UndifferentiatedGoodType.MONEY,100);
         dept1.getMarket().registerBuyer(buyer);
         dept1.getMarket().submitBuyQuote(buyer,buyer.quotedPrice);
 
 
 
 
-        assertEquals(0, dept2.getFirm().getTotalInventory().size());
-        assertEquals(dept1.getMarket().getLastPrice(), 72l);
+        assertEquals(0, dept2.getFirm().hasHowMany(DifferentiatedGoodType.CAPITAL));
+        assertEquals(dept1.getMarket().getLastPrice(), 72);
 
 
         market.setPricePolicy(new BuyerSetPricePolicy());
@@ -305,7 +271,7 @@ public class SalesDepartmentTest2 {
         market.setPricePolicy(new AveragePricePolicy());
 
         //make sure it throws errors when it's not set up correctly
-        Good toQuote = new Good(GoodType.GENERIC,dept1.getFirm(),10);
+        Good toQuote = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,dept1.getFirm(),10);
         dept1.start(model);
         dept1.getFirm().receive(toQuote,null);
         //force it in the toSell list
@@ -331,7 +297,7 @@ public class SalesDepartmentTest2 {
     @Test
     public void testPeddle() throws Exception {
 
-        assertEquals(dept1.getMarket().getBestBuyPrice(),100l); //all the others should have been taken
+        assertEquals(dept1.getMarket().getBestBuyPrice(),100); //all the others should have been taken
 
         Field field = SalesDepartment.class.getDeclaredField("toSell");
         field.setAccessible(true);
@@ -349,8 +315,8 @@ public class SalesDepartmentTest2 {
 
         //the results are the same because the market is small and we are using cost pricing
         assertEquals(2,toSell.size()); //2 things left to sell
-        assertEquals(30l,dept2.getLastClosingPrice());
-        assertEquals(380,dept2.getFirm().getCash());
+        assertEquals(30,dept2.getLastClosingPrice());
+        assertEquals(380,dept2.getFirm().hasHowMany(UndifferentiatedGoodType.MONEY)());
 
 
 
@@ -379,14 +345,14 @@ public class SalesDepartmentTest2 {
 
         //NEW BUYER
         DummyBuyer buyer = new DummyBuyer(dept.getFirm().getModel(),30);
-        buyer.earn(100);
+        buyer.receiveMany(UndifferentiatedGoodType.MONEY,100);
         dept.getMarket().registerBuyer(buyer);
         dept.getMarket().submitBuyQuote(buyer,buyer.quotedPrice);
 
 
         //nothing should change
-        assertEquals(30l,dept.getLastClosingPrice());
-        assertEquals(380,dept.getFirm().getCash());
+        assertEquals(30,dept.getLastClosingPrice());
+        assertEquals(380,dept.getFirm().hasHowMany(UndifferentiatedGoodType.MONEY)());
 
 
     }
@@ -403,10 +369,10 @@ public class SalesDepartmentTest2 {
         dept.weekEnd();
         assertEquals(.90f,dept.getSoldPercentage());
         assertEquals(dept.getGrossMargin().size(),1);
-        assertEquals(dept.getGrossMargin().getFirst().longValue(), 140l);
+        assertEquals(dept.getGrossMargin().getFirst().longValue(), 140);
         assertEquals(dept.getTotalUnsold().size(),1);
-        assertEquals(dept.getTotalUnsold().getFirst().longValue(), 30l);
-        assertEquals(dept.getTotalSales().getFirst().longValue(), 410l);
+        assertEquals(dept.getTotalUnsold().getFirst().longValue(), 30);
+        assertEquals(dept.getTotalSales().getFirst().longValue(), 410);
 
 
 

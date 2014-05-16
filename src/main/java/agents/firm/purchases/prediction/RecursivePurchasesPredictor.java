@@ -134,10 +134,10 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
     //    System.err.println("slope " + (predictPrice(1)-predictPrice(0)));
         if(getIndependentLags() > 1 || getPriceLags() > 0)
-            return Math.round(Math.max(predictPrice(1),predictPrice(0)));
+            return (int) Math.round(Math.max(predictPrice(1),predictPrice(0)));
         else{
             delegate.setIncrementDelta((float)(predictPrice(1)-predictPrice(0)));
             return delegate.predictPurchasePriceWhenIncreasingProduction(dept);
@@ -153,10 +153,10 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
 
         if(getIndependentLags() > 1 || getPriceLags() > 0)
-            return Math.round(predictPrice(0));
+            return (int) Math.round(predictPrice(0));
         else{
             delegate.setIncrementDelta((float)(predictPrice(1)-predictPrice(0)));
             return delegate.predictPurchasePriceWhenNoChangeInProduction(dept);
@@ -171,9 +171,9 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         if(getIndependentLags() > 1 || getPriceLags() > 0)
-            return Math.round(Math.min(predictPrice(-1), predictPrice(0)));
+            return (int) Math.round(Math.min(predictPrice(-1), predictPrice(0)));
         else{
             delegate.setIncrementDelta((float)(predictPrice(0)-predictPrice(-1)));
             return delegate.predictPurchasePriceWhenDecreasingProduction(dept);

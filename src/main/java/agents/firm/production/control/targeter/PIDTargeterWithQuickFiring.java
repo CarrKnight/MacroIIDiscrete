@@ -173,7 +173,7 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
                 ActionOrder.ADJUST_PRICES);  //i made this before standard so it acts BEFORE the maximizer
 
         //initially round
-        final long newWage = Math.round(pid.getCurrentMV());
+        final int newWage = Math.round(pid.getCurrentMV());
 
 
 
@@ -228,7 +228,7 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
         assert workersToFire > 0;
 
         //set the wage and fire the workers
-        long newWage = workers.get(workers.size() - workersToFire -1).getMinimumDailyWagesRequired();
+        int newWage = workers.get(workers.size() - workersToFire -1).getMinimumDailyWagesRequired();
         assert newWage == workers.get(workers.size() - workersToFire -1).getMinimumDailyWagesRequired();
         plantControl.setCurrentWage(newWage ); //set new wage
         //in normal situation the new wage will be the variable newwage, but maybe there are frictions. At which point your best bet is just to be slightly below it

@@ -17,7 +17,8 @@ import agents.firm.sales.SalesDepartmentAllAtOnce;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import financial.market.OrderBookBlindMarket;
-import goods.GoodType;
+import goods.DifferentiatedGoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -57,18 +58,18 @@ public class FixWagesPlantControlTest {
     public void checkTargets()
     {
         //randomizer is needed for the constructor of the control
-        MersenneTwisterFast random = new MersenneTwisterFast(1l);
+        MersenneTwisterFast random = new MersenneTwisterFast(1);
         HumanResources hr = mock(HumanResources.class);
         when(hr.getRandom()).thenReturn(random);
 
         Firm firm = mock(Firm.class);
-        when(firm.getModel()).thenReturn(new MacroII(1l));
+        when(firm.getModel()).thenReturn(new MacroII(1));
 
         Plant p = mock(Plant.class);
         when(p.maximumWorkersPossible()).thenReturn(100);
         when(hr.getPlant()).thenReturn(p);
         when(hr.getFirm()).thenReturn(firm);
-        when(p.getModel()).thenReturn(new MacroII(1l));
+        when(p.getModel()).thenReturn(new MacroII(1));
 
 
         FixWagesPlantControl control = new FixWagesPlantControl(hr);
@@ -96,10 +97,10 @@ public class FixWagesPlantControlTest {
         System.out.println("FIXWAGES:");
 
 
-        MacroII model = new MacroII(10l);
-        Firm firm = new Firm(model); firm.earn(1000000000000l);
-        Plant p = new Plant(Blueprint.simpleBlueprint(GoodType.GENERIC, 1, GoodType.GENERIC, 1),firm);
-        p.setPlantMachinery(new IRSExponentialMachinery(GoodType.CAPITAL,firm,10,p,1f));
+        MacroII model = new MacroII(10);
+        Firm firm = new Firm(model); firm.receiveMany(UndifferentiatedGoodType.MONEY,1000000000);
+        Plant p = new Plant(Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC, 1, UndifferentiatedGoodType.GENERIC, 1),firm);
+        p.setPlantMachinery(new IRSExponentialMachinery(DifferentiatedGoodType.CAPITAL,firm,10,p,1f));
 
         firm.addPlant(p);
 
@@ -110,10 +111,10 @@ public class FixWagesPlantControlTest {
 
         //make this always profitable
         SalesDepartment dept = mock(SalesDepartmentAllAtOnce.class);
-        when(dept.getLastClosingCost()).thenReturn(1l);
-        when(dept.getLastClosingPrice()).thenReturn(2l);
+        when(dept.getLastClosingCost()).thenReturn(1);
+        when(dept.getLastClosingPrice()).thenReturn(2);
         //should be profitable
-        firm.registerSaleDepartment(dept,GoodType.GENERIC);
+        firm.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
 
 
 
@@ -144,7 +145,7 @@ public class FixWagesPlantControlTest {
 
 
 
-        Market market = new OrderBookBlindMarket(GoodType.LABOR);
+        Market market = new OrderBookBlindMarket(UndifferentiatedGoodType.LABOR);
         assertEquals(p.maximumWorkersPossible(),100);
         HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000,firm,market,
                 p,FixWagesPlantControl.class,null,null).getDepartment(); //create!!!
@@ -184,7 +185,7 @@ public class FixWagesPlantControlTest {
             Set<Steppable> toStep = new HashSet<>(steppableList);
             steppableList.clear();
             int oldTarget = control.getTarget();
-            long oldWage = humanResources.maxPrice(GoodType.LABOR,market);
+            int oldWage = humanResources.maxPrice(UndifferentiatedGoodType.LABOR,market);
 
 
             firm.weekEnd(100*i);
@@ -193,7 +194,7 @@ public class FixWagesPlantControlTest {
             for(Steppable s : toStep)
                 s.step(model);
 
-            long newWage = humanResources.maxPrice(GoodType.LABOR,market);
+            int newWage = humanResources.maxPrice(UndifferentiatedGoodType.LABOR,market);
             System.out.println("old wage:" + oldWage +" , new wage: " + newWage + " , worker size: " + p.getNumberOfWorkers() + ", old target: " + oldTarget + ", new target: " + control.getTarget());
 
 
@@ -227,10 +228,10 @@ public class FixWagesPlantControlTest {
         System.out.println("--------------------------------------------------------------------------------------");
         System.out.println("FIXWAGES (from above):");
 
-        MacroII model = new MacroII(10l);
-        Firm firm = new Firm(model); firm.earn(1000000000000l);
-        Plant p = new Plant(Blueprint.simpleBlueprint(GoodType.GENERIC, 1, GoodType.GENERIC, 1),firm);
-        p.setPlantMachinery(new IRSExponentialMachinery(GoodType.CAPITAL,firm,10,p,1f));
+        MacroII model = new MacroII(10);
+        Firm firm = new Firm(model); firm.receiveMany(UndifferentiatedGoodType.MONEY,1000000000);
+        Plant p = new Plant(Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC, 1, UndifferentiatedGoodType.GENERIC, 1),firm);
+        p.setPlantMachinery(new IRSExponentialMachinery(DifferentiatedGoodType.CAPITAL,firm,10,p,1f));
 
         firm.addPlant(p);
 
@@ -241,10 +242,10 @@ public class FixWagesPlantControlTest {
 
         //make this always profitable
         SalesDepartment dept = mock(SalesDepartmentAllAtOnce.class);
-        when(dept.getLastClosingCost()).thenReturn(1l);
-        when(dept.getLastClosingPrice()).thenReturn(2l);
+        when(dept.getLastClosingCost()).thenReturn(1);
+        when(dept.getLastClosingPrice()).thenReturn(2);
         //should be profitable
-        firm.registerSaleDepartment(dept,GoodType.GENERIC);
+        firm.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
 
 
         System.out.println("--------------------------------------------------------------------------------------");
@@ -277,7 +278,7 @@ public class FixWagesPlantControlTest {
 
 
 
-        Market market = new OrderBookBlindMarket(GoodType.LABOR);
+        Market market = new OrderBookBlindMarket(UndifferentiatedGoodType.LABOR);
         assertEquals(p.maximumWorkersPossible(),100);
         HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000,firm,market,
                 p,FixWagesPlantControl.class,null,null).getDepartment(); //create!!!
@@ -334,14 +335,14 @@ public class FixWagesPlantControlTest {
             Set<Steppable> toStep = new HashSet<>(steppableList);
             steppableList.clear();
             int oldTarget = control.getTarget();
-            long oldWage = humanResources.maxPrice(GoodType.LABOR,market);
+            int oldWage = humanResources.maxPrice(UndifferentiatedGoodType.LABOR,market);
 
 
             //notice that this is un-natural as profitStep occurs only once every 3 pid steps in reality
             for(Steppable s : toStep)
                 s.step(model);
 
-            long newWage = humanResources.maxPrice(GoodType.LABOR,market);
+            int newWage = humanResources.maxPrice(UndifferentiatedGoodType.LABOR,market);
             System.out.println("old wage:" + oldWage +" , new wage: " + newWage + " , worker size: " + p.getNumberOfWorkers() + ", old target: " + oldTarget + ", new target: " + control.getTarget());
 
 

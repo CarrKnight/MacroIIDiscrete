@@ -17,8 +17,7 @@ import agents.firm.production.technology.Machinery;
 import agents.firm.utilities.DailyProductionAndConsumptionCounter;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
-import goods.Good;
-import goods.GoodType;
+import goods.*;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.logs.*;
@@ -66,7 +65,7 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
         this.maxWorkers = maxWorkers;
         this.buildingCosts = buildingCosts;
         this.usefulLife = usefulLife;
-        this.listeners = new LinkedHashSet<>();
+        this.listeners = new HashSet<>();
         this.model = owner.getModel();
         this.dataStorage = new PlantData();
         this.productionData = new ProductionData();
@@ -286,7 +285,7 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
         assert  checkForInputs(); //inputs should still be valid
         //  assert checkForWorkers(); //workers should still be valid
 
-        long totalCostOfInputs = 0l;
+        int totalCostOfInputs = 0;
 
 
         /*************************************
@@ -319,12 +318,12 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
                 owner.countNewProduction(output.getKey(), totalOutput); //tell the firm counter
 
             }
-            for(int i=0; i < totalOutput; i++)
+            //for(int i=0; i < totalOutput; i++)
+            if(totalOutput > 0)
             {
 
-                Good newProduct = new Good(output.getKey(),owner,costStrategy.unitOutputCost(output.getKey(), totalCostOfInputs));  //BUILD!
-                owner.receive(newProduct, null);
-                owner.reactToPlantProduction(newProduct); //tell the owner!
+                output.getKey().produceAndDeliver(totalOutput,owner,totalCostOfInputs);
+                assert owner.hasHowMany(output.getKey()) >= totalOutput;
             }
 
 
@@ -567,9 +566,9 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
             handleNewEvent(new LogEvent(this,LogLevel.TRACE,"Worker left, total workers:{}",getNumberOfWorkers()));
 
             //tell the market about it
-
-            if(getHr() != null) //it might be null if we are turning off
-                getHr().getMarket().registerFiring(owner,w);
+            //todo lognode
+            //if(getHr() != null) //it might be null if we are turning off
+            //    getHr().getMarket().registerFiring(owner,w);
 
 
 
@@ -816,7 +815,7 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
      * @param totalCostOfInputs the sum of all inputs
      * @return the cost the accounting assings to this good.
      */
-    public long costOfOutput(GoodType t, long totalCostOfInputs) {
+    public int costOfOutput(GoodType t, int totalCostOfInputs) {
         return costStrategy.unitOutputCost(t, totalCostOfInputs);
     }
 
@@ -859,7 +858,7 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
      * Returns the cost of building the machinery that makes out the plant
      * @return
      */
-    public long getBuildingCosts(){
+    public int getBuildingCosts(){
         return plantMachinery.getLastValidPrice();
     }
 
@@ -913,7 +912,7 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
         return plantMachinery.marginalInputRequirements(inputType);
     }
 
-    public void setLastValidPrice(long lastValidPrice) {
+    public void setLastValidPrice(int lastValidPrice) {
         plantMachinery.setLastValidPrice(lastValidPrice);
     }
 
@@ -952,9 +951,6 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
         return plantMachinery.marginalProductionRuns();
     }
 
-    public EconomicAgent getProducer() {
-        return plantMachinery.getProducer();
-    }
 
     public GoodType getType() {
         return plantMachinery.getType();
@@ -982,7 +978,7 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
      * @param totalCostOfInputs the value of input CONSUMED to perform the production RUN
      * @return the cost we assign to this good.
      */
-    public long unitOutputCost(GoodType t, long totalCostOfInputs) {
+    public int unitOutputCost(GoodType t, int totalCostOfInputs) {
         return costStrategy.unitOutputCost(t, totalCostOfInputs);
     }
 
@@ -994,7 +990,7 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
      * @param totalWages the new wages being paid if we have these workers.
      * @return the cost we assign to this good.
      */
-    public long hypotheticalUnitOutputCost(GoodType t, long totalCostOfInputs, int workers, long totalWages) {
+    public int hypotheticalUnitOutputCost(GoodType t, int totalCostOfInputs, int workers, int totalWages) {
         return costStrategy.hypotheticalUnitOutputCost(t, totalCostOfInputs, workers, totalWages);
     }
 
@@ -1002,7 +998,7 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
      * The fixed costs associated with having the plant. These could be the ammortized costs of building the plant, wages if considered quasi-fixed and so on.
      * @return the costs of running the plant
      */
-    public long weeklyFixedCosts() {
+    public int weeklyFixedCosts() {
         return costStrategy.weeklyFixedCosts();
     }
 
@@ -1260,7 +1256,7 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
         Preconditions.checkNotNull(blueprint);
         //add the plant
         Plant plant = new Plant(blueprint, firm);
-        plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, firm, 0, plant));
+        plant.setPlantMachinery(new LinearConstantMachinery(DifferentiatedGoodType.CAPITAL, firm, 0, plant));
         plant.setCostStrategy(new InputCostStrategy(plant));
         firm.addPlant(plant);
         return plant;

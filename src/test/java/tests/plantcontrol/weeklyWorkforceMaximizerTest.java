@@ -53,7 +53,7 @@ public class weeklyWorkforceMaximizerTest {
         currentTarget = 0;
 
         //model
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
 
 
 
@@ -63,7 +63,7 @@ public class weeklyWorkforceMaximizerTest {
         Firm firm = mock(Firm.class);
         when(control.getPlant()).thenReturn(plant);
         when(hr.getPlant()).thenReturn(plant);
-        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(100l);
+        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(100);
         when(plant.minimumWorkersNeeded()).thenReturn(1);
         when(hr.getFirm()).thenReturn(firm);
         when(hr.getPlant()).thenReturn(plant);
@@ -72,7 +72,7 @@ public class weeklyWorkforceMaximizerTest {
         when(control.getHr()).thenReturn(hr);
         PlantCostStrategy strategy = mock(PlantCostStrategy.class);
         when(plant.getCostStrategy()).thenReturn(strategy);
-        when(strategy.weeklyFixedCosts()).thenReturn(100l);
+        when(strategy.weeklyFixedCosts()).thenReturn(100);
 
 
 
@@ -131,7 +131,7 @@ public class weeklyWorkforceMaximizerTest {
         currentTarget = 0;
 
         //model
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         Schedule schedule = mock(Schedule.class);
         model.schedule =  schedule;
 
@@ -142,7 +142,7 @@ public class weeklyWorkforceMaximizerTest {
         Firm firm = mock(Firm.class);
         when(control.getPlant()).thenReturn(plant);
         when(hr.getPlant()).thenReturn(plant);
-        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(100l);
+        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(100);
         when(plant.minimumWorkersNeeded()).thenReturn(1);
         when(hr.getFirm()).thenReturn(firm);
         when(hr.getPlant()).thenReturn(plant);
@@ -151,7 +151,7 @@ public class weeklyWorkforceMaximizerTest {
         when(firm.getRandom()).thenReturn(model.random);
         PlantCostStrategy strategy = mock(PlantCostStrategy.class);
         when(plant.getCostStrategy()).thenReturn(strategy);
-        when(strategy.weeklyFixedCosts()).thenReturn(100l);
+        when(strategy.weeklyFixedCosts()).thenReturn(100);
 
 
 
@@ -213,7 +213,7 @@ public class weeklyWorkforceMaximizerTest {
 
 
         //model
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         Schedule schedule = mock(Schedule.class);
         model.schedule =  schedule;
 
@@ -224,7 +224,7 @@ public class weeklyWorkforceMaximizerTest {
         Firm firm = mock(Firm.class);
         when(control.getPlant()).thenReturn(plant);
         when(hr.getPlant()).thenReturn(plant); when(hr.getRandom()).thenReturn(new MersenneTwisterFast(1));
-        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.weeklyFixedCosts()).thenReturn(100l);
+        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.weeklyFixedCosts()).thenReturn(100);
         when(plant.minimumWorkersNeeded()).thenReturn(1);
         when(hr.getFirm()).thenReturn(firm);
         when(firm.getModel()).thenReturn(model);
@@ -232,7 +232,7 @@ public class weeklyWorkforceMaximizerTest {
         when(control.getHr()).thenReturn(hr);
         PlantCostStrategy strategy = mock(PlantCostStrategy.class);
         when(plant.getCostStrategy()).thenReturn(strategy);
-        when(strategy.weeklyFixedCosts()).thenReturn(100l);
+        when(strategy.weeklyFixedCosts()).thenReturn(100);
 
 
 

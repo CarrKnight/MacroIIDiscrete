@@ -29,12 +29,12 @@ public class PriceLookupPurchaseDepartmentTest {
 
         PriceLookupPurchaseDepartment lookup = new PriceLookupPurchaseDepartment(department);
 
-        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
-        assertEquals(lookup.getPrice(),10l);
+        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10);
+        assertEquals(lookup.getPrice(),10);
 
 
-        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(-1l);
-        assertEquals(lookup.getPrice(),-1l);
+        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(-1);
+        assertEquals(lookup.getPrice(),-1);
     }
 
 

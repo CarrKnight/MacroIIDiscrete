@@ -18,6 +18,7 @@ import financial.market.GeographicalMarket;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.paint.Color;
 import model.MacroII;
@@ -38,7 +39,7 @@ import static org.mockito.Mockito.*;
  */
 public class GeographicalMarketPresentationTest {
 
-    final static private GoodType OIL = new GoodType("oiltest","oil");
+    final static private GoodType OIL = new UndifferentiatedGoodType("oiltest","oil");
 
 
 
@@ -52,13 +53,13 @@ public class GeographicalMarketPresentationTest {
     //make sure the pixels coordinates are correct
     @Test
     public void positioningWhenEverythingIsInitialized() throws Exception {
-        GeographicalMarket market = new GeographicalMarket(GoodType.GENERIC);
+        GeographicalMarket market = new GeographicalMarket(UndifferentiatedGoodType.GENERIC);
         SellingFirmToColorMap map = new SellingFirmToColorMap(market,new MersenneTwisterFast());
 
         //add a seller at -5,-5 and 5,5 and a buyer at 0,0
         GeographicalFirm firm1 = new GeographicalFirm(mock(MacroII.class), -5, -5);
         GeographicalFirm firm2 = new GeographicalFirm(mock(MacroII.class), 5, 5);
-        GeographicalCustomer buyer = new GeographicalCustomer(mock(MacroII.class),100l,0,0,market); //buyer autoregisters
+        GeographicalCustomer buyer = new GeographicalCustomer(mock(MacroII.class),100,0,0,market); //buyer autoregisters
 
 
         market.registerSeller(firm1);
@@ -75,14 +76,14 @@ public class GeographicalMarketPresentationTest {
     //make sure the pixels coordinates are correct
     @Test
     public void positioningWhenListening() throws Exception {
-        GeographicalMarket market = new GeographicalMarket(GoodType.GENERIC);
+        GeographicalMarket market = new GeographicalMarket(UndifferentiatedGoodType.GENERIC);
         SellingFirmToColorMap map = new SellingFirmToColorMap(market,new MersenneTwisterFast());
         GeographicalMarketPresentation presentation = new GeographicalMarketPresentation(map,market,mock(MacroII.class));
 
         //add a seller at -5,-5 and 5,5 and a buyer at 0,0
         GeographicalFirm firm1 = new GeographicalFirm(mock(MacroII.class), -5, -5);
         GeographicalFirm firm2 = new GeographicalFirm(mock(MacroII.class), 5, 5);
-        GeographicalCustomer buyer = new GeographicalCustomer(mock(MacroII.class),100l,0,0,market); //buyer autoregisters
+        GeographicalCustomer buyer = new GeographicalCustomer(mock(MacroII.class),100,0,0,market); //buyer autoregisters
 
 
         market.registerSeller(firm1);
@@ -135,7 +136,7 @@ public class GeographicalMarketPresentationTest {
         //the whole setup is stolen from: testSellsToTheHighestCustomer in dressedSimpleSellerTest
         //here i just want to make sure the color of the buyers is changed, while the buyer that doesn't buy remains white
 
-        MacroII macroII = new MacroII(1l);
+        MacroII macroII = new MacroII(1);
         final GeographicalCustomer customers[] = new GeographicalCustomer[100];
         final GeographicalCustomer farCustomers[] = new GeographicalCustomer[100];
 
@@ -166,7 +167,7 @@ public class GeographicalMarketPresentationTest {
                     @Override
                     public void step(SimState state) {
                         for (int i = 0; i < 10; i++) {
-                            Good toSell = new Good(OIL, seller, 0);
+                            Good toSell = Good.getInstanceOfUndifferentiatedGood(OIL);
                             seller.receive(toSell,null);
                             seller.reactToPlantProduction(toSell);
 

@@ -73,7 +73,7 @@ public class ImmediateOrderHandler implements OrderHandler {
         if(bestBid.getPriceQuoted() >= bestAsk.getPriceQuoted())
         {
             //price is somewhere in the middle
-            long price = market.price(bestAsk.getPriceQuoted(), bestBid.getPriceQuoted());
+            int price = market.price(bestAsk.getPriceQuoted(), bestBid.getPriceQuoted());
 
             //sanity check
             assert price >= bestAsk.getPriceQuoted();
@@ -89,11 +89,11 @@ public class ImmediateOrderHandler implements OrderHandler {
                 throw new Bankruptcy(bestBid.getAgent());
 
             //remove the two crossing quotes
-            bids.remove();
-            asks.remove();
+            final Quote bidQuote = bids.remove();
+            final Quote askQuote = asks.remove();
             //reactions!
-            bestBid.getAgent().reactToFilledBidQuote(bestAsk.getGood(),price,bestAsk.getAgent());
-            bestAsk.getAgent().reactToFilledAskedQuote(bestAsk.getGood(), price,bestBid.getAgent());
+            bestBid.getAgent().reactToFilledBidQuote(bidQuote, bestAsk.getGood(), price, bestAsk.getAgent());
+            bestAsk.getAgent().reactToFilledAskedQuote(askQuote, bestAsk.getGood(), price, bestBid.getAgent());
 
             //recursively make sure there are no more crossing quotes
             return true;

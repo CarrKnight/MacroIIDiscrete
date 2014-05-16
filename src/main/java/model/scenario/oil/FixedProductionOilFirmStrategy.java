@@ -18,6 +18,7 @@ import com.google.common.base.Preconditions;
 import financial.market.GeographicalMarket;
 import goods.Good;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import model.MacroII;
@@ -70,11 +71,20 @@ public class FixedProductionOilFirmStrategy implements OilFirmsScenarioStrategy 
                 int dailyProduction = productionRate.get();
                 Preconditions.checkState(dailyProduction > 0, "production rate must be positive");
 
-                for (int i = 0; i < dailyProduction; i++) {
-                    Good barrel = new Good(goodTypeSold, oilPump, 0);
-                    oilPump.receive(barrel, null);
-                    oilPump.reactToPlantProduction(barrel);
+                if(goodTypeSold.isDifferentiated())
+                {
+                    for (int i = 0; i < dailyProduction; i++) {
+                        Good barrel = Good.getInstanceOfDifferentiatedGood(goodTypeSold, oilPump, 0);
+                        oilPump.receive(barrel, null);
+                        oilPump.reactToPlantProduction(barrel);
+                    }
                 }
+                else {
+                    oilPump.receiveMany((UndifferentiatedGoodType) goodTypeSold, dailyProduction);
+                    oilPump.reactToPlantProduction((UndifferentiatedGoodType)goodTypeSold,dailyProduction);
+                }
+
+
                 model.scheduleTomorrow(ActionOrder.PRODUCTION, this);
             }
         });

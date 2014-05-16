@@ -59,13 +59,13 @@ public class FixedIncreasePurchasesPredictor implements PurchasesPredictor {
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
         return Math.max(0,Math.round(delegate.predictPurchasePriceWhenIncreasingProduction(dept)+incrementDelta));
 
     }
 
     @Override
-    public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         return Math.max(0,Math.round(delegate.predictPurchasePriceWhenIncreasingProduction(dept)-incrementDelta));
 
 
@@ -78,7 +78,7 @@ public class FixedIncreasePurchasesPredictor implements PurchasesPredictor {
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
         return delegate.predictPurchasePriceWhenNoChangeInProduction(dept);
     }
     /**

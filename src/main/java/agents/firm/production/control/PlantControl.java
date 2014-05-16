@@ -40,14 +40,14 @@ public interface PlantControl extends Control, BidPricingStrategy, PlantListener
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(GoodType type);
+    public int maxPrice(GoodType type);
 
 
     /**
      * The controller sets wages for everybody. Probably only used by subcomponents
      * @param newWage the new wage
      */
-    public void setCurrentWage(long newWage);
+    public void setCurrentWage(int newWage);
 
 
     /**

@@ -9,6 +9,7 @@ import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Test;
 
@@ -40,8 +41,8 @@ public class LookAheadPredictorTest {
     public void properTest() throws Exception {
 
         //this is exactly the same test as the survey test. This is because lookAhead reverts to survey if the market doesn't allow for the book to be visible
-        MacroII model = new MacroII(1l);
-        Market market = new OrderBookMarket(GoodType.GENERIC);
+        MacroII model = new MacroII(1);
+        Market market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         Firm buyer = mock(Firm.class); market.registerBuyer(buyer);   when(buyer.getModel()).thenReturn(model);
         LookAheadPredictor predictor = new LookAheadPredictor();
 
@@ -62,7 +63,7 @@ public class LookAheadPredictorTest {
         assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), 10);
 
         Firm seller = mock(Firm.class);
-        Good stubGood = mock(Good.class); when(stubGood.getType()).thenReturn(GoodType.GENERIC);   Quote q = Quote.newSellerQuote(seller, 1, stubGood);
+        Good stubGood = mock(Good.class); when(stubGood.getType()).thenReturn(UndifferentiatedGoodType.GENERIC);   Quote q = Quote.newSellerQuote(seller, 1, stubGood);
         when(seller.askedForASaleQuote(any(EconomicAgent.class), any(GoodType.class))).thenReturn(q);
         market.registerSeller(seller);                              //he didn't submit any quote yet
         assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), 10);

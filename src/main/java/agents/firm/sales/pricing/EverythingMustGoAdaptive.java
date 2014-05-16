@@ -48,8 +48,8 @@ public class EverythingMustGoAdaptive extends  BaseAskPricingStrategy {
      * @return
      */
     @Override
-    public long price(Good g) {
-        return (long) (g.getLastValidPrice() * (1+ markup));
+    public int price(Good g) {
+        return (int)(g.getLastValidPrice() * (1+ markup));
     }
 
 

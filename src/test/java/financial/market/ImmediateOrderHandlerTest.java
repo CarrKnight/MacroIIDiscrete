@@ -9,7 +9,7 @@ package financial.market;
 import agents.EconomicAgent;
 import financial.utilities.Quote;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.scenario.Scenario;
 import model.utilities.dummies.Customer;
@@ -45,7 +45,7 @@ public class ImmediateOrderHandlerTest {
         OrderBookMarket market = mock(OrderBookMarket.class);
         EconomicAgent fakeSeller = mock(EconomicAgent.class);
         EconomicAgent fakebuyer = mock(EconomicAgent.class);
-        final Good fakeGood = new Good(GoodType.GENERIC, fakeSeller, 100);
+        final Good fakeGood = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
 
         ImmediateOrderHandler orderHandler = new ImmediateOrderHandler();
 
@@ -53,7 +53,7 @@ public class ImmediateOrderHandlerTest {
         Queue<Quote> asks = new LinkedList<>();
         asks.add(Quote.newSellerQuote(fakeSeller,100, fakeGood));
         Queue<Quote> bids = new LinkedList<>();
-        bids.add(Quote.newBuyerQuote(fakeSeller, 10, GoodType.GENERIC));
+        bids.add(Quote.newBuyerQuote(fakeSeller, 10, UndifferentiatedGoodType.GENERIC));
         boolean traded = ImmediateOrderHandler.matchQuotes(asks, bids, market);
         Assert.assertTrue(!traded);
         Assert.assertEquals(1, asks.size());
@@ -61,8 +61,8 @@ public class ImmediateOrderHandlerTest {
 
         //now two crossing quotes
         bids.clear();
-        bids.add(Quote.newBuyerQuote(fakeSeller, 1000, GoodType.GENERIC));
-        when(market.price(anyLong(),anyLong())).thenReturn(100l);
+        bids.add(Quote.newBuyerQuote(fakeSeller, 1000, UndifferentiatedGoodType.GENERIC));
+        when(market.price(anyInt(),anyInt())).thenReturn(100);
         traded = ImmediateOrderHandler.matchQuotes(asks, bids, market);
         Assert.assertTrue(traded);
         Assert.assertEquals(0,asks.size());
@@ -73,13 +73,13 @@ public class ImmediateOrderHandlerTest {
     @Test
     public void marketClearsCorrectly() throws IllegalAccessException {
 
-        MacroII model = new MacroII(10l);
+        MacroII model = new MacroII(10);
         model.setScenario(new Scenario(model) {
             @Override
             public void start() {
-                OrderBookMarket market= new OrderBookMarket(GoodType.GENERIC);
+                OrderBookMarket market= new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
                 market.setOrderHandler(new ImmediateOrderHandler(),model);
-                getMarkets().put(GoodType.GENERIC,market);
+                getMarkets().put(UndifferentiatedGoodType.GENERIC,market);
 
                 //20 buyers, from 100 to 120
                 for(int i=0; i < 20; i++)
@@ -99,7 +99,7 @@ public class ImmediateOrderHandlerTest {
         for(int i=0; i< 100; i++)
         {
             model.schedule.step(model);
-            Assert.assertEquals(10, model.getMarket(GoodType.GENERIC).getTodayVolume());
+            Assert.assertEquals(10, model.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume());
             //this isn't always true: (which is the point of having it clear later or using strange priorities)
         //    Assert.assertEquals(109,model.getMarket(GoodType.GENERIC).getBestBuyPrice());
         }

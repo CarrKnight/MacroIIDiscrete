@@ -10,7 +10,6 @@ import agents.EconomicAgent;
 import agents.firm.Department;
 import com.google.common.base.Preconditions;
 import financial.BidListener;
-import financial.MarketEvents;
 import financial.utilities.ActionsAllowed;
 import financial.utilities.HistogramDecoratedPriorityBook;
 import financial.utilities.Quote;
@@ -140,7 +139,7 @@ public class OrderBookMarket extends Market {
      */
 
     @Override
-    public Quote submitSellQuote( EconomicAgent seller, long price,  Good good,  Department department) {
+    public Quote submitSellQuote( EconomicAgent seller, int price,  Good good,  Department department) {
 
         assert getSellers().contains(seller);  //you should be registered if you are here
         if(MacroII.SAFE_MODE) //double check the good isn't already on sale
@@ -183,7 +182,7 @@ public class OrderBookMarket extends Market {
      */
 
     @Override
-    public Quote submitSellQuote( EconomicAgent seller, long price,  Good good) {
+    public Quote submitSellQuote( EconomicAgent seller, int price,  Good good) {
         return submitSellQuote(seller,price,good,null);
     }
 
@@ -217,7 +216,7 @@ public class OrderBookMarket extends Market {
      */
 
     @Override
-    public Quote submitBuyQuote( EconomicAgent buyer, long price,  Department department) {
+    public Quote submitBuyQuote( EconomicAgent buyer, int price,  Department department) {
         assert getBuyers().contains(buyer) : buyer + " ---- " + getBuyers() + " ---- " + this.getGoodType();  //you should be registered if you are here
         if(MacroII.SAFE_MODE) //double check the good isn't already on sale
             Preconditions.checkState(buyer.getModel().getCurrentPhase().equals(ActionOrder.TRADE));
@@ -265,7 +264,7 @@ public class OrderBookMarket extends Market {
      */
 
     @Override
-    public Quote submitBuyQuote( EconomicAgent buyer, long price) {
+    public Quote submitBuyQuote( EconomicAgent buyer, int price) {
         return submitBuyQuote(buyer,price,null);
     }
 
@@ -403,7 +402,7 @@ public class OrderBookMarket extends Market {
      * @return the best price or -1 if there are none
      */
     @Override
-    public long getBestSellPrice() throws IllegalAccessException {
+    public int getBestSellPrice() throws IllegalAccessException {
         if(!isBestSalePriceVisible())
             throw new IllegalAccessException();
 
@@ -445,7 +444,7 @@ public class OrderBookMarket extends Market {
      * @throws IllegalAccessException thrown by markets that do not allow such information.
      */
     @Override
-    public long getBestBuyPrice() throws IllegalAccessException{
+    public int getBestBuyPrice() throws IllegalAccessException{
         if(bids.isEmpty())   //if the ask is empty returns -1
             return -1;
         else

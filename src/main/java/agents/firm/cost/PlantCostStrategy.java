@@ -32,7 +32,7 @@ public interface PlantCostStrategy {
      * @param totalCostOfInputs the value of input CONSUMED to perform the production RUN
      * @return the cost we assign to this good.
      */
-    public long unitOutputCost(GoodType t, long totalCostOfInputs);
+    public int unitOutputCost(GoodType t, int totalCostOfInputs);
 
     /**
      * The unit costs of goods if we change the worker number is going to be how much?
@@ -42,13 +42,13 @@ public interface PlantCostStrategy {
      * @param totalWages the new wages being paid if we have these workers.
      * @return the cost we assign to this good.
      */
-    public long hypotheticalUnitOutputCost(GoodType t, long totalCostOfInputs, int workers, long totalWages);
+    public int hypotheticalUnitOutputCost(GoodType t, int totalCostOfInputs, int workers, int totalWages);
 
     /**
      * The fixed costs associated with having the plant. These could be the ammortized costs of building the plant, wages if considered quasi-fixed and so on.
      * @return the costs of running the plant
      */
-    public long weeklyFixedCosts();
+    public int weeklyFixedCosts();
 
     /**
      * Turning off the strategy

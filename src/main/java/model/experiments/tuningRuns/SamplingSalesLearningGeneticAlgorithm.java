@@ -9,7 +9,7 @@ package model.experiments.tuningRuns;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.SamplingLearningDecreaseSalesPredictor;
 import agents.firm.sales.pricing.pid.salesControlWithSmoothedinventoryAndPID;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.scenario.MonopolistScenario;
 import org.uncommons.maths.random.MersenneTwisterRNG;
@@ -113,7 +113,7 @@ public class SamplingSalesLearningGeneticAlgorithm {
             predictor.setHowManyDaysOnAverageToSample(howManyDaysOnAverageToSample);
             predictor.setMaximumDaysToLookBack(maximumDaysToLookBack);
             predictor.setMaximumDaysToLookForward(maximumDaysToLookForward);
-            scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC).setPredictorStrategy(predictor);
+            scenario1.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPredictorStrategy(predictor);
             while(macroII.schedule.getTime()<5000)
                 macroII.schedule.step(macroII);
 

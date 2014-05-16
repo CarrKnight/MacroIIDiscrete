@@ -112,7 +112,7 @@ public class PurchasesDailyPID extends DailyInventoryControl implements BidPrici
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(GoodType type) {
+    public int maxPrice(GoodType type) {
         return Math.round(controller.getCurrentMV());
     }
 
@@ -123,7 +123,7 @@ public class PurchasesDailyPID extends DailyInventoryControl implements BidPrici
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(Good good) {
+    public int maxPrice(Good good) {
         return maxPrice(good.getType());
     }
 

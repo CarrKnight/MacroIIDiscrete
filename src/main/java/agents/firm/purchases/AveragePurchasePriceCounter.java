@@ -42,7 +42,7 @@ public class AveragePurchasePriceCounter implements Steppable, Deactivatable
     /**
      * average last week price weihted by outflow
      */
-    private ExponentialFilter<Long> averagedPrice = new ExponentialFilter<>(.8f);
+    private ExponentialFilter<Integer> averagedPrice = new ExponentialFilter<>(.8f);
 
     private final PurchasesDepartment department;
 

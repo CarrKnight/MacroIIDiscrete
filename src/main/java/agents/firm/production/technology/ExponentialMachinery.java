@@ -36,13 +36,13 @@ public abstract class ExponentialMachinery extends Machinery {
 
     final private Plant plant;
 
-    protected ExponentialMachinery( GoodType type,  EconomicAgent producer, long costOfProduction,  Plant plant, float outputMultiplier) {
+    protected ExponentialMachinery( GoodType type,  EconomicAgent producer, int costOfProduction,  Plant plant, float outputMultiplier) {
         super(type, producer, costOfProduction);
         this.plant = plant;
         this.outputMultiplier = outputMultiplier;
     }
 
-    protected ExponentialMachinery( GoodType type,  EconomicAgent producer, long costOfProduction,  Plant plant) {
+    protected ExponentialMachinery( GoodType type,  EconomicAgent producer, int costOfProduction,  Plant plant) {
         this(type,producer,costOfProduction,plant,1f);
     }
 

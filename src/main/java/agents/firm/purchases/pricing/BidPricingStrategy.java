@@ -32,14 +32,14 @@ public interface BidPricingStrategy extends Deactivatable {
      * @param type the type of good you want to buy
      * @return the maximum price I am willing to pay for this good
      */
-    public long maxPrice(GoodType type);
+    public int maxPrice(GoodType type);
 
     /**
      * Answer the purchase strategy question: how much am I willing to pay for this specific good?
      * @param good the specific good being offered to you
      * @return the maximum price I am willing to pay for this good
      */
-    public long maxPrice(Good good);
+    public int maxPrice(Good good);
 
 
     /**

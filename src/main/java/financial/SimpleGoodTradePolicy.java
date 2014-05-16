@@ -11,6 +11,7 @@ import financial.market.Market;
 import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;
+import goods.UndifferentiatedGoodType;
 
 
 /**
@@ -57,21 +58,28 @@ public class SimpleGoodTradePolicy implements TradePolicy {
      * @param price the price
      */
     @Override
-    public PurchaseResult trade( EconomicAgent buyer,  EconomicAgent seller,  Good good, long price,
+    public PurchaseResult trade( EconomicAgent buyer,  EconomicAgent seller,  Good good, int price,
                                  Quote buyerQuote, Quote sellerQuote, Market market) {
 
 
         assert seller.has(good); //the seller should have the good!!
 
-        if(!buyer.hasEnoughCash(price)) //check that the buyer has money!
+
+        final UndifferentiatedGoodType money = market.getMoney();
+        if(buyer.hasHowMany(money)<price) //check that the buyer has money!
         {
             System.err.println(buyer + " is bankrupt!");
             throw new Bankruptcy(buyer);
         }
 
-
-        buyer.pay(price,seller,market); //the buyer pays the seller
-
+        //exchange money
+        if(price>0) {
+            buyer.consumeMany(money, price); //buyer pays
+            seller.receiveMany(money, price); //seller earns
+        }
+        else
+            assert price == 0;
+        //exchange goods
         seller.deliver(good,buyer,price); //the seller gives the good to the buyer
 
 

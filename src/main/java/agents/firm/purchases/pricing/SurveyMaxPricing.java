@@ -46,7 +46,7 @@ public class SurveyMaxPricing implements BidPricingStrategy {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(GoodType type) {
+    public int maxPrice(GoodType type) {
 
         EconomicAgent best = department.getBestSupplierFound();
         if(best == null)  //did you find anything?
@@ -55,11 +55,11 @@ public class SurveyMaxPricing implements BidPricingStrategy {
             department.supplierSearchFailure(best, PurchaseResult.NO_MATCH_AVAILABLE);
             if(department.getAvailableBudget() == 0)
                 return 0;
-            return department.getRandom().nextLong(department.getAvailableBudget());
+            return department.getRandom().nextInt(department.getAvailableBudget());
 
         }
         else {
-            long bestPrice = best.askedForASaleQuote(department.getFirm(),department.getGoodType()).getPriceQuoted();
+            int bestPrice = best.askedForASaleQuote(department.getFirm(),department.getGoodType()).getPriceQuoted();
             assert bestPrice >=0; //shouldn't be -1 or it would be null!
 
             return bestPrice;
@@ -75,7 +75,7 @@ public class SurveyMaxPricing implements BidPricingStrategy {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(Good good) {
+    public int maxPrice(Good good) {
         return maxPrice(good.getType());
     }
 

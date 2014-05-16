@@ -8,6 +8,7 @@ import financial.market.Market;
 import financial.market.OrderBookMarket;
 import goods.Good;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,21 +41,21 @@ import static org.mockito.Mockito.*;
 public class MaximumBidPriceDecoratorTest {
 
 
-    final private long decoratedPrice;
+    final private int decoratedPrice;
 
-    final private long reservationPrice;
+    final private int reservationPrice;
 
-    final private long expected;
+    final private int expected;
 
 
     @Parameterized.Parameters
-    public static Collection<Long[]> getTestParameters(){
+    public static Collection<Integer[]> getTestParameters(){
 
-        return Arrays.asList(new Long[][]{
-                {10l, 20l, 10l},
-                {20l, 10l, 10l},
-                {10l, 10l, 10l},
-                {0l, 5l, 0l}
+        return Arrays.asList(new Integer[][]{
+                {10, 20, 10},
+                {20, 10, 10},
+                {10, 10, 10},
+                {0, 5, 0}
 
 
         });
@@ -62,7 +63,7 @@ public class MaximumBidPriceDecoratorTest {
 
     }
 
-    public MaximumBidPriceDecoratorTest(long decoratedPrice, long reservationPrice, long expected) {
+    public MaximumBidPriceDecoratorTest(int decoratedPrice, int reservationPrice, int expected) {
         this.decoratedPrice = decoratedPrice;
         this.reservationPrice = reservationPrice;
         this.expected = expected;
@@ -78,7 +79,7 @@ public class MaximumBidPriceDecoratorTest {
 
         BidPricingDecorator decorator = new MaximumBidPriceDecorator(strategy,reservationPrice);
 
-        assertEquals(decorator.maxPrice(GoodType.GENERIC),expected);
+        assertEquals(decorator.maxPrice(UndifferentiatedGoodType.GENERIC),expected);
         assertEquals(decorator.maxPrice(mock(Good.class)),expected);
 
 
@@ -90,11 +91,11 @@ public class MaximumBidPriceDecoratorTest {
     @Test
     public void testDeptMaxPrice() throws Exception {
 
-        Market market = new OrderBookMarket(GoodType.GENERIC);
+        Market market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
 
         Firm firm = mock(Firm.class);
         when(firm.getModel()).thenReturn(mock(MacroII.class));
-        PurchasesDepartment department = PurchasesDepartment.getEmptyPurchasesDepartment(10000l,firm,market);
+        PurchasesDepartment department = PurchasesDepartment.getEmptyPurchasesDepartment(10000,firm,market);
 
         BidPricingStrategy strategy = mock(BidPricingStrategy.class);
         when(strategy.maxPrice(any(GoodType.class))).thenReturn(decoratedPrice);
@@ -107,7 +108,7 @@ public class MaximumBidPriceDecoratorTest {
 
         department.setReservationPrice(reservationPrice);
 
-        assertEquals(department.maxPrice(GoodType.GENERIC,market),expected);
+        assertEquals(department.maxPrice(UndifferentiatedGoodType.GENERIC,market),expected);
         assertEquals(department.maximumOffer(mock(Good.class)),expected);
 
 

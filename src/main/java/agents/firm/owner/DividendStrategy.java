@@ -32,6 +32,6 @@ public interface DividendStrategy {
      * @param firm the firm paying the dividends
      * @param owner the owner that should be paid
      */
-    public void payDividends(long aggregateProfits, Firm firm, EconomicAgent owner);
+    public void payDividends(int aggregateProfits, Firm firm, EconomicAgent owner);
 
 }

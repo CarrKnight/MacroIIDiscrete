@@ -44,12 +44,12 @@ public class ZeroIntelligenceBidPricing implements BidPricingStrategy{
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(GoodType type) {
+    public int maxPrice(GoodType type) {
 
         assert dept.getGoodType() == type;
         if(dept.getAvailableBudget() == 0) //if we got no money, offer no money
             return 0;
-        return random.nextLong(dept.getAvailableBudget());
+        return random.nextInt(dept.getAvailableBudget());
 
     }
 
@@ -60,8 +60,8 @@ public class ZeroIntelligenceBidPricing implements BidPricingStrategy{
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(Good good) {
-        return random.nextLong(dept.getAvailableBudget());
+    public int maxPrice(Good good) {
+        return random.nextInt(dept.getAvailableBudget());
     }
 
     /**

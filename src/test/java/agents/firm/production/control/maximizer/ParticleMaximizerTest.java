@@ -15,6 +15,7 @@ import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.maximizer.algorithms.hillClimbers.ParticleMaximizer;
 import ec.util.MersenneTwisterFast;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Assert;
 import org.junit.Test;
@@ -50,7 +51,7 @@ import static org.mockito.Mockito.*;
 public class ParticleMaximizerTest {
 
 
-    static private final GoodType BEEF = new GoodType("testBeef","beef");
+    static private final GoodType BEEF = new UndifferentiatedGoodType("testBeef","beef");
 
     @Test
     public void testCurrentOrNeighborTarget(){
@@ -58,11 +59,11 @@ public class ParticleMaximizerTest {
         HumanResources hr = mock(HumanResources.class);
         MersenneTwisterFast random = PowerMockito.mock(MersenneTwisterFast.class);
         when(hr.getRandom()).thenReturn(random);
-        Plant plant = mock(Plant.class); when(plant.weeklyFixedCosts()).thenReturn(0l); when(hr.getPlant()).thenReturn(plant);
+        Plant plant = mock(Plant.class); when(plant.weeklyFixedCosts()).thenReturn(0); when(hr.getPlant()).thenReturn(plant);
         PlantControl pc = mock(PlantControl.class);
         //hr.getFirm().getModel().getWeekLength();
         Firm firm = mock(Firm.class);
-        MacroII model = new MacroII(1l); when(firm.getModel()).thenReturn(model); when(hr.getFirm()).thenReturn(firm);
+        MacroII model = new MacroII(1); when(firm.getModel()).thenReturn(model); when(hr.getFirm()).thenReturn(firm);
         when(hr.getTime()).thenReturn(10d);
 
 
@@ -80,7 +81,7 @@ public class ParticleMaximizerTest {
 
         //other mocking initialization, my good look at what I have done!
         when(hr.getAllEmployers()).thenReturn(employers);
-        when(plant.getBlueprint()).thenReturn(Blueprint.simpleBlueprint(GoodType.GENERIC,1,BEEF,1));
+        when(plant.getBlueprint()).thenReturn(Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,1,BEEF,1));
         when(pc.getHr()).thenReturn(hr); when(plant.maximumWorkersPossible()).thenReturn(100); when(plant.minimumWorkersNeeded()).thenReturn(0);
         when(plant.getNumberOfWorkers()).thenReturn(1);
         when(random.nextGaussian()).thenReturn(0d);
@@ -121,11 +122,11 @@ public class ParticleMaximizerTest {
         HumanResources hr = mock(HumanResources.class);
         MersenneTwisterFast random = PowerMockito.mock(MersenneTwisterFast.class);
         when(hr.getRandom()).thenReturn(random);
-        Plant plant = mock(Plant.class); when(plant.weeklyFixedCosts()).thenReturn(0l); when(hr.getPlant()).thenReturn(plant);
+        Plant plant = mock(Plant.class); when(plant.weeklyFixedCosts()).thenReturn(0); when(hr.getPlant()).thenReturn(plant);
         PlantControl pc = mock(PlantControl.class);
         //hr.getFirm().getModel().getWeekLength();
         Firm firm = mock(Firm.class);
-        MacroII model = new MacroII(1l); when(firm.getModel()).thenReturn(model); when(hr.getFirm()).thenReturn(firm);
+        MacroII model = new MacroII(1); when(firm.getModel()).thenReturn(model); when(hr.getFirm()).thenReturn(firm);
         when(hr.getTime()).thenReturn(10d);
 
 
@@ -143,7 +144,7 @@ public class ParticleMaximizerTest {
 
         //other mocking initialization, my good look at what I have done!
         when(hr.getAllEmployers()).thenReturn(employers);
-        when(plant.getBlueprint()).thenReturn(Blueprint.simpleBlueprint(GoodType.GENERIC,1,BEEF,1));
+        when(plant.getBlueprint()).thenReturn(Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,1,BEEF,1));
         when(pc.getHr()).thenReturn(hr); when(plant.maximumWorkersPossible()).thenReturn(100); when(plant.minimumWorkersNeeded()).thenReturn(0);
         when(plant.getNumberOfWorkers()).thenReturn(1);
         when(random.nextGaussian()).thenReturn(0d);
@@ -176,7 +177,7 @@ public class ParticleMaximizerTest {
         }
     }
 
-    private long profitFunction(int x){
+    private int profitFunction(int x){
         if(x==1 || x==3)
             return 1;
         if(x==2)

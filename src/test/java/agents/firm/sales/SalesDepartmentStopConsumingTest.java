@@ -5,13 +5,18 @@ import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.prediction.LinearExtrapolationPredictor;
 import agents.firm.sales.prediction.PricingSalesPredictor;
+import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.MarkupFollower;
+import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import financial.market.OrderBookMarket;
-import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * <h4>Description</h4>
@@ -34,7 +39,7 @@ public class SalesDepartmentStopConsumingTest {
 
     @Test
     public void testStopConsuming() throws Exception {
-        for(long i=0; i<50; i++)
+        for(int i=0; i<50; i++)
         {
             testStopSellingThisGoodBecauseItWasConsumed_WithAllAtOnceDepartment(i);
             testStopSellingThisGoodBecauseItWasConsumed_WithOneAtATimeDepartment(i);
@@ -43,36 +48,34 @@ public class SalesDepartmentStopConsumingTest {
 
 
 
-    public void testStopSellingThisGoodBecauseItWasConsumed_WithAllAtOnceDepartment(long seed) throws Exception {
+    public void testStopSellingThisGoodBecauseItWasConsumed_WithAllAtOnceDepartment(int seed) throws Exception {
 
         //create the model
         MacroII macroII = new MacroII(seed);
         //add a special phase scheduler that ignores everything scheduled not at trade time
-        OrderBookMarket orderBookMarket = new OrderBookMarket(GoodType.GENERIC);
+        OrderBookMarket orderBookMarket = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         //create a simple firm
         Firm firm = new Firm(macroII);
         //now create the sales department
         FactoryProducedSalesDepartment
-                <BuyerSearchAlgorithm,SellerSearchAlgorithm,MarkupFollower,LinearExtrapolationPredictor> factoryMade =
+                <BuyerSearchAlgorithm,SellerSearchAlgorithm,SimpleFlowSellerPID,LinearExtrapolationPredictor> factoryMade =
                 SalesDepartmentFactory.
-                newSalesDepartment(firm, orderBookMarket, null, null, MarkupFollower.class, LinearExtrapolationPredictor.class,
+                newSalesDepartment(firm, orderBookMarket, null, null, SimpleFlowSellerPID.class, LinearExtrapolationPredictor.class,
                         SalesDepartmentAllAtOnce.class);
         SalesDepartment department = factoryMade.getSalesDepartment();
+        AskPricingStrategy fixed = mock(AskPricingStrategy.class); when(fixed.price(any())).thenReturn(100);
+        department.setAskPricingStrategy(fixed);
         department.setPredictorStrategy(new PricingSalesPredictor());
 
 
         //give three goods to the firm
-        Good[] produced = new Good[3];
         department.start(macroII);
         macroII.start();
 
 
-        for(int i=0; i <3 ; i++)
-        {
-            produced[i] = new Good(GoodType.GENERIC,firm,1l);
-            firm.receive(produced[i],null);
-            firm.reactToPlantProduction(produced[i]);
-        }
+        firm.receiveMany(UndifferentiatedGoodType.GENERIC,3);
+        firm.reactToPlantProduction(UndifferentiatedGoodType.GENERIC,3);
+
         //step the model so that the orders are placed
 
         macroII.schedule.step(macroII);
@@ -81,40 +84,36 @@ public class SalesDepartmentStopConsumingTest {
         //they should all be quoted in the market
         Assert.assertEquals(orderBookMarket.numberOfAsks(),3);
         //the sales department should have them all in its master list
-        for(Good g : produced)
-            Assert.assertTrue(department.isSelling(g));
+        Assert.assertEquals(3, department.numberOfGoodsToSell());
+        Assert.assertEquals(3, department.numberOfQuotesPlaced());
         //and the firm should have not sold any
-        for(Good g : produced)
-            Assert.assertTrue(firm.has(g));
-        Assert.assertEquals(firm.hasHowMany(GoodType.GENERIC),3);
+
+        Assert.assertEquals(firm.hasHowMany(UndifferentiatedGoodType.GENERIC),3);
 
 
 
 
         //now consume 2 goods
-        firm.consume(GoodType.GENERIC);
-        firm.consume(GoodType.GENERIC);
+        firm.consume(UndifferentiatedGoodType.GENERIC);
+        firm.consume(UndifferentiatedGoodType.GENERIC);
 
 
 
         //only one good in inventory
-        Assert.assertEquals(firm.hasHowMany(GoodType.GENERIC),1);
+        Assert.assertEquals(firm.hasHowMany(UndifferentiatedGoodType.GENERIC),1);
         //only one good being sold
-        int sum = 0 ;
-        for(Good g : produced)
-            if(department.isSelling(g))
-                sum++;
-        Assert.assertEquals(sum,1);
+        Assert.assertEquals(1, department.numberOfGoodsToSell());
+        Assert.assertEquals(1, department.numberOfQuotesPlaced());
         //there should be only one quote in the market now
         Assert.assertEquals(orderBookMarket.numberOfAsks(),1);
 
 
         //consume the last!
-        firm.consume(GoodType.GENERIC);
+        firm.consume(UndifferentiatedGoodType.GENERIC);
         //should be empty now
-        Assert.assertEquals(firm.hasHowMany(GoodType.GENERIC),0);
-        for(Good g : produced)
-            Assert.assertTrue(!department.isSelling(g));
+        Assert.assertEquals(firm.hasHowMany(UndifferentiatedGoodType.GENERIC),0);
+        Assert.assertEquals(0, department.numberOfGoodsToSell());
+        Assert.assertEquals(0, department.numberOfQuotesPlaced());
         Assert.assertEquals(orderBookMarket.numberOfAsks(),0);
 
 
@@ -124,12 +123,12 @@ public class SalesDepartmentStopConsumingTest {
 
 
     //this is the same as above, except it is using OneAtATime departments
-    public void testStopSellingThisGoodBecauseItWasConsumed_WithOneAtATimeDepartment(long seed) throws Exception {
+    public void testStopSellingThisGoodBecauseItWasConsumed_WithOneAtATimeDepartment(int seed) throws Exception {
 
         //create the model
         MacroII macroII = new MacroII(seed);
         //create a simple market
-        OrderBookMarket orderBookMarket = new OrderBookMarket(GoodType.GENERIC);
+        OrderBookMarket orderBookMarket = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         //create a simple firm
         Firm firm = new Firm(macroII);
         //now create the sales department
@@ -139,15 +138,11 @@ public class SalesDepartmentStopConsumingTest {
         department.setPredictorStrategy(new PricingSalesPredictor());
 
         macroII.start();
+        department.start(macroII);
 
         //give three goods to the firm
-        Good[] produced = new Good[3];
-        for(int i=0; i <3 ; i++)
-        {
-            produced[i] = new Good(GoodType.GENERIC,firm,1l);
-            firm.receive(produced[i],null);
-            firm.reactToPlantProduction(produced[i]);
-        }
+        firm.receiveMany(UndifferentiatedGoodType.GENERIC,3);
+        firm.reactToPlantProduction(UndifferentiatedGoodType.GENERIC,3);
         //step the model so that the orders are placed
         macroII.schedule.step(macroII);
 
@@ -155,42 +150,36 @@ public class SalesDepartmentStopConsumingTest {
         //only one of them should be quoted in the market
         Assert.assertEquals(orderBookMarket.numberOfAsks(),1);
         //the sales department should have them all in its master list
-        for(Good g : produced)
-            Assert.assertTrue(department.isSelling(g));
-        //and the firm should have not sold any
-        for(Good g : produced)
-            Assert.assertTrue(firm.has(g));
-        Assert.assertEquals(firm.hasHowMany(GoodType.GENERIC),3);
+        Assert.assertEquals(1,department.numberOfQuotesPlaced());
+        Assert.assertEquals(3,department.numberOfGoodsToSell());
+        Assert.assertEquals(firm.hasHowMany(UndifferentiatedGoodType.GENERIC),3);
 
 
 
 
         //now consume 2 goods
-        firm.consume(GoodType.GENERIC);
-        firm.consume(GoodType.GENERIC);
+        firm.consume(UndifferentiatedGoodType.GENERIC);
+        firm.consume(UndifferentiatedGoodType.GENERIC);
 
 
         //step the model again to make sure that the queued good is being quoted
         macroII.getPhaseScheduler().step(macroII);
 
         //only one good in inventory
-        Assert.assertEquals(firm.hasHowMany(GoodType.GENERIC),1);
+        Assert.assertEquals(firm.hasHowMany(UndifferentiatedGoodType.GENERIC),1);
         //only one good being sold
-        int sum = 0 ;
-        for(Good g : produced)
-            if(department.isSelling(g))
-                sum++;
-        Assert.assertEquals(sum,1);
+        Assert.assertEquals(1,department.numberOfGoodsToSell());
+        Assert.assertEquals(1,department.numberOfQuotesPlaced());
         //there should be only one quote in the market now
         Assert.assertEquals(orderBookMarket.numberOfAsks(),1);
 
 
         //consume the last!
-        firm.consume(GoodType.GENERIC);
+        firm.consume(UndifferentiatedGoodType.GENERIC);
         //should be empty now
-        Assert.assertEquals(firm.hasHowMany(GoodType.GENERIC),0);
-        for(Good g : produced)
-            Assert.assertTrue(!department.isSelling(g));
+        Assert.assertEquals(firm.hasHowMany(UndifferentiatedGoodType.GENERIC),0);
+        Assert.assertEquals(0,department.numberOfGoodsToSell());
+        Assert.assertEquals(0,department.numberOfQuotesPlaced());
         Assert.assertEquals(orderBookMarket.numberOfAsks(),0);
 
 

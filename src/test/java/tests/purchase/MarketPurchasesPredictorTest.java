@@ -4,7 +4,7 @@ import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.MarketPurchasesPredictor;
 import financial.market.Market;
 import financial.market.OrderBookBlindMarket;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -37,7 +37,7 @@ public class MarketPurchasesPredictorTest {
 
         MarketPurchasesPredictor predictor = new MarketPurchasesPredictor();
 
-        for(long i=0; i<100; i++)
+        for(int i=0; i<100; i++)
         {
             when(market.getLastPrice()).thenReturn(i);
             assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), i);
@@ -50,7 +50,7 @@ public class MarketPurchasesPredictorTest {
     public void dressedTest() throws Exception
     {
 
-        Market market = new OrderBookBlindMarket(GoodType.GENERIC);
+        Market market = new OrderBookBlindMarket(UndifferentiatedGoodType.GENERIC);
         PurchasesDepartment dept = MemoryPurchasesPredictorTest.fixedPIDTest(market);
 
         MarketPurchasesPredictor predictor = new MarketPurchasesPredictor();

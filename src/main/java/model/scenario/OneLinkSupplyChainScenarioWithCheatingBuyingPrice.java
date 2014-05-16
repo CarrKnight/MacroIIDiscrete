@@ -41,7 +41,7 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
         for(GoodType input : blueprint.getInputs().keySet()){
             FactoryProducedPurchaseDepartment<FixedInventoryControl,CheaterPricing,BuyerSearchAlgorithm,SellerSearchAlgorithm>
                     factoryProducedPurchaseDepartment =
-                    PurchasesDepartment.getPurchasesDepartment(Long.MAX_VALUE, firm, getMarkets().get(input), FixedInventoryControl.class,
+                    PurchasesDepartment.getPurchasesDepartment(Integer.MAX_VALUE, firm, getMarkets().get(input), FixedInventoryControl.class,
                             CheaterPricing.class, null, null);
 
             /*

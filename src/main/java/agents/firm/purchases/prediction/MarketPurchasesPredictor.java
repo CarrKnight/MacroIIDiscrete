@@ -31,12 +31,12 @@ public class MarketPurchasesPredictor implements PurchasesPredictor {
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
         return dept.getMarket().getLastPrice();
     }
 
     @Override
-    public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         return dept.getMarket().getLastPrice();
     }
 
@@ -47,7 +47,7 @@ public class MarketPurchasesPredictor implements PurchasesPredictor {
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
         return dept.getMarket().getLastPrice();
     }
 

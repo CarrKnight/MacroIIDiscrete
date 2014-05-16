@@ -37,11 +37,6 @@ import java.util.List;
 public class PlantData extends DataStorage<PlantDataType> {
 
     /**
-     * when it is set to off, it stops rescheduling itself!
-     */
-    private boolean active = true;
-
-    /**
      * the firm owning the plant we are documenting
      */
     private Firm plantOwner = null;
@@ -72,7 +67,7 @@ public class PlantData extends DataStorage<PlantDataType> {
      * called when the data gathering is supposed to start. It schedules itself to start at next CLEANUP phase
      */
     public void start( MacroII state, Plant plant,  Firm plantOwner) {
-        if(!active)
+        if(!isActive())
             return;
 
         Preconditions.checkState(this.plantOwner == null, " can't start the gatherer twice!");
@@ -99,7 +94,7 @@ public class PlantData extends DataStorage<PlantDataType> {
 
     @Override
     public void step(SimState state) {
-        if(!active)
+        if(!isActive())
             return;
 
         //make sure it's the right time
@@ -128,9 +123,9 @@ public class PlantData extends DataStorage<PlantDataType> {
             lastDayAMeaningfulChangeInWorkforceOccurred = (int)model.getMainScheduleTime();
             daysWhenAMeaningfulChangeInWorkforceOccurred.add(lastDayAMeaningfulChangeInWorkforceOccurred);
         }
-        data.get(PlantDataType.WORKER_TARGET).add(Double.valueOf(plant.getWorkerTarget()));
-        data.get(PlantDataType.TOTAL_WORKERS).add(Double.valueOf(numberOfWorkers));
-        data.get(PlantDataType.WAGES_PAID_THAT_WEEK).add(Double.valueOf(plant.getWagesPaid()));
+        data.get(PlantDataType.WORKER_TARGET).add((double) plant.getWorkerTarget());
+        data.get(PlantDataType.TOTAL_WORKERS).add((double) numberOfWorkers);
+        data.get(PlantDataType.WAGES_PAID_THAT_WEEK).add((double) plant.getWagesPaid());
 
 
         //reschedule
@@ -149,7 +144,8 @@ public class PlantData extends DataStorage<PlantDataType> {
 
     @Override
     public void turnOff() {
-        active = false;
+        super.turnOff();
+        plant = null;
     }
 
     public int getLastDayAMeaningfulChangeInWorkforceOccurred() {

@@ -8,6 +8,7 @@ package model.utilities.dummies;
 
 import com.google.common.base.Preconditions;
 import financial.market.Market;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
@@ -43,18 +44,18 @@ public class CustomerWithDelay extends Customer {
     /**
      * price asked until the delay is over (-1 means no offer)
      */
-    private long defaultPrice=-1l;
+    private int defaultPrice=-1;
 
     /**
      * what is the real price of the customer
      */
-    final private long originalMaxPrice;
+    final private int originalMaxPrice;
 
-    private final LinkedList<Long> delayQueue;
+    private final LinkedList<Integer> delayQueue;
 
 
 
-    public CustomerWithDelay(final MacroII model, long price, final int delay, final Market market) {
+    public CustomerWithDelay(final MacroII model, int price, final int delay, final Market market) {
         super(model, price,market);
         originalMaxPrice = price;
         maxPrice = defaultPrice;
@@ -111,7 +112,7 @@ public class CustomerWithDelay extends Customer {
             long oldPrice = delayQueue.pop();
             if(oldPrice<= originalMaxPrice && oldPrice != -1 )
             {
-                maxPrice = this.getCash()-1;
+                maxPrice = hasHowMany(UndifferentiatedGoodType.MONEY)-1;
             }
             else
                 maxPrice = defaultPrice;

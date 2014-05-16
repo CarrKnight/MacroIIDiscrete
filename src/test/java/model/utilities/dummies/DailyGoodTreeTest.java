@@ -9,7 +9,7 @@ package model.utilities.dummies;
 import financial.market.ImmediateOrderHandler;
 import financial.market.OrderBookMarket;
 import financial.utilities.ShopSetPricePolicy;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,7 +39,7 @@ public class DailyGoodTreeTest
         MacroII model = new MacroII(System.currentTimeMillis());
         model.start();
 
-        OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
+        OrderBookMarket market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         market.setOrderHandler(new ImmediateOrderHandler(),model);
         market.setPricePolicy(new ShopSetPricePolicy()); //the seller price is the final price
 
@@ -61,25 +61,25 @@ public class DailyGoodTreeTest
         //the tree should sell only to the first 2 customers
         model.schedule.step(model);
 
-        Assert.assertEquals(1,tree.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(1,customer1.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(1,customer2.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(0,customer3.hasHowMany(GoodType.GENERIC));
+        Assert.assertEquals(1,tree.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(1,customer1.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(1,customer2.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(0,customer3.hasHowMany(UndifferentiatedGoodType.GENERIC));
         Assert.assertEquals(1,market.numberOfAsks());
         Assert.assertEquals(1,market.numberOfBids());
-        Assert.assertEquals(20,tree.getCash());
+        Assert.assertEquals(20,tree.hasHowMany(UndifferentiatedGoodType.MONEY)); //this might be wrong now that we changed "consumeAll"
 
         //step it again, it repeats itself
         model.schedule.step(model);
         //both customers and tree destroy old inventory
-        Assert.assertEquals(1,tree.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(1,customer1.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(1,customer2.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(0,customer3.hasHowMany(GoodType.GENERIC));
+        Assert.assertEquals(1,tree.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(1,customer1.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(1,customer2.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(0,customer3.hasHowMany(UndifferentiatedGoodType.GENERIC));
         Assert.assertEquals(1,market.numberOfAsks());
         Assert.assertEquals(1,market.numberOfBids());
         //but tree doesn't destroy old cash, so this accumulates
-        Assert.assertEquals(40,tree.getCash());
+        Assert.assertEquals(40,tree.hasHowMany(UndifferentiatedGoodType.MONEY));
 
 
     }
@@ -92,7 +92,7 @@ public class DailyGoodTreeTest
         MacroII model = new MacroII(System.currentTimeMillis());
         model.start();
 
-        OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
+        OrderBookMarket market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         market.setPricePolicy(new ShopSetPricePolicy()); //the seller price is the final price
 
         //create the tree
@@ -113,25 +113,25 @@ public class DailyGoodTreeTest
         //the tree can't sell to anyone
         model.schedule.step(model);
 
-        Assert.assertEquals(3,tree.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(0,customer1.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(0,customer2.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(0,customer3.hasHowMany(GoodType.GENERIC));
+        Assert.assertEquals(3,tree.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(0,customer1.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(0,customer2.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(0,customer3.hasHowMany(UndifferentiatedGoodType.GENERIC));
         Assert.assertEquals(1,market.numberOfAsks());
         Assert.assertEquals(3,market.numberOfBids());
-        Assert.assertEquals(0,tree.getCash());
+        Assert.assertEquals(0,tree.hasHowMany(UndifferentiatedGoodType.MONEY));
 
         //step it again, it repeats itself
         model.schedule.step(model);
         //both customers and tree destroy old inventory
-        Assert.assertEquals(3,tree.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(0,customer1.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(0,customer2.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(0,customer3.hasHowMany(GoodType.GENERIC));
+        Assert.assertEquals(3,tree.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(0,customer1.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(0,customer2.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(0,customer3.hasHowMany(UndifferentiatedGoodType.GENERIC));
         Assert.assertEquals(1,market.numberOfAsks());
         Assert.assertEquals(3,market.numberOfBids());
         //but tree doesn't destroy old cash, so this accumulates
-        Assert.assertEquals(0,tree.getCash());
+        Assert.assertEquals(0,tree.hasHowMany(UndifferentiatedGoodType.MONEY));
 
 
     }
@@ -144,7 +144,7 @@ public class DailyGoodTreeTest
         MacroII model = new MacroII(System.currentTimeMillis());
         model.start();
 
-        OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
+        OrderBookMarket market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         market.setOrderHandler(new ImmediateOrderHandler(),model);
         market.setPricePolicy(new ShopSetPricePolicy()); //the seller price is the final price
 
@@ -166,25 +166,25 @@ public class DailyGoodTreeTest
         //the tree sell all three
         model.schedule.step(model);
 
-        Assert.assertEquals(0,tree.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(1,customer1.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(1,customer2.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(1,customer3.hasHowMany(GoodType.GENERIC));
+        Assert.assertEquals(0,tree.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(1,customer1.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(1,customer2.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(1,customer3.hasHowMany(UndifferentiatedGoodType.GENERIC));
         Assert.assertEquals(0,market.numberOfAsks());
         Assert.assertEquals(0,market.numberOfBids());
-        Assert.assertEquals(3,tree.getCash());
+        Assert.assertEquals(3,tree.hasHowMany(UndifferentiatedGoodType.MONEY));
 
         //step it again, it repeats itself
         model.schedule.step(model);
         //both customers and tree destroy old inventory
-        Assert.assertEquals(0,tree.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(1,customer1.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(1,customer2.hasHowMany(GoodType.GENERIC));
-        Assert.assertEquals(1,customer3.hasHowMany(GoodType.GENERIC));
+        Assert.assertEquals(0,tree.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(1,customer1.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(1,customer2.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertEquals(1,customer3.hasHowMany(UndifferentiatedGoodType.GENERIC));
         Assert.assertEquals(0,market.numberOfAsks());
         Assert.assertEquals(0,market.numberOfBids());
         //but tree doesn't destroy old cash, so this accumulates
-        Assert.assertEquals(6,tree.getCash());
+        Assert.assertEquals(6,tree.hasHowMany(UndifferentiatedGoodType.MONEY));
 
 
     }

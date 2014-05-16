@@ -34,7 +34,10 @@ public abstract class DataStorage<T extends  Enum<T>> extends DataStorageSkeleto
      * grabbed at constructor, makes all the enum stuff possible
      */
     final private Class<T> enumType;
-
+    /**
+     * when it is set to off, it stops rescheduling itself!
+     */
+    private boolean active = true;
 
 
     protected DataStorage(Class<T> enumType) {
@@ -68,5 +71,13 @@ public abstract class DataStorage<T extends  Enum<T>> extends DataStorageSkeleto
     }
 
 
+    public boolean isActive() {
+        return active;
+    }
 
+    @Override
+    public void turnOff() {
+        active = false;
+        data.clear();
+    }
 }

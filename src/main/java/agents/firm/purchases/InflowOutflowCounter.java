@@ -8,7 +8,7 @@ package agents.firm.purchases;
 
 import agents.EconomicAgent;
 import agents.HasInventory;
-import agents.InventoryListener;
+import goods.InventoryListener;
 import com.google.common.base.Preconditions;
 import goods.GoodType;
 import model.MacroII;

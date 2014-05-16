@@ -11,6 +11,7 @@ import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -38,14 +39,15 @@ public class SurveyPurchasesPredictorTest {
     @Test
     public void testPredictPurchasePrice() throws Exception {
 
-        MacroII model = new MacroII(1l);
-        Market market = new OrderBookMarket(GoodType.GENERIC);
+        MacroII model = new MacroII(1);
+        Market market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         Firm buyer = mock(Firm.class); market.registerBuyer(buyer);   when(buyer.getModel()).thenReturn(model);
 
         for(int i=0; i<3; i++)
         {
             Firm seller = mock(Firm.class);
-            Quote q = mock(Quote.class); when(q.getAgent()).thenReturn(seller); when(q.getPriceQuoted()).thenReturn(10l+i*10); when(q.getGood()).thenReturn(mock(Good.class));
+            Quote q = mock(Quote.class); when(q.getAgent()).thenReturn(seller); when(q.getPriceQuoted()).
+                thenReturn(10+i*10); when(q.getGood()).thenReturn(mock(Good.class));
             when(seller.askedForASaleQuote(any(EconomicAgent.class), any(GoodType.class))).thenReturn(q);
             market.registerSeller(seller);
         }
@@ -63,7 +65,8 @@ public class SurveyPurchasesPredictorTest {
         assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), 10);
 
         Firm seller = mock(Firm.class);
-        Quote q = mock(Quote.class); when(q.getAgent()).thenReturn(seller); when(q.getPriceQuoted()).thenReturn(1l); when(q.getGood()).thenReturn(mock(Good.class));
+        Quote q = mock(Quote.class); when(q.getAgent()).thenReturn(seller); when(q.getPriceQuoted()).thenReturn(1);
+        when(q.getGood()).thenReturn(mock(Good.class));
         when(seller.askedForASaleQuote(any(EconomicAgent.class), any(GoodType.class))).thenReturn(q);
         market.registerSeller(seller);
 

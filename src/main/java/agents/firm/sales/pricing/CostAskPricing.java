@@ -33,7 +33,7 @@ public class CostAskPricing extends BaseAskPricingStrategy {
     }
 
     @Override
-    public long price(Good g) {
+    public int price(Good g) {
         return g.getLastValidPrice(); //the good is going to be either the price of production or just the price for which  the good was bought
 
     }

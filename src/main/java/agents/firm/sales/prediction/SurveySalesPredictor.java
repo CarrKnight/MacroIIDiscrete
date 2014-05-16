@@ -40,13 +40,13 @@ public class SurveySalesPredictor extends BaseSalesPredictor {
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
+    public int predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
         EconomicAgent bestBuyer = dept.getBuyerSearchAlgorithm().getBestInSampleBuyer();     //sample the best buyer
         if(bestBuyer == null)
             return -1; //none found, return sadly
         else
         {
-            long offer = bestBuyer.askedForABuyOffer(dept.getMarket().getGoodType()); //
+            int offer = bestBuyer.askedForABuyOffer(dept.getMarket().getGoodType()); //
             assert offer >= 0; //should be a real offer!
             return offer;
         }
@@ -62,7 +62,7 @@ public class SurveySalesPredictor extends BaseSalesPredictor {
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
+    public int predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
         return dept.getLastClosingPrice();
 
     }
@@ -77,7 +77,7 @@ public class SurveySalesPredictor extends BaseSalesPredictor {
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+    public int predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         return dept.getLastClosingPrice();
 
 

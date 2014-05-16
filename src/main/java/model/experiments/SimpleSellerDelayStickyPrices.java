@@ -7,7 +7,7 @@
 package model.experiments;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.experiments.tuningRuns.MarginalMaximizerPIDTuning;
 import model.scenario.SimpleSellerWithSellerDelayScenario;
@@ -157,7 +157,7 @@ public class SimpleSellerDelayStickyPrices {
 
                     long price = 0;
                     try {
-                        price = scenario1.getMarkets().get(GoodType.GENERIC).getBestSellPrice();
+                        price = scenario1.getMarkets().get(UndifferentiatedGoodType.GENERIC).getBestSellPrice();
                     } catch (IllegalAccessException e) {
 
                     }

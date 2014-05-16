@@ -205,7 +205,7 @@ public class LinearExtrapolationPredictor extends BaseSalesPredictor implements 
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
+    public int predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
 
         //if we aren't ready, default to last closing price
         if(lowWorkers == -1 || highWorkers == -1 || !highWorkersPrice.isReady() || !lowWorkersPrice.isReady() || lowWorkers == 0) //when low workers are 0 the prediction will be wrong because of no data
@@ -227,7 +227,7 @@ public class LinearExtrapolationPredictor extends BaseSalesPredictor implements 
         long currentPrice = highWorkers==totalNumberOfWorkers() ?  Math.round(highWorkersPrice.getSmoothedObservation())
                 : Math.round(lowWorkersPrice.getSmoothedObservation())  ;
         long priceDifference = Math.round((lowWorkersPrice.getSmoothedObservation()-highWorkersPrice.getSmoothedObservation())/stepSize);
-        return Math.max(currentPrice - priceDifference,0);
+        return (int) Math.max(currentPrice - priceDifference,0);
 
 
     }
@@ -243,7 +243,7 @@ public class LinearExtrapolationPredictor extends BaseSalesPredictor implements 
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
+    public int predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
 
         //if we aren't ready, default to last closing price
         if(lowWorkers == -1 || highWorkers == -1 || !highWorkersPrice.isReady() || !lowWorkersPrice.isReady() || lowWorkers == 0) //when low workers are 0 the prediction will be wrong because of no data
@@ -265,7 +265,7 @@ public class LinearExtrapolationPredictor extends BaseSalesPredictor implements 
         long currentPrice = highWorkers==totalNumberOfWorkers() ?  Math.round(highWorkersPrice.getSmoothedObservation())
                 : Math.round(lowWorkersPrice.getSmoothedObservation())  ;
         long priceDifference = Math.round((lowWorkersPrice.getSmoothedObservation()-highWorkersPrice.getSmoothedObservation())/stepSize);
-        return Math.max(currentPrice + priceDifference,0);
+        return (int) Math.max(currentPrice + priceDifference,0);
 
     }
 
@@ -310,7 +310,7 @@ public class LinearExtrapolationPredictor extends BaseSalesPredictor implements 
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+    public int predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         return dept.getLastClosingPrice();
     }
 }

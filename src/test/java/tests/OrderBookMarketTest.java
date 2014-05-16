@@ -7,7 +7,7 @@ import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,17 +33,17 @@ public class OrderBookMarketTest {
     @Before
     public void setUp() throws Exception {
         Market.TESTING_MODE = true;
-        market = new OrderBookMarket(GoodType.GENERIC);
-        model = new MacroII(1l);
+        market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
+        model = new MacroII(1);
         buyer = new Person(model){
             @Override
-            public void reactToFilledBidQuote(Good g, long price, EconomicAgent seller) {
+            public void reactToFilledBidQuote(Quote quoteFilled, Good g, int price, EconomicAgent seller) {
 
             }
         };
         seller = new Person(model){
             @Override
-            public void reactToFilledAskedQuote(Good g, long price, EconomicAgent seller) {
+            public void reactToFilledAskedQuote(Quote quoteFilled, Good g, int price, EconomicAgent seller) {
 
             }
         };
@@ -58,10 +58,10 @@ public class OrderBookMarketTest {
     public void testSubmitSellQuote() throws Exception {
 
 
-        buyer.earn(100);
-        Good one =  new Good(GoodType.GENERIC,null,0l);
+        buyer.receiveMany(UndifferentiatedGoodType.MONEY,100);
+        Good one =  Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
         seller.receive(one,null);
-        Good two =  new Good(GoodType.GENERIC,null,1l);
+        Good two =  Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
         seller.receive(two,null);
 
 
@@ -73,7 +73,7 @@ public class OrderBookMarketTest {
         assertEquals(market.getBestSellPrice(), 20);
         assertEquals(market.getBestBuyPrice(), -1);
         assertTrue(buyer.has(one));
-        assertEquals(seller.getCash(), 11l); //this should be the price agreed
+        assertEquals(seller.hasHowMany(UndifferentiatedGoodType.MONEY), 11); //this should be the price agreed
 
 
 
@@ -84,9 +84,9 @@ public class OrderBookMarketTest {
     @Test
     public void testRemoveSellQuote() throws Exception {
 
-        Good one =  new Good(GoodType.GENERIC,null,0l);
+        Good one =  Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
         seller.receive(one,null);
-        Good two =  new Good(GoodType.GENERIC,null,1l);
+        Good two =  Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
         seller.receive(two,null);
 
 
@@ -107,9 +107,9 @@ public class OrderBookMarketTest {
 
         Quote q = null;
         try{
-            Good one =  new Good(GoodType.GENERIC,null,0l);
+            Good one = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
             seller.receive(one,null);
-            Good two =  new Good(GoodType.GENERIC,null,1l);
+            Good two =  Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
             seller.receive(two,null);
 
 
@@ -132,27 +132,27 @@ public class OrderBookMarketTest {
     @Test
     public void testSubmitBuyQuote() throws Exception {
         for(int i=0; i < 5; i++){
-            Good g =  new Good(GoodType.GENERIC,null,10l * i);
+            Good g =  Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
             seller.receive(g,null);
-            market.submitSellQuote(seller,10l * i+10l,g);
+            market.submitSellQuote(seller,10 * i+10,g);
         }
 
-        assertTrue(buyer.getTotalInventory().size() == 0);
-        assertTrue(seller.getTotalInventory().size() == 5);
+        assertTrue(buyer.hasHowMany(UndifferentiatedGoodType.GENERIC) == 0);
+        assertTrue(seller.hasHowMany(UndifferentiatedGoodType.GENERIC) == 5);
 
-        buyer.earn(100l);
+        buyer.receiveMany(UndifferentiatedGoodType.MONEY,100);
 
         for(int i=0; i < 5; i++)
-            market.submitBuyQuote(buyer,30l);
+            market.submitBuyQuote(buyer,30);
 
 
         assertEquals(market.getBestSellPrice(), 40);
         assertEquals(market.getBestBuyPrice(), 30);
 
-        assertEquals(buyer.getTotalInventory().size(), 3);
-        assertEquals(seller.getTotalInventory().size(), 2);
+        assertEquals(buyer.hasHowMany(UndifferentiatedGoodType.GENERIC), 3);
+        assertEquals(seller.hasHowMany(UndifferentiatedGoodType.GENERIC), 2);
 
-        assertEquals(buyer.getCash(), 25l);
+        assertEquals(buyer.hasHowMany(UndifferentiatedGoodType.MONEY), 25);
 
 
 
@@ -169,9 +169,9 @@ public class OrderBookMarketTest {
     @Test
     public void testGetBestBuyPrice() throws Exception {
 
-        market.submitBuyQuote(buyer,30l);
-        market.submitBuyQuote(buyer,40l);
-        market.submitBuyQuote(buyer,20l);
+        market.submitBuyQuote(buyer,30);
+        market.submitBuyQuote(buyer,40);
+        market.submitBuyQuote(buyer,20);
         assertEquals(market.getBestBuyPrice(), 40);
 
 

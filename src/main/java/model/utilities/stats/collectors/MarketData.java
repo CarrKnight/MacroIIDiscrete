@@ -11,7 +11,6 @@ import financial.market.Market;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.enums.MarketDataType;
-import org.jfree.data.time.TimeSeries;
 import sim.engine.SimState;
 
 import java.util.ArrayList;
@@ -37,14 +36,6 @@ public class MarketData extends DataStorage<MarketDataType>
 
 
 
-
-
-
-    /**
-     * when it is set to off, it stops rescheduling itself!
-     */
-    private boolean active = true;
-
     /**
      * the market you are supposed to watch and memorize
      */
@@ -58,7 +49,7 @@ public class MarketData extends DataStorage<MarketDataType>
 
     @Override
     public void step(SimState state) {
-        if(!active)
+        if(!isActive())
             return;
 
         //make sure it's the right time
@@ -95,7 +86,7 @@ public class MarketData extends DataStorage<MarketDataType>
      * called when the agent has to start acting!
      */
     public void start( MacroII state,  Market marketToFollow) {
-        if(!active)
+        if(!isActive())
             return;
 
         //schedule yourself
@@ -110,10 +101,7 @@ public class MarketData extends DataStorage<MarketDataType>
     }
 
 
-    @Override
-    public void turnOff() {
-        active = false;
-    }
+
 
 
 
@@ -183,8 +171,11 @@ public class MarketData extends DataStorage<MarketDataType>
 
     }
 
-
-
+    @Override
+    public void turnOff() {
+        super.turnOff();
+        marketToFollow = null;
+    }
 
     /**
      * a simple comparator that gets all the observations in a day and returns a boolean. It's supposed to be used by observers
@@ -204,7 +195,4 @@ public class MarketData extends DataStorage<MarketDataType>
     }
 
 
-    public boolean isActive() {
-        return active;
-    }
 }

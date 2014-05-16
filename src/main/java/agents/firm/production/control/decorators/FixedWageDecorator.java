@@ -47,7 +47,7 @@ public class FixedWageDecorator extends PlantControlDecorator {
      * @param newWage the new wage
      */
     @Override
-    public void setCurrentWage(long newWage)
+    public void setCurrentWage(int newWage)
     {
         if(newWage > maxPrice(toDecorate.getHr().getGoodType()))   //if it's an increase...
         {

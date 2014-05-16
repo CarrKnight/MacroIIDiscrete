@@ -66,7 +66,7 @@ public class LinearExtrapolationPredictorTest {
         LinearExtrapolationPredictor predictor = new LinearExtrapolationPredictor(dept,macroII);
 
         when(p.getNumberOfWorkers()).thenReturn(1);
-        when(dept.getLastClosingPrice()).thenReturn(15l);
+        when(dept.getLastClosingPrice()).thenReturn(15);
 
         //let it learn
         predictor.step(macroII);
@@ -77,14 +77,14 @@ public class LinearExtrapolationPredictorTest {
 
         //decrease price by 5!
         when(p.getNumberOfWorkers()).thenReturn(2);
-        when(dept.getLastClosingPrice()).thenReturn(10l);
+        when(dept.getLastClosingPrice()).thenReturn(10);
         predictor.step(macroII);  //learn again
         predictor.step(macroII);
         predictor.step(macroII);
         predictor.step(macroII);
         Assert.assertEquals(predictor.getLowWorkersPrice(),15f,.001f); //float because it's rounding
         Assert.assertEquals(predictor.getHighWorkersPrice(),10f,.001f); //float because it's rounding
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(dept, 1000l, 1),5l);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(dept, 1000, 1),5);
     }
 
     //test precipitous drop!
@@ -104,7 +104,7 @@ public class LinearExtrapolationPredictorTest {
         //imagine linear demand p = 100-2W
         for(int workers = 1; workers <= 10; workers++)
         {
-            long price = 100 - 2 * workers;
+            int price = 100 - 2 * workers;
             when(p.getNumberOfWorkers()).thenReturn(workers);
             when(dept.getLastClosingPrice()).thenReturn(price);
             predictor.step(macroII);
@@ -116,14 +116,14 @@ public class LinearExtrapolationPredictorTest {
 
         //now drop the workers to 5!
         when(p.getNumberOfWorkers()).thenReturn(5);
-        when(dept.getLastClosingPrice()).thenReturn(100l-2l*5);
+        when(dept.getLastClosingPrice()).thenReturn(100-2*5);
         predictor.step(macroII);
         predictor.step(macroII);
         predictor.step(macroII);
         predictor.step(macroII);
 
         //the prediction should now be
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(dept, 1000l, 1),100l-2l*6);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(dept, 1000, 1),100-2*6);
 
 
 
@@ -146,7 +146,7 @@ public class LinearExtrapolationPredictorTest {
         LinearExtrapolationPredictor predictor = new LinearExtrapolationPredictor(dept,macroII);
 
         when(p.getNumberOfWorkers()).thenReturn(0);
-        when(dept.getLastClosingPrice()).thenReturn(15l);
+        when(dept.getLastClosingPrice()).thenReturn(15);
 
         //let it learn
         predictor.step(macroII);
@@ -157,7 +157,7 @@ public class LinearExtrapolationPredictorTest {
 
         //decrease price by 5!
         when(p.getNumberOfWorkers()).thenReturn(1);
-        when(dept.getLastClosingPrice()).thenReturn(10l);
+        when(dept.getLastClosingPrice()).thenReturn(10);
         predictor.step(macroII);  //learn again
         predictor.step(macroII);
         predictor.step(macroII);
@@ -167,7 +167,7 @@ public class LinearExtrapolationPredictorTest {
 
 
         //the only difference is that it ignores 0 and just quotes the #1 worker price
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(dept, 1000l, 1),10l);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(dept, 1000, 1),10);
 
 
 
@@ -192,7 +192,7 @@ public class LinearExtrapolationPredictorTest {
         //imagine linear demand p = 100-2W
         for(int workers = 1; workers <= 10; workers++)
         {
-            long price = 100 - 2 * workers;
+            int price = 100 - 2 * workers;
             when(p.getNumberOfWorkers()).thenReturn(workers);
             when(dept.getLastClosingPrice()).thenReturn(price);
             predictor.step(macroII);

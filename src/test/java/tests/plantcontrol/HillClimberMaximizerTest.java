@@ -40,10 +40,10 @@ public class HillClimberMaximizerTest {
         Plant plant = mock(Plant.class);
         Firm firm = mock(Firm.class);
         when(control.getPlant()).thenReturn(plant);
-        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(1l);
+        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(1);
         when(plant.minimumWorkersNeeded()).thenReturn(1);
         when(hr.getFirm()).thenReturn(firm);
-        MacroII model =  new MacroII(1l);
+        MacroII model =  new MacroII(1);
         when(firm.getModel()).thenReturn(model);
         when(control.getHr()).thenReturn(hr);
         when(hr.getPlant()).thenReturn(plant);
@@ -89,10 +89,10 @@ public class HillClimberMaximizerTest {
         Plant plant = mock(Plant.class);
         Firm firm = mock(Firm.class);
         when(control.getPlant()).thenReturn(plant);
-        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(1l);
+        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(1);
         when(plant.minimumWorkersNeeded()).thenReturn(1);
         when(hr.getFirm()).thenReturn(firm);
-        when(firm.getModel()).thenReturn(new MacroII(1l));
+        when(firm.getModel()).thenReturn(new MacroII(1));
         when(control.getHr()).thenReturn(hr);
         when(hr.getPlant()).thenReturn(plant);
 
@@ -139,10 +139,10 @@ public class HillClimberMaximizerTest {
         Plant plant = mock(Plant.class);
         Firm firm = mock(Firm.class);
         when(control.getPlant()).thenReturn(plant);
-        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(1l);
+        when(plant.maximumWorkersPossible()).thenReturn(30); when(plant.getBuildingCosts()).thenReturn(1);
         when(plant.minimumWorkersNeeded()).thenReturn(1);
         when(hr.getFirm()).thenReturn(firm);
-        when(firm.getModel()).thenReturn(new MacroII(1l));
+        when(firm.getModel()).thenReturn(new MacroII(1));
         when(control.getHr()).thenReturn(hr);
         when(hr.getPlant()).thenReturn(plant);
 

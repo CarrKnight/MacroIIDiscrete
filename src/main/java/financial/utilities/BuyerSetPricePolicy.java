@@ -23,7 +23,7 @@ package financial.utilities;
  */
 public class BuyerSetPricePolicy implements PricePolicy {
     @Override
-    public long price(long sellerPrice, long buyerPrice) {
+    public int price(int sellerPrice, int buyerPrice) {
         assert buyerPrice>=sellerPrice;
         return buyerPrice;
     }

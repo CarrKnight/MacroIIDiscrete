@@ -1,7 +1,6 @@
 package tests.purchase;
 
 import agents.EconomicAgent;
-import agents.Inventory;
 import agents.firm.Firm;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
@@ -16,11 +15,13 @@ import agents.firm.purchases.inventoryControl.SimpleInventoryControl;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.purchases.pricing.decorators.LookAtTheMarketBidPricingDecorator;
 import agents.firm.utilities.NumberOfPlantsListener;
-import financial.Bankruptcy;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
+import financial.utilities.Quote;
+import goods.DifferentiatedGoodType;
 import goods.Good;
-import goods.GoodType;
+import goods.Inventory;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.dummies.DummySeller;
 import org.junit.Before;
@@ -48,8 +49,8 @@ public class SimpleInventoryControlTest {
 
     @Before
     public void setup(){
-        model = new MacroII(1l);
-        market = new OrderBookMarket(GoodType.GENERIC);
+        model = new MacroII(1);
+        market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
 
     }
 
@@ -59,7 +60,7 @@ public class SimpleInventoryControlTest {
     {
         Firm f = mock(Firm.class);
         //set up the firm so that it returns first 1 then 10 then 5
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(1);
+        when(f.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(1);
         when(f.getModel()).thenReturn(model);  when(f.getRandom()).thenReturn(model.random);
 
 
@@ -69,9 +70,9 @@ public class SimpleInventoryControlTest {
         //assuming target inventory is 6~~
 
         assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(10);
+        when(f.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(10);
         assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(5);
+        when(f.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(5);
         assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
 
     }
@@ -89,17 +90,17 @@ public class SimpleInventoryControlTest {
 
         //assuming target inventory is 6~~
 
-        f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <9; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <5; i++)
-            f.consume(GoodType.GENERIC);
+            f.consume(UndifferentiatedGoodType.GENERIC);
         assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
         assertEquals(dept.canBuy(), false);
 
@@ -116,11 +117,11 @@ public class SimpleInventoryControlTest {
         when(f.getModel()).thenReturn(model);  when(f.getRandom()).thenReturn(model.random);
 
         Plant p = mock(Plant.class);
-        Blueprint b = Blueprint.simpleBlueprint(GoodType.GENERIC,6,GoodType.CAPITAL,1);
+        Blueprint b = Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,6, DifferentiatedGoodType.CAPITAL,1);
         when(p.getBlueprint()).thenReturn(b);
         LinkedList<Plant> list = new LinkedList<>();
         list.add(p);
-        when(f.getListOfPlantsUsingSpecificInput(GoodType.GENERIC)).thenReturn(list);
+        when(f.getListOfPlantsUsingSpecificInput(UndifferentiatedGoodType.GENERIC)).thenReturn(list);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, SimpleInventoryControl.class,
@@ -141,7 +142,7 @@ public class SimpleInventoryControlTest {
     public void InventoryRating()
     {
         Firm f = new Firm(model);
-        Plant p = new Plant( Blueprint.simpleBlueprint(GoodType.GENERIC,6,GoodType.CAPITAL,1),f);
+        Plant p = new Plant( Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,6, DifferentiatedGoodType.CAPITAL,1),f);
         p.setPlantMachinery(mock(Machinery.class));
         f.addPlant(p);
 
@@ -152,27 +153,27 @@ public class SimpleInventoryControlTest {
 
         //assuming target inventory is 6~~
 
-        f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(dept.rateCurrentLevel(), Level.DANGER);
         assertEquals(dept.canBuy(), true);
 
         for(int i=0; i <9; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(dept.rateCurrentLevel(), Level.BARELY);
         assertEquals(dept.canBuy(), true);
 
         for(int i=0; i <5; i++)
-            f.consume(GoodType.GENERIC);
+            f.consume(UndifferentiatedGoodType.GENERIC);
         assertEquals(dept.rateCurrentLevel(), Level.DANGER);
         assertEquals(dept.canBuy(), true);
 
         for(int i=0; i <100; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
         assertEquals(dept.canBuy(), false);
 
         //now test the listener
-        p = new Plant( Blueprint.simpleBlueprint(GoodType.GENERIC,100,GoodType.CAPITAL,1),f);
+        p = new Plant( Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,100, DifferentiatedGoodType.CAPITAL,1),f);
         p.setPlantMachinery(mock(Machinery.class));
         f.addPlant(p);
         //the new requirement should automatically be put to 100
@@ -180,7 +181,7 @@ public class SimpleInventoryControlTest {
         assertEquals(dept.canBuy(), true);
 
         for(int i=0; i <5; i++)
-            f.receive(new Good(GoodType.GENERIC, f, 0l), null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC), null);
         assertEquals(dept.rateCurrentLevel(), Level.BARELY);
         assertEquals(dept.canBuy(), true);
 
@@ -197,12 +198,12 @@ public class SimpleInventoryControlTest {
     @Test
     public void InventoryRatingShouldBuyMock() throws IllegalAccessException, NoSuchFieldException, InvocationTargetException, NoSuchMethodException {
         Firm f = new Firm(model);
-        Plant p = new Plant( Blueprint.simpleBlueprint(GoodType.GENERIC,6,GoodType.CAPITAL,1),f);
+        Plant p = new Plant( Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,6, DifferentiatedGoodType.CAPITAL,1),f);
         p.setPlantMachinery(mock(Machinery.class));
         f.addPlant(p);
 
 
-        PurchasesDepartment dept = PurchasesDepartment.getEmptyPurchasesDepartment(0l,f,market,model);
+        PurchasesDepartment dept = PurchasesDepartment.getEmptyPurchasesDepartment(0,f,market,model);
         dept = spy(dept);
 
         InventoryControl control = new SimpleInventoryControl(dept);
@@ -219,7 +220,7 @@ public class SimpleInventoryControlTest {
 
         for(int i=0; i <20; i++)
         {//under 6 is DANGER, under 12 is barely. Since buy is called every-time you receive one you should call it until you have 12. Basically you call it 11 times
-            f.receive(new Good(GoodType.GENERIC, f, 0l), null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC), null);
         }
         verify(dept,times(11)).buy();
 
@@ -236,18 +237,18 @@ public class SimpleInventoryControlTest {
         Market.TESTING_MODE = true;
 
 
-        Firm f = new Firm(model); f.earn(1000);
-        Plant p = new Plant( Blueprint.simpleBlueprint(GoodType.GENERIC,6,GoodType.CAPITAL,1),f);
+        Firm f = new Firm(model); f.receiveMany(UndifferentiatedGoodType.MONEY,1000);
+        Plant p = new Plant( Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,6, DifferentiatedGoodType.CAPITAL,1),f);
         p.setPlantMachinery(mock(Machinery.class));
         f.addPlant(p);
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(1000, f, market, SimpleInventoryControl.class,
                 null, null, null).getDepartment();
 
-        f.registerPurchasesDepartment(dept,GoodType.GENERIC);
+        f.registerPurchasesDepartment(dept, UndifferentiatedGoodType.GENERIC);
 
         BidPricingStrategy stubStrategy = mock(BidPricingStrategy.class); //addSalesDepartmentListener this stub as a new strategy so we can fix prices as we prefer
-        when(stubStrategy.maxPrice(GoodType.GENERIC)).thenReturn(80l); //price everything at 80; who cares
+        when(stubStrategy.maxPrice(UndifferentiatedGoodType.GENERIC)).thenReturn(80); //price everything at 80; who cares
         stubStrategy =  new LookAtTheMarketBidPricingDecorator(stubStrategy,market);
         dept.setPricingStrategy(stubStrategy);
 
@@ -260,15 +261,17 @@ public class SimpleInventoryControlTest {
         for(int i=0; i<10; i++) //create 10 buyers!!!!!!!!
         {
             DummySeller seller = new DummySeller(model,10+i*10){
-
                 @Override
-                public void earn(long money) throws Bankruptcy {
-                    super.earn(money);    //To change body of overridden methods use File | Settings | File Templates.
+                public void reactToFilledAskedQuote(Quote quoteFilled, Good g, int price, EconomicAgent buyer) {
+                    super.reactToFilledAskedQuote(quoteFilled, g, price, buyer);
                     market.deregisterSeller(this);
                 }
-            };  //these dummies are modified so that if they do trade once, they quit the market entirely
+            };
+            seller.receiveMany(UndifferentiatedGoodType.MONEY,1000000000);
+
+            //these dummies are modified so that if they do trade once, they quit the market entirely
             market.registerSeller(seller);
-            Good toSell = new Good(GoodType.GENERIC,seller,0);
+            Good toSell =Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
             seller.receive(toSell,null);
             market.submitSellQuote(seller,seller.saleQuote,toSell);
         }
@@ -276,19 +279,19 @@ public class SimpleInventoryControlTest {
         assertEquals(market.getBestBuyPrice(), -1);
         assertEquals(market.getBestSellPrice(), 10);
 
-        assertEquals(f.hasHowMany(GoodType.GENERIC), 0);
+        assertEquals(f.hasHowMany(UndifferentiatedGoodType.GENERIC), 0);
         //you could buy 10 but your max price is 80 so you end up buying only 8!
         dept.buy(); //goooooooooo
         market.start(model);
         model.getPhaseScheduler().step(model);
-        assertEquals(f.hasHowMany(GoodType.GENERIC), 8);
+        assertEquals(f.hasHowMany(UndifferentiatedGoodType.GENERIC), 8);
 
         //when the dust settles...
-        assertEquals(80l, dept.getMarket().getBestBuyPrice()); //there shouldn't be a new buy order!
-        assertEquals(90l, dept.getMarket().getBestSellPrice());  //all the others should have been taken
-        assertEquals(80l, dept.getMarket().getLastPrice());    //although the max price is 80, the buyer defaults to the order book since it's visible
+        assertEquals(80, dept.getMarket().getBestBuyPrice()); //there shouldn't be a new buy order!
+        assertEquals(90, dept.getMarket().getBestSellPrice());  //all the others should have been taken
+        assertEquals(80, dept.getMarket().getLastPrice());    //although the max price is 80, the buyer defaults to the order book since it's visible
 
-        assertEquals(640l, dept.getFirm().getCash());   //1000 - 360
+        assertEquals(640, dept.getFirm().hasHowMany(UndifferentiatedGoodType.MONEY));   //1000 - 360
 
 
 
@@ -300,11 +303,11 @@ public class SimpleInventoryControlTest {
     @Test
     public void gracefulTurnOff() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
 
-         Market.TESTING_MODE = true;
+        Market.TESTING_MODE = true;
 
-        Firm f = new Firm(model); f.earn(1000);
-        Plant plant = new Plant( Blueprint.simpleBlueprint(GoodType.GENERIC,6,GoodType.CAPITAL,1),f);
-        plant.setPlantMachinery(new CRSExponentialMachinery(GoodType.CAPITAL, f, 0, plant, 1));
+        Firm f = new Firm(model); f.receiveMany(UndifferentiatedGoodType.MONEY,1000);
+        Plant plant = new Plant( Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,6, DifferentiatedGoodType.CAPITAL,1),f);
+        plant.setPlantMachinery(new CRSExponentialMachinery(DifferentiatedGoodType.CAPITAL, f, 0, plant, 1));
         f.addPlant(plant);
 
         PurchasesDepartment dept = null;
@@ -376,11 +379,11 @@ public class SimpleInventoryControlTest {
         when(f.getModel()).thenReturn(model);  when(f.getRandom()).thenReturn(model.random);
 
         Plant p = mock(Plant.class);
-        Blueprint b = Blueprint.simpleBlueprint(GoodType.GENERIC,6,GoodType.CAPITAL,1);    //daily needs are 6
+        Blueprint b = Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,6, DifferentiatedGoodType.CAPITAL,1);    //daily needs are 6
         when(p.getBlueprint()).thenReturn(b);
         LinkedList<Plant> list = new LinkedList<>();
         list.add(p);
-        when(f.getListOfPlantsUsingSpecificInput(GoodType.GENERIC)).thenReturn(list);
+        when(f.getListOfPlantsUsingSpecificInput(UndifferentiatedGoodType.GENERIC)).thenReturn(list);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, SimpleInventoryControl.class,

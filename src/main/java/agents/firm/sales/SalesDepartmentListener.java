@@ -32,17 +32,16 @@ public interface SalesDepartmentListener {
      * Tell the listener the firm just tasked the salesdepartment to sell a new good
      * @param owner the owner of the sales department
      * @param dept the sales department asked
-     * @param good the good being sold
+     * @param amount amount to sell
      */
-    public void sellThisEvent( final Firm owner, final SalesDepartment dept, final Good good);
+    public void sellThisEvent(final Firm owner, final SalesDepartment dept, int amount);
 
     /**
      * This logEvent is fired whenever the sales department managed to sell a good!
      * @param dept The department
-     * @param good the good being sold
      * @param price the price sold for
      */
-    public void goodSoldEvent( final SalesDepartment dept, Good good, Long price);
+    public void goodSoldEvent(final SalesDepartment dept, int price);
 
     /**
      * Tell the listener a peddler just came by and we couldn't service him because we have no goods

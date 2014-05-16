@@ -86,17 +86,17 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficencyTest
 
         //now convince the price change lookup that prices went up
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(1l);
+        when(market.getLastPrice()).thenReturn(1);
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(2l);
+        when(market.getLastPrice()).thenReturn(2);
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(3l);
+        when(market.getLastPrice()).thenReturn(3);
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(4l);
+        when(market.getLastPrice()).thenReturn(4);
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(5l);
+        when(market.getLastPrice()).thenReturn(5);
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(6l);
+        when(market.getLastPrice()).thenReturn(6);
         changeLookup.step(macroII);
         assertTrue(changeLookup.getChange() > 0); //there should be a positive change in the air
 
@@ -165,17 +165,17 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficencyTest
 
         //now convince the price change lookup that prices went up
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(1l);
+        when(market.getLastPrice()).thenReturn(1);
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(1l);
+        when(market.getLastPrice()).thenReturn(1);
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(1l);
+        when(market.getLastPrice()).thenReturn(1);
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(1l);
+        when(market.getLastPrice()).thenReturn(1);
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(1l);
+        when(market.getLastPrice()).thenReturn(1);
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(1l);
+        when(market.getLastPrice()).thenReturn(1);
         changeLookup.step(macroII);
         assertTrue(changeLookup.getChange() == 0); //there should be a positive change in the air
 
@@ -241,17 +241,17 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficencyTest
 
         //now convince the price change lookup that prices went up
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(6l);
+        when(market.getLastPrice()).thenReturn(6);
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(5l);
+        when(market.getLastPrice()).thenReturn(5);
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(4l);
+        when(market.getLastPrice()).thenReturn(4);
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(3l);
+        when(market.getLastPrice()).thenReturn(3);
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(2l);
+        when(market.getLastPrice()).thenReturn(2);
         changeLookup.step(macroII);
-        when(market.getLastPrice()).thenReturn(1l);
+        when(market.getLastPrice()).thenReturn(1);
         changeLookup.step(macroII);
         assertTrue(changeLookup.getChange() < 0); //there should be a negative change in the air
 

@@ -50,7 +50,7 @@ public class InputCostStrategy implements PlantCostStrategy, PlantListener{
     }
 
     @Override
-    public long unitOutputCost(GoodType t, long totalCostOfInputs) {
+    public int unitOutputCost(GoodType t, int totalCostOfInputs) {
         //throw an exception if the goodtype is not produced!
         if(!plant.getBlueprint().getOutputs().containsKey(t))
             throw new IllegalArgumentException("Can't assign cost to something we don't completeProductionRunNow!");
@@ -75,7 +75,7 @@ public class InputCostStrategy implements PlantCostStrategy, PlantListener{
      * @return the cost we assign to this good.
      */
     @Override
-    public long hypotheticalUnitOutputCost(GoodType t, long totalCostOfInputs, int workers, long totalWages) {
+    public int hypotheticalUnitOutputCost(GoodType t, int totalCostOfInputs, int workers, int totalWages) {
         Preconditions.checkArgument(plant.getBlueprint().getOutputs().containsKey(t),
                 "Can't assign cost to something we don't completeProductionRunNow!" );
         Preconditions.checkArgument(totalCostOfInputs == 0 || !plant.getBlueprint().getInputs().isEmpty(),
@@ -92,8 +92,8 @@ public class InputCostStrategy implements PlantCostStrategy, PlantListener{
      * @return the costs of running the plant
      */
     @Override
-    public long weeklyFixedCosts() {
-        return Math.round((float) plant.getBuildingCosts() / (float) plant.getUsefulLife()) + plant.getHr().getWagesPaid();
+    public int weeklyFixedCosts() {
+        return (int) (Math.round((float) plant.getBuildingCosts() / (float) plant.getUsefulLife()) + plant.getHr().getWagesPaid());
 
     }
 

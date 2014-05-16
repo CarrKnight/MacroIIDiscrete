@@ -16,14 +16,13 @@ import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import ec.util.MersenneTwisterFast;
 import financial.market.GeographicalMarket;
 import financial.utilities.ShopSetPricePolicy;
-import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.chart.LineChart;
 import model.MacroII;
 import model.scenario.Scenario;
-import model.utilities.dummies.GeographicalCustomer;
 import model.utilities.ActionOrder;
+import model.utilities.dummies.GeographicalCustomer;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import org.junit.Assert;
@@ -37,7 +36,7 @@ import sim.engine.Steppable;
  */
 public class CreateChartOnDemandTest {
 
-    final static private GoodType OIL = new GoodType("oiltest","oil");
+    final static private UndifferentiatedGoodType OIL = new UndifferentiatedGoodType("oiltest","oil");
 
 
     @Before
@@ -53,7 +52,7 @@ public class CreateChartOnDemandTest {
         //the whole setup is stolen from: testSellsToTheHighestCustomer in dressedSimpleSellerTest
         //here i just want to make sure the color of the buyers is changed, while the buyer that doesn't buy remains white
 
-        MacroII macroII = new MacroII(1l);
+        MacroII macroII = new MacroII(1);
         final GeographicalCustomer customers[] = new GeographicalCustomer[100];
         final GeographicalCustomer farCustomers[] = new GeographicalCustomer[100];
         final GeographicalFirm[] seller = new GeographicalFirm[1];
@@ -84,12 +83,9 @@ public class CreateChartOnDemandTest {
                 getModel().scheduleSoon(ActionOrder.PRODUCTION, new Steppable() {
                     @Override
                     public void step(SimState state) {
-                        for (int i = 0; i < 10; i++) {
-                            Good toSell = new Good(OIL, seller[0], 0);
-                            seller[0].receive(toSell, null);
-                            seller[0].reactToPlantProduction(toSell);
+                        seller[0].receiveMany(OIL,10);
+                        seller[0].reactToPlantProduction(OIL,10);
 
-                        }
                         getModel().scheduleTomorrow(ActionOrder.PRODUCTION,this);
 
                     }

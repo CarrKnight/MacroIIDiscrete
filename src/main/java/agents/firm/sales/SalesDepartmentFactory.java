@@ -12,7 +12,7 @@ import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import financial.market.Market;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 
 
 public class SalesDepartmentFactory {
@@ -87,7 +87,7 @@ public class SalesDepartmentFactory {
             dept = new SalesDepartmentOneAtATime(firm, market, buyerSearchAlgorithm, sellerSearchAlgorithm);
         }
 
-        firm.registerSaleDepartment(dept, GoodType.GENERIC);
+        firm.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
 
         //now create the two pricing strategies
         AP askPricingStrategy;

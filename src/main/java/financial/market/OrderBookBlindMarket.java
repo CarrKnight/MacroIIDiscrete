@@ -53,7 +53,7 @@ public class OrderBookBlindMarket extends OrderBookMarket {
      * Throws illegal access exception
      */
     @Override
-    public long getBestSellPrice() throws IllegalAccessException {
+    public int getBestSellPrice() throws IllegalAccessException {
         throw new IllegalAccessException("not visible");
     }
 
@@ -76,7 +76,7 @@ public class OrderBookBlindMarket extends OrderBookMarket {
      * @throws IllegalAccessException thrown by markets that do not allow such information.
      */
     @Override
-    public long getBestBuyPrice() throws IllegalAccessException {
+    public int getBestBuyPrice() throws IllegalAccessException {
         throw new IllegalAccessException("not visible");
     }
 

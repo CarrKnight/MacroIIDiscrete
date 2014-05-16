@@ -12,7 +12,7 @@ import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.dummies.DummyBuyer;
 import model.utilities.dummies.DummySeller;
@@ -54,20 +54,20 @@ public class SurveyPredictorStrategyTest {
     public void scenario1() throws Exception {
 
 
-        model = new MacroII(100l);
-        market = new OrderBookMarket(GoodType.GENERIC);
+        model = new MacroII(100);
+        market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         f = new Firm(model);
         department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new SurveySalesPredictor();
         department.setPredictorStrategy(strategy);
 
 
-        DummyBuyer buyer1 = new DummyBuyer(model,100l,market); market.registerBuyer(buyer1);
-        market.submitBuyQuote(buyer1,100l);
-        DummyBuyer buyer2 = new DummyBuyer(model,199l,market); market.registerBuyer(buyer2);
-        market.submitBuyQuote(buyer2,200l);
-        DummySeller seller = new DummySeller(model, 300l); market.registerSeller(seller);
-        market.submitSellQuote(seller,300l,new Good(GoodType.GENERIC,seller,300l));
+        DummyBuyer buyer1 = new DummyBuyer(model,100,market); market.registerBuyer(buyer1);
+        market.submitBuyQuote(buyer1,100);
+        DummyBuyer buyer2 = new DummyBuyer(model,199,market); market.registerBuyer(buyer2);
+        market.submitBuyQuote(buyer2,200);
+        DummySeller seller = new DummySeller(model, 300); market.registerSeller(seller);
+        market.submitSellQuote(seller,300,Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
 
 
         assertEquals(199, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //dummy buyer 2 always answers "199"
@@ -84,8 +84,8 @@ public class SurveyPredictorStrategyTest {
 
 
 
-        model = new MacroII(100l);
-        market = new OrderBookMarket(GoodType.GENERIC);
+        model = new MacroII(100);
+        market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         market.setOrderHandler(new ImmediateOrderHandler(),model);
         f = new Firm(model);
         department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
@@ -95,30 +95,30 @@ public class SurveyPredictorStrategyTest {
 
 
 
-        DummyBuyer buyer1 = new DummyBuyer(model,100l,market); market.registerBuyer(buyer1);
-        market.submitBuyQuote(buyer1,100l);
-        DummyBuyer buyer2 = new DummyBuyer(model,199l,market); market.registerBuyer(buyer2);
-        market.submitBuyQuote(buyer2,200l);
-        DummySeller seller = new DummySeller(model, 300l); market.registerSeller(seller);
-        market.submitSellQuote(seller,300l,new Good(GoodType.GENERIC,seller,300l));
+        DummyBuyer buyer1 = new DummyBuyer(model,100,market); market.registerBuyer(buyer1);
+        market.submitBuyQuote(buyer1,100);
+        DummyBuyer buyer2 = new DummyBuyer(model,199,market); market.registerBuyer(buyer2);
+        market.submitBuyQuote(buyer2,200);
+        DummySeller seller = new DummySeller(model, 300); market.registerSeller(seller);
+        market.submitSellQuote(seller,300,Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
 
 
-        Good sold = new Good(GoodType.GENERIC,seller,200l);
-        DummyBuyer buyer3 = new DummyBuyer(model,250,market); market.registerBuyer(buyer3);   buyer3.earn(300);
-        market.submitBuyQuote(buyer3,250l);
+        Good sold = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
+        DummyBuyer buyer3 = new DummyBuyer(model,250,market); market.registerBuyer(buyer3);   buyer3.receiveMany(UndifferentiatedGoodType.MONEY,300);
+        market.submitBuyQuote(buyer3,250);
         DummySeller seller2 = new DummySeller(model, 250); market.registerSeller(seller2);
         seller2.receive(sold,null);
-        market.submitSellQuote(seller2,250l,sold);
+        market.submitSellQuote(seller2,250,sold);
 
         assertTrue(buyer3.has(sold));
         assertTrue(!seller2.has(sold));
-        assertEquals(50, buyer3.getCash());
-        assertEquals(250, seller2.getCash());
+        assertEquals(50, buyer3.hasHowMany(UndifferentiatedGoodType.MONEY));
+        assertEquals(250, seller2.hasHowMany(UndifferentiatedGoodType.MONEY));
 
 
-        assertEquals(250l, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 3
+        assertEquals(250, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 3
         market.deregisterBuyer(buyer3);
-        assertEquals(199l, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 2
+        assertEquals(199, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 2
 
 
     }
@@ -130,8 +130,8 @@ public class SurveyPredictorStrategyTest {
 
         Market.TESTING_MODE = true;
 
-        model = new MacroII(100l);
-        market = new OrderBookMarket(GoodType.GENERIC){ //break the order book so that the best buyer is not visible anymore
+        model = new MacroII(100);
+        market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC){ //break the order book so that the best buyer is not visible anymore
             /**
              * Best bid and asks are visible.
              */
@@ -149,29 +149,29 @@ public class SurveyPredictorStrategyTest {
 
 
 
-        DummyBuyer buyer1 = new DummyBuyer(model,100l,market); market.registerBuyer(buyer1);
-        market.submitBuyQuote(buyer1,100l);
-        DummyBuyer buyer2 = new DummyBuyer(model,199l,market); market.registerBuyer(buyer2);
-        market.submitBuyQuote(buyer2,200l);
-        DummySeller seller = new DummySeller(model, 300l); market.registerSeller(seller);
-        market.submitSellQuote(seller,300l,new Good(GoodType.GENERIC,seller,300l));
+        DummyBuyer buyer1 = new DummyBuyer(model,100,market); market.registerBuyer(buyer1);
+        market.submitBuyQuote(buyer1,100);
+        DummyBuyer buyer2 = new DummyBuyer(model,199,market); market.registerBuyer(buyer2);
+        market.submitBuyQuote(buyer2,200);
+        DummySeller seller = new DummySeller(model, 300); market.registerSeller(seller);
+        market.submitSellQuote(seller,300,Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
 
 
-        Good sold = new Good(GoodType.GENERIC,seller,200l);
-        DummyBuyer buyer3 = new DummyBuyer(model,250,market); market.registerBuyer(buyer3);   buyer3.earn(300);
-        market.submitBuyQuote(buyer3,250l);
+        Good sold = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
+        DummyBuyer buyer3 = new DummyBuyer(model,250,market); market.registerBuyer(buyer3);   buyer3.receiveMany(UndifferentiatedGoodType.MONEY,300);
+        market.submitBuyQuote(buyer3,250);
         DummySeller seller2 = new DummySeller(model, 250); market.registerSeller(seller2);
         seller2.receive(sold,null);
-        market.submitSellQuote(seller2,250l,sold);
+        market.submitSellQuote(seller2,250,sold);
 
         assertTrue(buyer3.has(sold));
         assertTrue(!seller2.has(sold));
-        assertEquals(50, buyer3.getCash());
-        assertEquals(250, seller2.getCash());
+        assertEquals(50, buyer3.hasHowMany(UndifferentiatedGoodType.MONEY));
+        assertEquals(250, seller2.hasHowMany(UndifferentiatedGoodType.MONEY));
 
-        assertEquals(250l, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 3
+        assertEquals(250, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 3
         market.deregisterBuyer(buyer3);
-        assertEquals(199l, strategy.predictSalePriceAfterIncreasingProduction(department, 200,1 )); //find buyer 2        assertEquals(199l,department.predictSalePriceAfterIncreasingProduction(200)); //not overriden this time!
+        assertEquals(199, strategy.predictSalePriceAfterIncreasingProduction(department, 200,1 )); //find buyer 2        assertEquals(199,department.predictSalePriceAfterIncreasingProduction(200)); //not overriden this time!
 
     }
 
@@ -182,8 +182,8 @@ public class SurveyPredictorStrategyTest {
         Market.TESTING_MODE = true;
 
 
-        model = new MacroII(100l);
-        market = new OrderBookMarket(GoodType.GENERIC);
+        model = new MacroII(100);
+        market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         f = new Firm(model);
         department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new SurveySalesPredictor();
@@ -202,12 +202,12 @@ public class SurveyPredictorStrategyTest {
 
 
 
-        model = new MacroII(100l);
-        market = new OrderBookMarket(GoodType.GENERIC);
+        model = new MacroII(100);
+        market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         market.setOrderHandler(new ImmediateOrderHandler(),model);
         f = new Firm(model);
         department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
-        f.registerSaleDepartment(department,GoodType.GENERIC);
+        f.registerSaleDepartment(department, UndifferentiatedGoodType.GENERIC);
 
 
 
@@ -218,17 +218,17 @@ public class SurveyPredictorStrategyTest {
 
 
 
-        DummyBuyer buyer1 = new DummyBuyer(model,100l,market); market.registerBuyer(buyer1);
-        market.submitBuyQuote(buyer1,100l);
-        DummyBuyer buyer2 = new DummyBuyer(model,199l,market); market.registerBuyer(buyer2);
-        market.submitBuyQuote(buyer2,200l);
-        DummySeller seller = new DummySeller(model, 300l); market.registerSeller(seller);
-        market.submitSellQuote(seller,300l,new Good(GoodType.GENERIC,seller,300l));
+        DummyBuyer buyer1 = new DummyBuyer(model,100,market); market.registerBuyer(buyer1);
+        market.submitBuyQuote(buyer1,100);
+        DummyBuyer buyer2 = new DummyBuyer(model,199,market); market.registerBuyer(buyer2);
+        market.submitBuyQuote(buyer2,200);
+        DummySeller seller = new DummySeller(model, 300); market.registerSeller(seller);
+        market.submitSellQuote(seller,300,Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
 
 
-        Good sold = new Good(GoodType.GENERIC,seller,200l);
-        DummyBuyer buyer3 = new DummyBuyer(model,250,market); market.registerBuyer(buyer3);   buyer3.earn(300);
-        market.submitBuyQuote(buyer3, 250l);
+        Good sold = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
+        DummyBuyer buyer3 = new DummyBuyer(model,250,market); market.registerBuyer(buyer3);   buyer3.receiveMany(UndifferentiatedGoodType.MONEY,300);
+        market.submitBuyQuote(buyer3, 250);
         //market.registerSeller(department.getFirm()); Automatically registered when you create the sales department
         department.getFirm().receive(sold,null);
         //hack to simulate sellThis without actually calling it
@@ -236,16 +236,16 @@ public class SurveyPredictorStrategyTest {
         field.setAccessible(true);
         ((HashMap<Good,Quote>)field.get (department)).put(sold, null);
 
-        market.submitSellQuote(department.getFirm(),250l,sold);
+        market.submitSellQuote(department.getFirm(),250,sold);
 
         assertTrue(buyer3.has(sold));
         assertTrue(!f.has(sold));
-        assertEquals(50, buyer3.getCash());
-        assertEquals(250, f.getCash());
+        assertEquals(50, buyer3.hasHowMany(UndifferentiatedGoodType.MONEY));
+        assertEquals(250, f.hasHowMany(UndifferentiatedGoodType.MONEY));
 
-        assertEquals(250l, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 3
+        assertEquals(250, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 3
         market.deregisterBuyer(buyer3);
-        assertEquals(199l, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 2        assertEquals(200,department.predictSalePriceAfterIncreasingProduction(200)); //overridden by looking at the order book.
+        assertEquals(199, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 2        assertEquals(200,department.predictSalePriceAfterIncreasingProduction(200)); //overridden by looking at the order book.
 
     }
 

@@ -73,7 +73,7 @@ public class LearningDecreaseSalesPredictorTest
         SalesDepartment department = mock(SalesDepartment.class);
         when(department.getAveragedLastPrice()).thenReturn(200d);
         //the sales predictor will be predict for 9 (yesterdayVolume + 1)
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 100l, 1), 197l); //200-2.6 (rounded)
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 100, 1), 197); //200-2.6 (rounded)
 
 
 
@@ -125,19 +125,19 @@ public class LearningDecreaseSalesPredictorTest
 
         LearningDecreaseSalesPredictor predictor = new LearningDecreaseSalesPredictor(market,model );
         when(department.getAveragedLastPrice()).thenReturn(50d); //current department pricing 100$
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000l, 1),50l);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1),50);
 
         //with one observation, it still returns whatever the sales department says
         when(market.getLastObservedDay()).thenReturn(0);
         when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(0d);
         model.getPhaseScheduler().step(model);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000l, 1),50l);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1),50);
 
         //with no volume the observation is ignored
         when(market.getLastObservedDay()).thenReturn(1);
         when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(-1d);
         model.getPhaseScheduler().step(model);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000l, 1),50l);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1),50);
 
 
         //two observations, everything back to normal! (but the slope is 0, so no effect)
@@ -152,7 +152,7 @@ public class LearningDecreaseSalesPredictorTest
                         1,1
                 });
         model.getPhaseScheduler().step(model);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 50l, 1),50l);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 50, 1),50);
 
 
     }

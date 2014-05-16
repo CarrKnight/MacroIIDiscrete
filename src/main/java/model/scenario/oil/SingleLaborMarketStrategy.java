@@ -11,7 +11,7 @@ import financial.market.GeographicalMarket;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import javafx.beans.property.SimpleIntegerProperty;
 import model.MacroII;
 import model.scenario.MonopolistScenario;
@@ -40,7 +40,7 @@ public class SingleLaborMarketStrategy implements LaborMarketOilScenarioStrategy
 
     public SingleLaborMarketStrategy(int laborSupplySlope, int laborSupplyIntercept, int totalNumberOfWorkers)
     {
-        this.laborMarket = new OrderBookMarket(GoodType.LABOR);
+        this.laborMarket = new OrderBookMarket(UndifferentiatedGoodType.LABOR);
         laborMarket.setPricePolicy(new BuyerSetPricePolicy());
 
         this.laborSupplySlope = new SimpleIntegerProperty(laborSupplySlope);
@@ -53,8 +53,8 @@ public class SingleLaborMarketStrategy implements LaborMarketOilScenarioStrategy
     @Override
     public void initializeLaborMarkets(OilDistributorScenario scenario, GeographicalMarket oilMarket, MacroII model) {
         //register the market
-        model.getGoodTypeMasterList().addNewSector(GoodType.LABOR);
-        scenario.getMarkets().put(GoodType.LABOR,laborMarket);
+        model.getGoodTypeMasterList().addNewSector(UndifferentiatedGoodType.LABOR);
+        scenario.getMarkets().put(UndifferentiatedGoodType.LABOR,laborMarket);
 
         //fill labor market
         MonopolistScenario.fillLaborSupply(laborSupplyIntercept.get(),laborSupplySlope.get(),true,false,

@@ -278,7 +278,7 @@ public class HillClimberThroughPredictionControl implements PlantControl, PlantL
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice( GoodType type) {
+    public int maxPrice(GoodType type) {
         return delegate.maxPrice(type);
     }
 
@@ -290,7 +290,7 @@ public class HillClimberThroughPredictionControl implements PlantControl, PlantL
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice( Good good) {
+    public int maxPrice(Good good) {
         return delegate.maxPrice(good);
     }
 
@@ -307,7 +307,7 @@ public class HillClimberThroughPredictionControl implements PlantControl, PlantL
      * @param newWage the new wage
      */
     @Override
-    public void setCurrentWage(long newWage) {
+    public void setCurrentWage(int newWage) {
         delegate.setCurrentWage(newWage);
     }
 

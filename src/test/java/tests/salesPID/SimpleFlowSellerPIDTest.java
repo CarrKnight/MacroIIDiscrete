@@ -9,8 +9,9 @@ import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
+import goods.DifferentiatedGoodType;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.dummies.DummyBuyer;
@@ -49,13 +50,13 @@ public class SimpleFlowSellerPIDTest {
 
         MacroII model = new MacroII(System.currentTimeMillis());
         Firm firm = new Firm(model);
-        OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
+        OrderBookMarket market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, market, new SimpleBuyerSearch(market, firm), new SimpleSellerSearch(market, firm), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept,.1f,.1f,0f,0);
         dept.setAskPricingStrategy(strategy);
 
         //register sale department
-        firm.registerSaleDepartment(dept,GoodType.GENERIC);
+        firm.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
         dept.start(model);
         model.start();
 
@@ -73,7 +74,7 @@ public class SimpleFlowSellerPIDTest {
             {
                 DummyBuyer buyer = new DummyBuyer(model,i*10,market);
                 market.registerBuyer(buyer);
-                buyer.earn(1000l);
+                buyer.receiveMany(UndifferentiatedGoodType.MONEY,1000);
                 Quote q = market.submitBuyQuote(buyer,i*10);
                 quotes.add(q);
             }
@@ -81,7 +82,7 @@ public class SimpleFlowSellerPIDTest {
             //sell 4 goods!
             model.scheduleSoon(ActionOrder.PRODUCTION, simState -> {
                 for(int i=0; i<4; i++){
-                    Good good = new Good(GoodType.GENERIC,firm,50l);
+                    Good good = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
                     firm.receive(good,null);
                     dept.sellThis(good);
                 }
@@ -120,14 +121,14 @@ public class SimpleFlowSellerPIDTest {
 
         MacroII model = new MacroII(1l);
         Firm firm = new Firm(model);
-        OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
+        OrderBookMarket market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, market, new SimpleBuyerSearch(market, firm), new SimpleSellerSearch(market, firm), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept);
         dept.setAskPricingStrategy(strategy);
-        strategy.setInitialPrice(150l);
+        strategy.setInitialPrice(150);
 
 
-        firm.registerSaleDepartment(dept,GoodType.GENERIC);
+        firm.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
         dept.start(model);
         model.start();
 
@@ -143,7 +144,7 @@ public class SimpleFlowSellerPIDTest {
             {
                 DummyBuyer buyer = new DummyBuyer(model,i*10,market);
                 market.registerBuyer(buyer);
-                buyer.earn(1000l);
+                buyer.receiveMany(UndifferentiatedGoodType.MONEY,1000);
                 Quote q = market.submitBuyQuote(buyer,i*10);
                 quotes.add(q);
             }
@@ -151,7 +152,7 @@ public class SimpleFlowSellerPIDTest {
             //sell 4 goods!
             model.scheduleSoon(ActionOrder.PRODUCTION, simState -> {
                 for(int i=0; i<4; i++){
-                    Good good = new Good(GoodType.GENERIC,firm,50l);
+                    Good good = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
                     firm.receive(good,null);
                     dept.sellThis(good);
                 }
@@ -193,7 +194,7 @@ public class SimpleFlowSellerPIDTest {
 
         MacroII model = new MacroII(1l);
         Firm firm = new Firm(model);
-        OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
+        OrderBookMarket market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
         SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, market, new SimpleBuyerSearch(market, firm), new SimpleSellerSearch(market, firm), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept);
         strategy.setProductionCostOverride(true);
@@ -201,10 +202,10 @@ public class SimpleFlowSellerPIDTest {
         dept.start(model);
         model.start();
 
-        strategy.setInitialPrice(150l);
+        strategy.setInitialPrice(150);
 
 
-        firm.registerSaleDepartment(dept,GoodType.GENERIC);
+        firm.registerSaleDepartment(dept, DifferentiatedGoodType.CAPITAL);
 
         List<Quote> quotes =new LinkedList<>();
 
@@ -218,7 +219,7 @@ public class SimpleFlowSellerPIDTest {
             {
                 DummyBuyer buyer = new DummyBuyer(model,i*10,market);
                 market.registerBuyer(buyer);
-                buyer.earn(1000l);
+                buyer.receiveMany(UndifferentiatedGoodType.MONEY,1000);
                 Quote q = market.submitBuyQuote(buyer,i*10);
                 quotes.add(q);
             }
@@ -227,7 +228,7 @@ public class SimpleFlowSellerPIDTest {
             //sell 4 goods!
             model.scheduleSoon(ActionOrder.PRODUCTION, simState -> {
                 for(int i=0; i<4; i++){
-                    Good good = new Good(GoodType.GENERIC,firm,80l);
+                    Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,firm,80);
                     firm.receive(good,null);
                     dept.sellThis(good);
                 }

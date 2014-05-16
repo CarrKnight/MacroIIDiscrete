@@ -56,7 +56,7 @@ public class GeographicalCustomer extends Customer implements HasLocation {
     private double distanceExponent =1;
 
 
-    public GeographicalCustomer( MacroII model, long maxPrice, double x, double y, GeographicalMarket market) {
+    public GeographicalCustomer( MacroII model, int maxPrice, double x, double y, GeographicalMarket market) {
         super(model, maxPrice,market);
         location.setxLocation(x);
         location.setyLocation(y);

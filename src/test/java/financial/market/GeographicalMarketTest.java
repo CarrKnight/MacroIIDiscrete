@@ -19,6 +19,7 @@ import financial.utilities.Quote;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.scenario.Scenario;
 import model.utilities.ActionOrder;
@@ -52,7 +53,7 @@ import static org.mockito.Mockito.*;
 public class GeographicalMarketTest
 {
 
-    final public static GoodType INPUT = new GoodType("testInput","Input");
+    final public static GoodType INPUT = new UndifferentiatedGoodType("testInput","Input");
 
 
     //make sure it schedule itself correctly
@@ -86,7 +87,7 @@ public class GeographicalMarketTest
     public void testSellsToTheHigherCustomers()
     {
         //model to step
-        MacroII macroII = new MacroII(1l);
+        MacroII macroII = new MacroII(1);
 
         //geographical market for oil!
         final GeographicalMarket market = new GeographicalMarket(INPUT);
@@ -102,11 +103,11 @@ public class GeographicalMarketTest
             @Override
             public void step(SimState state) {
                 for (int i = 0; i < 2; i++) {
-                    Good toSell = new Good(INPUT, seller, 5l);
-                    Quote quote = market.submitSellQuote(seller, 10l, toSell);
+                    Good toSell = Good.getInstanceOfUndifferentiatedGood(INPUT);
+                    Quote quote = market.submitSellQuote(seller, 10, toSell);
                     when(seller.has(toSell)).thenReturn(true);
                     //it should not have been cleared!
-                    Assert.assertTrue(quote.getPriceQuoted() == 10l);
+                    Assert.assertTrue(quote.getPriceQuoted() == 10);
                 }
 
             }
@@ -122,7 +123,7 @@ public class GeographicalMarketTest
             //if they are ever asked to choose, choose the seller
             when(customers[i].chooseSupplier(any(Multimap.class))).thenReturn(seller);
             //make sure buyer is never bankrupt
-            when(customers[i].hasEnoughCash(anyLong())).thenReturn(true);
+            when(customers[i].hasHowMany(UndifferentiatedGoodType.MONEY)).thenReturn(Integer.MAX_VALUE);
             market.registerBuyer(customers[i]);
         }
         //step them so that they place a quote during trade!
@@ -132,7 +133,7 @@ public class GeographicalMarketTest
 
                 for(int i=0; i<3; i++)
                 {
-                    when(customers[i].getMaxPrice()).thenReturn(Long.valueOf(20+i*10)); //need this so that the market sorts the customers correctly
+                    when(customers[i].getMaxPrice()).thenReturn(Integer.valueOf(20+i*10)); //need this so that the market sorts the customers correctly
                     //make the customers buy
                     Quote quote = market.submitBuyQuote(customers[i],20+i*10);
                     //it should not have been cleared!
@@ -148,9 +149,9 @@ public class GeographicalMarketTest
         macroII.schedule.step(macroII);
 
         //only the last two customers should have received it!
-        verify(customers[1],times(1)).reactToFilledBidQuote(any(Good.class),anyLong(),any(EconomicAgent.class));
-        verify(customers[2],times(1)).reactToFilledBidQuote(any(Good.class), anyLong(), any(EconomicAgent.class));
-        verify(customers[0],never()).reactToFilledBidQuote(any(Good.class), anyLong(), any(EconomicAgent.class));
+        verify(customers[1],times(1)).reactToFilledBidQuote(any(), any(Good.class), anyInt(), any(EconomicAgent.class));
+        verify(customers[2],times(1)).reactToFilledBidQuote(any(), any(Good.class), anyInt(), any(EconomicAgent.class));
+        verify(customers[0],never()).reactToFilledBidQuote(any(), any(Good.class), anyInt(), any(EconomicAgent.class));
 
     }
 
@@ -160,7 +161,7 @@ public class GeographicalMarketTest
     public void testSellsToTheHighestCustomer()
     {
         //model to step
-        MacroII macroII = new MacroII(1l);
+        MacroII macroII = new MacroII(1);
 
         //geographical market for oil!
         final GeographicalMarket market = new GeographicalMarket(INPUT);
@@ -176,11 +177,11 @@ public class GeographicalMarketTest
             @Override
             public void step(SimState state) {
                 for (int i = 0; i < 2; i++) {
-                    Good toSell = new Good(INPUT, seller, 5l);
-                    Quote quote = market.submitSellQuote(seller, 10l, toSell);
+                    Good toSell = Good.getInstanceOfUndifferentiatedGood(INPUT);
+                    Quote quote = market.submitSellQuote(seller, 10, toSell);
                     when(seller.has(toSell)).thenReturn(true);
                     //it should not have been cleared!
-                    Assert.assertTrue(quote.getPriceQuoted() == 10l);
+                    Assert.assertTrue(quote.getPriceQuoted() == 10);
                 }
 
             }
@@ -196,7 +197,7 @@ public class GeographicalMarketTest
             //if they are ever asked to choose, choose the seller
             when(customers[i].chooseSupplier(any(Multimap.class))).thenReturn(seller);
             //make sure buyer is never bankrupt
-            when(customers[i].hasEnoughCash(anyLong())).thenReturn(true);
+            when(customers[i].hasHowMany(UndifferentiatedGoodType.MONEY)).thenReturn(Integer.MAX_VALUE);
             market.registerBuyer(customers[i]);
         }
         //step them so that they place a quote during trade!
@@ -206,7 +207,7 @@ public class GeographicalMarketTest
 
                 for(int i=0; i<3; i++)
                 {
-                    when(customers[i].getMaxPrice()).thenReturn(Long.valueOf(20+i*10)); //need this so that the market sorts the customers correctly
+                    when(customers[i].getMaxPrice()).thenReturn(Integer.valueOf(20+i*10)); //need this so that the market sorts the customers correctly
                     //make the customers buy
                     Quote quote = market.submitBuyQuote(customers[i],20+i*10);
                     //it should not have been cleared!
@@ -228,15 +229,15 @@ public class GeographicalMarketTest
                 Assert.assertTrue(quote.getPriceQuoted() ==40);
                 return null;
             }
-        }).when(customers[2]).reactToFilledBidQuote(any(Good.class), anyLong(), any(EconomicAgent.class));
+        }).when(customers[2]).reactToFilledBidQuote(any(), any(Good.class), anyInt(), any(EconomicAgent.class));
 
         macroII.start();
         macroII.schedule.step(macroII);
 
         //only the last two customers should have received it!
-        verify(customers[1],never()).reactToFilledBidQuote(any(Good.class), anyLong(), any(EconomicAgent.class));
-        verify(customers[2],times(2)).reactToFilledBidQuote(any(Good.class), anyLong(), any(EconomicAgent.class));
-        verify(customers[0],never()).reactToFilledBidQuote(any(Good.class), anyLong(), any(EconomicAgent.class));
+        verify(customers[1],never()).reactToFilledBidQuote(any(), any(Good.class), anyInt(), any(EconomicAgent.class));
+        verify(customers[2],times(2)).reactToFilledBidQuote(any(), any(Good.class), anyInt(), any(EconomicAgent.class));
+        verify(customers[0],never()).reactToFilledBidQuote(any(), any(Good.class), anyInt(), any(EconomicAgent.class));
 
     }
 
@@ -246,7 +247,7 @@ public class GeographicalMarketTest
 
         //the only seller prices its good to high, nobody buys.
         //model to step
-        MacroII macroII = new MacroII(1l);
+        MacroII macroII = new MacroII(1);
 
         //geographical market for oil!
         final GeographicalMarket market = new GeographicalMarket(INPUT);
@@ -262,11 +263,11 @@ public class GeographicalMarketTest
             @Override
             public void step(SimState state) {
                 for (int i = 0; i < 2; i++) {
-                    Good toSell = new Good(INPUT, seller, 5l);
-                    Quote quote = market.submitSellQuote(seller, 10000l, toSell);
+                    Good toSell = Good.getInstanceOfUndifferentiatedGood(INPUT);
+                    Quote quote = market.submitSellQuote(seller, 10000, toSell);
                     when(seller.has(toSell)).thenReturn(true);
                     //it should not have been cleared!
-                    Assert.assertTrue(quote.getPriceQuoted() == 10000l);
+                    Assert.assertTrue(quote.getPriceQuoted() == 10000);
                 }
 
             }
@@ -281,7 +282,7 @@ public class GeographicalMarketTest
             //if they are ever asked to choose, choose the seller
             when(customers[i].chooseSupplier(any(Multimap.class))).thenReturn(null);
             //make sure buyer is never bankrupt
-            when(customers[i].hasEnoughCash(anyLong())).thenReturn(true);
+            when(customers[i].hasHowMany(UndifferentiatedGoodType.MONEY)).thenReturn(Integer.MAX_VALUE);
             market.registerBuyer(customers[i]);
         }
         //step them so that they place a quote during trade!
@@ -291,7 +292,7 @@ public class GeographicalMarketTest
 
                 for(int i=0; i<3; i++)
                 {
-                    when(customers[i].getMaxPrice()).thenReturn(Long.valueOf(20+i*10)); //need this so that the market sorts the customers correctly
+                    when(customers[i].getMaxPrice()).thenReturn(Integer.valueOf(20+i*10)); //need this so that the market sorts the customers correctly
                     //make the customers buy
                     Quote quote = market.submitBuyQuote(customers[i],20+i*10);
                     //it should not have been cleared!
@@ -307,9 +308,9 @@ public class GeographicalMarketTest
         macroII.schedule.step(macroII);
 
         //only the last two customers should have received it!
-        verify(customers[1],never()).reactToFilledBidQuote(any(Good.class), anyLong(), any(EconomicAgent.class));
-        verify(customers[2],never()).reactToFilledBidQuote(any(Good.class), anyLong(), any(EconomicAgent.class));
-        verify(customers[0],never()).reactToFilledBidQuote(any(Good.class), anyLong(), any(EconomicAgent.class));
+        verify(customers[1],never()).reactToFilledBidQuote(any(), any(Good.class), anyInt(), any(EconomicAgent.class));
+        verify(customers[2],never()).reactToFilledBidQuote(any(), any(Good.class), anyInt(), any(EconomicAgent.class));
+        verify(customers[0],never()).reactToFilledBidQuote(any(), any(Good.class), anyInt(), any(EconomicAgent.class));
 
     }
 
@@ -321,7 +322,7 @@ public class GeographicalMarketTest
 
         //the only seller prices its good to high, nobody buys.
         //model to step
-        MacroII macroII = new MacroII(1l);
+        MacroII macroII = new MacroII(1);
         final GeographicalCustomer customers[] = new GeographicalCustomer[100];
         final GeographicalCustomer farCustomers[] = new GeographicalCustomer[100];
 
@@ -352,7 +353,7 @@ public class GeographicalMarketTest
                     @Override
                     public void step(SimState state) {
                         for (int i = 0; i < 10; i++) {
-                            Good toSell = new Good(INPUT, seller, 0);
+                            Good toSell = Good.getInstanceOfUndifferentiatedGood(INPUT);
                             seller.receive(toSell,null);
                             seller.reactToPlantProduction(toSell);
 
@@ -420,7 +421,7 @@ public class GeographicalMarketTest
     @Test
     public void samePriceDoesNotMeanSamePerson()
     {
-        MacroII macroII = new MacroII(1l);
+        MacroII macroII = new MacroII(1);
         macroII.start();
 
         final GeographicalMarket market = new GeographicalMarket(INPUT);

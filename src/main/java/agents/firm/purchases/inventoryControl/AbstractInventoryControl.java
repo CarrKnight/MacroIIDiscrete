@@ -32,7 +32,7 @@ import model.utilities.pid.ControllerInput;
  *
  * @author Ernesto
  * @version 2012-08-04
- * @see agents.InventoryListener
+ * @see goods.InventoryListener
  */
 public abstract class AbstractInventoryControl implements InventoryControl{
 

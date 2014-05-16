@@ -172,7 +172,7 @@ public class MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment implements 
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice( GoodType type) {
+    public int maxPrice(GoodType type) {
         return control.maxPrice(type);
     }
 
@@ -183,7 +183,7 @@ public class MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment implements 
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice( Good good) {
+    public int maxPrice(Good good) {
         return control.maxPrice(good);
     }
 
@@ -200,7 +200,7 @@ public class MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment implements 
      * @param newWage the new wage
      */
     @Override
-    public void setCurrentWage(long newWage) {
+    public void setCurrentWage(int newWage) {
         control.setCurrentWage(newWage);
     }
 

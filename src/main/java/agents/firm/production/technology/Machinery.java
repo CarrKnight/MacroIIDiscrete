@@ -32,8 +32,8 @@ import java.util.Map;
 public abstract class Machinery extends Good {
 
 
-    protected Machinery( GoodType type, EconomicAgent producer, long costOfProduction) {
-        super(type, producer, costOfProduction);
+    protected Machinery( GoodType type, EconomicAgent producer, int costOfProduction) {
+        super(type, costOfProduction);
         assert type.isMachinery();
     }
 

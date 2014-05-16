@@ -4,7 +4,7 @@ import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import financial.market.OrderBookMarket;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.dummies.DummyBuyer;
 import org.junit.Before;
@@ -35,8 +35,8 @@ public class SimpleBuyerSearchTest {
 
 
     SimpleBuyerSearch toTest;
-    OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);  //notice that the search algorithm will always ignore the quoted price, if any. That's the sales department business
-    MacroII model = new MacroII(1l);
+    OrderBookMarket market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);  //notice that the search algorithm will always ignore the quoted price, if any. That's the sales department business
+    MacroII model = new MacroII(1);
     Firm f;
 
 
@@ -70,13 +70,13 @@ public class SimpleBuyerSearchTest {
 
         EconomicAgent bestBuyer = toTest.getBestInSampleBuyer();
         assertEquals(buyer5, bestBuyer);
-        assertEquals(50, bestBuyer.askedForABuyOffer(GoodType.GENERIC));
+        assertEquals(50, bestBuyer.askedForABuyOffer(UndifferentiatedGoodType.GENERIC));
 
         buyer5.setQuotedPrice(5);
 
         bestBuyer = toTest.getBestInSampleBuyer();
         assertEquals(buyer4, bestBuyer);
-        assertEquals(40, bestBuyer.askedForABuyOffer(GoodType.GENERIC));
+        assertEquals(40, bestBuyer.askedForABuyOffer(UndifferentiatedGoodType.GENERIC));
 
 
 

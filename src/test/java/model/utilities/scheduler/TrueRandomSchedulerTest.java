@@ -66,7 +66,7 @@ public class TrueRandomSchedulerTest
                 }
             },Priority.AFTER_STANDARD);
 
-            MacroII macroII = new MacroII(1l);
+            MacroII macroII = new MacroII(1);
             scheduler.step(macroII);
             if(listToCheckForOrder.get(0)==0)
                 countHowManyTimes0IsWritten++;
@@ -122,7 +122,7 @@ public class TrueRandomSchedulerTest
             }
         },Priority.BEFORE_STANDARD);
 
-        MacroII macroII = new MacroII(1l);
+        MacroII macroII = new MacroII(1);
         scheduler.step(macroII);
 
 
@@ -181,7 +181,7 @@ public class TrueRandomSchedulerTest
 
 
 
-        MacroII macroII = new MacroII(1l);
+        MacroII macroII = new MacroII(1);
         scheduler.step(macroII);
         scheduler.step(macroII);
 
@@ -239,7 +239,7 @@ public class TrueRandomSchedulerTest
 
 
 
-        MacroII macroII = new MacroII(1l);
+        MacroII macroII = new MacroII(1);
         scheduler.step(macroII);
         scheduler.step(macroII);
         scheduler.step(macroII);

@@ -7,7 +7,7 @@
 package agents.firm.purchases;
 
 import agents.EconomicAgent;
-import agents.InventoryListener;
+import goods.InventoryListener;
 import agents.firm.Department;
 import agents.firm.Firm;
 import agents.firm.purchases.inventoryControl.InventoryControl;
@@ -61,12 +61,12 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
     /**
      * The weekly budget given by the firm to this purchase department to carry out its tasks
      */
-    private long budgetGiven;
+    private int budgetGiven;
 
     /**
      * the amount of weekly budget already spent
      */
-    private long budgetSpent;
+    private int budgetSpent;
 
     /**
      * The firm that owns this department
@@ -134,13 +134,13 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
     /**
      * What price was paid for the last good bought?
      */
-    private long lastClosingPrice = -1;
+    private int lastClosingPrice = -1;
 
     /**
      * when you placed your last bid, what was your offer price. I think it is more informative than querying maxPrice() because
      * it takes some time between maxPrice being updated and then update moving in the quotes
      */
-    private long lastOfferedPrice = -1;
+    private int lastOfferedPrice = -1;
 
 
     private final PurchasesDepartmentData purchasesData;
@@ -169,11 +169,11 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
     protected boolean startWasCalled=false;
 
 
-    protected PurchasesDepartment(long budgetGiven, Firm firm, Market market,
+    protected PurchasesDepartment(int budgetGiven, Firm firm, Market market,
                                   MacroII model) {
         //initialize objects
         this.budgetGiven = budgetGiven;
-        this.budgetSpent = 0l;
+        this.budgetSpent = 0;
         this.firm = firm;
         this.market = market;
         this.goodType = market.getGoodType();
@@ -202,7 +202,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * @param firm the firm owning the department
      * @param market the market to buy from
      */
-    protected PurchasesDepartment(long budgetGiven, Firm firm, Market market) {
+    protected PurchasesDepartment(int budgetGiven, Firm firm, Market market) {
         this(budgetGiven,firm,market,firm.getModel());
 
 
@@ -213,11 +213,11 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * This is useful if the caller wants to assign a specific rule from its side; otherwise stick with the other factories
      * @param budgetGiven the amount of money given to the purchase department!
      * @param firm the firm owning the department
-     * @param market the market the department belongs to
+     * @param market the market the department beints to
      * @param  model the reference to the model object
      *
      */
-    public static PurchasesDepartment getEmptyPurchasesDepartment(long budgetGiven, Firm firm, Market market,
+    public static PurchasesDepartment getEmptyPurchasesDepartment(int budgetGiven, Firm firm, Market market,
                                                                   MacroII model){
         //create the simple purchases department
         //return it
@@ -230,9 +230,9 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * This is useful if the caller wants to assign a specific rule from its side; otherwise stick with the other factories
      * @param budgetGiven the amount of money given to the purchase department!
      * @param firm the firm owning the department
-     * @param market the market the department belongs to
+     * @param market the market the department beints to
      */
-    public static PurchasesDepartment getEmptyPurchasesDepartment(long budgetGiven, Firm firm, Market market){
+    public static PurchasesDepartment getEmptyPurchasesDepartment(int budgetGiven, Firm firm, Market market){
         //create the simple purchases department
         //return it
         return getEmptyPurchasesDepartment(budgetGiven, firm, market,firm.getModel());
@@ -249,7 +249,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      */
     public static
     FactoryProducedPurchaseDepartment<InventoryControl,BidPricingStrategy,BuyerSearchAlgorithm,SellerSearchAlgorithm>
-    getRandomPurchaseDepartment(long budgetGiven,  Firm firm,  Market market){
+    getRandomPurchaseDepartment(int budgetGiven,  Firm firm,  Market market){
         //create the simple purchases department
         PurchasesDepartment instance = new PurchasesDepartment(budgetGiven,firm,market); //call the constructor
         //create random inventory control and assign it
@@ -295,7 +295,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      */
     public static <IC extends InventoryControl & BidPricingStrategy,BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm>
     FactoryProducedPurchaseDepartment<IC,IC,BS,SS> getPurchasesDepartmentIntegrated
-    (long budgetGiven,  Firm firm,  Market market,
+    (int budgetGiven,  Firm firm,  Market market,
       Class<IC> integratedControl,  Class<BS> buyerSearchAlgorithmType,  Class<SS> sellerSearchAlgorithmType )
     {
 
@@ -362,7 +362,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      */
     public static
     <IC extends InventoryControl, BP extends BidPricingStrategy,BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm>
-    FactoryProducedPurchaseDepartment<IC,BP,BS,SS> getPurchasesDepartment(long budgetGiven,  Firm firm,  Market market,
+    FactoryProducedPurchaseDepartment<IC,BP,BS,SS> getPurchasesDepartment(int budgetGiven,  Firm firm,  Market market,
                                                                            Class<IC> inventoryControlType,
                                                                            Class<BP> bidPricingStrategyType,
                                                                            Class<BS> buyerSearchAlgorithmType,
@@ -433,7 +433,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      */
     public static
     FactoryProducedPurchaseDepartment<InventoryControl,BidPricingStrategy,BuyerSearchAlgorithm,SellerSearchAlgorithm>
-    getPurchasesDepartment(long budgetGiven, Firm firm, Market market,
+    getPurchasesDepartment(int budgetGiven, Firm firm, Market market,
                             String inventoryControlType,  String bidPricingStrategyType,
                             String buyerSearchAlgorithmType, String sellerSearchAlgorithmType){
         //create the simple purchases department
@@ -474,7 +474,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * @param market the market we are buying it from
      * @return the max price we are willing to pay!
      */
-    public long maxPrice(GoodType type, Market market)
+    public int maxPrice(GoodType type, Market market)
     {
 
 
@@ -490,9 +490,9 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * if approached by a peddler, how much is the purchase department willing to pay? It just calls maxPrice() if it's willing to buy
      * @return maxPrice or -1 if it doesn't want to buy
      */
-    public long maximumOffer(Good g){
+    public int maximumOffer(Good g){
         if(!canBuy())
-            return -1l;
+            return -1;
         else
             return maxPrice(g.getType(),getMarket());
 
@@ -503,7 +503,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * @param g good bought
      * @param price price of the good.
      */
-    public void reactToFilledQuote(Good g, long price, EconomicAgent seller){
+    public void reactToFilledQuote(Good g, int price, EconomicAgent seller){
 
         budgetSpent += price; //budget recording
         lastClosingPrice = price;
@@ -545,7 +545,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
 
                 assert control.canBuy(); //make sure it's okay
                 status = PurchasesDepartmentStatus.SHOPPING; //put yourself in shopping mood
-                long maxPrice = maxPrice(goodType,market); //maximum we are willing to pay
+                int maxPrice = maxPrice(goodType,market); //maximum we are willing to pay
 
                 EconomicAgent seller = supplierSearch.getBestInSampleSeller(); //get the best seller available
                 //if we couldn't find any
@@ -560,7 +560,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
                     assert sellerQuote.getPriceQuoted() >= 0 ; //can't be negative!!!
                     if(maxPrice >= sellerQuote.getPriceQuoted()) //if the match is good:
                     {
-                        long finalPrice = market.price(sellerQuote.getPriceQuoted(),maxPrice);
+                        int finalPrice = market.price(sellerQuote.getPriceQuoted(),maxPrice);
 
                         //build a fake buyer quote for stat collection
                         Quote buyerQuote = Quote.newBuyerQuote(getFirm(),maxPrice,goodType);
@@ -766,7 +766,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * Once set, don't change!
      * @param reservationPrice the new maximum
      */
-    public void setReservationPrice(long reservationPrice)
+    public void setReservationPrice(int reservationPrice)
     {
         Preconditions.checkState(pricingStrategy != null, "Can't add a reservation wage until a pricing strategy is in place!");
         pricingStrategy = new MaximumBidPriceDecorator(pricingStrategy,reservationPrice);
@@ -794,7 +794,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * Add some money to the purchaser's budget
      * @param additionalBudget additional money to spend by the purchases department
      */
-    public void addToBudget(long additionalBudget){
+    public void addToBudget(int additionalBudget){
         budgetGiven +=additionalBudget;
 
     }
@@ -855,8 +855,8 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * just return the amount of budget allocated that is still up for grabs
      * @return the budget left
      */
-    public long getAvailableBudget(){
-        long budget = budgetGiven - budgetSpent;
+    public int getAvailableBudget(){
+        int budget = budgetGiven - budgetSpent;
         assert budget>=0;
         return budget;
 
@@ -1015,7 +1015,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
     /**
      * used by a subclass to tell you they are spending money!!
      */
-    protected void spendFromBudget(long amountSpent){
+    protected void spendFromBudget(int amountSpent){
         budgetSpent += amountSpent;
     }
 
@@ -1026,7 +1026,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * The last price the purchases department got for its goods
      * @return
      */
-    public long getLastClosingPrice() {
+    public int getLastClosingPrice() {
         return lastClosingPrice;
     }
 
@@ -1044,7 +1044,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * Predicts the future price of the next good to buy
      * @return the predicted price or -1 if there are no predictions.
      */
-    public long predictPurchasePriceWhenIncreasingProduction() {
+    public int predictPurchasePriceWhenIncreasingProduction() {
         return predictor.predictPurchasePriceWhenIncreasingProduction(this);
     }
 
@@ -1052,7 +1052,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * Predicts the future price of the next good to buy
      * @return the predicted price or -1 if there are no predictions.
      */
-    public long predictPurchasePriceWhenDecreasingProduction()
+    public int predictPurchasePriceWhenDecreasingProduction()
     {
         return predictor.predictPurchasePriceWhenDecreasingProduction(this);
     }
@@ -1210,7 +1210,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * Predicts the future price of the next good to buy
      * @return the predicted price or -1 if there are no predictions.
      */
-    public long predictPurchasePriceWhenNoChangeInProduction() {
+    public int predictPurchasePriceWhenNoChangeInProduction() {
         return predictor.predictPurchasePriceWhenNoChangeInProduction(this);
     }
 
@@ -1221,7 +1221,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * @return Value of when you placed your last bid, what was your offer price. I think it is more informative than querying maxPrice because
      *         it takes some time between maxPrice being updated and then update moving in the quotes.
      */
-    public long getLastOfferedPrice() {
+    public int getLastOfferedPrice() {
         return lastOfferedPrice;
     }
 

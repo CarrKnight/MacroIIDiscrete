@@ -66,12 +66,12 @@ public class SalesPriceAveragerTest {
         SalesPriceAverager averager = new SalesPriceAverager(model,department,3);
 
         when(department.getTodayOutflow()).thenReturn(24);
-        when(department.getLastClosingPrice()).thenReturn(78l);
+        when(department.getLastClosingPrice()).thenReturn(78);
         when(department.getTodayInflow()).thenReturn(12);
 
         averager.step(model);
         when(department.getTodayOutflow()).thenReturn(0);
-        when(department.getLastClosingPrice()).thenReturn(78l);
+        when(department.getLastClosingPrice()).thenReturn(78);
         when(department.getTodayInflow()).thenReturn(12);
         averager.step(model);
         Assert.assertEquals(78,averager.getAveragedPrice(),.0001d);
@@ -80,14 +80,14 @@ public class SalesPriceAveragerTest {
         averager = new SalesPriceAverager(model,department,4);
 
         when(department.getTodayOutflow()).thenReturn(16);
-        when(department.getLastClosingPrice()).thenReturn(86l);
+        when(department.getLastClosingPrice()).thenReturn(86);
         when(department.getTodayInflow()).thenReturn(4);
         averager.step(model);
 
         for(int i=0; i<3 ; i++)
         {
             when(department.getTodayOutflow()).thenReturn(0);
-            when(department.getLastClosingPrice()).thenReturn(86l);
+            when(department.getLastClosingPrice()).thenReturn(86);
             when(department.getTodayInflow()).thenReturn(4);
             averager.step(model);
         }

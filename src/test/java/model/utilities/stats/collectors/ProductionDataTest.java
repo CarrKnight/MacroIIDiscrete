@@ -10,6 +10,7 @@ import agents.firm.Firm;
 import agents.firm.production.Plant;
 import goods.GoodType;
 import goods.GoodTypeMasterList;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import org.junit.Assert;
@@ -35,7 +36,7 @@ import static org.mockito.Mockito.*;
 public class ProductionDataTest
 {
 
-    final static private GoodType OIL = new GoodType("oiltest","oil");
+    final static private GoodType OIL = new UndifferentiatedGoodType("oiltest","oil");
 
     @Test
     public void rescheduleItself()
@@ -74,20 +75,20 @@ public class ProductionDataTest
 
         //initialize master-list
         GoodTypeMasterList list = new GoodTypeMasterList();
-        list.addNewSectors(GoodType.GENERIC);
+        list.addNewSectors(UndifferentiatedGoodType.GENERIC);
         list.addNewSectors(OIL);
         when(model.getGoodTypeMasterList()).thenReturn(list);
 
         data.start(model,plant);
         //put in price data
-        when(plant.getProducedToday(GoodType.GENERIC)).thenReturn(1,2,3);
+        when(plant.getProducedToday(UndifferentiatedGoodType.GENERIC)).thenReturn(1,2,3);
         when(model.getMainScheduleTime()).thenReturn(0d,1d,2d);
         data.step(model);
         data.step(model);
         data.step(model);
 
         //make sure it works!
-        GoodType type = GoodType.GENERIC;
+        GoodType type = UndifferentiatedGoodType.GENERIC;
         Assert.assertEquals(data.numberOfObservations(), 3);
         Assert.assertEquals(data.getObservationRecordedThisDay(type,0),1d,.00001d);
         Assert.assertEquals(data.getLatestObservation(type),3d,.00001d);

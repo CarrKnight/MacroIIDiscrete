@@ -7,8 +7,9 @@ import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.CostAskPricing;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
+import goods.DifferentiatedGoodType;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +44,7 @@ public class CostPricingTest {
         producer = new Firm(model);
         other = new Firm(model);
 
-        Market market = new OrderBookMarket(GoodType.GENERIC);
+        Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
         SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(producer, market); //useless null is useless
         strategyAsk = new CostAskPricing(dept);
 
@@ -55,35 +56,36 @@ public class CostPricingTest {
     @Test
     public void good1() throws Exception {
 
-        Good good = new Good(GoodType.GENERIC,producer,10);
+        Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,producer,10);
 
-        long price = strategyAsk.price(good);
+        int price = strategyAsk.price(good);
         assertEquals(price, 10);
     }
 
     @Test
     public void good2() throws Exception {
 
-        Good good = new Good(GoodType.GENERIC,producer,0);
+        Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,producer,0);
 
-        long price = strategyAsk.price(good);
+        int price = strategyAsk.price(good);
         assertEquals(price, 0);
     }
 
     @Test
     public void good3() throws Exception {
 
-        Good good = new Good(GoodType.GENERIC,producer,10);
+        Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,producer,10);
         producer.receive(good,null);
-        other.earn(100);
-        producer.deliver(good,other,50);  other.pay(50,producer,null);
-        assertEquals(50, other.getCash());
-        assertEquals(50, producer.getCash());
+        other.receiveMany(UndifferentiatedGoodType.MONEY,100);
+        producer.deliver(good,other,50);
+        other.deliverMany(UndifferentiatedGoodType.MONEY,producer,50);
+        assertEquals(50, other.hasHowMany(UndifferentiatedGoodType.MONEY));
+        assertEquals(50, producer.hasHowMany(UndifferentiatedGoodType.MONEY));
 
 
 
 
-        long price = strategyAsk.price(good);
+        int price = strategyAsk.price(good);
         assertEquals(price, 50);
     }
 }

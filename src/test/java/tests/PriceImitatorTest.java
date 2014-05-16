@@ -9,8 +9,10 @@ import agents.firm.sales.pricing.PriceImitator;
 import agents.firm.sales.pricing.UndercuttingAskPricing;
 import financial.market.ImmediateOrderHandler;
 import financial.market.OrderBookMarket;
+import financial.utilities.Quote;
+import goods.DifferentiatedGoodType;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +61,7 @@ public class PriceImitatorTest {
         producer = new Firm(model);
         other = new Firm(model);
 
-        market = new OrderBookMarket(GoodType.GENERIC);
+        market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
         market.setOrderHandler(new ImmediateOrderHandler(),model);
         dept = SalesDepartmentFactory.incompleteSalesDepartment(producer, market, null, null, agents.firm.sales.SalesDepartmentAllAtOnce.class); //useless null is useless
         strategy = new PriceImitator(dept);
@@ -72,26 +74,26 @@ public class PriceImitatorTest {
 
         Firm seller = new Firm(model){    //don't want to deal with it
             @Override
-            public void reactToFilledAskedQuote(Good g, long price, EconomicAgent agent) {
+            public void reactToFilledAskedQuote(Quote quoteFilled, Good g, int price, EconomicAgent agent) {
                 //ignore quotes
             }
         }; market.registerSeller(seller);
-        Good good =    new Good(GoodType.GENERIC,seller,10l);
+        Good good =    Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,seller,10);
         seller.receive(good,null);
         Firm buyer = dept.getFirm(); market.registerBuyer(buyer);
-        buyer.registerPurchasesDepartment(mock(PurchasesDepartment.class),GoodType.GENERIC);
+        buyer.registerPurchasesDepartment(mock(PurchasesDepartment.class), DifferentiatedGoodType.CAPITAL);
 
         assertEquals(strategy.price(good), 12); //with no adjust, it just goes default
 
-        buyer.earn(100);
+        buyer.receiveMany(UndifferentiatedGoodType.MONEY,100);
 
 
 
         assertTrue(seller.has(good));
         assertTrue(!buyer.has(good));
 
-        market.submitSellQuote(seller,20l,good);
-        //  market.submitBuyQuote(buyer,10l);
+        market.submitSellQuote(seller,20,good);
+        //  market.submitBuyQuote(buyer,10);
 
 
 
@@ -100,29 +102,29 @@ public class PriceImitatorTest {
         assertEquals(strategy.price(good), 20);  //now just copy the opponent!
 
 
-        market.submitBuyQuote(buyer,20l);
+        market.submitBuyQuote(buyer,20);
         assertTrue(!seller.has(good));
         assertTrue(buyer.has(good));
 
-        assertEquals(good.getLastValidPrice(), 20l);
+        assertEquals(good.getLastValidPrice(), 20);
         assertEquals(strategy.price(good), 20); //now it's forced to 20 by the cost of production
 
-        good.setLastValidPrice(10l);
+        good.setLastValidPrice(10);
         assertEquals(strategy.price(good), 20); //now copy
 
-        good.setLastValidPrice(100l);
-        assertEquals(strategy.price(good), 100l); //fail to copy price and instead price them minimum
+        good.setLastValidPrice(100);
+        assertEquals(strategy.price(good), 100); //fail to copy price and instead price them minimum
 
 
         strategy.step(mock(MacroII.class)); //now there is nobody anymore. Go back to ask 20%
-        assertEquals(strategy.price(good), 120l);
+        assertEquals(strategy.price(good), 120);
 
 
 
-        market.submitSellQuote(seller,21l,good);
+        market.submitSellQuote(seller,21,good);
         strategy.step(mock(MacroII.class));   //you should have been able to find 21 and undercut him instead!
         assertEquals(strategy.price(good), 100); //limited by the cost of production
-        good.setLastValidPrice(1l);
+        good.setLastValidPrice(1);
         assertEquals(strategy.price(good), 21); //now markup should be 100% and lastValue is 20
 
 
@@ -133,35 +135,35 @@ public class PriceImitatorTest {
     @Test
     public void uselessgood1() throws Exception {
 
-        Good good = new Good(GoodType.GENERIC,producer,10);
+        Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,producer,10);
 
-        long price = strategy.price(good);
+        int price = strategy.price(good);
         assertEquals(price, 12);
     }
 
     @Test
     public void uselessgood2() throws Exception {
 
-        Good good = new Good(GoodType.GENERIC,producer,0);
+        Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,producer,0);
 
-        long price = strategy.price(good);
+        int price = strategy.price(good);
         assertEquals(price, 0);
     }
 
     @Test
     public void uselessgood3() throws Exception {
 
-        Good good = new Good(GoodType.GENERIC,producer,10);
+        Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,producer,10);
         producer.receive(good,null);
-        other.earn(100);
-        producer.deliver(good,other,50);  other.pay(50,producer,null);
-        assertEquals(50, other.getCash());
-        assertEquals(50, producer.getCash());
+        other.receiveMany(UndifferentiatedGoodType.MONEY,100);
+        producer.deliver(good,other,50);  other.deliverMany(UndifferentiatedGoodType.MONEY,producer,50);
+        assertEquals(50, other.hasHowMany(UndifferentiatedGoodType.MONEY));
+        assertEquals(50, producer.hasHowMany(UndifferentiatedGoodType.MONEY));
 
 
 
 
-        long price = strategy.price(good);
+        int price = strategy.price(good);
         assertEquals(price, 60);
     }
 
@@ -169,17 +171,16 @@ public class PriceImitatorTest {
     @Test
     public void uselessAdaptiveTest() throws Exception {
 
-        Good good = new Good(GoodType.GENERIC,producer,10);
+        Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,producer,10);
         producer.receive(good,null);
-        other.earn(100);
-        producer.deliver(good,other,50);  other.pay(50,producer,null);
-        assertEquals(50, other.getCash());
-        assertEquals(50, producer.getCash());
+        other.receiveMany(UndifferentiatedGoodType.MONEY,100);
+        producer.deliver(good,other,50);  other.deliverMany(UndifferentiatedGoodType.MONEY,producer,50);
+        assertEquals(50, other.hasHowMany(UndifferentiatedGoodType.MONEY));
+        assertEquals(50, producer.hasHowMany(UndifferentiatedGoodType.MONEY));
 
 
 
-
-        long price = strategy.price(good);
+        int price = strategy.price(good);
         assertEquals(price, 60);
 
 

@@ -34,12 +34,12 @@ public class PricingPurchasesPredictor implements PurchasesPredictor {
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
 
         return price(dept);
     }
 
-    private long price(PurchasesDepartment dept) {
+    private int price(PurchasesDepartment dept) {
         float averagedClosingPrice = dept.getAveragedClosingPrice();
         if(Float.isNaN(averagedClosingPrice))
             return -1;
@@ -48,7 +48,7 @@ public class PricingPurchasesPredictor implements PurchasesPredictor {
     }
 
     @Override
-    public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         return price(dept);
     }
 
@@ -59,7 +59,7 @@ public class PricingPurchasesPredictor implements PurchasesPredictor {
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
         return price(dept);
     }
 

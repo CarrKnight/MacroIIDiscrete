@@ -30,7 +30,7 @@ public class CheaterPricing implements BidPricingStrategy {
      * how much to offer for a good when the price is not visible.
      *
      */
-    private long defaultOffer = 1000;
+    private int defaultOffer = 1000;
 
 
 
@@ -58,7 +58,7 @@ public class CheaterPricing implements BidPricingStrategy {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(GoodType type) {
+    public int maxPrice(GoodType type) {
 
 
             return defaultOffer;
@@ -72,7 +72,7 @@ public class CheaterPricing implements BidPricingStrategy {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(Good good) {
+    public int maxPrice(Good good) {
         return maxPrice(good.getType()); //delegate
     }
 
@@ -90,7 +90,7 @@ public class CheaterPricing implements BidPricingStrategy {
      *
      * @param defaultOffer New value of how much to offer for a good when the price is not visible..
      */
-    public void setDefaultOffer(long defaultOffer) {
+    public void setDefaultOffer(int defaultOffer) {
         this.defaultOffer = defaultOffer;
     }
 

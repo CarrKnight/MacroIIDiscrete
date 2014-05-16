@@ -1,7 +1,6 @@
 package tests.purchase;
 
 import agents.EconomicAgent;
-import agents.Inventory;
 import agents.firm.Firm;
 import agents.firm.purchases.FactoryProducedPurchaseDepartment;
 import agents.firm.purchases.PurchasesDepartment;
@@ -10,14 +9,14 @@ import agents.firm.purchases.inventoryControl.Level;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
-import financial.Bankruptcy;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
+import financial.utilities.Quote;
 import goods.Good;
-import goods.GoodType;
+import goods.Inventory;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.dummies.DummySeller;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,8 +50,8 @@ public class FixedInventoryControlTest {
 
     @Before
     public void setup(){
-        model = new MacroII(1l);
-        market = new OrderBookMarket(GoodType.GENERIC);
+        model = new MacroII(1);
+        market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
 
     }
 
@@ -61,7 +60,7 @@ public class FixedInventoryControlTest {
     {
         Firm f = mock(Firm.class);
         //set up the firm so that it returns first 1 then 10 then 5
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(1);
+        when(f.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(1);
         when(f.getModel()).thenReturn(model);  when(f.getRandom()).thenReturn(model.random);
 
 
@@ -76,9 +75,9 @@ public class FixedInventoryControlTest {
         //assuming target inventory is 6~~
 
         assertEquals(dept.rateCurrentLevel(), Level.DANGER);
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(10);
+        when(f.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(10);
         assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(5);
+        when(f.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(5);
         assertEquals(dept.rateCurrentLevel(), Level.BARELY);
 
 
@@ -106,17 +105,17 @@ public class FixedInventoryControlTest {
 
         //assuming target inventory is 6~~
 
-        f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(dept.rateCurrentLevel(), Level.DANGER);
         assertEquals(dept.canBuy(), true);
 
         for(int i=0; i <9; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <5; i++)
-            f.consume(GoodType.GENERIC);
+            f.consume(UndifferentiatedGoodType.GENERIC);
         assertEquals(dept.rateCurrentLevel(), Level.BARELY);
         assertEquals(dept.canBuy(), true);
 
@@ -135,7 +134,7 @@ public class FixedInventoryControlTest {
         Firm f = new Firm(model);
 
 
-        PurchasesDepartment dept = PurchasesDepartment.getEmptyPurchasesDepartment(0l,f,market,model);
+        PurchasesDepartment dept = PurchasesDepartment.getEmptyPurchasesDepartment(0,f,market,model);
         dept = spy(dept);
 
 
@@ -153,7 +152,7 @@ public class FixedInventoryControlTest {
 
 
         for(int i=0; i <10; i++){ //you receive 10, every time you receive one and it's less than 8 (too much value) in total you call buy() so you should have called it 5 times
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         }
         verify(dept,times(8)).buy();
 
@@ -172,14 +171,14 @@ public class FixedInventoryControlTest {
             market.start(model);
 
 
-            Firm f = new Firm(model); f.earn(1000);
+            Firm f = new Firm(model); f.receiveMany(UndifferentiatedGoodType.MONEY,1000);
             PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(1000, f, market, FixedInventoryControl.class,
                     null, null, null).getDepartment();
 
-            f.registerPurchasesDepartment(dept,GoodType.GENERIC);
+            f.registerPurchasesDepartment(dept, UndifferentiatedGoodType.GENERIC);
 
             BidPricingStrategy stubStrategy = mock(BidPricingStrategy.class); //addSalesDepartmentListener this stub as a new strategy so we can fix prices as we prefer
-            when(stubStrategy.maxPrice(GoodType.GENERIC)).thenReturn(80l); //price everything at 80; who cares
+            when(stubStrategy.maxPrice(UndifferentiatedGoodType.GENERIC)).thenReturn(80); //price everything at 80; who cares
             dept.setPricingStrategy(stubStrategy);
 
             // SalesDepartment salesDepartment = new SalesDepartment(seller,market,new SimpleBuyerSearch(market,seller),new SimpleSellerSearch(market,seller)); //create the sales department for the seller
@@ -194,13 +193,13 @@ public class FixedInventoryControlTest {
                 DummySeller seller = new DummySeller(model,10+i*10){
 
                     @Override
-                    public void earn(long money) throws Bankruptcy {
-                        super.earn(money);    //To change body of overridden methods use File | Settings | File Templates.
+                    public void reactToFilledAskedQuote(Quote quoteFilled, Good g, int price, EconomicAgent buyer) {
+                        super.reactToFilledAskedQuote(quoteFilled, g, price, buyer);
                         market.deregisterSeller(this);
                     }
                 };  //these dummies are modified so that if they do trade once, they quit the market entirely
                 market.registerSeller(seller);
-                Good toSell = new Good(GoodType.GENERIC,seller,0);
+                Good toSell = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
                 seller.receive(toSell,null);
                 market.submitSellQuote(seller,seller.saleQuote,toSell);
             }
@@ -208,16 +207,16 @@ public class FixedInventoryControlTest {
             assertEquals(market.getBestBuyPrice(), -1);
             assertEquals(market.getBestSellPrice(), 10);
 
-            assertEquals(f.hasHowMany(GoodType.GENERIC), 0);
+            assertEquals(f.hasHowMany(UndifferentiatedGoodType.GENERIC), 0);
             //now force the first buy, hopefully it'll cascade up until the firm has inventory 6
             dept.buy(); //goooooooooo
             dept.getFirm().getModel().getPhaseScheduler().step(dept.getFirm().getModel());
-            assertEquals(dept.toString(), f.hasHowMany(GoodType.GENERIC), 8);
+            assertEquals(dept.toString(), f.hasHowMany(UndifferentiatedGoodType.GENERIC), 8);
 
             //when the dust settles...
-            assertEquals(80l, dept.getMarket().getBestBuyPrice()); //there shouldn't be a new buy order!
-            assertEquals(90l, dept.getMarket().getBestSellPrice());  //all the others should have been taken
-            assertEquals(80l, dept.getMarket().getLastPrice());    //although the max price is 80, the buyer defaults to the order book since it's visible
+            assertEquals(80, dept.getMarket().getBestBuyPrice()); //there shouldn't be a new buy order!
+            assertEquals(90, dept.getMarket().getBestSellPrice());  //all the others should have been taken
+            assertEquals(80, dept.getMarket().getLastPrice());    //although the max price is 80, the buyer defaults to the order book since it's visible
 
 
 

@@ -11,7 +11,7 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.RecursiveSalePredictor;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.scenario.MonopolistScenario;
 import org.junit.Test;
@@ -46,7 +46,7 @@ public class AbstractWorkerLearningPredictorTest {
         //run the test 15 times
         for(int i=0; i<30; i++)
         {
-          //  final MacroII macroII = new MacroII(1384099470750l);
+          //  final MacroII macroII = new MacroII(1384099470750);
             final MacroII macroII = new MacroII(System.currentTimeMillis());
 
 
@@ -80,15 +80,15 @@ public class AbstractWorkerLearningPredictorTest {
 
             macroII.start();
             macroII.schedule.step(macroII);
-            RecursiveSalePredictor predictor = new RecursiveSalePredictor(macroII,scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC));
+            RecursiveSalePredictor predictor = new RecursiveSalePredictor(macroII,scenario1.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC));
            // predictor.setRegressingOnWorkers(true);
-            scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC).setPredictorStrategy(predictor);
+            scenario1.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPredictorStrategy(predictor);
             while(macroII.schedule.getTime()<5000)
                 macroII.schedule.step(macroII);
 
 
 
-            scenario1.getMonopolist().getSalesDepartment(GoodType.GENERIC).getData().writeToCSVFile(new File("test.csv"));
+            scenario1.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(new File("test.csv"));
             assertEquals(predictor.getDecrementDelta(), (double) (p1), .5d);
 
 

@@ -5,7 +5,7 @@ import agents.firm.Firm;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import financial.market.OrderBookMarket;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.dummies.DummySeller;
 import org.junit.Before;
@@ -37,8 +37,8 @@ public class SimpleSellerSearchTest {
 
 
     SimpleSellerSearch toTest;
-    OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);  //notice that the search algorithm will always ignore the quoted price, if any. That's the sales department business
-    MacroII model = new MacroII(1l);
+    OrderBookMarket market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);  //notice that the search algorithm will always ignore the quoted price, if any. That's the sales department business
+    MacroII model = new MacroII(1);
 
     Firm f;
 
@@ -56,11 +56,11 @@ public class SimpleSellerSearchTest {
     @Test
     public void scenario1(){
 
-        DummySeller seller1 = new DummySeller(model,10); market.registerSeller(seller1); seller1.receive(new Good(GoodType.GENERIC,f,0l),null);
-        DummySeller seller2 = new DummySeller(model,20); market.registerSeller(seller2);  seller2.receive(new Good(GoodType.GENERIC,f,0l),null);
-        DummySeller seller3 = new DummySeller(model,30); market.registerSeller(seller3); seller3.receive(new Good(GoodType.GENERIC,f,0l),null);
-        DummySeller seller4 = new DummySeller(model,40); market.registerSeller(seller4); seller4.receive(new Good(GoodType.GENERIC,f,0l),null);
-        DummySeller seller5 = new DummySeller(model,50); market.registerSeller(seller5); seller5.receive(new Good(GoodType.GENERIC,f,0l),null);
+        DummySeller seller1 = new DummySeller(model,10); market.registerSeller(seller1); seller1.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
+        DummySeller seller2 = new DummySeller(model,20); market.registerSeller(seller2);  seller2.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
+        DummySeller seller3 = new DummySeller(model,30); market.registerSeller(seller3); seller3.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
+        DummySeller seller4 = new DummySeller(model,40); market.registerSeller(seller4); seller4.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
+        DummySeller seller5 = new DummySeller(model,50); market.registerSeller(seller5); seller5.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
 
         List<EconomicAgent> sample = Arrays.asList(toTest.sampleSellers());
         assertTrue(sample.size() == 5);
@@ -72,13 +72,13 @@ public class SimpleSellerSearchTest {
 
         EconomicAgent bestSeller = toTest.getBestInSampleSeller();
         assertEquals(seller1, bestSeller);
-        assertEquals(10, bestSeller.askedForASaleQuote(f, GoodType.GENERIC).getPriceQuoted());
+        assertEquals(10, bestSeller.askedForASaleQuote(f, UndifferentiatedGoodType.GENERIC).getPriceQuoted());
 
-        seller5.setSaleQuote(5l);
+        seller5.setSaleQuote(5);
 
         bestSeller = toTest.getBestInSampleSeller();
         assertEquals(seller5, bestSeller);
-        assertEquals(5, bestSeller.askedForASaleQuote(f, GoodType.GENERIC).getPriceQuoted());
+        assertEquals(5, bestSeller.askedForASaleQuote(f, UndifferentiatedGoodType.GENERIC).getPriceQuoted());
 
 
 
@@ -88,12 +88,12 @@ public class SimpleSellerSearchTest {
     @Test
     public void scenario2(){
 
-        DummySeller seller1 = new DummySeller(model,-1); market.registerSeller(seller1); seller1.receive(new Good(GoodType.GENERIC,f,0l),null);
-        DummySeller seller2 = new DummySeller(model,-1); market.registerSeller(seller2);  seller2.receive(new Good(GoodType.GENERIC,f,0l),null);
-        DummySeller seller3 = new DummySeller(model,100); market.registerSeller(seller3);  seller3.receive(new Good(GoodType.GENERIC,f,0l),null);
-        DummySeller seller4 = new DummySeller(model,2000); market.registerSeller(seller4);  seller4.receive(new Good(GoodType.GENERIC,f,0l),null);
-        DummySeller seller5 = new DummySeller(model,-1); market.registerSeller(seller5);   seller5.receive(new Good(GoodType.GENERIC,f,0l),null);
-        DummySeller seller6 = new DummySeller(model,-1); market.registerSeller(seller6);   seller6.receive(new Good(GoodType.GENERIC,f,0l),null);
+        DummySeller seller1 = new DummySeller(model,-1); market.registerSeller(seller1); seller1.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
+        DummySeller seller2 = new DummySeller(model,-1); market.registerSeller(seller2);  seller2.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
+        DummySeller seller3 = new DummySeller(model,100); market.registerSeller(seller3);  seller3.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
+        DummySeller seller4 = new DummySeller(model,2000); market.registerSeller(seller4);  seller4.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
+        DummySeller seller5 = new DummySeller(model,-1); market.registerSeller(seller5);   seller5.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
+        DummySeller seller6 = new DummySeller(model,-1); market.registerSeller(seller6);   seller6.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
 
 
         List<EconomicAgent> sample = Arrays.asList(toTest.sampleSellers());
@@ -109,8 +109,8 @@ public class SimpleSellerSearchTest {
     @Test
     public void scenario3(){
 
-        DummySeller seller1 = new DummySeller(model,100); market.registerSeller(seller1); seller1.receive(new Good(GoodType.GENERIC,f,0l),null);
-        DummySeller seller2 = new DummySeller(model,-1); market.registerSeller(seller2); seller2.receive(new Good(GoodType.GENERIC,f,0l),null);
+        DummySeller seller1 = new DummySeller(model,100); market.registerSeller(seller1); seller1.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
+        DummySeller seller2 = new DummySeller(model,-1); market.registerSeller(seller2); seller2.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
 
 
 
@@ -128,8 +128,8 @@ public class SimpleSellerSearchTest {
     @Test
     public void scenario4(){
 
-        DummySeller seller1 = new DummySeller(model,-1); market.registerSeller(seller1); seller1.receive(new Good(GoodType.GENERIC,f,0l),null);
-        DummySeller seller2 = new DummySeller(model,-1); market.registerSeller(seller2); seller2.receive(new Good(GoodType.GENERIC,f,0l),null);
+        DummySeller seller1 = new DummySeller(model,-1); market.registerSeller(seller1); seller1.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
+        DummySeller seller2 = new DummySeller(model,-1); market.registerSeller(seller2); seller2.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         market.registerSeller(f);
 
 

@@ -8,7 +8,7 @@ package model.scenario.oil;
 
 import agents.firm.Firm;
 import financial.market.GeographicalMarket;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.geography.Location;
 import org.junit.Assert;
@@ -27,14 +27,14 @@ public class FixedProductionOilFirmStrategyTest {
     public void testOilProduction() throws Exception {
 
         FixedProductionOilFirmStrategy strategy = new FixedProductionOilFirmStrategy();
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         model.start();
-        GeographicalMarket stub = mock(GeographicalMarket.class); when(stub.getGoodType()).thenReturn(GoodType.GENERIC);
+        GeographicalMarket stub = mock(GeographicalMarket.class); when(stub.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
         //create the firm
         Firm firm = strategy.createOilPump(new Location(0,0),stub,"test",mock(OilDistributorScenario.class),model);
         //should start with no inventory but the sales department should be initialized
-        Assert.assertEquals(0,firm.hasHowMany(GoodType.GENERIC));
-        Assert.assertNotNull(firm.getSalesDepartment(GoodType.GENERIC));
+        Assert.assertEquals(0,firm.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertNotNull(firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC));
         Assert.assertEquals(0,firm.getHRs().size());
         Assert.assertEquals(0,firm.getPlants().size());
 
@@ -43,8 +43,8 @@ public class FixedProductionOilFirmStrategyTest {
         model.schedule.step(model);
 
         //should have 30 now
-        Assert.assertEquals(30,firm.hasHowMany(GoodType.GENERIC));
-        Assert.assertNotNull(firm.getSalesDepartment(GoodType.GENERIC));
+        Assert.assertEquals(30,firm.hasHowMany(UndifferentiatedGoodType.GENERIC));
+        Assert.assertNotNull(firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC));
         Assert.assertEquals(0,firm.getHRs().size());
         Assert.assertEquals(0,firm.getPlants().size());
 

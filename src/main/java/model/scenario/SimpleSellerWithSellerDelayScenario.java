@@ -15,7 +15,7 @@ import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import com.google.common.base.Preconditions;
 import financial.market.OrderBookMarket;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import sim.engine.SimState;
@@ -96,7 +96,7 @@ public class SimpleSellerWithSellerDelayScenario extends SimpleSellerScenario {
 
 
     @Override
-    protected void buildBuyer(OrderBookMarket market, final long price) {
+    protected void buildBuyer(OrderBookMarket market, final int price) {
         if(price!=60)
             super.buildBuyer(market, price);    //To change body of overridden methods use File | Settings | File Templates.
         else
@@ -115,7 +115,7 @@ public class SimpleSellerWithSellerDelayScenario extends SimpleSellerScenario {
             public void step(SimState simState) {
                 SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(seller, market, new SimpleBuyerSearch(market, seller),
                         new SimpleSellerSearch(market, seller), salesDepartmentType);
-                seller.registerSaleDepartment(dept, GoodType.GENERIC);
+                seller.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
 
                 SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly strategy = AskPricingStrategy.Factory.newAskPricingStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class,dept);
                 if(sellerDelay > 0 )

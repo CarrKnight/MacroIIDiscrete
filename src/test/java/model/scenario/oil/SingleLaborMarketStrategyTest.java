@@ -11,6 +11,7 @@ import financial.market.GeographicalMarket;
 import financial.market.Market;
 import goods.GoodType;
 import goods.GoodTypeMasterList;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Assert;
 import org.junit.Test;
@@ -52,6 +53,6 @@ public class SingleLaborMarketStrategyTest {
 
         //one market only!
         Assert.assertEquals(scenario.getMarkets().size(),1);
-        Assert.assertEquals(scenario.getMarkets().get(GoodType.LABOR),market1);
+        Assert.assertEquals(scenario.getMarkets().get(UndifferentiatedGoodType.LABOR),market1);
     }
 }

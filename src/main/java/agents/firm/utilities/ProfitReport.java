@@ -30,7 +30,7 @@ public interface ProfitReport extends Deactivatable {
 
     float getPlantProfits(Plant p);
 
-    long getAggregateProfits();
+    int getAggregateProfits();
 
     float getEfficiencyRatio(Plant p);
 

@@ -30,14 +30,14 @@ import model.utilities.NonDrawable;
 public class MaximumBidPriceDecorator extends BidPricingDecorator {
 
 
-    private long reservationPrice;
+    private int reservationPrice;
 
     /**
      * This decorator just implements a floor price (the reservation price) above which the purchase department just never goes.
      * @param toDecorate the strategy to decorate
      * @param reservationPrice the minimum price above which the department never goes
      */
-    public MaximumBidPriceDecorator(BidPricingStrategy toDecorate, long reservationPrice) {
+    public MaximumBidPriceDecorator(BidPricingStrategy toDecorate, int reservationPrice) {
         super(toDecorate);
         this.reservationPrice = reservationPrice;
     }
@@ -48,8 +48,8 @@ public class MaximumBidPriceDecorator extends BidPricingDecorator {
      * @param type the type of good you want to buy
      * @return the maximum price I am willing to pay for this good
      */
-    public long maxPrice(GoodType type) {
-        return Math.min(toDecorate.maxPrice(type), reservationPrice);
+    public int maxPrice(GoodType type) {
+        return (int) Math.min(toDecorate.maxPrice(type), reservationPrice);
     }
 
     /**
@@ -57,16 +57,16 @@ public class MaximumBidPriceDecorator extends BidPricingDecorator {
      * @param good the specific good being offered to you
      * @return the maximum price I am willing to pay for this good
      */
-    public long maxPrice(Good good) {
-        return  Math.min(toDecorate.maxPrice(good), reservationPrice);
+    public int maxPrice(Good good) {
+        return (int) Math.min(toDecorate.maxPrice(good), reservationPrice);
     }
 
 
-    public long getReservationPrice() {
+    public int getReservationPrice() {
         return reservationPrice;
     }
 
-    public void setReservationPrice(long reservationPrice) {
+    public void setReservationPrice(int reservationPrice) {
         this.reservationPrice = reservationPrice;
     }
 }

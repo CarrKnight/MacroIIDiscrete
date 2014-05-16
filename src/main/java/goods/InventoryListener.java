@@ -4,8 +4,9 @@
  * See the file "LICENSE" for more information
  */
 
-package agents;
+package goods;
 
+import agents.HasInventory;
 import goods.GoodType;
 
 

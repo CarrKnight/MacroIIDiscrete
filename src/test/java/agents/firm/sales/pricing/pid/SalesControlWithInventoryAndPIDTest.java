@@ -37,8 +37,8 @@ public class SalesControlWithInventoryAndPIDTest {
 
         SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
         Firm firm = mock(Firm.class); when(department.getFirm()).thenReturn(firm);  when(firm.isActive()).thenReturn(true);
-        when(firm.getModel()).thenReturn(new MacroII(1l));
-        Market market= mock(Market.class); when(department.getMarket()).thenReturn(market); when(department.getModel()).thenReturn(new MacroII(1l));
+        when(firm.getModel()).thenReturn(new MacroII(1));
+        Market market= mock(Market.class); when(department.getMarket()).thenReturn(market); when(department.getModel()).thenReturn(new MacroII(1));
 
 
         SalesControlWithFixedInventoryAndPID pid = new SalesControlWithFixedInventoryAndPID(department);
@@ -55,7 +55,7 @@ public class SalesControlWithInventoryAndPIDTest {
             pid.step(model);
         //now price should be BELOW 100
         System.out.println("new price is:" + pid.price(mock(Good.class) ));
-        assertTrue(pid.price(mock(Good.class)) < 100l);
+        assertTrue(pid.price(mock(Good.class)) < 100);
 
 
 
@@ -71,8 +71,8 @@ public class SalesControlWithInventoryAndPIDTest {
 
         SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
         Firm firm = mock(Firm.class); when(department.getFirm()).thenReturn(firm); when(firm.isActive()).thenReturn(true);
-        when(firm.getModel()).thenReturn(new MacroII(1l));
-        Market market= mock(Market.class); when(department.getMarket()).thenReturn(market); when(department.getModel()).thenReturn(new MacroII(1l));
+        when(firm.getModel()).thenReturn(new MacroII(1));
+        Market market= mock(Market.class); when(department.getMarket()).thenReturn(market); when(department.getModel()).thenReturn(new MacroII(1));
 
 
 
@@ -86,12 +86,12 @@ public class SalesControlWithInventoryAndPIDTest {
         MacroII model = mock(MacroII.class); when(model.getCurrentPhase()).thenReturn(ActionOrder.ADJUST_PRICES);
         pid.step(model);
         //now price should be BELOW 100
-        assertTrue(pid.price(mock(Good.class)) > 100l);
+        assertTrue(pid.price(mock(Good.class)) > 100);
         System.out.println("new price is:" + pid.price(mock(Good.class) ));
 
 
         //now also test that it goes down
-        long newPrice =   pid.price(mock(Good.class));
+        int newPrice =   pid.price(mock(Good.class));
         assertEquals(pid.getTargetInventory(),defaultTargetInventory); //your target should still be 5
         when(department.getHowManyToSell()).thenReturn(defaultTargetInventory+10); //you have too many
         pid.step(model);

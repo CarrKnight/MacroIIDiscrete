@@ -203,7 +203,7 @@ public class GeographicalMarket extends Market implements Steppable{
      */
 
     @Override
-    public Quote submitSellQuote( EconomicAgent seller, long price,  Good good)
+    public Quote submitSellQuote( EconomicAgent seller, int price,  Good good)
     {
         return submitSellQuote(seller, price, good,null);
 
@@ -221,7 +221,7 @@ public class GeographicalMarket extends Market implements Steppable{
      */
 
     @Override
-    public Quote submitSellQuote( EconomicAgent seller, long price,  Good good,  Department department)
+    public Quote submitSellQuote( EconomicAgent seller, int price,  Good good,  Department department)
     {
         assert getSellers().contains(seller);
         assert seller instanceof GeographicalFirm;
@@ -301,7 +301,7 @@ public class GeographicalMarket extends Market implements Steppable{
      */
 
     @Override
-    public Quote submitBuyQuote( EconomicAgent buyer, long price,  Department department) {
+    public Quote submitBuyQuote( EconomicAgent buyer, int price,  Department department) {
         assert getBuyers().contains(buyer);
         assert buyer instanceof GeographicalCustomer;
         if(MacroII.SAFE_MODE) //double check the good isn't already on sale
@@ -355,7 +355,7 @@ public class GeographicalMarket extends Market implements Steppable{
      */
 
     @Override
-    public Quote submitBuyQuote( EconomicAgent buyer, long price) {
+    public Quote submitBuyQuote( EconomicAgent buyer, int price) {
         return this.submitBuyQuote(buyer,price,null);
 
     }
@@ -433,7 +433,7 @@ public class GeographicalMarket extends Market implements Steppable{
      * @throws IllegalAccessException thrown by markets that do not allow such information.
      */
     @Override
-    public long getBestSellPrice() throws IllegalAccessException {
+    public int getBestSellPrice() throws IllegalAccessException {
         if(sellersWhoPlacedAQuote.isEmpty())
             return -1;
 
@@ -501,7 +501,7 @@ public class GeographicalMarket extends Market implements Steppable{
      * @throws IllegalAccessException thrown by markets that do not allow such information.
     +     */
     @Override
-    public long getBestBuyPrice() throws IllegalAccessException {
+    public int getBestBuyPrice() throws IllegalAccessException {
 
         if(buyersWhoPlacedAQuote.isEmpty())
             return -1;
@@ -622,7 +622,7 @@ public class GeographicalMarket extends Market implements Steppable{
 
 
             //make them trade!
-            long finalPrice = pricePolicy.price(sellerQuoteChosen.getPriceQuoted(), buyerQuoteToRemove.getPriceQuoted());
+            int finalPrice = pricePolicy.price(sellerQuoteChosen.getPriceQuoted(), buyerQuoteToRemove.getPriceQuoted());
             //make them trade!
             Good goodBought = sellerQuoteChosen.getGood();
             PurchaseResult result = trade(currentBuyer,sellerChosen, goodBought,finalPrice,sellerQuoteChosen,buyerQuoteToRemove);
@@ -637,8 +637,8 @@ public class GeographicalMarket extends Market implements Steppable{
             assert removedCorrectly;
 
             //reactions!
-            currentBuyer.reactToFilledBidQuote(goodBought, finalPrice, sellerChosen);
-            sellerChosen.reactToFilledAskedQuote(goodBought, finalPrice,currentBuyer);
+            currentBuyer.reactToFilledBidQuote(buyerQuoteToRemove, goodBought, finalPrice, sellerChosen);
+            sellerChosen.reactToFilledAskedQuote(sellerQuoteChosen, goodBought, finalPrice, currentBuyer);
 
         }
         else

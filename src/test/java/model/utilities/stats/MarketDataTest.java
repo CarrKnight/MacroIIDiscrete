@@ -65,7 +65,7 @@ public class MarketDataTest
 
         data.start(model,market);
         //put in price data
-        when(market.getLastPrice()).thenReturn(1l,2l,3l);
+        when(market.getLastPrice()).thenReturn(1,2,3);
         data.step(model);
         data.step(model);
         data.step(model);
@@ -96,7 +96,7 @@ public class MarketDataTest
 
         data.start(model,market);
         //put in price data
-        when(market.getLastPrice()).thenReturn(1l,2l,3l);
+        when(market.getLastPrice()).thenReturn(1,2,3);
         data.step(model);
         data.step(model);
         data.step(model);

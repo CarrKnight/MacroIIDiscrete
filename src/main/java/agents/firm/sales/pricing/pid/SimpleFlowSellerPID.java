@@ -92,7 +92,7 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
     /**
      * The price we are currently charging.
      */
-    long price = 0;
+    int price = 0;
 
     public static boolean flowTargetingDefault = true;
     /**
@@ -214,19 +214,17 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
 
     /**
      * Tell the listener the firm just tasked the salesdepartment to sell a new good
-     *
-     * @param owner the owner of the sales department
+     *  @param owner the owner of the sales department
      * @param dept  the sales department asked
-     * @param good  the good being sold
+     * @param amount
      */
     @Override
-    public void sellThisEvent( Firm owner,  SalesDepartment dept,  Good good) {
+    public void sellThisEvent(Firm owner, SalesDepartment dept, int amount) {
         assert dept == sales;
         assert sales.getFirm() == owner;
-        assert owner.has(good);
         //goodsToSell++;
         //percolate
-        stockOuts.sellThisEvent(owner,dept,good);
+        stockOuts.sellThisEvent(owner,dept, 1);
     }
 
 
@@ -245,14 +243,13 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
 
     /**
      * This logEvent is fired whenever the sales department managed to sell a good!
-     *  @param dept   The department
-     * @param good
+     * @param dept   The department
      * @param price
      */
     @Override
-    public void goodSoldEvent( SalesDepartment dept, Good good, Long price) {
+    public void goodSoldEvent(SalesDepartment dept, int price) {
         goodsSold++;
-        stockOuts.goodSoldEvent(dept, good,price );
+        stockOuts.goodSoldEvent(dept, price );
 
     }
 
@@ -326,7 +323,7 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
      * Resets the PID at this new price
      * @param price the new price
      */
-    public void setInitialPrice(long price) {
+    public void setInitialPrice(int price) {
         controller.setOffset(price);
         this.price = price;
     }
@@ -341,7 +338,7 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
      * @return the price given to that good
      */
     @Override
-    public long price(Good g) {
+    public int price(Good g) {
         if(productionCostOverride)
         {
             if(g.getCostOfProduction() > price) //force to increase MV
@@ -352,7 +349,7 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
             return price;
         }
         else
-            return Math.max(price,0l);
+            return Math.max(price,0);
 
     }
 
@@ -423,7 +420,7 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
      * The price suggested by the PID
      * @return
      */
-    public long getTargetPrice() {
+    public int getTargetPrice() {
         return price;
     }
 

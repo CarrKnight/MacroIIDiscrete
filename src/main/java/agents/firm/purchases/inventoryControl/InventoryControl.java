@@ -6,7 +6,7 @@
 
 package agents.firm.purchases.inventoryControl;
 
-import agents.InventoryListener;
+import goods.InventoryListener;
 import model.utilities.Control;
 import model.utilities.Deactivatable;
 

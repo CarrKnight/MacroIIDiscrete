@@ -45,7 +45,7 @@ public abstract class BidPricingDecorator implements BidPricingStrategy {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(GoodType type) {
+    public int maxPrice(GoodType type) {
         return toDecorate.maxPrice(type);
     }
 
@@ -55,7 +55,7 @@ public abstract class BidPricingDecorator implements BidPricingStrategy {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(Good good) {
+    public int maxPrice(Good good) {
         return toDecorate.maxPrice(good);
     }
 

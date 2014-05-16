@@ -80,12 +80,12 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
+    public int predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
 
         if(getIndependentLags() > 1 || getPriceLags() > 0)
         {
             double toReturn = Math.min(predictPrice(increaseStep), predictPrice(0));
-            return (long) Math.round(toReturn);
+            return (int) Math.round(toReturn);
         }
         else
         {
@@ -104,14 +104,14 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
+    public int predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
 
 
 
         if(getIndependentLags() > 1 || getPriceLags() > 0)
         {
             double toReturn = Math.max(predictPrice(-decreaseStep), predictPrice(0));
-            return (long) Math.round(toReturn);
+            return (int) Math.round(toReturn);
         }
         else
         {
@@ -129,11 +129,11 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+    public int predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
 
         if(getIndependentLags() > 1 || getPriceLags() > 0)
         {
-            return (long) Math.round(predictPrice(0));
+            return (int) Math.round(predictPrice(0));
         }
         else
         {

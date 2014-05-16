@@ -26,7 +26,7 @@ import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Preconditions;
 import financial.market.Market;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.experiments.tuningRuns.MarginalMaximizerPIDTuning;
 import model.scenario.*;
@@ -380,14 +380,14 @@ public class StickyPricesCSVPrinter {
                     macroII.schedule.step(macroII);
 
                     //now set the right parameters
-                    final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(GoodType.GENERIC);
+                    final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
                     final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, currentP.floatValue(), currentI.floatValue(), 0f, 0);
                     salesDepartment.setAskPricingStrategy(strategy);
 
                     //and make it learned!
                     salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(2));
                     scenario.getMonopolist().getHRs().iterator().next().setPredictor(new FixedIncreasePurchasesPredictor(1));
-                    salesDepartment.setAveragedPrice(new WeightedMovingAverage<Long, Double>(2)); //doesn't really need/care about Moving averages!
+                    salesDepartment.setAveragedPrice(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
 
                     //run the model
                     for(int i=0; i<5000; i++)
@@ -476,10 +476,10 @@ public class StickyPricesCSVPrinter {
         macroII.schedule.step(macroII);
 
         //now set the right parameters
-        final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(GoodType.GENERIC);
+        final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
         final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, proportionalGain, integralGain, 0f, 0);
         salesDepartment.setAskPricingStrategy(strategy);
-        salesDepartment.setAveragedPrice(new WeightedMovingAverage<Long, Double>(2)); //doesn't really need/care about Moving averages!
+        salesDepartment.setAveragedPrice(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
 
         //and make it learned!
         salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(demandSlope));
@@ -521,7 +521,7 @@ public class StickyPricesCSVPrinter {
 
         //now set the right parameters
         for(final Firm firm : scenario.getCompetitors()){
-            final SalesDepartment salesDepartment = firm.getSalesDepartment(GoodType.GENERIC);
+            final SalesDepartment salesDepartment = firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
             final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, proportionalGain + (float)macroII.random.nextGaussian()/100f,
                     integralGain + (float)macroII.random.nextGaussian()/100f, 0f, 0); //added a bit of noise
             salesDepartment.setAskPricingStrategy(strategy);
@@ -542,7 +542,7 @@ public class StickyPricesCSVPrinter {
 
 
 
-        macroII.getMarket(GoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper",filename).toFile());
+        macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper",filename).toFile());
 
     }
 
@@ -609,7 +609,7 @@ public class StickyPricesCSVPrinter {
 
         //now set the right parameters
         for(final Firm firm : scenario.getCompetitors()){
-            final SalesDepartment salesDepartment = firm.getSalesDepartment(GoodType.GENERIC);
+            final SalesDepartment salesDepartment = firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
             final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, proportionalGain + (float)macroII.random.nextGaussian()/100f,
                     integralGain + (float)macroII.random.nextGaussian()/100f, 0f, 0); //added a bit of noise
             salesDepartment.setAskPricingStrategy(strategy);
@@ -634,7 +634,7 @@ public class StickyPricesCSVPrinter {
         {
             macroII.schedule.step(macroII);
             MarginalMaximizerPIDTuning.printProgressBar(5000, i, 100);
-            final double closingPrice = macroII.getMarket(GoodType.GENERIC).getData().getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+            final double closingPrice = macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
             double distanceFromCorrect;
             if(Double.isNaN(closingPrice) || closingPrice < 0)
             {
@@ -652,7 +652,7 @@ public class StickyPricesCSVPrinter {
         {
             macroII.schedule.step(macroII);
             MarginalMaximizerPIDTuning.printProgressBar(1000, i, 100);
-            double closingPrice = macroII.getMarket(GoodType.GENERIC).getData().getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+            double closingPrice = macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
             finalPrice.addValue(closingPrice);
 
             double distanceFromCorrect;
@@ -670,7 +670,7 @@ public class StickyPricesCSVPrinter {
 
 
         if(filename != null)
-            macroII.getMarket(GoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper",filename).toFile());
+            macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper",filename).toFile());
 
 
         return new double[]{distance.getMean(),finalDistance.getMean(),finalPrice.getVariance()};
@@ -704,10 +704,10 @@ public class StickyPricesCSVPrinter {
         macroII.schedule.step(macroII);
 
         //now set the right parameters
-        final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(GoodType.GENERIC);
+        final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
         final SalesControlWithFixedInventoryAndPID strategy = new SalesControlWithFixedInventoryAndPID(salesDepartment,100, proportionalGain, integralGain, 0f);
         salesDepartment.setAskPricingStrategy(strategy);
-        salesDepartment.setAveragedPrice(new WeightedMovingAverage<Long, Double>(2)); //doesn't really need/care about Moving averages!
+        salesDepartment.setAveragedPrice(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
 
         //and make it learned!
         salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(demandSlope));
@@ -750,10 +750,10 @@ public class StickyPricesCSVPrinter {
 
         //now set the right parameters
         for(final Firm firm : scenario.getCompetitors()){
-            final SalesDepartment salesDepartment = firm.getSalesDepartment(GoodType.GENERIC);
+            final SalesDepartment salesDepartment = firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
             final SalesControlWithFixedInventoryAndPID strategy = new SalesControlWithFixedInventoryAndPID(salesDepartment,100, proportionalGain, integralGain, 0f);
             salesDepartment.setAskPricingStrategy(strategy);
-            salesDepartment.setAveragedPrice(new WeightedMovingAverage<Long, Double>(2)); //doesn't really need/care about Moving averages!
+            salesDepartment.setAveragedPrice(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
 
             //all impacts are 0 because it's perfect competitive
             salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
@@ -770,7 +770,7 @@ public class StickyPricesCSVPrinter {
 
 
 
-        macroII.getMarket(GoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper",filename).toFile());
+        macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper",filename).toFile());
 
     }
 
@@ -806,7 +806,7 @@ public class StickyPricesCSVPrinter {
                 else
                 {
                     final SimpleFlowSellerPID askPricingStrategy = new SimpleFlowSellerPID(department, proportionalGain, integralGain, 0, speed);
-                    department.setAveragedPrice(new WeightedMovingAverage<Long, Double>(2)); // no need to MA
+                    department.setAveragedPrice(new WeightedMovingAverage<>(2)); // no need to MA
                     department.setAskPricingStrategy(askPricingStrategy);
 
                 }
@@ -1248,8 +1248,8 @@ public class StickyPricesCSVPrinter {
             macroII.schedule.step(macroII);
 
             //now set the right parameters
-            final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(GoodType.GENERIC);
-            salesDepartment.setAveragedPrice(new WeightedMovingAverage<Long, Double>(2)); //doesn't really need/care about Moving averages!
+            final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
+            salesDepartment.setAveragedPrice(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
 
             //learning
             assert salesDepartment.getPredictorStrategy() instanceof RecursiveSalePredictor;
@@ -1266,8 +1266,8 @@ public class StickyPricesCSVPrinter {
 
 
             String[] resultString = new String[2];
-            resultString[0]= String.valueOf(macroII.getMarket(GoodType.GENERIC).getData().getLatestObservation(MarketDataType.VOLUME_TRADED));
-            resultString[1]= String.valueOf(macroII.getMarket(GoodType.GENERIC).getData().getLatestObservation(MarketDataType.CLOSING_PRICE));
+            resultString[0]= String.valueOf(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().getLatestObservation(MarketDataType.VOLUME_TRADED));
+            resultString[1]= String.valueOf(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().getLatestObservation(MarketDataType.CLOSING_PRICE));
             System.out.println(Arrays.toString(resultString));
             writer.writeNext(resultString);
             writer.flush();
@@ -1314,8 +1314,8 @@ public class StickyPricesCSVPrinter {
             //now set the right parameters
             for(Firm firm : scenario.getCompetitors() )
             {
-                final SalesDepartment salesDepartment = firm.getSalesDepartment(GoodType.GENERIC);
-                salesDepartment.setAveragedPrice(new WeightedMovingAverage<Long, Double>(2)); //doesn't really need/care about Moving averages!
+                final SalesDepartment salesDepartment = firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
+                salesDepartment.setAveragedPrice(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
                 //learning
                 assert salesDepartment.getPredictorStrategy() instanceof RecursiveSalePredictor;
             }
@@ -1335,9 +1335,9 @@ public class StickyPricesCSVPrinter {
             for(int j=0; j<500; j++)
             {
                 macroII.schedule.step(macroII);
-                assert !Float.isNaN(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
-                prices.addValue(macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice());
-                quantities.addValue(macroII.getMarket(GoodType.GENERIC).getTodayVolume());
+                assert !Float.isNaN(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice());
+                prices.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice());
+                quantities.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume());
 
 
             }
@@ -1604,7 +1604,7 @@ public class StickyPricesCSVPrinter {
 
         //now set the right parameters
         for(final Firm firm : scenario.getCompetitors()){
-            final SalesDepartment salesDepartment = firm.getSalesDepartment(GoodType.GENERIC);
+            final SalesDepartment salesDepartment = firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
             final SalesControlWithFixedInventoryAndPID strategy = new SalesControlWithFixedInventoryAndPID(salesDepartment); //added a bit of noise
             strategy.setTargetInventory(1000);
             strategy.setSpeed(normalStickiness);
@@ -1617,7 +1617,7 @@ public class StickyPricesCSVPrinter {
         }
 
         //now change it again to the first one (which is identified as "monopolist"); that guy will be our special
-        final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(GoodType.GENERIC);
+        final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
         final SalesControlWithFixedInventoryAndPID strategy = new SalesControlWithFixedInventoryAndPID(salesDepartment); //added a bit of noise
         strategy.setTargetInventory(1000);
         strategy.setSpeed(specialStickiness);
@@ -1635,7 +1635,7 @@ public class StickyPricesCSVPrinter {
         {
             macroII.schedule.step(macroII);
             MarginalMaximizerPIDTuning.printProgressBar(7000, i, 100);
-            final double closingPrice = macroII.getMarket(GoodType.GENERIC).getData().getLatestObservation(MarketDataType.CLOSING_PRICE);
+            final double closingPrice = macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().getLatestObservation(MarketDataType.CLOSING_PRICE);
             double distanceFromCorrect;
             if(Double.isNaN(closingPrice) || closingPrice < 0)
             {
@@ -1653,7 +1653,7 @@ public class StickyPricesCSVPrinter {
         {
             macroII.schedule.step(macroII);
             MarginalMaximizerPIDTuning.printProgressBar(1000, i, 100);
-            double closingPrice = macroII.getMarket(GoodType.GENERIC).getData().getLatestObservation(MarketDataType.CLOSING_PRICE);
+            double closingPrice = macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().getLatestObservation(MarketDataType.CLOSING_PRICE);
             finalPrice.addValue(closingPrice);
 
             double distanceFromCorrect;
@@ -1669,15 +1669,15 @@ public class StickyPricesCSVPrinter {
         }
 
 
-        double cashSpecial = scenario.getMonopolist().getCash();
+        double cashSpecial = scenario.getMonopolist().hasHowMany(UndifferentiatedGoodType.MONEY);
         for(final Firm firm : scenario.getCompetitors())
             if(firm != scenario.getMonopolist())
-                cashCompetitors.addValue(firm.getCash());
+                cashCompetitors.addValue(scenario.getMonopolist().hasHowMany(UndifferentiatedGoodType.MONEY));
 
 
 
         if(filename != null)
-            macroII.getMarket(GoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper",filename).toFile());
+            macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper",filename).toFile());
 
 
         return new double[]{distance.getMean(),finalDistance.getMean(),finalPrice.getVariance(),cashCompetitors.getMean(),cashSpecial};

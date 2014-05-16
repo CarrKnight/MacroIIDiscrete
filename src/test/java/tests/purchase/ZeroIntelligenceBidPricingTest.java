@@ -6,7 +6,7 @@ import agents.firm.purchases.pricing.ZeroIntelligenceBidPricing;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +36,7 @@ public class ZeroIntelligenceBidPricingTest {
 
     @Before
     public void setup(){
-        model = new MacroII(1l);
+        model = new MacroII(1);
     }
 
     @Test
@@ -45,13 +45,13 @@ public class ZeroIntelligenceBidPricingTest {
 
         PurchasesDepartment dept = mock(PurchasesDepartment.class);
         when(dept.getRandom()).thenReturn(new MersenneTwisterFast());
-        when(dept.getAvailableBudget()).thenReturn(100l); //fix the budget
-        when(dept.getGoodType()).thenReturn(GoodType.GENERIC);
+        when(dept.getAvailableBudget()).thenReturn(100); //fix the budget
+        when(dept.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
         ZeroIntelligenceBidPricing pricing = new ZeroIntelligenceBidPricing(dept);
 
         for(int i=0; i < 10000; i++)
         {
-            long maxPrice =pricing.maxPrice(GoodType.GENERIC);
+            int maxPrice =pricing.maxPrice(UndifferentiatedGoodType.GENERIC);
             assertTrue(maxPrice>=0);
             assertTrue(maxPrice<=100);
 
@@ -61,7 +61,7 @@ public class ZeroIntelligenceBidPricingTest {
         int decile =0;
         for(int i=0; i < 10000; i++)
         {
-            long maxPrice =pricing.maxPrice(GoodType.GENERIC);
+            int maxPrice =pricing.maxPrice(UndifferentiatedGoodType.GENERIC);
             if(maxPrice >= 40 && maxPrice < 50)
                 decile++;
 
@@ -75,13 +75,13 @@ public class ZeroIntelligenceBidPricingTest {
     {
 
         Firm firm = new Firm(model);
-        Market market = new OrderBookMarket(GoodType.GENERIC);
+        Market market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100, firm, market,
                 null, ZeroIntelligenceBidPricing.class, null, null).getDepartment();
 
         for(int i=0; i < 10000; i++)
         {
-            long maxPrice =dept.maxPrice(GoodType.GENERIC,market);
+            int maxPrice =dept.maxPrice(UndifferentiatedGoodType.GENERIC,market);
             assertTrue(maxPrice>=0);
             assertTrue(maxPrice<=100);
 
@@ -91,7 +91,7 @@ public class ZeroIntelligenceBidPricingTest {
         int decile =0;
         for(int i=0; i < 10000; i++)
         {
-            long maxPrice =dept.maxPrice(GoodType.GENERIC,market);
+            int maxPrice =dept.maxPrice(UndifferentiatedGoodType.GENERIC,market);
             if(maxPrice >= 40 && maxPrice < 50)
                 decile++;
 

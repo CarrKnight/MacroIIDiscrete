@@ -30,15 +30,15 @@ public class MovingSumTest {
     public void testMovingSum() throws Exception {
 
 
-        MovingSum<Long> movingSum = new MovingSum<>(3);
+        MovingSum<Integer> movingSum = new MovingSum<>(3);
         Assert.assertTrue(Float.isNaN(movingSum.getSmoothedObservation()));
-        movingSum.addObservation(10l);
+        movingSum.addObservation(10);
         Assert.assertEquals(10f,movingSum.getSmoothedObservation(),.0001d);
-        movingSum.addObservation(20l);
+        movingSum.addObservation(20);
         Assert.assertEquals(30f,movingSum.getSmoothedObservation(),.0001d);
-        movingSum.addObservation(30l);
+        movingSum.addObservation(30);
         Assert.assertEquals(60f,movingSum.getSmoothedObservation(),.0001d);
-        movingSum.addObservation(40l);
+        movingSum.addObservation(40);
         Assert.assertEquals(90f,movingSum.getSmoothedObservation(),.0001d);
 
     }

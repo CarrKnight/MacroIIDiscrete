@@ -27,7 +27,7 @@ public class IndipendentLaborMarketsForEachFirmStrategyTest {
 
     @Test
     public void sameMarketForEveryone() throws Exception {
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         model.start();
         OilDistributorScenario scenario = mock(OilDistributorScenario.class);
         HashMap<GoodType, Market> marketMap = new HashMap<>();
@@ -49,11 +49,10 @@ public class IndipendentLaborMarketsForEachFirmStrategyTest {
         Assert.assertNotEquals(market3, market2);
 
         //one market only!
-        Assert.assertEquals(scenario.getMarkets().size(),3);
-        Assert.assertEquals(model.getGoodTypeMasterList().size(),6); //3 built in this test plus the 3 default ones!
-        Assert.assertTrue(scenario.getMarkets().containsValue(market1));
-        Assert.assertTrue(scenario.getMarkets().containsValue(market2));
-        Assert.assertTrue(scenario.getMarkets().containsValue(market3));
+        Assert.assertEquals(model.getGoodTypeMasterList().size(),7); //3 built in this test plus the 4 default ones!
+        Assert.assertTrue(model.getMarkets().contains(market1));
+        Assert.assertTrue(model.getMarkets().contains(market2));
+        Assert.assertTrue(model.getMarkets().contains(market3));
     }
 
 }

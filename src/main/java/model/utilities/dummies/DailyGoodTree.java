@@ -13,6 +13,7 @@ import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
@@ -44,13 +45,13 @@ public class DailyGoodTree extends EconomicAgent
      */
     private int dailySupply;
 
-    private long minPrice;
+    private int minPrice;
 
     private final Market market;
 
     private String name;
 
-    public DailyGoodTree(MacroII model,int dailySupply, long minPrice, Market market)
+    public DailyGoodTree(MacroII model,int dailySupply, int minPrice, Market market)
     {
         super(model);
         Preconditions.checkArgument(minPrice >= 0);
@@ -65,7 +66,7 @@ public class DailyGoodTree extends EconomicAgent
 
     }
 
-    public DailyGoodTree(MacroII model, long minPrice, Market market)
+    public DailyGoodTree(MacroII model, int minPrice, Market market)
     {
         this(model,1,minPrice,market);
 
@@ -127,25 +128,33 @@ public class DailyGoodTree extends EconomicAgent
     }
 
     private void createNewGoods(DailyGoodTree goodTree) {
-        for(int i=0; i< dailySupply; i++)
-        {
-            receive(new Good(market.getGoodType(),goodTree,minPrice),null);
+        if(market.getGoodType().isDifferentiated()) {
+            for (int i = 0; i < dailySupply; i++) {
+                receive(Good.getInstanceOfDifferentiatedGood(market.getGoodType(), goodTree, minPrice), null);
+            }
+        }
+        else{
+            receiveMany((UndifferentiatedGoodType) market.getGoodType(),dailySupply);
         }
     }
 
     private void eatEverythingAndRemoveQuotes() {
+        int money= hasHowMany(market.getMoney()); //save the amount of money you have so you don't lose it
+        System.out.println(money);
         consumeAll();
+        if(money > 0)
+            receiveMany(market.getMoney(),money); //retrieve the money you had before
         market.removeAllSellQuoteBySeller(this);
     }
 
     @Override
-    public void reactToFilledAskedQuote(Good g, long price, EconomicAgent buyer) {
+    public void reactToFilledAskedQuote(Quote quoteFilled, Good g, int price, EconomicAgent buyer) {
         sellIfPossible(market);
 
     }
 
     @Override
-    public void reactToFilledBidQuote(Good g, long price, EconomicAgent seller) {
+    public void reactToFilledBidQuote(Quote quoteFilled, Good g, int price, EconomicAgent seller) {
         Preconditions.checkState(false, "good trees never buy!");
     }
 
@@ -156,7 +165,7 @@ public class DailyGoodTree extends EconomicAgent
      * @return the maximum price willing to pay or -1 if no price is good.
      */
     @Override
-    public long maximumOffer(Good g) {
+    public int maximumOffer(Good g) {
         return -1;
     }
 
@@ -167,7 +176,7 @@ public class DailyGoodTree extends EconomicAgent
      * @return the maximum price willing to pay or -1 if no price is good.
      */
     @Override
-    public long askedForABuyOffer(GoodType t) {
+    public int askedForABuyOffer(GoodType t) {
         return -1;
     }
 
@@ -225,7 +234,7 @@ public class DailyGoodTree extends EconomicAgent
         return minPrice;
     }
 
-    public void setMinPrice(long minPrice) {
+    public void setMinPrice(int minPrice) {
         this.minPrice = minPrice;
         name = market.getGoodType() + "Tree, price: " +minPrice;
 

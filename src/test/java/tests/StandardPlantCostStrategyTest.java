@@ -7,7 +7,9 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.technology.Machinery;
+import goods.DifferentiatedGoodType;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -44,7 +46,7 @@ public class StandardPlantCostStrategyTest {
     public void initialTest(){
 
         Plant p = mock(Plant.class);
-        Blueprint b = new Blueprint.Builder().input(GoodType.GENERIC,2).output(GoodType.CAPITAL,4).build();
+        Blueprint b = new Blueprint.Builder().input(UndifferentiatedGoodType.GENERIC,2).output(DifferentiatedGoodType.CAPITAL,4).build();
 
 
         List<Person> fakeRoster = new LinkedList<>();
@@ -54,19 +56,19 @@ public class StandardPlantCostStrategyTest {
         when(p.getOutputMultiplier(any(GoodType.class))).thenReturn(1f);
 
         HumanResources hr = mock(HumanResources.class); when(p.getHr()).thenReturn(hr);
-        when(hr.getWagesPaid()).thenReturn(0l);
+        when(hr.getWagesPaid()).thenReturn(0);
 
 
 
         DirectCosts strategy = new DirectCosts(p);
         assertEquals(strategy.getTotalProductionPerRun(), 4);
         assertEquals(strategy.getWageCostsPerUnit(), 0); //there is no worker
-        assertEquals(strategy.unitOutputCost(GoodType.CAPITAL, 400), 100);
+        assertEquals(strategy.unitOutputCost(DifferentiatedGoodType.CAPITAL, 400), 100);
 
 
         boolean exceptionThrown = false;
         try{
-            assertEquals(strategy.unitOutputCost(GoodType.GENERIC, 400), 0);
+            assertEquals(strategy.unitOutputCost(UndifferentiatedGoodType.GENERIC, 400), 0);
             fail(); //should trow an exception
         }
         catch (IllegalArgumentException e){
@@ -79,7 +81,7 @@ public class StandardPlantCostStrategyTest {
         for(int i=0; i < 3; i++)
         {
             Person w = mock(Person.class);
-            when(w.getWage()).thenReturn(3l);
+            when(w.getWage()).thenReturn(3);
             fakeRoster.add(w); //addSalesDepartmentListener to roster
         }
 
@@ -87,7 +89,7 @@ public class StandardPlantCostStrategyTest {
 
         //it still shouldn't have updated because the listener wasn't fired
         assertEquals(strategy.getWageCostsPerUnit(), 0); //there is no worker
-        when(hr.getWagesPaid()).thenReturn(3l * fakeRoster.size());
+        when(hr.getWagesPaid()).thenReturn(3 * fakeRoster.size());
         when(p.hypotheticalTotalThroughput(anyInt())).thenReturn(4f);
         strategy.changeInWorkforceEvent(p,3, 2);
         //get wages paid
@@ -115,9 +117,9 @@ public class StandardPlantCostStrategyTest {
     @Test
     public void BetterDressedTest(){
 
-        Blueprint b = new Blueprint.Builder().input(GoodType.GENERIC,2).output(GoodType.CAPITAL,4).build();
+        Blueprint b = new Blueprint.Builder().input(UndifferentiatedGoodType.GENERIC,2).output(DifferentiatedGoodType.CAPITAL,4).build();
         Firm f = mock(Firm.class);
-        when(f.getModel()).thenReturn(new MacroII(1l));
+        when(f.getModel()).thenReturn(new MacroII(1));
         final Plant p = new Plant(b,f);
         HumanResources hr = mock(HumanResources.class);
         when(f.getHR(p)).thenReturn(hr);
@@ -143,10 +145,10 @@ public class StandardPlantCostStrategyTest {
 
         assertEquals(strategy.getTotalProductionPerRun(), 4);
         assertEquals(strategy.getWageCostsPerUnit(), 0); //there is no worker
-        assertEquals(strategy.unitOutputCost(GoodType.CAPITAL, 400), 100);
+        assertEquals(strategy.unitOutputCost(DifferentiatedGoodType.CAPITAL, 400), 100);
         boolean exceptionThrown = false;
         try{
-            assertEquals(strategy.unitOutputCost(GoodType.GENERIC, 400), 0);
+            assertEquals(strategy.unitOutputCost(UndifferentiatedGoodType.GENERIC, 400), 0);
             fail(); //should trow an exception
         }
         catch (IllegalArgumentException e){
@@ -160,7 +162,7 @@ public class StandardPlantCostStrategyTest {
         for(int i=0; i < 3; i++)
         {
             Person w = mock(Person.class);
-            when(w.getWage()).thenReturn(3l);
+            when(w.getWage()).thenReturn(3);
             p.addWorker(w);
 
         }

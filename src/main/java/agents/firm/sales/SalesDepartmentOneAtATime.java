@@ -13,6 +13,7 @@ import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import com.google.common.base.Preconditions;
 import financial.market.Market;
 import financial.utilities.ActionsAllowed;
+import financial.utilities.Quote;
 import goods.Good;
 import model.MacroII;
 
@@ -119,8 +120,14 @@ public class SalesDepartmentOneAtATime extends SalesDepartment
      * @param g
      */
     @Override
-    protected void newGoodToSell(Good g) {
+    protected void newGoodsToSellEvent(Good... g) {
+        Preconditions.checkArgument(g.length > 0);
+        sellIfAble();
 
+
+    }
+
+    private void sellIfAble() {
         //now act
         if(market.getSellerRole() == ActionsAllowed.QUOTE) //if we are supposed to quote
         {
@@ -129,18 +136,24 @@ public class SalesDepartmentOneAtATime extends SalesDepartment
         }
         else  if(canPeddle)
         {
-            peddle(g);
+            throw new RuntimeException("Delete peddling, please!");
 
         }
+    }
+
+    @Override
+    protected void newGoodsToSellEvent(int amount) {
+        Preconditions.checkArgument(amount>0);
+        sellIfAble();
     }
 
     /**
      * tries to sell a good on the order book conditional on not being waiting for other orders.
      */
     private void placeIfAble() {
-        if(!this.hasItPlacedAtLeastOneOrder() && goodsQuotedOnTheMarket.size()>0 && !lock)
+        if(this.numberOfQuotesPlaced()==0 && quotesManager.numberOfGoodsToSell()>0 && !lock)
         {
-            Good g =  goodsQuotedOnTheMarket.keySet().iterator().next();
+            Good g =  quotesManager.peekFirstGoodAvailable();
             prepareToPlaceAQuote(g);
         }
     }
@@ -149,12 +162,13 @@ public class SalesDepartmentOneAtATime extends SalesDepartment
     /**
      * Calls superclass and checks if it can place another order
      *
+     * @param filledQuote
      * @param g     the good sold
      * @param price the price for which it sold
      */
     @Override
-    public void reactToFilledQuote(Good g, long price, EconomicAgent buyer) {
-        super.reactToFilledQuote(g, price, buyer);
+    public void reactToFilledQuote(Quote filledQuote, Good g, int price, EconomicAgent buyer) {
+        super.reactToFilledQuote(filledQuote, g, price, buyer);
 
         placeIfAble();
     }
@@ -173,7 +187,7 @@ public class SalesDepartmentOneAtATime extends SalesDepartment
 
         //these two should be equal: because this sales department allows only one order it must always be true that if you
         //removed the previous order, there are no other orders
-        assert (toReturn && !hasItPlacedAtLeastOneOrder()) || !toReturn;
+        assert (toReturn && numberOfQuotesPlaced()==0) || !toReturn;
 
         //if you were preparing to quote the good, bad news!
         if(beingQuoted == g)

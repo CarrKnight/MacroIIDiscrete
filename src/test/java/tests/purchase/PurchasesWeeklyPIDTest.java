@@ -13,8 +13,9 @@ import agents.firm.sales.SalesDepartmentAllAtOnce;
 import financial.market.Market;
 import financial.market.OrderBookBlindMarket;
 import financial.utilities.Quote;
+import goods.DifferentiatedGoodType;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import org.junit.Test;
@@ -60,21 +61,21 @@ public class PurchasesWeeklyPIDTest {
 
         PurchasesDepartment dept = mock(PurchasesDepartment.class); //new stub
         Firm firm = mock(Firm.class); //new stub
-        MacroII model = new MacroII(1l);          when(firm.getModel()).thenReturn(model);
+        MacroII model = new MacroII(1);          when(firm.getModel()).thenReturn(model);
 
-        Blueprint b = Blueprint.simpleBlueprint(GoodType.GENERIC,6,GoodType.CAPITAL,1);
+        Blueprint b = Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,6, DifferentiatedGoodType.CAPITAL,1);
         Plant p = new Plant(b,firm);
         List<Plant> plants = new LinkedList<>(); plants.add(p);
         Machinery machinery = mock(Machinery.class);
         when(machinery.expectedWeeklyProductionRuns()).thenReturn(0f);
         p.setPlantMachinery(machinery);
 
-        when(firm.getListOfPlantsUsingSpecificInput(GoodType.GENERIC)).thenReturn(plants);
+        when(firm.getListOfPlantsUsingSpecificInput(UndifferentiatedGoodType.GENERIC)).thenReturn(plants);
 
         when(dept.getFirm()).thenReturn(firm);
         when(dept.getRandom()).thenReturn(model.random);
         when(dept.getModel()).thenReturn(model);
-        when(dept.getGoodType()).thenReturn(GoodType.GENERIC);
+        when(dept.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
         model.schedule = mock(Schedule.class);
 
 
@@ -83,8 +84,8 @@ public class PurchasesWeeklyPIDTest {
         PurchasesDailyPID control = new PurchasesDailyPID(dept,.5f,2f,.05f);
         control.setHowManyDaysOfInventoryToHold(7);
 
-        long pidPrice = control.maxPrice(GoodType.GENERIC);
-        assertEquals(pidPrice, 0l);
+        int pidPrice = control.maxPrice(UndifferentiatedGoodType.GENERIC);
+        assertEquals(pidPrice, 0);
 
         assertEquals(control.getDailyTarget(), 0f, 0.0001f);
         when(machinery.expectedWeeklyProductionRuns()).thenReturn(1f);
@@ -94,12 +95,12 @@ public class PurchasesWeeklyPIDTest {
 
 
         for(int i=0; i < 100; i++){
-            when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
+            when(firm.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
             model.scheduleSoon(ActionOrder.ADJUST_PRICES,control);
             model.getPhaseScheduler().step(model);
-            long oldPrice = pidPrice;
-            pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
-            int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
+            int oldPrice = pidPrice;
+            pidPrice = control.maxPrice(UndifferentiatedGoodType.GENERIC);           //new price
+            int currentInventory = firm.hasHowMany(UndifferentiatedGoodType.GENERIC); //what do you currently "have"
             //System.out.println(getCurrentInventory + " ---> " + pidPrice);
         /*    assertTrue((currentInventory <= 6 && pidPrice > oldPrice) ||
                     (currentInventory >= 6 && pidPrice < oldPrice) ||
@@ -119,18 +120,18 @@ public class PurchasesWeeklyPIDTest {
 
         PurchasesDepartment dept = mock(PurchasesDepartment.class); //new stub
         Firm firm = mock(Firm.class); //new stub
-        MacroII model = new MacroII(1l);
-        Blueprint b = Blueprint.simpleBlueprint(GoodType.GENERIC,6,GoodType.CAPITAL,1);
+        MacroII model = new MacroII(1);
+        Blueprint b = Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,6, DifferentiatedGoodType.CAPITAL,1);
         Plant p = new Plant(b,firm);
         List<Plant> plants = new LinkedList<>(); plants.add(p);
 
-        when(firm.getListOfPlantsUsingSpecificInput(GoodType.GENERIC)).thenReturn(plants);
+        when(firm.getListOfPlantsUsingSpecificInput(UndifferentiatedGoodType.GENERIC)).thenReturn(plants);
 
         when(dept.getFirm()).thenReturn(firm);
         when(dept.getModel()).thenReturn(model);
         when(dept.getRandom()).thenReturn(model.random);
         when(firm.getModel()).thenReturn(model);
-        when(dept.getGoodType()).thenReturn(GoodType.GENERIC);
+        when(dept.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
         model.schedule = mock(Schedule.class);
 
 
@@ -142,8 +143,8 @@ public class PurchasesWeeklyPIDTest {
 
         PurchasesDailyPID control = new PurchasesDailyPID(dept,.5f,2f,.05f);
         control.setHowManyDaysOfInventoryToHold(7);
-        long pidPrice = control.maxPrice(GoodType.GENERIC);
-        assertEquals(pidPrice, 0l);
+        int pidPrice = control.maxPrice(UndifferentiatedGoodType.GENERIC);
+        assertEquals(pidPrice, 0);
 
         assertEquals(control.getDailyTarget(), 0f, 0.0001f);
         when(machinery.expectedWeeklyProductionRuns()).thenReturn(1f);   //if they expect only one run, it should be relatively easy.
@@ -154,12 +155,12 @@ public class PurchasesWeeklyPIDTest {
 
 
         for(int i=0; i < 100; i++){
-            when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
+            when(firm.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
             model.scheduleSoon(ActionOrder.ADJUST_PRICES,control);
             model.getPhaseScheduler().step(model);
-            long oldPrice = pidPrice;
-            pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
-            int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
+            int oldPrice = pidPrice;
+            pidPrice = control.maxPrice(UndifferentiatedGoodType.GENERIC);           //new price
+            int currentInventory = firm.hasHowMany(UndifferentiatedGoodType.GENERIC); //what do you currently "have"
             // System.out.println(getCurrentInventory + " ---> " + pidPrice);
             assertTrue((currentInventory <= 6 && pidPrice > oldPrice) ||
                     (currentInventory >= 6 && pidPrice < oldPrice) ||
@@ -180,18 +181,18 @@ public class PurchasesWeeklyPIDTest {
 
         PurchasesDepartment dept = mock(PurchasesDepartment.class); //new stub
         Firm firm = mock(Firm.class); //new stub
-        MacroII model = new MacroII(1l);
-        Blueprint b = Blueprint.simpleBlueprint(GoodType.GENERIC,6,GoodType.CAPITAL,1);
+        MacroII model = new MacroII(1);
+        Blueprint b = Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,6, DifferentiatedGoodType.CAPITAL,1);
         Plant p = new Plant(b,firm);
         List<Plant> plants = new LinkedList<>(); plants.add(p);
 
 
-        when(firm.getListOfPlantsUsingSpecificInput(GoodType.GENERIC)).thenReturn(plants);
+        when(firm.getListOfPlantsUsingSpecificInput(UndifferentiatedGoodType.GENERIC)).thenReturn(plants);
 
         when(dept.getFirm()).thenReturn(firm);
         when(dept.getRandom()).thenReturn(model.random);
         when(firm.getModel()).thenReturn(model);
-        when(dept.getGoodType()).thenReturn(GoodType.GENERIC);
+        when(dept.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
         when(dept.getModel()).thenReturn(model);
 
         model.schedule = mock(Schedule.class);
@@ -204,8 +205,8 @@ public class PurchasesWeeklyPIDTest {
         PurchasesDailyPID control = new PurchasesDailyPID(dept,.5f,2f,.05f);
         control.setHowManyDaysOfInventoryToHold(7);
 
-        long pidPrice = control.maxPrice(GoodType.GENERIC);
-        assertEquals(pidPrice, 0l);
+        int pidPrice = control.maxPrice(UndifferentiatedGoodType.GENERIC);
+        assertEquals(pidPrice, 0);
 
         assertEquals(control.getDailyTarget(), 0f, 0.0001f);
         when(machinery.expectedWeeklyProductionRuns()).thenReturn(1f);   //if they expect only one run, it should be relatively easy.
@@ -216,11 +217,11 @@ public class PurchasesWeeklyPIDTest {
         model.scheduleSoon(ActionOrder.ADJUST_PRICES,control);
 
         for(int i=0; i < 1000; i++){
-            when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
+            when(firm.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/10f))); //tell the control how much you managed to buy
             model.getPhaseScheduler().step(model);
-            long oldPrice = pidPrice;
-            pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
-            int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
+            int oldPrice = pidPrice;
+            pidPrice = control.maxPrice(UndifferentiatedGoodType.GENERIC);           //new price
+            int currentInventory = firm.hasHowMany(UndifferentiatedGoodType.GENERIC); //what do you currently "have"
             System.out.println(currentInventory + " ---> " + pidPrice);
 /*            assertTrue((currentInventory <= 6 && pidPrice > oldPrice) ||
                     (currentInventory >= 6 && pidPrice < oldPrice) ||
@@ -232,11 +233,11 @@ public class PurchasesWeeklyPIDTest {
 
         //and now you need half of the money!
         for(int i=0; i < 5000; i++){
-            when(firm.hasHowMany(GoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/5f))); //tell the control how much you managed to buy
+            when(firm.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(Math.abs((int)Math.floor(((float)pidPrice)/5f))); //tell the control how much you managed to buy
             model.getPhaseScheduler().step(model);
-            long oldPrice = pidPrice;
-            pidPrice = control.maxPrice(GoodType.GENERIC);           //new price
-            int currentInventory = firm.hasHowMany(GoodType.GENERIC); //what do you currently "have"
+            int oldPrice = pidPrice;
+            pidPrice = control.maxPrice(UndifferentiatedGoodType.GENERIC);           //new price
+            int currentInventory = firm.hasHowMany(UndifferentiatedGoodType.GENERIC); //what do you currently "have"
             //   System.out.println(getCurrentInventory + " ****> " + pidPrice);
     /*        assertTrue((currentInventory <= 6 && pidPrice > oldPrice) ||
                     (currentInventory >= 6 && pidPrice < oldPrice) ||
@@ -254,17 +255,17 @@ public class PurchasesWeeklyPIDTest {
 
         Market.TESTING_MODE = true;
 
-        final MacroII model = new MacroII(1l){
+        final MacroII model = new MacroII(1){
             @Override
             public void start() {
                 super.start();    //this model doesn't do anything special when starting, so we can test.
             }
         };
-        final Market market = new OrderBookBlindMarket(GoodType.GENERIC);
+        final Market market = new OrderBookBlindMarket(UndifferentiatedGoodType.GENERIC);
         final Firm f = new Firm(model);
-        Blueprint b = Blueprint.simpleBlueprint(GoodType.GENERIC,6,GoodType.CAPITAL,1);
+        Blueprint b = Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,6, DifferentiatedGoodType.CAPITAL,1);
         final Plant p = new Plant(b,f);
-        final LinearConstantMachinery machinery = new LinearConstantMachinery(GoodType.CAPITAL,f,0,p);
+        final LinearConstantMachinery machinery = new LinearConstantMachinery(DifferentiatedGoodType.CAPITAL,f,0,p);
         machinery.setOneWorkerThroughput(100);
         p.setPlantMachinery(machinery);
         p.setCostStrategy(new EmptyCostStrategy());
@@ -273,16 +274,16 @@ public class PurchasesWeeklyPIDTest {
         //addSalesDepartmentListener 20 workers and your completeProductionRunNow once every 25
         for(int i=0; i < 4; i++)
             p.addWorker(new Person(model));
-        f.earn(10000000);
+        f.receiveMany(UndifferentiatedGoodType.MONEY,10000000);
         model.start();
-        f.registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class),GoodType.GENERIC);
-        f.registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class),GoodType.CAPITAL);
+        f.registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class), UndifferentiatedGoodType.GENERIC);
+        f.registerSaleDepartment(mock(SalesDepartmentAllAtOnce.class), DifferentiatedGoodType.CAPITAL);
 
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartmentIntegrated(
                 10000000,f,market,PurchasesDailyPID.class,null,null).getDepartment();
-        f.registerPurchasesDepartment(dept,GoodType.GENERIC);
+        f.registerPurchasesDepartment(dept, UndifferentiatedGoodType.GENERIC);
 
         Field field = PurchasesDepartment.class.getDeclaredField("control");
         field.setAccessible(true);
@@ -304,7 +305,7 @@ public class PurchasesWeeklyPIDTest {
                 {
                     DummySeller seller = new DummySeller(model,i*10 + 10);
                     market.registerSeller(seller);
-                    Good good = new Good(GoodType.GENERIC,seller,i*10+10);
+                    Good good = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
                     seller.receive(good,null);
                     Quote q = market.submitSellQuote(seller,seller.saleQuote,good);
                     quotes.add(q);

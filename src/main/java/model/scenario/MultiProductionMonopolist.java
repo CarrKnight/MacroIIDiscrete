@@ -22,9 +22,12 @@ import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import financial.market.OrderBookMarket;
+import financial.utilities.Quote;
 import financial.utilities.ShopSetPricePolicy;
+import goods.DifferentiatedGoodType;
 import goods.Good;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import sim.engine.SimState;
@@ -50,9 +53,9 @@ public class MultiProductionMonopolist extends Scenario{
 
 
 
-    final public static GoodType LEATHER = new GoodType("leatherTest","Leather");
+    final public static GoodType LEATHER = new UndifferentiatedGoodType("leatherTest","Leather");
 
-    final public static GoodType BEEF = new GoodType("beefTest","Beef");
+    final public static GoodType BEEF = new UndifferentiatedGoodType("beefTest","Beef");
 
 
     public MultiProductionMonopolist(MacroII model) {
@@ -65,7 +68,7 @@ public class MultiProductionMonopolist extends Scenario{
     @Override
     public void start() {
 
-        model.getGoodTypeMasterList().addNewSectors(BEEF,LEATHER,GoodType.LABOR);
+        model.getGoodTypeMasterList().addNewSectors(BEEF,LEATHER, UndifferentiatedGoodType.LABOR);
 
 
         //LEATHER market
@@ -79,9 +82,9 @@ public class MultiProductionMonopolist extends Scenario{
         getMarkets().put(BEEF,beefMarket);
 
         //create and record the labor market!
-        final OrderBookMarket laborMarket= new OrderBookMarket(GoodType.LABOR);
+        final OrderBookMarket laborMarket= new OrderBookMarket(UndifferentiatedGoodType.LABOR);
         laborMarket.setPricePolicy(new ShopSetPricePolicy()); //make the seller price matter
-        getMarkets().put(GoodType.LABOR,laborMarket);
+        getMarkets().put(UndifferentiatedGoodType.LABOR,laborMarket);
 
 
 
@@ -100,14 +103,14 @@ public class MultiProductionMonopolist extends Scenario{
              */
             final DummyBuyer buyer = new DummyBuyer(getModel(),2 + i*2,leatherMarket){
                 @Override
-                public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
+                public void reactToFilledBidQuote(Quote quoteFilled, Good g, int price, final EconomicAgent b) {
                     //trick to get the steppable to recognize the anonymous me!
                     final DummyBuyer reference = this;
                     //schedule a new quote in period!
                     this.getModel().scheduleTomorrow(ActionOrder.TRADE,new Steppable() {
                         @Override
                         public void step(SimState simState) {
-                            earn(1000l);
+                            receiveMany(UndifferentiatedGoodType.MONEY,1000);
                             //put another quote
                             leatherMarket.submitBuyQuote(reference,getFixedPrice());
 
@@ -124,7 +127,7 @@ public class MultiProductionMonopolist extends Scenario{
                 @Override
                 public void step(SimState simState) {
                     leatherMarket.registerBuyer(buyer);
-                    buyer.earn(1000l);
+                    buyer.receiveMany(UndifferentiatedGoodType.MONEY,1000);
                     //make the buyer submit a quote soon.
                     leatherMarket.submitBuyQuote(buyer,buyer.getFixedPrice());                }
             }  );
@@ -153,14 +156,14 @@ public class MultiProductionMonopolist extends Scenario{
              */
             final DummyBuyer buyer = new DummyBuyer(getModel(),2 + i*2,beefMarket){
                 @Override
-                public void reactToFilledBidQuote(Good g, long price, final EconomicAgent b) {
+                public void reactToFilledBidQuote(Quote quoteFilled, Good g, int price, final EconomicAgent b) {
                     //trick to get the steppable to recognize the anonymous me!
                     final DummyBuyer reference = this;
                     //schedule a new quote in period!
                     this.getModel().scheduleTomorrow(ActionOrder.TRADE,new Steppable() {
                         @Override
                         public void step(SimState simState) {
-                            earn(1000l);
+                            receiveMany(UndifferentiatedGoodType.MONEY,1000);
                             //put another quote
                             beefMarket.submitBuyQuote(reference,getFixedPrice());
 
@@ -177,7 +180,7 @@ public class MultiProductionMonopolist extends Scenario{
                 @Override
                 public void step(SimState simState) {
                     beefMarket.registerBuyer(buyer);
-                    buyer.earn(1000l);
+                    buyer.receiveMany(UndifferentiatedGoodType.MONEY,1000);
                     //make the buyer submit a quote soon.
                     beefMarket.submitBuyQuote(buyer,buyer.getFixedPrice());                }
             }  );
@@ -199,7 +202,8 @@ public class MultiProductionMonopolist extends Scenario{
         for(int i=0;i<1;i++){
             //only one seller
             final Firm seller = new Firm(getModel());
-            seller.earn(1000000000l);
+            seller.receiveMany(UndifferentiatedGoodType.MONEY,1000000000);
+
             //set up the firm at time 1
             getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE,new Steppable() {
                 @Override
@@ -222,7 +226,7 @@ public class MultiProductionMonopolist extends Scenario{
                     //add the plant
                     Blueprint blueprint = new Blueprint.Builder().output(BEEF,1).output(LEATHER,2).build();
                     Plant plant = new Plant(blueprint,seller);
-                    plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL,seller,0,plant));
+                    plant.setPlantMachinery(new LinearConstantMachinery(DifferentiatedGoodType.CAPITAL,seller,0,plant));
                     plant.setCostStrategy(new InputCostStrategy(plant));
                     seller.addPlant(plant);
 

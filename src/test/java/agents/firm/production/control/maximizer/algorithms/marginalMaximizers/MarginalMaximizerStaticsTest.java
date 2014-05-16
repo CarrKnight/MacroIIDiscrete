@@ -14,6 +14,7 @@ import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.sales.SalesDepartment;
 import financial.market.OrderBookMarket;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.utilities.DelayException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -50,7 +51,7 @@ public class MarginalMaximizerStaticsTest
 {
 
 
-    final static private GoodType BEEF = new GoodType("beeftest","testy");
+    final static private GoodType BEEF = new UndifferentiatedGoodType("beeftest","testy");
 
 
 
@@ -67,16 +68,16 @@ public class MarginalMaximizerStaticsTest
     public void simpleRevenueTest() throws DelayException {
 
         Plant plant = mock(Plant.class);
-        when(plant.hypotheticalThroughput(1, GoodType.GENERIC)).thenReturn(10f);
-        when(plant.hypotheticalThroughput(2, GoodType.GENERIC)).thenReturn(11f);
-        HashSet<GoodType> outputs = new HashSet<>(); outputs.add(GoodType.GENERIC);
+        when(plant.hypotheticalThroughput(1, UndifferentiatedGoodType.GENERIC)).thenReturn(10f);
+        when(plant.hypotheticalThroughput(2, UndifferentiatedGoodType.GENERIC)).thenReturn(11f);
+        HashSet<GoodType> outputs = new HashSet<>(); outputs.add(UndifferentiatedGoodType.GENERIC);
         when(plant.getOutputs()).thenReturn(outputs);
 
         Firm owner = mock(Firm.class);
         SalesDepartment department = mock(SalesDepartment.class);
-        when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.predictSalePriceWhenNotChangingPoduction()).thenReturn(60l);
-        when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59l);
+        when(owner.getSalesDepartment(UndifferentiatedGoodType.GENERIC)).thenReturn(department);
+        when(department.predictSalePriceWhenNotChangingPoduction()).thenReturn(60);
+        when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
 
@@ -97,16 +98,16 @@ public class MarginalMaximizerStaticsTest
     public void simpleRevenueTest2() throws DelayException {
 
         Plant plant = mock(Plant.class);
-        when(plant.hypotheticalThroughput(1, GoodType.GENERIC)).thenReturn(10f);
-        when(plant.hypotheticalThroughput(2, GoodType.GENERIC)).thenReturn(20f);
-        HashSet<GoodType> outputs = new HashSet<>(); outputs.add(GoodType.GENERIC);
+        when(plant.hypotheticalThroughput(1, UndifferentiatedGoodType.GENERIC)).thenReturn(10f);
+        when(plant.hypotheticalThroughput(2, UndifferentiatedGoodType.GENERIC)).thenReturn(20f);
+        HashSet<GoodType> outputs = new HashSet<>(); outputs.add(UndifferentiatedGoodType.GENERIC);
         when(plant.getOutputs()).thenReturn(outputs);
 
         Firm owner = mock(Firm.class);
         SalesDepartment department = mock(SalesDepartment.class);
-        when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.predictSalePriceWhenNotChangingPoduction()).thenReturn(60l);
-        when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59l);
+        when(owner.getSalesDepartment(UndifferentiatedGoodType.GENERIC)).thenReturn(department);
+        when(department.predictSalePriceWhenNotChangingPoduction()).thenReturn(60);
+        when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
 
@@ -123,16 +124,16 @@ public class MarginalMaximizerStaticsTest
     public void simpleRevenueTest3() throws DelayException {
 
         Plant plant = mock(Plant.class);
-        when(plant.hypotheticalThroughput(1, GoodType.GENERIC)).thenReturn(10f);
-        when(plant.hypotheticalThroughput(2, GoodType.GENERIC)).thenReturn(20f);
-        HashSet<GoodType> outputs = new HashSet<>(); outputs.add(GoodType.GENERIC);
+        when(plant.hypotheticalThroughput(1, UndifferentiatedGoodType.GENERIC)).thenReturn(10f);
+        when(plant.hypotheticalThroughput(2, UndifferentiatedGoodType.GENERIC)).thenReturn(20f);
+        HashSet<GoodType> outputs = new HashSet<>(); outputs.add(UndifferentiatedGoodType.GENERIC);
         when(plant.getOutputs()).thenReturn(outputs);
 
         Firm owner = mock(Firm.class);
         SalesDepartment department = mock(SalesDepartment.class);
-        when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.predictSalePriceWhenNotChangingPoduction()).thenReturn(60l);
-        when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(70l);
+        when(owner.getSalesDepartment(UndifferentiatedGoodType.GENERIC)).thenReturn(department);
+        when(department.predictSalePriceWhenNotChangingPoduction()).thenReturn(60);
+        when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(70);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
 
@@ -150,16 +151,16 @@ public class MarginalMaximizerStaticsTest
     public void simpleRevenueTest4() throws DelayException {
 
         Plant plant = mock(Plant.class);
-        when(plant.hypotheticalThroughput(1, GoodType.GENERIC)).thenReturn(10f);
-        when(plant.hypotheticalThroughput(3, GoodType.GENERIC)).thenReturn(11f);
-        HashSet<GoodType> outputs = new HashSet<>(); outputs.add(GoodType.GENERIC);
+        when(plant.hypotheticalThroughput(1, UndifferentiatedGoodType.GENERIC)).thenReturn(10f);
+        when(plant.hypotheticalThroughput(3, UndifferentiatedGoodType.GENERIC)).thenReturn(11f);
+        HashSet<GoodType> outputs = new HashSet<>(); outputs.add(UndifferentiatedGoodType.GENERIC);
         when(plant.getOutputs()).thenReturn(outputs);
 
         Firm owner = mock(Firm.class);
         SalesDepartment department = mock(SalesDepartment.class);
-        when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.predictSalePriceWhenNotChangingPoduction()).thenReturn(60l);
-        when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59l);
+        when(owner.getSalesDepartment(UndifferentiatedGoodType.GENERIC)).thenReturn(department);
+        when(department.predictSalePriceWhenNotChangingPoduction()).thenReturn(60);
+        when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
 
@@ -180,19 +181,19 @@ public class MarginalMaximizerStaticsTest
     public void doubleRevenueTest() throws DelayException {
 
         Plant plant = mock(Plant.class);
-        when(plant.hypotheticalThroughput(1, GoodType.GENERIC)).thenReturn(10f);
-        when(plant.hypotheticalThroughput(2, GoodType.GENERIC)).thenReturn(11f);
+        when(plant.hypotheticalThroughput(1, UndifferentiatedGoodType.GENERIC)).thenReturn(10f);
+        when(plant.hypotheticalThroughput(2, UndifferentiatedGoodType.GENERIC)).thenReturn(11f);
         when(plant.hypotheticalThroughput(1, BEEF)).thenReturn(10f);
         when(plant.hypotheticalThroughput(2, BEEF)).thenReturn(11f);
-        HashSet<GoodType> outputs = new HashSet<>(); outputs.add(GoodType.GENERIC);  outputs.add(BEEF);
+        HashSet<GoodType> outputs = new HashSet<>(); outputs.add(UndifferentiatedGoodType.GENERIC);  outputs.add(BEEF);
         when(plant.getOutputs()).thenReturn(outputs);
 
         Firm owner = mock(Firm.class);
         SalesDepartment department = mock(SalesDepartment.class);
-        when(owner.getSalesDepartment(GoodType.GENERIC)).thenReturn(department);
+        when(owner.getSalesDepartment(UndifferentiatedGoodType.GENERIC)).thenReturn(department);
         when(owner.getSalesDepartment(BEEF)).thenReturn(department);
-        when(department.predictSalePriceWhenNotChangingPoduction()).thenReturn(60l);
-        when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59l);
+        when(department.predictSalePriceWhenNotChangingPoduction()).thenReturn(60);
+        when(department.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(59);
         when(department.getTodayOutflow()).thenReturn(10);// if this is 0 then the drop in demand price is ignored.
 
 
@@ -217,20 +218,20 @@ public class MarginalMaximizerStaticsTest
     public void simpleWageCosts() throws DelayException {
 
         HumanResources hr = mock(HumanResources.class);
-        when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
+        when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10);
         when(hr.isFixedPayStructure()).thenReturn(true);
         Mockito.when(hr.getMarket()).thenReturn(Mockito.mock(OrderBookMarket.class));
 
         PlantControl control = mock(PlantControl.class);
 
-        when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5l);
+        when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5);
 
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeWageCosts(hr, control, 1, 2, MarginalMaximizer.RandomizationPolicy.MORE_TIME);
 
-        Assert.assertEquals(estimate.getTotalCost(),20l,.0001);
-        Assert.assertEquals(estimate.getMarginalCost(),15l,.0001);
+        Assert.assertEquals(estimate.getTotalCost(),20,.0001);
+        Assert.assertEquals(estimate.getMarginalCost(),15,.0001);
 
 
     }
@@ -240,18 +241,18 @@ public class MarginalMaximizerStaticsTest
     public void simpleWageCosts2() throws DelayException {
 
         HumanResources hr = mock(HumanResources.class);
-        when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
+        when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10);
         when(hr.isFixedPayStructure()).thenReturn(true);
         Mockito.when(hr.getMarket()).thenReturn(Mockito.mock(OrderBookMarket.class));
 
         PlantControl control = mock(PlantControl.class);
-        when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5l);
+        when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5);
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeWageCosts(hr, control, 1, 3, MarginalMaximizer.RandomizationPolicy.MORE_TIME);
 
-        Assert.assertEquals(estimate.getTotalCost(),30l,.0001);
-        Assert.assertEquals(estimate.getMarginalCost(),25l,.0001);
+        Assert.assertEquals(estimate.getTotalCost(),30,.0001);
+        Assert.assertEquals(estimate.getMarginalCost(),25,.0001);
 
 
     }
@@ -263,18 +264,18 @@ public class MarginalMaximizerStaticsTest
 
         HumanResources hr = mock(HumanResources.class);
         when(hr.isFixedPayStructure()).thenReturn(true);
-        when(hr.predictPurchasePriceWhenDecreasingProduction()).thenReturn(5l);
+        when(hr.predictPurchasePriceWhenDecreasingProduction()).thenReturn(5);
         Mockito.when(hr.getMarket()).thenReturn(Mockito.mock(OrderBookMarket.class));
 
         PlantControl control = mock(PlantControl.class);
-        when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(10l);
+        when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(10);
 
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeWageCosts(hr, control, 2, 1, MarginalMaximizer.RandomizationPolicy.MORE_TIME);
 
-        Assert.assertEquals(estimate.getTotalCost(),5l,.0001);
-        Assert.assertEquals(estimate.getMarginalCost(),-15l,.0001);
+        Assert.assertEquals(estimate.getTotalCost(),5,.0001);
+        Assert.assertEquals(estimate.getMarginalCost(),-15,.0001);
 
 
     }
@@ -285,18 +286,18 @@ public class MarginalMaximizerStaticsTest
 
         HumanResources hr = mock(HumanResources.class);
         when(hr.isFixedPayStructure()).thenReturn(true);
-        when(hr.predictPurchasePriceWhenDecreasingProduction()).thenReturn(5l);
+        when(hr.predictPurchasePriceWhenDecreasingProduction()).thenReturn(5);
         Mockito.when(hr.getMarket()).thenReturn(Mockito.mock(OrderBookMarket.class));
 
         PlantControl control = mock(PlantControl.class);
-        when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(10l);
+        when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(10);
 
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeWageCosts(hr, control, 3, 1, MarginalMaximizer.RandomizationPolicy.MORE_TIME);
 
-        Assert.assertEquals(estimate.getTotalCost(),5l,.0001);
-        Assert.assertEquals(estimate.getMarginalCost(),-25l,.0001);
+        Assert.assertEquals(estimate.getTotalCost(),5,.0001);
+        Assert.assertEquals(estimate.getMarginalCost(),-25,.0001);
 
 
     }
@@ -317,17 +318,17 @@ public class MarginalMaximizerStaticsTest
         Plant plant = mock(Plant.class);
 
 
-        HashSet<GoodType> inputs = new HashSet<>(); inputs.add(GoodType.GENERIC);
+        HashSet<GoodType> inputs = new HashSet<>(); inputs.add(UndifferentiatedGoodType.GENERIC);
         when(plant.getInputs()).thenReturn(inputs);
-        when(plant.hypotheticalWeeklyInputNeeds(GoodType.GENERIC,1)).thenReturn(1);
-        when(plant.hypotheticalWeeklyInputNeeds(GoodType.GENERIC,2)).thenReturn(2);
+        when(plant.hypotheticalWeeklyInputNeeds(UndifferentiatedGoodType.GENERIC,1)).thenReturn(1);
+        when(plant.hypotheticalWeeklyInputNeeds(UndifferentiatedGoodType.GENERIC,2)).thenReturn(2);
 
 
         Firm owner = mock(Firm.class);
         PurchasesDepartment department = mock(PurchasesDepartment.class);
-        when(owner.getPurchaseDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5l);
-        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
+        when(owner.getPurchaseDepartment(UndifferentiatedGoodType.GENERIC)).thenReturn(department);
+        when(department.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5);
+        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10);
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeInputCosts(owner, plant, MarginalMaximizer.RandomizationPolicy.MORE_TIME, 1, 2);
@@ -351,17 +352,17 @@ public class MarginalMaximizerStaticsTest
         Plant plant = mock(Plant.class);
 
 
-        HashSet<GoodType> inputs = new HashSet<>(); inputs.add(GoodType.GENERIC);
+        HashSet<GoodType> inputs = new HashSet<>(); inputs.add(UndifferentiatedGoodType.GENERIC);
         when(plant.getInputs()).thenReturn(inputs);
-        when(plant.hypotheticalWeeklyInputNeeds(GoodType.GENERIC,1)).thenReturn(1);
-        when(plant.hypotheticalWeeklyInputNeeds(GoodType.GENERIC,2)).thenReturn(4);
+        when(plant.hypotheticalWeeklyInputNeeds(UndifferentiatedGoodType.GENERIC,1)).thenReturn(1);
+        when(plant.hypotheticalWeeklyInputNeeds(UndifferentiatedGoodType.GENERIC,2)).thenReturn(4);
 
 
         Firm owner = mock(Firm.class);
         PurchasesDepartment department = mock(PurchasesDepartment.class);
-        when(owner.getPurchaseDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5l);
-        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
+        when(owner.getPurchaseDepartment(UndifferentiatedGoodType.GENERIC)).thenReturn(department);
+        when(department.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5);
+        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10);
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeInputCosts(owner, plant, MarginalMaximizer.RandomizationPolicy.MORE_TIME, 1, 2);
@@ -387,17 +388,17 @@ public class MarginalMaximizerStaticsTest
         Plant plant = mock(Plant.class);
 
 
-        HashSet<GoodType> inputs = new HashSet<>(); inputs.add(GoodType.GENERIC);
+        HashSet<GoodType> inputs = new HashSet<>(); inputs.add(UndifferentiatedGoodType.GENERIC);
         when(plant.getInputs()).thenReturn(inputs);
-        when(plant.hypotheticalWeeklyInputNeeds(GoodType.GENERIC,1)).thenReturn(1);
-        when(plant.hypotheticalWeeklyInputNeeds(GoodType.GENERIC,2)).thenReturn(2);
+        when(plant.hypotheticalWeeklyInputNeeds(UndifferentiatedGoodType.GENERIC,1)).thenReturn(1);
+        when(plant.hypotheticalWeeklyInputNeeds(UndifferentiatedGoodType.GENERIC,2)).thenReturn(2);
 
 
         Firm owner = mock(Firm.class);
         PurchasesDepartment department = mock(PurchasesDepartment.class);
-        when(owner.getPurchaseDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5l);
-        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(3l);
+        when(owner.getPurchaseDepartment(UndifferentiatedGoodType.GENERIC)).thenReturn(department);
+        when(department.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5);
+        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(3);
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeInputCosts(owner, plant, MarginalMaximizer.RandomizationPolicy.MORE_TIME, 1, 2);
@@ -421,17 +422,17 @@ public class MarginalMaximizerStaticsTest
         Plant plant = mock(Plant.class);
 
 
-        HashSet<GoodType> inputs = new HashSet<>(); inputs.add(GoodType.GENERIC);
+        HashSet<GoodType> inputs = new HashSet<>(); inputs.add(UndifferentiatedGoodType.GENERIC);
         when(plant.getInputs()).thenReturn(inputs);
-        when(plant.hypotheticalWeeklyInputNeeds(GoodType.GENERIC,1)).thenReturn(1);
-        when(plant.hypotheticalWeeklyInputNeeds(GoodType.GENERIC,2)).thenReturn(2);
+        when(plant.hypotheticalWeeklyInputNeeds(UndifferentiatedGoodType.GENERIC,1)).thenReturn(1);
+        when(plant.hypotheticalWeeklyInputNeeds(UndifferentiatedGoodType.GENERIC,2)).thenReturn(2);
 
 
         Firm owner = mock(Firm.class);
         PurchasesDepartment department = mock(PurchasesDepartment.class);
-        when(owner.getPurchaseDepartment(GoodType.GENERIC)).thenReturn(department);
-        when(department.predictPurchasePriceWhenDecreasingProduction()).thenReturn(5l);
-        when(department.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(10l);
+        when(owner.getPurchaseDepartment(UndifferentiatedGoodType.GENERIC)).thenReturn(department);
+        when(department.predictPurchasePriceWhenDecreasingProduction()).thenReturn(5);
+        when(department.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(10);
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeInputCosts(owner, plant, MarginalMaximizer.RandomizationPolicy.MORE_TIME, 2, 1);
@@ -459,20 +460,20 @@ public class MarginalMaximizerStaticsTest
         Plant plant = mock(Plant.class);
 
 
-        HashSet<GoodType> inputs = new HashSet<>(); inputs.add(GoodType.GENERIC);inputs.add(BEEF);
+        HashSet<GoodType> inputs = new HashSet<>(); inputs.add(UndifferentiatedGoodType.GENERIC);inputs.add(BEEF);
         when(plant.getInputs()).thenReturn(inputs);
-        when(plant.hypotheticalWeeklyInputNeeds(GoodType.GENERIC,1)).thenReturn(1);
-        when(plant.hypotheticalWeeklyInputNeeds(GoodType.GENERIC,2)).thenReturn(2);
+        when(plant.hypotheticalWeeklyInputNeeds(UndifferentiatedGoodType.GENERIC,1)).thenReturn(1);
+        when(plant.hypotheticalWeeklyInputNeeds(UndifferentiatedGoodType.GENERIC,2)).thenReturn(2);
         when(plant.hypotheticalWeeklyInputNeeds(BEEF,1)).thenReturn(1);
         when(plant.hypotheticalWeeklyInputNeeds(BEEF,2)).thenReturn(2);
 
 
         Firm owner = mock(Firm.class);
         PurchasesDepartment department = mock(PurchasesDepartment.class);
-        when(owner.getPurchaseDepartment(GoodType.GENERIC)).thenReturn(department);
+        when(owner.getPurchaseDepartment(UndifferentiatedGoodType.GENERIC)).thenReturn(department);
         when(owner.getPurchaseDepartment(BEEF)).thenReturn(department);
-        when(department.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5l);
-        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10l);
+        when(department.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(5);
+        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10);
 
         CostEstimate estimate = MarginalMaximizerStatics.
                 computeInputCosts(owner, plant, MarginalMaximizer.RandomizationPolicy.MORE_TIME, 1, 2);
@@ -508,7 +509,7 @@ public class MarginalMaximizerStaticsTest
 
         //revenues
         Mockito.when(MarginalMaximizerStatics.computeMarginalRevenue(any(Firm.class),any(Plant.class),
-                any(MarginalMaximizer.RandomizationPolicy.class),anyInt(),anyInt(),anyLong(),anyLong())).thenReturn(200f);
+                any(MarginalMaximizer.RandomizationPolicy.class),anyInt(),anyInt(),anyInt(),anyInt())).thenReturn(200f);
 
         Mockito.when(MarginalMaximizerStatics.computeMarginalProfits(any(Firm.class),any(Plant.class), any(HumanResources.class),
                 any(PlantControl.class),
@@ -546,7 +547,7 @@ public class MarginalMaximizerStaticsTest
 
         //revenues
         Mockito.when(MarginalMaximizerStatics.computeMarginalRevenue(any(Firm.class),any(Plant.class),
-                any(MarginalMaximizer.RandomizationPolicy.class),anyInt(),anyInt(),anyLong(),anyLong())).thenReturn(200f);
+                any(MarginalMaximizer.RandomizationPolicy.class),anyInt(),anyInt(),anyInt(),anyInt())).thenReturn(200f);
 
         Mockito.when(MarginalMaximizerStatics.computeMarginalProfits(any(Firm.class),any(Plant.class), any(HumanResources.class),
                 any(PlantControl.class),
@@ -582,7 +583,7 @@ public class MarginalMaximizerStaticsTest
 
         //revenues
         Mockito.when(MarginalMaximizerStatics.computeMarginalRevenue(any(Firm.class),any(Plant.class),
-                any(MarginalMaximizer.RandomizationPolicy.class),anyInt(),anyInt(),anyLong(),anyLong())).thenReturn(200f);
+                any(MarginalMaximizer.RandomizationPolicy.class),anyInt(),anyInt(),anyInt(),anyInt())).thenReturn(200f);
 
         Mockito.when(MarginalMaximizerStatics.computeMarginalProfits(any(Firm.class),any(Plant.class), any(HumanResources.class),
                 any(PlantControl.class),
@@ -618,7 +619,7 @@ public class MarginalMaximizerStaticsTest
 
         //revenues
         Mockito.when(MarginalMaximizerStatics.computeMarginalRevenue(any(Firm.class),any(Plant.class),
-                any(MarginalMaximizer.RandomizationPolicy.class),anyInt(),anyInt(),anyLong(),anyLong())).thenReturn(-200f);
+                any(MarginalMaximizer.RandomizationPolicy.class),anyInt(),anyInt(),anyInt(),anyInt())).thenReturn(-200f);
 
         Mockito.when(MarginalMaximizerStatics.computeMarginalProfits(any(Firm.class),any(Plant.class), any(HumanResources.class),
                 any(PlantControl.class),

@@ -15,6 +15,7 @@ import financial.market.GeographicalMarket;
 import financial.market.Market;
 import financial.utilities.ShopSetPricePolicy;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.scenario.ControllableGeographicalScenario;
 import model.scenario.Scenario;
@@ -30,7 +31,7 @@ public class OilDistributorScenario extends Scenario implements ControllableGeog
 {
 
 
-    public static final GoodType oilGoodType = new GoodType("oilTest","Oil",false,false);
+    public static final GoodType oilGoodType = new UndifferentiatedGoodType("oilTest","Oil",false,false);
     /**
      * each neighborhood is 30 people
      */
@@ -117,7 +118,7 @@ public class OilDistributorScenario extends Scenario implements ControllableGeog
 
     }
 
-    public EconomicAgent createNewConsumer(Location location, GeographicalMarket market, long price)
+    public EconomicAgent createNewConsumer(Location location, GeographicalMarket market, int price)
     {
         GeographicalCustomer customer = new GeographicalCustomer(getModel(),price,
                 location.getxLocation(),location.getyLocation(),market);

@@ -203,7 +203,7 @@ public class salesControlWithSmoothedinventoryAndPID implements AskPricingStrate
      * @return the price given to that good
      */
     @Override
-    public long price(Good g) {
+    public int price(Good g) {
         return Math.max(delegate.price(g), 0);
     }
 

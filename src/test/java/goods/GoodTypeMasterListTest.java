@@ -36,7 +36,7 @@ public class GoodTypeMasterListTest {
     public void observerTest1()
     {
         GoodTypeMasterList list = new GoodTypeMasterList();
-        Assert.assertEquals(1,list.size());
+        Assert.assertEquals(4,list.size());
         MasterListObserver o = mock(MasterListObserver.class);
 
         boolean add1 = list.addObserver(o);
@@ -48,7 +48,7 @@ public class GoodTypeMasterListTest {
         Assert.assertFalse(add3);
 
         //add a sector
-        GoodType agriculture = new GoodType("1","agriculture");
+        GoodType agriculture = new UndifferentiatedGoodType("1","agriculture");
         list.addNewSector(agriculture);
         verify(o,times(1)).theMasterListHasChanged();
 
@@ -63,11 +63,11 @@ public class GoodTypeMasterListTest {
     public void observerTest2()
     {
         GoodTypeMasterList list = new GoodTypeMasterList();
-        Assert.assertEquals(1,list.size());
+        Assert.assertEquals(4,list.size());
         MasterListObserver o = mock(MasterListObserver.class);
 
         //add a sector
-        GoodType agriculture = new GoodType("1","agriculture");
+        GoodType agriculture = new UndifferentiatedGoodType("1","agriculture");
         list.addNewSector(agriculture);
 
         //start observing now:
@@ -83,12 +83,12 @@ public class GoodTypeMasterListTest {
     public void observerTest3(){
 
         GoodTypeMasterList list = new GoodTypeMasterList();
-        Assert.assertEquals(1,list.size());
+        Assert.assertEquals(4,list.size());
         MasterListObserver o = mock(MasterListObserver.class);
 
 
         //add a sector
-        GoodType agriculture = new GoodType("1","agriculture");
+        GoodType agriculture = new UndifferentiatedGoodType("1","agriculture");
         list.addNewSector(agriculture);
 
         //try to add the same sector twice, it won't notify anybody
@@ -98,10 +98,10 @@ public class GoodTypeMasterListTest {
         list.addObserver(o);
 
         //try to create the same sector again and add it, it won't work
-        GoodType agriculture2 = new GoodType("1","agriculture");
+        GoodType agriculture2 = new UndifferentiatedGoodType("1","agriculture");
         boolean addedCorrectly = list.addNewSector(agriculture2);
         Assert.assertFalse(addedCorrectly); //it wasn't added!
-        Assert.assertEquals(2,list.size()); //agriculture and labor
+        Assert.assertEquals(5,list.size());
         verify(o,times(0)).theMasterListHasChanged();
 
     }
@@ -113,22 +113,22 @@ public class GoodTypeMasterListTest {
     {
 
         GoodTypeMasterList list = new GoodTypeMasterList();
-        Assert.assertEquals(1,list.size());
+        Assert.assertEquals(4,list.size());
         MasterListObserver o = mock(MasterListObserver.class);
 
 
         //add a sector
-        GoodType agriculture = new GoodType("1","agriculture");
+        GoodType agriculture = new UndifferentiatedGoodType("1","agriculture");
         list.addNewSector(agriculture);
 
         //try to add the same sector twice, it won't notify anybody
         list.addNewSector(agriculture);
 
         //try to create the same sector again and add it, it won't work
-        agriculture = new GoodType("1","agriculture");
+        agriculture = new UndifferentiatedGoodType("1","agriculture");
         boolean addedCorrectly = list.addNewSector(agriculture);
         Assert.assertFalse(addedCorrectly); //it wasn't added!
-        Assert.assertEquals(2,list.size()); //agriculture and labor
+        Assert.assertEquals(5,list.size());
 
         //start observing now!!
         list.addObserver(o);
@@ -136,12 +136,12 @@ public class GoodTypeMasterListTest {
         //now try to add a list of 3: one old and 2 new sector, it will call the masterlist change of the observer but only once
         List<GoodType> newTypes = new LinkedList<GoodType>();
         newTypes.add(agriculture);
-        GoodType forestry = new GoodType("2","forestry");
+        GoodType forestry = new UndifferentiatedGoodType("2","forestry");
         newTypes.add(forestry);
-        GoodType fishing = new GoodType("3","fishing");
+        GoodType fishing = new UndifferentiatedGoodType("3","fishing");
         newTypes.add(fishing);
         list.addNewSectors(newTypes);
-        Assert.assertEquals(4,list.size()); //agriculture,labor, fishing,forestry
+        Assert.assertEquals(7,list.size());
         verify(o,times(1)).theMasterListHasChanged();
 
 
@@ -155,34 +155,34 @@ public class GoodTypeMasterListTest {
     {
 
         GoodTypeMasterList list = new GoodTypeMasterList();
-        Assert.assertEquals(1, list.size());
+        Assert.assertEquals(4,list.size());
         MasterListObserver o = mock(MasterListObserver.class);
 
 
         //add a sector
-        GoodType agriculture = new GoodType("1","agriculture");
+        GoodType agriculture = new UndifferentiatedGoodType("1","agriculture");
         list.addNewSector(agriculture);
 
         //try to add the same sector twice, it won't notify anybody
         list.addNewSector(agriculture);
 
         //try to create the same sector again and add it, it won't work
-        agriculture = new GoodType("1","agriculture");
+        agriculture = new UndifferentiatedGoodType("1","agriculture");
         boolean addedCorrectly = list.addNewSector(agriculture);
         Assert.assertFalse(addedCorrectly); //it wasn't added!
-        Assert.assertEquals(2,list.size()); //agriculture and labor
+        Assert.assertEquals(5,list.size());
 
 
 
         //now try to add a list of 3: one old and 2 new sector, it will call the masterlist change of the observer but only once
         List<GoodType> newTypes = new LinkedList<GoodType>();
         newTypes.add(agriculture);
-        GoodType forestry = new GoodType("2","forestry");
+        GoodType forestry = new UndifferentiatedGoodType("2","forestry");
         newTypes.add(forestry);
-        GoodType fishing = new GoodType("3","fishing");
+        GoodType fishing = new UndifferentiatedGoodType("3","fishing");
         newTypes.add(fishing);
         list.addNewSectors(newTypes);
-        Assert.assertEquals(4,list.size()); //agriculture and labor
+        Assert.assertEquals(7,list.size());
 
         //start observing now!!
         list.addObserver(o);

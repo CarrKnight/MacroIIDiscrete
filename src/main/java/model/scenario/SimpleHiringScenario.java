@@ -21,8 +21,9 @@ import agents.firm.utilities.DummyProfitReport;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
+import goods.DifferentiatedGoodType;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 
 import java.util.LinkedList;
@@ -72,8 +73,8 @@ public class SimpleHiringScenario extends Scenario
     @Override
     public void start()
     {
-        market = new OrderBookMarket(GoodType.LABOR);
-        getMarkets().put(GoodType.LABOR,market);
+        market = new OrderBookMarket(UndifferentiatedGoodType.LABOR);
+        getMarkets().put(UndifferentiatedGoodType.LABOR,market);
         market.setPricePolicy(new BuyerSetPricePolicy());
 
         hrs = new LinkedList<>();
@@ -114,16 +115,16 @@ public class SimpleHiringScenario extends Scenario
             }
         };
         firm.setProfitReport(new DummyProfitReport());
-        firm.earn(100000000);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,1000000000);
         //give it a plant
-        Plant plant = new Plant(new Blueprint.Builder().output(GoodType.GENERIC,1).build(),firm);
-        plant.setPlantMachinery( new LinearConstantMachinery(GoodType.CAPITAL,firm,0,plant));
+        Plant plant = new Plant(new Blueprint.Builder().output(UndifferentiatedGoodType.GENERIC,1).build(),firm);
+        plant.setPlantMachinery( new LinearConstantMachinery(DifferentiatedGoodType.CAPITAL,firm,0,plant));
         plant.setCostStrategy(new InputCostStrategy(plant));
         firm.addPlant(plant);
 
         //create an hr with fixed target
         FactoryProducedHumanResourcesWithMaximizerAndTargeter produced =
-                HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, firm,
+                HumanResources.getHumanResourcesIntegrated(1000000000, firm,
                         market, plant, PIDTargeterWithQuickFiring.class, PeriodicMaximizer.class,
                         FixedTargetMaximizationAlgorithm.class, null, null);
         //take out all breaks

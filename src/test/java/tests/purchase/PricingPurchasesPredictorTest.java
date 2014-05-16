@@ -31,7 +31,7 @@ public class PricingPurchasesPredictorTest {
         PurchasesDepartment dept = mock(PurchasesDepartment.class);
         PricingPurchasesPredictor predictor = new PricingPurchasesPredictor();
 
-        for(long i=0; i<100; i++){
+        for(int i=0; i<100; i++){
             when(dept.getAveragedClosingPrice()).thenReturn(Float.valueOf(i));
             assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), i);
         }

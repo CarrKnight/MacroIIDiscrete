@@ -8,7 +8,7 @@ package model.utilities.logs;
 
 import model.utilities.Deactivatable;
 
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -31,8 +31,8 @@ public class LogNodeSimple implements LogNode, Deactivatable
 
 
     public LogNodeSimple() {
-        roots = new LinkedHashSet<>();
-        branches = new LinkedHashSet<>();
+        roots = new HashSet<>();
+        branches = new HashSet<>();
 
     }
 
@@ -88,8 +88,10 @@ public class LogNodeSimple implements LogNode, Deactivatable
     public void turnOff()
     {
         roots.clear();
-        for(Loggable branch : branches)
+        for(Loggable branch : branches) {
             branch.removeLogEventListener(this);
+
+        }
         branches.clear();
     }
 

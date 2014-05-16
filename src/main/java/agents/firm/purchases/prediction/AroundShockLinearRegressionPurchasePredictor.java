@@ -79,7 +79,7 @@ public class AroundShockLinearRegressionPurchasePredictor implements PurchasesPr
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
         return predictor.predictPurchasePriceWhenNoChangeInProduction(dept);
     }
 
@@ -101,7 +101,7 @@ public class AroundShockLinearRegressionPurchasePredictor implements PurchasesPr
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
 
         updateModelIfPossible(dept);
 
@@ -199,7 +199,7 @@ public class AroundShockLinearRegressionPurchasePredictor implements PurchasesPr
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         updateModelIfPossible(dept);
     //    System.out.println("slope: " + predictor.getIncrementDelta());
 

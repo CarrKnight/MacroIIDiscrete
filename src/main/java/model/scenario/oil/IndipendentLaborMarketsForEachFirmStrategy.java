@@ -12,6 +12,7 @@ import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableIntegerValue;
 import model.MacroII;
@@ -50,7 +51,7 @@ public class IndipendentLaborMarketsForEachFirmStrategy implements LaborMarketOi
     {
         //create a new goodType, a labor for this firm
         int id = supplySlopes.size();
-        GoodType laborType = new GoodType("labor"+id,"Workers for " +oilStation.toString(),false,true );
+        GoodType laborType = new UndifferentiatedGoodType("labor"+id,"Workers for " +oilStation.toString(),false,true );
         model.getGoodTypeMasterList().addNewSector(laborType);
 
         //create the market

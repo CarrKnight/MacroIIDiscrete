@@ -9,7 +9,7 @@ package model.scenario.oil;
 import agents.EconomicAgent;
 import agents.Person;
 import financial.market.OrderBookMarket;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import model.MacroII;
@@ -32,10 +32,10 @@ public class LaborMarketForOilUpdaterTest
         IntegerProperty slope = new SimpleIntegerProperty(1);
         IntegerProperty intercept = new SimpleIntegerProperty(0);
         IntegerProperty workers = new SimpleIntegerProperty(2);
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         model.start();
 
-        OrderBookMarket market = new OrderBookMarket(GoodType.LABOR);
+        OrderBookMarket market = new OrderBookMarket(UndifferentiatedGoodType.LABOR);
 
         LaborMarketForOilUpdater updater = new LaborMarketForOilUpdater(slope,intercept,workers,model,market);
         //the updater doesn't initialize, only updates

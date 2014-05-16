@@ -10,8 +10,10 @@ import agents.firm.sales.pricing.MarkupFollower;
 import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
+import financial.utilities.Quote;
+import goods.DifferentiatedGoodType;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,13 +60,13 @@ public class MarkupFollowerTest {
         producer = new Firm(model);
         other = new Firm(model);
 
-        market = new OrderBookMarket(GoodType.GENERIC);
+        market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
         market.setOrderHandler(new ImmediateOrderHandler(),model);
         dept = SalesDepartmentFactory.incompleteSalesDepartment(producer, market, null, null,
                 agents.firm.sales.SalesDepartmentAllAtOnce.class); //useless null is useless
-        producer.registerSaleDepartment(dept,GoodType.GENERIC);
+        producer.registerSaleDepartment(dept, DifferentiatedGoodType.CAPITAL);
 
- //       dept.getFirm().getSalesDepartments().put(GoodType.GENERIC,dept);
+ //       dept.getFirm().getSalesDepartments().put(GoodType.CAPITAL,dept);
         strategyAsk = new MarkupFollower(dept);
 
 
@@ -77,34 +79,34 @@ public class MarkupFollowerTest {
         Market.TESTING_MODE = true;
         Firm seller = new Firm(model){
             @Override
-            public void reactToFilledAskedQuote(Good g, long price,EconomicAgent agent) {
+            public void reactToFilledAskedQuote(Quote quoteFilled, Good g, int price, EconomicAgent agent) {
                 //ignore quotes
             }
         }; market.registerSeller(seller);
-        Good good =    new Good(GoodType.GENERIC,seller,10l);
+        Good good =    Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,seller,10);
         seller.receive(good,null);
         Firm buyer = dept.getFirm(); market.registerBuyer(buyer);
-        buyer.registerPurchasesDepartment(mock(PurchasesDepartment.class),GoodType.GENERIC);
+        buyer.registerPurchasesDepartment(mock(PurchasesDepartment.class), DifferentiatedGoodType.CAPITAL);
 
 
         assertEquals(strategyAsk.price(good), 12); //since there is no history, a seller using this strategyAsk would just addSalesDepartmentListener 20%
 
-        buyer.earn(100);
+        buyer.receiveMany(UndifferentiatedGoodType.MONEY,100);
 
 
         assertTrue(seller.has(good));
         assertTrue(!buyer.has(good));
 
-        market.submitSellQuote(seller,20l,good);
-        market.submitBuyQuote(buyer,20l);
+        market.submitSellQuote(seller,20,good);
+        market.submitBuyQuote(buyer,20);
 
         assertTrue(!seller.has(good));
         assertTrue(buyer.has(good));
 
-        assertEquals(good.getLastValidPrice(), 20l);
+        assertEquals(good.getLastValidPrice(), 20);
         assertEquals(strategyAsk.price(good), 40); //now markup should be 100% and lastValue is 20
 
-        good.setLastValidPrice(100l);
+        good.setLastValidPrice(100);
         assertEquals(strategyAsk.price(good), 200); //now markup should be 100% and lastValue is 20
 
 
@@ -117,35 +119,35 @@ public class MarkupFollowerTest {
     @Test
     public void uselessgood1() throws Exception {
 
-        Good good = new Good(GoodType.GENERIC,producer,10);
+        Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,producer,10);
 
-        long price = strategyAsk.price(good);
+        int price = strategyAsk.price(good);
         assertEquals(price, 12);
     }
 
     @Test
     public void uselessgood2() throws Exception {
 
-        Good good = new Good(GoodType.GENERIC,producer,0);
+        Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,producer,0);
 
-        long price = strategyAsk.price(good);
+        int price = strategyAsk.price(good);
         assertEquals(price, 0);
     }
 
     @Test
     public void uselessgood3() throws Exception {
 
-        Good good = new Good(GoodType.GENERIC,producer,10);
+        Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,producer,10);
         producer.receive(good,null);
-        other.earn(100);
-        producer.deliver(good,other,50);  other.pay(50,producer,null);
-        assertEquals(50, other.getCash());
-        assertEquals(50, producer.getCash());
+        other.receiveMany(UndifferentiatedGoodType.MONEY,100);
+        producer.deliver(good,other,50);  other.deliverMany(UndifferentiatedGoodType.MONEY,producer,50);
+        assertEquals(50, other.hasHowMany(UndifferentiatedGoodType.MONEY));
+        assertEquals(50, producer.hasHowMany(UndifferentiatedGoodType.MONEY));
 
 
 
 
-        long price = strategyAsk.price(good);
+        int price = strategyAsk.price(good);
         assertEquals(price, 60);
     }
 
@@ -153,17 +155,17 @@ public class MarkupFollowerTest {
     @Test
     public void uselessAdaptiveTest() throws Exception {
 
-        Good good = new Good(GoodType.GENERIC,producer,10);
+        Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,producer,10);
         producer.receive(good,null);
-        other.earn(100);
-        producer.deliver(good,other,50);  other.pay(50,producer,null);
-        assertEquals(50, other.getCash());
-        assertEquals(50, producer.getCash());
+        other.receiveMany(UndifferentiatedGoodType.MONEY,100);
+        producer.deliver(good,other,50);  other.deliverMany(UndifferentiatedGoodType.MONEY,producer,50);
+        assertEquals(50, other.hasHowMany(UndifferentiatedGoodType.MONEY));
+        assertEquals(50, producer.hasHowMany(UndifferentiatedGoodType.MONEY));
 
 
 
 
-        long price = strategyAsk.price(good);
+        int price = strategyAsk.price(good);
         assertEquals(price, 60);
 
 

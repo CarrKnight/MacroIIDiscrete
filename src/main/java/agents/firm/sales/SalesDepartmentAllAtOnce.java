@@ -9,10 +9,13 @@ package agents.firm.sales;
 import agents.firm.Firm;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
+import com.google.common.base.Preconditions;
 import financial.market.Market;
 import financial.utilities.ActionsAllowed;
 import goods.Good;
 import model.MacroII;
+
+import java.util.Arrays;
 
 
 /**
@@ -36,21 +39,35 @@ public class SalesDepartmentAllAtOnce extends SalesDepartment{
 
 
     @Override
-    protected void newGoodToSell(Good g) {
-        //now act
-        if(market.getSellerRole() == ActionsAllowed.QUOTE) //if we are supposed to quote
+    protected void newGoodsToSellEvent(Good... goods) {
+        Preconditions.checkArgument(goods.length > 0);
+        for(Good g : goods)
         {
-            prepareToPlaceAQuote(g);
+            //now act
+            if (market.getSellerRole() == ActionsAllowed.QUOTE) //if we are supposed to quote
+            {
+                prepareToPlaceAQuote(g);
 
-        }
-        else  if(canPeddle)
-        {
-            peddle(g);
+            } else if (canPeddle) {
+                peddle(g);
 
+            }
         }
     }
 
 
+    @Override
+    protected void newGoodsToSellEvent(int amount) {
+        Preconditions.checkArgument(amount > 0);
+
+        //create fake goods
+        Good[] array = new Good[amount];
+        Arrays.fill(array,Good.getInstanceOfUndifferentiatedGood(market.getGoodType()));
+        //new goods to sell!
+        newGoodsToSellEvent(array);
+
+
+    }
 
     /**
      * This is the constructor for the template sales department.  It also registers the firm as seller
@@ -101,7 +118,7 @@ public class SalesDepartmentAllAtOnce extends SalesDepartment{
      */
     private SalesDepartmentAllAtOnce(Firm firm, Market market, BuyerSearchAlgorithm buyerSearchAlgorithm,
                                      SellerSearchAlgorithm sellerSearchAlgorithm,
-                                      MacroII model) {
+                                     MacroII model) {
         super(sellerSearchAlgorithm, market, model, firm, buyerSearchAlgorithm);
 
 

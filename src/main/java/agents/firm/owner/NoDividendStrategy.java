@@ -27,13 +27,12 @@ import agents.firm.Firm;
 public class NoDividendStrategy implements DividendStrategy {
     /**
      * Tell the firm to pay dividends on this week profits
-     *
-     * @param aggregateProfits the total profits of the firm
+     *  @param aggregateProfits the total profits of the firm
      * @param firm             the firm paying the dividends
      * @param owner            the owner that should be paid
      */
     @Override
-    public void payDividends(long aggregateProfits, Firm firm, EconomicAgent owner) {
+    public void payDividends(int aggregateProfits, Firm firm, EconomicAgent owner) {
         //nothing happens
 
     }

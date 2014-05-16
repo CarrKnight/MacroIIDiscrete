@@ -41,7 +41,7 @@ public class salesControlWithSmoothedinventoryAndPIDTest {
         SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
         when(department.getRandom()).thenReturn(new MersenneTwisterFast());
         Firm firm = mock(Firm.class); when(department.getFirm()).thenReturn(firm);
-        MacroII model = new MacroII(1l); when(firm.getModel()).thenReturn(model); when(department.getModel()).thenReturn(model);
+        MacroII model = new MacroII(1); when(firm.getModel()).thenReturn(model); when(department.getModel()).thenReturn(model);
         PhaseScheduler scheduler = mock(PhaseScheduler.class);
         model.setPhaseScheduler(scheduler);
         when(scheduler.getCurrentPhase()).thenReturn(ActionOrder.PREPARE_TO_TRADE);

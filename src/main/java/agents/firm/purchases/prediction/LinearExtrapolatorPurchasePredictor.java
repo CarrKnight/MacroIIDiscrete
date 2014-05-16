@@ -165,7 +165,7 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
         updateModelIfNeeded();
         return predictor.predictPurchasePriceWhenIncreasingProduction(dept);
 
@@ -317,7 +317,7 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
         return predictor.predictPurchasePriceWhenNoChangeInProduction(dept);
     }
 
@@ -328,7 +328,7 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public long predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
+    public int predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         updateModelIfNeeded();
         return predictor.predictPurchasePriceWhenDecreasingProduction(dept);
     }

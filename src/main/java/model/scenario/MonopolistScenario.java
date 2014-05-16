@@ -38,7 +38,8 @@ import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
 import financial.utilities.ShopSetPricePolicy;
-import goods.GoodType;
+import goods.DifferentiatedGoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.dummies.Customer;
@@ -98,7 +99,7 @@ public class MonopolistScenario extends Scenario {
     /**
      * The blueprint that the monopolist will use
      */
-    protected Blueprint blueprint= new Blueprint.Builder().output(GoodType.GENERIC, laborProductivity).build();
+    protected Blueprint blueprint= new Blueprint.Builder().output(UndifferentiatedGoodType.GENERIC, laborProductivity).build();
     protected Firm monopolist;
 
     private int buyerDelay=0;
@@ -167,22 +168,22 @@ public class MonopolistScenario extends Scenario {
     @Override
     public void start() {
         maximizers.clear();
-        model.getGoodTypeMasterList().addNewSectors(GoodType.GENERIC,GoodType.LABOR,GoodType.CAPITAL);
+        model.getGoodTypeMasterList().addNewSectors(UndifferentiatedGoodType.GENERIC, UndifferentiatedGoodType.LABOR, DifferentiatedGoodType.CAPITAL);
 
         //create and record a new market!
-        goodMarket= new OrderBookMarket(GoodType.GENERIC);
+        goodMarket= new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         goodMarket.setOrderHandler(new EndOfPhaseOrderHandler(),model);
         goodMarket.setPricePolicy(new ShopSetPricePolicy()); //make the seller price matter
-        getMarkets().put(GoodType.GENERIC,goodMarket);
+        getMarkets().put(UndifferentiatedGoodType.GENERIC,goodMarket);
 
         //create and record the labor market!
-        laborMarket= new OrderBookMarket(GoodType.LABOR);
+        laborMarket= new OrderBookMarket(UndifferentiatedGoodType.LABOR);
         laborMarket.setOrderHandler(new EndOfPhaseOrderHandler(),model);
         laborMarket.setPricePolicy(new BuyerSetPricePolicy()); //make the seller price matter
-        getMarkets().put(GoodType.LABOR,laborMarket);
+        getMarkets().put(UndifferentiatedGoodType.LABOR,laborMarket);
 
         //this prepares the production of the firms
-        blueprint.getOutputs().put(GoodType.GENERIC,laborProductivity);
+        blueprint.getOutputs().put(UndifferentiatedGoodType.GENERIC,laborProductivity);
 
 
 
@@ -266,7 +267,7 @@ public class MonopolistScenario extends Scenario {
             /*
              * For this scenario we use a different kind of dummy buyer that, after "period" passed, puts a new order in the market
              */
-            long buyerPrice = demandIntercept - demandSlope * i;
+            int buyerPrice = demandIntercept - demandSlope * i;
             if(buyerPrice <= 0) //break if the price is 0 or lower, we are done drawing!
                 break;
 
@@ -284,7 +285,7 @@ public class MonopolistScenario extends Scenario {
         }
     }
 
-    private Customer buildBuyer(long buyerPrice) {
+    private Customer buildBuyer(int buyerPrice) {
 
         if(buyerDelay == 0 )
 
@@ -297,7 +298,7 @@ public class MonopolistScenario extends Scenario {
     public Firm buildFirm() {
         //only one seller
         final Firm built= new Firm(getModel());
-        built.earn(5000000000l);
+        built.receiveMany(UndifferentiatedGoodType.MONEY,500000000);
         // built.setName("monopolist");
         //set up the firm at time 1
         getModel().scheduleSoon(ActionOrder.DAWN, new Steppable() {
@@ -320,7 +321,7 @@ public class MonopolistScenario extends Scenario {
         HumanResources hr;
 
         final FactoryProducedHumanResources<? extends PlantControl,BuyerSearchAlgorithm,SellerSearchAlgorithm> factoryMadeHR =
-                HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, built,
+                HumanResources.getHumanResourcesIntegrated(Integer.MAX_VALUE, built,
                 laborMarket, plant, controlType.getController(), null, null);
 
         hr = factoryMadeHR.getDepartment();
@@ -338,7 +339,7 @@ public class MonopolistScenario extends Scenario {
     protected Plant buildPlantForFirm(Firm built) {
         //add the plant
         Plant plant = new Plant(blueprint, built);
-        plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, built, 0, plant));
+        plant.setPlantMachinery(new LinearConstantMachinery(DifferentiatedGoodType.CAPITAL, built, 0, plant));
         plant.setCostStrategy(new InputCostStrategy(plant));
         built.addPlant(plant);
         return plant;
@@ -350,7 +351,7 @@ public class MonopolistScenario extends Scenario {
                 new SimpleBuyerSearch(goodMarket, built), new SimpleSellerSearch(goodMarket, built),
                 salesDepartmentType);
         dept.setPredictorStrategy(SalesPredictor.Factory.newSalesPredictor(salesPricePreditorStrategy,dept));
-        built.registerSaleDepartment(dept, GoodType.GENERIC);
+        built.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
         AskPricingStrategy askPricingStrategy = AskPricingStrategy.Factory.newAskPricingStrategy(this.askPricingStrategy, dept);
         dept.setAskPricingStrategy(askPricingStrategy); //set strategy to PID
 

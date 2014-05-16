@@ -13,6 +13,7 @@ import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import org.junit.Assert;
@@ -20,6 +21,9 @@ import org.junit.Before;
 import org.junit.Test;
 import sim.engine.SimState;
 import sim.engine.Steppable;
+import tests.MemoryLeakVerifier;
+
+import java.lang.ref.WeakReference;
 
 import static org.mockito.Mockito.*;
 
@@ -43,16 +47,16 @@ public class CustomerTest
 
     private final GeographicalMarket market = mock(GeographicalMarket.class);
 
-    final static private GoodType OIL = new GoodType("oiltest","oil");
+    final static private GoodType OIL = new UndifferentiatedGoodType("oiltest","oil");
 
 
     @Before
     public void setUp() throws Exception {
         when(market.getGoodType()).thenReturn(OIL);
+        when(market.getMoney()).thenReturn(UndifferentiatedGoodType.MONEY);
 
-
-        when(market.submitBuyQuote(any(EconomicAgent.class), anyLong())).thenAnswer(invocation ->
-                Quote.newBuyerQuote((EconomicAgent)invocation.getArguments()[0],(Long)invocation.getArguments()[1],market.getGoodType()));
+        when(market.submitBuyQuote(any(EconomicAgent.class), anyInt())).thenAnswer(invocation ->
+                Quote.newBuyerQuote((EconomicAgent)invocation.getArguments()[0],(Integer)invocation.getArguments()[1],market.getGoodType()));
 
 
     }
@@ -61,12 +65,12 @@ public class CustomerTest
     public void testThatTheCustomerEatsOilEveryDay()
     {
         //create the model
-        MacroII macroII = new MacroII(1l);
+        MacroII macroII = new MacroII(1);
         //create the customer
         Customer customer = new Customer(macroII,10,market);
         //give it two units of oil
-        customer.receive(new Good(OIL,null,0),null);
-        customer.receive(new Good(OIL,null,0),null);
+        customer.receive(Good.getInstanceOfUndifferentiatedGood(OIL),null);
+        customer.receive(Good.getInstanceOfUndifferentiatedGood(OIL),null);
         Assert.assertEquals(customer.hasHowMany(OIL), 2);
 
         //make one day pass
@@ -86,32 +90,32 @@ public class CustomerTest
         //target higher than what you have
 
         //create the model
-        MacroII macroII = new MacroII(1l);
+        MacroII macroII = new MacroII(1);
         //create the customer
         Customer customer = new Customer(macroII,10,market);
-        long targetCash = customer.getResetCashTo() + 100;
+        int targetCash = customer.getResetCashTo() + 100;
         customer.setResetCashTo(targetCash);
-        Assert.assertFalse(targetCash == customer.getCash());
+        Assert.assertFalse(targetCash == customer.hasHowMany(UndifferentiatedGoodType.MONEY));
         //make one day pass
         macroII.start();
         macroII.schedule.step(macroII);
         //it should have consumed them both!
-        Assert.assertEquals(customer.getCash(),targetCash);
+        Assert.assertEquals(customer.hasHowMany(UndifferentiatedGoodType.MONEY),targetCash);
 
 
 
         //target lower than what you have
-        macroII = new MacroII(1l);
+        macroII = new MacroII(1);
         //create the customer
         customer = new GeographicalCustomer(macroII,10,2,2, market);
         targetCash = customer.getResetCashTo() -1;
         customer.setResetCashTo(targetCash);
-        Assert.assertFalse(targetCash == customer.getCash());
+        Assert.assertFalse(targetCash == customer.hasHowMany(UndifferentiatedGoodType.MONEY));
         //make one day pass
         macroII.start();
         macroII.schedule.step(macroII);
         //it should have consumed them both!
-        Assert.assertEquals(customer.getCash(),targetCash);
+        Assert.assertEquals(customer.hasHowMany(UndifferentiatedGoodType.MONEY),targetCash);
 
 
     }
@@ -125,7 +129,7 @@ public class CustomerTest
     {
         //daily demand 2, with empty inventory that's 0
         GeographicalMarket geographicalMarket = market;
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         final         Customer customer = new Customer(model,100,market);
         customer.setDailyDemand(2);
         customer.start(model);
@@ -150,7 +154,7 @@ public class CustomerTest
         model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
             @Override
             public void step(SimState state) {
-                customer.receive(new Good(OIL,mock(EconomicAgent.class),100l),null);
+                customer.receive(Good.getInstanceOfUndifferentiatedGood(OIL),null);
 
             }
         });
@@ -169,8 +173,8 @@ public class CustomerTest
     public void buyAndSell()
     {
         //daily demand 2, with empty inventory that's 0
-        OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
-        MacroII model = new MacroII(1l);
+        OrderBookMarket market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
+        MacroII model = new MacroII(1);
         market.setOrderHandler(new ImmediateOrderHandler(),model);
 
         final Customer buyer = new Customer(model,100,market);
@@ -184,12 +188,12 @@ public class CustomerTest
 
         //now have one unit being sold
         DummySeller seller = new DummySeller(model,50); market.registerSeller(seller);
-        Good toSell = new Good(GoodType.GENERIC, seller, 0); seller.receive(toSell,null);
+        Good toSell = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC); seller.receive(toSell,null);
         market.submitSellQuote(seller,50, toSell);
 
         Assert.assertEquals(0,market.numberOfAsks());
         Assert.assertEquals(1,market.numberOfBids());
-        Assert.assertEquals(1,buyer.hasHowMany(GoodType.GENERIC));
+        Assert.assertEquals(1,buyer.hasHowMany(UndifferentiatedGoodType.GENERIC));
 
 
         //step again
@@ -197,39 +201,67 @@ public class CustomerTest
 
         Assert.assertEquals(0,market.numberOfAsks());
         Assert.assertEquals(2,market.numberOfBids());
-        Assert.assertEquals(0,buyer.hasHowMany(GoodType.GENERIC));
+        Assert.assertEquals(0,buyer.hasHowMany(UndifferentiatedGoodType.GENERIC));
 
     }
 
 
+
     //when we turn the buyer off, all the quotes are gone and the buyer isn't even listed anymore
     @Test
-    public void turnOff()
-    {
-        //daily demand 2, with empty inventory that's 0
-        OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
-        MacroII model = new MacroII(1l);
-        final Customer buyer = new Customer(model,100,market);
-        buyer.setDailyDemand(2);
-        buyer.start(model);
-        model.start();
-        model.schedule.step(model);
+    public void turnOff() {
+        MemoryLeakVerifier verifier;
+        for(int i=0; i< 20; i++) {
+            {
+                //daily demand 2, with empty inventory that's 0
+                OrderBookMarket market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
+                MacroII model = new MacroII(1);
+                Customer buyer = new Customer(model, 100, market);
+                verifier = new MemoryLeakVerifier(buyer);
+                Assert.assertNotNull(verifier.getObject());
+                buyer.setDailyDemand(2);
+                buyer.start(model);
+                model.start();
+                model.schedule.step(model);
 
-        Assert.assertEquals(1,market.getBuyers().size());
-        Assert.assertEquals(2,market.numberOfBids());
+                Assert.assertEquals(1, market.getBuyers().size());
+                Assert.assertEquals(2, market.numberOfBids());
 
-        buyer.turnOff();
+                buyer.turnOff();
 
-        Assert.assertEquals(0,market.getBuyers().size());
-        Assert.assertEquals(0,market.numberOfBids());
-
-
-        //step again
-        model.schedule.step(model);
-
-        Assert.assertEquals(0,market.getBuyers().size());
-        Assert.assertEquals(0,market.numberOfBids());
+                Assert.assertEquals(0, market.getBuyers().size());
+                Assert.assertEquals(0, market.numberOfBids());
 
 
+                //step again
+                model.schedule.step(model);
+
+                Assert.assertEquals(0, market.getBuyers().size());
+                Assert.assertEquals(0, market.numberOfBids());
+
+                model.finish();
+                market = null;
+                buyer = null;
+
+            }
+
+            verifier.assertGarbageCollected("buyer");
+            Assert.assertNull(verifier.getObject());
+       //
+        }
+    }
+
+
+    @Test
+    public void testsimpleShutDown() throws Exception {
+
+        for(int i=0; i<100; i++) {
+            Object object = new Object();
+            WeakReference<Object> reference = new WeakReference<>(object);
+            object = null;
+            System.gc();
+            System.runFinalization();
+            Assert.assertNull(reference.get());
+        }
     }
 }

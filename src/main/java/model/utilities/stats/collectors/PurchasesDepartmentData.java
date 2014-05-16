@@ -35,11 +35,6 @@ public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
 
 
     /**
-     * when it is set to off, it stops rescheduling itself!
-     */
-    private boolean active = true;
-
-    /**
      * the department we are documenting
      */
     private PurchasesDepartment departmentToFollow = null;
@@ -58,7 +53,7 @@ public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
      * called when the data gathering is supposed to start. It schedules itself to start at next CLEANUP phase
      */
     public void start( MacroII state,  PurchasesDepartment departmentToFollow) {
-        if(!active)
+        if(!isActive())
             return;
 
         Preconditions.checkState(this.departmentToFollow == null, " can't start the gatherer twice!");
@@ -74,7 +69,7 @@ public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
 
     @Override
     public void step(SimState state) {
-        if(!active)
+        if(!isActive())
             return;
 
         //make sure it's the right time
@@ -92,18 +87,18 @@ public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
 
 
         //memorize
-        data.get(PurchasesDataType.INFLOW).add(Double.valueOf(departmentToFollow.getTodayInflow()));
-        data.get(PurchasesDataType.OUTFLOW).add(Double.valueOf(departmentToFollow.getTodayOutflow()));
-        data.get(PurchasesDataType.CLOSING_PRICES).add(Double.valueOf(departmentToFollow.getLastClosingPrice()));
-        data.get(PurchasesDataType.INVENTORY).add(Double.valueOf(departmentToFollow.getCurrentInventory()));
-        data.get(PurchasesDataType.FAILURES_TO_CONSUME).add(Double.valueOf(departmentToFollow.getTodayFailuresToConsume()));
-        data.get(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD).add(Double.valueOf(departmentToFollow.getNumberOfWorkersWhoConsumeWhatWePurchase()));
-        data.get(PurchasesDataType.AVERAGE_CLOSING_PRICES).add(Double.valueOf(departmentToFollow.getTodayAverageClosingPrice()));
-        data.get(PurchasesDataType.LAST_OFFERED_PRICE).add(Double.valueOf(departmentToFollow.getLastOfferedPrice()));
+        data.get(PurchasesDataType.INFLOW).add((double) departmentToFollow.getTodayInflow());
+        data.get(PurchasesDataType.OUTFLOW).add((double) departmentToFollow.getTodayOutflow());
+        data.get(PurchasesDataType.CLOSING_PRICES).add((double) departmentToFollow.getLastClosingPrice());
+        data.get(PurchasesDataType.INVENTORY).add((double) departmentToFollow.getCurrentInventory());
+        data.get(PurchasesDataType.FAILURES_TO_CONSUME).add((double) departmentToFollow.getTodayFailuresToConsume());
+        data.get(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD).add((double) departmentToFollow.getNumberOfWorkersWhoConsumeWhatWePurchase());
+        data.get(PurchasesDataType.AVERAGE_CLOSING_PRICES).add((double) departmentToFollow.getTodayAverageClosingPrice());
+        data.get(PurchasesDataType.LAST_OFFERED_PRICE).add((double) departmentToFollow.getLastOfferedPrice());
 
-        data.get(PurchasesDataType.DEMAND_GAP).add(Double.valueOf(departmentToFollow.estimateDemandGap()));
+        data.get(PurchasesDataType.DEMAND_GAP).add((double) departmentToFollow.estimateDemandGap());
         int workersTargeted = departmentToFollow instanceof HumanResources ? ((HumanResources) departmentToFollow).getWorkerTarget() : 0;
-        data.get(PurchasesDataType.WORKERS_TARGETED).add(Double.valueOf(workersTargeted));
+        data.get(PurchasesDataType.WORKERS_TARGETED).add((double) workersTargeted);
 
         //reschedule
         model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
@@ -121,6 +116,9 @@ public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
 
     @Override
     public void turnOff() {
-        active = false;
+        super.turnOff();
+        departmentToFollow = null;
+
+
     }
 }

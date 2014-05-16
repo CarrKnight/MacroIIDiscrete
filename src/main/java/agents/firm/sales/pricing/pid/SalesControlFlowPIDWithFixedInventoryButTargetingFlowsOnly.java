@@ -136,7 +136,7 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
      * @return the price given to that good
      */
     @Override
-    public long price(Good g) {
+    public int price(Good g) {
 
         return getPrice(); //always teh same price
     }
@@ -319,7 +319,7 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
      * since this controller puts the same price for every good, we can use this rather than passing a good
      * @return
      */
-    public long getPrice() {
+    public int getPrice() {
         return Math.round(controller.getCurrentMV());
 
     }

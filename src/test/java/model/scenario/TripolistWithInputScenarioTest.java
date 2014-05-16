@@ -13,7 +13,7 @@ import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import au.com.bytecode.opencsv.CSVWriter;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.stats.collectors.DailyStatCollector;
 import org.junit.Test;
@@ -68,7 +68,7 @@ public class TripolistWithInputScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
+            assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice(), 87,1);
             assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
 
         }
@@ -111,7 +111,7 @@ public class TripolistWithInputScenarioTest {
             System.out.println("---------------------------------------------------------------------------------------------------------");
 
 
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
+            assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice(), 87,1);
             assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
 
 
@@ -153,7 +153,7 @@ public class TripolistWithInputScenarioTest {
 
 
             System.out.println(macroII.seed());
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87, 1);
+            assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice(), 87, 1);
             assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
 
 
@@ -179,7 +179,7 @@ public class TripolistWithInputScenarioTest {
                 protected void addPurchaseDepartmentToFirms(){
                     FactoryProducedPurchaseDepartment<FixedInventoryControl,CheaterPricing,BuyerSearchAlgorithm,SellerSearchAlgorithm>
                             factoryProducedPurchaseDepartment =
-                            PurchasesDepartment.getPurchasesDepartment(Long.MAX_VALUE, monopolist, getMarkets().get(TripolistWithInputScenario.INPUT), FixedInventoryControl.class,
+                            PurchasesDepartment.getPurchasesDepartment(Integer.MAX_VALUE, monopolist, getMarkets().get(TripolistWithInputScenario.INPUT), FixedInventoryControl.class,
                                     CheaterPricing.class, null, null);
 
                     factoryProducedPurchaseDepartment.getInventoryControl().setInventoryTarget(100);
@@ -206,9 +206,9 @@ public class TripolistWithInputScenarioTest {
 
 
             scenario1.getMonopolist().getPurchaseDepartment(TripolistWithInputScenario.INPUT).getPurchasesData().writeToCSVFile(Paths.get("runs","test.csv").toFile());
-            System.out.println(i + " ----- " + scenario1.monopolist.getTotalWorkers() + " ... " + macroII.getMarket(GoodType.GENERIC).getLastPrice() + " ----> " + macroII.seed());
+            System.out.println(i + " ----- " + scenario1.monopolist.getTotalWorkers() + " ... " + macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice() + " ----> " + macroII.seed());
             assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastPrice(), 87,1);
+            assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice(), 87,1);
 
 
 
@@ -251,7 +251,7 @@ public class TripolistWithInputScenarioTest {
                 //sales:
                 for(Firm f : scenario1.getCompetitors())
                 {
-                    f.getSalesDepartment(GoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+                    f.getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
                     f.getPurchaseDepartment(TripolistWithInputScenario.INPUT).setPredictor(new FixedIncreasePurchasesPredictor(0));
                     f.getHRs().iterator().next().setPredictor(new FixedIncreasePurchasesPredictor(0));
                 }
@@ -265,8 +265,8 @@ public class TripolistWithInputScenarioTest {
                 for(int averaging=0; averaging<1000; averaging++)
                 {
                     macroII.schedule.step(macroII);
-                    price += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
-                    quantity += macroII.getMarket(GoodType.GENERIC).getTodayVolume();
+                    price += macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice();
+                    quantity += macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume();
                 }
                 price /=1000;
                 quantity /= 1000;
@@ -322,8 +322,8 @@ public class TripolistWithInputScenarioTest {
                 for(int averaging=0; averaging<1000; averaging++)
                 {
                     macroII.schedule.step(macroII);
-                    price += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
-                    quantity += macroII.getMarket(GoodType.GENERIC).getTodayVolume();
+                    price += macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice();
+                    quantity += macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume();
                 }
                 price /=1000;
                 quantity /= 1000;
@@ -354,7 +354,7 @@ public class TripolistWithInputScenarioTest {
         for(int i=0; i<5; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
-            final MacroII macroII = new MacroII(1l);
+            final MacroII macroII = new MacroII(1);
             TripolistWithInputScenario scenario1 = new TripolistWithInputScenario(macroII);
             scenario1.setAdditionalCompetitors(4);
             macroII.setScenario(scenario1);
@@ -380,7 +380,7 @@ public class TripolistWithInputScenarioTest {
             //sales:
             for(Firm f : scenario1.getCompetitors())
             {
-                f.getSalesDepartment(GoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(1));
+                f.getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(1));
                 f.getPurchaseDepartment(TripolistWithInputScenario.INPUT).setPredictor(new FixedIncreasePurchasesPredictor(1));
                 //without this overproduction
                 f.getHRs().iterator().next().setPredictor(new FixedIncreasePurchasesPredictor(1));
@@ -395,8 +395,8 @@ public class TripolistWithInputScenarioTest {
             for(int averaging=0; averaging<1000; averaging++)
             {
                 macroII.schedule.step(macroII);
-                price += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
-                quantity += macroII.getMarket(GoodType.GENERIC).getTodayVolume();
+                price += macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice();
+                quantity += macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume();
             }
             price /=1000;
             quantity /= 1000;
@@ -440,7 +440,7 @@ public class TripolistWithInputScenarioTest {
         //sales:
         for(Firm f : scenario1.getCompetitors())
         {
-            f.getSalesDepartment(GoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(1));
+            f.getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(1));
             f.getPurchaseDepartment(TripolistWithInputScenario.INPUT).setPredictor(new FixedIncreasePurchasesPredictor(1));
             //without this overproduction
             f.getHRs().iterator().next().setPredictor(new FixedIncreasePurchasesPredictor(1));
@@ -455,8 +455,8 @@ public class TripolistWithInputScenarioTest {
         for(int averaging=0; averaging<1000; averaging++)
         {
             macroII.schedule.step(macroII);
-            price += macroII.getMarket(GoodType.GENERIC).getTodayAveragePrice();
-            quantity += macroII.getMarket(GoodType.GENERIC).getTodayVolume();
+            price += macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice();
+            quantity += macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume();
         }
         price /=1000;
         quantity /= 1000;

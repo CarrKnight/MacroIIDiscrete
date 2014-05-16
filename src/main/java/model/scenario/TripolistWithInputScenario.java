@@ -17,6 +17,7 @@ import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.ShopSetPricePolicy;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.dummies.DailyGoodTree;
 import model.utilities.pid.CascadePToPIDController;
@@ -38,7 +39,7 @@ import model.utilities.pid.CascadePToPIDController;
  */
 public class TripolistWithInputScenario extends TripolistScenario {
 
-    final public static GoodType INPUT = new GoodType("testInput","Input");
+    final public static GoodType INPUT = new UndifferentiatedGoodType("testInput","Input");
 
 
     public TripolistWithInputScenario(MacroII macroII) {
@@ -53,7 +54,7 @@ public class TripolistWithInputScenario extends TripolistScenario {
     public void start() {
         model.getGoodTypeMasterList().addNewSectors(INPUT);
         //change the blueprint so that it's done with inputs
-        blueprint = Blueprint.simpleBlueprint(INPUT,1,GoodType.GENERIC,1);
+        blueprint = Blueprint.simpleBlueprint(INPUT,1, UndifferentiatedGoodType.GENERIC,1);
 
         super.start();    //create the monopolist
         monopolist.setName("Monopolist");
@@ -81,7 +82,7 @@ public class TripolistWithInputScenario extends TripolistScenario {
         {
 
             PurchasesDepartment department = PurchasesDepartment.
-                    getEmptyPurchasesDepartment(Long.MAX_VALUE, f,
+                    getEmptyPurchasesDepartment(Integer.MAX_VALUE, f,
                             getMarkets().get(INPUT));
             Market market = getMarkets().get(INPUT);
 
@@ -101,7 +102,7 @@ public class TripolistWithInputScenario extends TripolistScenario {
     private void createSuppliers() {
         //create the suppliers
         //min price = 2, max price = 50, increments of 1. Each of them sells one a day
-        for(long price=2;price<50; price++)
+        for(int price=2;price<50; price++)
         {
             final DailyGoodTree seller = new DailyGoodTree(model,price,getMarkets().get(INPUT));
 

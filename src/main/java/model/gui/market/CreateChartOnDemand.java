@@ -118,7 +118,7 @@ public class CreateChartOnDemand extends Task<LineChart<Number,Number>> {
 
             assert pricesObserved.length>=observationsPerFirm;
             //convert the array into data
-            for(int i=salesData.getStartingDay(); i< finalDate; i++ ) {
+            for(int i=salesData.getStartingDay(); i<= finalDate; i++ ) {
                 if (isCancelled())
                     break mainloop;
                 series.getData().add(new XYChart.Data<>(i,pricesObserved[i-salesData.getStartingDay()]));

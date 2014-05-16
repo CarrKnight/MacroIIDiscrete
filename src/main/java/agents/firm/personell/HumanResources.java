@@ -59,7 +59,7 @@ public class HumanResources extends PurchasesDepartment implements Agent {
     /**
      * The wages paid by the hr last weekEnd
      */
-    private long wagesPaid = 0;
+    private int wagesPaid = 0;
 
     /**
      * updated in its own little steppable. Done at production because that's really where the workers surely are present
@@ -79,7 +79,7 @@ public class HumanResources extends PurchasesDepartment implements Agent {
      * @param firm the firm owning the department
      * @param market the labor market
      */
-    private HumanResources(long budgetGiven,  Firm firm,  Market market,
+    private HumanResources(int budgetGiven,  Firm firm,  Market market,
                             Plant plant) {
         super(budgetGiven, firm, market);
         assert market.getGoodType().isLabor(); //must be a labor market!
@@ -99,7 +99,7 @@ public class HumanResources extends PurchasesDepartment implements Agent {
      * @param firm the firm owning the department
      * @param market the labor market
      */
-    public static HumanResources getEmptyHumanResources(long budgetGiven,  Firm firm,  Market market,
+    public static HumanResources getEmptyHumanResources(int budgetGiven,  Firm firm,  Market market,
                                                          Plant plant)
     {
         HumanResources hr =  new HumanResources(budgetGiven, firm, market, plant);
@@ -120,7 +120,7 @@ public class HumanResources extends PurchasesDepartment implements Agent {
      * @return a new instance of PurchasesDepartment
      */
     public static <PC extends PlantControl, BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm>
-    FactoryProducedHumanResources<PC,BS,SS> getHumanResourcesIntegrated(long budgetGiven,  Firm firm,
+    FactoryProducedHumanResources<PC,BS,SS> getHumanResourcesIntegrated(int budgetGiven,  Firm firm,
                                                                          Market market,  Plant plant,
                                                                          Class<PC> integratedControl,
                                                                          Class<BS> buyerSearchAlgorithmType,
@@ -191,7 +191,7 @@ public class HumanResources extends PurchasesDepartment implements Agent {
     <PC extends PlantControl,
             BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm, WT extends WorkforceTargeter,
             WM extends WorkforceMaximizer<ALG>, ALG extends WorkerMaximizationAlgorithm>
-    FactoryProducedHumanResourcesWithMaximizerAndTargeter getHumanResourcesIntegrated(long budgetGiven,  Firm firm,
+    FactoryProducedHumanResourcesWithMaximizerAndTargeter getHumanResourcesIntegrated(int budgetGiven,  Firm firm,
                                                                                        Market market,  Plant plant,
                                                                                        Class<WT> targeter,
                                                                                        Class<WM> maximizer,
@@ -291,7 +291,7 @@ public class HumanResources extends PurchasesDepartment implements Agent {
      * @return the max price we are willing to pay!
      */
     @Override
-    public long maxPrice(GoodType type, Market market) {
+    public int maxPrice(GoodType type, Market market) {
         return getPricingStrategy().maxPrice(type);
     }
 
@@ -306,7 +306,7 @@ public class HumanResources extends PurchasesDepartment implements Agent {
             @Override
             public void step(SimState state) {
                 //new wage!
-                long newWage = maxPrice(getGoodType(),getMarket()); //this is the new wage
+                int newWage = maxPrice(getGoodType(),getMarket()); //this is the new wage
 
                 //change the wage to everyone
                 if(fixedPayStructure)
@@ -349,7 +349,7 @@ public class HumanResources extends PurchasesDepartment implements Agent {
      * @param price price of the good.
      */
     @Override
-    public void reactToFilledQuote(Good g, long price,  EconomicAgent seller) {
+    public void reactToFilledQuote(Good g, int price,  EconomicAgent seller) {
         assert seller instanceof Person && plant.getWorkers().contains(seller);
         counter.inventoryIncreaseEvent(getFirm(),getGoodType(),getNumberOfWorkers(),1); //call the counter yourself because workers aren't really an inventory item
         super.reactToFilledQuote(g, price, seller);
@@ -358,7 +358,7 @@ public class HumanResources extends PurchasesDepartment implements Agent {
     /**
      * Get the wages paid by the HR object last weekend
      */
-    public long getWagesPaid() {
+    public int getWagesPaid() {
         return wagesPaid;
     }
 
@@ -534,8 +534,12 @@ public class HumanResources extends PurchasesDepartment implements Agent {
 
         for(Person p : roster)
         {
-            long wage = p.getWage(); //get the wage promised to pay
-            getFirm().pay(wage,p,getMarket()); //pay wage to worker
+            int wage = p.getWage(); //get the wage promised to pay
+            assert wage >=0;
+            if(wage>0)
+            {
+                getFirm().deliverMany(getMarket().getMoney(),p,wage);
+            }
             wagesPaid += wage;
             spendFromBudget(wage);
             assert getAvailableBudget() >=0;

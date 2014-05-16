@@ -10,7 +10,7 @@ import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import sim.engine.SimState;
@@ -46,12 +46,14 @@ public class TestScenario extends Scenario {
     public void start() {
 
         //create a useless market
-        final Market testMarket = new OrderBookMarket(GoodType.GENERIC);
+        final Market testMarket = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         //add it to the collections!
-        getMarkets().put(GoodType.GENERIC,testMarket);
+        getMarkets().put(UndifferentiatedGoodType.GENERIC,testMarket);
 
         //create fake buyer
-        final DummyBuyer buyer = new DummyBuyer(getModel(),100,testMarket);  buyer.earn(1000000000l);
+        final DummyBuyer buyer = new DummyBuyer(getModel(),100,testMarket);
+        buyer.receiveMany(UndifferentiatedGoodType.MONEY,10000000);
+
         //create fake seller
         final DummySeller seller = new DummySeller(getModel(),100);
         //add them to the list
@@ -72,11 +74,11 @@ public class TestScenario extends Scenario {
         getModel().scheduleSoon(ActionOrder.TRADE,new Steppable() {
             @Override
             public void step(SimState simState) {
-                Good good = new Good(GoodType.GENERIC, seller, 10);
+                Good good = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
                 seller.receive(good,null);
 
                 testMarket.trade(buyer, seller,good ,
-                        10, Quote.emptyBidQuote(GoodType.GENERIC), Quote.emptySellQuote(good));
+                        10, Quote.emptyBidQuote(UndifferentiatedGoodType.GENERIC), Quote.emptySellQuote(good));
 
             }
         });
@@ -85,10 +87,10 @@ public class TestScenario extends Scenario {
         getModel().scheduleAnotherDay(ActionOrder.TRADE,new Steppable() {
             @Override
             public void step(SimState simState) {
-                Good good = new Good(GoodType.GENERIC, seller, 10);
+                Good good =  Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
                 seller.receive(good,null);
                 testMarket.trade(buyer, seller, good,
-                        30, Quote.emptyBidQuote(GoodType.GENERIC),Quote.emptySellQuote(good));
+                        30, Quote.emptyBidQuote(UndifferentiatedGoodType.GENERIC),Quote.emptySellQuote(good));
 
             }
         },2);
@@ -107,7 +109,8 @@ public class TestScenario extends Scenario {
             @Override
             public void step(SimState simState) {
                 testMarket.submitBuyQuote(buyer,40);
-                testMarket.submitSellQuote(seller, 100, new Good(GoodType.GENERIC,seller,0l));
+                testMarket.submitSellQuote(seller, 100,
+                        Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
             }
         },4);
 

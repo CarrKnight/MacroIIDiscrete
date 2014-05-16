@@ -20,7 +20,7 @@ import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -123,10 +123,10 @@ public class SimpleBuyerSellerScenario extends Scenario {
     public void start() {
 
         //create and record a new market!
-        final OrderBookMarket market= new OrderBookMarket(GoodType.GENERIC);
+        final OrderBookMarket market= new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         market.setPricePolicy(new ShopSetPricePolicy()); //make the seller price matter
 
-        getMarkets().put(GoodType.GENERIC,market);
+        getMarkets().put(UndifferentiatedGoodType.GENERIC,market);
 
         //creates sellers
         for(int i=0; i < numberOfSellers; i++)
@@ -185,7 +185,7 @@ public class SimpleBuyerSellerScenario extends Scenario {
                 SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(seller, market,
                         new SimpleBuyerSearch(market, seller), new SimpleSellerSearch(market, seller),
                         SalesDepartmentAllAtOnce.class);
-                seller.registerSaleDepartment(dept, GoodType.GENERIC);
+                seller.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
                 dept.setAskPricingStrategy(new SimpleFlowSellerPID(dept)); //set strategy to PID
                 getAgents().add(seller);
             }
@@ -200,7 +200,7 @@ public class SimpleBuyerSellerScenario extends Scenario {
             public void step(SimState simState) {
                 //sell 4 goods!
                 for(int i=0; i<goodPerSeller; i++){
-                    Good good = new Good(GoodType.GENERIC,seller,minimumPrice);
+                    Good good = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
                     seller.receive(good,null);
                     seller.reactToPlantProduction(good);
                 }
@@ -220,11 +220,11 @@ public class SimpleBuyerSellerScenario extends Scenario {
      * @param maximumPrice the price ABOVE which the buyer never bids. It is only activated if the number is >0; the argument is ignored otherwise
      * @return the buyer
      */
-    public Firm createBuyer(final Market market, long maximumPrice)
+    public Firm createBuyer(final Market market, int maximumPrice)
     {
         //create the buyer!
-        final Firm buyer = new Firm(model); buyer.earn(Long.MAX_VALUE);
-        final PurchasesDepartment department = PurchasesDepartment.getEmptyPurchasesDepartment(Long.MAX_VALUE, buyer, market);
+        final Firm buyer = new Firm(model); buyer.receiveMany(UndifferentiatedGoodType.MONEY,100000000);
+        final PurchasesDepartment department = PurchasesDepartment.getEmptyPurchasesDepartment(100000000, buyer, market);
 //        float proportionalGain = (float) (proportionalGainAVG + model.random.nextGaussian()*.01f); proportionalGain = Math.max(proportionalGain,0); //never below 0
   //      float integralGain = (float) (integralGainAVG + model.random.nextGaussian()*.05f); integralGain = Math.max(integralGain,0);
     //    float derivativeGain =(float) (derivativeGainAVG + model.random.nextGaussian()*.005f); derivativeGain = Math.max(derivativeGain,0);
@@ -239,7 +239,7 @@ public class SimpleBuyerSellerScenario extends Scenario {
             control.smoothFlowPID(.5f);
 
 
-        buyer.registerPurchasesDepartment(department, GoodType.GENERIC);
+        buyer.registerPurchasesDepartment(department, UndifferentiatedGoodType.GENERIC);
         //set up as the control!!
         department.setControl(control);
         if(maximumPrice <=0)
@@ -261,10 +261,10 @@ public class SimpleBuyerSellerScenario extends Scenario {
             @Override
             public void step(SimState state) {
                 for (int i = 0; i < consumptionRate; i++) {
-                    if (buyer.hasAny(GoodType.GENERIC))
-                        buyer.consume(GoodType.GENERIC);
+                    if (buyer.hasAny(UndifferentiatedGoodType.GENERIC))
+                        buyer.consume(UndifferentiatedGoodType.GENERIC);
                     else{
-                        buyer.fireFailedToConsumeEvent(GoodType.GENERIC,consumptionRate - i);
+                        buyer.fireFailedToConsumeEvent(UndifferentiatedGoodType.GENERIC,consumptionRate - i);
                         break;
                     }
                 }

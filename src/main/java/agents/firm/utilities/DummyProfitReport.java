@@ -35,8 +35,8 @@ public class DummyProfitReport implements ProfitReport {
     }
 
     @Override
-    public long getAggregateProfits() {
-        return 0l;
+    public int getAggregateProfits() {
+        return 0;
     }
 
     @Override

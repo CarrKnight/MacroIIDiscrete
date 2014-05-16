@@ -102,7 +102,7 @@ public class AroundShockLinearRegressionSalesPredictor extends BaseSalesPredicto
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
+    public int predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
 
         updateModelIfPossible(dept);
         return predictor.predictSalePriceAfterIncreasingProduction(dept, expectedProductionCost, increaseStep);
@@ -230,7 +230,7 @@ public class AroundShockLinearRegressionSalesPredictor extends BaseSalesPredicto
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
+    public int predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
         updateModelIfPossible(dept);
 
         return predictor.predictSalePriceAfterDecreasingProduction(dept,expectedProductionCost,decreaseStep);
@@ -246,7 +246,7 @@ public class AroundShockLinearRegressionSalesPredictor extends BaseSalesPredicto
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+    public int predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         return predictor.predictSalePriceWhenNotChangingProduction(dept);
     }
 

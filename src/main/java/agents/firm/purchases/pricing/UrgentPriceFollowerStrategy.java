@@ -63,7 +63,7 @@ public class UrgentPriceFollowerStrategy implements BidPricingStrategy {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(GoodType type) {
+    public int maxPrice(GoodType type) {
         assert type == dept.getGoodType();
 
 
@@ -71,7 +71,7 @@ public class UrgentPriceFollowerStrategy implements BidPricingStrategy {
         if( lastPrice== -1){
             if(dept.getAvailableBudget() == 0)  //if there is no money, offer no money
                 return 0;
-            return dept.getRandom().nextLong(dept.getAvailableBudget()); //throw a number between 0 and the available budget!
+            return dept.getRandom().nextInt(dept.getAvailableBudget()); //throw a number between 0 and the available budget!
             }
 
         Level level = getInventoryLevel();
@@ -92,7 +92,7 @@ public class UrgentPriceFollowerStrategy implements BidPricingStrategy {
                 multiplier = 1.2f;
                 break;
         }
-        return (long) Math.round(lastPrice * multiplier);
+        return (int) Math.round(lastPrice * multiplier);
 
 
 
@@ -107,7 +107,7 @@ public class UrgentPriceFollowerStrategy implements BidPricingStrategy {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(Good good) {
+    public int maxPrice(Good good) {
         return maxPrice(good.getType());
     }
 

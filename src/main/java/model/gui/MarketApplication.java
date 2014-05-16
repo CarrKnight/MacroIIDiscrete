@@ -9,7 +9,7 @@ package model.gui;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import com.google.common.base.Preconditions;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -72,7 +72,7 @@ public class MarketApplication extends Application implements Steppable, Deactiv
         //////////////////////////////////
         model.start();
         System.out.println("Creating the view");
-        SimpleMarketView simpleMarketView = new SimpleMarketView(model.getMarket(GoodType.GENERIC),model);
+        SimpleMarketView simpleMarketView = new SimpleMarketView(model.getMarket(UndifferentiatedGoodType.GENERIC),model);
 
         //make a scene
         stage.setScene(new Scene(simpleMarketView));
@@ -84,7 +84,7 @@ public class MarketApplication extends Application implements Steppable, Deactiv
         Thread thread = new Thread(() -> {
             while(model.schedule.getTime()<5000) {
                 model.schedule.step(model);
-                System.out.println(model.getMarket(GoodType.GENERIC).getTodayVolume());
+                System.out.println(model.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume());
             }
         });
         thread.start();
@@ -100,7 +100,7 @@ public class MarketApplication extends Application implements Steppable, Deactiv
             return;
         Preconditions.checkState(!Platform.isFxApplicationThread());
 
-        MarketData marketData = model.getMarket(GoodType.GENERIC).getData();
+        MarketData marketData = model.getMarket(UndifferentiatedGoodType.GENERIC).getData();
         final Double newPrice = marketData.getLatestObservation(MarketDataType.CLOSING_PRICE);
         final Integer day = new Integer(marketData.getLastObservedDay());
 

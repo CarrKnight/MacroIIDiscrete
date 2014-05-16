@@ -23,7 +23,7 @@ package financial.utilities;
  */
 public class AveragePricePolicy implements PricePolicy {
     @Override
-    public long price(long sellerPrice, long buyerPrice) {
+    public int price(int sellerPrice, int buyerPrice) {
         assert sellerPrice <= buyerPrice;
         return Math.round(((float)(sellerPrice + buyerPrice))/2f);
 

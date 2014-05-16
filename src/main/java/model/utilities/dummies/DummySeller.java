@@ -39,13 +39,13 @@ import sim.engine.Steppable;
 public class DummySeller extends Firm {
 
 
-    public long saleQuote;
+    public int saleQuote;
 
     private Market market;
 
     boolean soldToday = false;
 
-    public DummySeller(MacroII model,long quote) {
+    public DummySeller(MacroII model,int quote) {
         super(model,false);
         saleQuote = quote;
         getProfitReport().turnOff();
@@ -53,7 +53,7 @@ public class DummySeller extends Firm {
     }
 
 
-    public DummySeller(MacroII model, long saleQuote, Market market) {
+    public DummySeller(MacroII model, int saleQuote, Market market) {
         super(model);
         this.saleQuote = saleQuote;
         this.market = market;
@@ -75,12 +75,12 @@ public class DummySeller extends Firm {
 
     }
 
-    public void setSaleQuote(long saleQuote) {
+    public void setSaleQuote(int saleQuote) {
         this.saleQuote = saleQuote;
     }
 
     @Override
-    public void reactToFilledAskedQuote(Good g, long price, EconomicAgent buyer) {
+    public void reactToFilledAskedQuote(Quote quoteFilled, Good g, int price, EconomicAgent buyer) {
         //don't react
         /**
          * how "far" purchases inventory are from target.
@@ -110,7 +110,7 @@ public class DummySeller extends Firm {
 
     @Override
     public PurchaseResult shopHere( Quote buyerQuote,  Quote sellerQuote) {
-        long finalPrice = market.price(sellerQuote.getPriceQuoted(),buyerQuote.getPriceQuoted());
+        int finalPrice = market.price(sellerQuote.getPriceQuoted(),buyerQuote.getPriceQuoted());
         assert sellerQuote.getGood() != null;
         assert this.has(sellerQuote.getGood());
 
@@ -134,7 +134,7 @@ public class DummySeller extends Firm {
      * @return
      */
     @Override
-    public long hypotheticalSellPrice(GoodType goodType) {
+    public int hypotheticalSellPrice(GoodType goodType) {
 
         return saleQuote;
     }

@@ -9,7 +9,7 @@ package agents.firm.purchases.prediction;
 import agents.firm.Firm;
 import agents.firm.purchases.PurchasesDepartment;
 import financial.market.Market;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.stats.collectors.PeriodicMarketObserver;
 import model.utilities.stats.collectors.enums.MarketDataType;
@@ -52,7 +52,7 @@ public class SamplingLearningIncreasePurchasePredictorTest
         //observation 1
         when(department.getLastObservedDay()).thenReturn(2);
         when(department.getStartingDay()).thenReturn(0);
-        when(department.getGoodType()).thenReturn(GoodType.GENERIC);
+        when(department.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
 
         //these are the data you were looking for:
         when(department.getObservationsRecordedTheseDays(PurchasesDataType.CLOSING_PRICES, new int[]{0, 1, 2})).thenReturn(
@@ -76,7 +76,7 @@ public class SamplingLearningIncreasePurchasePredictorTest
 
         when(department.getAveragedClosingPrice()).thenReturn(200f);
         //the sales predictor will be predict for 9 (yesterdayVolume + 1)
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 203l); //200+2.6 (rounded)
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 203); //200+2.6 (rounded)
 
     }
 
@@ -108,14 +108,14 @@ public class SamplingLearningIncreasePurchasePredictorTest
 
         SamplingLearningIncreasePurchasePredictor predictor = new SamplingLearningIncreasePurchasePredictor();
         when(department.getAveragedClosingPrice()).thenReturn(50f);
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50l);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50);
 
         //with one observation, it still returns whatever the sales department says
 
         when(department.getLastObservedDay()).thenReturn(1);
         when(department.getStartingDay()).thenReturn(0);
 
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50l);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50);
 
         //with negative price the observation is ignored
         when(market.getLastObservedDay()).thenReturn(3);
@@ -132,7 +132,7 @@ public class SamplingLearningIncreasePurchasePredictorTest
                 new double[]{
                         0,0,0
                 });
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50l);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50);
 
 
         //two observations, everything back to normal! (but the slope is 0, so no effect)
@@ -151,7 +151,7 @@ public class SamplingLearningIncreasePurchasePredictorTest
                 new double[]{
                         0,0,0
                 });
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50l);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50);
 
 
         FixedIncreasePurchasesPredictor.defaultIncrementDelta=1;

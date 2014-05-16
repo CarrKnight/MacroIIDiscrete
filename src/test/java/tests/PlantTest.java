@@ -13,8 +13,10 @@ import agents.firm.production.technology.DRSExponentialMachinery;
 import agents.firm.production.technology.IRSExponentialMachinery;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
+import goods.DifferentiatedGoodType;
 import goods.Good;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.PhaseScheduler;
@@ -44,22 +46,22 @@ public class PlantTest {
     Plant drs;
     MacroII macro;
 
-    final public static GoodType BEEF = new GoodType("testInput","Input");
+    final public static GoodType BEEF = new UndifferentiatedGoodType("testInput","Input");
 
 
 
     @Before
     public void setUp() throws Exception {
 
-        Blueprint b = new Blueprint.Builder().output(GoodType.GENERIC,2).build(); //create a simple output
-        macro = new MacroII(1l);
+        Blueprint b = new Blueprint.Builder().output(DifferentiatedGoodType.CAPITAL,2).build(); //create a simple output
+        macro = new MacroII(1);
         macro.schedule = mock(Schedule.class); //put in a fake schedule so we avoid steppables firing at random
 
 
         Firm f = new Firm(macro);
-        crs = new Plant(b,new Firm(macro)); crs.setPlantMachinery(new CRSExponentialMachinery(GoodType.CAPITAL,f,0l,crs, 1f, 1f));
-        irs = new Plant(b,new Firm(macro)); irs.setPlantMachinery(new IRSExponentialMachinery(GoodType.CAPITAL,f,0l,irs, 1f, 1f));
-        drs = new Plant(b,new Firm(macro)); drs.setPlantMachinery(new DRSExponentialMachinery(GoodType.CAPITAL,f,0l,drs, 1f, 1f));
+        crs = new Plant(b,new Firm(macro)); crs.setPlantMachinery(new CRSExponentialMachinery(DifferentiatedGoodType.CAPITAL,f,0,crs, 1f, 1f));
+        irs = new Plant(b,new Firm(macro)); irs.setPlantMachinery(new IRSExponentialMachinery(DifferentiatedGoodType.CAPITAL,f,0,irs, 1f, 1f));
+        drs = new Plant(b,new Firm(macro)); drs.setPlantMachinery(new DRSExponentialMachinery(DifferentiatedGoodType.CAPITAL,f,0,drs, 1f, 1f));
 
         Person w1 = new Person(macro); Person w2 = new Person(macro);
         crs.addWorker(w1);crs.addWorker(w2);    w1.hired(crs.getOwner(),9999999); w2.hired(crs.getOwner(), 9999999);
@@ -70,9 +72,9 @@ public class PlantTest {
 
 
         SalesDepartmentAllAtOnce stub = mock(SalesDepartmentAllAtOnce.class);
-        crs.getOwner().registerSaleDepartment(stub,GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
-        irs.getOwner().registerSaleDepartment(stub,GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
-        drs.getOwner().registerSaleDepartment(stub, GoodType.GENERIC); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+        crs.getOwner().registerSaleDepartment(stub, DifferentiatedGoodType.CAPITAL); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+        irs.getOwner().registerSaleDepartment(stub, DifferentiatedGoodType.CAPITAL); //fake sales department so that you don't sell the stuff you completeProductionRunNow
+        drs.getOwner().registerSaleDepartment(stub, DifferentiatedGoodType.CAPITAL); //fake sales department so that you don't sell the stuff you completeProductionRunNow
         when(stub.isSelling(any(Good.class))).thenReturn(Boolean.TRUE);
 
 
@@ -125,10 +127,10 @@ public class PlantTest {
         crs.getModel().schedule.scheduleOnce(Schedule.EPOCH,new Person(crs.getModel())); //this is to have the steppable not at time -1
         crs.getModel().schedule.step(crs.getModel());
 
-        Blueprint b = Blueprint.simpleBlueprint(GoodType.GENERIC,1,GoodType.GENERIC,2); //addSalesDepartmentListener one for input
+        Blueprint b = Blueprint.simpleBlueprint(DifferentiatedGoodType.CAPITAL,1, DifferentiatedGoodType.CAPITAL,2); //addSalesDepartmentListener one for input
         crs.setBlueprint(b); //set it as blueprint
         assertFalse(crs.checkForInputs()); //you should miss one
-        crs.getOwner().receive(new Good(GoodType.GENERIC,drs.getOwner(),1l),drs.getOwner()); //receive it
+        crs.getOwner().receive(Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,drs.getOwner(),1),drs.getOwner()); //receive it
         //this automatically steps production (because it's inventory listener!)
 
 
@@ -187,8 +189,8 @@ public class PlantTest {
 
         macro.schedule = new Schedule(); //create a real schedule, please.
         assertTrue(crs.getModel().schedule.scheduleComplete()); //the schedule should be empty!
-        assertTrue(!crs.getOwner().hasAny(GoodType.GENERIC));
-        assertTrue(crs.getOwner().hasHowMany(GoodType.GENERIC) == 0);
+        assertTrue(!crs.getOwner().hasAny(DifferentiatedGoodType.CAPITAL));
+        assertTrue(crs.getOwner().hasHowMany(DifferentiatedGoodType.CAPITAL) == 0);
 
 
         crs.getModel().schedule.reset();
@@ -202,8 +204,8 @@ public class PlantTest {
         // System.out.println(crs.getModel().schedule.getTime());
         assertEquals(crs.getStatus(), PlantStatus.READY);
 
-        assertTrue(crs.getOwner().hasAny(GoodType.GENERIC));
-        assertTrue(crs.getOwner().hasHowMany(GoodType.GENERIC) == 2);
+        assertTrue(crs.getOwner().hasAny(DifferentiatedGoodType.CAPITAL));
+        assertTrue(crs.getOwner().hasHowMany(DifferentiatedGoodType.CAPITAL) == 2);
 
         //here we produced 2
 
@@ -211,19 +213,19 @@ public class PlantTest {
 
 
 
-        crs.setBlueprint(Blueprint.simpleBlueprint(GoodType.GENERIC, 2, GoodType.GENERIC, 1)); //dumb technology to test inputs
+        crs.setBlueprint(Blueprint.simpleBlueprint(DifferentiatedGoodType.CAPITAL, 2, DifferentiatedGoodType.CAPITAL, 1)); //dumb technology to test inputs
         crs.startProductionRun();
         assertEquals(crs.getStatus(), PlantStatus.READY);
-        assertTrue(crs.getOwner().hasAny(GoodType.GENERIC));       //should still have the stuff
-        assertTrue(crs.getOwner().hasHowMany(GoodType.GENERIC) == 1);  //burned two, made one
+        assertTrue(crs.getOwner().hasAny(DifferentiatedGoodType.CAPITAL));       //should still have the stuff
+        assertTrue(crs.getOwner().hasHowMany(DifferentiatedGoodType.CAPITAL) == 1);  //burned two, made one
         crs.startProductionRun();
         assertEquals(crs.getStatus(), PlantStatus.WAITING_FOR_INPUT);
-        assertTrue(crs.getOwner().hasAny(GoodType.GENERIC));       //no change!
-        assertTrue(crs.getOwner().hasHowMany(GoodType.GENERIC) == 1);
+        assertTrue(crs.getOwner().hasAny(DifferentiatedGoodType.CAPITAL));       //no change!
+        assertTrue(crs.getOwner().hasHowMany(DifferentiatedGoodType.CAPITAL) == 1);
 
         //check that the counts are right
-        Assert.assertEquals(crs.getOwner().getTodayConsumption(GoodType.GENERIC),2);
-        Assert.assertEquals(crs.getOwner().getTodayProduction(GoodType.GENERIC),3);
+        Assert.assertEquals(crs.getOwner().getTodayConsumption(DifferentiatedGoodType.CAPITAL),2);
+        Assert.assertEquals(crs.getOwner().getTodayProduction(DifferentiatedGoodType.CAPITAL),3);
 
 
 
@@ -240,19 +242,19 @@ public class PlantTest {
     public void testStep() throws Exception {
 
 
-        Blueprint b = Blueprint.simpleBlueprint(GoodType.GENERIC, 1, GoodType.GENERIC, 1);
-        MacroII localMacroII = new MacroII(1l);
+        Blueprint b = Blueprint.simpleBlueprint(DifferentiatedGoodType.CAPITAL, 1, DifferentiatedGoodType.CAPITAL, 1);
+        MacroII localMacroII = new MacroII(1);
         localMacroII.schedule = mock(Schedule.class); //put in a fake schedule so we avoid steppables firing at random
 
 
         Firm f = new Firm(localMacroII);
-        Plant localCRS = new Plant(b,new Firm(localMacroII)); localCRS.setPlantMachinery(new CRSExponentialMachinery(GoodType.CAPITAL, f, 0l, localCRS, 1f, 1f));
+        Plant localCRS = new Plant(b,new Firm(localMacroII)); localCRS.setPlantMachinery(new CRSExponentialMachinery(DifferentiatedGoodType.CAPITAL, f, 0, localCRS, 1f, 1f));
         f.addPlant(localCRS);
 
 
         SalesDepartmentAllAtOnce stub = mock(SalesDepartmentAllAtOnce.class);
         when(stub.isSelling(any(Good.class))).thenReturn(Boolean.TRUE);
-        localCRS.getOwner().registerSaleDepartment(stub,GoodType.GENERIC); //fake sales
+        localCRS.getOwner().registerSaleDepartment(stub, DifferentiatedGoodType.CAPITAL); //fake sales
         // department so that you don't try selling the stuff you build
 
 
@@ -272,7 +274,8 @@ public class PlantTest {
             localCRS.getModel().getPhaseScheduler().step(localCRS.getModel());
 
             assertEquals(localCRS.getStatus(), PlantStatus.WAITING_FOR_INPUT);
-            localCRS.getOwner().receive(new Good(GoodType.GENERIC, drs.getOwner(), 1l), drs.getOwner());
+            localCRS.getOwner().receive(Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,drs.getOwner(),1)
+                    , drs.getOwner());
 
             localCRS.getModel().getPhaseScheduler().step(localCRS.getModel());
             assertEquals(localCRS.getStatus(), PlantStatus.READY); //you should automatically start production!
@@ -298,7 +301,7 @@ public class PlantTest {
 
         for(int i=0; i < irs.getUsefulLife(); i++){
             assertEquals(irs.getStatus(), PlantStatus.READY);
-            irs.weekEnd(0l);
+            irs.weekEnd(0);
         }
 
         assertEquals(irs.getStatus(), PlantStatus.OBSOLETE);
@@ -332,13 +335,13 @@ public class PlantTest {
         assertEquals(1f / 1.41421356f, drs.expectedWaitingTime(), .0001f);
 
 
-        assertEquals(2f * 2.0f * crs.getModel().getWeekLength(), crs.expectedWeeklyProduction(GoodType.GENERIC), .0001f);
-        assertEquals(2f * 4.0f * drs.getModel().getWeekLength(), irs.expectedWeeklyProduction(GoodType.GENERIC), .0001f);
-        assertEquals(2f * 1.41421356f * irs.getModel().getWeekLength(), drs.expectedWeeklyProduction(GoodType.GENERIC), .0001f);
+        assertEquals(2f * 2.0f * crs.getModel().getWeekLength(), crs.expectedWeeklyProduction(DifferentiatedGoodType.CAPITAL), .0001f);
+        assertEquals(2f * 4.0f * drs.getModel().getWeekLength(), irs.expectedWeeklyProduction(DifferentiatedGoodType.CAPITAL), .0001f);
+        assertEquals(2f * 1.41421356f * irs.getModel().getWeekLength(), drs.expectedWeeklyProduction(DifferentiatedGoodType.CAPITAL), .0001f);
 
-        assertEquals(2f * crs.getModel().getWeekLength(), crs.marginalProductOfWorker(GoodType.GENERIC), .0001f);
-        assertEquals(2f * 5.0f * irs.getModel().getWeekLength(), irs.marginalProductOfWorker(GoodType.GENERIC), .0001f);
-        assertEquals(2f * 0.317837245 * drs.getModel().getWeekLength(), drs.marginalProductOfWorker(GoodType.GENERIC), .0001f);
+        assertEquals(2f * crs.getModel().getWeekLength(), crs.marginalProductOfWorker(DifferentiatedGoodType.CAPITAL), .0001f);
+        assertEquals(2f * 5.0f * irs.getModel().getWeekLength(), irs.marginalProductOfWorker(DifferentiatedGoodType.CAPITAL), .0001f);
+        assertEquals(2f * 0.317837245 * drs.getModel().getWeekLength(), drs.marginalProductOfWorker(DifferentiatedGoodType.CAPITAL), .0001f);
 
 
 
@@ -349,12 +352,12 @@ public class PlantTest {
     public void testTotalInputs()
     {
 
-        Blueprint b = Blueprint.simpleBlueprint(GoodType.GENERIC, 1, BEEF, 1);
+        Blueprint b = Blueprint.simpleBlueprint(DifferentiatedGoodType.CAPITAL, 1, BEEF, 1);
         MacroII localMacroII =  mock(MacroII.class);
         PhaseScheduler scheduler = mock(RandomQueuePhaseScheduler.class); when(localMacroII.getCurrentPhase()).thenReturn(ActionOrder.PRODUCTION);
         when(localMacroII.getPhaseScheduler()).thenReturn(scheduler);  when(localMacroII.getWeekLength()).thenReturn(7f);
         Firm f = new Firm(localMacroII);
-        Plant localCRS = new Plant(b,new Firm(localMacroII)); localCRS.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, f, 0l, localCRS));
+        Plant localCRS = new Plant(b,new Firm(localMacroII)); localCRS.setPlantMachinery(new LinearConstantMachinery(DifferentiatedGoodType.CAPITAL, f, 0, localCRS));
         f.addPlant(localCRS);
         localCRS.addWorker(new Person(localCRS.getModel()));
         localCRS.addWorker(new Person(localCRS.getModel()));
@@ -363,53 +366,55 @@ public class PlantTest {
 
 
         //initially they should be set up to 0
-        assertEquals(localCRS.getThisWeekInputCosts(), 0l);
-        assertEquals(localCRS.getLastWeekInputCosts(), 0l);
+        assertEquals(localCRS.getThisWeekInputCosts(), 0);
+        assertEquals(localCRS.getLastWeekInputCosts(), 0);
 
         //now when I step you, you should  say you are waiting for inputs
         localCRS.getModel();
         localCRS.step(localMacroII);
         assertEquals(localCRS.getStatus(), PlantStatus.WAITING_FOR_INPUT);
-        assertEquals(localCRS.getThisWeekInputCosts(), 0l); //input costs should still be 0
-        assertEquals(localCRS.getLastWeekInputCosts(), 0l);
+        assertEquals(localCRS.getThisWeekInputCosts(), 0); //input costs should still be 0
+        assertEquals(localCRS.getLastWeekInputCosts(), 0);
 
 
 
         //now I give you one input that costs 10$
-        localCRS.getOwner().receive(new Good(GoodType.GENERIC, drs.getOwner(), 10l), drs.getOwner());
+        localCRS.getOwner().receive(Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,drs.getOwner(),10),
+                drs.getOwner());
         localCRS.step(localCRS.getModel());
-        assertEquals(localCRS.getThisWeekInputCosts(), 10l); //input costs should still now be 10
-        assertEquals(localCRS.getLastWeekInputCosts(), 0l);
+        assertEquals(localCRS.getThisWeekInputCosts(), 10); //input costs should still now be 10
+        assertEquals(localCRS.getLastWeekInputCosts(), 0);
 
         //I'll give you another and force you to step again
-        localCRS.getOwner().receive(new Good(GoodType.GENERIC,drs.getOwner(),10l),drs.getOwner());
+        localCRS.getOwner().receive(Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,drs.getOwner(),10)
+                ,drs.getOwner());
         localCRS.step(localCRS.getModel());
-        assertEquals(localCRS.getThisWeekInputCosts(), 20l); //input costs should still now be 20
-        assertEquals(localCRS.getLastWeekInputCosts(), 0l);
+        assertEquals(localCRS.getThisWeekInputCosts(), 20); //input costs should still now be 20
+        assertEquals(localCRS.getLastWeekInputCosts(), 0);
 
 
         //with weekend it should reset this week and make lastweekinput costs equal 20
         localCRS.weekEnd(7);
-        assertEquals(localCRS.getThisWeekInputCosts(), 0l); //reset to 0
-        assertEquals(localCRS.getLastWeekInputCosts(), 20l); //now it's 20
+        assertEquals(localCRS.getThisWeekInputCosts(), 0); //reset to 0
+        assertEquals(localCRS.getLastWeekInputCosts(), 20); //now it's 20
 
 
         //try one more time
-        localCRS.getOwner().receive(new Good(GoodType.GENERIC,drs.getOwner(),10l),drs.getOwner());
+        localCRS.getOwner().receive(Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,drs.getOwner(),10),drs.getOwner());
         localCRS.step(localCRS.getModel());
-        assertEquals(localCRS.getThisWeekInputCosts(), 10l); //input costs should now be 10
-        assertEquals(localCRS.getLastWeekInputCosts(), 20l); //this should be stuck at 20
+        assertEquals(localCRS.getThisWeekInputCosts(), 10); //input costs should now be 10
+        assertEquals(localCRS.getLastWeekInputCosts(), 20); //this should be stuck at 20
 
 
         //new weekend, forget 20$ and reset this week
         localCRS.weekEnd(14);
-        assertEquals(localCRS.getThisWeekInputCosts(), 0l); //reset to 0
-        assertEquals(localCRS.getLastWeekInputCosts(), 10l); //now it's 10
+        assertEquals(localCRS.getThisWeekInputCosts(), 0); //reset to 0
+        assertEquals(localCRS.getLastWeekInputCosts(), 10); //now it's 10
 
         //another weekend, everything is at 0
         localCRS.weekEnd(0);
-        assertEquals(localCRS.getThisWeekInputCosts(), 0l); //reset to 0
-        assertEquals(localCRS.getLastWeekInputCosts(), 0l); //now it's 10
+        assertEquals(localCRS.getThisWeekInputCosts(), 0); //reset to 0
+        assertEquals(localCRS.getLastWeekInputCosts(), 0); //now it's 10
 
 
 

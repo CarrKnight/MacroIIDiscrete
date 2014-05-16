@@ -1,8 +1,7 @@
 package tests.purchase;
 
 import agents.EconomicAgent;
-import agents.Inventory;
-import agents.InventoryListener;
+import goods.*;
 import agents.firm.Firm;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.inventoryControl.DailyInventoryControl;
@@ -20,8 +19,6 @@ import financial.market.Market;
 import financial.market.OrderBookBlindMarket;
 import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
-import goods.Good;
-import goods.GoodType;
 import model.MacroII;
 import model.utilities.dummies.DummySeller;
 import org.junit.Test;
@@ -62,7 +59,7 @@ public class PurchasesDepartmentTest {
     public void testGetPurchasesDepartment() throws Exception {
 
         Firm firm = mock(Firm.class);
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         when(firm.getRandom()).thenReturn(new MersenneTwisterFast());
         when(firm.getModel()).thenReturn(model);
 
@@ -175,8 +172,8 @@ public class PurchasesDepartmentTest {
     @Test
     public void testMaxPrice() throws Exception {
         Firm firm = mock(Firm.class);
-        MacroII model = new MacroII(1l);
-        Market market = mock(Market.class); when(market.isBestSalePriceVisible()).thenReturn(true); when(market.getBestSellPrice()).thenReturn(-1l); //stub market, price visible but no best price around!
+        MacroII model = new MacroII(1);
+        Market market = mock(Market.class); when(market.isBestSalePriceVisible()).thenReturn(true); when(market.getBestSellPrice()).thenReturn(-1); //stub market, price visible but no best price around!
         when(firm.getRandom()).thenReturn(new MersenneTwisterFast());
         when(firm.getModel()).thenReturn(model);
 
@@ -189,13 +186,13 @@ public class PurchasesDepartmentTest {
         BidPricingStrategy pricingStrategy = mock(BidPricingStrategy.class);
         dept.setPricingStrategy(new LookAtTheMarketBidPricingDecorator(pricingStrategy,market));   //addSalesDepartmentListener it as new strategy
 
-        when(pricingStrategy.maxPrice((Good) any())).thenReturn(100l); //this always prices at 100!
-        when(pricingStrategy.maxPrice((GoodType) any())).thenReturn(100l); //this always prices at 100!
+        when(pricingStrategy.maxPrice((Good) any())).thenReturn(100); //this always prices at 100!
+        when(pricingStrategy.maxPrice((GoodType) any())).thenReturn(100); //this always prices at 100!
 
 
-        assertEquals(dept.maxPrice(GoodType.GENERIC, market), 100l); //bounded by pricing choice
-        when(market.getBestSellPrice()).thenReturn(30l);
-        assertEquals(dept.maxPrice(GoodType.GENERIC, market), 30l); //bounded by best visible price
+        assertEquals(dept.maxPrice(DifferentiatedGoodType.CAPITAL, market), 100); //bounded by pricing choice
+        when(market.getBestSellPrice()).thenReturn(30);
+        assertEquals(dept.maxPrice(DifferentiatedGoodType.CAPITAL, market), 30); //bounded by best visible price
 
 
 
@@ -216,15 +213,15 @@ public class PurchasesDepartmentTest {
 
         MacroII model = new MacroII(System.currentTimeMillis());
         Firm firm = new Firm(model);
-        firm.earn(100000);
-        Market market = new OrderBookMarket(GoodType.GENERIC);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,100000);
+        Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
         market.start(model);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100000,firm,market,
                 FixedInventoryControl.class,null,null,null).getDepartment();
 
-        firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
+        firm.registerPurchasesDepartment(dept, DifferentiatedGoodType.CAPITAL);
         dept.buy(); //place a bid or whatever
         model.getPhaseScheduler().step(model);
         Field field = PurchasesDepartment.class.getDeclaredField("quotePlaced");
@@ -235,15 +232,15 @@ public class PurchasesDepartmentTest {
 
         //if I put in a bad quote it should throw an exception
         try{
-            dept.reactToFilledQuote(new Good(GoodType.GENERIC,firm,10l),10l,null);
+            dept.reactToFilledQuote(Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,firm,10),10,null);
             fail();
         }
         catch (AssertionError e){}
 
-        DummySeller seller = new DummySeller(model,0l); market.registerSeller(seller);
-        Good good = new Good(GoodType.GENERIC,firm,10l);
+        DummySeller seller = new DummySeller(model,0); market.registerSeller(seller);
+        Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,firm,10);
         seller.receive(good,null );
-        market.submitSellQuote(seller,0l,good);
+        market.submitSellQuote(seller,0,good);
         model.getPhaseScheduler().step(model);
 
 
@@ -276,34 +273,34 @@ public class PurchasesDepartmentTest {
         Market.TESTING_MODE = true;
 
 
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         Firm firm = new Firm(model);
-        firm.earn(1000);
-        Market market = new OrderBookBlindMarket(GoodType.GENERIC);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
+        Market market = new OrderBookBlindMarket(DifferentiatedGoodType.CAPITAL);
         market.start(model);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
                 FixedInventoryControl.class,null,null,null).getDepartment();
 
-        firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
+        firm.registerPurchasesDepartment(dept, DifferentiatedGoodType.CAPITAL);
         BidPricingStrategy pricingStrategy = mock(BidPricingStrategy.class);//i am going to force the dept to offer maxPrice = 150
-        when(pricingStrategy.maxPrice(any(GoodType.class))).thenReturn(150l);
+        when(pricingStrategy.maxPrice(any(GoodType.class))).thenReturn(150);
         dept.setPricingStrategy(pricingStrategy);
 
 
 
-        DummySeller seller1 = new DummySeller(model,100l*(1),market);
+        DummySeller seller1 = new DummySeller(model,100*(1),market);
         market.registerSeller(seller1);
-        Good good = new Good(GoodType.GENERIC,firm,10l);
+        Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,firm,10);
         seller1.receive(good,null );
         assert seller1.has(good);
         assert seller1.hasAny(good.getType());
-        //     market.submitSellQuote(seller1,5l,good);   //even though it places a quote for 0, it will answer "100" when the shopper asks him
+        //     market.submitSellQuote(seller1,5,good);   //even though it places a quote for 0, it will answer "100" when the shopper asks him
 
-        DummySeller seller2 = new DummySeller(model,100l*(2));
+        DummySeller seller2 = new DummySeller(model,100*(2));
         market.registerSeller(seller2);
-        Good good2 = new Good(GoodType.GENERIC,firm,10l);
+        Good good2 = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,firm,10);
         seller2.receive(good2,null );
 
 
@@ -314,7 +311,7 @@ public class PurchasesDepartmentTest {
         assertTrue(firm.has(good));
         assertTrue(!firm.has(good2));
         //should have paid 125!
-        assertEquals(firm.getCash(), 1000 - 125);
+        assertEquals(firm.hasHowMany(UndifferentiatedGoodType.MONEY), 1000 - 125);
 
 
 
@@ -336,19 +333,19 @@ public class PurchasesDepartmentTest {
         Market.TESTING_MODE = true;
 
 
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         Firm firm = new Firm(model);
-        firm.earn(1000);
-        final Market market = new OrderBookMarket(GoodType.GENERIC);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
+        final Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
         market.start(model);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(2000,firm,market,
                 FixedInventoryControl.class,null,null,null).getDepartment();
 
-        firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
+        firm.registerPurchasesDepartment(dept, DifferentiatedGoodType.CAPITAL);
         BidPricingStrategy pricingStrategy = mock(BidPricingStrategy.class);//i am going to force the dept to offer maxPrice = 150
-        when(pricingStrategy.maxPrice(any(GoodType.class))).thenReturn(150l);
+        when(pricingStrategy.maxPrice(any(GoodType.class))).thenReturn(150);
         dept.setPricingStrategy(pricingStrategy);
 
 
@@ -356,20 +353,20 @@ public class PurchasesDepartmentTest {
         {
             final DummySeller seller = new DummySeller(model,75 * (i)){
                 @Override
-                public void reactToFilledAskedQuote(Good g, long price,EconomicAgent agent) {
+                public void reactToFilledAskedQuote(Quote quoteFilled, Good g, int price, EconomicAgent agent) {
                     market.deregisterSeller(this);
 
                 }
             };
 
             market.registerSeller(seller);
-            Good good = new Good(GoodType.GENERIC,seller,0l);
+            Good good =Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,seller,0);
             seller.receive(good,null);
             market.submitSellQuote(seller,seller.saleQuote,good);
 
         }
 
-        assertEquals(firm.hasHowMany(GoodType.GENERIC), 0);
+        assertEquals(firm.hasHowMany(DifferentiatedGoodType.CAPITAL), 0);
 
 
         //now cascade!
@@ -378,7 +375,7 @@ public class PurchasesDepartmentTest {
         model.getPhaseScheduler().step(model);
 
 
-        assertEquals(firm.hasHowMany(GoodType.GENERIC), 3);
+        assertEquals(firm.hasHowMany(DifferentiatedGoodType.CAPITAL), 3);
         assertEquals(market.getBestSellPrice(), 75 * 3);
         assertEquals(market.getBestBuyPrice(), 150);
 
@@ -389,10 +386,10 @@ public class PurchasesDepartmentTest {
     @Test
     public void testGetGoodType() throws Exception {
 
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         Firm firm = new Firm(model);
-        firm.earn(1000);
-        final Market market = new OrderBookMarket(GoodType.GENERIC);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
+        final Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
@@ -411,10 +408,10 @@ public class PurchasesDepartmentTest {
 
     @Test
     public void testGetFirm() throws Exception {
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         Firm firm = new Firm(model);
-        firm.earn(1000);
-        final Market market = new OrderBookMarket(GoodType.GENERIC);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
+        final Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
@@ -433,10 +430,10 @@ public class PurchasesDepartmentTest {
     @Test
     public void testSetInventoryControl() throws Exception {
         //make sure you set the right thing and kill off listeners
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         Firm firm = new Firm(model);
-        firm.earn(1000);
-        final Market market = new OrderBookMarket(GoodType.GENERIC);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
+        final Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
@@ -479,10 +476,10 @@ public class PurchasesDepartmentTest {
     public void testSetPricingStrategy() throws Exception {
 
         //make sure you set the right thing and kill off listeners
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         Firm firm = new Firm(model);
-        firm.earn(1000);
-        final Market market = new OrderBookMarket(GoodType.GENERIC);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
+        final Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
@@ -514,10 +511,10 @@ public class PurchasesDepartmentTest {
     public void testSetOpponentSearch() throws Exception {
 
         //make sure you set the right thing and kill off listeners
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         Firm firm = new Firm(model);
-        firm.earn(1000);
-        final Market market = new OrderBookMarket(GoodType.GENERIC);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
+        final Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
@@ -549,10 +546,10 @@ public class PurchasesDepartmentTest {
     {
 
         //make sure you set the right thing and kill off listeners
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         Firm firm = new Firm(model);
-        firm.earn(1000);
-        final Market market = new OrderBookMarket(GoodType.GENERIC);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
+        final Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
@@ -583,10 +580,10 @@ public class PurchasesDepartmentTest {
     public void testWeekEnd() throws Exception {
 
         //make sure you set the right thing and kill off listeners
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         Firm firm = new Firm(model);
-        firm.earn(1000);
-        final Market market = new OrderBookMarket(GoodType.GENERIC);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
+        final Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
@@ -595,15 +592,15 @@ public class PurchasesDepartmentTest {
         //make sure it's assigned correctly
         Field field = PurchasesDepartment.class.getDeclaredField("budgetSpent");
         field.setAccessible(true);
-        field.setLong(dept,100);
+        field.set(dept,100);
         assertTrue(dept.getAvailableBudget() == 100);
         dept.weekEnd(1);
         //should adjust the budget
         assertTrue(dept.getAvailableBudget() == 100);
-        assertEquals(field.get(dept), 0l);
+        assertEquals(field.get(dept), 0);
         field = PurchasesDepartment.class.getDeclaredField("budgetGiven");
         field.setAccessible(true);
-        assertEquals(100l, field.get(dept));
+        assertEquals(100, field.get(dept));
     }
 
     @Test
@@ -613,10 +610,10 @@ public class PurchasesDepartmentTest {
         Market.TESTING_MODE = true;
 
 
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         Firm firm = new Firm(model);
-        firm.earn(1000);
-        final Market market = new OrderBookMarket(GoodType.GENERIC);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
+        final Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
         market.start(model);
 
 
@@ -624,22 +621,22 @@ public class PurchasesDepartmentTest {
                 FixedInventoryControl.class,null,null,null).getDepartment();
         dept.setPredictor(new PricingPurchasesPredictor());
 
-        firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
+        firm.registerPurchasesDepartment(dept, DifferentiatedGoodType.CAPITAL);
         BidPricingStrategy pricingStrategy = mock(BidPricingStrategy.class);//i am going to force the dept to offer maxPrice = 150
-        when(pricingStrategy.maxPrice(any(GoodType.class))).thenReturn(150l);
+        when(pricingStrategy.maxPrice(any(GoodType.class))).thenReturn(150);
         dept.setPricingStrategy(pricingStrategy);
 
         dept.start(model);
         model.start();
         model.schedule.step(model);
 
-        assertEquals(market.getBestBuyPrice(), 150l);
-        when(pricingStrategy.maxPrice(any(GoodType.class))).thenReturn(75l);
-        assertEquals(market.getBestBuyPrice(), 150l);
+        assertEquals(market.getBestBuyPrice(), 150);
+        when(pricingStrategy.maxPrice(any(GoodType.class))).thenReturn(75);
+        assertEquals(market.getBestBuyPrice(), 150);
         dept.updateOfferPrices();
         model.getPhaseScheduler().step(model);
 
-        assertEquals(market.getBestBuyPrice(), 75l);
+        assertEquals(market.getBestBuyPrice(), 75);
 
 
 
@@ -654,34 +651,34 @@ public class PurchasesDepartmentTest {
         Market.TESTING_MODE = true;
 
 
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         Firm firm = new Firm(model);
-        firm.earn(1000);
-        Market market = new OrderBookBlindMarket(GoodType.GENERIC);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
+        Market market = new OrderBookBlindMarket(DifferentiatedGoodType.CAPITAL);
         market.start(model);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(200,firm,market,
                 FixedInventoryControl.class,null,null,null).getDepartment();
 
-        firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
+        firm.registerPurchasesDepartment(dept, DifferentiatedGoodType.CAPITAL);
         BidPricingStrategy pricingStrategy = mock(BidPricingStrategy.class);//i am going to force the dept to offer maxPrice = 150
-        when(pricingStrategy.maxPrice(any(GoodType.class))).thenReturn(150l);
+        when(pricingStrategy.maxPrice(any(GoodType.class))).thenReturn(150);
         dept.setPricingStrategy(pricingStrategy);
 
 
 
-        DummySeller seller1 = new DummySeller(model,100l*(1),market);
+        DummySeller seller1 = new DummySeller(model,100*(1),market);
         market.registerSeller(seller1);
-        Good good = new Good(GoodType.GENERIC,firm,10l);
+        Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,firm,10);
         seller1.receive(good,null );
         assert seller1.has(good);
         assert seller1.hasAny(good.getType());
-        //     market.submitSellQuote(seller1,5l,good);   //even though it places a quote for 0, it will answer "100" when the shopper asks him
+        //     market.submitSellQuote(seller1,5,good);   //even though it places a quote for 0, it will answer "100" when the shopper asks him
 
-        DummySeller seller2 = new DummySeller(model,100l*(2));
+        DummySeller seller2 = new DummySeller(model,100*(2));
         market.registerSeller(seller2);
-        Good good2 = new Good(GoodType.GENERIC,firm,10l);
+        Good good2 =Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,firm,10);
         seller2.receive(good2,null );
 
 
@@ -689,16 +686,15 @@ public class PurchasesDepartmentTest {
         dept.shop(); //shop should find and trade with the seller1
         model.getPhaseScheduler().step(model);
 
-        assertTrue(firm.has(good));
-        assertTrue(!firm.has(good2));
+        assertEquals(firm.hasHowMany(DifferentiatedGoodType.CAPITAL),1);
         //should have paid 125!
-        assertEquals(firm.getCash(), 1000 - 125);
+        assertEquals(firm.hasHowMany(UndifferentiatedGoodType.MONEY), 1000 - 125);
 
 
 
         Market.TESTING_MODE = false;
 
-        assertEquals(dept.getAvailableBudget(), 75l);
+        assertEquals(dept.getAvailableBudget(), 75);
 
 
 
@@ -716,19 +712,19 @@ public class PurchasesDepartmentTest {
         Market.TESTING_MODE = true;
 
 
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         Firm firm = new Firm(model);
-        firm.earn(1000);
-        final Market market = new OrderBookMarket(GoodType.GENERIC);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
+        final Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
         market.start(model);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(2000,firm,market,
                 FixedInventoryControl.class,null,null,null).getDepartment();
 
-        firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
+        firm.registerPurchasesDepartment(dept, DifferentiatedGoodType.CAPITAL);
         BidPricingStrategy pricingStrategy = mock(BidPricingStrategy.class);//i am going to force the dept to offer maxPrice = 150
-        when(pricingStrategy.maxPrice(any(GoodType.class))).thenReturn(150l);
+        when(pricingStrategy.maxPrice(any(GoodType.class))).thenReturn(150);
         dept.setPricingStrategy(new LookAtTheMarketBidPricingDecorator(pricingStrategy,market));   //addSalesDepartmentListener it as new strategy
 
 
@@ -736,20 +732,20 @@ public class PurchasesDepartmentTest {
         {
             final DummySeller seller = new DummySeller(model,75 * (i)){
                 @Override
-                public void reactToFilledAskedQuote(Good g, long price, EconomicAgent agent) {
+                public void reactToFilledAskedQuote(Quote quoteFilled, Good g, int price, EconomicAgent agent) {
                     market.deregisterSeller(this);
 
                 }
             };
 
             market.registerSeller(seller);
-            Good good = new Good(GoodType.GENERIC,seller,0l);
+            Good good =Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,seller,0);
             seller.receive(good,null);
             market.submitSellQuote(seller,seller.saleQuote,good);
 
         }
 
-        assertEquals(firm.hasHowMany(GoodType.GENERIC), 0);
+        assertEquals(firm.hasHowMany(DifferentiatedGoodType.CAPITAL), 0);
 
 
         //now cascade!
@@ -757,7 +753,7 @@ public class PurchasesDepartmentTest {
         model.getPhaseScheduler().step(model);
 
 
-        assertEquals(firm.hasHowMany(GoodType.GENERIC), 3);
+        assertEquals(firm.hasHowMany(DifferentiatedGoodType.CAPITAL), 3);
         assertEquals(market.getBestSellPrice(), 75 * 3);
         assertEquals(market.getBestBuyPrice(), 150);
 
@@ -774,16 +770,16 @@ public class PurchasesDepartmentTest {
         Market.TESTING_MODE = true;
 
 
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         Firm firm = new Firm(model);
-        firm.earn(1000);
-        final Market market = new OrderBookMarket(GoodType.GENERIC);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
+        final Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(2000,firm,market,
                 (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
 
-        firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
+        firm.registerPurchasesDepartment(dept, DifferentiatedGoodType.CAPITAL);
         InventoryControl control = mock(InventoryControl.class);//i am going to force the dept to offer maxPrice = 150
         //make sure it asks inventory control
         when(control.rateCurrentLevel()).thenReturn(Level.DANGER);
@@ -803,10 +799,10 @@ public class PurchasesDepartmentTest {
         Market.TESTING_MODE = true;
 
 
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         Firm firm = new Firm(model);
-        firm.earn(1000);
-        final Market market = new OrderBookMarket(GoodType.GENERIC);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
+        final Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(2000,firm,market,
@@ -825,16 +821,16 @@ public class PurchasesDepartmentTest {
         Market.TESTING_MODE = true;
 
 
-        MacroII model = new MacroII(1l);
+        MacroII model = new MacroII(1);
         Firm firm = new Firm(model);
-        firm.earn(1000);
-        final Market market = new OrderBookMarket(GoodType.GENERIC);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
+        final Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
 
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(2000,firm,market,
                 (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
 
-        firm.registerPurchasesDepartment(dept,GoodType.GENERIC);
+        firm.registerPurchasesDepartment(dept, DifferentiatedGoodType.CAPITAL);
         InventoryControl control = mock(InventoryControl.class);
         //make sure it asks inventory control
         when(control.canBuy()).thenReturn(true);
@@ -850,8 +846,8 @@ public class PurchasesDepartmentTest {
 
 
         Firm firm = mock(Firm.class);
-        MacroII model = new MacroII(1l);
-        Market market = new OrderBookMarket(GoodType.GENERIC);
+        MacroII model = new MacroII(1);
+        Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
         when(firm.getRandom()).thenReturn(new MersenneTwisterFast());
         when(firm.getModel()).thenReturn(model);
         final Set<InventoryListener> inventoryListenersRegistered = new HashSet<>();

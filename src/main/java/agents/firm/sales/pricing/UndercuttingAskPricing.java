@@ -74,10 +74,10 @@ public class UndercuttingAskPricing extends BaseAskPricingStrategy implements St
      * @return the price given to that good
      */
     @Override
-    public long price(Good g) {
+    public int price(Good g) {
         if(bestOpponentPriceFound == -1){
             //if we didn't find a single opponent, just return the cost
-            return (long) (g.getLastValidPrice() * (1f + sales.getFirm().getModel().getCluelessDefaultMarkup()));
+            return (int) (g.getLastValidPrice() * (1f + sales.getFirm().getModel().getCluelessDefaultMarkup()));
         }
         else{
 
@@ -86,7 +86,7 @@ public class UndercuttingAskPricing extends BaseAskPricingStrategy implements St
             if(undercutPrice == bestOpponentPriceFound && undercutPrice > 1)
                 undercutPrice--;
 
-            return Math.max(undercutPrice,g.getLastValidPrice()); //return the undercut price or the cost, whichever is higher
+            return (int) Math.max(undercutPrice,g.getLastValidPrice()); //return the undercut price or the cost, whichever is higher
         }
 
 

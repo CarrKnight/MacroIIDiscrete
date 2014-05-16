@@ -35,15 +35,15 @@ public class SimpleHiringTradePolicy implements TradePolicy {
 
 
 
-    public PurchaseResult trade( Firm buyer, Person seller, Good good, long price,
-                                 Quote buyerQuote)
+    public PurchaseResult trade(Firm buyer, Person seller, Good good, int price,
+                                Quote buyerQuote, Market market)
     {
 
 
         assert seller.getEmployer() == null;
 
-        if(!buyer.hasEnoughCash(price)) //check that the buyer has money!
-            return PurchaseResult.BUYER_HAS_NO_MONEY;
+        if(buyer.hasHowMany(market.getMoney()) < price) //check that the buyer has money!
+            throw new RuntimeException("Hirer is out of a job!");
 
         seller.hired(buyer,price);
         buyer.hire(seller,buyerQuote.getOriginator());
@@ -53,7 +53,7 @@ public class SimpleHiringTradePolicy implements TradePolicy {
     }
 
     @Override
-    public PurchaseResult trade( EconomicAgent buyer,  EconomicAgent seller,  Good good, long price,
+    public PurchaseResult trade( EconomicAgent buyer,  EconomicAgent seller,  Good good, int price,
                                  Quote buyerQuote, Quote sellerQuote, Market market) {
         Preconditions.checkArgument(market.getGoodType().isLabor());
         //make sure arguments make sense
@@ -64,7 +64,7 @@ public class SimpleHiringTradePolicy implements TradePolicy {
 
         assert good.getType().isLabor();
 
-        return trade((Firm) buyer, (Person) seller, good,price,buyerQuote);
+        return trade((Firm) buyer, (Person) seller, good,price,buyerQuote, market);
 
     }
 }

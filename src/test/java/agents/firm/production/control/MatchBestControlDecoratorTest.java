@@ -9,10 +9,9 @@ package agents.firm.production.control;
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
-import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.decorators.MatchBestControlDecorator;
 import financial.market.Market;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -39,7 +38,7 @@ public class MatchBestControlDecoratorTest {
     @Test
     public void simpleTest(){
         Firm firm = mock(Firm.class);
-        Market market = mock(Market.class);  when(market.getGoodType()).thenReturn(GoodType.LABOR);
+        Market market = mock(Market.class);  when(market.getGoodType()).thenReturn(UndifferentiatedGoodType.LABOR);
         when(market.isBestBuyPriceVisible()).thenReturn(true);
         HumanResources hr = mock(HumanResources.class); when(hr.getMarket()).thenReturn(market);
         Plant plant = mock(Plant.class);
@@ -52,14 +51,14 @@ public class MatchBestControlDecoratorTest {
         MatchBestControlDecorator decorator = new MatchBestControlDecorator(control);
 
         try {
-            when(market.getBestBuyPrice()).thenReturn(100l);
-            decorator.tradeEvent(null,null,null,0l,null,null);
+            when(market.getBestBuyPrice()).thenReturn(100);
+            decorator.tradeEvent(null,null,null,0,null,null);
         } catch (IllegalAccessException e) {
             Assert.fail();
         }
 
 
-        for(long i=0; i < 100; i++)
+        for(int i=0; i < 100; i++)
         {
             //notify the decorator
             decorator.setCurrentWage(i);
@@ -67,7 +66,7 @@ public class MatchBestControlDecoratorTest {
             verify(control,times((int)i+1)).setCanBuy(false);
 
         }
-        for(long i=100; i < 200; i++)
+        for(int i=100; i < 200; i++)
         {
             //notify the decorator
             decorator.setCurrentWage(i);

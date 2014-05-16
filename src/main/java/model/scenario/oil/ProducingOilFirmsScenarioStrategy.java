@@ -29,6 +29,7 @@ import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTar
 import financial.market.GeographicalMarket;
 import financial.market.Market;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.geography.Location;
 
@@ -85,7 +86,7 @@ public class ProducingOilFirmsScenarioStrategy implements OilFirmsScenarioStrate
         //initialize the firm
         final GeographicalFirm oilPump = new GeographicalFirm(model,location.getxLocation(),location.getyLocation());
         oilPump.setName(name);
-        oilPump.earn(100000000l);
+        oilPump.receiveMany(UndifferentiatedGoodType.MONEY,100000000);
 
         //create the sales department
         buildSalesDepartment(market, oilPump);
@@ -118,7 +119,7 @@ public class ProducingOilFirmsScenarioStrategy implements OilFirmsScenarioStrate
     protected HumanResources buildHumanResources(GeographicalFirm oilPump, Plant plant, Market laborMarket) {
         HumanResources hr;
         final FactoryProducedHumanResources<? extends PlantControl,BuyerSearchAlgorithm,SellerSearchAlgorithm> factoryMadeHR =
-                HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE, oilPump,
+                HumanResources.getHumanResourcesIntegrated(Integer.MAX_VALUE, oilPump,
                         laborMarket, plant, plantControl, null, null);
         hr = factoryMadeHR.getDepartment();
         hr.setPredictor(hrPredictorGenerator.apply(hr));

@@ -6,7 +6,7 @@ import agents.firm.Firm;
 import au.com.bytecode.opencsv.CSVWriter;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 import model.MacroII;
@@ -42,8 +42,8 @@ public class ProducersStatCollectorTest
         //create the model and market
         MacroII macroII = mock(MacroII.class);
         Market market = mock(OrderBookMarket.class);
-        when(macroII.getMarket(GoodType.GENERIC)).thenReturn(market);
-        when(market.getGoodType()).thenReturn(GoodType.GENERIC);
+        when(macroII.getMarket(UndifferentiatedGoodType.GENERIC)).thenReturn(market);
+        when(market.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
 
         //now create 3 sellers, 2 firms and 1 person.
         ObservableSet<EconomicAgent> sellers = FXCollections.observableSet(new LinkedHashSet<>()); //make it linked so it keeps the order
@@ -55,23 +55,23 @@ public class ProducersStatCollectorTest
         //create the stat collector
         CSVWriter prices = mock(CSVWriter.class);
         CSVWriter quantities = mock(CSVWriter.class);
-        ProducersStatCollector collector = new ProducersStatCollector(macroII,GoodType.GENERIC,
+        ProducersStatCollector collector = new ProducersStatCollector(macroII, UndifferentiatedGoodType.GENERIC,
                 prices,quantities);
         collector.start();
         //it should have scheduled itself already
         verify(macroII).scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING,collector);
 
         //DAY 1: (write header and first observation)
-        when(firm1.hypotheticalSellPrice(GoodType.GENERIC)).thenReturn(10l);
-        when(firm2.hypotheticalSellPrice(GoodType.GENERIC)).thenReturn(20l);
+        when(firm1.hypotheticalSellPrice(UndifferentiatedGoodType.GENERIC)).thenReturn(10);
+        when(firm2.hypotheticalSellPrice(UndifferentiatedGoodType.GENERIC)).thenReturn(20);
         collector.step(macroII);
         verify(prices).writeNext(new String[]{"uno","due"});   //write header
         verify(prices).writeNext(new String[]{"10","20"}); //write the prices (notice that the person has been ignored!)
 
         //DAY 2: change the firm list, shouldn't matter
         sellers.add(mock(Firm.class));
-        when(firm1.hypotheticalSellPrice(GoodType.GENERIC)).thenReturn(30l);
-        when(firm2.hypotheticalSellPrice(GoodType.GENERIC)).thenReturn(20l);
+        when(firm1.hypotheticalSellPrice(UndifferentiatedGoodType.GENERIC)).thenReturn(30);
+        when(firm2.hypotheticalSellPrice(UndifferentiatedGoodType.GENERIC)).thenReturn(20);
         collector.step(macroII);
         verify(prices).writeNext(new String[]{"30","20"}); //write the prices (notice that the person has been ignored!)
 

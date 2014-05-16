@@ -44,14 +44,14 @@ public class LookAtTheMarketBidPricingDecorator extends BidPricingDecorator {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(GoodType type) {
-        long askPrice = Long.MAX_VALUE;
+    public int maxPrice(GoodType type) {
+        int askPrice = Integer.MAX_VALUE;
         try{
             if(market.isBestSalePriceVisible())
             {
                 askPrice = market.getBestSellPrice() ;
                 if(askPrice<0) //don't bother if there is none
-                    askPrice = Long.MAX_VALUE;
+                    askPrice = Integer.MAX_VALUE;
             }
 
         } catch (IllegalAccessException e) {
@@ -68,14 +68,14 @@ public class LookAtTheMarketBidPricingDecorator extends BidPricingDecorator {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(Good good) {
-        long askPrice = Long.MAX_VALUE;
+    public int maxPrice(Good good) {
+        int askPrice = Integer.MAX_VALUE;
         try{
             if(market.isBestSalePriceVisible())
             {
                 askPrice = market.getBestSellPrice() ;
                 if(askPrice<0) //don't bother if there is none
-                    askPrice = Long.MAX_VALUE;
+                    askPrice = Integer.MAX_VALUE;
             }
 
         } catch (IllegalAccessException e) {

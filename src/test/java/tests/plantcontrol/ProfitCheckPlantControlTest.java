@@ -20,7 +20,8 @@ import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookBlindMarket;
 import financial.market.OrderBookMarket;
-import goods.GoodType;
+import goods.DifferentiatedGoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.NonDrawable;
 import org.junit.Test;
@@ -69,10 +70,10 @@ public class ProfitCheckPlantControlTest {
 
         System.out.println("--------------------------------------------------------------------------------------");
 
-        MacroII model = new MacroII(10l);
-        Firm firm = new Firm(model); firm.earn(1000000000000l);
-        Plant p = new Plant(Blueprint.simpleBlueprint(GoodType.GENERIC, 1, GoodType.GENERIC, 1),firm);
-        p.setPlantMachinery(new IRSExponentialMachinery(GoodType.CAPITAL,firm,10,p,1f));
+        MacroII model = new MacroII(10);
+        Firm firm = new Firm(model); firm.receiveMany(UndifferentiatedGoodType.MONEY,1000000000);
+        Plant p = new Plant(Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC, 1, UndifferentiatedGoodType.GENERIC, 1),firm);
+        p.setPlantMachinery(new IRSExponentialMachinery(DifferentiatedGoodType.CAPITAL,firm,10,p,1f));
         p.setCostStrategy(new InputCostStrategy(p));
 
         firm.addPlant(p);
@@ -85,15 +86,15 @@ public class ProfitCheckPlantControlTest {
         //make this always profitable
         SalesDepartment dept = mock(SalesDepartmentAllAtOnce.class);
         dept.setPredictorStrategy(new PricingSalesPredictor());
-        when(dept.getLastClosingCost()).thenReturn(1l);
-        when(dept.getLastClosingPrice()).thenReturn(2l);
+        when(dept.getLastClosingCost()).thenReturn(1);
+        when(dept.getLastClosingPrice()).thenReturn(2);
         //should be profitable
-        firm.registerSaleDepartment(dept,GoodType.GENERIC);
+        firm.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
 
 
 
 
-        OrderBookMarket market = new OrderBookBlindMarket(GoodType.LABOR);
+        OrderBookMarket market = new OrderBookBlindMarket(UndifferentiatedGoodType.LABOR);
         market.setOrderHandler(new ImmediateOrderHandler(),model);
         assertEquals(p.maximumWorkersPossible(), 100);
         HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000,firm,market,
@@ -143,14 +144,14 @@ public class ProfitCheckPlantControlTest {
             Set<Steppable> toStep = new HashSet<>(steppableList);
             steppableList.clear();
             int oldTarget = control.getTarget();
-            long oldWage = humanResources.maxPrice(GoodType.LABOR,market);
+            int oldWage = humanResources.maxPrice(UndifferentiatedGoodType.LABOR,market);
 
 
             //notice that this is un-natural as profitStep occurs only once every 3 pid steps in reality
             model.getPhaseScheduler().step(model);
 
 
-            long newWage = humanResources.maxPrice(GoodType.LABOR,market);
+            int newWage = humanResources.maxPrice(UndifferentiatedGoodType.LABOR,market);
             System.out.println("old wage:" + oldWage +" , new wage: " + newWage + " , worker size: " + p.getNumberOfWorkers() + ", old target: " + oldTarget + ", new target: " + control.getTarget());
 
 
@@ -182,10 +183,10 @@ public class ProfitCheckPlantControlTest {
     public void hiringTestFromAbove() throws NoSuchFieldException, IllegalAccessException {
         Market.TESTING_MODE = true;
 
-        MacroII model = new MacroII(10l);
-        Firm firm = new Firm(model); firm.earn(1000000000000l);
-        Plant p = new Plant(Blueprint.simpleBlueprint(GoodType.GENERIC, 1, GoodType.GENERIC, 1),firm);
-        p.setPlantMachinery(new IRSExponentialMachinery(GoodType.CAPITAL,firm,10,p,1f));
+        MacroII model = new MacroII(10);
+        Firm firm = new Firm(model); firm.receiveMany(UndifferentiatedGoodType.MONEY,1000000000);
+        Plant p = new Plant(Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC, 1, UndifferentiatedGoodType.GENERIC, 1),firm);
+        p.setPlantMachinery(new IRSExponentialMachinery(DifferentiatedGoodType.CAPITAL,firm,10,p,1f));
         p.setCostStrategy(new InputCostStrategy(p));
 
         firm.addPlant(p);
@@ -199,7 +200,7 @@ public class ProfitCheckPlantControlTest {
         //make this always profitable
         SalesDepartment dept = mock(SalesDepartmentAllAtOnce.class);
         //should be profitable
-        firm.registerSaleDepartment(dept, GoodType.GENERIC);
+        firm.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
 
 
         System.out.println("--------------------------------------------------------------------------------------");
@@ -210,7 +211,7 @@ public class ProfitCheckPlantControlTest {
 
 
 
-        OrderBookMarket market = new OrderBookBlindMarket(GoodType.LABOR);
+        OrderBookMarket market = new OrderBookBlindMarket(UndifferentiatedGoodType.LABOR);
         market.setOrderHandler(new ImmediateOrderHandler(),model);
         assertEquals(p.maximumWorkersPossible(), 100);
         HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000,
@@ -272,14 +273,14 @@ public class ProfitCheckPlantControlTest {
             Set<Steppable> toStep = new HashSet<>(steppableList);
             steppableList.clear();
             int oldTarget = control.getTarget();
-            long oldWage = humanResources.maxPrice(GoodType.LABOR,market);
+            int oldWage = humanResources.maxPrice(UndifferentiatedGoodType.LABOR,market);
 
 
             //notice that this is un-natural as profitStep occurs only once every 3 pid steps in reality
             model.getPhaseScheduler().step(model);
 
 
-            long newWage = humanResources.maxPrice(GoodType.LABOR,market);
+            int newWage = humanResources.maxPrice(UndifferentiatedGoodType.LABOR,market);
             System.out.println("old wage:" + oldWage +" , new wage: " + newWage + " , worker size: " + p.getNumberOfWorkers() + ", old target: " + oldTarget + ", new target: " +
                     control.getTarget());
 

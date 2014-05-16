@@ -24,7 +24,7 @@ public class Quote {
 
     final private EconomicAgent agent;
 
-    final private long priceQuoted;
+    final private int priceQuoted;
 
     /**
      * Bid quotes want a general kind of good, this is it.
@@ -45,20 +45,20 @@ public class Quote {
     private Department originator = null;
 
 
-    private Quote(EconomicAgent agent, long priceQuoted) {
+    private Quote(EconomicAgent agent, int priceQuoted) {
         this.agent = agent;
         this.priceQuoted = priceQuoted;
     }
 
 
-    public static Quote newSellerQuote( EconomicAgent seller, long priceQuoted, Good good){
+    public static Quote newSellerQuote( EconomicAgent seller, int priceQuoted, Good good){
         Quote ask = new Quote(seller,priceQuoted);
         ask.good = good;
         ask.type = good.getType();
         return ask;
     }
 
-    public static Quote newBuyerQuote(EconomicAgent buyer, long priceQuoted, GoodType type){
+    public static Quote newBuyerQuote(EconomicAgent buyer, int priceQuoted, GoodType type){
         Quote bid = new Quote(buyer,priceQuoted);
         bid.type = type;
         return bid;
@@ -91,7 +91,7 @@ public class Quote {
         return agent;
     }
 
-    public long getPriceQuoted() {
+    public int getPriceQuoted() {
         return priceQuoted;
     }
 

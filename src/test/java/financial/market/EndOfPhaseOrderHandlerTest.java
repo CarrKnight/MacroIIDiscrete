@@ -6,7 +6,7 @@
 
 package financial.market;
 
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.scenario.Scenario;
 import model.utilities.dummies.Customer;
@@ -39,13 +39,13 @@ public class EndOfPhaseOrderHandlerTest {
     @Test
     public void marketClearsCorrectly() throws IllegalAccessException {
 
-        MacroII model = new MacroII(10l);
+        MacroII model = new MacroII(10);
         model.setScenario(new Scenario(model) {
             @Override
             public void start() {
-                OrderBookMarket market= new OrderBookMarket(GoodType.GENERIC);
+                OrderBookMarket market= new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
                 market.setOrderHandler(new EndOfPhaseOrderHandler(),model);
-                getMarkets().put(GoodType.GENERIC,market);
+                getMarkets().put(UndifferentiatedGoodType.GENERIC,market);
 
                 //20 buyers, from 100 to 120
                 for(int i=0; i < 20; i++)
@@ -65,9 +65,9 @@ public class EndOfPhaseOrderHandlerTest {
         for(int i=0; i< 100; i++)
         {
             model.schedule.step(model);
-            Assert.assertEquals(10, model.getMarket(GoodType.GENERIC).getTodayVolume());
+            Assert.assertEquals(10, model.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume());
             //this should always be true!
-            Assert.assertEquals(109,model.getMarket(GoodType.GENERIC).getBestBuyPrice());
+            Assert.assertEquals(109,model.getMarket(UndifferentiatedGoodType.GENERIC).getBestBuyPrice());
         }
 
 

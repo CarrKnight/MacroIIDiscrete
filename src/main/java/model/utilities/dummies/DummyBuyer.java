@@ -24,13 +24,13 @@ public class DummyBuyer extends Firm {
      * This is just so that I can have buyers return a quote without having to build the goods and all that
      */
 
-    public long quotedPrice;
+    public int quotedPrice;
 
     public boolean boughtToday = false;
 
     final private Market market;
 
-    public DummyBuyer(MacroII model, long price,Market market) {
+    public DummyBuyer(MacroII model, int price,Market market) {
         super(model,false);
         quotedPrice = price;
         this.market = market;
@@ -81,11 +81,11 @@ public class DummyBuyer extends Firm {
      * @return the maximum price willing to pay or -1 if no price is good.
      */
     @Override
-    public long askedForABuyOffer(GoodType t) {
+    public int askedForABuyOffer(GoodType t) {
         return quotedPrice;
     }
 
-    public void setQuotedPrice(long quotedPrice) {
+    public void setQuotedPrice(int quotedPrice) {
         this.quotedPrice = quotedPrice;
     }
 
@@ -96,7 +96,7 @@ public class DummyBuyer extends Firm {
      * @return the maximum price willing to pay or -1 if no price is good.
      */
     @Override
-    public long maximumOffer(Good g) {
+    public int maximumOffer(Good g) {
         return quotedPrice;
     }
 
@@ -106,12 +106,12 @@ public class DummyBuyer extends Firm {
     }
 
     @Override
-    public void reactToFilledAskedQuote(Good g, long price, EconomicAgent buyer) {
+    public void reactToFilledAskedQuote(Quote quoteFilled, Good g, int price, EconomicAgent buyer) {
         //don't react
     }
 
     @Override
-    public void reactToFilledBidQuote(final Good g, long price, EconomicAgent seller) {
+    public void reactToFilledBidQuote(Quote quoteFilled, final Good g, int price, EconomicAgent seller) {
         boughtToday = true;
         getModel().scheduleASAP(new Steppable() {
             @Override
@@ -133,7 +133,7 @@ public class DummyBuyer extends Firm {
      * Dummy buyers have a fixed price with which they pretend to buy
      * @return
      */
-    public long getFixedPrice() {
+    public int getFixedPrice() {
         return quotedPrice;
     }
 

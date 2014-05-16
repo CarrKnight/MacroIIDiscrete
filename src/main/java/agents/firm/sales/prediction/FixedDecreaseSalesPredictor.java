@@ -54,7 +54,7 @@ public class FixedDecreaseSalesPredictor extends BaseSalesPredictor {
      * Never returns less than 0
      */
     @Override
-    public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
+    public int predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
         Preconditions.checkArgument(increaseStep >= 0);
 
         long beforeImpactPrice = delegate.predictSalePriceAfterIncreasingProduction(dept, expectedProductionCost, increaseStep);
@@ -70,7 +70,7 @@ public class FixedDecreaseSalesPredictor extends BaseSalesPredictor {
      * Never returns less than 0
      */
     @Override
-    public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
+    public int predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
         Preconditions.checkArgument(decreaseStep >= 0);
 
         long beforeImpactPrice = delegate.predictSalePriceAfterDecreasingProduction(dept, expectedProductionCost, decreaseStep);
@@ -116,7 +116,7 @@ public class FixedDecreaseSalesPredictor extends BaseSalesPredictor {
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+    public int predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         return delegate.predictSalePriceWhenNotChangingProduction(dept);
     }
 }

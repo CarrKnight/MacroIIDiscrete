@@ -41,6 +41,6 @@ public interface TradePolicy {
      * @param market in which the trade is recorded/happening
      * @return a PurchaseResult describing the results
      */
-    public PurchaseResult trade( EconomicAgent buyer, EconomicAgent seller, Good good, long price,
+    public PurchaseResult trade( EconomicAgent buyer, EconomicAgent seller, Good good, int price,
                                  Quote buyerQuote, Quote sellerQuote, Market market);
 }

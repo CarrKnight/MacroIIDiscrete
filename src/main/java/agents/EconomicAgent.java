@@ -10,12 +10,9 @@ package agents;
 import agents.firm.utilities.DailyProductionAndConsumptionCounter;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
-import financial.Bankruptcy;
-import financial.market.Market;
 import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
-import goods.Good;
-import goods.GoodType;
+import goods.*;
 import model.MacroII;
 import model.utilities.logs.*;
 import sim.display.GUIState;
@@ -23,7 +20,6 @@ import sim.engine.SimState;
 import sim.portrayal.Inspector;
 import sim.portrayal.SimpleInspector;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -41,8 +37,6 @@ import java.util.Set;
 public abstract class EconomicAgent implements Agent, HasInventory, LogNode
 {
 
-
-    private long cash = 0;
 
     /**
      * This boolean represents whether or not the agent is still scheduled. Might change to stoppable later.
@@ -85,7 +79,6 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
 
     protected EconomicAgent( final MacroII model,final long cash) {
         this.model = model;
-        this.cash = cash;
         this.counter = new DailyProductionAndConsumptionCounter();
 
     }
@@ -102,41 +95,6 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
 
     }
 
-    public void earn(long money)
-    {
-        Preconditions.checkArgument(money >=0);
-
-        long oldcash = cash;
-        cash += money;
-        //   MacroII.logger.log(Level.FINEST, this + " just earned: " + money +", now it has " + getCash() );
-
-        assert oldcash <= cash;
-
-
-    }
-
-
-    /**
-     * Removes cash from this agent and transfers it to the receiver
-     * @param money how much money paid
-     * @param receiver who should receive it? (if null just call burn money instead)
-     * @param reason the market in which the transaction occurs, can be null
-     * @throws financial.Bankruptcy if you end up with negative money. If thrown the receiver received nothing!
-     */
-    public void pay(long money, EconomicAgent receiver, Market reason) throws Bankruptcy {
-        cash -= money;  //money is gone!
-        if(cash < 0 )
-            throw new Bankruptcy(this);
-
-        receiver.earn(money); //give the money to the receiver
-
-
-
-        //MacroII.logger.log(Level.FINEST, this + " just paid: " + money + ", now it has " + getCash());
-        model.registerCashDelivery(this,receiver,money);
-
-
-    }
 
 
 
@@ -144,54 +102,13 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
 
 
 
-    /**
-     * This is probably used only in testing.
-     * @param money
-     * @throws Bankruptcy
-     */
-    public void burnMoney(long money) throws Bankruptcy {
-        cash -= money;
-        if(cash < 0)
-            throw new Bankruptcy(this);
 
 
-        // MacroII.logger.log(Level.FINEST, this + " just paid: " + money + ", now it has " + getCash());
-
-
-    }
-
-
-
-
-
-    public long getCash(){
-        return cash;
-    }
-
-    /**
-     * Checks if the agent is bankrupt
-     * @return true if cash>0
-     */
-    public boolean isLiquid(){
-        return cash >=0;
-    }
-
-    public boolean hasEnoughCash(long money){
-        return cash >= money;
-    }
-
-
-    /**
-     * reset cash holdings to 0
-     */
-    public void zeroCash(){
-        cash = 0;
-    }
 
 
     @Override
     public void weekEnd(double time) {
-            counter.weekEnd();
+        counter.weekEnd();
     }
 
     @Override
@@ -234,9 +151,9 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
     }
 
 
-    abstract  public void reactToFilledAskedQuote(Good g, long price, EconomicAgent buyer);
+    abstract  public void reactToFilledAskedQuote(Quote quoteFilled, Good g, int price, EconomicAgent buyer);
 
-    abstract public void reactToFilledBidQuote(Good g, long price, EconomicAgent seller);
+    abstract public void reactToFilledBidQuote(Quote quoteFilled, Good g, int price, EconomicAgent seller);
 
 
     /**
@@ -244,14 +161,14 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
      * @param g the good the peddler/survey is pushing
      * @return the maximum price willing to pay or -1 if no price is good.
      */
-    abstract public long maximumOffer(Good g);
+    abstract public int maximumOffer(Good g);
 
     /**
      * This is called by a peddler/survey to the agent and asks what would be the maximum he's willing to pay to buy a new good.
      * @param t the type good the peddler/survey is pushing
      * @return the maximum price willing to pay or -1 if no price is good.
      */
-    abstract public long askedForABuyOffer(GoodType t);
+    abstract public int askedForABuyOffer(GoodType t);
 
     /**
      * A buyer asks the sales department for the price they are willing to sell one of their good.
@@ -266,7 +183,7 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
      */
     private Inventory getInventory() {
         if(inventory == null)
-            inventory = new Inventory(getModel(),this);
+            inventory = new Inventory(getModel());
         return inventory;
     }
 
@@ -277,8 +194,14 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
      */
     @Override
     public void receive(Good g,  HasInventory sender) {
-        counter.countNewReceive(g.getType());
-        getInventory().receive(g, sender);
+        countNewReceive(g.getType());
+        getInventory().receive(g, sender, this);
+    }
+
+    @Override
+    public void receiveMany(UndifferentiatedGoodType type, int amount) {
+        countNewReceive(type,amount);
+        getInventory().receiveMany(type, amount, this);
     }
 
     /**
@@ -289,8 +212,8 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
      * @param newPrice this is the price for which it was sold, it's not charging destination but it's going to record it in the good
      */
     @Override
-    public void deliver(GoodType g, HasInventory destination, long newPrice) {
-        getInventory().deliver(g, destination, newPrice);
+    public void deliver(GoodType g, HasInventory destination, int newPrice) {
+        getInventory().deliver(g, destination, newPrice, this);
     }
 
     /**
@@ -301,8 +224,8 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
      * @param newPrice this is the price for which it was sold, it's not charging destination but it's going to record it in the good
      */
     @Override
-    public void deliver(Good g, HasInventory destination, long newPrice) {
-        getInventory().deliver(g, destination, newPrice);
+    public void deliver(Good g, HasInventory destination, int newPrice) {
+        getInventory().deliver(g, destination, newPrice, destination);
     }
 
     /**
@@ -313,7 +236,7 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
     @Override
     public Good consume(GoodType g) {
         countNewConsumption(g);
-        return getInventory().consume(g);
+        return getInventory().consume(g, this);
     }
 
     /**
@@ -321,11 +244,13 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
      */
     @Override
     public void consumeAll() {
-        for(GoodType g : getInventory().goodTypesEncountered())
-            if(hasHowMany(g) > 0){
+        for(GoodType g : getInventory().goodTypesEncountered()) {
+            final int size = hasHowMany(g);
+            if(size > 0){
                 countNewConsumption(g,getInventory().hasHowMany(g));
             }
-        getInventory().consumeAll();
+        }
+        getInventory().consumeAll(this);
 
     }
 
@@ -359,14 +284,6 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
         return getInventory().hasHowMany(t);
     }
 
-    /**
-     * Put all the inventories in a single list and return it
-     * @return the total stuff owned
-     */
-    @Override
-    public List<Good> getTotalInventory() {
-        return getInventory().getTotalInventory();
-    }
 
     /**
      * Add a new inventory listener
@@ -386,15 +303,6 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
         return getInventory().removeListener(listener);
     }
 
-    /**
-     * peek at the topmost good of a specific type in your inventory.
-     * @return the first good found or null if there are none
-     */
-    @Override 
-    public Good peekGood( GoodType type) {
-        return getInventory().peekGood(type);
-
-    }
 
     /**
      * Called by a buyer that wants to buy directly from this agent, not going through the market.
@@ -402,7 +310,7 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
      * @param sellerQuote the quote (including the offer price) of the seller; I expect the buyer to have achieved this through asked for an offer function
      * @return a purchaseResult including whether the trade was succesful and if so the final price
      */
-    
+
     public abstract PurchaseResult shopHere( Quote buyerQuote, Quote sellerQuote);
 
 
@@ -414,7 +322,7 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
     public void fireFailedToConsumeEvent(GoodType type, int numberNeeded) {
         Preconditions.checkArgument(numberNeeded > 0);
         Preconditions.checkState(hasHowMany(type) < numberNeeded);
-        inventory.fireFailedToConsumeEvent(type, numberNeeded);
+        getInventory().fireFailedToConsumeEvent(type, numberNeeded, this);
     }
 
 
@@ -423,6 +331,8 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
         isActive=false;
         counter.turnOff();
         logNode.turnOff();
+        if(inventory != null)
+            inventory.turnOff();
         model.removeAgent(this);
     }
 
@@ -527,11 +437,24 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
      */
     @Override
     public Set<GoodType> goodTypesEncountered() {
-        return inventory.goodTypesEncountered();
+        return getInventory().goodTypesEncountered();
     }
 
+    @Override
+    public void consumeMany(UndifferentiatedGoodType type, int amount) {
+        countNewConsumption(type,amount);
+        getInventory().removeMany(type, amount, this);
+    }
 
+    @Override
+    public Good peekGood(GoodType type) {
+        return getInventory().peekGood(type);
+    }
 
+    @Override
+    public void deliverMany(UndifferentiatedGoodType type, HasInventory destination, int amount) {
+        getInventory().deliverMany(type, destination, amount, this);
+    }
 
     /***
      *       __

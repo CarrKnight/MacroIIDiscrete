@@ -36,11 +36,11 @@ public class MemorySalesPredictor extends BaseSalesPredictor {
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePriceAfterIncreasingProduction(SalesDepartment dept, long expectedProductionCost, int increaseStep) {
+    public int predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
         return memoryLookup(dept);
     }
 
-    private long memoryLookup(SalesDepartment dept) {
+    private int memoryLookup(SalesDepartment dept) {
         if(Double.isNaN(dept.getAveragedLastPrice()) || dept.getAveragedLastPrice() < 0)
         {
             return -1;
@@ -48,7 +48,7 @@ public class MemorySalesPredictor extends BaseSalesPredictor {
         //do we not have anything in memory or did we screw up so badly
         //in the past term that we didn't sell a single item?
 
-        return Math.round(dept.getAveragedLastPrice());
+        return (int) Math.round(dept.getAveragedLastPrice());
     }
 
     /**
@@ -61,7 +61,7 @@ public class MemorySalesPredictor extends BaseSalesPredictor {
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public long predictSalePriceAfterDecreasingProduction(SalesDepartment dept, long expectedProductionCost, int decreaseStep) {
+    public int predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
         return memoryLookup(dept);
 
     }
@@ -74,7 +74,7 @@ public class MemorySalesPredictor extends BaseSalesPredictor {
      * @return predicted price
      */
     @Override
-    public long predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+    public int predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         return memoryLookup(dept);
 
 

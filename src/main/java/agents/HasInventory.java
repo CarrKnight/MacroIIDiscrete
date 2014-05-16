@@ -8,8 +8,9 @@ package agents;
 
 import goods.Good;
 import goods.GoodType;
+import goods.InventoryListener;
+import goods.UndifferentiatedGoodType;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -40,6 +41,7 @@ public interface HasInventory {
     public void receive(Good g, HasInventory sender) ;
 
 
+    public void receiveMany(UndifferentiatedGoodType type, int amount);
 
     /**
      * This method sends the first good of type g available to destination.
@@ -48,7 +50,7 @@ public interface HasInventory {
      * @param destination who is going to receive it?
      * @param newPrice this is the price for which it was sold, it's not charging destination but it's going to record it in the good
      */
-    public void deliver(GoodType g, HasInventory destination,long newPrice );
+    public void deliver(GoodType g, HasInventory destination,int newPrice );
 
 
 
@@ -59,12 +61,11 @@ public interface HasInventory {
      * @param destination who is going to receive it?
      * @param newPrice this is the price for which it was sold, it's not charging destination but it's going to record it in the good
      */
-    public void deliver(Good g, HasInventory destination,long newPrice ) ;
+    public void deliver(Good g, HasInventory destination,int newPrice ) ;
 
     /**
      * This method burns inventory by 1
      * @param g what good is consumed?
-     * @return the good consumed
      */
     public Good consume(GoodType g) ;
 
@@ -96,26 +97,17 @@ public interface HasInventory {
     public int hasHowMany(GoodType t);
 
 
-
-
-    /**
-     * Put all the inventories in a single list and return it
-     * @return the total stuff owned
-     */
-    public List<Good> getTotalInventory();
-
-
-
-    /**
-     * peek at the topmost good of a specific type in your inventory.
-     * @return the first good found or null if there are none
-     */
-    public Good peekGood(GoodType type);
+    public void deliverMany(UndifferentiatedGoodType type, HasInventory destination,int amount );
 
     /**
      * A set of all goods consumed/produced/glimpsed by the agent
      */
     public Set<GoodType> goodTypesEncountered();
+
+    public void consumeMany(UndifferentiatedGoodType type, int amount);
+
+
+    public Good peekGood(GoodType type);
 
 
 }

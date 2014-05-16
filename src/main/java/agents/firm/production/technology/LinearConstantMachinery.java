@@ -36,7 +36,7 @@ public class LinearConstantMachinery extends Machinery {
 
     private float oneWorkerProductionTime = 7f;
 
-    public LinearConstantMachinery( GoodType type,  EconomicAgent producer, long costOfProduction,  Plant plant) {
+    public LinearConstantMachinery( GoodType type,  EconomicAgent producer, int costOfProduction,  Plant plant) {
         super(type, producer, costOfProduction);
         this.plant = plant;
         oneWorkerThroughput = ((float)plant.getModel().getWeekLength()) / oneWorkerProductionTime;

@@ -67,7 +67,7 @@ public class Person extends EconomicAgent {
 
     private Market laborMarket;
 
-    private long wage=-1;
+    private int wage=-1;
 
 
 
@@ -110,7 +110,7 @@ public class Person extends EconomicAgent {
 
 
     @Override
-    public void reactToFilledAskedQuote(Good g, long price, EconomicAgent buyer) {
+    public void reactToFilledAskedQuote(Quote quoteFilled, Good g, int price, EconomicAgent buyer) {
 
         if(g.getType().isLabor())
         {
@@ -131,7 +131,7 @@ public class Person extends EconomicAgent {
      * @return the maximum price willing to pay or -1 if no price is good.
      */
     @Override
-    public long maximumOffer(Good g) {
+    public int maximumOffer(Good g) {
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -142,7 +142,7 @@ public class Person extends EconomicAgent {
      * @return the maximum price willing to pay or -1 if no price is good.
      */
     @Override
-    public long askedForABuyOffer(GoodType t) {
+    public int askedForABuyOffer(GoodType t) {
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -159,18 +159,18 @@ public class Person extends EconomicAgent {
     }
 
     @Override
-    public void reactToFilledBidQuote(Good g, long price, EconomicAgent seller) {
+    public void reactToFilledBidQuote(Quote quoteFilled, Good g, int price, EconomicAgent seller) {
         throw new RuntimeException("Not programmed in yet");
     }
 
 
-    public void hired(Firm buyer, long wage){
+    public void hired(Firm buyer, int wage){
         employer = buyer;
         this.wage = wage;
     }
 
 
-    public void changeInWage(long newWage, EconomicAgent employer1){
+    public void changeInWage(int newWage, EconomicAgent employer1){
 
         wage = newWage;
         assert this.employer != null;
@@ -219,7 +219,7 @@ public class Person extends EconomicAgent {
      * Returns the wage or -1 if unemployed
      * @return -1
      */
-    public long getWage(){
+    public int getWage(){
 
         if(employer == null){
             assert wage == -1;
@@ -275,7 +275,8 @@ public class Person extends EconomicAgent {
 
                     //if we can quote: great!
                     laborMarket.submitSellQuote(Person.this,
-                            minimumDailyWagesRequired, new Good(laborMarket.getGoodType(),Person.this, minimumDailyWagesRequired));
+                            minimumDailyWagesRequired, Good.getInstanceOfUndifferentiatedGood(
+                                    laborMarket.getGoodType()));
                 }
                 else{
                     //if we can't quote we have to peddle

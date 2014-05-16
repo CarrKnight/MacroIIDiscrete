@@ -57,7 +57,7 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
     private PIDController stockPID;
 
 
-    long priceQuoted = 0;
+    int priceQuoted = 0;
 
     /**
      * This flag is true whenever we modify the price offered by using stock adjustment. We need to keep track of it because we use it to turn off the flow pid to avoid it being hit by
@@ -264,7 +264,7 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(GoodType type) {
+    public int maxPrice(GoodType type) {
         return priceQuoted;
 
     }
@@ -276,7 +276,7 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice(Good good) {
+    public int maxPrice(Good good) {
         return priceQuoted;
     }
 

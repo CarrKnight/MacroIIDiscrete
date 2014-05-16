@@ -60,7 +60,7 @@ public class LearningDecreaseWithTimeSeriesSalesPredictorTest {
         LearningDecreaseWithTimeSeriesSalesPredictor predictor = new LearningDecreaseWithTimeSeriesSalesPredictor(observer);
         //force an update
         predictor.setUsingWeights(false); predictor.setCorrectingWithDeltaPrice(false);
-        predictor.predictSalePriceAfterIncreasingProduction(mock(SalesDepartment.class), 1l, 1);
+        predictor.predictSalePriceAfterIncreasingProduction(mock(SalesDepartment.class), 1, 1);
         //0.8527228*price - 6.596947
         //notice here that there is a LOT of difference between the R results and my results.
         Assert.assertEquals(-0.09629347, predictor.extractSlopeOfDemandFromRegression(), .01);
@@ -108,7 +108,7 @@ public class LearningDecreaseWithTimeSeriesSalesPredictorTest {
         LearningDecreaseWithTimeSeriesSalesPredictor predictor = new LearningDecreaseWithTimeSeriesSalesPredictor(observer);
         predictor.setUsingWeights(false);
         //force an update
-        predictor.predictSalePriceAfterIncreasingProduction(mock(SalesDepartment.class), 1l, 1);
+        predictor.predictSalePriceAfterIncreasingProduction(mock(SalesDepartment.class), 1, 1);
 
         Assert.assertEquals(-1, predictor.extractSlopeOfDemandFromRegression(), .01);
         Assert.assertEquals(101,predictor.extractInterceptOfDemandFromRegression(),.01);

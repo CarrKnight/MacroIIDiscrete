@@ -38,7 +38,7 @@ public class MarginalMaximizerToCSVTest {
 
 
         //we know the profit maximizing equilibrium is q=220, price = 72
-        final MacroII macroII = new MacroII(1376037116257l);
+        final MacroII macroII = new MacroII(1376037116l);
         MonopolistScenario scenario1 = new MonopolistScenario(macroII);
         //    scenario1.setAlwaysMoving(true);
         //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
@@ -145,7 +145,7 @@ public class MarginalMaximizerToCSVTest {
     public static void main(String[] args)
     {
 /*
-        final MacroII macroII = new MacroII(1376214006782l);
+        final MacroII macroII = new MacroII(1376214006782);
 
 
 
@@ -299,7 +299,7 @@ public class MarginalMaximizerToCSVTest {
     public static void main4(String[] args)
     {
 
-        final MacroII macroII = new MacroII(1376144694474l);
+        final MacroII macroII = new MacroII(1376144694474);
 
         //we know the profit maximizing equilibrium is q=220, price = 72
         MonopolistScenario scenario1 = new MonopolistScenario(macroII);

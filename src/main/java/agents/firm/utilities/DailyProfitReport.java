@@ -91,7 +91,7 @@ public class DailyProfitReport implements ProfitReport
     }
 
     @Override
-    public long getAggregateProfits() {
+    public int getAggregateProfits() {
         float profits = 0;
         for(Plant p : firm.getPlants())
             profits += this.getPlantProfits(p);

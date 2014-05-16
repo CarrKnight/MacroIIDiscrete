@@ -69,7 +69,7 @@ public class SalesDataTest {
 
         data.start(model,department);
         //put in price data
-        when(department.getLastClosingPrice()).thenReturn(1l,2l,3l);
+        when(department.getLastClosingPrice()).thenReturn(1,2,3);
         when(model.getMainScheduleTime()).thenReturn(0d,1d,2d);
         data.step(model);
         data.step(model);
@@ -103,7 +103,7 @@ public class SalesDataTest {
 
         data.start(model,department);
         //put in price data
-        when(department.getLastAskedPrice()).thenReturn(1l,2l,3l);
+        when(department.getLastAskedPrice()).thenReturn(1,2,3);
         when(model.getMainScheduleTime()).thenReturn(0d);
         data.step(model);
         data.step(model);

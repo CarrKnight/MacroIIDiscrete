@@ -11,8 +11,9 @@ import agents.firm.purchases.inventoryControl.DailyInventoryControl;
 import agents.firm.purchases.inventoryControl.Level;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
+import goods.DifferentiatedGoodType;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,8 +48,8 @@ public class WeeklyInventoryControlTest {
 
     @Before
     public void setup(){
-        model = new MacroII(1l);
-        market = new OrderBookMarket(GoodType.GENERIC);
+        model = new MacroII(1);
+        market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
 
     }
 
@@ -58,7 +59,7 @@ public class WeeklyInventoryControlTest {
     {
         Firm f = mock(Firm.class);
         //set up the firm so that it returns first 1 then 10 then 5
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(1);
+        when(f.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(1);
         when(f.getModel()).thenReturn(model);  when(f.getRandom()).thenReturn(model.random);
 
 
@@ -68,9 +69,9 @@ public class WeeklyInventoryControlTest {
         //target inventory is going to be 0 because there is no plant
 
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(10);
+        when(f.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(10);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(5);
+        when(f.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(5);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
 
     }
@@ -84,7 +85,7 @@ public class WeeklyInventoryControlTest {
 
 
         Firm f = new Firm(model);
-        Plant plant = new Plant( Blueprint.simpleBlueprint(GoodType.GENERIC,6,GoodType.CAPITAL,1),f);
+        Plant plant = new Plant( Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,6, DifferentiatedGoodType.CAPITAL,1),f);
         plant.setPlantMachinery(mock(Machinery.class));
         f.addPlant(plant);
 
@@ -100,27 +101,26 @@ public class WeeklyInventoryControlTest {
 
         //without workers and machinery the need is always 0
 
-        f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(0,dept.estimateDemandGap());
         assertEquals(dept.canBuy(), false);
 
-        for(int i=0; i <9; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        f.receiveMany(UndifferentiatedGoodType.GENERIC,9);
         assertEquals(0,dept.estimateDemandGap());
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <5; i++)
-            f.consume(GoodType.GENERIC);
+            f.consume(UndifferentiatedGoodType.GENERIC);
         assertEquals(0,dept.estimateDemandGap());
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <100; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(0,dept.estimateDemandGap());
         assertEquals(dept.canBuy(), false);
 
         //adding a new plant has no effect at all!
-        Plant newPlant = new Plant( Blueprint.simpleBlueprint(GoodType.GENERIC,100,GoodType.CAPITAL,1),f);
+        Plant newPlant = new Plant( Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,100, DifferentiatedGoodType.CAPITAL,1),f);
         newPlant.setPlantMachinery(mock(Machinery.class));
         f.addPlant(newPlant);
         //the new requirement should automatically be put to 100
@@ -128,30 +128,27 @@ public class WeeklyInventoryControlTest {
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <5; i++)
-            f.receive(new Good(GoodType.GENERIC, f, 0l), null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC), null);
         assertEquals(0,dept.estimateDemandGap());
         assertEquals(dept.canBuy(), false);
 
 
         //without workers the need is stil 0
-        plant.setPlantMachinery(new CRSExponentialMachinery(GoodType.CAPITAL,f,0l,plant,1));
+        plant.setPlantMachinery(new CRSExponentialMachinery(DifferentiatedGoodType.CAPITAL,f,0,plant,1));
 
-        f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(0,dept.estimateDemandGap());
         assertEquals(dept.canBuy(), false);
 
-        for(int i=0; i <9; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        f.receiveMany(UndifferentiatedGoodType.GENERIC,9);
         assertEquals(0,dept.estimateDemandGap());
         assertEquals(dept.canBuy(), false);
 
-        for(int i=0; i <5; i++)
-            f.consume(GoodType.GENERIC);
+        f.consumeMany(UndifferentiatedGoodType.GENERIC,5);
         assertEquals(0,dept.estimateDemandGap());
         assertEquals(dept.canBuy(), false);
 
-        for(int i=0; i <100; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        f.receiveMany(UndifferentiatedGoodType.GENERIC,100);
         assertEquals(0,dept.estimateDemandGap());
         assertEquals(dept.canBuy(), false);
 
@@ -162,22 +159,22 @@ public class WeeklyInventoryControlTest {
 
 
         //216 goods as of now
-        f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(216-600,dept.estimateDemandGap());
         assertEquals(dept.canBuy(), true);
 
         for(int i=0; i <9; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(216+9-600,dept.estimateDemandGap());
         assertEquals(dept.canBuy(), true);
 
         for(int i=0; i <400; i++)
-            f.receive(new Good(GoodType.GENERIC, f, 0l), null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC), null);
         assertEquals(0,dept.estimateDemandGap());
         assertEquals(dept.canBuy(), true);
 
-        while(f.hasAny(GoodType.GENERIC))
-            f.consume(GoodType.GENERIC);
+        while(f.hasAny(UndifferentiatedGoodType.GENERIC))
+            f.consume(UndifferentiatedGoodType.GENERIC);
         assertEquals(dept.rateCurrentLevel(), Level.DANGER);
         assertEquals(-600,dept.estimateDemandGap());
 
@@ -201,17 +198,17 @@ public class WeeklyInventoryControlTest {
 
         //target inventory is going to be 0 because there is no plant
 
-        f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <9; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <5; i++)
-            f.consume(GoodType.GENERIC);
+            f.consume(UndifferentiatedGoodType.GENERIC);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
@@ -226,11 +223,11 @@ public class WeeklyInventoryControlTest {
         when(f.getModel()).thenReturn(model);  when(f.getRandom()).thenReturn(model.random);
 
         Plant p = mock(Plant.class);
-        Blueprint b = Blueprint.simpleBlueprint(GoodType.GENERIC,6,GoodType.CAPITAL,1);
+        Blueprint b = Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,6, DifferentiatedGoodType.CAPITAL,1);
         when(p.getBlueprint()).thenReturn(b);
         LinkedList<Plant> list = new LinkedList<>();
         list.add(p);
-        when(f.getListOfPlantsUsingSpecificInput(GoodType.GENERIC)).thenReturn(list);
+        when(f.getListOfPlantsUsingSpecificInput(UndifferentiatedGoodType.GENERIC)).thenReturn(list);
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, DailyInventoryControl.class,
                 null, null, null).getDepartment();
@@ -242,11 +239,11 @@ public class WeeklyInventoryControlTest {
 
         //unfortunately weekly production is still 0!
 
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(1);
+        when(f.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(1);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(10);
+        when(f.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(10);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(5);
+        when(f.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(5);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
 
 
@@ -261,11 +258,11 @@ public class WeeklyInventoryControlTest {
         control.changeInWorkforceEvent(p,100, 99);  //the number of workers is ignored anyway!
 
 
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(1);
+        when(f.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(1);
         assertEquals(dept.rateCurrentLevel(), Level.DANGER);
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(10);
+        when(f.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(10);
         assertEquals(dept.rateCurrentLevel(), Level.TOOMUCH); //more than twice the weekly needs is too much
-        when(f.hasHowMany(GoodType.GENERIC)).thenReturn(5);
+        when(f.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(5);
         assertEquals(dept.rateCurrentLevel(), Level.DANGER);
 
     }
@@ -278,7 +275,7 @@ public class WeeklyInventoryControlTest {
 
 
         Firm f = new Firm(model);
-        Plant plant = new Plant( Blueprint.simpleBlueprint(GoodType.GENERIC,6,GoodType.CAPITAL,1),f);
+        Plant plant = new Plant( Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,6, DifferentiatedGoodType.CAPITAL,1),f);
         plant.setPlantMachinery(mock(Machinery.class));
         f.addPlant(plant);
 
@@ -293,27 +290,27 @@ public class WeeklyInventoryControlTest {
 
         //without workers and machinery the need is always 0
 
-        f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <9; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <5; i++)
-            f.consume(GoodType.GENERIC);
+            f.consume(UndifferentiatedGoodType.GENERIC);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <100; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         //adding a new plant has no effect at all!
-        Plant newPlant = new Plant( Blueprint.simpleBlueprint(GoodType.GENERIC,100,GoodType.CAPITAL,1),f);
+        Plant newPlant = new Plant( Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,100, DifferentiatedGoodType.CAPITAL,1),f);
         newPlant.setPlantMachinery(mock(Machinery.class));
         f.addPlant(newPlant);
         //the new requirement should automatically be put to 100
@@ -321,30 +318,30 @@ public class WeeklyInventoryControlTest {
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <5; i++)
-            f.receive(new Good(GoodType.GENERIC, f, 0l), null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC), null);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
 
         //without workers the need is stil 0
-        plant.setPlantMachinery(new CRSExponentialMachinery(GoodType.CAPITAL,f,0l,plant,1));
+        plant.setPlantMachinery(new CRSExponentialMachinery(DifferentiatedGoodType.CAPITAL,f,0,plant,1));
 
-        f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <9; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <5; i++)
-            f.consume(GoodType.GENERIC);
+            f.consume(UndifferentiatedGoodType.GENERIC);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
         for(int i=0; i <100; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), false);
 
@@ -355,22 +352,22 @@ public class WeeklyInventoryControlTest {
 
 
         //215 goods as of now
-        f.receive(new Good(GoodType.GENERIC,f,0l),null);
+        f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(dept.rateCurrentLevel(), Level.BARELY);
         assertEquals(dept.canBuy(), true);
 
         for(int i=0; i <9; i++)
-            f.receive(new Good(GoodType.GENERIC,f,0l),null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC),null);
         assertEquals(dept.rateCurrentLevel(), Level.BARELY);
         assertEquals(dept.canBuy(), true);
 
         for(int i=0; i <400; i++)
-            f.receive(new Good(GoodType.GENERIC, f, 0l), null);
+            f.receive(Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC), null);
         assertEquals(dept.rateCurrentLevel(), Level.ACCEPTABLE);
         assertEquals(dept.canBuy(), true);
 
-        while(f.hasAny(GoodType.GENERIC))
-            f.consume(GoodType.GENERIC);
+        while(f.hasAny(UndifferentiatedGoodType.GENERIC))
+            f.consume(UndifferentiatedGoodType.GENERIC);
         assertEquals(dept.rateCurrentLevel(), Level.DANGER);
         assertEquals(dept.canBuy(), true);
 

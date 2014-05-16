@@ -37,48 +37,48 @@ public class ChangeLookupMAMarketTest {
 
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0f,.0001f); //invalid
-        when(market.getLastPrice()).thenReturn(1l);
+        when(market.getLastPrice()).thenReturn(1);
 
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0f,.0001f); //invalid
-        when(market.getLastPrice()).thenReturn(2l);
+        when(market.getLastPrice()).thenReturn(2);
 
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),1f,.0001f); //100%!
-        when(market.getLastPrice()).thenReturn(3l);
+        when(market.getLastPrice()).thenReturn(3);
 
 
 
         changeLookupMAMarket.step(macroII);
-        when(market.getLastPrice()).thenReturn(4l);
+        when(market.getLastPrice()).thenReturn(4);
         changeLookupMAMarket.step(macroII);
-        when(market.getLastPrice()).thenReturn(5l);
+        when(market.getLastPrice()).thenReturn(5);
         changeLookupMAMarket.step(macroII);
-        when(market.getLastPrice()).thenReturn(6l);
+        when(market.getLastPrice()).thenReturn(6);
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0.45666f,.0001f);
 
-        when(market.getLastPrice()).thenReturn(7l);
+        when(market.getLastPrice()).thenReturn(7);
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0.29f,.0001f);
 
-        when(market.getLastPrice()).thenReturn(8l);
+        when(market.getLastPrice()).thenReturn(8);
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0.2185714286f,.0001f);
 
-        when(market.getLastPrice()).thenReturn(9l);
+        when(market.getLastPrice()).thenReturn(9);
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0.1769047619f,.0001f);
 
-        when(market.getLastPrice()).thenReturn(10l);
+        when(market.getLastPrice()).thenReturn(10);
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0.1491269841f,.0001f);
 
-        when(market.getLastPrice()).thenReturn(11l);
+        when(market.getLastPrice()).thenReturn(11);
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0.1291269841f,.0001f);
 
-        when(market.getLastPrice()).thenReturn(12l);
+        when(market.getLastPrice()).thenReturn(12);
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0.113975469f,.0001f);
 
@@ -97,56 +97,56 @@ public class ChangeLookupMAMarketTest {
 
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0f,.0001f); //invalid
-        when(market.getLastPrice()).thenReturn(1l);
+        when(market.getLastPrice()).thenReturn(1);
 
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0f,.0001f); //invalid
-        when(market.getLastPrice()).thenReturn(2l);
+        when(market.getLastPrice()).thenReturn(2);
 
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),1f,.0001f); //100%!
-        when(market.getLastPrice()).thenReturn(3l);
+        when(market.getLastPrice()).thenReturn(3);
 
 
 
         changeLookupMAMarket.step(macroII);
-        when(market.getLastPrice()).thenReturn(4l);
+        when(market.getLastPrice()).thenReturn(4);
         changeLookupMAMarket.step(macroII);
-        when(market.getLastPrice()).thenReturn(5l);
+        when(market.getLastPrice()).thenReturn(5);
         changeLookupMAMarket.step(macroII);
-        when(market.getLastPrice()).thenReturn(6l);
+        when(market.getLastPrice()).thenReturn(6);
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0.45666f,.0001f);
 
         for(int i=0; i < 15; i++) //15 times you are fed in a -1
         {
-            when(market.getLastPrice()).thenReturn(-1l);
+            when(market.getLastPrice()).thenReturn(-1);
             changeLookupMAMarket.step(macroII);
         }
         //give it back 6
-        when(market.getLastPrice()).thenReturn(6l);
+        when(market.getLastPrice()).thenReturn(6);
         changeLookupMAMarket.step(macroII);
-        when(market.getLastPrice()).thenReturn(7l);
+        when(market.getLastPrice()).thenReturn(7);
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0.29f,.0001f);
 
-        when(market.getLastPrice()).thenReturn(8l);
+        when(market.getLastPrice()).thenReturn(8);
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0.2185714286f,.0001f);
 
-        when(market.getLastPrice()).thenReturn(9l);
+        when(market.getLastPrice()).thenReturn(9);
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0.1769047619f,.0001f);
 
-        when(market.getLastPrice()).thenReturn(10l);
+        when(market.getLastPrice()).thenReturn(10);
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0.1491269841f,.0001f);
 
-        when(market.getLastPrice()).thenReturn(11l);
+        when(market.getLastPrice()).thenReturn(11);
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0.1291269841f,.0001f);
 
-        when(market.getLastPrice()).thenReturn(12l);
+        when(market.getLastPrice()).thenReturn(12);
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0.113975469f,.0001f);
 
@@ -166,11 +166,11 @@ public class ChangeLookupMAMarketTest {
 
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0f,.0001f); //invalid
-        when(market.getLastPrice()).thenReturn(0l);
+        when(market.getLastPrice()).thenReturn(0);
 
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0f,.0001f); //invalid
-        when(market.getLastPrice()).thenReturn(0l);
+        when(market.getLastPrice()).thenReturn(0);
 
         changeLookupMAMarket.step(macroII);
         assertEquals(changeLookupMAMarket.getChange(),0f,.0001f);

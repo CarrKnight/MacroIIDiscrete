@@ -31,12 +31,12 @@ public class CRSExponentialMachinery extends ExponentialMachinery {
 
     private float alpha = 0.1f;
 
-    public CRSExponentialMachinery( GoodType type,  EconomicAgent producer, long costOfProduction,  Plant plant, float outputMultiplier, float alpha) {
+    public CRSExponentialMachinery( GoodType type,  EconomicAgent producer, int costOfProduction,  Plant plant, float outputMultiplier, float alpha) {
         super(type, producer, costOfProduction, plant, outputMultiplier);
         this.alpha = alpha;
     }
 
-    public CRSExponentialMachinery( GoodType type,  EconomicAgent producer, long costOfProduction,  Plant plant, float alpha) {
+    public CRSExponentialMachinery( GoodType type,  EconomicAgent producer, int costOfProduction,  Plant plant, float alpha) {
         super(type, producer, costOfProduction, plant);
         this.alpha = alpha;
     }

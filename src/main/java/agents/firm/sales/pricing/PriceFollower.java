@@ -43,11 +43,11 @@ public class PriceFollower extends BaseAskPricingStrategy {
      * @return the price given to that good
      */
     @Override
-    public long price(Good g) {
-        long priceToFollow =sales.getMarket().getLastPrice();
+    public int price(Good g) {
+        int priceToFollow =sales.getMarket().getLastPrice();
         if(priceToFollow == -1)
             //if you know nothing, just act cluelessly
-            return (long) (g.getLastValidPrice() * (1f + sales.getFirm().getModel().getCluelessDefaultMarkup()));
+            return (int) (g.getLastValidPrice() * (1f + sales.getFirm().getModel().getCluelessDefaultMarkup()));
         else
             //if you you can copy from the last price
             return Math.max(priceToFollow,g.getLastValidPrice());

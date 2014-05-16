@@ -37,7 +37,9 @@ import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
 import financial.utilities.ShopSetPricePolicy;
+import goods.DifferentiatedGoodType;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.dummies.Customer;
@@ -70,23 +72,23 @@ public class OneLinkSupplyChainScenario extends Scenario {
     /**
      * what used to be "beef" and now is wood. The input good for the final output
      */
-    public static final GoodType INPUT_GOOD = new GoodType("inputTest","wood");
+    public static final GoodType INPUT_GOOD = new UndifferentiatedGoodType("inputTest","wood");
 
 
     /**
      * what used to be "beef" and now is wood. The input good for the final output
      */
-    public static final GoodType INPUT_LABOR = new GoodType("inputLaborTest","Lumberjacks",false,true);
+    public static final GoodType INPUT_LABOR = new UndifferentiatedGoodType("inputLaborTest","Lumberjacks",false,true);
 
     /**
      * the final outpu!
      */
-    public static final GoodType OUTPUT_GOOD = new GoodType("outputTest","furniture");
+    public static final GoodType OUTPUT_GOOD = new UndifferentiatedGoodType("outputTest","furniture");
 
     /**
      * what used to be "beef" and now is wood. The input good for the final output
      */
-    public static final GoodType OUTPUT_LABOR = new GoodType("outputLaborTest","Carpenters",false,true);
+    public static final GoodType OUTPUT_LABOR = new UndifferentiatedGoodType("outputLaborTest","Carpenters",false,true);
 
 
 
@@ -230,7 +232,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
     protected Firm createFirm(final Market goodmarket, final Market laborMarket)
     {
         final Firm firm = new Firm(getModel());
-        firm.earn(Integer.MAX_VALUE);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY,1000000000);
         firm.setName(goodmarket.getGoodType().getName() + " producer " + getModel().random.nextInt());
         //give it a seller department at time 1
 
@@ -310,7 +312,7 @@ public class OneLinkSupplyChainScenario extends Scenario {
         PurchasesDepartment department = null;
 
         for(GoodType input : blueprint.getInputs().keySet()){
-            department = PurchasesDepartment.getEmptyPurchasesDepartment(Long.MAX_VALUE, firm,
+            department = PurchasesDepartment.getEmptyPurchasesDepartment(Integer.MAX_VALUE, firm,
                     getMarkets().get(input));
             Market market = model.getMarket(input);
 
@@ -340,13 +342,13 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
     protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
         Plant plant = new Plant(blueprint, firm);
-        plant.setPlantMachinery(new LinearConstantMachinery(GoodType.CAPITAL, firm, 0, plant));
+        plant.setPlantMachinery(new LinearConstantMachinery(DifferentiatedGoodType.CAPITAL, firm, 0, plant));
         plant.setCostStrategy(new InputCostStrategy(plant));
         firm.addPlant(plant);
         FactoryProducedHumanResourcesWithMaximizerAndTargeter<TargetAndMaximizePlantControl,BuyerSearchAlgorithm,
                 SellerSearchAlgorithm,PIDTargeterWithQuickFiring,WorkforceMaximizer<WorkerMaximizationAlgorithm>,WorkerMaximizationAlgorithm>
                 produced =
-                HumanResources.getHumanResourcesIntegrated(Long.MAX_VALUE,firm,laborMarket,plant,
+                HumanResources.getHumanResourcesIntegrated(Integer.MAX_VALUE,firm,laborMarket,plant,
                         PIDTargeterWithQuickFiring.class, maximizerType,controlType,null,null);
 
 

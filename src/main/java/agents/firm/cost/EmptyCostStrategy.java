@@ -17,7 +17,7 @@ import goods.GoodType;
 public class EmptyCostStrategy implements PlantCostStrategy{
 
     @Override
-    public long unitOutputCost(GoodType t, long totalCostOfInputs) {
+    public int unitOutputCost(GoodType t, int totalCostOfInputs) {
         return 0;
     }
 
@@ -32,7 +32,7 @@ public class EmptyCostStrategy implements PlantCostStrategy{
      * @return the cost we assign to this good.
      */
     @Override
-    public long hypotheticalUnitOutputCost(GoodType t, long totalCostOfInputs, int workers, long totalWages) {
+    public int hypotheticalUnitOutputCost(GoodType t, int totalCostOfInputs, int workers, int totalWages) {
         return  0;
     }
 
@@ -42,7 +42,7 @@ public class EmptyCostStrategy implements PlantCostStrategy{
      * @return the costs of running the plant
      */
     @Override
-    public long weeklyFixedCosts() {
+    public int weeklyFixedCosts() {
         return 0;
     }
 

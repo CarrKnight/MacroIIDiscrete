@@ -29,7 +29,7 @@ public class MacroIIFinishTest {
         //make sure the deactivable registering works
         Deactivatable d = mock(Deactivatable.class);
 
-        MacroII macroII = new MacroII(1l);
+        MacroII macroII = new MacroII(1);
         macroII.registerDeactivable(d);
 
         macroII.start();

@@ -9,20 +9,21 @@ import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.dummies.DummySeller;
 import org.junit.Test;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-import model.utilities.dummies.DummySeller;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * <h4>Description</h4>
@@ -46,13 +47,13 @@ public class MemoryPurchasesPredictorTest {
         PurchasesDepartment dept = mock(PurchasesDepartment.class);
         MemoryPurchasesPredictor predictor = new MemoryPurchasesPredictor();
 
-        for(long i=0; i<100; i++){
+        for(int i=0; i<100; i++){
             when(dept.getLastClosingPrice()).thenReturn(i);
             assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), i);
         }
 
-        when(dept.getLastClosingPrice()).thenReturn(-1l);
-        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), -1l);
+        when(dept.getLastClosingPrice()).thenReturn(-1);
+        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), -1);
 
 
 
@@ -62,13 +63,13 @@ public class MemoryPurchasesPredictorTest {
     @Test
     public void fullyDressedTest() throws Exception {
 
-        Market market = new OrderBookMarket(GoodType.GENERIC);
+        Market market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         PurchasesDepartment dept = fixedPIDTest(market);
 
         /**********************************************
          * Make sure the last closing price is correctly predicted by the predictor!
          *********************************************/
-        assertTrue(dept.getLastClosingPrice() >= 20 && dept.maxPrice(GoodType.GENERIC, market) <= 30);
+        assertTrue(dept.getLastClosingPrice() >= 20 && dept.maxPrice(UndifferentiatedGoodType.GENERIC, market) <= 30);
         MemoryPurchasesPredictor predictor = new MemoryPurchasesPredictor();
         assertTrue(predictor.predictPurchasePriceWhenIncreasingProduction(dept) >= 20 && predictor.predictPurchasePriceWhenIncreasingProduction(dept) <= 30);
     }
@@ -83,9 +84,9 @@ public class MemoryPurchasesPredictorTest {
          *********************************************/
         Market.TESTING_MODE = true;
 
-        final MacroII model = new MacroII(1l);
+        final MacroII model = new MacroII(1);
         final Firm f = new Firm(model);
-        f.earn(10000000);
+        f.receiveMany(UndifferentiatedGoodType.MONEY,100000000);
         model.start();
         market.start(model);
 
@@ -93,7 +94,7 @@ public class MemoryPurchasesPredictorTest {
                 10000000,f,market,PurchasesFixedPID.class,null,null).getDepartment();
         dept.setPredictor(new PricingPurchasesPredictor());
  //       dept.start();
-        f.registerPurchasesDepartment(dept,GoodType.GENERIC);
+        f.registerPurchasesDepartment(dept, UndifferentiatedGoodType.GENERIC);
 
         Field field = null;
         PurchasesFixedPID control=null;
@@ -121,7 +122,9 @@ public class MemoryPurchasesPredictorTest {
                 public void step(SimState state) {
 //create 10 sellers
 
-                    System.out.println("DAWN INV:" + f.hasHowMany(GoodType.GENERIC));
+                    System.out.println("DAWN INV:" + f.hasHowMany(UndifferentiatedGoodType.GENERIC));
+                    System.out.println(f.hasHowMany(UndifferentiatedGoodType.MONEY));
+
                 }});
 
             model.scheduleSoon(ActionOrder.TRADE,new Steppable() {
@@ -132,13 +135,13 @@ public class MemoryPurchasesPredictorTest {
                     {
                         DummySeller seller = new DummySeller(model,i*10 + 10);
                         market.registerSeller(seller);
-                        Good good = new Good(GoodType.GENERIC,seller,i*10+10);
+                        Good good = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
                         seller.receive(good,null);
                         Quote q = market.submitSellQuote(seller,seller.saleQuote,good);
                         quotes.add(q);
                     }
 
-                    System.out.println("TRADE INV:" + f.hasHowMany(GoodType.GENERIC));
+                    System.out.println("TRADE INV:" + f.hasHowMany(UndifferentiatedGoodType.GENERIC));
                 }});
 
             model.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING,new Steppable() {
@@ -164,10 +167,10 @@ public class MemoryPurchasesPredictorTest {
                 @Override
                 public void step(SimState state) {
                     //outflow
-                    if(f.hasAny(GoodType.GENERIC))
-                        f.consume(GoodType.GENERIC);
-                    if(f.hasAny(GoodType.GENERIC))
-                        f.consume(GoodType.GENERIC);
+                    if(f.hasAny(UndifferentiatedGoodType.GENERIC))
+                        f.consume(UndifferentiatedGoodType.GENERIC);
+                    if(f.hasAny(UndifferentiatedGoodType.GENERIC))
+                        f.consume(UndifferentiatedGoodType.GENERIC);
 
 
                //     inventoryAtProduction[0] = f.hasHowMany(GoodType.GENERIC);
@@ -175,9 +178,8 @@ public class MemoryPurchasesPredictorTest {
             });
 
 
-            f.earn(10000l);
             model.getPhaseScheduler().step(model);
-            System.out.println(inventoryAtProduction[0] + " ---> " + control.maxPrice(GoodType.GENERIC));
+            System.out.println(inventoryAtProduction[0] + " ---> " + control.maxPrice(UndifferentiatedGoodType.GENERIC));
 
 
 
@@ -185,8 +187,8 @@ public class MemoryPurchasesPredictorTest {
 
         Market.TESTING_MODE = false;
         //I expect the price to go high so that the firm builds up its reserves and then drop so that it only needs to buy 2 a adjust to keep things constant
-        assertTrue(dept.maxPrice(GoodType.GENERIC, market) >= 20 && dept.maxPrice(GoodType.GENERIC, market) <= 30);
-        assertEquals(f.hasHowMany(GoodType.GENERIC), 6); //has 6 but I just consumed 2
+        assertTrue(dept.maxPrice(UndifferentiatedGoodType.GENERIC, market) >= 20 && dept.maxPrice(UndifferentiatedGoodType.GENERIC, market) <= 30);
+        assertEquals(f.hasHowMany(UndifferentiatedGoodType.GENERIC), 6); //has 6 but I just consumed 2
         return dept;
 
     }

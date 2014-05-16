@@ -53,18 +53,19 @@ public class Customer extends EconomicAgent{
      * the maximum price the customer is willing to pay for its stuff, that is
      * oilPrice + distanceCost * distance <= maxPrice to buy.
      */
-    protected long maxPrice;
+    protected int maxPrice;
 
 
     /**
      * every day, after consuming the customer gets back the total cash to this number
      */
-    private long resetCashTo = 100000;
+    private int resetCashTo = 100000;
 
     private final Market market;
 
 
-    public Customer(MacroII model, long maxPrice, Market market) {
+
+    public Customer(MacroII model, int maxPrice, Market market) {
         super(model);
         Preconditions.checkArgument(maxPrice >= 0);
         this.maxPrice = maxPrice;
@@ -125,7 +126,7 @@ public class Customer extends EconomicAgent{
     {
         //cancel all previous quotes
         //place all the orders you need
-        Preconditions.checkState(dailyDemand-hasHowMany(market.getGoodType()) == 1);
+        Preconditions.checkState(dailyDemand-hasHowMany(market.getGoodType()) >=0);
         for(int i=0; i<dailyDemand-hasHowMany(market.getGoodType()); i++)
             if(maxPrice >= 0) {
                 handleNewEvent(new LogEvent(this,LogLevel.TRACE,"Placing a bid"));
@@ -160,14 +161,10 @@ public class Customer extends EconomicAgent{
 
     private void eatEverythingAndResetCash() {
         //eat all!
-        consumeAll();
-        long cashDifference = resetCashTo-getCash();
-        if(cashDifference > 0)
-            earn(cashDifference);
-        else if(cashDifference < 0)
-            burnMoney(-cashDifference);
+        consumeAll(); //this consumes cash too
 
-        assert getCash() == resetCashTo;
+        receiveMany(market.getMoney(),resetCashTo);
+        assert hasHowMany(market.getMoney()) == resetCashTo;
     }
 
 
@@ -180,19 +177,19 @@ public class Customer extends EconomicAgent{
         this.dailyDemand = dailyDemand;
     }
 
-    public long getMaxPrice() {
+    public int getMaxPrice() {
         return maxPrice;
     }
 
-    public void setMaxPrice(long maxPrice) {
+    public void setMaxPrice(int maxPrice) {
         this.maxPrice = maxPrice;
     }
 
-    public long getResetCashTo() {
+    public int getResetCashTo() {
         return resetCashTo;
     }
 
-    public void setResetCashTo(long resetCashTo) {
+    public void setResetCashTo(int resetCashTo) {
         this.resetCashTo = resetCashTo;
     }
 
@@ -204,12 +201,12 @@ public class Customer extends EconomicAgent{
 
 
     @Override
-    public void reactToFilledAskedQuote(Good g, long price, EconomicAgent buyer) {
+    public void reactToFilledAskedQuote(Quote quoteFilled, Good g, int price, EconomicAgent buyer) {
         //nothing happens. We placed all our quotes already
     }
 
     @Override
-    public void reactToFilledBidQuote(Good g, long price, EconomicAgent seller) {
+    public void reactToFilledBidQuote(Quote quoteFilled, Good g, int price, EconomicAgent seller) {
 
         handleNewEvent(new LogEvent(this, LogLevel.TRACE,"Filled bid quote. Price {}, Seller {}, Good {}",price,seller,g));
         if(!bidsMade.isEmpty())
@@ -223,7 +220,7 @@ public class Customer extends EconomicAgent{
      * @return the maximum price willing to pay or -1 if no price is good.
      */
     @Override
-    public long askedForABuyOffer(GoodType t) {
+    public int askedForABuyOffer(GoodType t) {
         return -1;
     }
 
@@ -279,6 +276,7 @@ public class Customer extends EconomicAgent{
         removeAllQuotes(market);
         //deregister yourself
         market.deregisterBuyer(this);
+
     }
 
     /**
@@ -288,7 +286,7 @@ public class Customer extends EconomicAgent{
      * @return the maximum price willing to pay or -1 if no price is good.
      */
     @Override
-    public long maximumOffer(Good g) {
+    public int maximumOffer(Good g) {
         //do not peddle
         return -1;
     }

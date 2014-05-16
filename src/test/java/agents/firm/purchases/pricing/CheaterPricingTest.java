@@ -11,7 +11,7 @@ import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.dummies.DummySeller;
@@ -43,17 +43,17 @@ public class CheaterPricingTest {
     //this isn't true anymore!
     public void submitRightPrice() throws IllegalAccessException {
         //create the market, the purchase department and the pricer
-        Market market = mock(Market.class); when(market.getGoodType()).thenReturn(GoodType.GENERIC);
+        Market market = mock(Market.class); when(market.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
         PurchasesDepartment department = mock(PurchasesDepartment.class); when(department.getMarket()).thenReturn(market);  when(department.getRandom()).thenReturn(new MersenneTwisterFast());
         when(department.getModel()).thenReturn(mock(MacroII.class));
         CheaterPricing pricing = new CheaterPricing(department);
 
         //make the market visible and the best ask wanting 100$
         when(market.isBestSalePriceVisible()).thenReturn(true);
-        when(market.getBestSellPrice()).thenReturn(100l);
+        when(market.getBestSellPrice()).thenReturn(100);
 
         //should be the right price!
-        Assert.assertEquals(pricing.maxPrice(GoodType.GENERIC),100l);
+        Assert.assertEquals(pricing.maxPrice(UndifferentiatedGoodType.GENERIC),100);
 
     }
 
@@ -61,18 +61,18 @@ public class CheaterPricingTest {
     @Test
     public void submitDefaultOfferWhenNotVisible() throws IllegalAccessException {
         //create the market, the purchase department and the pricer
-        Market market = mock(Market.class); when(market.getGoodType()).thenReturn(GoodType.GENERIC);
+        Market market = mock(Market.class); when(market.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
         PurchasesDepartment department = mock(PurchasesDepartment.class); when(department.getMarket()).thenReturn(market);   when(department.getRandom()).thenReturn(new MersenneTwisterFast());
         when(department.getModel()).thenReturn(mock(MacroII.class));
         CheaterPricing pricing = new CheaterPricing(department);
         //set the default offer to 999
-        pricing.setDefaultOffer(999l);;
+        pricing.setDefaultOffer(999);;
 
         //best sale is not visible!
         when(market.isBestSalePriceVisible()).thenReturn(false);
 
         //should be the right price!
-        Assert.assertEquals(pricing.maxPrice(GoodType.GENERIC),999l);
+        Assert.assertEquals(pricing.maxPrice(UndifferentiatedGoodType.GENERIC),999);
 
     }
 
@@ -80,20 +80,20 @@ public class CheaterPricingTest {
     @Test
     public void submitDefaultOfferWhenNoAsk() throws IllegalAccessException {
         //create the market, the purchase department and the pricer
-        Market market = mock(Market.class); when(market.getGoodType()).thenReturn(GoodType.GENERIC);
+        Market market = mock(Market.class); when(market.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
         PurchasesDepartment department = mock(PurchasesDepartment.class); when(department.getMarket()).thenReturn(market);
         when(department.getRandom()).thenReturn(new MersenneTwisterFast()); when(department.getModel()).thenReturn(mock(MacroII.class));
 
         CheaterPricing pricing = new CheaterPricing(department);
         //set the default offer to 999
-        pricing.setDefaultOffer(999l);
+        pricing.setDefaultOffer(999);
 
         //best sale is visible but there is none!
         when(market.isBestSalePriceVisible()).thenReturn(true);
-        when(market.getBestSellPrice()).thenReturn(-1l);
+        when(market.getBestSellPrice()).thenReturn(-1);
 
         //should be the right price!
-        Assert.assertEquals(pricing.maxPrice(GoodType.GENERIC),999l);
+        Assert.assertEquals(pricing.maxPrice(UndifferentiatedGoodType.GENERIC),999);
 
     }
 
@@ -109,18 +109,18 @@ public class CheaterPricingTest {
             //================================================================================
             //create the model, the market, the firm and the purchase department
             final MacroII model = new MacroII(System.currentTimeMillis());
-            final OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
+            final OrderBookMarket market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
             market.setOrderHandler(new ImmediateOrderHandler(),model);
-            Firm firm = new Firm(model); firm.earn(1000000l);
+            Firm firm = new Firm(model); firm.receiveMany(UndifferentiatedGoodType.MONEY,1000000);
             FactoryProducedPurchaseDepartment<FixedInventoryControl,CheaterPricing,
                     BuyerSearchAlgorithm,SellerSearchAlgorithm> factoryMade
                     =
-                    PurchasesDepartment.getPurchasesDepartment(999999l,firm,market, FixedInventoryControl.class,CheaterPricing.class,null,null);
+                    PurchasesDepartment.getPurchasesDepartment(999999,firm,market, FixedInventoryControl.class,CheaterPricing.class,null,null);
             //set target 2, very strict!
             factoryMade.getInventoryControl().setInventoryTarget(2);
             factoryMade.getInventoryControl().setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(1f);
             //finally register it back to the firm
-            firm.registerPurchasesDepartment(factoryMade.getDepartment(),GoodType.GENERIC);
+            firm.registerPurchasesDepartment(factoryMade.getDepartment(), UndifferentiatedGoodType.GENERIC);
             factoryMade.getDepartment().start(model);
 
 
@@ -130,11 +130,11 @@ public class CheaterPricingTest {
             for(int i=0;i<3;i++)
             {
 
-                final long price=30+i;
+                final int price=30+i;
                 model.scheduleSoon(ActionOrder.TRADE,new Steppable() {
                     @Override
                     public void step(SimState state) {
-                        Good good = new Good(GoodType.GENERIC,mock(Firm.class),0l);
+                        Good good = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
                         DummySeller seller = new DummySeller(model,price);
                         seller.receive(good,null);
                         market.registerSeller(seller);
@@ -147,13 +147,13 @@ public class CheaterPricingTest {
 
             //before:
             Assert.assertEquals(market.numberOfAsks(),0);
-            Assert.assertTrue(firm.hasHowMany(GoodType.GENERIC)==0);
+            Assert.assertTrue(firm.hasHowMany(UndifferentiatedGoodType.GENERIC)==0);
 
             //punch it
             model.start();
             model.schedule.step(model);
             //after:
-            Assert.assertTrue(firm.hasHowMany(GoodType.GENERIC)==2);
+            Assert.assertTrue(firm.hasHowMany(UndifferentiatedGoodType.GENERIC)==2);
             Assert.assertEquals(market.numberOfAsks(), 1);
 
 

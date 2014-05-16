@@ -42,14 +42,14 @@ public class PriceImitator extends UndercuttingAskPricing {
      * @return the price given to that good
      */
     @Override
-    public long price(Good g) {
+    public int price(Good g) {
         if(getBestOpponentPriceFound() == -1){
             //if we didn't find a single opponent, just return the cost
-            return (long) (g.getLastValidPrice() * (1f + getSales().getFirm().getModel().getCluelessDefaultMarkup()));
+            return (int) (g.getLastValidPrice() * (1f + getSales().getFirm().getModel().getCluelessDefaultMarkup()));
         }
         else{
             //return the copied price
-            return Math.max(getBestOpponentPriceFound(),g.getLastValidPrice());
+            return (int) Math.max(getBestOpponentPriceFound(),g.getLastValidPrice());
         }
     }
     /**

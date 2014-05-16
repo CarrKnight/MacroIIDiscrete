@@ -58,7 +58,7 @@ public abstract class AbstractPlantControl implements  PlantControl{
     /**
      * This is the wage held by the plant control, whenever it is changed important stuff happens.
      */
-    private long currentWage;
+    private int currentWage;
 
     protected AbstractPlantControl( final HumanResources hr) {
         this.hr = hr;
@@ -81,7 +81,7 @@ public abstract class AbstractPlantControl implements  PlantControl{
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice( final GoodType type){
+    public int maxPrice(final GoodType type){
 
 
 
@@ -97,7 +97,7 @@ public abstract class AbstractPlantControl implements  PlantControl{
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice( final Good good){
+    public int maxPrice(final Good good){
         return maxPrice(good.getType());
     }
 
@@ -128,7 +128,7 @@ public abstract class AbstractPlantControl implements  PlantControl{
      * @param newWage the new wage
      */
     @Override
-    public void setCurrentWage(long newWage) {
+    public void setCurrentWage(int newWage) {
         if(this.currentWage != newWage) //if the change is meaningful
         {
 

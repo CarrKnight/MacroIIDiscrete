@@ -80,7 +80,7 @@ public class DiscreteSlowPlantControl  implements PlantControl, PlantListener {
      * Sets the wage, update offers and then updates wages of current workers
      * @param newWage the new wage
      */
-    public void setCurrentWage(long newWage) {
+    public void setCurrentWage(int newWage) {
         control.setCurrentWage(newWage);
     }
 
@@ -186,7 +186,7 @@ public class DiscreteSlowPlantControl  implements PlantControl, PlantListener {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice( GoodType type) {
+    public int maxPrice(GoodType type) {
         return control.maxPrice(type);
     }
 
@@ -197,7 +197,7 @@ public class DiscreteSlowPlantControl  implements PlantControl, PlantListener {
      * @return the maximum price I am willing to pay for this good
      */
     @Override
-    public long maxPrice( Good good) {
+    public int maxPrice(Good good) {
         return control.maxPrice(good);
     }
 

@@ -6,6 +6,7 @@ import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import financial.market.Market;
 import goods.Good;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,20 +37,20 @@ import static org.mockito.Mockito.*;
 @RunWith(value = Parameterized.class)
 public class AskReservationPriceDecoratorTest {
 
-    private long decoratedPrice;
+    private int decoratedPrice;
 
-    private long reservationPrice;
+    private int reservationPrice;
 
-    private long expected;
+    private int expected;
 
     @Parameterized.Parameters
-    public static Collection<Long[]> getTestParameters(){
+    public static Collection<Integer[]> getTestParameters(){
 
-        return Arrays.asList(new Long[][]{
-                {10l,20l,20l},
-                {20l,10l,20l},
-                {10l,10l,10l},
-                {0l,5l,5l}
+        return Arrays.asList(new Integer[][]{
+                {10,20,20},
+                {20,10,20},
+                {10,10,10},
+                {0,5,5}
 
 
         });
@@ -57,7 +58,7 @@ public class AskReservationPriceDecoratorTest {
 
     }
 
-    public AskReservationPriceDecoratorTest(long decoratedPrice, long reservationPrice, long expected) {
+    public AskReservationPriceDecoratorTest(int decoratedPrice, int reservationPrice, int expected) {
         this.decoratedPrice = decoratedPrice;
         this.reservationPrice = reservationPrice;
         this.expected = expected;
@@ -80,10 +81,12 @@ public class AskReservationPriceDecoratorTest {
     @Test
     public void testSalesPrice() throws Exception {
 
-        MacroII macroII = new MacroII(1l);
+        MacroII macroII = new MacroII(1);
         Firm firm = mock(Firm.class); when(firm.getModel()).thenReturn(macroII);
 
-        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, mock(Market.class));
+        final Market stub = mock(Market.class);
+        when(stub.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
+        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, stub);
         AskPricingStrategy strategy = mock(AskPricingStrategy.class);
         when(strategy.price(any(Good.class))).thenReturn(decoratedPrice);
 

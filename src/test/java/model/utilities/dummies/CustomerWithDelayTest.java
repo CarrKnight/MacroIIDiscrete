@@ -14,7 +14,7 @@ import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import financial.utilities.ShopSetPricePolicy;
 import goods.Good;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.scenario.Scenario;
 import model.utilities.scheduler.Priority;
@@ -50,11 +50,11 @@ public class CustomerWithDelayTest
 
         Market market = mock(Market.class);
         CustomerWithDelay delay = new CustomerWithDelay(mock(MacroII.class),100,5,market);
-        delay.earn(101);
+        delay.receiveMany(UndifferentiatedGoodType.MONEY, 101);
 
 
-        when(market.getBestSellPrice()).thenReturn(0l);
-        when(market.getLastFilledAsk()).thenReturn(50l); //selling for 50, you are willing to pay 100, it should work1
+        when(market.getBestSellPrice()).thenReturn(0);
+        when(market.getLastFilledAsk()).thenReturn(50); //selling for 50, you are willing to pay 100, it should work1
         //get the private method ready
         Method updateMethod = CustomerWithDelay.class.getDeclaredMethod("checkPriceStep", Market.class);
         updateMethod.setAccessible(true);
@@ -64,7 +64,7 @@ public class CustomerWithDelayTest
 
             updateMethod.invoke(delay,market);
 
-            assertEquals(delay.getMaxPrice(),-1l);
+            assertEquals(delay.getMaxPrice(),-1);
         }
 
         //the fifth is the charm!
@@ -73,7 +73,7 @@ public class CustomerWithDelayTest
         assertEquals(delay.getMaxPrice(), 100);
 
         //now it becomes too expensive, but it'll take a bit to notice
-        when(market.getBestSellPrice()).thenReturn(150l);
+        when(market.getBestSellPrice()).thenReturn(150);
         for(int i=0; i<4;i++)
         {
             updateMethod.invoke(delay, market);
@@ -88,12 +88,12 @@ public class CustomerWithDelayTest
     @Test
     public void dummyBuyerWithRealQuotes() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
-        Market market = new OrderBookMarket(GoodType.GENERIC);
+        Market market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         CustomerWithDelay delay = new CustomerWithDelay(mock(MacroII.class),100,5,market);
-        delay.earn(101);
+        delay.receiveMany(UndifferentiatedGoodType.MONEY, 101);
 
 
-        assertEquals(delay.getMaxPrice(), -1l);
+        assertEquals(delay.getMaxPrice(), -1);
 
         EconomicAgent mocki = mock(EconomicAgent.class);
         market.registerSeller(mocki);
@@ -104,7 +104,7 @@ public class CustomerWithDelayTest
 
         for(int i=0; i<4;i++)
         {
-            Quote q =  market.submitSellQuote(mocki, 100l, new Good(GoodType.GENERIC, mock(EconomicAgent.class), 0l));
+            Quote q =  market.submitSellQuote(mocki, 100, Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
             updateMethod.invoke(delay,market);
 
             assertEquals(delay.getMaxPrice(), -1);
@@ -112,7 +112,7 @@ public class CustomerWithDelayTest
             market.removeSellQuote(q);
         }
 
-        Quote q1 =  market.submitSellQuote(mocki, 100l, new Good(GoodType.GENERIC, mock(EconomicAgent.class), 0l));
+        Quote q1 =  market.submitSellQuote(mocki, 100, Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
 
         //the fifth is the charm!
         updateMethod.invoke(delay,market);
@@ -125,14 +125,14 @@ public class CustomerWithDelayTest
         //now it becomes too expensive, but it'll take a bit to notice
         for(int i=0; i<4;i++)
         {
-            Quote q =  market.submitSellQuote(mocki, 150l, new Good(GoodType.GENERIC, mock(EconomicAgent.class), 0l));
+            Quote q =  market.submitSellQuote(mocki, 150, Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
             updateMethod.invoke(delay,market);
             assertEquals(delay.getMaxPrice(), 100);
 
             market.removeSellQuote(q);
         }
         //finally it will show up
-        q1 =  market.submitSellQuote(mocki, 150l, new Good(GoodType.GENERIC, mock(EconomicAgent.class), 0l));
+        q1 =  market.submitSellQuote(mocki, 150, Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
         updateMethod.invoke(delay,market);
         assertEquals(delay.getMaxPrice(), -1);
 
@@ -143,18 +143,18 @@ public class CustomerWithDelayTest
     @Test
     public void dummyBuyerWithRealTrades() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
-        OrderBookMarket market = new OrderBookMarket(GoodType.GENERIC);
+        OrderBookMarket market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         market.setOrderHandler(new ImmediateOrderHandler(),mock(MacroII.class));
         Market.TESTING_MODE = true;
         market.setPricePolicy(new ShopSetPricePolicy());
         CustomerWithDelay delay = new CustomerWithDelay(mock(MacroII.class),100,5,market);
-        delay.earn(101);
+        delay.receiveMany(UndifferentiatedGoodType.MONEY, 101);;
 
 
         assertEquals(delay.getMaxPrice(), -1);
 
         EconomicAgent mocki = mock(EconomicAgent.class);  when(mocki.has(any(Good.class))).thenReturn(true);
-        EconomicAgent buyer = mock(EconomicAgent.class);  when(buyer.hasEnoughCash(anyLong())).thenReturn(true);
+        EconomicAgent buyer = mock(EconomicAgent.class);  when(buyer.hasHowMany(UndifferentiatedGoodType.MONEY)).thenReturn(Integer.MAX_VALUE);
         market.registerSeller(mocki);
         market.registerBuyer(buyer);
 
@@ -165,16 +165,16 @@ public class CustomerWithDelayTest
 
         for(int i=0; i<4;i++)
         {
-            market.submitSellQuote(mocki, 100l, new Good(GoodType.GENERIC, mock(EconomicAgent.class), 0l));
-            market.submitBuyQuote(buyer,1000l);
+            market.submitSellQuote(mocki, 100, Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
+            market.submitBuyQuote(buyer,1000);
             updateMethod.invoke(delay,market);
 
             assertEquals(delay.getMaxPrice(), -1);
 
         }
 
-        market.submitSellQuote(mocki, 100l, new Good(GoodType.GENERIC, mock(EconomicAgent.class), 0l));
-        market.submitBuyQuote(buyer,1000l);
+        market.submitSellQuote(mocki, 100, Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
+        market.submitBuyQuote(buyer,1000);
 
         //the fifth is the charm!
         updateMethod.invoke(delay,market);
@@ -186,16 +186,16 @@ public class CustomerWithDelayTest
         //now it becomes too expensive, but it'll take a bit to notice
         for(int i=0; i<4;i++)
         {
-            market.submitSellQuote(mocki, 150l, new Good(GoodType.GENERIC, mock(EconomicAgent.class), 0l));
-            market.submitBuyQuote(buyer,1000l);
+            market.submitSellQuote(mocki, 150, Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
+            market.submitBuyQuote(buyer,1000);
 
             updateMethod.invoke(delay,market);
             assertEquals(delay.getMaxPrice(), 100);
 
         }
         //finally it will show up
-        market.submitSellQuote(mocki, 150l, new Good(GoodType.GENERIC, mock(EconomicAgent.class), 0l));
-        market.submitBuyQuote(buyer,1000l);
+        market.submitSellQuote(mocki, 150, Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
+        market.submitBuyQuote(buyer,1000);
 
         updateMethod.invoke(delay,market);
         assertEquals(delay.getMaxPrice(), -1);
@@ -217,9 +217,9 @@ public class CustomerWithDelayTest
             @Override
             public void start() {
 
-                OrderBookMarket market= new OrderBookMarket(GoodType.GENERIC);
+                OrderBookMarket market= new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
                 market.setOrderHandler(new EndOfPhaseOrderHandler(),model);
-                getMarkets().put(GoodType.GENERIC,market);
+                getMarkets().put(UndifferentiatedGoodType.GENERIC,market);
                 //buyers
                 for(int i =0 ; i<101; i++)
                 {
@@ -241,7 +241,7 @@ public class CustomerWithDelayTest
 
         //start the model
         test.start();
-        Market market = test.getMarket(GoodType.GENERIC);
+        Market market = test.getMarket(UndifferentiatedGoodType.GENERIC);
         //bring gently the price down from 100 to 0
         for(int i=0; i<100; i++){
             seller[0].setMinPrice(100-i);

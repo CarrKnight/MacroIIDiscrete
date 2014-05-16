@@ -7,7 +7,7 @@
 package model.scenario;
 
 import agents.firm.purchases.PurchasesDepartment;
-import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.pid.CascadePIDController;
 import model.utilities.pid.FlowAndStockController;
@@ -62,11 +62,11 @@ public class SimpleBuyerScenarioTest
             }
 
             //price should be any between 60 and 51
-            assertTrue(String.valueOf(macroII.getMarket(GoodType.GENERIC).getLastPrice()),macroII.getMarket(GoodType.GENERIC).getLastPrice() < 140);
-            assertTrue(String.valueOf(macroII.getMarket(GoodType.GENERIC).getLastPrice()),macroII.getMarket(GoodType.GENERIC).getLastPrice() >= 130);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getYesterdayVolume(), 4); //every day 4 goods should have been traded
-            assertEquals(Integer.toString(scenario.getDepartment().getFirm().hasHowMany(GoodType.GENERIC)),
-                    scenario.getDepartment().getFirm().hasHowMany(GoodType.GENERIC),20,1);
+            assertTrue(String.valueOf(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice()),macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice() < 140);
+            assertTrue(String.valueOf(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice()),macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice() >= 130);
+            assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getYesterdayVolume(), 4); //every day 4 goods should have been traded
+            assertEquals(Integer.toString(scenario.getDepartment().getFirm().hasHowMany(UndifferentiatedGoodType.GENERIC)),
+                    scenario.getDepartment().getFirm().hasHowMany(UndifferentiatedGoodType.GENERIC),20,1);
 
         }
 
@@ -92,15 +92,15 @@ public class SimpleBuyerScenarioTest
             while(macroII.schedule.getTime()<3500)
             {
                 macroII.schedule.step(macroII);
-                System.out.println(macroII.getMarket(GoodType.GENERIC).getLastPrice());
+                System.out.println(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice());
 
             }
 
             //price should be any between 60 and 51
-            assertTrue(String.valueOf(macroII.getMarket(GoodType.GENERIC).getLastPrice()),macroII.getMarket(GoodType.GENERIC).getLastPrice() < 140);
-            assertTrue(String.valueOf(macroII.getMarket(GoodType.GENERIC).getLastPrice()),macroII.getMarket(GoodType.GENERIC).getLastPrice() >= 130);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getYesterdayVolume(), 4); //every day 4 goods should have been traded
-            assertEquals(scenario.getDepartment().getFirm().hasHowMany(GoodType.GENERIC),20);
+            assertTrue(String.valueOf(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice()),macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice() < 140);
+            assertTrue(String.valueOf(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice()),macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice() >= 130);
+            assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getYesterdayVolume(), 4); //every day 4 goods should have been traded
+            assertEquals(scenario.getDepartment().getFirm().hasHowMany(UndifferentiatedGoodType.GENERIC),20);
 
         }
 
@@ -128,9 +128,9 @@ public class SimpleBuyerScenarioTest
 
 
             //price should be any between 60 and 51
-            assertTrue(macroII.getMarket(GoodType.GENERIC).getLastPrice() < 140);
-            assertTrue(macroII.getMarket(GoodType.GENERIC).getLastPrice() >= 130);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getLastWeekVolume(), 4 * 7); //every day 4 goods should have been traded
+            assertTrue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice() < 140);
+            assertTrue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice() >= 130);
+            assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastWeekVolume(), 4 * 7); //every day 4 goods should have been traded
 
             //notice that here the controller isn't guaranteed to havet the right inventory (since it's flow first)
         }
@@ -174,12 +174,12 @@ public class SimpleBuyerScenarioTest
 
             SummaryStatistics averagePrice = new SummaryStatistics();
             for(int j=0; j<1000; j++)
-                averagePrice.addValue(macroII.getMarket(GoodType.GENERIC).getLastPrice());
+                averagePrice.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice());
             //price should be any between 60 and 51
             assertEquals(16,averagePrice.getMean(),.5d);
             for(PurchasesDepartment department : scenario.getDepartments())
                 assertEquals(16,department.getAveragedClosingPrice(),.001d);
-            assertEquals(macroII.getMarket(GoodType.GENERIC).getYesterdayVolume(), 16,.0001d); //every day 4 goods should have been traded
+            assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getYesterdayVolume(), 16,.0001d); //every day 4 goods should have been traded
 
 
         }
