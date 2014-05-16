@@ -18,7 +18,10 @@ import model.utilities.logs.Loggable;
  */
 public abstract class BaseWorkforceMaximizer<ALG extends WorkerMaximizationAlgorithm>
         implements WorkforceMaximizer<ALG> {
-
+    @Override
+    public void turnOff() {
+        logNode.turnOff();
+    }
 
 
     /***

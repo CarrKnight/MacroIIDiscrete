@@ -129,6 +129,7 @@ public class SetTargetThenTryAgainMaximizer<ALG extends WorkerMaximizationAlgori
     @Override
     public void turnOff()
     {
+        super.turnOff();
         isActive = false;
         maximizationAlgorithm.turnOff();
     }

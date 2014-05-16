@@ -42,6 +42,7 @@ import goods.GoodType;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.Deactivatable;
 import model.utilities.dummies.Customer;
 import model.utilities.filters.ExponentialFilter;
 import model.utilities.pid.PIDController;
@@ -66,7 +67,7 @@ import java.util.LinkedList;
  * @version 2013-02-20
  * @see
  */
-public class OneLinkSupplyChainScenario extends Scenario {
+public class OneLinkSupplyChainScenario extends Scenario implements Deactivatable {
 
 
     /**
@@ -184,6 +185,8 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
         //create workers
         buildLaborSupplies();
+
+        model.registerDeactivable(this);
 
 
 
@@ -682,5 +685,11 @@ public class OneLinkSupplyChainScenario extends Scenario {
 
     public LinkedList<WorkforceMaximizer> getMaximizers() {
         return maximizers;
+    }
+
+    @Override
+    public void turnOff() {
+        maximizers.clear();
+        strategy2 = null;
     }
 }

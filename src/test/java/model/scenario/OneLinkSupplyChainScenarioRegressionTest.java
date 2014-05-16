@@ -191,7 +191,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
             printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
         }
 
-        System.out.println("done with price: " +macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE) );
+        System.out.println("done with price: " +
+                macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE) );
         System.out.println();
         System.out.println("done!");
         return new OneLinkSupplyChainResult(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),

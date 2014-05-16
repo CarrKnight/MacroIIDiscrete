@@ -559,6 +559,7 @@ public class MacroII extends SimState{
         //turn off when needed
         for(Deactivatable d :toTurnOffAtFinish)
             d.turnOff();
+        toTurnOffAtFinish.clear();
 
         goodTypeMasterList.turnOff();
 

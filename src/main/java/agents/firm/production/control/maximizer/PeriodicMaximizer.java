@@ -147,6 +147,7 @@ public class PeriodicMaximizer<ALG extends WorkerMaximizationAlgorithm> extends 
 
     @Override
     public void turnOff() {
+        super.turnOff();
         Preconditions.checkState(isActive,"Can't turn off a maximizer twice!");
         isActive = false;
         plant.removeListener(this);

@@ -73,6 +73,7 @@ public class PricingSalesPredictor extends BaseSalesPredictor {
      */
     @Override
     public void turnOff() {
+        super.turnOff();
         logNode.turnOff();
 
     }

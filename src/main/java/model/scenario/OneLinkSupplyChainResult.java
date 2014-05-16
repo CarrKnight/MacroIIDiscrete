@@ -340,6 +340,7 @@ public class OneLinkSupplyChainResult {
         System.out.println("food price: " +averageFoodPrice.getMean() );
         System.out.println("produced: " +averageBeefProduced.getMean() );
         System.out.println();
+        macroII.finish();
 
 
         return new OneLinkSupplyChainResult(averageBeefPrice.getMean(),averageFoodPrice.getMean(),averageBeefProduced.getMean(), macroII);
@@ -395,6 +396,7 @@ public class OneLinkSupplyChainResult {
         System.out.println("food price: " +averageFoodPrice/1000f );
         System.out.println("produced: " +averageBeefProduced/1000f );
         System.out.println();
+        macroII.finish();
 
 
         return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f, macroII);
@@ -487,6 +489,7 @@ public class OneLinkSupplyChainResult {
 
         macroII.setScenario(scenario1);
         macroII.start();
+        macroII.finish();
 
 
         while(macroII.schedule.getTime()<14000)
@@ -574,6 +577,7 @@ public class OneLinkSupplyChainResult {
         System.out.println("food price: " +averageFoodPrice/1000f );
         System.out.println("produced: " +averageBeefProduced/1000f );
         System.out.println();
+        macroII.finish();
 
 
         return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f, macroII);

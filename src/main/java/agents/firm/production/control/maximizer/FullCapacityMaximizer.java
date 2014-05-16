@@ -58,13 +58,7 @@ public class FullCapacityMaximizer<ALG extends WorkerMaximizationAlgorithm> exte
 
     }
 
-    /**
-     * Method to switch the strategy off. Irreversible
-     */
-    @Override
-    public void turnOff() {
-        //nothing really happens
-    }
+
 
     /**
      * This is called whenever a plant has changed the number of workers
