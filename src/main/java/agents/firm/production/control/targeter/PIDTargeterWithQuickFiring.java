@@ -6,7 +6,7 @@
 
 package agents.firm.production.control.targeter;
 
-import agents.Person;
+import agents.people.Person;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;

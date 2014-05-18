@@ -1,6 +1,6 @@
 package tests.plantcontrol;
 
-import agents.Person;
+import agents.people.Person;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
 import agents.firm.cost.PlantCostStrategy;

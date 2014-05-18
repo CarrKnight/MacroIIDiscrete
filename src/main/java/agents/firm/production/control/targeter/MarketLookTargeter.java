@@ -6,7 +6,7 @@
 
 package agents.firm.production.control.targeter;
 
-import agents.Person;
+import agents.people.Person;
 import agents.firm.personell.HumanResources;
 import com.google.common.base.Preconditions;
 import financial.MarketEvents;

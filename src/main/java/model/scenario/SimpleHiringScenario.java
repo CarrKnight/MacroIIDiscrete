@@ -6,7 +6,7 @@
 
 package model.scenario;
 
-import agents.Person;
+import agents.people.Person;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.FactoryProducedHumanResourcesWithMaximizerAndTargeter;

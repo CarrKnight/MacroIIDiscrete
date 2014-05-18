@@ -7,7 +7,7 @@
 package agents.firm;
 
 import agents.EconomicAgent;
-import agents.Person;
+import agents.people.Person;
 import agents.firm.owner.DividendStrategy;
 import agents.firm.owner.NoDividendStrategy;
 import agents.firm.personell.HumanResources;

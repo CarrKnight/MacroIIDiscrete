@@ -6,7 +6,7 @@
 
 package agents.firm.production;
 
-import agents.Person;
+import agents.people.Person;
 import agents.firm.Firm;
 import agents.firm.cost.EmptyCostStrategy;
 import agents.firm.personell.HumanResources;

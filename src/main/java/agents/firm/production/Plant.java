@@ -15,6 +15,7 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.production.technology.Machinery;
 import agents.firm.utilities.DailyProductionAndConsumptionCounter;
+import agents.people.Person;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import goods.*;

@@ -1,6 +1,6 @@
 package tests;
 
-import agents.Person;
+import agents.people.Person;
 import agents.firm.Firm;
 import agents.firm.cost.EmptyCostStrategy;
 import agents.firm.cost.InputCostStrategy;

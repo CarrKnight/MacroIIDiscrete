@@ -4,8 +4,9 @@
  * See the file "LICENSE" for more information
  */
 
-package agents;
+package agents.people;
 
+import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
@@ -70,6 +71,14 @@ public class Person extends EconomicAgent {
     private int wage=-1;
 
 
+    private ConsumptionStrategy consumptionStrategy;
+
+    private PersonalProductionStrategy productionStrategy;
+
+    private final static Class<? extends ConsumptionStrategy> DEFAULT_CONSUMPTION_STRATEGY = ConsumeAllStrategy.class;
+
+    private final static Class<? extends PersonalProductionStrategy> DEFAULT_PRODUCTION_STRATEGY = NoPersonalProductionStrategy.class;
+
 
 
 
@@ -94,6 +103,9 @@ public class Person extends EconomicAgent {
             setActive(false);
         }
         this.name = "Person " + minimumDailyWagesRequired;
+        //create strategies!
+        this.consumptionStrategy = ConsumptionStrategy.Factory.build(DEFAULT_CONSUMPTION_STRATEGY);
+        this.productionStrategy = PersonalProductionStrategy.Factory.build(DEFAULT_PRODUCTION_STRATEGY);
     }
 
     @Override
@@ -413,6 +425,18 @@ public class Person extends EconomicAgent {
         //look for work
         lookForWorkSoon();
 
+        //start consumption/production step
+        getModel().scheduleSoon(ActionOrder.PRODUCTION, new Steppable() {
+                    @Override
+                    public void step(SimState state) {
+                        if (!isActive())
+                            return;
+                        productionStep();
+                        getModel().scheduleTomorrow(ActionOrder.PRODUCTION, this);
+                    }
+                }
+        );
+
 
 
 
@@ -420,12 +444,23 @@ public class Person extends EconomicAgent {
         getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
             @Override
             public void step(SimState simState) {
+                if(!isActive())
+                    return;
                 Person.this.lookForBetterOffersNow();
 
             }
         });
 
 
+    }
+
+    /**
+     * this method is called by the person itself every PRODUCTION.
+     *
+     */
+    private void productionStep() {
+        consumptionStrategy.consume(Person.this,model); //first consume
+        productionStrategy.produce(Person.this,model); //then produce!
     }
 
 
@@ -524,10 +559,29 @@ public class Person extends EconomicAgent {
             quitWork();
         laborMarket.removeAllSellQuoteBySeller(this);
         laborMarket.deregisterSeller(this);
+        consumptionStrategy = null;
+        productionStrategy = null;
     }
 
     @Override
     public String toString() {
         return name;
+    }
+
+
+    public ConsumptionStrategy getConsumptionStrategy() {
+        return consumptionStrategy;
+    }
+
+    public void setConsumptionStrategy(ConsumptionStrategy consumptionStrategy) {
+        this.consumptionStrategy = consumptionStrategy;
+    }
+
+    public PersonalProductionStrategy getProductionStrategy() {
+        return productionStrategy;
+    }
+
+    public void setProductionStrategy(PersonalProductionStrategy productionStrategy) {
+        this.productionStrategy = productionStrategy;
     }
 }

@@ -7,7 +7,7 @@
 package model.utilities;
 
 import agents.EconomicAgent;
-import agents.Person;
+import agents.people.Person;
 import agents.firm.Firm;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.SpringLayout;

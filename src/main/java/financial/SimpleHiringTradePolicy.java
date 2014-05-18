@@ -7,7 +7,7 @@
 package financial;
 
 import agents.EconomicAgent;
-import agents.Person;
+import agents.people.Person;
 import agents.firm.Firm;
 import com.google.common.base.Preconditions;
 import financial.market.Market;

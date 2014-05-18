@@ -1,7 +1,7 @@
 package model.utilities.stats;
 
 import agents.EconomicAgent;
-import agents.Person;
+import agents.people.Person;
 import agents.firm.Firm;
 import au.com.bytecode.opencsv.CSVWriter;
 import financial.market.Market;

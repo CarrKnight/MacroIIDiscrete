@@ -1,7 +1,7 @@
 package tests;
 
 import agents.EconomicAgent;
-import agents.Person;
+import agents.people.Person;
 import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;

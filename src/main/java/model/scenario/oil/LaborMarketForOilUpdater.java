@@ -7,7 +7,7 @@
 package model.scenario.oil;
 
 import agents.EconomicAgent;
-import agents.Person;
+import agents.people.Person;
 import com.google.common.base.Preconditions;
 import financial.market.Market;
 import javafx.beans.InvalidationListener;

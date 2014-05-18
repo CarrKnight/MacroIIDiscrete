@@ -7,7 +7,7 @@
 package model.gui.market;
 
 import agents.EconomicAgent;
-import agents.Person;
+import agents.people.Person;
 import agents.firm.Firm;
 import agents.firm.GeographicalFirm;
 import ec.util.MersenneTwisterFast;

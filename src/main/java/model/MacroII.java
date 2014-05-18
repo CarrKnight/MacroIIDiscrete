@@ -173,7 +173,7 @@ public class MacroII extends SimState{
     /**
      * the list of ALL agents. Notice it's an arraylist so it's faster to shuffle
      */
-    private ArrayList<EconomicAgent> agents;
+    private final ArrayList<EconomicAgent> agents = new ArrayList<>();;
 
 
     public void registerCashDelivery(EconomicAgent economicAgent, EconomicAgent receiver, long money) {
@@ -212,7 +212,6 @@ public class MacroII extends SimState{
         super.start();
         //make sure counters are at 0
         weeksPassed = 0;
-        agents = new ArrayList<>();
 
 
         //if there is no scenario, create one!
@@ -552,7 +551,6 @@ public class MacroII extends SimState{
             a.turnOff();
         }
         agents.clear();
-        agents = null;
 
         phaseScheduler.clear();
 
@@ -723,9 +721,6 @@ public class MacroII extends SimState{
         return phaseScheduler.getCurrentPhase();
     }
 
-    public void setAgents(ArrayList<EconomicAgent> agents) {
-        this.agents = agents;
-    }
 
     public void setMarkets(HashMap<GoodType, Market> markets) {
         this.markets = markets;

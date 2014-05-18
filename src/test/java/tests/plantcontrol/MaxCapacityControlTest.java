@@ -1,6 +1,6 @@
 package tests.plantcontrol;
 
-import agents.Person;
+import agents.people.Person;
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;

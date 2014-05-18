@@ -7,7 +7,7 @@
 package agents.firm.utilities;
 
 import agents.EconomicAgent;
-import agents.Person;
+import agents.people.Person;
 import agents.firm.Firm;
 import goods.Good;
 import goods.GoodType;

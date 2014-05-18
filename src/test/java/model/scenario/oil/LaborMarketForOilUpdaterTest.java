@@ -7,7 +7,7 @@
 package model.scenario.oil;
 
 import agents.EconomicAgent;
-import agents.Person;
+import agents.people.Person;
 import financial.market.OrderBookMarket;
 import goods.UndifferentiatedGoodType;
 import javafx.beans.property.IntegerProperty;

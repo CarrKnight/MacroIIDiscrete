@@ -8,7 +8,7 @@ package agents.firm.personell;
 
 import agents.Agent;
 import agents.EconomicAgent;
-import agents.Person;
+import agents.people.Person;
 import agents.firm.Firm;
 import agents.firm.production.Plant;
 import agents.firm.production.control.FactoryProducedTargetAndMaximizePlantControl;
