@@ -57,7 +57,7 @@ public class IndipendentLaborMarketsForEachFirmStrategy implements LaborMarketOi
         //create the market
         Market laborMarket = new OrderBookMarket(laborType);
         laborMarket.setPricePolicy(new BuyerSetPricePolicy());
-        MonopolistScenario.fillLaborSupply(defaultSupplyIntercept,defaultSupplySlope,true,false,defaultNumberOfWorkers,laborMarket,model);
+        MonopolistScenario.fillLaborSupply(defaultSupplyIntercept,defaultSupplySlope,true, defaultNumberOfWorkers,laborMarket,model);
         ObservableIntegerValue slope = new SimpleIntegerProperty(defaultSupplySlope); supplySlopes.put(laborMarket,slope);
         ObservableIntegerValue intercept = new SimpleIntegerProperty(defaultSupplyIntercept);supplyIntercepts.put(laborMarket,intercept);
         ObservableIntegerValue workers = new SimpleIntegerProperty(defaultNumberOfWorkers);supplyNumberOfWorkers.put(laborMarket,workers);

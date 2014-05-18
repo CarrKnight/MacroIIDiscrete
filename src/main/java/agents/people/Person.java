@@ -17,6 +17,7 @@ import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
@@ -55,14 +56,6 @@ public class Person extends EconomicAgent {
      */
     private boolean aboutToQuit = false;
 
-    /**
-     * The person keeps searching for better work if he can whenver this is active
-     */
-    private boolean searchForBetterOffers = false;
-
-
-    private boolean precario = false;
-
 
     private BuyerSearchAlgorithm employerSearch;
 
@@ -70,14 +63,35 @@ public class Person extends EconomicAgent {
 
     private int wage=-1;
 
-
+    /***
+     *       ______           __           _
+     *      / __/ /________ _/ /____ ___ _(_)__ ___
+     *     _\ \/ __/ __/ _ `/ __/ -_) _ `/ / -_|_-<
+     *    /___/\__/_/  \_,_/\__/\__/\_, /_/\__/___/
+     *                             /___/
+     */
+    /**
+     * what to do when consuming (production phase)
+     */
     private ConsumptionStrategy consumptionStrategy;
 
+    /**
+     * whether and what to personally produce (production phase)
+     */
     private PersonalProductionStrategy productionStrategy;
+
+    /**
+     * what should the worker do at the end of its work day (prepare_to_trade phase)
+     */
+    private AfterWorkStrategy afterWorkStrategy;
+
+
 
     private final static Class<? extends ConsumptionStrategy> DEFAULT_CONSUMPTION_STRATEGY = ConsumeAllStrategy.class;
 
     private final static Class<? extends PersonalProductionStrategy> DEFAULT_PRODUCTION_STRATEGY = NoPersonalProductionStrategy.class;
+
+    private final static Class<? extends AfterWorkStrategy> DEFAULT_AFTER_STRATEGY = DoNothingAfterWorkStrategy.class;
 
 
 
@@ -106,6 +120,7 @@ public class Person extends EconomicAgent {
         //create strategies!
         this.consumptionStrategy = ConsumptionStrategy.Factory.build(DEFAULT_CONSUMPTION_STRATEGY);
         this.productionStrategy = PersonalProductionStrategy.Factory.build(DEFAULT_PRODUCTION_STRATEGY);
+        this.afterWorkStrategy = AfterWorkStrategy.Factory.build(DEFAULT_AFTER_STRATEGY);
     }
 
     @Override
@@ -214,7 +229,7 @@ public class Person extends EconomicAgent {
     /**
      * Utility method to call when the person quits his job!
      */
-    private void quitWork(){
+    public void quitWork(){
 
         assert this.employer != null;
         assert wage >=0;
@@ -301,68 +316,7 @@ public class Person extends EconomicAgent {
 
     }
 
-    /**
-     * If there is a labor market and I am employed I can look for better jobs and leave my current one
-     */
-    public void lookForBetterOffersNow()
-    {
-        //if you have no employer, you got no point in being here
-        try{
-            if(!searchForBetterOffers || employer == null || laborMarket == null)
-                return;
 
-
-            //make sure you are correctly employed
-            assert wage >=0;
-            //this is not necessarilly true: you might be in the process of quitting!
-            assert (getMinimumDailyWagesRequired() <= wage) || aboutToQuit : getMinimumDailyWagesRequired() + " ---- " + wage;
-
-            if(aboutToQuit) //the quitting will take care of this!
-                return;
-
-            //can you see the best offer now?
-            if(laborMarket.isBestBuyPriceVisible())
-            {
-                //if there is work advertised ABOVE the wage we are being paid: quit!
-                try {
-                    if(laborMarket.getBestBuyPrice() > wage) //notice that this also takes care of when there is no offer at all (best price then is -1)
-                    {
-                        assert getMinimumDailyWagesRequired() < laborMarket.getBestBuyPrice(); //transitive property don't abandon me now!
-                        quitWork(); //so long, suckers
-                        //this might be false with better markets:
-                        assert employer != null && wage >=0 : "I am assuming if you quit when there is an offer you are willing to accept, it must be the case that you find that job immediately!";
-                    }
-                } catch (IllegalAccessException e) {
-                    assert false;
-                    throw new RuntimeException("The market said the best price was visible, but it wasn't");
-
-                }
-
-            }
-            else
-            {
-
-                throw new RuntimeException("Not implemented yet");
-
-
-            }
-
-        }
-        //there are too many branching returns to fix in any other way but by finally. Man I am a terrible programmer.
-        finally {
-            if(isActive())
-                //no matter what, keep trying
-                getModel().scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
-                    @Override
-                    public void step(SimState simState) {
-                        Person.this.lookForBetterOffersNow();
-
-                    }
-                });
-        }
-
-
-    }
 
     public Firm getEmployer() {
         return employer;
@@ -372,46 +326,7 @@ public class Person extends EconomicAgent {
         return minimumDailyWagesRequired;
     }
 
-    /**
-     * Does the person keep searching for better work if he can?
-     * @return true if he does
-     */
-    public boolean isSearchForBetterOffers() {
-        return searchForBetterOffers;
-    }
 
-    /**
-     * Does the person keep searching for better work if he can?
-     * @param searchForBetterOffers true if he does
-     */
-    public void setSearchForBetterOffers(boolean searchForBetterOffers) {
-
-        boolean  oldFlag =this.searchForBetterOffers;
-        this.searchForBetterOffers = searchForBetterOffers;
-
-
-        if(isActive())
-        {
-            //if you started already and you weren't searching before we have to start the stepper
-            if(!oldFlag)
-            {
-
-                //schedule yourself for a look
-                getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
-                    @Override
-                    public void step(SimState simState) {
-                        Person.this.lookForBetterOffersNow();
-
-                    }
-                });
-            }
-
-
-        }
-        //normal setter regardless
-
-
-    }
 
 
     /**
@@ -440,13 +355,17 @@ public class Person extends EconomicAgent {
 
 
 
-        //if need it, start your routine of looking for better job (greedy)
+        //after work routine
         getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
             @Override
             public void step(SimState simState) {
                 if(!isActive())
                     return;
-                Person.this.lookForBetterOffersNow();
+                UndifferentiatedGoodType money = laborMarket == null? null : laborMarket.getMoney();
+                afterWorkStrategy.endOfWorkDay(Person.this,model,getEmployer(),wage,money);
+
+                //reschedule yourself
+                getModel().scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE, this);
 
             }
         });
@@ -464,43 +383,6 @@ public class Person extends EconomicAgent {
     }
 
 
-    /**
-     * when this is set to true the person fires himself every day after production. Needs to be rehired everyday
-     * @param isPrecarioNow
-     */
-    public void setPrecario(boolean isPrecarioNow)
-    {
-
-        boolean oldPrecario = this.precario;
-        this.precario = isPrecarioNow;
-
-        if(this.precario && !oldPrecario)
-        {
-
-            //you will act every day at "PREPARE_TO_TRADE" to fire yourself
-            getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE,new Steppable() {
-                @Override
-                public void step(SimState state) {
-                    if(!isActive() || !precario)
-                        return;
-                    //if you have a job, quit!
-                    if(employer!=null)
-                    {
-                        quitWork();
-                    }
-                    //reschedule
-                    assert precario;
-                    getModel().scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE,this);
-
-                }
-            });
-
-
-        }
-
-
-
-    }
 
 
     /**
@@ -584,4 +466,19 @@ public class Person extends EconomicAgent {
     public void setProductionStrategy(PersonalProductionStrategy productionStrategy) {
         this.productionStrategy = productionStrategy;
     }
+
+
+    public AfterWorkStrategy getAfterWorkStrategy() {
+        return afterWorkStrategy;
+    }
+
+    public void setAfterWorkStrategy(AfterWorkStrategy afterWorkStrategy) {
+        this.afterWorkStrategy = afterWorkStrategy;
+    }
+
+    public Market getLaborMarket() {
+        return laborMarket;
+    }
+
+
 }

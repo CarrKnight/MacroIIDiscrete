@@ -6,6 +6,7 @@
 
 package model.scenario;
 
+import agents.people.AfterWorkStrategy;
 import agents.people.Person;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
@@ -32,6 +33,7 @@ import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
+import agents.people.QuitJobAfterWorkStrategy;
 import com.google.common.base.Preconditions;
 import financial.market.EndOfPhaseOrderHandler;
 import financial.market.Market;
@@ -125,11 +127,6 @@ public class MonopolistScenario extends Scenario {
      */
     private MonopolistScenarioIntegratedControlEnum controlType = MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_SIMPLE;
 
-    /**
-     * Do agents go around look for better offers all the time?
-     */
-    private boolean lookForBetterOffers = false;
-
     protected  OrderBookMarket goodMarket;
 
     protected OrderBookMarket laborMarket;
@@ -179,7 +176,7 @@ public class MonopolistScenario extends Scenario {
         //create and record the labor market!
         laborMarket= new OrderBookMarket(UndifferentiatedGoodType.LABOR);
         laborMarket.setOrderHandler(new EndOfPhaseOrderHandler(),model);
-        laborMarket.setPricePolicy(new BuyerSetPricePolicy()); //make the seller price matter
+        laborMarket.setPricePolicy(new BuyerSetPricePolicy()); //make the employer offer matter
         getMarkets().put(UndifferentiatedGoodType.LABOR,laborMarket);
 
         //this prepares the production of the firms
@@ -211,7 +208,7 @@ public class MonopolistScenario extends Scenario {
 
     private void createLaborSupply() {
         Collection<Person> workersCreated = fillLaborSupply(dailyWageIntercept,dailyWageSlope,workersToBeRehiredEveryDay,
-                lookForBetterOffers,120,laborMarket,getModel());
+                120,laborMarket,getModel());
         workers.addAll(workersCreated);
 
     }
@@ -221,14 +218,13 @@ public class MonopolistScenario extends Scenario {
      * @param dailyWageIntercept the intercept of the labor supply
      * @param dailyWageSlope the slope of the labor supply
      * @param workersToBeRehiredEveryDay are workers changing job automatically every day?
-     * @param lookForBetterOffers do workers quit their jobs if a better offer comes along?
      * @param totalNumberOfWorkers the total number of workers in the labor supply curve
      * @param laborMarket the market to fill
      * @param model the model (to schedule workers)
      * @return a list with all the new
      */
     public static Collection<Person> fillLaborSupply(int dailyWageIntercept, int dailyWageSlope, boolean workersToBeRehiredEveryDay,
-                                                     boolean lookForBetterOffers, int totalNumberOfWorkers,
+                                                     int totalNumberOfWorkers,
                                                      Market laborMarket, MacroII model) {
         Preconditions.checkState(dailyWageIntercept >= 0);
         Preconditions.checkState(dailyWageSlope > 0);
@@ -242,10 +238,10 @@ public class MonopolistScenario extends Scenario {
             int dailyWage = dailyWageIntercept + dailyWageSlope * i;
             //dummy worker, really
             final Person p = new Person(model,0l,(dailyWage),laborMarket);
-            p.setPrecario(workersToBeRehiredEveryDay);
+            if(workersToBeRehiredEveryDay)
+                p.setAfterWorkStrategy(AfterWorkStrategy.Factory.build(QuitJobAfterWorkStrategy.class));
 
 
-            p.setSearchForBetterOffers(lookForBetterOffers);
 
             workers.add(p);
             model.addAgent(p);
@@ -366,14 +362,6 @@ public class MonopolistScenario extends Scenario {
         this.fixedPayStructure = fixedPayStructure;
     }
 
-
-    public boolean isLookForBetterOffers() {
-        return lookForBetterOffers;
-    }
-
-    public void setLookForBetterOffers(boolean lookForBetterOffers) {
-        this.lookForBetterOffers = lookForBetterOffers;
-    }
 
     /**
      * Gets The blueprint that the monopolist will use.

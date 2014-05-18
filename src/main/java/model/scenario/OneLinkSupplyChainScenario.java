@@ -6,6 +6,7 @@
 
 package model.scenario;
 
+import agents.people.AfterWorkStrategy;
 import agents.people.Person;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
@@ -30,6 +31,7 @@ import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
+import agents.people.QuitJobAfterWorkStrategy;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import financial.market.EndOfPhaseOrderHandler;
@@ -427,9 +429,8 @@ public class OneLinkSupplyChainScenario extends Scenario implements Deactivatabl
         {
             //dummy worker, really
             final Person p = new Person(getModel(),0l,i,laborMarket);
-            p.setPrecario(workersToBeRehiredEveryDay);
-
-            p.setSearchForBetterOffers(false);
+            if(workersToBeRehiredEveryDay)
+                p.setAfterWorkStrategy(AfterWorkStrategy.Factory.build(QuitJobAfterWorkStrategy.class));
 
 
             getAgents().add(p);

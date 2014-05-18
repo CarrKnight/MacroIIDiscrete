@@ -39,7 +39,7 @@ public class LaborMarketForOilUpdaterTest
 
         LaborMarketForOilUpdater updater = new LaborMarketForOilUpdater(slope,intercept,workers,model,market);
         //the updater doesn't initialize, only updates
-        MonopolistScenario.fillLaborSupply(0,1,true,false,2,market,model);
+        MonopolistScenario.fillLaborSupply(0,1,true, 2,market,model);
 
         //make sure it's initialized correctly
         Assert.assertTrue(market.getSellers().toString(),market.getSellers().size()==2);

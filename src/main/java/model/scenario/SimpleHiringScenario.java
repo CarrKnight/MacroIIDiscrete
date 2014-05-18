@@ -6,6 +6,7 @@
 
 package model.scenario;
 
+import agents.people.AfterWorkStrategy;
 import agents.people.Person;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
@@ -18,6 +19,7 @@ import agents.firm.production.control.maximizer.algorithms.otherMaximizers.Fixed
 import agents.firm.production.control.targeter.PIDTargeterWithQuickFiring;
 import agents.firm.production.technology.LinearConstantMachinery;
 import agents.firm.utilities.DummyProfitReport;
+import agents.people.QuitJobAfterWorkStrategy;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
@@ -96,9 +98,7 @@ public class SimpleHiringScenario extends Scenario
         {
             //dummy worker, really
             final Person p = new Person(getModel(),0l,laborSupplyIntercept+i*laborSupplySlope,market);
-            p.setPrecario(true);
-
-            p.setSearchForBetterOffers(false);
+            p.setAfterWorkStrategy(AfterWorkStrategy.Factory.build(QuitJobAfterWorkStrategy.class));
 
 
             getAgents().add(p);

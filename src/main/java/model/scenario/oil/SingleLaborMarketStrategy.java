@@ -57,7 +57,7 @@ public class SingleLaborMarketStrategy implements LaborMarketOilScenarioStrategy
         scenario.getMarkets().put(UndifferentiatedGoodType.LABOR,laborMarket);
 
         //fill labor market
-        MonopolistScenario.fillLaborSupply(laborSupplyIntercept.get(),laborSupplySlope.get(),true,false,
+        MonopolistScenario.fillLaborSupply(laborSupplyIntercept.get(),laborSupplySlope.get(),true,
                 totalNumberOfWorkers.get(),laborMarket,model);
 
         //get ready to update the market if any observable changes

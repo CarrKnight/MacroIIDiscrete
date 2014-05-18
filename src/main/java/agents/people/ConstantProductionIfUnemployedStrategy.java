@@ -10,6 +10,7 @@ import goods.UndifferentiatedGoodType;
 import model.MacroII;
 
 /**
+ * Like Constant Personal Production (which is in fact a delegate) except that it only produce if the worker has no employer
  * Created by carrknight on 5/17/14.
  */
 public class ConstantProductionIfUnemployedStrategy implements PersonalProductionStrategy {

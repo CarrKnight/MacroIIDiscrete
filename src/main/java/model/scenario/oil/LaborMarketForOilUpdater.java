@@ -94,7 +94,7 @@ public class LaborMarketForOilUpdater implements InvalidationListener, Deactivat
                 sellersCopy.stream().filter(a -> a instanceof Person).forEach(a -> a.turnOff());
                 //now regenerate!
                 MonopolistScenario.fillLaborSupply(laborSupplyIntercept.get(),laborSupplySlope.get(),
-                        true,false,totalNumberOfWorkers.get(),laborMarket,model);
+                        true, totalNumberOfWorkers.get(),laborMarket,model);
             });
         }
 
