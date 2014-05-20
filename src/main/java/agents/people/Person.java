@@ -10,6 +10,7 @@ import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
+import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import financial.utilities.ActionsAllowed;
@@ -85,13 +86,36 @@ public class Person extends EconomicAgent {
      */
     private AfterWorkStrategy afterWorkStrategy;
 
+    /**
+     * the utility function of the person, if used at all.
+     */
+    private UtilityFunction utilityFunction;
 
 
-    private final static Class<? extends ConsumptionStrategy> DEFAULT_CONSUMPTION_STRATEGY = ConsumeAllStrategy.class;
+    /**
+     * the idea is that unless i specify either a consumption or a personal production strategy,
+     * this worker has no reason to step on PRODUCTION which speeds up the model.
+     * This is a link to the production steppable which is not null if activated
+     */
+    private ProductionStep productionSteppable = null;
 
-    private final static Class<? extends PersonalProductionStrategy> DEFAULT_PRODUCTION_STRATEGY = NoPersonalProductionStrategy.class;
+    /**
+     * this flag is set to true if a production or consumption strategy is used.
+     */
+    private boolean productionOrConsumptionStrategiesSet = false;
+
+
+    //so this default means no consumption. If the default isn't changed for either consumption or production
+    //the production step simply doesn't happen.
+    private final static Class<? extends ConsumptionStrategy> DEFAULT_NO_CONSUMPTION_STRATEGY = NoConsumptionStrategy.class;
+
+    //so this default means no production. If the default isn't changed for either consumption or production
+    //the production step simply doesn't happen.
+    private final static Class<? extends PersonalProductionStrategy> DEFAULT_NO_PRODUCTION_STRATEGY = NoPersonalProductionStrategy.class;
 
     private final static Class<? extends AfterWorkStrategy> DEFAULT_AFTER_STRATEGY = DoNothingAfterWorkStrategy.class;
+
+    private final static Class<? extends UtilityFunction> DEFAULT_UTILITY_FUNCTION = NoUtilityFunction.class;
 
 
 
@@ -118,9 +142,10 @@ public class Person extends EconomicAgent {
         }
         this.name = "Person " + minimumDailyWagesRequired;
         //create strategies!
-        this.consumptionStrategy = ConsumptionStrategy.Factory.build(DEFAULT_CONSUMPTION_STRATEGY);
-        this.productionStrategy = PersonalProductionStrategy.Factory.build(DEFAULT_PRODUCTION_STRATEGY);
+        this.consumptionStrategy = ConsumptionStrategy.Factory.build(DEFAULT_NO_CONSUMPTION_STRATEGY);
+        this.productionStrategy = PersonalProductionStrategy.Factory.build(DEFAULT_NO_PRODUCTION_STRATEGY);
         this.afterWorkStrategy = AfterWorkStrategy.Factory.build(DEFAULT_AFTER_STRATEGY);
+        this.utilityFunction = UtilityFunction.Factory.build(DEFAULT_UTILITY_FUNCTION);
     }
 
     @Override
@@ -197,7 +222,7 @@ public class Person extends EconomicAgent {
     }
 
 
-    public void changeInWage(int newWage, EconomicAgent employer1){
+    public void changeInWageOrReservationWage(int newWage, EconomicAgent employer1){
 
         wage = newWage;
         assert this.employer != null;
@@ -207,19 +232,17 @@ public class Person extends EconomicAgent {
         if(newWage< minimumDailyWagesRequired) {
             aboutToQuit=true;
 
-            getModel().scheduleASAP(new Steppable() {
-                @Override
-                public void step(SimState simState) {
-                    if(employer == null){
-                        assert wage == -1; //if the employer changed the wage TWICE (or fired you) then you scheduled yourself twice which is silly, ignore it
-                        return;
-                    }
-
-                    //If the wage is still low I QUIT!
-                    if(wage < minimumDailyWagesRequired)
-                        quitWork();
-
+            //quit at next prepare to trade
+            getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE, simState -> {
+                if(employer == null){
+                    assert wage == -1; //if the employer changed the wage TWICE (or fired you) then you scheduled yourself twice which is silly, ignore it
+                    return;
                 }
+
+                //If the wage is still low I QUIT!
+                if(wage < minimumDailyWagesRequired)
+                    quitWork();
+
             });
         }
 
@@ -327,7 +350,13 @@ public class Person extends EconomicAgent {
     }
 
 
+    public void setMinimumDailyWagesRequired(int minimumDailyWagesRequired) {
+        this.minimumDailyWagesRequired = minimumDailyWagesRequired;
 
+        //when set and you already have a job, call
+        if(employer!= null)
+            changeInWageOrReservationWage(wage,employer);
+    }
 
     /**
      * call this to start the person and let it move a bit
@@ -340,18 +369,10 @@ public class Person extends EconomicAgent {
         //look for work
         lookForWorkSoon();
 
-        //start consumption/production step
-        getModel().scheduleSoon(ActionOrder.PRODUCTION, new Steppable() {
-                    @Override
-                    public void step(SimState state) {
-                        if (!isActive())
-                            return;
-                        productionStep();
-                        getModel().scheduleTomorrow(ActionOrder.PRODUCTION, this);
-                    }
-                }
-        );
-
+        //start consumption/production step (only if there is at least one strategy set!)
+        if(productionOrConsumptionStrategiesSet) {
+            startProductionStep();
+        }
 
 
 
@@ -373,14 +394,12 @@ public class Person extends EconomicAgent {
 
     }
 
-    /**
-     * this method is called by the person itself every PRODUCTION.
-     *
-     */
-    private void productionStep() {
-        consumptionStrategy.consume(Person.this,model); //first consume
-        productionStrategy.produce(Person.this,model); //then produce!
+    private void startProductionStep() {
+        final ProductionStep action = new ProductionStep();
+        getModel().scheduleSoon(ActionOrder.PRODUCTION, action);
+        productionSteppable = action;
     }
+
 
 
 
@@ -411,6 +430,19 @@ public class Person extends EconomicAgent {
         else
             employerSearch.setMarket(laborMarket);
 
+    }
+
+
+    public float computesUtility() {
+        return utilityFunction.computesUtility(this);
+    }
+
+    public float howMuchOfThisGoodWouldYouGiveAwayInExchangeForOneUnitOfAnother(GoodType typeYouGainOneUnitOf, GoodType typeOfGoodToGiveAway) {
+        return utilityFunction.howMuchOfThisGoodWouldYouGiveAwayInExchangeForOneUnitOfAnother(typeYouGainOneUnitOf, typeOfGoodToGiveAway, this);
+    }
+
+    public float howMuchOfThisGoodDoYouNeedToCompensateTheLossOfOneUnitOfAnother(GoodType typeLost, GoodType typeGained) {
+        return utilityFunction.howMuchOfThisGoodDoYouNeedToCompensateTheLossOfOneUnitOfAnother(typeLost, typeGained, this);
     }
 
     /**
@@ -456,7 +488,17 @@ public class Person extends EconomicAgent {
     }
 
     public void setConsumptionStrategy(ConsumptionStrategy consumptionStrategy) {
+        Preconditions.checkNotNull(consumptionStrategy);
         this.consumptionStrategy = consumptionStrategy;
+        productionOrConsumptionStrategiesSet = true;
+
+
+        if(productionSteppable == null && startWasCalled) {
+            startProductionStep();
+            assert productionSteppable != null;
+        }
+
+
     }
 
     public PersonalProductionStrategy getProductionStrategy() {
@@ -464,7 +506,15 @@ public class Person extends EconomicAgent {
     }
 
     public void setProductionStrategy(PersonalProductionStrategy productionStrategy) {
+        Preconditions.checkArgument(productionStrategy!=null);
         this.productionStrategy = productionStrategy;
+        productionOrConsumptionStrategiesSet = true;
+
+        if(productionSteppable == null && startWasCalled) {
+            startProductionStep();
+            assert productionSteppable != null;
+        }
+
     }
 
 
@@ -476,9 +526,45 @@ public class Person extends EconomicAgent {
         this.afterWorkStrategy = afterWorkStrategy;
     }
 
+    public UtilityFunction getUtilityFunction() {
+        return utilityFunction;
+    }
+
+    public void setUtilityFunction(UtilityFunction utilityFunction) {
+        this.utilityFunction = utilityFunction;
+    }
+
+    public boolean isSteppingOnProduction() {
+        return productionSteppable != null;
+    }
+
     public Market getLaborMarket() {
         return laborMarket;
     }
+
+    private class ProductionStep implements Steppable
+    {
+
+
+
+        /**
+         * this method is called by the person itself every PRODUCTION.
+         *
+         */
+        private void productionStep() {
+            consumptionStrategy.consume(Person.this,model); //first consume
+            productionStrategy.produce(Person.this,model); //then produce!
+        }
+
+        public void step(SimState state) {
+            if (!isActive())
+                return;
+            productionStep();
+            getModel().scheduleTomorrow(ActionOrder.PRODUCTION, this);
+        }
+
+    }
+
 
 
 }

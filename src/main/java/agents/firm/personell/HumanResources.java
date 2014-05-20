@@ -314,7 +314,7 @@ public class HumanResources extends PurchasesDepartment implements Agent {
                         //max price calls should NOT change over time
                         assert maxPrice(getGoodType(),getMarket()) == newWage;
                         //change the wage to the worker
-                        p.changeInWage(newWage,getFirm());
+                        p.changeInWageOrReservationWage(newWage, getFirm());
 
                     }
 

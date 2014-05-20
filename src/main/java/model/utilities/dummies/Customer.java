@@ -17,7 +17,6 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.logs.LogEvent;
 import model.utilities.logs.LogLevel;
-import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -41,7 +40,6 @@ import java.util.LinkedList;
 public class Customer extends EconomicAgent{
 
 
-    private Priority tradePriority = Priority.AFTER_STANDARD;
 
     protected LinkedList<Quote> bidsMade = new LinkedList<>();
     /**
@@ -113,7 +111,7 @@ public class Customer extends EconomicAgent{
                 assert bidsMade.isEmpty();
                 buyIfNeeded(market);
                 //reschedule yourself
-                model.scheduleTomorrow(ActionOrder.TRADE,this, tradePriority);
+                model.scheduleTomorrow(ActionOrder.TRADE,this);
 
             }
         });
@@ -292,12 +290,5 @@ public class Customer extends EconomicAgent{
     }
 
 
-    public Priority getTradePriority() {
-        return tradePriority;
-    }
-
-    public void setTradePriority(Priority tradePriority) {
-        this.tradePriority = tradePriority;
-    }
 }
 

@@ -17,7 +17,6 @@ import goods.Good;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.scenario.Scenario;
-import model.utilities.scheduler.Priority;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -229,7 +228,6 @@ public class CustomerWithDelayTest
 
                 //seller
                 seller[0] = new DailyGoodTree(model,100,101,market);
-                seller[0].setTradePriority(Priority.BEFORE_STANDARD);
                 getAgents().add(seller[0]);
 
 

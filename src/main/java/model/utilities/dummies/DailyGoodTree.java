@@ -16,7 +16,6 @@ import goods.GoodType;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -39,7 +38,6 @@ import sim.engine.Steppable;
 public class DailyGoodTree extends EconomicAgent
 {
 
-    private Priority tradePriority = Priority.AFTER_STANDARD;
     /**
      * how many units of goods do you try to sell everyday
      */
@@ -103,7 +101,7 @@ public class DailyGoodTree extends EconomicAgent
 
                 sellIfPossible(market);
 
-                model.scheduleTomorrow(ActionOrder.TRADE,this, tradePriority);
+                model.scheduleTomorrow(ActionOrder.TRADE,this);
 
             }
         });
@@ -246,12 +244,4 @@ public class DailyGoodTree extends EconomicAgent
     }
 
 
-    public Priority getTradePriority() {
-        return tradePriority;
-    }
-
-
-    public void setTradePriority(Priority tradePriority) {
-        this.tradePriority = tradePriority;
-    }
 }

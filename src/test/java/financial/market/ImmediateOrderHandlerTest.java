@@ -14,7 +14,6 @@ import model.MacroII;
 import model.scenario.Scenario;
 import model.utilities.dummies.Customer;
 import model.utilities.dummies.DailyGoodTree;
-import model.utilities.scheduler.Priority;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -86,11 +85,9 @@ public class ImmediateOrderHandlerTest {
                 {
                     Customer customer = new Customer(model,100+i,market);
                     getAgents().add(customer);
-                    customer.setTradePriority(Priority.STANDARD);
                 }
                 //1 seller, pricing 100, trying to sell 10 things!
                 DailyGoodTree tree = new DailyGoodTree(model,10,100,market);
-                tree.setTradePriority(Priority.STANDARD);
                 getAgents().add(tree);
             }
         });
