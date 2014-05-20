@@ -1,8 +1,8 @@
 <component name="CopyrightManager">
-  <settings default="AFL 3">
+  <settings default="">
     <module2copyright>
-      <element module="Production" copyright="AFL 3" />
-      <element module="Tests" copyright="AFL 3" />
+      <element module="Production" copyright="MIT" />
+      <element module="Tests" copyright="MIT" />
     </module2copyright>
     <LanguageOptions name="JAVA" />
   </settings>
