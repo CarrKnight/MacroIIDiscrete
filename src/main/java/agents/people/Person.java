@@ -91,6 +91,16 @@ public class Person extends EconomicAgent {
      */
     private UtilityFunction utilityFunction;
 
+    /**
+     * How this person goes about trading
+     */
+    private PersonalTradingStrategy tradingStrategy;
+
+    /**
+     * this is set to true if a trading strategy is set. This person will not step after trade if this isn't set
+     */
+    private boolean tradingStrategySet = false;
+
 
     /**
      * the idea is that unless i specify either a consumption or a personal production strategy,
@@ -116,6 +126,8 @@ public class Person extends EconomicAgent {
     private final static Class<? extends AfterWorkStrategy> DEFAULT_AFTER_STRATEGY = DoNothingAfterWorkStrategy.class;
 
     private final static Class<? extends UtilityFunction> DEFAULT_UTILITY_FUNCTION = NoUtilityFunction.class;
+
+    private final static Class<? extends PersonalTradingStrategy> DEFAULT_TRADING_STRATEGY = NotTradingStrategy.class;
 
 
 
@@ -146,6 +158,7 @@ public class Person extends EconomicAgent {
         this.productionStrategy = PersonalProductionStrategy.Factory.build(DEFAULT_NO_PRODUCTION_STRATEGY);
         this.afterWorkStrategy = AfterWorkStrategy.Factory.build(DEFAULT_AFTER_STRATEGY);
         this.utilityFunction = UtilityFunction.Factory.build(DEFAULT_UTILITY_FUNCTION);
+        this.tradingStrategy =NotTradingStrategy.getInstance();
     }
 
     @Override
@@ -172,7 +185,7 @@ public class Person extends EconomicAgent {
         }
         else
         {
-            throw new RuntimeException("Error: Not programmed yet!");
+            tradingStrategy.reactToFilledAskedQuote(quoteFilled,g,price,this,buyer);
         }
     }
 
@@ -212,7 +225,7 @@ public class Person extends EconomicAgent {
 
     @Override
     public void reactToFilledBidQuote(Quote quoteFilled, Good g, int price, EconomicAgent seller) {
-        throw new RuntimeException("Not programmed in yet");
+        tradingStrategy.reactToFilledBidQuote(quoteFilled, g, price, this, seller);
     }
 
 
@@ -384,6 +397,8 @@ public class Person extends EconomicAgent {
                     return;
                 UndifferentiatedGoodType money = laborMarket == null? null : laborMarket.getMoney();
                 afterWorkStrategy.endOfWorkDay(Person.this,model,getEmployer(),wage,money);
+                //it's also the beginning of trade
+                tradingStrategy.beginTradingDay(Person.this,state);
 
                 //reschedule yourself
                 getModel().scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE, this);
@@ -475,6 +490,9 @@ public class Person extends EconomicAgent {
         laborMarket.deregisterSeller(this);
         consumptionStrategy = null;
         productionStrategy = null;
+        afterWorkStrategy = null;
+        utilityFunction = null;
+        tradingStrategy.turnOff(); tradingStrategy = null;
     }
 
     @Override
@@ -534,6 +552,22 @@ public class Person extends EconomicAgent {
         this.utilityFunction = utilityFunction;
     }
 
+
+    public PersonalTradingStrategy getTradingStrategy() {
+        return tradingStrategy;
+    }
+
+    public void setTradingStrategy(PersonalTradingStrategy tradingStrategy) {
+        this.tradingStrategy.turnOff(); //turn off the old one!
+
+        this.tradingStrategy = tradingStrategy; //set the new one
+        if(!tradingStrategySet)
+        {
+            tradingStrategySet = true;
+            model.scheduleSoon(ActionOrder.AFTER_TRADE,new AfterTradeStep()); //start the production step!
+        }
+    }
+
     public boolean isSteppingOnProduction() {
         return productionSteppable != null;
     }
@@ -563,6 +597,17 @@ public class Person extends EconomicAgent {
             getModel().scheduleTomorrow(ActionOrder.PRODUCTION, this);
         }
 
+    }
+
+    private class AfterTradeStep implements Steppable
+    {
+        @Override
+        public void step(SimState state) {
+            if (!isActive())
+                return;
+            tradingStrategy.endTradingDay(Person.this,model);
+            getModel().scheduleTomorrow(ActionOrder.AFTER_TRADE,this);
+        }
     }
 
 

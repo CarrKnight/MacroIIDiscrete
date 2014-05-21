@@ -423,6 +423,7 @@ public abstract class Market implements Deactivatable{
     public PurchaseResult trade( EconomicAgent buyer, EconomicAgent seller, Good good, int price,
                                  Quote buyerQuote, Quote sellerQuote)
     {
+        Preconditions.checkArgument(buyer != seller, "buyer and seller are the same person!");
         assert getBuyers().contains(buyer) : buyer.toString() + " ----- " + buyers;
         assert getSellers().contains(seller);
         double sellerCost = good.getLastValidPrice(); //record the price of the good BEFORE it is traded, so we can learn its markup

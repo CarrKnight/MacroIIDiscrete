@@ -49,7 +49,7 @@ public enum ActionOrder
     /**
      * before any action is taken after trade.
      */
-    POST_TRADE_STATISTICS,
+    AFTER_TRADE,
 
 
     /**

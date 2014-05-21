@@ -48,7 +48,7 @@ public class AfterTradeCounter implements StockoutEstimator, Steppable {
         this.market = market;
         this.department = department;
 
-        department.getModel().scheduleSoon(ActionOrder.POST_TRADE_STATISTICS,this);
+        department.getModel().scheduleSoon(ActionOrder.AFTER_TRADE,this);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class AfterTradeCounter implements StockoutEstimator, Steppable {
             }
         }
 
-        ((MacroII)simState).scheduleTomorrow(ActionOrder.POST_TRADE_STATISTICS,this);
+        ((MacroII)simState).scheduleTomorrow(ActionOrder.AFTER_TRADE,this);
     }
 
     @Override

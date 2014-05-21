@@ -107,7 +107,7 @@ public class StickyPricesCSVPrinter {
         //woodMonopolistSupplyChainSweep();
 
         //what happens if one guy is more or less sticky than the others?
-        differentStickinessSweep();
+       // differentStickinessSweep();
 
 
 
