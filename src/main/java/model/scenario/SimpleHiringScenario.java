@@ -117,7 +117,7 @@ public class SimpleHiringScenario extends Scenario
         firm.setProfitReport(new DummyProfitReport());
         firm.receiveMany(UndifferentiatedGoodType.MONEY,1000000000);
         //give it a plant
-        Plant plant = new Plant(new Blueprint.Builder().output(UndifferentiatedGoodType.GENERIC,1).build(),firm);
+        Plant plant = new Plant(new Blueprint.Builder().output(UndifferentiatedGoodType.GENERIC,0).build(),firm);
         plant.setPlantMachinery( new LinearConstantMachinery(DifferentiatedGoodType.CAPITAL,firm,0,plant));
         plant.setCostStrategy(new InputCostStrategy(plant));
         firm.addPlant(plant);

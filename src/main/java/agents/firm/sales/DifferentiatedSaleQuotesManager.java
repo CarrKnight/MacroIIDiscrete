@@ -144,8 +144,8 @@ public class DifferentiatedSaleQuotesManager implements SaleQuotesManager {
     public void thisQuoteHasBeenFilledSoRemoveItWithItsAssociatedGood(Quote q) {
         Preconditions.checkArgument(q != null);
         Preconditions.checkArgument(q.getGood() != null);
-        assert goodsQuotedOnTheMarket.get(q.getGood()).equals(q);
-        forgetTheQuoteAssociatedWithThisGood(q.getGood());
+//        assert q.getPriceQuoted() <0 || goodsQuotedOnTheMarket.get(q.getGood()).equals(q);
+        stopSellingThisGoodAndReturnItsAssociatedQuote(q.getGood());
     }
 
     @Override

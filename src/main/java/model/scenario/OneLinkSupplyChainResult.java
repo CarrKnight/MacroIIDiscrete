@@ -489,7 +489,6 @@ public class OneLinkSupplyChainResult {
 
         macroII.setScenario(scenario1);
         macroII.start();
-        macroII.finish();
 
 
         while(macroII.schedule.getTime()<14000)

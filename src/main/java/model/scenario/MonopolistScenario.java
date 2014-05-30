@@ -232,7 +232,7 @@ public class MonopolistScenario extends Scenario {
 
         LinkedList<Person> workers = new LinkedList<>();
         //with minimum wage from 15 to 65
-        for(int i=1; i<totalNumberOfWorkers; i++)
+        for(int i=1; i<=totalNumberOfWorkers; i++)
         {
 
             int dailyWage = dailyWageIntercept + dailyWageSlope * i;

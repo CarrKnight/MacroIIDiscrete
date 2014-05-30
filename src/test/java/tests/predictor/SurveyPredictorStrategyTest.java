@@ -16,16 +16,12 @@ import agents.firm.sales.prediction.SurveySalesPredictor;
 import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
-import financial.utilities.Quote;
 import goods.Good;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.dummies.DummyBuyer;
 import model.utilities.dummies.DummySeller;
 import org.junit.Test;
-
-import java.lang.reflect.Field;
-import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -238,9 +234,8 @@ public class SurveyPredictorStrategyTest {
         //market.registerSeller(department.getFirm()); Automatically registered when you create the sales department
         department.getFirm().receive(sold,null);
         //hack to simulate sellThis without actually calling it
-        Field field = SalesDepartment.class.getDeclaredField("goodsQuotedOnTheMarket");
-        field.setAccessible(true);
-        ((HashMap<Good,Quote>)field.get (department)).put(sold, null);
+        department.sellThis(sold);
+
 
         market.submitSellQuote(department.getFirm(),250,sold);
 

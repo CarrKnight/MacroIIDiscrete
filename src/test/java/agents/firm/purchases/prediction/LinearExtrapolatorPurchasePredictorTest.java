@@ -19,6 +19,7 @@ import org.mockito.stubbing.Answer;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.*;
@@ -135,7 +136,7 @@ public class LinearExtrapolatorPurchasePredictorTest
 
 
         //read data from file!
-        CSVReader reader = new CSVReader(new FileReader("./src/test/EMAtest.csv"));
+        CSVReader reader = new CSVReader(new FileReader(Paths.get("testresources", "EMAtest.csv").toFile()));
         reader.readNext(); //ignore the header!
 
         ArrayList<Float> prices = new ArrayList<>(200);

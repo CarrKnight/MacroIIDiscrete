@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.*;
@@ -41,7 +42,7 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictorTest {
     public void testing() throws IOException {
 
         //read data from file!
-        CSVReader reader = new CSVReader(new FileReader("./src/test/regressionTest.csv"));
+        CSVReader reader = new CSVReader(new FileReader( Paths.get("testresources","regressionTest.csv").toFile()));
         reader.readNext(); //ignore the header!
 
         ArrayList<Double> prices = new ArrayList<>(900);

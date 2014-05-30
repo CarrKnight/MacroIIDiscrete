@@ -10,6 +10,7 @@ import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentFactory;
+import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.SurveySalesPredictor;
@@ -59,7 +60,7 @@ public class SalesDepartmentTest {
         market.setOrderHandler(new ImmediateOrderHandler(),model);
         Firm firm = new Firm(model);
         dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, market, 
-                new SimpleBuyerSearch(market, firm), new SimpleSellerSearch(market, firm), agents.firm.sales.SalesDepartmentAllAtOnce.class);
+                new SimpleBuyerSearch(market, firm), new SimpleSellerSearch(market, firm), SalesDepartmentOneAtATime.class);
         firm.registerSaleDepartment(dept,market.getGoodType());
 
         for(int i=0; i<10; i++) //create 10 buyers!!!!!!!!
@@ -146,6 +147,7 @@ public class SalesDepartmentTest {
         dept.getMarket().registerBuyer(buyer);
         dept.getMarket().submitBuyQuote(buyer,buyer.quotedPrice);
 
+        model.schedule.step(model);
 
         //when the dust settles...
         assertEquals(20l, dept.getMarket().getBestBuyPrice()); //all the others should have been taken

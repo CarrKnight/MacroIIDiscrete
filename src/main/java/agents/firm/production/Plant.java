@@ -317,15 +317,11 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
             {
                 counter.countNewProduction(output.getKey(),totalOutput);//tell the plant counter
                 owner.countNewProduction(output.getKey(), totalOutput); //tell the firm counter
-
-            }
-            //for(int i=0; i < totalOutput; i++)
-            if(totalOutput > 0)
-            {
-
                 output.getKey().produceAndDeliver(totalOutput,owner,totalCostOfInputs);
-                assert owner.hasHowMany(output.getKey()) >= totalOutput;
+
+
             }
+
 
 
 
