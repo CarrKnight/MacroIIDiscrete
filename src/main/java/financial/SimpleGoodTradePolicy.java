@@ -74,8 +74,7 @@ public class SimpleGoodTradePolicy implements TradePolicy {
 
         //exchange money
         if(price>0) {
-            buyer.consumeMany(money, price); //buyer pays
-            seller.receiveMany(money, price); //seller earns
+            buyer.deliverMany(money,seller,price);
         }
         else
             assert price == 0;

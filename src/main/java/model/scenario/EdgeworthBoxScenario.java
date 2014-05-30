@@ -9,6 +9,8 @@ package model.scenario;
 import agents.people.*;
 import financial.market.EndOfPhaseOrderHandler;
 import financial.market.OrderBookMarket;
+import financial.market.OrderHandler;
+import financial.utilities.PricePolicy;
 import financial.utilities.ShopSetPricePolicy;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
@@ -54,6 +56,11 @@ public class EdgeworthBoxScenario extends Scenario {
 
     private OrderBookMarket goodMarket;
 
+    //these two are useful to change during tests to show they are not important, but I don't see them mattering in
+    //actual applications
+    private OrderHandler orderHandler = new EndOfPhaseOrderHandler();
+    private PricePolicy pricePolicy = new ShopSetPricePolicy();
+
 
     /**
      * Creates the scenario object, so that it links to the model.
@@ -71,11 +78,12 @@ public class EdgeworthBoxScenario extends Scenario {
 
         goodMarket = new OrderBookMarket(xType);
         goodMarket.setMoney(yType);
-        goodMarket.setOrderHandler(new EndOfPhaseOrderHandler(),model);
-        goodMarket.setPricePolicy(new ShopSetPricePolicy()); //make the seller price matter
+        goodMarket.setOrderHandler(orderHandler,model);
+        goodMarket.setPricePolicy(pricePolicy); //make the seller price matter
         getMarkets().put(xType,goodMarket);
         
         person1 = new Person(getModel());
+        person1.setName("Person1");
         person1.setProductionStrategy(new ConstantPersonalProductionStrategy(firstPersonDailyEndowmentOfX,xType));
         person1.setUtilityFunction(new CobbDouglas2GoodsUtility(xType, yType, alpha1));
         person1.setConsumptionStrategy(ConsumptionStrategy.Factory.build(ConsumeAllStrategy.class));
@@ -83,6 +91,7 @@ public class EdgeworthBoxScenario extends Scenario {
         getAgents().add(person1);
 
         person2 = new Person(getModel());
+        person2.setName("Person2");
         person2.setProductionStrategy(new ConstantPersonalProductionStrategy(secondPersonDailyEndowmentOfY,yType));
         person2.setUtilityFunction(new CobbDouglas2GoodsUtility(xType, yType, alpha2));
         person2.setConsumptionStrategy(ConsumptionStrategy.Factory.build(ConsumeAllStrategy.class));
@@ -156,5 +165,22 @@ public class EdgeworthBoxScenario extends Scenario {
 
     public void setSecondPersonDailyEndowmentOfY(int secondPersonDailyEndowmentOfY) {
         this.secondPersonDailyEndowmentOfY = secondPersonDailyEndowmentOfY;
+    }
+
+
+    public OrderHandler getOrderHandler() {
+        return orderHandler;
+    }
+
+    public void setOrderHandler(OrderHandler orderHandler) {
+        this.orderHandler = orderHandler;
+    }
+
+    public PricePolicy getPricePolicy() {
+        return pricePolicy;
+    }
+
+    public void setPricePolicy(PricePolicy pricePolicy) {
+        this.pricePolicy = pricePolicy;
     }
 }

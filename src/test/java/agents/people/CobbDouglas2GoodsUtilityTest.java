@@ -59,5 +59,20 @@ public class CobbDouglas2GoodsUtilityTest {
                 UndifferentiatedGoodType.MONEY,p),.001d);
         //at this point the person could place a bid 1
 
+
+        //if I invert the order, it doesn't matter!
+        utility =
+                new CobbDouglas2GoodsUtility(UndifferentiatedGoodType.MONEY,
+                        UndifferentiatedGoodType.GENERIC,.25f);
+
+        when(p.hasHowMany(UndifferentiatedGoodType.GENERIC)).thenReturn(9);
+        when(p.hasHowMany(UndifferentiatedGoodType.MONEY)).thenReturn(9);
+        Assert.assertEquals(10,utility.computesUtility(p),.01f);
+
+        Assert.assertEquals(3.717,utility.howMuchOfThisGoodDoYouNeedToCompensateTheLossOfOneUnitOfAnother(UndifferentiatedGoodType.GENERIC,
+                UndifferentiatedGoodType.MONEY,p),.001d);
+
+        Assert.assertEquals(2.48685,utility.howMuchOfThisGoodWouldYouGiveAwayInExchangeForOneUnitOfAnother(UndifferentiatedGoodType.GENERIC,
+                UndifferentiatedGoodType.MONEY,p),.001d);
     }
 }

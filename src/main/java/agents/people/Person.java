@@ -45,7 +45,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class Person extends EconomicAgent {
 
 
-    final private String name;
+    private String name;
 
 
     private int minimumDailyWagesRequired;
@@ -610,6 +610,7 @@ public class Person extends EconomicAgent {
         }
     }
 
-
-
+    public void setName(String name) {
+        this.name = name;
+    }
 }

@@ -1,0 +1,62 @@
+\documentclass[]{article}
+
+%opening
+\title{Simple Macro}
+\author{Ernesto}
+\begin{document}
+
+\maketitle
+
+\section{Simple world}
+There are $N$ people in the world. Each day a person has to decide whether to be farmer or worker.  
+As worker, a person gets daily wage $w$ and produces a fixed number $\gamma$ of manufactured goods. 
+As farmer, the person produces $\eta$ units of agricultural goods every day.
+$\eta$ is heterogeneous: the first farmer has $\eta=1$, the second $\eta=2$, and the last $\eta = N$. Personal agricultural production $\eta$ is not a function of how many other people farm, it is a personal parameter of each agent.
+
+
+For $L_m$ workers, total daily production is:
+\[ q_m = \gamma L_m \]
+A farmer will become a worker only if wages are above or equal its personal $\eta$. 
+Because I expect the "worst" farmers (those with the lowest $\eta$) to become workers first, daily wages are:
+\[ w_m = \frac{L_m(L_m+1)}{2}\]
+(which is just the sum of the first $L_m$ natural number).
+Since $L_a+L_m=N$ and we assume that only the best farmers remain so, total agricultural production is:
+\[ q_a =  \frac{N(N+1)}{2} - \frac{L_m(L_m+1)}{2} \]
+which simplifies in:
+\[q_a = \frac{L_a(N+1) -L_aL_m}{2} \]
+
+Every person has the same utility function:
+\[ U = q_a^{.5}q_m^{.5} \]
+Which has marginal rate of substitution of one to one.
+So setting MRS equal to price ratio, and remembering that $a$ is the monetary commodity so its price is one:
+\[ q_a = p_m q_m \]
+For workers, the budget constraint is:
+\[ q_a + p_m q_m = \frac{L_m(L_m+1)}{2}  \]
+\[ 2 p_m q_m = \frac{L_m(L_m+1)}{2}  \]
+\[ q_m = \frac{L_m(L_m+1)}{4 p_m}  \]
+A farmer budget constraint is contingent on its own personal production:
+\[ 2 p_m q_m = \eta_i \]
+\[ q_m = \frac{\eta_i}{2 p_m} \]
+
+So if we try to aggregate the demands we have $L_m$ worker demands and $N-L_m$ farmer demands:
+\[ q_m = L_m * \frac{L_m(L_m+1)}{4 p_m} + \sum_{i=L_m+1}^N \frac{\eta_i}{2 p_m}  \]
+The sum of all $\eta$s is just $q_a$, total agricultural production:
+\[q_m = L_m \times \frac{L_m(L_m+1)}{4 p_m} +  \frac{q_a}{2 p_m} \]
+Flip it so that we have price as a function of quantity:
+\[ p_m = \frac{2 q_a + L_m^3 +L_m^2 }{4 q_m}\]
+You can also exploit the fact that $L_m = \frac{q_m}{\gamma}$
+And the result is the messy:
+\[ p = \frac{2 q_a \gamma^3 + q_m^2 (\gamma + q_m)}{4 q_m \gamma^3} \]
+This is problematic because the demand function is not decreasing in $q_m$. This must be the income effect biting my ass.
+
+Starting from 
+\[q_m = L_m \times \frac{L_m(L_m+1)}{4 p_m} +  \frac{q_a}{2 p_m} \]
+We know that 
+\[ q_a =  \frac{N(N+1)}{2} - \frac{L_m(L_m+1)}{2} \]
+So
+\[q_m = L_m \times \frac{L_m(L_m+1)}{4 p_m} +  \frac{N(N+1)}{4 p_m} - \frac{L_m(L_m+1)}{4 p_m}  \]
+\[ 4 p_m q_m = (L_m-1)L_m(L_m+1) + N(N+1) \]
+\[ 4 p_m q_m = (L_m^3-L) + N(N+1) \]
+\[ p_m = \frac{L_m^3-L_m + N^2 + N}{4 q_m} \]
+
+\end{document}
