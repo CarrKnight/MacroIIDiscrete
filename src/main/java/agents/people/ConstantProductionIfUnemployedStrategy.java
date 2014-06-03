@@ -10,7 +10,8 @@ import goods.UndifferentiatedGoodType;
 import model.MacroII;
 
 /**
- * Like Constant Personal Production (which is in fact a delegate) except that it only produce if the worker has no employer
+ * Like Constant Personal Production (which is in fact a delegate) except that it only produce if the worker has no employer.
+ * Moreover, it sets minimum wage required equal to production
  * Created by carrknight on 5/17/14.
  */
 public class ConstantProductionIfUnemployedStrategy implements PersonalProductionStrategy {
@@ -49,6 +50,7 @@ public class ConstantProductionIfUnemployedStrategy implements PersonalProductio
 
     @Override
     public void produce(Person person, MacroII model) {
+        person.setMinimumDailyWagesRequired(getDailyProductionRate());
         if(person.getEmployer()==null)
             delegate.produce(person, model);
     }

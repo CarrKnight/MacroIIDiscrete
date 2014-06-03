@@ -43,7 +43,7 @@ public class SimpleHiringTradePolicy implements TradePolicy {
         assert seller.getEmployer() == null;
 
         if(buyer.hasHowMany(market.getMoney()) < price) //check that the buyer has money!
-            throw new RuntimeException("Hirer is out of a job!");
+            throw new RuntimeException("Hirer is out of money!");
 
         seller.hired(buyer,price);
         buyer.hire(seller,buyerQuote.getOriginator());

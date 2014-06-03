@@ -35,6 +35,7 @@ public class LinearConstantMachinery extends Machinery {
     private float oneWorkerThroughput;
 
     private float oneWorkerProductionTime = 7f;
+    private int maxWorkers = 100;
 
     public LinearConstantMachinery( GoodType type,  EconomicAgent producer, int costOfProduction,  Plant plant) {
         super(type, producer, costOfProduction);
@@ -158,7 +159,7 @@ public class LinearConstantMachinery extends Machinery {
      */
     @Override
     public int maximumWorkersPossible() {
-        return 100;
+        return maxWorkers;
     }
 
     /**
@@ -192,5 +193,9 @@ public class LinearConstantMachinery extends Machinery {
     public void setOneWorkerProductionTime(float oneWorkerProductionTime) {
         this.oneWorkerProductionTime = oneWorkerProductionTime;
         oneWorkerThroughput = ((float)plant.getModel().getWeekLength()) / oneWorkerProductionTime;
+    }
+
+    public void setMaxWorkers(int maxWorkers) {
+        this.maxWorkers = maxWorkers;
     }
 }

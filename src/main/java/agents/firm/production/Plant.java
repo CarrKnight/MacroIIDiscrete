@@ -597,7 +597,7 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
 
         int originalNumberOfWorkers = getNumberOfWorkers();
 
-        if(getNumberOfWorkers() + newHires.length > maxWorkers)
+        if(getNumberOfWorkers() + newHires.length > getPlantMachinery().maximumWorkersPossible())
             throw new IllegalStateException("Trying to too many workers to the firm " + getNumberOfWorkers() + newHires.length);
 
 
@@ -1253,7 +1253,9 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
         Preconditions.checkNotNull(blueprint);
         //add the plant
         Plant plant = new Plant(blueprint, firm);
-        plant.setPlantMachinery(new LinearConstantMachinery(DifferentiatedGoodType.CAPITAL, firm, 0, plant));
+        final LinearConstantMachinery stubMachine = new LinearConstantMachinery(DifferentiatedGoodType.CAPITAL, firm, 0, plant);
+        stubMachine.setMaxWorkers(1000);
+        plant.setPlantMachinery(stubMachine);
         plant.setCostStrategy(new InputCostStrategy(plant));
         firm.addPlant(plant);
         return plant;

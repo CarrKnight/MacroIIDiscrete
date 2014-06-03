@@ -36,8 +36,10 @@ public class ConstantPersonalProductionStrategy implements PersonalProductionStr
     @Override
     public void produce(Person person, MacroII model) {
 
-       if(dailyProductionRate > 0)
-           person.receiveMany(dailyProductionType,dailyProductionRate);
+       if(dailyProductionRate > 0) {
+           person.receiveMany(dailyProductionType, dailyProductionRate);
+           person.countNewProduction(dailyProductionType, dailyProductionRate);
+       }
 
     }
 

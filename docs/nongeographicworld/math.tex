@@ -1,5 +1,9 @@
 \documentclass[]{article}
 
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
 %opening
 \title{Simple Macro}
 \author{Ernesto}
@@ -11,52 +15,82 @@
 There are $N$ people in the world. Each day a person has to decide whether to be farmer or worker.  
 As worker, a person gets daily wage $w$ and produces a fixed number $\gamma$ of manufactured goods. 
 As farmer, the person produces $\eta$ units of agricultural goods every day.
-$\eta$ is heterogeneous: the first farmer has $\eta=1$, the second $\eta=2$, and the last $\eta = N$. Personal agricultural production $\eta$ is not a function of how many other people farm, it is a personal parameter of each agent.
+$\eta$ is heterogeneous: the first farmer was born with $\eta=1$, the second with $\eta=2$, and the last $\eta = N$. 
+Personal agricultural production $\eta$ is not a function of how many other people farm, it is a personal parameter of each agent.
 
-
-For $L_m$ workers, total daily production is:
-\[ q_m = \gamma L_m \]
+In aggregate, $L_m$ is the number of people who works in manufacturing, $L_a$ in farming. 
+\[ L_a + L_m = N \]
+Given $L_m$ workers, total daily production is:
+\[ Q_m = \gamma L_m \]
 A farmer will become a worker only if wages are above or equal its personal $\eta$. 
 Because I expect the "worst" farmers (those with the lowest $\eta$) to become workers first, daily wages are:
-\[ w_m = \frac{L_m(L_m+1)}{2}\]
-(which is just the sum of the first $L_m$ natural number).
-Since $L_a+L_m=N$ and we assume that only the best farmers remain so, total agricultural production is:
+\[ w_m \geq L_m\]
+The $L_a$ people with the highest $\eta$s will be farmers, total agricultural production is:
 \[ q_a =  \frac{N(N+1)}{2} - \frac{L_m(L_m+1)}{2} \]
-which simplifies in:
+(that's the sum of all integers between $L_m+1$ and $N$ )which simplifies in:
 \[q_a = \frac{L_a(N+1) -L_aL_m}{2} \]
 
 Every person has the same utility function:
-\[ U = q_a^{.5}q_m^{.5} \]
-Which has marginal rate of substitution of one to one.
-So setting MRS equal to price ratio, and remembering that $a$ is the monetary commodity so its price is one:
-\[ q_a = p_m q_m \]
+\[ U = (q_a+1)^{.5}(q_m+1)^{.5} \]
+setting MRS equal to price ratio, and remembering that $a$ is the monetary commodity so its price is one:
+\begin{align*}
+\text{MRS} &= \frac{p_m}{p_a} \\
+\frac{\frac{\partial U}{\partial m}}{\frac{\partial U}{\partial a}} &= p_m \\
+q_a &= p_m(q_m+1)-1
+\end{align*}
 For workers, the budget constraint is:
-\[ q_a + p_m q_m = \frac{L_m(L_m+1)}{2}  \]
-\[ 2 p_m q_m = \frac{L_m(L_m+1)}{2}  \]
-\[ q_m = \frac{L_m(L_m+1)}{4 p_m}  \]
+\[ q_a + p_m q_m = L_m  \]
+Where $L_m$ is the wage.
+\[  p_m(q_m+1)-1 + p_m q_m = L_m  \]
+\[ q_m = \frac{L_m-p_m+1}{2 p_m}  \]
 A farmer budget constraint is contingent on its own personal production:
-\[ 2 p_m q_m = \eta_i \]
-\[ q_m = \frac{\eta_i}{2 p_m} \]
+\[q_a + p_m q_m = \eta_i \]
+\[ p_m(q_m+1)-1 + p_m q_m = \eta_i \]
+\[ q_m = \frac{\eta_i-p_m+1}{2 p_m} \]
 
-So if we try to aggregate the demands we have $L_m$ worker demands and $N-L_m$ farmer demands:
-\[ q_m = L_m * \frac{L_m(L_m+1)}{4 p_m} + \sum_{i=L_m+1}^N \frac{\eta_i}{2 p_m}  \]
-The sum of all $\eta$s is just $q_a$, total agricultural production:
-\[q_m = L_m \times \frac{L_m(L_m+1)}{4 p_m} +  \frac{q_a}{2 p_m} \]
-Flip it so that we have price as a function of quantity:
-\[ p_m = \frac{2 q_a + L_m^3 +L_m^2 }{4 q_m}\]
-You can also exploit the fact that $L_m = \frac{q_m}{\gamma}$
-And the result is the messy:
-\[ p = \frac{2 q_a \gamma^3 + q_m^2 (\gamma + q_m)}{4 q_m \gamma^3} \]
-This is problematic because the demand function is not decreasing in $q_m$. This must be the income effect biting my ass.
+Let's aggregate demands. We sum up the demand for all workers, which are all identical and the demand for farmers which are heterogeneous:
+\[Q_m = L_m \times \text{Worker demand}) + \sum \text{Farmer Demand}\]
+\[ Q_m = L_m \left( \frac{L_m}{2p_m} + \frac{1 - p_m}{2p_m} \right) +  \sum \left( \frac{\eta}{2p_m} + \frac{1 - p_m}{2p_m} \right) \]
+Now, $\sum \eta_i$ is just total agricultural production $Q_a$.
+\[ Q_m = \frac{L^2_m}{2p_m} + L_m\frac{1 - p_m}{2p_m}  +   \frac{Q_a}{2p_m} + L_a\frac{1 - p_m}{2p_m}  \]
+$L_a + L_m$ is everyone so:
+\[ Q_m = \frac{L^2_m}{2p_m} +   \frac{Q_a}{2p_m} + N\frac{1 - p_m}{2p_m}  \]
+\[ Q_m = \frac{L^2_m + Q_a +N(1 - p_m)}{2p_m} \]
+Or if we want the price:
+\[ p_m = \frac{q_a + L_m^2 + N}{2 q_m + N}\]
 
-Starting from 
-\[q_m = L_m \times \frac{L_m(L_m+1)}{4 p_m} +  \frac{q_a}{2 p_m} \]
-We know that 
-\[ q_a =  \frac{N(N+1)}{2} - \frac{L_m(L_m+1)}{2} \]
-So
-\[q_m = L_m \times \frac{L_m(L_m+1)}{4 p_m} +  \frac{N(N+1)}{4 p_m} - \frac{L_m(L_m+1)}{4 p_m}  \]
-\[ 4 p_m q_m = (L_m-1)L_m(L_m+1) + N(N+1) \]
-\[ 4 p_m q_m = (L_m^3-L) + N(N+1) \]
-\[ p_m = \frac{L_m^3-L_m + N^2 + N}{4 q_m} \]
+Notice that $L_m$ is really a function of $q$ so we could simply further, but for now keep it like that.
 
+\section{Zero profits}
+Manufacturing must make zero profits
+\[ p_m q_m - w L_m = 0\]
+\[ p_m \frac{L^2_m + Q_a +N(1 - p_m)}{2p_m} - L^2_m = 0\]
+Now if we add this condition, we have a sistem of 5 equations in 5 unknowns (after setting $N=50$, $\gamma=10$):
+\[
+\begin{cases}  p_m \frac{L^2_m + Q_a +50(1 - p_m)}{2p_m} - L^2_m = 0 & \text{Profits are 0 }
+\\ Q_a =  \frac{50(50+1)}{2} - \frac{L_m(L_m+1)}{2} & \text{Agricultural production definition } \\
+ L_a + L_m = N &\text{Everybody is employed } \\ 
+Q_m = 10 L_m &\text{Linear manufacturing production } \\
+p_m = \frac{Q_a + L_m^2 + 50}{2 Q_m + 50} &\text{Demand function }
+ \end{cases} 
+\]
+
+And you end up with
+\begin{align*}
+L_m &= 27.9441 \approx 28 \\
+L_a &\approx 22 \\
+Q_m &\approx 280 \\
+Q_a &\approx 869 \\
+p &\approx 2.70 \\
+\end{align*}
+
+
+If $N=200$ instead:
+\begin{align*}
+L_m &= 109.7 \approx 110 \\
+L_a &\approx 90 \\
+Q_m &\approx 1100 \\
+Q_a &\approx 13995 \\
+p &\approx 10.95 \\
+\end{align*}
 \end{document}
