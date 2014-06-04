@@ -22,7 +22,7 @@ import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
+import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.people.*;
 import financial.market.EndOfPhaseOrderHandler;
 import financial.market.OrderBookMarket;
@@ -161,14 +161,15 @@ public class FarmersAndWorkersScenario extends Scenario {
     private Firm createFirm(MacroII model, OrderBookMarket laborMarket, OrderBookMarket goodMarket)
     {
         Firm firm = new Firm(model);
-        firm.receiveMany(AGRICULTURE,1000);
+        firm.receiveMany(AGRICULTURE,50000);
 
         //sales department
         SalesDepartment salesDepartment = SalesDepartmentFactory.incompleteSalesDepartment(firm, goodMarket,
                 new SimpleBuyerSearch(goodMarket, firm), new SimpleSellerSearch(goodMarket, firm), SalesDepartmentOneAtATime.class);
         //give the sale department a simple PID
-        final SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly strategy = new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(salesDepartment);
-        strategy.setGains(strategy.getProportionalGain()/100,strategy.getIntegralGain()/100,strategy.getDerivativeGain()/100);
+        final SalesControlWithFixedInventoryAndPID strategy = new SalesControlWithFixedInventoryAndPID(salesDepartment,1000);
+        strategy.setGainsSlavePID(strategy.getProportionalGain() / 100, strategy.getIntegralGain() / 100, strategy.getDerivativeGain() / 100);
+
         salesDepartment.setAskPricingStrategy(strategy);
 
         salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
