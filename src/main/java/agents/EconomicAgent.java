@@ -428,6 +428,15 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
         counter.countNewProduction(type);
     }
 
+    /**
+     * Like weekStart, weekEnd should be mostly about accounting.
+     *
+     * @param time
+     */
+    @Override
+    public void weekEnd(double time) {
+
+    }
 
     /**
      * A set of all goods consumed/produced/glimpsed by the agent

@@ -672,9 +672,9 @@ public class MonopolistScenarioTest {
 
 
     @Test
-    public void rightPriceAndQuantityTestAsMarginal()
+    public void rightPriceAndQuantityTestAsMarginalNoInventory()
     {
-        for(int i=0; i<50; i++)
+        for(int i=0; i<10; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -887,7 +887,7 @@ public class MonopolistScenarioTest {
 
 
     @Test
-    public void rightPriceAndQuantityTestAsMarginalWithSalesControlFlowPIDWithFixedInventory()
+    public void rightPriceAndQuantityTestAsMarginalWithSalesControlIDWithFixedInventory()
     {
         for(int i=0; i<10; i++)
         {
