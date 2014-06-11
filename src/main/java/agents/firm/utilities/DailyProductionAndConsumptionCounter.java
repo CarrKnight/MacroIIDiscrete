@@ -60,18 +60,6 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
 
     private HashMap<GoodType,Integer> producedYesterday;
 
-    private HashMap<GoodType,Integer> producedThisWeek;
-
-    private HashMap<GoodType,Integer> producedLastWeek;
-
-    private HashMap<GoodType,Integer> boughtOrProducedThisWeek;
-
-    private HashMap<GoodType,Integer> boughtOrProducedLastWeek;
-
-
-    private HashMap<GoodType,Integer> consumedThisWeek;
-
-    private HashMap<GoodType,Integer> consumedLastWeek;
 
 
     private boolean active = true;
@@ -90,13 +78,6 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
         consumedYesterday = new HashMap<>();
         boughtOrProducedYesterday = new HashMap<>();
         producedYesterday = new HashMap<>();
-        //weekly too
-        producedThisWeek = new HashMap<>();
-        producedLastWeek = new HashMap<>();
-        consumedThisWeek = new HashMap<>();
-        consumedLastWeek = new HashMap<>();
-        boughtOrProducedLastWeek = new HashMap<>();
-        boughtOrProducedThisWeek = new HashMap<>();
 
     }
 
@@ -144,25 +125,12 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     }
 
 
-    public void weekEnd()
-    {
-        consumedLastWeek = consumedThisWeek;
-        producedLastWeek = producedThisWeek;
-        boughtOrProducedLastWeek = boughtOrProducedThisWeek;
-
-        consumedThisWeek = new HashMap<>();
-        producedThisWeek = new HashMap<>();
-        boughtOrProducedThisWeek = new HashMap<>();
-    }
-
-
     /**
      * Tell the counter something has been consumed
      */
     public void countNewConsumption(GoodType type)
     {
         increaseByOne(consumedToday,type);
-        increaseByOne(consumedThisWeek,type);
     }
 
     /**
@@ -171,7 +139,6 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     public void countNewConsumption(GoodType type, Integer n)
     {
         increaseByN(consumedToday,type,n);
-        increaseByN(consumedThisWeek,type,n);
     }
 
     /**
@@ -180,7 +147,6 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     public void countNewProduction(GoodType type)
     {
         increaseByOne(producedToday,type);
-        increaseByOne(producedThisWeek,type);
     }
 
     /**
@@ -189,7 +155,6 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     public void countNewProduction(GoodType type, Integer n)
     {
         increaseByN(producedToday,type,n);
-        increaseByN(producedThisWeek,type,n);
     }
 
     /**
@@ -198,7 +163,6 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     public void countNewReceive(GoodType type)
     {
         increaseByOne(boughtOrProducedToday,type);
-        increaseByOne(boughtOrProducedThisWeek,type);
     }
 
     /**
@@ -207,7 +171,6 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     public void countNewReceive(GoodType type, Integer n)
     {
         increaseByN(boughtOrProducedToday,type,n);
-        increaseByN(boughtOrProducedThisWeek,type,n);
     }
 
     /**
@@ -216,14 +179,6 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     public int getTodayConsumption(GoodType type)
     {
         return lookupMap(consumedToday,type);
-
-    }
-    /**
-     * get this week consumption
-     */
-    public int getThisWeekConsumption(GoodType type)
-    {
-        return lookupMap(consumedThisWeek,type);
 
     }
 
@@ -238,29 +193,11 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
 
 
     /**
-     * get yesterday consumption
-     */
-    public int getLastWeekConsumption(GoodType type)
-    {
-        return lookupMap(consumedLastWeek,type);
-
-    }
-
-
-    /**
      * get today Production
      */
     public int getTodayProduction(GoodType type)
     {
         return lookupMap(producedToday,type);
-
-    }
-    /**
-     * get this week Production
-     */
-    public int getThisWeekProduction(GoodType type)
-    {
-        return lookupMap(producedThisWeek,type);
 
     }
 
@@ -270,15 +207,6 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     public int getYesterdayProduction(GoodType type)
     {
         return lookupMap(producedYesterday,type);
-
-    }
-
-    /**
-     * get lastweek Production
-     */
-    public int getLastWeekProduction(GoodType type)
-    {
-        return lookupMap(producedLastWeek,type);
 
     }
 
@@ -295,17 +223,6 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
     }
 
     /**
-     * get # of goods bought (not produced) this week
-     */
-    public int getThisWeekAcquisitions(GoodType type)
-    {
-        int acquisitions = lookupMap(boughtOrProducedThisWeek,type) -  lookupMap(producedThisWeek,type);
-        assert acquisitions >= 0;
-        return acquisitions;
-
-    }
-
-    /**
      * get # of goods bought (not produced) yesterday
      */
     public int getYesterdayAcquisitions(GoodType type)
@@ -313,18 +230,6 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
         int acquisitions = lookupMap(boughtOrProducedYesterday,type) -  lookupMap(producedYesterday,type);
         assert acquisitions >= 0;
         return acquisitions;
-    }
-
-
-    /**
-     * get # of goods bought (not produced) last week
-     */
-    public int getLastWeekAcquisitions(GoodType type)
-    {
-        int acquisitions = lookupMap(boughtOrProducedLastWeek,type) -  lookupMap(producedLastWeek,type);
-        assert acquisitions >= 0;
-        return acquisitions;
-
     }
 
 

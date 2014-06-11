@@ -107,13 +107,6 @@ public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
 
     }
 
-    private void setCorrectStartingDate(MacroII model) {
-        setStartingDay((int) Math.round(model.getMainScheduleTime()));
-
-        for(DailyObservations obs : data.values())
-            obs.setStartingDay(getStartingDay());
-    }
-
     @Override
     public void turnOff() {
         super.turnOff();

@@ -135,12 +135,6 @@ public class PlantData extends DataStorage<PlantDataType> {
 
     }
 
-    private void setCorrectStartingDate(MacroII model) {
-        setStartingDay((int) Math.round(model.getMainScheduleTime()));
-
-        for(DailyObservations obs : data.values())
-            obs.setStartingDay(getStartingDay());
-    }
 
     @Override
     public void turnOff() {

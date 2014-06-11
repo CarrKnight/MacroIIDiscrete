@@ -7,6 +7,7 @@
 package model.utilities.stats.collectors;
 
 import com.google.common.base.Preconditions;
+import model.MacroII;
 import model.utilities.stats.collectors.enums.DataStorageSkeleton;
 
 import java.util.EnumMap;
@@ -73,6 +74,13 @@ public abstract class DataStorage<T extends  Enum<T>> extends DataStorageSkeleto
 
     public boolean isActive() {
         return active;
+    }
+
+    protected void setCorrectStartingDate(MacroII model) {
+        setStartingDay((int) Math.round(model.getMainScheduleTime()));
+
+        for(DailyObservations obs : data.values())
+            obs.setStartingDay(getStartingDay());
     }
 
     @Override

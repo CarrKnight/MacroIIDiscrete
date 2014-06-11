@@ -629,7 +629,6 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
      */
     public void weekEnd(double time) {
         age++;
-        counter.weekEnd(); //tell the production counter weekend arrived.
 
         if(age == usefulLife)
         {//if the plant is too old
@@ -865,15 +864,6 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
     public void fireWageEvent(long wage){
         for(PlantListener listener : listeners)
             listener.changeInWageEvent(this, getNumberOfWorkers(),wage);
-    }
-
-    public int getLastWeekThroughput(GoodType produced) {
-
-        return counter.getLastWeekProduction(produced);
-    }
-
-    public int getThisWeekThroughput(GoodType produced) {
-        return counter.getThisWeekProduction(produced);
     }
 
     public int getProducedYesterday(GoodType produced) {

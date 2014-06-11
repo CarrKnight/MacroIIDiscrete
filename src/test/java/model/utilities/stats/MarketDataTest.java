@@ -6,7 +6,10 @@
 
 package model.utilities.stats;
 
+import agents.EconomicAgent;
 import financial.market.Market;
+import goods.UndifferentiatedGoodType;
+import javafx.collections.FXCollections;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.MarketData;
@@ -38,6 +41,8 @@ public class MarketDataTest
     public void rescheduleItself()
     {
         Market market = mock(Market.class);
+        when(market.getBuyers()).thenReturn(FXCollections.emptyObservableSet());
+        when(market.getSellers()).thenReturn(FXCollections.emptyObservableSet());
         MacroII model = mock(MacroII.class);
         MarketData data = new MarketData();
 
@@ -52,12 +57,15 @@ public class MarketDataTest
         data.step(model);
         verify(model, times(2)).scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, data); //only the two old times are counted!
     }
-    
-    
-    @Test 
+
+
+    @Test
     public void acceptableDays()
     {
         Market market = mock(Market.class);
+        when(market.getBuyers()).thenReturn(FXCollections.emptyObservableSet());
+        when(market.getSellers()).thenReturn(FXCollections.emptyObservableSet());
+
         MacroII model = mock(MacroII.class);
         when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
@@ -66,6 +74,8 @@ public class MarketDataTest
         data.start(model,market);
         //put in price data
         when(market.getLastPrice()).thenReturn(1,2,3);
+        when(model.getMainScheduleTime()).thenReturn(0d,1d,2d);
+
         data.step(model);
         data.step(model);
         data.step(model);
@@ -74,13 +84,13 @@ public class MarketDataTest
             @Override
             public boolean acceptDay(Double lastPrice, Double volumeTraded, Double volumeProduced, Double volumeConsumed, Double demandGap, Double supplyGap) {
                 return lastPrice >=2;
-                
+
             }
         };
-        
+
         Assert.assertArrayEquals(new int[]{1,2},data.getAcceptableDays(new int[]{0,1,2},acceptor));
-        
-        
+
+
     }
 
 
@@ -89,6 +99,9 @@ public class MarketDataTest
     {
 
         Market market = mock(Market.class);
+        when(market.getBuyers()).thenReturn(FXCollections.emptyObservableSet());
+        when(market.getSellers()).thenReturn(FXCollections.emptyObservableSet());
+
         MacroII model = mock(MacroII.class);
         when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
@@ -97,6 +110,8 @@ public class MarketDataTest
         data.start(model,market);
         //put in price data
         when(market.getLastPrice()).thenReturn(1,2,3);
+        when(model.getMainScheduleTime()).thenReturn(0d,1d,2d);
+
         data.step(model);
         data.step(model);
         data.step(model);
@@ -121,6 +136,9 @@ public class MarketDataTest
     {
 
         Market market = mock(Market.class);
+        when(market.getBuyers()).thenReturn(FXCollections.emptyObservableSet());
+        when(market.getSellers()).thenReturn(FXCollections.emptyObservableSet());
+
         MacroII model = mock(MacroII.class);
         when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
@@ -129,6 +147,8 @@ public class MarketDataTest
         data.start(model, market);
         //put in price data
         when(market.getTodayVolume()).thenReturn(1,2,3);
+        when(model.getMainScheduleTime()).thenReturn(0d,1d,2d);
+
         data.step(model);
         data.step(model);
         data.step(model);
@@ -152,6 +172,11 @@ public class MarketDataTest
     {
 
         Market market = mock(Market.class);
+        EconomicAgent buyer = mock(EconomicAgent.class);
+        EconomicAgent seller = mock(EconomicAgent.class);
+        when(market.getBuyers()).thenReturn(FXCollections.observableSet(buyer));
+        when(market.getSellers()).thenReturn(FXCollections.observableSet(seller));
+
         MacroII model = mock(MacroII.class);
         when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
@@ -159,7 +184,10 @@ public class MarketDataTest
 
         data.start(model, market);
         //put in price data
-        when(market.countTodayConsumptionByRegisteredBuyers()).thenReturn(1,2,3);
+        when(buyer.getTodayConsumption(market.getGoodType())).thenReturn(1,0,3);
+        when(seller.getTodayConsumption(market.getGoodType())).thenReturn(0,2,0);
+        when(model.getMainScheduleTime()).thenReturn(0d,1d,2d);
+
         data.step(model);
         data.step(model);
         data.step(model);
@@ -183,7 +211,12 @@ public class MarketDataTest
     public void productionTest()
     {
 
-        Market market = mock(Market.class);
+        Market market = mock(Market.class); when(market.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
+        EconomicAgent buyer = mock(EconomicAgent.class);
+        EconomicAgent seller = mock(EconomicAgent.class);
+        when(market.getBuyers()).thenReturn(FXCollections.observableSet(buyer));
+        when(market.getSellers()).thenReturn(FXCollections.observableSet(seller));
+
         MacroII model = mock(MacroII.class);
         when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
@@ -191,7 +224,11 @@ public class MarketDataTest
 
         data.start(model, market);
         //put in price data
-        when(market.countTodayProductionByRegisteredSellers()).thenReturn(1,2,3);
+
+        when(buyer.getTodayProduction(market.getGoodType())).thenReturn(1,0,3);
+        when(seller.getTodayProduction(market.getGoodType())).thenReturn(0,2,0);
+        when(model.getMainScheduleTime()).thenReturn(0d,1d,2d);
+
         data.step(model);
         data.step(model);
         data.step(model);
@@ -217,6 +254,11 @@ public class MarketDataTest
     {
 
         Market market = mock(Market.class);
+        EconomicAgent buyer = mock(EconomicAgent.class);
+        EconomicAgent seller = mock(EconomicAgent.class);
+        when(market.getBuyers()).thenReturn(FXCollections.observableSet(buyer));
+        when(market.getSellers()).thenReturn(FXCollections.observableSet(seller));
+
         MacroII model = mock(MacroII.class);
         when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
@@ -224,7 +266,10 @@ public class MarketDataTest
 
         data.start(model, market);
         //put in price data
-        when(market.sumDemandGaps()).thenReturn(1,2,3);
+        when(buyer.estimateDemandGap(market.getGoodType())).thenReturn(1,2,3);
+        when(seller.estimateDemandGap(market.getGoodType())).thenReturn(1,2,3);
+        when(model.getMainScheduleTime()).thenReturn(0d,1d,2d);
+
         data.step(model);
         data.step(model);
         data.step(model);
@@ -250,6 +295,11 @@ public class MarketDataTest
     {
 
         Market market = mock(Market.class);
+        EconomicAgent buyer = mock(EconomicAgent.class);
+        EconomicAgent seller = mock(EconomicAgent.class);
+        when(market.getBuyers()).thenReturn(FXCollections.observableSet(buyer));
+        when(market.getSellers()).thenReturn(FXCollections.observableSet(seller));
+
         MacroII model = mock(MacroII.class);
         when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
         when(model.getMainScheduleTime()).thenReturn(-1d);
@@ -257,7 +307,10 @@ public class MarketDataTest
 
         data.start(model, market);
         //put in price data
-        when(market.sumSupplyGaps()).thenReturn(1,2,3);
+        when(buyer.estimateSupplyGap(market.getGoodType())).thenReturn(1f,2f,3f);
+        when(seller.estimateSupplyGap(market.getGoodType())).thenReturn(1f, 2f, 3f);
+        when(model.getMainScheduleTime()).thenReturn(0d, 1d, 2d);
+
         data.step(model);
         data.step(model);
         data.step(model);
@@ -277,5 +330,89 @@ public class MarketDataTest
     }
 
 
+
+
+    @Test
+    public void cashCountTest()
+    {
+
+        Market market = mock(Market.class); when(market.getMoney()).thenReturn(UndifferentiatedGoodType.MONEY);
+        EconomicAgent buyer = mock(EconomicAgent.class);
+        EconomicAgent seller = mock(EconomicAgent.class);
+        when(market.getBuyers()).thenReturn(FXCollections.observableSet(buyer));
+        when(market.getSellers()).thenReturn(FXCollections.observableSet(seller));
+
+        MacroII model = mock(MacroII.class);
+        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
+        when(model.getMainScheduleTime()).thenReturn(-1d);
+        MarketData data = new MarketData();
+
+        data.start(model, market);
+        //put in price data
+        when(model.getMainScheduleTime()).thenReturn(0d,1d,2d);
+        when(buyer.hasHowMany(UndifferentiatedGoodType.MONEY)).thenReturn(10,20,30);
+        when(seller.hasHowMany(UndifferentiatedGoodType.MONEY)).thenReturn(10,20,10);
+
+        //total cash reserves: 20,40,40
+
+        data.step(model);
+        data.step(model);
+        data.step(model);
+
+        //make sure it works!
+        //make sure it works!
+        Assert.assertEquals(data.numberOfObservations(), 3);
+        Assert.assertEquals(data.getObservationRecordedThisDay(MarketDataType.CASH_RESERVES,0),20d,.00001d);
+        Assert.assertEquals(data.getLatestObservation(MarketDataType.CASH_RESERVES),40d,.00001d);
+        Assert.assertEquals(data.getObservationRecordedThisDay(MarketDataType.CASH_RESERVES,2),40d,.00001d);
+        Assert.assertArrayEquals(data.getAllRecordedObservations(MarketDataType.CASH_RESERVES),new double[]{20d,40d,40d},.0001d);
+        Assert.assertArrayEquals(data.getObservationsRecordedTheseDays(MarketDataType.CASH_RESERVES,new int[]{0, 2}),
+                new double[]{20d,40d},.0001d);
+        Assert.assertArrayEquals(data.getObservationsRecordedTheseDays(MarketDataType.CASH_RESERVES,0, 1),
+                new double[]{20d,40d},.0001d);
+
+    }
+
+
+    @Test
+    public void cashProductionCountTest()
+    {
+
+        Market market = mock(Market.class); when(market.getMoney()).thenReturn(UndifferentiatedGoodType.MONEY);
+        EconomicAgent buyer = mock(EconomicAgent.class);
+        EconomicAgent seller = mock(EconomicAgent.class);
+        when(market.getBuyers()).thenReturn(FXCollections.observableSet(buyer));
+        when(market.getSellers()).thenReturn(FXCollections.observableSet(seller));
+
+        MacroII model = mock(MacroII.class);
+        when(model.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
+        when(model.getMainScheduleTime()).thenReturn(-1d);
+        MarketData data = new MarketData();
+
+        data.start(model, market);
+        //put in price data
+        when(model.getMainScheduleTime()).thenReturn(0d,1d,2d);
+        when(buyer.getTodayProduction(UndifferentiatedGoodType.MONEY)).thenReturn(10,20,30);
+        when(seller.getTodayProduction(UndifferentiatedGoodType.MONEY)).thenReturn(10,20,10);
+
+        //total cash reserves: 20,40,40
+
+        data.step(model);
+        data.step(model);
+        data.step(model);
+
+        //make sure it works!
+        //make sure it works!
+        Assert.assertEquals(data.numberOfObservations(), 3);
+        Assert.assertEquals(data.getObservationRecordedThisDay(MarketDataType.CASH_PRODUCED,0),20d,.00001d);
+        Assert.assertEquals(data.getLatestObservation(MarketDataType.CASH_PRODUCED),40d,.00001d);
+        Assert.assertEquals(data.getObservationRecordedThisDay(MarketDataType.CASH_PRODUCED,2),40d,.00001d);
+        Assert.assertArrayEquals(data.getAllRecordedObservations(MarketDataType.CASH_PRODUCED),new double[]{20d,40d,40d},.0001d);
+        Assert.assertArrayEquals(data.getObservationsRecordedTheseDays(MarketDataType.CASH_PRODUCED,new int[]{0, 2}),
+                new double[]{20d,40d},.0001d);
+        Assert.assertArrayEquals(data.getObservationsRecordedTheseDays(MarketDataType.CASH_PRODUCED,0, 1),
+                new double[]{20d,40d},.0001d);
+
+    }
 
 }

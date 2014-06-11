@@ -59,15 +59,7 @@ public class MacroII extends SimState{
      */
     private float weekLength = 7;
 
-    /**
-     * How many weeks passed since we started the model?
-     */
-    private int weeksPassed = 0;
 
-    /**
-     * This is just how many milliseconds are there in a week
-     */
-    private final static long MILLISECONDS_IN_A_WEEK = 604800000l;
 
 
     /**
@@ -210,8 +202,7 @@ public class MacroII extends SimState{
     @Override
     public void start() {
         super.start();
-        //make sure counters are at 0
-        weeksPassed = 0;
+
 
 
         //if there is no scenario, create one!
@@ -393,7 +384,6 @@ public class MacroII extends SimState{
 
 
     public void weekEnd(){
-        weeksPassed++;
 
         //    Collections.shuffle(agents,new Random(random.nextLong())); //todo make this shuffled by the MersenneTwisterFast
 

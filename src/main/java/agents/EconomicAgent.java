@@ -106,10 +106,7 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
 
 
 
-    @Override
-    public void weekEnd(double time) {
-        counter.weekEnd();
-    }
+
 
     @Override
     public void step(SimState simState) {

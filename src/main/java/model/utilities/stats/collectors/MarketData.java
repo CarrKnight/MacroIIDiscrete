@@ -6,8 +6,11 @@
 
 package model.utilities.stats.collectors;
 
+import agents.EconomicAgent;
 import com.google.common.base.Preconditions;
 import financial.market.Market;
+import goods.GoodType;
+import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.enums.MarketDataType;
@@ -42,7 +45,6 @@ public class MarketData extends DataStorage<MarketDataType>
     private Market marketToFollow;
 
 
-
     public MarketData() {
         super(MarketDataType.class);
     }
@@ -52,24 +54,74 @@ public class MarketData extends DataStorage<MarketDataType>
         if(!isActive())
             return;
 
+
+
+        if(getStartingDay()==-1) {
+            setCorrectStartingDate((MacroII) state);
+        }
+        assert getStartingDay() >=0;
+
         //make sure it's the right time
         assert state instanceof MacroII;
         MacroII model = (MacroII) state;
         Preconditions.checkState(model.getCurrentPhase().equals(ActionOrder.CLEANUP_DATA_GATHERING));
         Preconditions.checkNotNull(marketToFollow);
 
-        //memorize
+        //note prices and volumes. These are easy!
         data.get(MarketDataType.CLOSING_PRICE).add((double) marketToFollow.getLastPrice());
         int todayVolume = marketToFollow.getTodayVolume();
         data.get(MarketDataType.VOLUME_TRADED).add((double) todayVolume);
-        data.get(MarketDataType.VOLUME_CONSUMED).add((double) marketToFollow.countTodayConsumptionByRegisteredBuyers());
-        data.get(MarketDataType.SELLERS_INVENTORY).add((double) marketToFollow.countTodayInventoryByRegisteredSellers());
-        data.get(MarketDataType.BUYERS_INVENTORY).add((double) marketToFollow.countTodayInventoryByRegisteredBuyers());
-        data.get(MarketDataType.VOLUME_PRODUCED).add((double) marketToFollow.countTodayProductionByRegisteredSellers());
-        data.get(MarketDataType.DEMAND_GAP).add((double)marketToFollow.sumDemandGaps());
-        data.get(MarketDataType.SUPPLY_GAP).add((double) marketToFollow.sumSupplyGaps());
         float todayAveragePrice = marketToFollow.getTodayAveragePrice();
         data.get(MarketDataType.AVERAGE_CLOSING_PRICE).add((double) todayAveragePrice);
+
+        //new stuff
+        double cashProduced = 0;
+        double todayCashInventory=0;
+        double totalConsumption = 0;
+        double totalProduction = 0;
+        double demandGap = 0;
+        double supplyGap = 0;
+        double sellerInventory=0;
+        double buyerInventory=0;
+        final UndifferentiatedGoodType money = marketToFollow.getMoney();
+        final GoodType goodTraded = marketToFollow.getGoodType();
+
+        //a single loop rather than a million small loops
+        for(EconomicAgent a : marketToFollow.getBuyers())
+        {
+            cashProduced += a.getTodayProduction(money);
+            todayCashInventory += a.hasHowMany(money);
+            totalConsumption += a.getTodayConsumption(goodTraded);
+            totalProduction += a.getTodayProduction(goodTraded);
+            demandGap += a.estimateDemandGap(goodTraded);
+            buyerInventory += a.hasHowMany(goodTraded);
+
+
+        }
+        for(EconomicAgent a : marketToFollow.getSellers())
+        {
+            cashProduced += a.getTodayProduction(money);
+            todayCashInventory += a.hasHowMany(money);
+            totalConsumption += a.getTodayConsumption(goodTraded);
+            totalProduction += a.getTodayProduction(goodTraded);
+            supplyGap+= a.estimateSupplyGap(goodTraded);
+            sellerInventory += a.hasHowMany(goodTraded);
+
+        }
+        double todayOutputInventory = sellerInventory + buyerInventory;
+        data.get(MarketDataType.SELLERS_INVENTORY).add(sellerInventory);
+        data.get(MarketDataType.BUYERS_INVENTORY).add( buyerInventory);
+        data.get(MarketDataType.VOLUME_CONSUMED).add(totalConsumption);
+        data.get(MarketDataType.VOLUME_PRODUCED).add(totalProduction);
+        data.get(MarketDataType.TOTAL_INVENTORY).add(todayOutputInventory);
+        data.get(MarketDataType.CASH_PRODUCED).add(cashProduced);
+        data.get(MarketDataType.CASH_RESERVES).add(todayCashInventory);
+        data.get(MarketDataType.DEMAND_GAP).add(demandGap);
+        data.get(MarketDataType.SUPPLY_GAP).add(supplyGap);
+
+
+
+
 
 
 
@@ -91,12 +143,9 @@ public class MarketData extends DataStorage<MarketDataType>
 
         //schedule yourself
         this.marketToFollow = marketToFollow;
-        setStartingDay((int) Math.round(state.getMainScheduleTime())+1);
+        //we are going to set the starting day at -1 and then change it at our first step()
+        setStartingDay(-1);
 
-        for(DailyObservations obs : data.values())
-            obs.setStartingDay(getStartingDay());
-
-        Preconditions.checkState(getStartingDay() >=0);
         state.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING,this);
     }
 

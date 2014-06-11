@@ -39,5 +39,12 @@ public enum MarketDataType {
 
     DEMAND_GAP,
 
-    SUPPLY_GAP
+    SUPPLY_GAP,
+
+    CASH_PRODUCED, //cash could be a good, after all...
+
+    CASH_RESERVES,
+
+    TOTAL_INVENTORY,
+
 }

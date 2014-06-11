@@ -237,6 +237,7 @@ public class FarmersAndWorkersScenario extends Scenario {
 
     }
 
+
     public int getNumberOfAgents() {
         return numberOfAgents;
     }
@@ -260,4 +261,35 @@ public class FarmersAndWorkersScenario extends Scenario {
     public List<Firm> getProducers() {
         return producers;
     }
+
+
+    private static enum PopulationDataType{
+
+        TOTAL_AGRICULTURAL_PRODUCTION,
+
+        TOTAL_MANUFACTURED_PRODUCTION,
+
+        TOTAL_AGRICULTURAL_CONSUMPTION,
+
+        TOTAL_MANUFACTURED_CONSUMPTION,
+
+        CASH_RESERVES,
+
+        OUTPUT_INVENTORY,
+
+        CHANGE_IN_INVENTORY,
+
+        CHANGE_IN_CASH_RESERVES,
+
+        GDP,
+
+        TOTAL_UTILITY,
+
+        GINI_COEFFICIENT
+
+
+    }
+
+
+
 }

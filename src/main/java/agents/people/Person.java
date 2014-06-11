@@ -613,4 +613,14 @@ public class Person extends EconomicAgent {
     public void setName(String name) {
         this.name = name;
     }
+
+    /**
+     * Like weekStart, weekEnd should be mostly about accounting.
+     *
+     * @param time
+     */
+    @Override
+    public void weekEnd(double time) {
+        //nada
+    }
 }
