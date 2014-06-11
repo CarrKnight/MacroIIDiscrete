@@ -222,7 +222,7 @@ public abstract class EconomicAgent implements Agent, HasInventory, LogNode
      */
     @Override
     public void deliver(Good g, HasInventory destination, int newPrice) {
-        getInventory().deliver(g, destination, newPrice, destination);
+        getInventory().deliver(g, destination, newPrice, this);
     }
 
     /**

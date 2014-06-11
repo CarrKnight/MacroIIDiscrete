@@ -6,7 +6,6 @@
 
 package tests;
 
-import agents.people.Person;
 import agents.firm.Firm;
 import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
@@ -14,6 +13,7 @@ import agents.firm.production.technology.CRSExponentialMachinery;
 import agents.firm.production.technology.DRSExponentialMachinery;
 import agents.firm.production.technology.ExponentialMachinery;
 import agents.firm.production.technology.IRSExponentialMachinery;
+import agents.people.Person;
 import financial.market.Market;
 import goods.DifferentiatedGoodType;
 import goods.UndifferentiatedGoodType;
@@ -57,6 +57,7 @@ public class ExponentialTechnologyTest {
 
 
         //addSalesDepartmentListener two workers
+        p.setPlantMachinery(crs);  //add any as default
         p.addWorker(new Person(macro));
         p.addWorker(new Person(macro));
         p.setBlueprint(b); //put it inside the plant

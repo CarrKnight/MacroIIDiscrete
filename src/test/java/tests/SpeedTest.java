@@ -98,7 +98,7 @@ public class SpeedTest {
     }
 
     private void runMonopolistScenario() {
-        final MacroII macroII = new MacroII(System.currentTimeMillis());
+        final MacroII macroII = new MacroII(0);
         MonopolistScenario scenario1 = new MonopolistScenario(macroII);
         macroII.setScenario(scenario1);
         scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);

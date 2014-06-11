@@ -74,6 +74,8 @@ public class PurchasesWeeklyPIDTest {
         List<Plant> plants = new LinkedList<>(); plants.add(p);
         Machinery machinery = mock(Machinery.class);
         when(machinery.expectedWeeklyProductionRuns()).thenReturn(0f);
+        when(machinery.maximumWorkersPossible()).thenReturn(100);
+
         p.setPlantMachinery(machinery);
 
         when(firm.getListOfPlantsUsingSpecificInput(UndifferentiatedGoodType.GENERIC)).thenReturn(plants);
@@ -143,6 +145,7 @@ public class PurchasesWeeklyPIDTest {
 
         Machinery machinery = mock(Machinery.class);         //stub machinery, makes it easy to control production speed.
         when(machinery.expectedWeeklyProductionRuns()).thenReturn(0f);
+        when(machinery.maximumWorkersPossible()).thenReturn(100);
         p.setPlantMachinery(machinery);
 
 
@@ -205,6 +208,8 @@ public class PurchasesWeeklyPIDTest {
 
         Machinery machinery = mock(Machinery.class);         //stub machinery, makes it easy to control production speed.
         when(machinery.expectedWeeklyProductionRuns()).thenReturn(0f);
+        when(machinery.maximumWorkersPossible()).thenReturn(100);
+
         p.setPlantMachinery(machinery);
 
 

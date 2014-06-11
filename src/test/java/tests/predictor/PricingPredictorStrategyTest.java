@@ -17,6 +17,7 @@ import agents.firm.sales.pricing.UndercuttingAskPricing;
 import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
+import goods.DifferentiatedGoodType;
 import goods.Good;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
@@ -60,7 +61,7 @@ public class PricingPredictorStrategyTest {
 
 
         model = new MacroII(100);
-        market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
+        market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
         f = new Firm(model);
         department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         strategy = new PricingSalesPredictor();
@@ -74,7 +75,7 @@ public class PricingPredictorStrategyTest {
         DummyBuyer buyer2 = new DummyBuyer(model,200,market); market.registerBuyer(buyer2);
         market.submitBuyQuote(buyer2,200);
         DummySeller seller = new DummySeller(model, 300); market.registerSeller(seller);
-        market.submitSellQuote(seller,300,Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
+        market.submitSellQuote(seller,300,Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,seller,300));
 
 
 
@@ -95,7 +96,7 @@ public class PricingPredictorStrategyTest {
 
 
         model = new MacroII(100);
-        market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
+        market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
         market.setOrderHandler(new ImmediateOrderHandler(),model);
         f = new Firm(model);
         department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
@@ -112,10 +113,10 @@ public class PricingPredictorStrategyTest {
         DummyBuyer buyer2 = new DummyBuyer(model,200,market); market.registerBuyer(buyer2);
         market.submitBuyQuote(buyer2,200);
         DummySeller seller = new DummySeller(model, 300); market.registerSeller(seller);
-        market.submitSellQuote(seller,300,Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
+        market.submitSellQuote(seller,300,Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,seller,300));
 
 
-        Good sold = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
+        Good sold = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,seller,200);
         DummyBuyer buyer3 = new DummyBuyer(model,250,market); market.registerBuyer(buyer3);   buyer3.receiveMany(UndifferentiatedGoodType.MONEY,300);
         market.submitBuyQuote(buyer3,250);
         DummySeller seller2 = new DummySeller(model, 250); market.registerSeller(seller2);
@@ -142,7 +143,7 @@ public class PricingPredictorStrategyTest {
         Market.TESTING_MODE = true;
 
         model = new MacroII(100);
-        market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC){ //break the order book so that the best buyer is not visible anymore
+        market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL){ //break the order book so that the best buyer is not visible anymore
             /**
              * Best bid and asks are visible.
              */
@@ -169,10 +170,10 @@ public class PricingPredictorStrategyTest {
         DummyBuyer buyer2 = new DummyBuyer(model,200,market); market.registerBuyer(buyer2);
         market.submitBuyQuote(buyer2,200);
         DummySeller seller = new DummySeller(model, 300); market.registerSeller(seller);
-        market.submitSellQuote(seller,300,Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
+        market.submitSellQuote(seller,300,Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,seller,300));
 
 
-        Good sold = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
+        Good sold = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,seller,200);
         DummyBuyer buyer3 = new DummyBuyer(model,250,market); market.registerBuyer(buyer3);   buyer3.receiveMany(UndifferentiatedGoodType.MONEY,300);
         market.submitBuyQuote(buyer3,250);
         DummySeller seller2 = new DummySeller(model, 250); market.registerSeller(seller2);
@@ -198,7 +199,7 @@ public class PricingPredictorStrategyTest {
 
 
         model = new MacroII(100);
-        market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
+        market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
         f = new Firm(model);
         strategy = new PricingSalesPredictor();
         department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
@@ -221,11 +222,11 @@ public class PricingPredictorStrategyTest {
 
 
         model = new MacroII(100);
-        market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
+        market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
         market.setOrderHandler(new ImmediateOrderHandler(),model);
         f = new Firm(model);
         department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
-        f.registerSaleDepartment(department, UndifferentiatedGoodType.GENERIC);
+        f.registerSaleDepartment(department, DifferentiatedGoodType.CAPITAL);
 
 
 
@@ -242,10 +243,10 @@ public class PricingPredictorStrategyTest {
         DummyBuyer buyer2 = new DummyBuyer(model,200,market); market.registerBuyer(buyer2);
         market.submitBuyQuote(buyer2,200);
         DummySeller seller = new DummySeller(model, 300); market.registerSeller(seller);
-        market.submitSellQuote(seller,300,Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
+        market.submitSellQuote(seller,300,Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,seller,300));
 
 
-        Good sold = Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC);
+        Good sold = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,seller,200);
         DummyBuyer buyer3 = new DummyBuyer(model,250,market); market.registerBuyer(buyer3);   buyer3.receiveMany(UndifferentiatedGoodType.MONEY,300);
         market.submitBuyQuote(buyer3, 250);
         //market.registerSeller(department.getFirm()); Automatically registered when you create the sales department

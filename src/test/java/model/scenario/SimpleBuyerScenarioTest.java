@@ -76,7 +76,7 @@ public class SimpleBuyerScenarioTest
     @Test
     public void rightPriceAndQuantityTestWithCascadeControllerFixed()
     {
-        for(int i=0; i<200; i++)
+        for(int i=0; i<20; i++)
         {
             //to sell 4 you need to price them between 60 and 51 everytime
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -97,8 +97,8 @@ public class SimpleBuyerScenarioTest
             }
 
             //price should be any between 60 and 51
-            assertTrue(String.valueOf(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice()),macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice() < 140);
-            assertTrue(String.valueOf(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice()),macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice() >= 130);
+            assertTrue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice() < 140);
+            assertTrue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice() >= 130);
             assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getYesterdayVolume(), 4); //every day 4 goods should have been traded
             assertEquals(scenario.getDepartment().getFirm().hasHowMany(UndifferentiatedGoodType.GENERIC),20);
 
@@ -110,7 +110,7 @@ public class SimpleBuyerScenarioTest
     @Test
     public void rightPriceAndQuantityTestWithFlowControllerFixed()
     {
-        for(int i=0; i<200; i++)
+        for(int i=0; i<20; i++)
         {
             //to sell 4 you need to price them between 60 and 51 everytime
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -142,7 +142,7 @@ public class SimpleBuyerScenarioTest
     @Test
     public void rightPriceAndQuantityTestWithCascadeControllerFixed4Buyers()
     {
-        for(int i=0; i<50; i++)
+        for(int i=0; i<20; i++)
         {
             //to sell 4 you need to price them between 60 and 51 everytime
             final MacroII macroII = new MacroII(System.currentTimeMillis());

@@ -142,6 +142,7 @@ public class StandardPlantCostStrategyTest {
         when(machinery.getOutputMultiplier(any(GoodType.class))).thenReturn(1f);
         when(machinery.expectedWeeklyProductionRuns()).thenReturn(1f);
         when(machinery.hypotheticalTotalThroughput(anyInt())).thenReturn(1f);
+        when(machinery.maximumWorkersPossible()).thenReturn(100);
 
         p.setPlantMachinery(machinery);
 

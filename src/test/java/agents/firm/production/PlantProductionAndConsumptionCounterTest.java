@@ -133,6 +133,7 @@ public class PlantProductionAndConsumptionCounterTest {
         Firm owner = mock(Firm.class);
         when(owner.getModel()).thenReturn(model);
         Plant plant = new Plant(Blueprint.simpleBlueprint(new UndifferentiatedGoodType("fake","useless"),0, UndifferentiatedGoodType.GENERIC,5),owner);
+        plant.setPlantMachinery(new LinearConstantMachinery(DifferentiatedGoodType.CAPITAL,null,0,plant));
         plant.addWorker(mock(Person.class));
         TrueRandomScheduler scheduler = new TrueRandomScheduler(100, model.getRandom());
         model.setPhaseScheduler(scheduler);
