@@ -161,7 +161,7 @@ public class FarmersAndWorkersScenario extends Scenario {
     private Firm createFirm(MacroII model, OrderBookMarket laborMarket, OrderBookMarket goodMarket)
     {
         Firm firm = new Firm(model);
-        firm.receiveMany(AGRICULTURE,50000);
+        firm.receiveMany(AGRICULTURE,5000);
 
         //sales department
         SalesDepartment salesDepartment = SalesDepartmentFactory.incompleteSalesDepartment(firm, goodMarket,

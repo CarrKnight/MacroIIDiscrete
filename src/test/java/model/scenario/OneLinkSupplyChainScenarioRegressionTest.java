@@ -272,13 +272,19 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     }
 
+    @Test
+public void problematicScenario1() throws Exception {
+        final OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(3, 100, 0, false, Paths.get("runs","problematic.csv").toFile());
+        checkBeefMonopolistResult(result);
+    }
+
     /*
-    \[ q_B = 17 \]
-    \[ q_F = 17 \]
-    \[ w_B = w_F = 17 \]
-    \[p_B =68\]
-    \[p_F = 85 \]
-     */
+        \[ q_B = 17 \]
+        \[ q_F = 17 \]
+        \[ w_B = w_F = 17 \]
+        \[p_B =68\]
+        \[p_F = 85 \]
+         */
     private void checkBeefMonopolistResult(OneLinkSupplyChainResult result) {
         Assert.assertEquals(result.getQuantity(), 17, 3);
         Assert.assertEquals(result.getBeefPrice(), 68, 5);
@@ -307,7 +313,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     //here the food is actually a monopolist "acting competitive"
     @Test
-    public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws ExecutionException, InterruptedException {
+public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws ExecutionException, InterruptedException {
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
         ExecutorService testRunner = Executors.newFixedThreadPool(1);

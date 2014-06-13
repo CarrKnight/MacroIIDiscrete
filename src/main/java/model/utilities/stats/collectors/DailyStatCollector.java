@@ -11,7 +11,6 @@ import agents.firm.Firm;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
-import com.sun.istack.internal.Nullable;
 import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
@@ -131,8 +130,8 @@ public class DailyStatCollector implements Steppable{
         marketVolume  = new HashMap<>();
         sellerTotalInventory = new HashMap<>();
         buyerTotalInventory = new HashMap<>();
-        wereThereShortages = new HashMap<>();
-        sumDemandGap =new HashMap<>();
+        wereThereShortages = new HashMap< >();
+        sumDemandGap =new HashMap< >();
         sumSupplyGap = new HashMap<>();
 
     }
@@ -167,56 +166,66 @@ public class DailyStatCollector implements Steppable{
         for(GoodType output : sectorList) //for each sector
         {
             final Market market = model.getMarket(output);
-            if(output.isMachinery() || market==null) //don't bother with non existing markets or non-goods
+            if(output.isMachinery()) //don't bother with  non-goods
                 continue;
 
 
             int production = 0; int workers = 0;int sellerInventory=0; int consumption = 0;
             boolean shortages= false; //prepare all the counts
 
-            for(EconomicAgent seller : market.getSellers() ) //for each firm
+
+            final Collection<EconomicAgent> sellers = market != null?  market.getSellers() : model.getAgents();
+            for(EconomicAgent seller : sellers) //for each firm
             {
-                if(! (seller instanceof Firm)) //ignore non firms
-                    continue;
 
-
-                //sum up workers
-                workers += ((Firm) seller).getNumberOfWorkersWhoProduceThisGood(output);
-                assert workers >=0;
 
                 //sum up inventory
                 sellerInventory += seller.hasHowMany(output);
+                production+=seller.getTodayProduction(output);
+                consumption += seller.getTodayConsumption(output);
 
-                //were there shortages?
-                shortages = shortages || ((Firm) seller).wereThereMissingInputsInAtLeastOnePlant(output);
 
+                if(seller instanceof Firm) //ignore non firms
+                {
+                    //sum up workers
+                    workers += ((Firm) seller).getNumberOfWorkersWhoProduceThisGood(output);
+                    assert workers >= 0;
+                    //were there shortages?
+                    shortages = shortages || ((Firm) seller).wereThereMissingInputsInAtLeastOnePlant(output);
+                }
 
             }
             //go through buyers and check their inventories
             int buyerInventory = 0;
-            for(EconomicAgent buyer : market.getBuyers() ) //for each firm
+            final Collection<EconomicAgent> buyers = market != null? market.getBuyers() : Collections.emptyList();
+            for(EconomicAgent buyer : buyers) //for each firm
             {
                 if(! (buyer instanceof Firm)) //ignore non firms
                     continue;
 
                 buyerInventory += buyer.hasHowMany(output);
-
-
+                production+=buyer.getTodayProduction(output);
+                consumption += buyer.getTodayConsumption(output);
 
             }
+            final float todayAveragePrice = market != null ? market.getTodayAveragePrice() : 1;
+            final int yesterdayVolume = market != null ? market.getYesterdayVolume() : 0;
+            final int demandGaps =  market != null ?market.sumDemandGaps() : 0;
+            final int supplyGap =  market != null ? market.sumSupplyGaps() : 0;
 
-            production = market.countTodayProductionByRegisteredSellers();
-            consumption = market.countTodayConsumptionByRegisteredBuyers();
+
+
+
             productionPerSector.put(output,production);
             consumptionPerSector.put(output,consumption);
             workersPerSector.put(output,workers);
-            marketPrice.put(output,market.getTodayAveragePrice());
-            marketVolume.put(output,market.getYesterdayVolume());
+            marketPrice.put(output, todayAveragePrice);
+            marketVolume.put(output,yesterdayVolume);
             sellerTotalInventory.put(output,sellerInventory);
             buyerTotalInventory.put(output,buyerInventory);
             wereThereShortages.put(output,shortages);
-            sumDemandGap.put(output,market.sumDemandGaps());
-            sumSupplyGap.put(output,market.sumSupplyGaps());
+            sumDemandGap.put(output, demandGaps);
+            sumSupplyGap.put(output, supplyGap);
 
 
         }
@@ -224,13 +233,13 @@ public class DailyStatCollector implements Steppable{
         if(writer != null)
         {
             try{
-            if(header == null)
-            {
-                buildHeader();
-                writer.writeNext(header);
-            }
-            writer.writeNext(buildCSVRow());
-            writer.flush();
+                if(header == null)
+                {
+                    buildHeader();
+                    writer.writeNext(header);
+                }
+                writer.writeNext(buildCSVRow());
+                writer.flush();
             }
             catch (IOException exception){
                 System.err.println("couldn't print!");
