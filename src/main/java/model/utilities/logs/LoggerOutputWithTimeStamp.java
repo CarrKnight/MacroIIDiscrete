@@ -36,11 +36,6 @@ public class LoggerOutputWithTimeStamp implements LogListener {
 
        String newMessage = "date:" + model.getMainScheduleTime() + ", phase: " + model.getCurrentPhase() + logEvent.getMessage();
         LogLevel.log(output,logEvent.getLevel(),newMessage,logEvent.getAdditionalParameters());
-   /*     if(logEvent.getLevel().compareTo(LogLevel.INFO)>=0)
-            System.out.println(
-                    "date:" + model.getMainScheduleTime() + ", phase: " + model.getCurrentPhase() + " " +
-                    MessageFormatter.arrayFormat(logEvent.getMessage(), logEvent.getAdditionalParameters()).getMessage()
-            );
-*/
+
     }
 }

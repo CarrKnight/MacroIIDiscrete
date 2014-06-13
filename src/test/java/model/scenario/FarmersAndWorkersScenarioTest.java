@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
@@ -24,7 +25,7 @@ public class FarmersAndWorkersScenarioTest {
 
 
         for(int j=0; j< 5; j++) {
-            final FarmersAndWorkersResult farmersAndWorkersResult = runFarmersAndWorkersScenario(10, 200, System.currentTimeMillis(), null);
+            final FarmersAndWorkersResult farmersAndWorkersResult = runFarmersAndWorkersScenario(10, 200, System.currentTimeMillis(), null,null );
             Assert.assertEquals(1100, farmersAndWorkersResult.getManufacturingProduction(), 50); //5% error allowed
             Assert.assertEquals(13995, farmersAndWorkersResult.getAgriculturalProduction(), 500);
             Assert.assertEquals(10.95, farmersAndWorkersResult.getManufacturingPrice(),5);
@@ -38,7 +39,7 @@ public class FarmersAndWorkersScenarioTest {
 
 
         for(int j=0; j< 5; j++) {
-            final FarmersAndWorkersResult farmersAndWorkersResult = runFarmersAndWorkersScenario(2, 50, System.currentTimeMillis(), null);
+            final FarmersAndWorkersResult farmersAndWorkersResult = runFarmersAndWorkersScenario(2, 50, System.currentTimeMillis(), null,null );
             Assert.assertEquals(44.825, farmersAndWorkersResult.getManufacturingProduction(), 4); //5% error allowed
             Assert.assertEquals(1012.63, farmersAndWorkersResult.getAgriculturalProduction(), 50);
             Assert.assertEquals(11.2063, farmersAndWorkersResult.getManufacturingPrice(),1);
@@ -49,7 +50,7 @@ public class FarmersAndWorkersScenarioTest {
 
     @Test
     public void whereIsMyMoney() throws Exception {
-            final FarmersAndWorkersResult farmersAndWorkersResult = runFarmersAndWorkersScenario(10, 50, 1402602013498l, Paths.get("runs", "whereIsMyMoney.csv").toFile());
+            final FarmersAndWorkersResult farmersAndWorkersResult = runFarmersAndWorkersScenario(10, 50, 1402602013498l, Paths.get("runs", "whereIsMyMoney.csv").toFile(),Paths.get("runs", "whereIsMyMoney.log") );
         Assert.assertEquals(280, farmersAndWorkersResult.getManufacturingProduction(), 15); //5% error allowed
         Assert.assertEquals(869, farmersAndWorkersResult.getAgriculturalProduction(), 45);
         Assert.assertEquals(2.7, farmersAndWorkersResult.getManufacturingPrice(),.5);
@@ -83,7 +84,9 @@ public class FarmersAndWorkersScenarioTest {
     }
 
 
-    public static FarmersAndWorkersResult runFarmersAndWorkersScenario(int productionPerWorker, int numberOfAgents, long seed, File csvFile)
+    public static FarmersAndWorkersResult runFarmersAndWorkersScenario(int productionPerWorker,
+                                                                       int numberOfAgents, long seed,
+                                                                       File csvFile, Path logFile)
     {
         System.out.println(seed);
         final MacroII macroII = new MacroII(seed);
@@ -99,6 +102,9 @@ public class FarmersAndWorkersScenarioTest {
             DailyStatCollector.addDailyStatCollectorToModel(csvFile, macroII);
 
         macroII.start();
+
+        if(logFile != null)
+            scenario1.attachLogger(logFile);
 
         while (macroII.schedule.getTime() < 3000) {
             macroII.schedule.step(macroII);

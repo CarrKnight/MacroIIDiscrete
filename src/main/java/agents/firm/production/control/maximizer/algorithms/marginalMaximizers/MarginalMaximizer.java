@@ -129,36 +129,35 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
                     MarginalMaximizerStatics.computeMarginalProfits(owner, p, hr, plantControl, policy, currentWorkerTarget, currentWorkerTarget - 1) :
                     Float.NEGATIVE_INFINITY;//if so check marginal profits
 
-            hr.handleNewEvent(new LogEvent(this, LogLevel.INFO,
-                    "FINALLY: current workers{} , profits if we increase {}, profits if we decrease {}",
-                    currentWorkerTarget,profitsIfWeIncrease,profitsIfWeDecrease));
 
-            if(profitsIfWeDecrease <= EPSILON && profitsIfWeIncrease <= EPSILON)
-            {
+            try {
+                if (profitsIfWeDecrease <= EPSILON && profitsIfWeIncrease <= EPSILON) {
 
-                //if profits decrease in both direction, stay where you are
-                newTarget = currentWorkerTarget;
-                return newTarget;
+                    //if profits decrease in both direction, stay where you are
+                    newTarget = currentWorkerTarget;
+                    return newTarget;
 
-            }
-            else
-            if(profitsIfWeIncrease >= profitsIfWeDecrease){ //if we increase profits going up, let's do that
-                //    System.out.println(profitsIfWeIncrease + " ++ on day: " + owner.getModel().getMainScheduleTime());
-                assert profitsIfWeIncrease > EPSILON;
-                newTarget = currentWorkerTarget + 1;
-                return newTarget;
-            }
-            else
-            {
-                //       System.out.println(profitsIfWeDecrease + " -- on day: " + owner.getModel().getMainScheduleTime());
+                } else if (profitsIfWeIncrease >= profitsIfWeDecrease) { //if we increase profits going up, let's do that
+                    //    System.out.println(profitsIfWeIncrease + " ++ on day: " + owner.getModel().getMainScheduleTime());
+                    assert profitsIfWeIncrease > EPSILON;
+                    newTarget = currentWorkerTarget + 1;
+                    return newTarget;
+                } else {
+                    //       System.out.println(profitsIfWeDecrease + " -- on day: " + owner.getModel().getMainScheduleTime());
 
-                assert profitsIfWeDecrease >=EPSILON;
+                    assert profitsIfWeDecrease >= EPSILON;
 
 
-                newTarget = Math.max(currentWorkerTarget - 1, 0);
-                if(newTarget ==0 && currentWorkerTarget >0 && steps < minimumStepsBeforeClosingDown)
-                    return currentWorkerTarget; //don't quit just yet
-                return newTarget;
+                    newTarget = Math.max(currentWorkerTarget - 1, 0);
+                    if (newTarget == 0 && currentWorkerTarget > 0 && steps < minimumStepsBeforeClosingDown)
+                        return currentWorkerTarget; //don't quit just yet
+                    return newTarget;
+
+                }
+            }finally {
+                hr.handleNewEvent(new LogEvent(this, LogLevel.INFO,
+                        "FINALLY: current workers{} , profits if we increase {}, profits if we decrease {}, current target: {}, future target: {}",
+                        currentWorkerTarget,profitsIfWeIncrease,profitsIfWeDecrease,currentWorkerTarget,newTarget));
 
             }
 

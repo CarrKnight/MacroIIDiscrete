@@ -24,6 +24,7 @@ import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.people.*;
+import com.google.common.base.Preconditions;
 import financial.market.EndOfPhaseOrderHandler;
 import financial.market.OrderBookMarket;
 import financial.utilities.BuyerSetPricePolicy;
@@ -31,7 +32,10 @@ import financial.utilities.ShopSetPricePolicy;
 import goods.GoodType;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
+import model.utilities.logs.LogLevel;
+import model.utilities.logs.LogToFile;
 
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -170,6 +174,7 @@ public class FarmersAndWorkersScenario extends Scenario {
         final SalesControlWithFixedInventoryAndPID strategy = new SalesControlWithFixedInventoryAndPID(salesDepartment,1000);
         strategy.setGainsSlavePID(strategy.getProportionalGain() / 100, strategy.getIntegralGain() / 100, strategy.getDerivativeGain() / 100);
 
+
         salesDepartment.setAskPricingStrategy(strategy);
 
         salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
@@ -291,5 +296,10 @@ public class FarmersAndWorkersScenario extends Scenario {
     }
 
 
+    public void attachLogger(Path file)
+    {
+        Preconditions.checkArgument(producers.size() > 0, "start hasn't been called yet!");
+        producers.get(0).addLogEventListener(new LogToFile(file, LogLevel.INFO,model));
+    }
 
 }
