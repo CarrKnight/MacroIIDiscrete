@@ -55,11 +55,11 @@ public class MemoryPurchasesPredictorTest {
 
         for(int i=0; i<100; i++){
             when(dept.getLastClosingPrice()).thenReturn(i);
-            assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), i);
+            assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), i,.0001f);
         }
 
         when(dept.getLastClosingPrice()).thenReturn(-1);
-        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), -1);
+        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), -1,.0001f);
 
 
 

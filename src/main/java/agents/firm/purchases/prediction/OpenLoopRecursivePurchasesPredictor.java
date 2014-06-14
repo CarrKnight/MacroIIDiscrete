@@ -46,7 +46,7 @@ public class OpenLoopRecursivePurchasesPredictor extends AbstractOpenLoopRecursi
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
 
         predictor.setIncrementDelta(getUpwardSlope());
         return predictor.predictPurchasePriceWhenIncreasingProduction(dept);
@@ -60,7 +60,7 @@ public class OpenLoopRecursivePurchasesPredictor extends AbstractOpenLoopRecursi
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         predictor.setIncrementDelta(getDownwardSlope());
         return predictor.predictPurchasePriceWhenDecreasingProduction(dept);
     }
@@ -72,7 +72,7 @@ public class OpenLoopRecursivePurchasesPredictor extends AbstractOpenLoopRecursi
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
         predictor.setIncrementDelta(getUpwardSlope());
         return predictor.predictPurchasePriceWhenNoChangeInProduction(dept);
 

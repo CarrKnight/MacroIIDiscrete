@@ -89,7 +89,6 @@ public class MouseModeSwitcherTest extends GuiTest{
         click(geographicalPane.localToScene(90,10));
         verify(scenario,times(1)).createNewProducer(any(Location.class),any(GeographicalMarket.class),anyString());
         verify(scenario,times(1)).createNewConsumer(any(Location.class),any(GeographicalMarket.class),anyInt()); //this happened
-
     }
     @Test
     public void testByUsingNames() throws Exception {
@@ -120,8 +119,11 @@ public class MouseModeSwitcherTest extends GuiTest{
         click(AddAgentsToMapTitledPane.SELECT_BUTTON_STRING);
         Assert.assertEquals(Cursor.DEFAULT,geographicalPane.getCursor()); //back to normal
         //clicks do nothing
-        click(geographicalPane.localToScene(90,10));
-        verify(scenario,times(1)).createNewProducer(any(Location.class),any(GeographicalMarket.class),anyString());
-        verify(scenario,times(1)).createNewConsumer(any(Location.class),any(GeographicalMarket.class),anyInt()); //this happened
+        click(geographicalPane.localToScene(90, 10));
+        verify(scenario,times(1)).createNewProducer(any(Location.class), any(GeographicalMarket.class), anyString());
+        verify(scenario,times(1)).createNewConsumer(any(Location.class), any(GeographicalMarket.class), anyInt()); //this happened
+
     }
+
+
 }

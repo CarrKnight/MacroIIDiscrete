@@ -79,7 +79,7 @@ public class LearningDecreaseSalesPredictor extends BaseSalesPredictor {
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public int predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep)
+    public float predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep)
     {
         Preconditions.checkArgument(increaseStep >= 0);
         updateRegressorAndUseItToUpdatePredictor();
@@ -102,7 +102,7 @@ public class LearningDecreaseSalesPredictor extends BaseSalesPredictor {
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public int predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
+    public float predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
         Preconditions.checkArgument(decreaseStep >= 0);
         updateRegressorAndUseItToUpdatePredictor();
 
@@ -141,7 +141,7 @@ public class LearningDecreaseSalesPredictor extends BaseSalesPredictor {
      * @return predicted price
      */
     @Override
-    public int predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+    public float predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         return predictor.predictSalePriceWhenNotChangingProduction(dept);
     }
 }

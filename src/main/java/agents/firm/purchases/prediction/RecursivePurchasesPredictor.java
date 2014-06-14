@@ -140,7 +140,7 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
     //    System.err.println("slope " + (predictPrice(1)-predictPrice(0)));
         if(getIndependentLags() > 1 || getPriceLags() > 0)
             return (int) Math.round(Math.max(predictPrice(1),predictPrice(0)));
@@ -159,7 +159,7 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
 
         if(getIndependentLags() > 1 || getPriceLags() > 0)
             return (int) Math.round(predictPrice(0));
@@ -177,7 +177,7 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         if(getIndependentLags() > 1 || getPriceLags() > 0)
             return (int) Math.round(Math.min(predictPrice(-1), predictPrice(0)));
         else{

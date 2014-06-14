@@ -123,7 +123,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     /**
      * average last week price weighted by outflow
      */
-    private WeightedMovingAverage<Integer,Double> averagedPrice = new WeightedMovingAverage<>(2);
+    private WeightedMovingAverage<Integer,Double> averagedPrice = new WeightedMovingAverage<>(7);
 
 
 
@@ -232,7 +232,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      * @param increaseStep by how much does production increase?
      * @return the best offer available or -1 if there are no quotes
      */
-    public int predictSalePriceAfterIncreasingProduction(int expectedProductionCost, int increaseStep)
+    public float predictSalePriceAfterIncreasingProduction(int expectedProductionCost, int increaseStep)
     {
         Preconditions.checkArgument(increaseStep >= 0);
 
@@ -247,7 +247,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      * @param decreaseStep by how much daily production will decrease
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
-    public int predictSalePriceAfterDecreasingProduction(int expectedProductionCost, int decreaseStep) {
+    public float predictSalePriceAfterDecreasingProduction(int expectedProductionCost, int decreaseStep) {
         Preconditions.checkArgument(decreaseStep >= 0);
 
         return predictorStrategy.predictSalePriceAfterDecreasingProduction(this, expectedProductionCost, decreaseStep);
@@ -1291,7 +1291,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      * Most predictors simply return today closing price, because maybe this will be useful in some cases. It's used by Marginal Maximizer Statics
      * @return predicted price
      */
-    public int predictSalePriceWhenNotChangingPoduction() {
+    public float predictSalePriceWhenNotChangingPoduction() {
         return predictorStrategy.predictSalePriceWhenNotChangingProduction(this);
     }
 

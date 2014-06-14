@@ -51,7 +51,7 @@ public class FixedFormulaFakePredictor extends BaseSalesPredictor implements Pur
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public int predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
+    public float predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
         return formula();
     }
 
@@ -64,7 +64,7 @@ public class FixedFormulaFakePredictor extends BaseSalesPredictor implements Pur
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public int predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
+    public float predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
         return formula();
     }
 
@@ -76,7 +76,7 @@ public class FixedFormulaFakePredictor extends BaseSalesPredictor implements Pur
      * @return predicted price
      */
     @Override
-    public int predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+    public float predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         return formula();
     }
 
@@ -88,7 +88,7 @@ public class FixedFormulaFakePredictor extends BaseSalesPredictor implements Pur
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
         return formula();
 
     }
@@ -100,7 +100,7 @@ public class FixedFormulaFakePredictor extends BaseSalesPredictor implements Pur
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         return formula();
     }
 
@@ -111,7 +111,7 @@ public class FixedFormulaFakePredictor extends BaseSalesPredictor implements Pur
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
         return formula();
     }
 

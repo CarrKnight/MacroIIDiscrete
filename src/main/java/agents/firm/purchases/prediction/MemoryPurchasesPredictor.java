@@ -31,12 +31,12 @@ public class MemoryPurchasesPredictor implements PurchasesPredictor {
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
         return dept.getLastClosingPrice();
     }
 
     @Override
-    public int predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         return dept.getLastClosingPrice();
     }
     /**
@@ -46,7 +46,7 @@ public class MemoryPurchasesPredictor implements PurchasesPredictor {
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
         return dept.getLastClosingPrice();
     }
 

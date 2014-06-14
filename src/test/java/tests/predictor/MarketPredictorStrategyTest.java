@@ -74,7 +74,7 @@ public class MarketPredictorStrategyTest {
         market.submitSellQuote(seller,300,Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
 
 
-        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //fails because there is no closing price in memory
+        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //fails because there is no closing price in memory
 
 
     }
@@ -119,7 +119,7 @@ public class MarketPredictorStrategyTest {
         assertEquals(50, buyer3.hasHowMany(UndifferentiatedGoodType.MONEY));
         assertEquals(250, seller2.hasHowMany(UndifferentiatedGoodType.MONEY));
 
-        assertEquals(250, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //copy last closing price
+        assertEquals(250, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //copy last closing price
 
 
     }
@@ -170,8 +170,8 @@ public class MarketPredictorStrategyTest {
         assertEquals(50, buyer3.hasHowMany(UndifferentiatedGoodType.MONEY));
         assertEquals(250, seller2.hasHowMany(UndifferentiatedGoodType.MONEY));
 
-        assertEquals(250, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //copy last closing price
-        assertEquals(250, department.predictSalePriceAfterIncreasingProduction(200, 1)); //not overriden this time!
+        assertEquals(250, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //copy last closing price
+        assertEquals(250, department.predictSalePriceAfterIncreasingProduction(200, 1),.0001f); //not overriden this time!
 
     }
 
@@ -188,8 +188,8 @@ public class MarketPredictorStrategyTest {
         strategy = new MarketSalesPredictor();
         department.setPredictorStrategy(strategy);
 
-        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //useless
-        assertEquals(-1, department.predictSalePriceAfterIncreasingProduction(200, 1)); //useless
+        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //useless
+        assertEquals(-1, department.predictSalePriceAfterIncreasingProduction(200, 1),.0001f); //useless
 
     }
 
@@ -241,7 +241,7 @@ public class MarketPredictorStrategyTest {
         assertEquals(50, buyer3.hasHowMany(UndifferentiatedGoodType.MONEY));
         assertEquals(250, f.hasHowMany(UndifferentiatedGoodType.MONEY));
 
-        assertEquals(250, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //copy the last closing price (which is our closing price anyway)
+        assertEquals(250, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //copy the last closing price (which is our closing price anyway)
 
     }
 

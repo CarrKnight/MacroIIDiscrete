@@ -44,11 +44,11 @@ public class FixedIncreasePurchasesPredictorTest
 
         //predicts a price 3 dollar higher
         predictor.setIncrementDelta(3);
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 103);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 103,.0001f);
 
         //predicts a price 50 dollars higher
         predictor.setIncrementDelta(50);
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department),150);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department),150,.0001f);
 
 
 

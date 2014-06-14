@@ -78,7 +78,7 @@ public class LearningIncreasePurchasesPredictorTest
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         when(department.getAveragedClosingPrice()).thenReturn(200f);
         //the sales predictor will be predict for 9 (yesterdayVolume + 1)
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 203); //200+2.6 (rounded)
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 203,.0001f); //200+2.6 (rounded)
 
     }
 
@@ -127,19 +127,19 @@ public class LearningIncreasePurchasesPredictorTest
 
         LearningIncreasePurchasesPredictor predictor = new LearningIncreasePurchasesPredictor(market,model );
         when(department.getAveragedClosingPrice()).thenReturn(50f);
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50,.0001f);
 
         //with one observation, it still returns whatever the sales department says
         when(market.getLastObservedDay()).thenReturn(0);
         when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(0d);
         model.getPhaseScheduler().step(model);
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50,.0001f);
 
         //with negative price the observation is ignored
         when(market.getLastObservedDay()).thenReturn(1);
         when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(-1d);
         model.getPhaseScheduler().step(model);
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50,.0001f);
 
 
         //two observations, everything back to normal! (but the slope is 0, so no effect)
@@ -154,7 +154,7 @@ public class LearningIncreasePurchasesPredictorTest
                 new double[]{
                         1,1
                 });
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50,.0001f);
 
 
     }

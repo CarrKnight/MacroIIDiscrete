@@ -122,19 +122,19 @@ public class RegressionWeightedSalePredictorTest {
 
         RegressionWeightedSalePredictor predictor = new RegressionWeightedSalePredictor(market,model );
         when(department.hypotheticalSalePrice()).thenReturn(50);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1), 50);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1), 50,.0001f);
 
         //with one observation, it still returns whatever the sales department says
         when(market.getLastObservedDay()).thenReturn(0);
         when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(0d);
         model.getPhaseScheduler().step(model);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1), 50);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1), 50,.0001f);
 
         //with no volume the observation is ignored
         when(market.getLastObservedDay()).thenReturn(1);
         when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(-1d);
         model.getPhaseScheduler().step(model);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1),50);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1),50,.0001f);
 
 
         //two observations, everything back to normal! (but the slope is 0, so no effect)
@@ -149,7 +149,7 @@ public class RegressionWeightedSalePredictorTest {
                         1, 1
                 });
         model.getPhaseScheduler().step(model);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 50, 1),50);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 50, 1),50,.0001f);
 
 
     }

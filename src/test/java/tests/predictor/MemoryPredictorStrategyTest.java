@@ -74,7 +74,7 @@ public class MemoryPredictorStrategyTest {
         market.submitSellQuote(seller,300,Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
 
         model.schedule.step(model);
-        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //fails because there is nothing memory
+        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //fails because there is nothing memory
 
 
     }
@@ -119,7 +119,7 @@ public class MemoryPredictorStrategyTest {
         assertEquals(50, buyer3.hasHowMany(UndifferentiatedGoodType.MONEY));
         assertEquals(250, seller2.hasHowMany(UndifferentiatedGoodType.MONEY));
 
-        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //copy last closing price
+        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //copy last closing price
 
 
     }
@@ -170,8 +170,8 @@ public class MemoryPredictorStrategyTest {
         assertEquals(50, buyer3.hasHowMany(UndifferentiatedGoodType.MONEY));
         assertEquals(250, seller2.hasHowMany(UndifferentiatedGoodType.MONEY));
 
-        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //copy last closing price
-        assertEquals(-1, department.predictSalePriceAfterIncreasingProduction(200, 1)); //not overriden this time!
+        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //copy last closing price
+        assertEquals(-1, department.predictSalePriceAfterIncreasingProduction(200, 1),.0001f); //not overriden this time!
 
     }
 
@@ -189,8 +189,8 @@ public class MemoryPredictorStrategyTest {
         strategy = new MemorySalesPredictor();
         department.setPredictorStrategy(strategy);
 
-        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200,1 )); //useless
-        assertEquals(-1, department.predictSalePriceAfterIncreasingProduction(200, 1)); //useless
+        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200,1 ),.0001f); //useless
+        assertEquals(-1, department.predictSalePriceAfterIncreasingProduction(200, 1),.0001f); //useless
 
     }
 

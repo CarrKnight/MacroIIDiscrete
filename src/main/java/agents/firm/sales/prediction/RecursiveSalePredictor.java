@@ -80,7 +80,7 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public int predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
+    public float predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
 
         if(getIndependentLags() > 1 || getPriceLags() > 0)
         {
@@ -104,7 +104,7 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public int predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
+    public float predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
 
 
 
@@ -129,7 +129,7 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
      * @return predicted price
      */
     @Override
-    public int predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+    public float predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
 
         if(getIndependentLags() > 1 || getPriceLags() > 0)
         {

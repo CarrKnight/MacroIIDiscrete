@@ -68,7 +68,7 @@ public class SurveyPurchasesPredictorTest {
         });
 
         SurveyPurchasesPredictor predictor = new SurveyPurchasesPredictor();
-        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), 10);
+        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), 10,.0001f);
 
         Firm seller = mock(Firm.class);
         Quote q = mock(Quote.class); when(q.getAgent()).thenReturn(seller); when(q.getPriceQuoted()).thenReturn(1);

@@ -47,7 +47,7 @@ public interface SalesPredictor extends LogNode {
      * @param increaseStep by how much the daily production will increase (has to be a positive number)
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
-    public int predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep);
+    public float predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep);
 
 
     /**
@@ -58,7 +58,7 @@ public interface SalesPredictor extends LogNode {
      * @param decreaseStep by how much the daily production will decrease (has to be a positive number)
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
-    public int predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep);
+    public float predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep);
 
 
     /**
@@ -67,7 +67,7 @@ public interface SalesPredictor extends LogNode {
      * @param dept the sales department
      * @return predicted price
      */
-    public int predictSalePriceWhenNotChangingProduction(SalesDepartment dept);
+    public float predictSalePriceWhenNotChangingProduction(SalesDepartment dept);
 
     /**
      * Call this to kill the predictor

@@ -39,7 +39,7 @@ public class PricingPurchasesPredictorTest {
 
         for(int i=0; i<100; i++){
             when(dept.getAveragedClosingPrice()).thenReturn(Float.valueOf(i));
-            assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), i);
+            assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), i,.0001f);
         }
 
 

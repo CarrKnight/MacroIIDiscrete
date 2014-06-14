@@ -48,7 +48,7 @@ public class OpenLoopRecursiveSalesPredictor extends AbstractOpenLoopRecursivePr
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public int predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
+    public float predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
 
         float slope = getUpwardSlope();
         if(slope > 0)
@@ -67,7 +67,7 @@ public class OpenLoopRecursiveSalesPredictor extends AbstractOpenLoopRecursivePr
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public int predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
+    public float predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
         float slope = getDownwardSlope();
         if(slope > 0)
             slope = 0;
@@ -84,7 +84,7 @@ public class OpenLoopRecursiveSalesPredictor extends AbstractOpenLoopRecursivePr
      * @return predicted price
      */
     @Override
-    public int predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+    public float predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         float slope = getUpwardSlope();
         if(slope > 0)
             slope = 0;

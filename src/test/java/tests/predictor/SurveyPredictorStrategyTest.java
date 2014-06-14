@@ -72,7 +72,7 @@ public class SurveyPredictorStrategyTest {
         market.submitSellQuote(seller,300,Good.getInstanceOfUndifferentiatedGood(UndifferentiatedGoodType.GENERIC));
 
 
-        assertEquals(199, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //dummy buyer 2 always answers "199"
+        assertEquals(199, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //dummy buyer 2 always answers "199"
 
 
     }
@@ -118,9 +118,9 @@ public class SurveyPredictorStrategyTest {
         assertEquals(250, seller2.hasHowMany(UndifferentiatedGoodType.MONEY));
 
 
-        assertEquals(250, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 3
+        assertEquals(250, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //find buyer 3
         market.deregisterBuyer(buyer3);
-        assertEquals(199, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 2
+        assertEquals(199, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //find buyer 2
 
 
     }
@@ -171,9 +171,9 @@ public class SurveyPredictorStrategyTest {
         assertEquals(50, buyer3.hasHowMany(UndifferentiatedGoodType.MONEY));
         assertEquals(250, seller2.hasHowMany(UndifferentiatedGoodType.MONEY));
 
-        assertEquals(250, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 3
+        assertEquals(250, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //find buyer 3
         market.deregisterBuyer(buyer3);
-        assertEquals(199, strategy.predictSalePriceAfterIncreasingProduction(department, 200,1 )); //find buyer 2        assertEquals(199,department.predictSalePriceAfterIncreasingProduction(200)); //not overriden this time!
+        assertEquals(199, strategy.predictSalePriceAfterIncreasingProduction(department, 200,1 ),.0001f); //find buyer 2        assertEquals(199,department.predictSalePriceAfterIncreasingProduction(200)); //not overriden this time!
 
     }
 
@@ -191,8 +191,8 @@ public class SurveyPredictorStrategyTest {
         strategy = new SurveySalesPredictor();
         department.setPredictorStrategy(strategy);
 
-        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //useless
-        assertEquals(-1, department.predictSalePriceAfterIncreasingProduction(200, 1)); //useless
+        assertEquals(-1, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //useless
+        assertEquals(-1, department.predictSalePriceAfterIncreasingProduction(200, 1),.0001f); //useless
 
     }
 
@@ -244,9 +244,9 @@ public class SurveyPredictorStrategyTest {
         assertEquals(50, buyer3.hasHowMany(UndifferentiatedGoodType.MONEY));
         assertEquals(250, f.hasHowMany(UndifferentiatedGoodType.MONEY));
 
-        assertEquals(250, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 3
+        assertEquals(250, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //find buyer 3
         market.deregisterBuyer(buyer3);
-        assertEquals(199, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //find buyer 2        assertEquals(200,department.predictSalePriceAfterIncreasingProduction(200)); //overridden by looking at the order book.
+        assertEquals(199, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //find buyer 2        assertEquals(200,department.predictSalePriceAfterIncreasingProduction(200)); //overridden by looking at the order book.
 
     }
 

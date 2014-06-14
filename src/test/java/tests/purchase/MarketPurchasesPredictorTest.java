@@ -46,7 +46,7 @@ public class MarketPurchasesPredictorTest {
         for(int i=0; i<100; i++)
         {
             when(market.getLastPrice()).thenReturn(i);
-            assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), i);
+            assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), i,.0001f);
         }
 
     }

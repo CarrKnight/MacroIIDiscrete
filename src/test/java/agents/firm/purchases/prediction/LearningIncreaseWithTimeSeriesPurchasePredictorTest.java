@@ -78,8 +78,8 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictorTest {
 
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         when(department.getAveragedClosingPrice()).thenReturn(100f);
-        Assert.assertEquals(Math.round(100+1d/0.8527228),predictor.predictPurchasePriceWhenIncreasingProduction(department));
-        Assert.assertEquals(Math.round(100-1d/0.8527228),predictor.predictPurchasePriceWhenDecreasingProduction(department));
+        Assert.assertEquals(Math.round(100+1d/0.8527228),predictor.predictPurchasePriceWhenIncreasingProduction(department),.0001f);
+        Assert.assertEquals(Math.round(100-1d/0.8527228),predictor.predictPurchasePriceWhenDecreasingProduction(department),.0001f);
 
 
 
@@ -131,8 +131,8 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictorTest {
 
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         when(department.getAveragedClosingPrice()).thenReturn(100f);
-        Assert.assertEquals(99,predictor.predictPurchasePriceWhenIncreasingProduction(department));
-        Assert.assertEquals(101,predictor.predictPurchasePriceWhenDecreasingProduction(department));
+        Assert.assertEquals(99,predictor.predictPurchasePriceWhenIncreasingProduction(department),.0001f);
+        Assert.assertEquals(101,predictor.predictPurchasePriceWhenDecreasingProduction(department),.0001f);
 
 
 

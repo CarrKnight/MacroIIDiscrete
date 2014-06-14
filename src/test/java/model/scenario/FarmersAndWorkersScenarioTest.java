@@ -39,10 +39,11 @@ public class FarmersAndWorkersScenarioTest {
 
 
         for(int j=0; j< 5; j++) {
-            final FarmersAndWorkersResult farmersAndWorkersResult = runFarmersAndWorkersScenario(2, 50, System.currentTimeMillis(), null,null );
-            Assert.assertEquals(44.825, farmersAndWorkersResult.getManufacturingProduction(), 4); //5% error allowed
-            Assert.assertEquals(1012.63, farmersAndWorkersResult.getAgriculturalProduction(), 50);
-            Assert.assertEquals(11.2063, farmersAndWorkersResult.getManufacturingPrice(),1);
+            final FarmersAndWorkersResult farmersAndWorkersResult = runFarmersAndWorkersScenario(10, 50,
+                    System.currentTimeMillis(), null,null );
+            Assert.assertEquals(280, farmersAndWorkersResult.getManufacturingProduction(), 15); //5% error allowed
+            Assert.assertEquals(869, farmersAndWorkersResult.getAgriculturalProduction(), 45);
+            Assert.assertEquals(2.7, farmersAndWorkersResult.getManufacturingPrice(),.5);
 
         }
     }

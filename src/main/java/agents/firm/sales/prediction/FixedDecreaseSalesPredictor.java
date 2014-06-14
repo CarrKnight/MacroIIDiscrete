@@ -54,15 +54,15 @@ public class FixedDecreaseSalesPredictor extends BaseSalesPredictor {
      * Never returns less than 0
      */
     @Override
-    public int predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
+    public float predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
         Preconditions.checkArgument(increaseStep >= 0);
 
-        long beforeImpactPrice = delegate.predictSalePriceAfterIncreasingProduction(dept, expectedProductionCost, increaseStep);
+        float beforeImpactPrice = delegate.predictSalePriceAfterIncreasingProduction(dept, expectedProductionCost, increaseStep);
 
         if(beforeImpactPrice == -1)
             return -1;
 
-        return Math.max(0,Math.round(beforeImpactPrice -decrementDelta* (float)increaseStep));
+        return Math.max(0,(beforeImpactPrice -decrementDelta* (float)increaseStep));
     }
 
     /**
@@ -70,14 +70,14 @@ public class FixedDecreaseSalesPredictor extends BaseSalesPredictor {
      * Never returns less than 0
      */
     @Override
-    public int predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
+    public float predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
         Preconditions.checkArgument(decreaseStep >= 0);
 
-        long beforeImpactPrice = delegate.predictSalePriceAfterDecreasingProduction(dept, expectedProductionCost, decreaseStep);
+        float beforeImpactPrice = delegate.predictSalePriceAfterDecreasingProduction(dept, expectedProductionCost, decreaseStep);
         if(beforeImpactPrice == -1)
             return -1;
 
-        return Math.max(0,Math.round(beforeImpactPrice + decrementDelta * (float) decreaseStep));
+        return Math.max(0,(beforeImpactPrice + decrementDelta * (float) decreaseStep));
     }
 
     /**
@@ -116,7 +116,7 @@ public class FixedDecreaseSalesPredictor extends BaseSalesPredictor {
      * @return predicted price
      */
     @Override
-    public int predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+    public float predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         return delegate.predictSalePriceWhenNotChangingProduction(dept);
     }
 }

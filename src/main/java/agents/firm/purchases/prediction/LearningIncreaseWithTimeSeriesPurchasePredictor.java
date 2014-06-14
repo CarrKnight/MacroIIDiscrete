@@ -90,7 +90,7 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
         if(observer.getNumberOfObservations() > 25)
         {
             updateModel();
@@ -107,7 +107,7 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
     }
 
     @Override
-    public int predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         if(observer.getNumberOfObservations() > 25)
         {
             updateModel();
@@ -131,7 +131,7 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
         return predictor.predictPurchasePriceWhenNoChangeInProduction(dept);
     }
 

@@ -53,7 +53,7 @@ public class LookAheadPredictorTest {
         LookAheadPredictor predictor = new LookAheadPredictor();
 
         PurchasesDepartment dept = mock(PurchasesDepartment.class); when(dept.getMarket()).thenReturn(market);
-        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), -1); //there is no price!
+        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), -1,.0001f); //there is no price!
 
 
         for(int i=0; i<5; i++)
@@ -66,15 +66,15 @@ public class LookAheadPredictorTest {
 
 
 
-        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), 10);
+        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), 10,.0001f);
 
         Firm seller = mock(Firm.class);
         Good stubGood = mock(Good.class); when(stubGood.getType()).thenReturn(UndifferentiatedGoodType.GENERIC);   Quote q = Quote.newSellerQuote(seller, 1, stubGood);
         when(seller.askedForASaleQuote(any(EconomicAgent.class), any(GoodType.class))).thenReturn(q);
         market.registerSeller(seller);                              //he didn't submit any quote yet
-        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), 10);
+        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), 10,.0001f);
         market.submitSellQuote(seller, 1, mock(Good.class));
-        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), 1);
+        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), 1,.0001f);
 
     }
 }

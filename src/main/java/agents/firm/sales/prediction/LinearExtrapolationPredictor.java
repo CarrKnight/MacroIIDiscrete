@@ -205,7 +205,7 @@ public class LinearExtrapolationPredictor extends BaseSalesPredictor implements 
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public int predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
+    public float predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
 
         //if we aren't ready, default to last closing price
         if(lowWorkers == -1 || highWorkers == -1 || !highWorkersPrice.isReady() || !lowWorkersPrice.isReady() || lowWorkers == 0) //when low workers are 0 the prediction will be wrong because of no data
@@ -243,7 +243,7 @@ public class LinearExtrapolationPredictor extends BaseSalesPredictor implements 
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public int predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
+    public float predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
 
         //if we aren't ready, default to last closing price
         if(lowWorkers == -1 || highWorkers == -1 || !highWorkersPrice.isReady() || !lowWorkersPrice.isReady() || lowWorkers == 0) //when low workers are 0 the prediction will be wrong because of no data
@@ -310,7 +310,7 @@ public class LinearExtrapolationPredictor extends BaseSalesPredictor implements 
      * @return predicted price
      */
     @Override
-    public int predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+    public float predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         return dept.getLastClosingPrice();
     }
 }

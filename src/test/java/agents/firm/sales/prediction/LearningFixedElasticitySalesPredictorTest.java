@@ -75,7 +75,7 @@ public class LearningFixedElasticitySalesPredictorTest {
         when(market.getObservationRecordedThisDay(MarketDataType.CLOSING_PRICE,2)).thenReturn(81d);
         when(market.getObservationRecordedThisDay(MarketDataType.VOLUME_CONSUMED,2)).thenReturn(8d);
         //the sales predictor will be predicting for 9 (yesterdayVolume + 1)
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 100, 1), 198); //200-2.09 (rounded)
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 100, 1), 198,.0001f); //200-2.09 (rounded)
 
 
 
@@ -127,19 +127,19 @@ public class LearningFixedElasticitySalesPredictorTest {
 
         LearningFixedElasticitySalesPredictor predictor = new LearningFixedElasticitySalesPredictor(market,model );
         when(department.getAveragedLastPrice()).thenReturn(50d);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1),50);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1),50,.0001f);
 
         //with one observation, it still returns whatever the sales department says
         when(market.getLastObservedDay()).thenReturn(0);
         when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(0d);
         model.getPhaseScheduler().step(model);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1),50);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1),50,.0001f);
 
         //with no volume the observation is ignored
         when(market.getLastObservedDay()).thenReturn(1);
         when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(-1d);
         model.getPhaseScheduler().step(model);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1),50);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1),50,.0001f);
 
 
         //two observations, everything back to normal! (but the slope is 0, so no effect)
@@ -154,7 +154,7 @@ public class LearningFixedElasticitySalesPredictorTest {
                         1,1
                 });
         model.getPhaseScheduler().step(model);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 50, 1),50);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 50, 1),50,.0001f);
 
 
     }

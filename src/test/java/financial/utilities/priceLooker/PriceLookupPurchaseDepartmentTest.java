@@ -7,8 +7,9 @@
 package financial.utilities.priceLooker;
 
 import agents.firm.purchases.PurchasesDepartment;
-import static org.junit.Assert.*;import org.junit.Test;
+import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 /**
@@ -35,11 +36,11 @@ public class PriceLookupPurchaseDepartmentTest {
 
         PriceLookupPurchaseDepartment lookup = new PriceLookupPurchaseDepartment(department);
 
-        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10);
+        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(10f);
         assertEquals(lookup.getPrice(),10);
 
 
-        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(-1);
+        when(department.predictPurchasePriceWhenIncreasingProduction()).thenReturn(-1f);
         assertEquals(lookup.getPrice(),-1);
     }
 

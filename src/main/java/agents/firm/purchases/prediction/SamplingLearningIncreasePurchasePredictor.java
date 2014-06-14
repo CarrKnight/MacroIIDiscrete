@@ -94,7 +94,7 @@ public class SamplingLearningIncreasePurchasePredictor extends  AbstractWorkerLe
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
         this.department=dept;
 
 
@@ -114,7 +114,7 @@ public class SamplingLearningIncreasePurchasePredictor extends  AbstractWorkerLe
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
 
         this.department=dept;
 
@@ -132,7 +132,7 @@ public class SamplingLearningIncreasePurchasePredictor extends  AbstractWorkerLe
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
         return predictor.predictPurchasePriceWhenNoChangeInProduction(dept);
     }
 

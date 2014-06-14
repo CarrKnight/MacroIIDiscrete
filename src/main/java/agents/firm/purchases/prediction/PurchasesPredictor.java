@@ -40,7 +40,7 @@ public interface PurchasesPredictor
      * @param dept the department that needs to buy it
      * @return the predicted price or -1 if there are no predictions.
      */
-    public int predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept);
+    public float predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept);
 
 
     /**
@@ -48,14 +48,14 @@ public interface PurchasesPredictor
      * @param dept the department that needs to buy it
      * @return the predicted price or -1 if there are no predictions.
      */
-    public int predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept);
+    public float predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept);
 
     /**
      * Predicts the future price of the next good to buy
      * @param dept the department that needs to buy it
      * @return the predicted price or -1 if there are no predictions.
      */
-    public int predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept);
+    public float predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept);
 
 
     /**

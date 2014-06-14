@@ -30,6 +30,7 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.Control;
 import model.utilities.Deactivatable;
+import model.utilities.filters.WeightedMovingAverage;
 import model.utilities.logs.*;
 import model.utilities.scheduler.Priority;
 import model.utilities.stats.collectors.PurchasesDepartmentData;
@@ -161,9 +162,12 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
     protected InflowOutflowCounter counter;
 
     /**
-     * a counter to compute the daily average closing price from filled quotes. Resets itself at DAWN every day
+     * average last week price weighted by outflow
      */
-    private AveragePurchasePriceCounter averagePriceCounter;
+    private WeightedMovingAverage<Integer,Double> averagedPrice = new WeightedMovingAverage<>(7);
+
+
+
 
 
     protected boolean startWasCalled=false;
@@ -186,7 +190,6 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
 
 
         counter = new InflowOutflowCounter(model,firm,goodType);
-        averagePriceCounter = new AveragePurchasePriceCounter(this);
         purchasesData = new PurchasesDepartmentData();
 
 
@@ -529,7 +532,6 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
             //we will return to the buy method so we don't need to deal with anything inside here.
         }
 
-        averagePriceCounter.getNotifiedOfFilledQuote(price);
         handleNewEvent(new LogEvent(this, LogLevel.TRACE,"Bought at price:{}",price));
     }
 
@@ -906,7 +908,6 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
         market.deregisterBuyer(firm);
         pricingStrategy.turnOff(); //turn off prices
         control.turnOff(); //turn off control
-        averagePriceCounter.turnOff();
         supplierSearch.turnOff(); //turn off seller search
         opponentSearch.turnOff(); //turn off buyer search
         predictor.turnOff(); //turn off the predictor
@@ -997,7 +998,6 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
         startWasCalled = true;
 
         counter.start();
-        averagePriceCounter.start(model);
         control.start();
         purchasesData.start(model,this);
 
@@ -1044,7 +1044,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * Predicts the future price of the next good to buy
      * @return the predicted price or -1 if there are no predictions.
      */
-    public int predictPurchasePriceWhenIncreasingProduction() {
+    public float predictPurchasePriceWhenIncreasingProduction() {
         return predictor.predictPurchasePriceWhenIncreasingProduction(this);
     }
 
@@ -1052,7 +1052,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * Predicts the future price of the next good to buy
      * @return the predicted price or -1 if there are no predictions.
      */
-    public int predictPurchasePriceWhenDecreasingProduction()
+    public float predictPurchasePriceWhenDecreasingProduction()
     {
         return predictor.predictPurchasePriceWhenDecreasingProduction(this);
     }
@@ -1102,6 +1102,10 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      */
     public void setTradePriority(Priority tradePriority) {
         this.tradePriority = tradePriority;
+    }
+
+    public WeightedMovingAverage<Integer, Double> getAveragedPrice() {
+        return averagedPrice;
     }
 
     /**
@@ -1203,14 +1207,17 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * the average closing price of today's trades, or -1 if there were no trades
      */
     public float getTodayAverageClosingPrice() {
-        return averagePriceCounter.getTodayAverageClosingPrice();
+        if(getTodayInflow() == 0)
+            return -1;
+        else
+            return ((float)lastClosingPrice) / getTodayInflow();
     }
 
     /**
      * Predicts the future price of the next good to buy
      * @return the predicted price or -1 if there are no predictions.
      */
-    public int predictPurchasePriceWhenNoChangeInProduction() {
+    public float predictPurchasePriceWhenNoChangeInProduction() {
         return predictor.predictPurchasePriceWhenNoChangeInProduction(this);
     }
 
@@ -1230,7 +1237,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
     }
 
     public float getAveragedClosingPrice() {
-        return averagePriceCounter.getAveragedClosingPrice();
+        return lastClosingPrice;
     }
 
     public int getYesterdayInflow() {

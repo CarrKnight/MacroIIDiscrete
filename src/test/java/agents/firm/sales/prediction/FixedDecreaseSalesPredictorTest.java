@@ -42,11 +42,11 @@ public class FixedDecreaseSalesPredictorTest {
 
         //predicts a price 3 dollar lower
         predictor.setDecrementDelta(3);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 2, 1), 97);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 2, 1), 97,.0001f);
 
         //predicts a price 50 dollars lower
         predictor.setDecrementDelta(50);
-        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 2, 1),50);
+        Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 2, 1),50,.0001f);
 
 
 

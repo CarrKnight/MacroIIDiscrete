@@ -76,7 +76,7 @@ public class SamplingLearningIncreasePurchasePredictorTest
 
         when(department.getAveragedClosingPrice()).thenReturn(200f);
         //the sales predictor will be predict for 9 (yesterdayVolume + 1)
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 203); //200+2.6 (rounded)
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 203,.0001f); //200+2.6 (rounded)
 
     }
 
@@ -108,14 +108,14 @@ public class SamplingLearningIncreasePurchasePredictorTest
 
         SamplingLearningIncreasePurchasePredictor predictor = new SamplingLearningIncreasePurchasePredictor();
         when(department.getAveragedClosingPrice()).thenReturn(50f);
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50,.0001f);
 
         //with one observation, it still returns whatever the sales department says
 
         when(department.getLastObservedDay()).thenReturn(1);
         when(department.getStartingDay()).thenReturn(0);
 
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50,.0001f);
 
         //with negative price the observation is ignored
         when(market.getLastObservedDay()).thenReturn(3);
@@ -132,7 +132,7 @@ public class SamplingLearningIncreasePurchasePredictorTest
                 new double[]{
                         0,0,0
                 });
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50,.0001f);
 
 
         //two observations, everything back to normal! (but the slope is 0, so no effect)
@@ -151,7 +151,7 @@ public class SamplingLearningIncreasePurchasePredictorTest
                 new double[]{
                         0,0,0
                 });
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50);
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50,.0001f);
 
 
         FixedIncreasePurchasesPredictor.defaultIncrementDelta=1;

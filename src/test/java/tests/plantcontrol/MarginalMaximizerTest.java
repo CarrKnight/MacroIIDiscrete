@@ -58,7 +58,7 @@ public class MarginalMaximizerTest {
         Blueprint b = new Blueprint.Builder().output(UndifferentiatedGoodType.GENERIC,1).build(); //just one output
         Firm owner = mock(Firm.class); when(p.getOwner()).thenReturn(owner); when(hr.getPlant()).thenReturn(p); when(hr.getFirm()).thenReturn(owner);
         when(owner.getModel()).thenReturn(new MacroII(1));  when(p.getNumberOfWorkers()).thenReturn(10);
-        when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(-1); //tell the hr to fail at predicting
+        when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(-1f); //tell the hr to fail at predicting
         PlantControl control = mock(PlantControl.class);
         //it should immediately fail
         MarginalMaximizer maximizer = new MarginalMaximizer(hr,control,p,owner);
@@ -85,7 +85,7 @@ public class MarginalMaximizerTest {
         when(p.getOutputs()).thenReturn(b.getOutputs().keySet());
         Firm owner = mock(Firm.class); when(p.getOwner()).thenReturn(owner); when(hr.getPlant()).thenReturn(p); when(hr.getFirm()).thenReturn(owner);
         when(owner.getModel()).thenReturn(new MacroII(1));  when(p.getNumberOfWorkers()).thenReturn(10);
-        when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(-1); //tell the hr to fail at predicting
+        when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(-1f); //tell the hr to fail at predicting
         SalesDepartment sales = mock(SalesDepartmentAllAtOnce.class);
         when(owner.getSalesDepartment(UndifferentiatedGoodType.GENERIC)).thenReturn(sales);
         when(p.hypotheticalThroughput(anyInt(),any(GoodType.class))).thenAnswer(new Answer<Object>() {     //production is just number of workers
@@ -99,16 +99,16 @@ public class MarginalMaximizerTest {
 
 
         //say that wages are always 50, sell prices are always 100
-        when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(50); when(hr.predictPurchasePriceWhenDecreasingProduction()).thenReturn(50);
+        when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(50f); when(hr.predictPurchasePriceWhenDecreasingProduction()).thenReturn(50f);
         when(hr.getWagesPaid()).thenReturn(10*50);
         when(hr.getMarket()).thenReturn(mock(OrderBookMarket.class));
-        when(sales.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(100);
-        when(sales.predictSalePriceWhenNotChangingPoduction()).thenReturn(100);
-        when(sales.predictSalePriceAfterDecreasingProduction(anyInt(), anyInt())).thenReturn(100);
+        when(sales.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(100f);
+        when(sales.predictSalePriceWhenNotChangingPoduction()).thenReturn(100f);
+        when(sales.predictSalePriceAfterDecreasingProduction(anyInt(), anyInt())).thenReturn(100f);
 
 
 
-        PlantControl control = mock(PlantControl.class); when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(50);
+        PlantControl control = mock(PlantControl.class); when(hr.predictPurchasePriceWhenNoChangeInProduction()).thenReturn(50f);
         //no delay exception thrown this time!!!
         MarginalMaximizer maximizer = new MarginalMaximizer(hr,control,p,owner);
         boolean exceptionThrown = false;
@@ -147,10 +147,10 @@ public class MarginalMaximizerTest {
 
 
             //do it again, but this time it pays to cut back
-            when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(100);
+            when(hr.predictPurchasePriceWhenIncreasingProduction()).thenReturn(100f);
             when(hr.getWagesPaid()).thenReturn(10*50);
-            when(sales.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(100); when(sales.getLastClosingPrice()).thenReturn(100);
-            when(sales.predictSalePriceAfterDecreasingProduction(anyInt(), anyInt())).thenReturn(100);
+            when(sales.predictSalePriceAfterIncreasingProduction(anyInt(), anyInt())).thenReturn(100f); when(sales.getLastClosingPrice()).thenReturn(100);
+            when(sales.predictSalePriceAfterDecreasingProduction(anyInt(), anyInt())).thenReturn(100f);
 
 
         } catch (NoSuchMethodException  | InvocationTargetException | IllegalAccessException e) {

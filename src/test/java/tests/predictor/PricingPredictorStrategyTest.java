@@ -79,9 +79,9 @@ public class PricingPredictorStrategyTest {
 
 
 
-        assertEquals(240, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //markup 20% (since you haven't stepped and seen the competition)
+        assertEquals(240, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //markup 20% (since you haven't stepped and seen the competition)
         pricing.step(mock(MacroII.class));
-        assertEquals(297, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //undercut by 1%
+        assertEquals(297, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //undercut by 1%
 
 
     }
@@ -128,9 +128,9 @@ public class PricingPredictorStrategyTest {
         assertEquals(50, buyer3.hasHowMany(UndifferentiatedGoodType.MONEY));
         assertEquals(250, seller2.hasHowMany(UndifferentiatedGoodType.MONEY));
 
-        assertEquals(240, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //markup 20% (since you haven't stepped and seen the competition)
+        assertEquals(240, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //markup 20% (since you haven't stepped and seen the competition)
         pricing.step(mock(MacroII.class));
-        assertEquals(297, strategy.predictSalePriceAfterIncreasingProduction(department, 200,1 )); //undercute by 1%
+        assertEquals(297, strategy.predictSalePriceAfterIncreasingProduction(department, 200,1 ),.0001f); //undercute by 1%
 
 
     }
@@ -185,10 +185,10 @@ public class PricingPredictorStrategyTest {
         assertEquals(50, buyer3.hasHowMany(UndifferentiatedGoodType.MONEY));
         assertEquals(250, seller2.hasHowMany(UndifferentiatedGoodType.MONEY));
 
-        assertEquals(240, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //markup 20% (since you haven't stepped and seen the competition)
+        assertEquals(240, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //markup 20% (since you haven't stepped and seen the competition)
         pricing.step(mock(MacroII.class));
-        assertEquals(297, strategy.predictSalePriceAfterIncreasingProduction(department, 200,1 )); //undercut 1%
-        assertEquals(297, department.predictSalePriceAfterIncreasingProduction(200,1 )); //not overriden this time!
+        assertEquals(297, strategy.predictSalePriceAfterIncreasingProduction(department, 200,1 ),.0001f); //undercut 1%
+        assertEquals(297, department.predictSalePriceAfterIncreasingProduction(200,1 ),.0001f); //not overriden this time!
 
     }
 
@@ -207,8 +207,8 @@ public class PricingPredictorStrategyTest {
         UndercuttingAskPricing pricing = new UndercuttingAskPricing(department);
 
         department.setAskPricingStrategy(pricing) ;
-        assertEquals(240, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //markup 20% (since you haven't stepped and seen the competition)
-        assertEquals(240, department.predictSalePriceAfterIncreasingProduction(200, 1)); //can't find anything on the order book, better ask the predict strategy
+        assertEquals(240, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //markup 20% (since you haven't stepped and seen the competition)
+        assertEquals(240, department.predictSalePriceAfterIncreasingProduction(200, 1),.0001f); //can't find anything on the order book, better ask the predict strategy
 
     }
 
@@ -261,9 +261,9 @@ public class PricingPredictorStrategyTest {
         assertEquals(50, buyer3.hasHowMany(UndifferentiatedGoodType.MONEY));
         assertEquals(250, f.hasHowMany(UndifferentiatedGoodType.MONEY));
 
-        assertEquals(240, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //markup 20% (since you haven't stepped and seen the competition)
+        assertEquals(240, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //markup 20% (since you haven't stepped and seen the competition)
         pricing.step(mock(MacroII.class));
-        assertEquals(297, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1)); //copy the last closing price (which is our closing price anyway)
+        assertEquals(297, strategy.predictSalePriceAfterIncreasingProduction(department, 200, 1),.0001f); //copy the last closing price (which is our closing price anyway)
 
     }
 

@@ -35,7 +35,7 @@ public class LookAheadPredictor implements PurchasesPredictor {
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
         //can we see the best price?
         if(dept.getMarket().isBestSalePriceVisible())
             try {
@@ -58,7 +58,7 @@ public class LookAheadPredictor implements PurchasesPredictor {
     }
 
     @Override
-    public int predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         if(defaultTo == null)
             defaultTo = new PricingPurchasesPredictor();
         return defaultTo.predictPurchasePriceWhenDecreasingProduction(dept);
@@ -72,7 +72,7 @@ public class LookAheadPredictor implements PurchasesPredictor {
      * @return the predicted price or -1 if there are no predictions.
      */
     @Override
-    public int predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
+    public float predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
         return defaultTo.predictPurchasePriceWhenNoChangeInProduction(dept);
     }
 

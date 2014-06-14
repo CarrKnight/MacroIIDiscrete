@@ -87,9 +87,11 @@ public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
 
 
         //memorize
-        data.get(PurchasesDataType.INFLOW).add((double) departmentToFollow.getTodayInflow());
+        final double inflow = (double) departmentToFollow.getTodayInflow();
+        data.get(PurchasesDataType.INFLOW).add(inflow);
         data.get(PurchasesDataType.OUTFLOW).add((double) departmentToFollow.getTodayOutflow());
-        data.get(PurchasesDataType.CLOSING_PRICES).add((double) departmentToFollow.getLastClosingPrice());
+        final int lastClosingPrice = departmentToFollow.getLastClosingPrice();
+        data.get(PurchasesDataType.CLOSING_PRICES).add((double) lastClosingPrice);
         data.get(PurchasesDataType.INVENTORY).add((double) departmentToFollow.getCurrentInventory());
         data.get(PurchasesDataType.FAILURES_TO_CONSUME).add((double) departmentToFollow.getTodayFailuresToConsume());
         data.get(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD).add((double) departmentToFollow.getNumberOfWorkersWhoConsumeWhatWePurchase());
@@ -99,6 +101,9 @@ public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
         data.get(PurchasesDataType.DEMAND_GAP).add((double) departmentToFollow.estimateDemandGap());
         int workersTargeted = departmentToFollow instanceof HumanResources ? ((HumanResources) departmentToFollow).getWorkerTarget() : 0;
         data.get(PurchasesDataType.WORKERS_TARGETED).add((double) workersTargeted);
+
+
+        departmentToFollow.getAveragedPrice().addObservation(lastClosingPrice,inflow);
 
         //reschedule
         model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);

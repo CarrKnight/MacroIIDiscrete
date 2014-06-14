@@ -34,7 +34,7 @@ public class MarketSalesPredictor extends BaseSalesPredictor {
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public int predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
+    public float predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
         long lastPrice = dept.getMarket().getLastPrice();
         if(lastPrice == -1 )
             return -1;
@@ -52,7 +52,7 @@ public class MarketSalesPredictor extends BaseSalesPredictor {
      * @return the best offer available/predicted or -1 if there are no quotes/good predictions
      */
     @Override
-    public int predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
+    public float predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
         long lastPrice = dept.getMarket().getLastPrice();
         if(lastPrice == -1 )
             return -1;
@@ -70,7 +70,7 @@ public class MarketSalesPredictor extends BaseSalesPredictor {
      * @return predicted price
      */
     @Override
-    public int predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
+    public float predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
         long lastPrice = dept.getMarket().getLastPrice();
         if(lastPrice == -1 )
             return -1;
