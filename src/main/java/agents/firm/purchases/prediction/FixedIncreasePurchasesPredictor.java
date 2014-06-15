@@ -60,13 +60,13 @@ public class FixedIncreasePurchasesPredictor implements PurchasesPredictor {
      */
     @Override
     public float predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
-        return Math.max(0,Math.round(delegate.predictPurchasePriceWhenIncreasingProduction(dept)+incrementDelta));
+        return Math.max(0,(delegate.predictPurchasePriceWhenIncreasingProduction(dept)+incrementDelta));
 
     }
 
     @Override
     public float predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
-        return Math.max(0,Math.round(delegate.predictPurchasePriceWhenIncreasingProduction(dept)-incrementDelta));
+        return Math.max(0,(delegate.predictPurchasePriceWhenIncreasingProduction(dept)-incrementDelta));
 
 
     }

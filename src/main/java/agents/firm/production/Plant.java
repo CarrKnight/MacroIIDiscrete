@@ -6,8 +6,8 @@
 
 package agents.firm.production;
 
-import agents.*;
-import agents.firm.Department;
+import agents.Agent;
+import agents.HasInventory;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
 import agents.firm.cost.PlantCostStrategy;
@@ -18,7 +18,10 @@ import agents.firm.utilities.DailyProductionAndConsumptionCounter;
 import agents.people.Person;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
-import goods.*;
+import goods.DifferentiatedGoodType;
+import goods.Good;
+import goods.GoodType;
+import goods.InventoryListener;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.logs.*;
@@ -45,7 +48,7 @@ import java.util.*;
  * @version %I%, %G%
  * @see
  */
-public class Plant implements Department, Agent, InventoryListener, LogNode {
+public class Plant implements Agent, InventoryListener, LogNode {
 
 
     private final DailyProductionAndConsumptionCounter counter;
@@ -1196,7 +1199,6 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
         return getHr().getWagesPaid();
     }
 
-    @Override
     public int getStartingDay() {
         return dataStorage.getStartingDay();
     }
@@ -1225,14 +1227,7 @@ public class Plant implements Department, Agent, InventoryListener, LogNode {
         return counter.getTodayConsumption(type);
     }
 
-    /**
-     * alwayas false, doesn't trade.
-     * @return
-     */
-    @Override
-    public boolean hasTradedAtLeastOnce() {
-        return false;
-    }
+
 
     /**
      * a utility method to quickly build a very simple (linear machinery) plant for a given firm

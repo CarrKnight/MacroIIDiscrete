@@ -17,6 +17,8 @@ import agents.firm.sales.prediction.RegressionSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.decorators.AskReservationPriceDecorator;
+import agents.firm.utilities.ExponentialPriceAverager;
+import agents.firm.utilities.PriceAverager;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
@@ -123,7 +125,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     /**
      * average last week price weighted by outflow
      */
-    private WeightedMovingAverage<Integer,Double> averagedPrice = new WeightedMovingAverage<>(7);
+    private PriceAverager averagedPrice = new ExponentialPriceAverager(.9f, PriceAverager.NoTradingDayPolicy.IGNORE);
 
 
 
@@ -383,7 +385,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
 
 
-        averagedPrice.addObservation(lastClosingPrice,(double)todayOutflow);
+        averagedPrice.endOfTheDay(this);
 
         //reset
         todayInflow = 0;
@@ -1094,22 +1096,30 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     /**
      * Gets goods sold today. Reset every day at PREPARE_TO_TRADE step.
      *
-     * @return Value of goods sold today. Reset every day at PREPARE_TO_TRADE step.
+     * @return # of goods sold today. Reset every day at DAWN
      */
     public int getTodayOutflow() {
         return todayOutflow;
     }
 
     /**
-     * Gets goods that were given to us to sell today.   Reset every day at PREPARE_TO_TRADE step.
+     * Gets goods that were given to us to sell today.   Reset every day at DAWN
      *
-     * @return Value of goods that were given to us to sell today.
+     * @return # of goods that were given to us to sell today.
      */
     public int getTodayInflow() {
         return todayInflow;
     }
 
-
+    /**
+     * alias for today outflow
+     *
+     * @return the today outflow
+     */
+    @Override
+    public int getTodayTrades() {
+        return getTodayOutflow();
+    }
 
     /**
      * Asks the sale department if its current inventory is where it should be according to the ask pricing strategy
@@ -1273,15 +1283,11 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      * @return
      */
     public double getAveragedLastPrice(){
-        if(lastClosingPrice == -1)
-            return -1;
-        else
-        {
 
-            return averagedPrice.getSmoothedObservation();
+            return averagedPrice.getAveragedPrice();
 
 
-        }
+
 
     }
 
@@ -1339,8 +1345,13 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
 
     public void setAveragedPrice(WeightedMovingAverage<Integer, Double> averagedPrice) {
+        // this.averagedPrice = averagedPrice;
+    }
+
+    public void setPriceAverager(PriceAverager averagedPrice) {
         this.averagedPrice = averagedPrice;
     }
+
 
 
     public boolean isActive() {

@@ -102,8 +102,7 @@ public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
         int workersTargeted = departmentToFollow instanceof HumanResources ? ((HumanResources) departmentToFollow).getWorkerTarget() : 0;
         data.get(PurchasesDataType.WORKERS_TARGETED).add((double) workersTargeted);
 
-
-        departmentToFollow.getAveragedPrice().addObservation(lastClosingPrice,inflow);
+        departmentToFollow.getPriceAverager().endOfTheDay(departmentToFollow);
 
         //reschedule
         model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);

@@ -85,7 +85,7 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
         if(getIndependentLags() > 1 || getPriceLags() > 0)
         {
             double toReturn = Math.min(predictPrice(increaseStep), predictPrice(0));
-            return (int) Math.round(toReturn);
+            return (float) toReturn;
         }
         else
         {

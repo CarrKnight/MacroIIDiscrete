@@ -7,7 +7,6 @@
 package agents.firm.purchases;
 
 import agents.EconomicAgent;
-import goods.InventoryListener;
 import agents.firm.Department;
 import agents.firm.Firm;
 import agents.firm.purchases.inventoryControl.InventoryControl;
@@ -18,6 +17,8 @@ import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.purchases.pricing.decorators.MaximumBidPriceDecorator;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
+import agents.firm.utilities.ExponentialPriceAverager;
+import agents.firm.utilities.PriceAverager;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
@@ -26,11 +27,11 @@ import financial.utilities.PurchaseResult;
 import financial.utilities.Quote;
 import goods.Good;
 import goods.GoodType;
+import goods.InventoryListener;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.Control;
 import model.utilities.Deactivatable;
-import model.utilities.filters.WeightedMovingAverage;
 import model.utilities.logs.*;
 import model.utilities.scheduler.Priority;
 import model.utilities.stats.collectors.PurchasesDepartmentData;
@@ -164,7 +165,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
     /**
      * average last week price weighted by outflow
      */
-    private WeightedMovingAverage<Integer,Double> averagedPrice = new WeightedMovingAverage<>(7);
+    private PriceAverager priceAverager = new ExponentialPriceAverager(.9f, PriceAverager.NoTradingDayPolicy.IGNORE);
 
 
 
@@ -299,7 +300,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
     public static <IC extends InventoryControl & BidPricingStrategy,BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm>
     FactoryProducedPurchaseDepartment<IC,IC,BS,SS> getPurchasesDepartmentIntegrated
     (int budgetGiven,  Firm firm,  Market market,
-      Class<IC> integratedControl,  Class<BS> buyerSearchAlgorithmType,  Class<SS> sellerSearchAlgorithmType )
+     Class<IC> integratedControl,  Class<BS> buyerSearchAlgorithmType,  Class<SS> sellerSearchAlgorithmType )
     {
 
         //create the simple purchases department
@@ -366,10 +367,10 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
     public static
     <IC extends InventoryControl, BP extends BidPricingStrategy,BS extends BuyerSearchAlgorithm, SS extends SellerSearchAlgorithm>
     FactoryProducedPurchaseDepartment<IC,BP,BS,SS> getPurchasesDepartment(int budgetGiven,  Firm firm,  Market market,
-                                                                           Class<IC> inventoryControlType,
-                                                                           Class<BP> bidPricingStrategyType,
-                                                                           Class<BS> buyerSearchAlgorithmType,
-                                                                           Class<SS> sellerSearchAlgorithmType){
+                                                                          Class<IC> inventoryControlType,
+                                                                          Class<BP> bidPricingStrategyType,
+                                                                          Class<BS> buyerSearchAlgorithmType,
+                                                                          Class<SS> sellerSearchAlgorithmType){
         //create the simple purchases department
         PurchasesDepartment instance = new PurchasesDepartment(budgetGiven,firm,market); //call the constructor
 
@@ -437,8 +438,8 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
     public static
     FactoryProducedPurchaseDepartment<InventoryControl,BidPricingStrategy,BuyerSearchAlgorithm,SellerSearchAlgorithm>
     getPurchasesDepartment(int budgetGiven, Firm firm, Market market,
-                            String inventoryControlType,  String bidPricingStrategyType,
-                            String buyerSearchAlgorithmType, String sellerSearchAlgorithmType){
+                           String inventoryControlType,  String bidPricingStrategyType,
+                           String buyerSearchAlgorithmType, String sellerSearchAlgorithmType){
         //create the simple purchases department
         PurchasesDepartment instance = new PurchasesDepartment(budgetGiven,firm,market); //call the constructor
         //create random inventory control and assign it
@@ -1104,8 +1105,8 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
         this.tradePriority = tradePriority;
     }
 
-    public WeightedMovingAverage<Integer, Double> getAveragedPrice() {
-        return averagedPrice;
+    public PriceAverager getPriceAverager() {
+        return priceAverager;
     }
 
     /**
@@ -1204,6 +1205,16 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
 
 
     /**
+     * alias for today inflow
+     *
+     * @return the today inflow
+     */
+    @Override
+    public int getTodayTrades() {
+        return getTodayInflow();
+    }
+
+    /**
      * the average closing price of today's trades, or -1 if there were no trades
      */
     public float getTodayAverageClosingPrice() {
@@ -1237,7 +1248,20 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
     }
 
     public float getAveragedClosingPrice() {
-        return lastClosingPrice;
+
+        if(getLastClosingPrice() == -1)
+            return -1;
+
+
+        final float smoothedObservation = priceAverager.getAveragedPrice();
+
+        return smoothedObservation;
+
+
+
+
+
+
     }
 
     public int getYesterdayInflow() {
@@ -1248,6 +1272,10 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
         return counter.getYesterdayOutflow();
     }
 
+
+    public void setPriceAverager(PriceAverager priceAverager) {
+        this.priceAverager = priceAverager;
+    }
 
     public Class<? extends BidPricingStrategy> getPricingStrategyClass()
     {

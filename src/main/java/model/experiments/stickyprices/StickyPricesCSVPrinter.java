@@ -525,7 +525,7 @@ public class StickyPricesCSVPrinter {
             final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, proportionalGain + (float)macroII.random.nextGaussian()/100f,
                     integralGain + (float)macroII.random.nextGaussian()/100f, 0f, 0); //added a bit of noise
             salesDepartment.setAskPricingStrategy(strategy);
-            //salesDepartment.setAveragedPrice(new WeightedMovingAverage<Long, Double>(2)); //doesn't really need/care about Moving averages!
+            //salesDepartment.setPriceAverager(new WeightedMovingAverage<Long, Double>(2)); //doesn't really need/care about Moving averages!
 
             //all impacts are 0 because it's perfect competitive
             salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
@@ -613,7 +613,7 @@ public class StickyPricesCSVPrinter {
             final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, proportionalGain + (float)macroII.random.nextGaussian()/100f,
                     integralGain + (float)macroII.random.nextGaussian()/100f, 0f, 0); //added a bit of noise
             salesDepartment.setAskPricingStrategy(strategy);
-            //salesDepartment.setAveragedPrice(new WeightedMovingAverage<Long, Double>(2)); //doesn't really need/care about Moving averages!
+            //salesDepartment.setPriceAverager(new WeightedMovingAverage<Long, Double>(2)); //doesn't really need/care about Moving averages!
 
             //all impacts are 0 because it's perfect competitive
             salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
@@ -1609,7 +1609,7 @@ public class StickyPricesCSVPrinter {
             strategy.setTargetInventory(1000);
             strategy.setSpeed(normalStickiness);
             salesDepartment.setAskPricingStrategy(strategy);
-            //salesDepartment.setAveragedPrice(new WeightedMovingAverage<Long, Double>(2)); //doesn't really need/care about Moving averages!
+            //salesDepartment.setPriceAverager(new WeightedMovingAverage<Long, Double>(2)); //doesn't really need/care about Moving averages!
 
             //all impacts are 0 because it's perfect competitive
             salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));

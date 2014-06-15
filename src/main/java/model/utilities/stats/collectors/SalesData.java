@@ -107,6 +107,7 @@ public class SalesData extends DataStorage<SalesDataType> {
 
         data.get(SalesDataType.SUPPLY_GAP).add(supplyGap);
 
+
         //reschedule
         model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
 

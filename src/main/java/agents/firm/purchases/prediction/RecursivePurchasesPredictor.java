@@ -143,7 +143,7 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
     public float predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
     //    System.err.println("slope " + (predictPrice(1)-predictPrice(0)));
         if(getIndependentLags() > 1 || getPriceLags() > 0)
-            return (int) Math.round(Math.max(predictPrice(1),predictPrice(0)));
+            return (float) Math.max(predictPrice(1),predictPrice(0));
         else{
             delegate.setIncrementDelta((float)(predictPrice(1)-predictPrice(0)));
             return delegate.predictPurchasePriceWhenIncreasingProduction(dept);

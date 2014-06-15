@@ -230,6 +230,8 @@ public class PeriodicMaximizer<ALG extends WorkerMaximizationAlgorithm> extends 
                 oldRevenue,oldCosts, lastWorkerTarget, oldProfits);
         //if the future target is negative, do it again next week (the subclass wants more info)
         if(futureTarget < 0){
+            handleNewEvent(new LogEvent(this, LogLevel.INFO,"maximizer told to wait for better predictions",
+                    oldProfits,newProfits,lastWorkerTarget,futureTarget));
         }
         else {
 

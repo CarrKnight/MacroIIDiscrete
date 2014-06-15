@@ -41,4 +41,17 @@ public interface Department {
      */
     public boolean hasTradedAtLeastOnce();
 
+
+    /**
+     * this is today outflow for sales department and today inflow for purchases
+     * @return the correct flow
+     */
+    public int getTodayTrades();
+
+
+    /**
+     * Last price that resulted in a trade. -1 if there has been no trade ever
+     */
+    public int getLastClosingPrice();
+
 }
