@@ -18,8 +18,6 @@ import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
-import agents.firm.utilities.ExponentialPriceAverager;
-import agents.firm.utilities.PriceAverager;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.stats.collectors.enums.MarketDataType;
@@ -205,7 +203,7 @@ public class CompetitiveScenarioTest {
             {
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
 
-                final MacroII macroII = new MacroII(1402754924906l);   //1387582416533
+                final MacroII macroII = new MacroII(System.currentTimeMillis());   //1387582416533
                 final TripolistScenario scenario1 = new TripolistScenario(macroII);
 
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
@@ -333,6 +331,7 @@ public class CompetitiveScenarioTest {
                     firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
                 }
 
+    //            scenario1.getCompetitors().getFirst().addLogEventListener(new LogToFile(Paths.get("quickLog.log"), LogLevel.TRACE,macroII));
 
                 while(macroII.schedule.getTime()<5000)
                 {
@@ -574,87 +573,5 @@ public class CompetitiveScenarioTest {
 
     }
 
-    @Test
-    public void averagingTuning() throws Exception {
 
-        for(float averaging = .9f; averaging <=1f; averaging += .1f) {
-
-
-            System.out.println("====================================================================");
-            System.out.println("averaging: " + averaging);
-            System.out.println("====================================================================");
-
-            SummaryStatistics averageResultingPrice = new SummaryStatistics();
-            SummaryStatistics averageResultingQuantity = new SummaryStatistics();
-            SummaryStatistics averageStandardDeviation = new SummaryStatistics();
-            for (int i = 0; i < 5; i++)
-            {
-                FixedDecreaseSalesPredictor.defaultDecrementDelta = 0;
-
-                final MacroII macroII = new MacroII(System.currentTimeMillis());
-                final TripolistScenario scenario1 = new TripolistScenario(macroII);
-
-                scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-                scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
-                scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
-                scenario1.setAdditionalCompetitors(4);
-                scenario1.setWorkersToBeRehiredEveryDay(true);
-                scenario1.setDemandIntercept(102);
-
-
-                FixedDecreaseSalesPredictor.defaultDecrementDelta = 0;
-                scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
-
-
-                //assign scenario
-                macroII.setScenario(scenario1);
-
-                macroII.start();
-
-                macroII.schedule.step(macroII);
-                for (Firm firm : scenario1.getCompetitors()) {
-                    for (HumanResources hr : firm.getHRs()) {
-                        hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
-                        hr.setPriceAverager(new ExponentialPriceAverager(averaging, PriceAverager.NoTradingDayPolicy.IGNORE));
-                    }
-                    firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPriceAverager(new ExponentialPriceAverager(averaging, PriceAverager.NoTradingDayPolicy.IGNORE));
-                }
-
-                while (macroII.schedule.getTime() < 10000) {
-                    macroII.schedule.step(macroII);
-                }
-
-                SummaryStatistics prices = new SummaryStatistics();
-                SummaryStatistics quantities = new SummaryStatistics();
-                SummaryStatistics target = new SummaryStatistics();
-                for (int j = 0; j < 500; j++) {
-                    macroII.schedule.step(macroII);
-                    assert !Float.isNaN(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice());
-                    prices.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice());
-                    quantities.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume());
-
-                    for (EconomicAgent agent : macroII.getMarket(UndifferentiatedGoodType.GENERIC).getSellers()) {
-                        SalesDepartment department = ((Firm) agent).getSalesDepartment(UndifferentiatedGoodType.GENERIC);
-                        target.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume());
-                    }
-
-
-                }
-
-
-                System.out.println(prices.getMean() + " - " + quantities.getMean() + "/" + target.getMean() + "----" + macroII.seed() + " | " + macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastDaysAveragePrice());
-                System.out.println("standard deviations: price : " + prices.getStandardDeviation() + " , quantity: " + quantities.getStandardDeviation());
-
-
-                //okay?
-                averageResultingPrice.addValue(prices.getMean());
-                averageResultingQuantity.addValue(quantities.getMean());
-                averageStandardDeviation.addValue(prices.getStandardDeviation());
-
-                FixedDecreaseSalesPredictor.defaultDecrementDelta = 1;
-            }
-            System.out.println("====================================================================");
-            System.out.println("averaging : " + averaging + ", price: " + averageResultingPrice.getMean() +  ", quantity: " + averageResultingQuantity.getMean() +", std: " + averageStandardDeviation.getMean()  );
-        }
-    }
 }

@@ -260,21 +260,21 @@ public class StickyPricesCSVPrinter {
         long seed = 0;
 
         //all learned
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed, 100, 0, true, true, Paths.get("runs", "supplychai", "paper", "everybodyLearnedSlow_withInventory.csv").toFile());
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,true,true, Paths.get("runs","supplychai","paper","everybodyLearnedSticky_withInventory.csv").toFile());
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed, 100, 0, true, true, Paths.get("runs", "supplychai", "paper", "everybodyLearnedSlow_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,true,true, Paths.get("runs","supplychai","paper","everybodyLearnedSticky_withInventory.csv").toFile(), null);
         //beef learned
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,true,false, Paths.get("runs","supplychai","paper","beefLearnedSlow_withInventory.csv").toFile());
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,true,false, Paths.get("runs","supplychai","paper","beefLearnedSticky_withInventory.csv").toFile());
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,true,false, Paths.get("runs","supplychai","paper","beefLearnedSlow_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,true,false, Paths.get("runs","supplychai","paper","beefLearnedSticky_withInventory.csv").toFile(), null);
         //food learned
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,false,true, Paths.get("runs","supplychai","paper","foodLearnedSlow_withInventory.csv").toFile());
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,false,true, Paths.get("runs","supplychai","paper","foodLearnedSticky_withInventory.csv").toFile());
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,false,true, Paths.get("runs","supplychai","paper","foodLearnedSlow_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,false,true, Paths.get("runs","supplychai","paper","foodLearnedSticky_withInventory.csv").toFile(), null);
         //learning
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,false,false, Paths.get("runs","supplychai","paper","learningSlow_withInventory.csv").toFile());
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,false,false, Paths.get("runs","supplychai","paper","learningSticky_withInventory.csv").toFile());
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,false,false, Paths.get("runs","supplychai","paper","learningSlow_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,false,false, Paths.get("runs","supplychai","paper","learningSticky_withInventory.csv").toFile(), null);
 
 
         //non sticky
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,0,true,true, Paths.get("runs","supplychai","paper","nonsticky_withInventory.csv").toFile());
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,0,true,true, Paths.get("runs","supplychai","paper","nonsticky_withInventory.csv").toFile(), null);
     }
 
 
@@ -1053,7 +1053,7 @@ public class StickyPricesCSVPrinter {
         //run the test 5 times!
         for(long i=0; i <100; i++)
         {
-            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(i, 1, 100, true, true, null);
+            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(i, 1, 100, true, true, null, null);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());
@@ -1083,7 +1083,7 @@ public class StickyPricesCSVPrinter {
         //run the test 5 times!
         for(long i=0; i <100; i++)
         {
-            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(i, 1, 100, false, false, null);
+            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(i, 1, 100, false, false, null, null);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());

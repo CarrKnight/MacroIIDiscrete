@@ -8,6 +8,8 @@ package model.experiments.tuningRuns;
 
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
+import agents.firm.production.control.PlantControl;
+import agents.firm.production.control.facades.MarginalPlantControl;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
@@ -55,12 +57,12 @@ public class CompetitiveAveragingGridSearch {
                 for(PriceAverager.NoTradingDayPolicy hrPolicy : PriceAverager.NoTradingDayPolicy.values())
                     for(PriceAverager.NoTradingDayPolicy salesPolicy : PriceAverager.NoTradingDayPolicy.values())
                     {
-                        final CompetitiveAveragingResult r = exponentialRuns(hrWeight, hrPolicy, salesWeight, salesPolicy);
+                        final CompetitiveAveragingResult r = exponentialRuns(hrWeight, hrPolicy, salesWeight, salesPolicy,20);
                         final String line = hrWeight + "," + hrPolicy + "," + salesWeight + "," + salesPolicy + "," + r.getPrice() + "," + r.getQuantity() + "," + r.getStd();
                         System.out.println(line);
                         writer.write(line+"\n");
                     }
-  */
+
 
         writer = new FileWriter(Paths.get("runs", "tunings", "weightedAveragingTuning.csv").toFile());
         for(int hrDays = 1; hrDays <=30; hrDays++)
@@ -73,13 +75,24 @@ public class CompetitiveAveragingGridSearch {
                 writer.flush();
 
             }
+         */
+        writer = new FileWriter(Paths.get("runs", "tunings", "doesSpeedMatters.csv").toFile());
+
+        for(int speed=1; speed<100; speed++) {
+            final CompetitiveAveragingResult r = exponentialRuns(.8f, PriceAverager.NoTradingDayPolicy.COUNT_AS_LAST_CLOSING_PRICE, .8f,
+                    PriceAverager.NoTradingDayPolicy.COUNT_AS_LAST_CLOSING_PRICE, speed);
+            final String line = speed + "," + r.getPrice() + "," + r.getQuantity() + "," + r.getStd();
+            System.out.println(line);
+            writer.write(line+"\n");
+        }
 
 
     }
 
 
     public static CompetitiveAveragingResult exponentialRuns(float hrWeight, PriceAverager.NoTradingDayPolicy hrPolicy,
-                                      float salesWeight, PriceAverager.NoTradingDayPolicy salesPolicy){
+                                                             float salesWeight, PriceAverager.NoTradingDayPolicy salesPolicy,
+                                                             int maximizerAveragePeriod){
 
         SummaryStatistics averageResultingPrice = new SummaryStatistics();
         SummaryStatistics averageResultingQuantity = new SummaryStatistics();
@@ -113,6 +126,12 @@ public class CompetitiveAveragingGridSearch {
                 }
                 firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPriceAverager(new ExponentialPriceAverager(salesWeight, salesPolicy));
                 firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+            }
+
+
+            for(final PlantControl control : scenario1.getMaximizers())
+            {
+                ((MarginalPlantControl)control).getMaximizer().setHowManyDaysBeforeEachCheck(maximizerAveragePeriod);
             }
 
             while (macroII.schedule.getTime() < 10000) {
@@ -237,6 +256,9 @@ public class CompetitiveAveragingGridSearch {
             return std;
         }
     }
+
+
+
 
 
 

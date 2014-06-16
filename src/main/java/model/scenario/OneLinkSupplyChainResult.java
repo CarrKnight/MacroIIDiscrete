@@ -19,6 +19,8 @@ import agents.firm.sales.prediction.RecursiveSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import financial.market.Market;
 import model.MacroII;
+import model.utilities.logs.LogLevel;
+import model.utilities.logs.LogToFile;
 import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -62,7 +64,7 @@ public class OneLinkSupplyChainResult {
 
     public static OneLinkSupplyChainResult beefMonopolistOneRun(long random, float divideMonopolistGainsByThis, int monopolistSpeed,
                                                                 final boolean beefLearned, final boolean foodLearned,
-                                                                 File csvFileToWrite) {
+                                                                File csvFileToWrite, File logFileToWrite) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
 
@@ -140,6 +142,11 @@ public class OneLinkSupplyChainResult {
 
         macroII.setScenario(scenario1);
         macroII.start();
+        macroII.schedule.step(macroII);
+
+        if(logFileToWrite!= null)
+            scenario1.getMarkets().get(OneLinkSupplyChainScenario.INPUT_GOOD).getSellers().iterator().next().
+                    addLogEventListener(new LogToFile(logFileToWrite, LogLevel.INFO,macroII));
 
 
         while(macroII.schedule.getTime()<14000)

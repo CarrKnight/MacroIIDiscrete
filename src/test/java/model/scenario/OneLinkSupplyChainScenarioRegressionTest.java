@@ -274,7 +274,14 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     @Test
 public void problematicScenario1() throws Exception {
-        final OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(3, 100, 0, false, Paths.get("runs","problematic.csv").toFile());
+        final OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(3, 100, 0, false,
+                Paths.get("runs","problematic.csv").toFile());
+        checkBeefMonopolistResult(result);
+    }
+    @Test
+public void problematicScenario2() throws Exception {
+        final OneLinkSupplyChainResult result =  OneLinkSupplyChainResult.beefMonopolistOneRun(-817614354l, 100, 0, false, true,
+                Paths.get("runs","problematic.csv").toFile(), Paths.get("runs","problematic.log").toFile());;
         checkBeefMonopolistResult(result);
     }
 
@@ -423,7 +430,7 @@ public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws 
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 100, 0, true, true, null);
+                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 100, 0, true, true, null, null);
                         }
                     });
 
@@ -465,7 +472,7 @@ public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws 
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 100, true, true, null);
+                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 100, true, true, null, null);
                         }
                     });
 
@@ -509,7 +516,7 @@ public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws 
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 100, 0, false, true, null);
+                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(-1559036002l, 100, 0, false, true, null, null);
                         }
                     });
 
@@ -554,7 +561,7 @@ public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws 
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 100, false, true, null);
+                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 100, false, true, null, null);
                         }
                     });
 
@@ -600,7 +607,7 @@ public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws 
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 100, 0, true, false, null);
+                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 100, 0, true, false, null, null);
                         }
                     });
 
@@ -643,7 +650,7 @@ public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws 
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 100, true, false, null);
+                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 100, true, false, null, null);
                         }
                     });
 
@@ -864,7 +871,7 @@ public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws 
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return             OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 100, 0, false, false, null);
+                            return             OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 100, 0, false, false, null, null);
                         }
                     });
 
@@ -908,7 +915,7 @@ public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws 
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return             OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 100, false, false, null);
+                            return             OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 100, false, false, null, null);
                         }
                     });
 

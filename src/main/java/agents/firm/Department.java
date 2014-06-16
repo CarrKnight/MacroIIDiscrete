@@ -6,6 +6,8 @@
 
 package agents.firm;
 
+import model.MacroII;
+
 /**
  * <h4>Description</h4>
  * <p/> Department refers to any subcomponent for a firm. So far we have PurchaseDepartments, SalesDepartment and HumanResources.
@@ -53,5 +55,7 @@ public interface Department {
      * Last price that resulted in a trade. -1 if there has been no trade ever
      */
     public int getLastClosingPrice();
+
+    public MacroII getModel();
 
 }

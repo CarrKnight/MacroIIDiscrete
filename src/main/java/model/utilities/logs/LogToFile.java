@@ -9,6 +9,7 @@ package model.utilities.logs;
 import model.MacroII;
 import org.slf4j.helpers.MessageFormatter;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,6 +47,18 @@ public class LogToFile implements LogListener {
             Files.deleteIfExists(file);
             Files.createFile(file);
             this.writer = new FileWriter(file.toFile());
+        } catch (IOException e) {
+            System.err.println("Failed to create file!");
+            e.printStackTrace();
+        }
+    }
+
+    public LogToFile(File file, LogLevel minimumLogLevel, MacroII model) {
+
+        this.minimumLogLevel = minimumLogLevel;
+        this.model = model;
+        try {
+            this.writer = new FileWriter(file);
         } catch (IOException e) {
             System.err.println("Failed to create file!");
             e.printStackTrace();

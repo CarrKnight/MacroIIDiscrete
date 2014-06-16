@@ -75,7 +75,7 @@ public class PeriodicMaximizer<ALG extends WorkerMaximizationAlgorithm> extends 
      */
     private final ALG workerMaximizationAlgorithm;
 
-    private static int defaultAverageCheckFrequency = 20;
+    public static int defaultAverageCheckFrequency = 20;
     /**
      * How many days must pass between asking the WorkerMaximizationAlgorithm
      */
