@@ -220,7 +220,7 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
 
         //take the EMA
         ExponentialFilter<Double> afterShockPrice = new ExponentialFilter<>(weight);
-        double[] observations = department.getObservationsRecordedTheseDays(PurchasesDataType.AVERAGE_CLOSING_PRICES,lastWorkerShockDay,higherBoundObservation);
+        double[] observations = department.getObservationsRecordedTheseDays(PurchasesDataType.CLOSING_PRICES,lastWorkerShockDay,higherBoundObservation);
         assert observations.length > 0;
         float sum = 0;
         for(double observation : observations)
@@ -253,7 +253,7 @@ public class LinearExtrapolatorPurchasePredictor implements PurchasesPredictor, 
 
         //take the EMA
         ExponentialFilter<Double> beforeShockPrice = new ExponentialFilter<>(weight);
-        double[] observations = department.getObservationsRecordedTheseDays(PurchasesDataType.AVERAGE_CLOSING_PRICES,
+        double[] observations = department.getObservationsRecordedTheseDays(PurchasesDataType.CLOSING_PRICES,
                 lowerBoundObservation,lastWorkerShockDay-1);
         assert observations.length > 0;
         float sum = 0;

@@ -23,56 +23,63 @@ package model.utilities;
  */
 public enum ActionOrder
 {
-
     /**
      * things are started here!
      */
-    DAWN,
+    DAWN(false),
 
 
     /**
      * Stuff gets produced here
      */
-    PRODUCTION,
+    PRODUCTION(false),
 
     /**
      * Set up prices and what can/can't be sold; basically anything between production and trade
      */
-    PREPARE_TO_TRADE,
+    PREPARE_TO_TRADE(false),
 
     /**
      * Match, peddle, shop
      */
-    TRADE,
+    TRADE(true),
 
 
     /**
      * before any action is taken after trade.
      */
-    AFTER_TRADE,
+    AFTER_TRADE(false),
 
 
     /**
      * deal with prices (pid and similar)
      */
-    ADJUST_PRICES,
+    ADJUST_PRICES(false),
 
     /**
      * After trading has occurred, think of the consequences
      */
-    THINK,
+    THINK(true),
 
 
     /**
      * Final Phase, just maintenance
      */
-    CLEANUP_DATA_GATHERING,
+    CLEANUP_DATA_GATHERING(false),
 
     /**
      * possibly useless phase, there for GUI objects to step
      */
-    GUI_PHASE
+    GUI_PHASE(false);
+
+    private final boolean toRandomize;
+
+    ActionOrder(boolean shouldBeRandomized) {
+        this.toRandomize = shouldBeRandomized;
+    }
 
 
-
+    public boolean isToRandomize() {
+        return toRandomize;
+    }
 }

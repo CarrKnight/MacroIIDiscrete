@@ -16,6 +16,7 @@ import sim.engine.Steppable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <h4>Description</h4>
@@ -42,7 +43,7 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
      * where we store every possible action!
      * Each action order has an array list for every possible priority value
      */
-    private EnumMap<ActionOrder,ArrayList<Steppable>[]> steppablesByPhase;
+    private EnumMap<ActionOrder,List<Steppable>[]> steppablesByPhase;
 
     /**
      * The randomizer
@@ -85,12 +86,12 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
         for(ActionOrder order :ActionOrder.values())
         {
             //put the array
-            ArrayList<Steppable>[] array = new ArrayList[Priority.values().length];
+            List<Steppable>[] array = order.isToRandomize() ? new LinkedList[Priority.values().length] : new ArrayList[Priority.values().length];
             steppablesByPhase.put(order,array);
 
             //populate the array
             for(Priority p : Priority.values())
-                array[p.ordinal()]= new ArrayList<Steppable>();
+                array[p.ordinal()]= order.isToRandomize()? new LinkedList<>() : new ArrayList<Steppable>();
 
         }
     }
@@ -121,15 +122,17 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
             while(highestPriority != -1) //as long as there are still things to do at any priority
             {
                 //get the highest priority steppables
-                ArrayList<Steppable> steppables = steppablesByPhase.get(phase)[highestPriority];
+                List<Steppable> steppables = steppablesByPhase.get(phase)[highestPriority];
 
 
                 assert steppables != null;
                 assert !steppables.isEmpty();
 
                 //take a random highest priority action and do it.
-
-                Steppable steppable = steppables.remove(randomizer.nextInt(steppables.size()));
+                //but don't bother randomizing for gui and clean up data
+                final int index = currentPhase.isToRandomize() ?
+                        0 :randomizer.nextInt(steppables.size());
+                Steppable steppable = steppables.remove(index);
                 assert steppable != null;
                 //act nau!!!
                 steppable.step(simState);
@@ -160,7 +163,7 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
     }
 
     private void allocateTomorrowSamePhaseActions(ActionOrder phase) {
-        ArrayList<Steppable>[] current= steppablesByPhase.get(phase);
+        List<Steppable>[] current= steppablesByPhase.get(phase);
         for(PrioritySteppablePair pair : tomorrowSamePhase)
         {
             current[pair.getPriority().ordinal()].add(pair.getSteppable());
@@ -174,7 +177,7 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
      * @return the highest priority or -1 if there are none.
      */
     public int getHighestPriority(ActionOrder phase) {
-        ArrayList<Steppable> steppablesByPriority[] =  steppablesByPhase.get(phase);
+        List<Steppable> steppablesByPriority[] =  steppablesByPhase.get(phase);
         for(int i=0; i<steppablesByPriority.length;i++)
         {
             assert steppablesByPriority[i] !=null; //because they are created once and never destroyed, all the arraylists should not be null

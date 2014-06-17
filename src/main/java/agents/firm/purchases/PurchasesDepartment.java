@@ -17,8 +17,8 @@ import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.purchases.pricing.decorators.MaximumBidPriceDecorator;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
+import agents.firm.utilities.AveragerOverSmallIntervalOnly;
 import agents.firm.utilities.PriceAverager;
-import agents.firm.utilities.WeightedPriceAverager;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
@@ -57,6 +57,8 @@ import sim.engine.Steppable;
  */
 public class PurchasesDepartment implements Deactivatable, Department, LogNode {
 
+
+    private boolean active = true;
 
     public static Class<? extends PurchasesPredictor> defaultPurchasePredictor =
             RecursivePurchasesPredictor.class;
@@ -165,7 +167,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
     /**
      * average last week price weighted by outflow
      */
-    private PriceAverager priceAverager  = new WeightedPriceAverager(4);
+    private PriceAverager priceAverager  = new AveragerOverSmallIntervalOnly(.9f);
 
 
 
@@ -905,6 +907,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
      * It also deregisters the department from the firm.
      */
     public void turnOff(){
+        active = false;
         //deregister the firm
         market.deregisterBuyer(firm);
         pricingStrategy.turnOff(); //turn off prices
@@ -991,6 +994,10 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
         return opponentSearch.getBestInSampleBuyer();
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
     /**
      * Start the inventory control and make the purchaseDepartment, if needed, buy stuff
      */
@@ -1001,6 +1008,18 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
         counter.start();
         control.start();
         purchasesData.start(model,this);
+
+        model.scheduleSoon(ActionOrder.ADJUST_PRICES,new Steppable() {
+            @Override
+            public void step(SimState state) {
+                if(!(isActive()))
+                    return;
+
+                priceAverager.endOfTheDay(PurchasesDepartment.this);
+                model.scheduleTomorrow(ActionOrder.ADJUST_PRICES,this);
+
+            }
+        });
 
     }
 

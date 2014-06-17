@@ -15,6 +15,7 @@ import financial.market.Market;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -152,7 +153,7 @@ public class DailyStatCollector implements Steppable{
      */
     public void start()
     {
-        model.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING,this);
+        model.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING,this, Priority.AFTER_STANDARD);
     }
 
 
@@ -247,7 +248,7 @@ public class DailyStatCollector implements Steppable{
 
         }
 
-        model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
+        model.scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this,Priority.AFTER_STANDARD);
 
 
     }

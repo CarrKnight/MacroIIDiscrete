@@ -49,7 +49,7 @@ public class SamplingLearningDecreaseSalesPredictor extends AbstractWorkerLearni
 
     @Override
     protected double[] getYArray(int[] days) {
-        return department.getObservationsRecordedTheseDays(SalesDataType.AVERAGE_CLOSING_PRICES,days);
+        return department.getObservationsRecordedTheseDays(SalesDataType.CLOSING_PRICES,days);
     }
 
     @Override

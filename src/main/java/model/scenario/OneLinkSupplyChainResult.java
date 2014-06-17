@@ -146,7 +146,7 @@ public class OneLinkSupplyChainResult {
 
         if(logFileToWrite!= null)
             scenario1.getMarkets().get(OneLinkSupplyChainScenario.INPUT_GOOD).getSellers().iterator().next().
-                    addLogEventListener(new LogToFile(logFileToWrite, LogLevel.INFO,macroII));
+                    addLogEventListener(new LogToFile(logFileToWrite, LogLevel.DEBUG,macroII));
 
 
         while(macroII.schedule.getTime()<14000)

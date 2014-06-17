@@ -49,7 +49,7 @@ public class DailyProfitReport implements ProfitReport
                 continue;
 
             double price = firm.
-                    getSalesDepartment(type).getLatestObservation(SalesDataType.AVERAGE_CLOSING_PRICES);
+                    getSalesDepartment(type).getLatestObservation(SalesDataType.CLOSING_PRICES);
 
             totalRevenue += price * producedByPlant;
 
@@ -120,7 +120,7 @@ public class DailyProfitReport implements ProfitReport
 
             double price = firm.
                     getPurchaseDepartment(type).
-                    getLatestObservation(PurchasesDataType.AVERAGE_CLOSING_PRICES);
+                    getLatestObservation(PurchasesDataType.CLOSING_PRICES);
 
             totalCosts += price * consumedByPlant;
 

@@ -126,7 +126,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     /**
      * average last week price weighted by outflow
      */
-    private PriceAverager averagedPrice = new NoTradingOverrideAveragerDecorator( new WeightedPriceAverager(4));
+    private PriceAverager averagedPrice = new NoTradingOverrideAveragerDecorator( new WeightedPriceAverager(2));
 
 
 
@@ -360,6 +360,17 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
             }
         });
+        model.scheduleSoon(ActionOrder.ADJUST_PRICES,new Steppable() {
+            @Override
+            public void step(SimState state) {
+                if(!isActive())
+                    return;
+
+                averagedPrice.endOfTheDay(SalesDepartment.this);
+                model.scheduleTomorrow(ActionOrder.ADJUST_PRICES,this);
+
+            }
+        });
 
 
     }
@@ -386,7 +397,6 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
 
 
-        averagedPrice.endOfTheDay(this);
 
         //reset
         todayInflow = 0;

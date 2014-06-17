@@ -64,10 +64,10 @@ public class RecursiveSalePredictorTest {
 
         //without time delay
         Assert.assertEquals(42, RecursiveSalePredictor.simulateFuturePrice(data, model, 3, 3, 0, SalesDataType.OUTFLOW,
-                SalesDataType.AVERAGE_CLOSING_PRICES, 3,beta,1 ),.0001);
+                SalesDataType.CLOSING_PRICES, 3,beta,1 ),.0001);
         //with time delay
         Assert.assertEquals(49, RecursiveSalePredictor.simulateFuturePrice(data, model, 3, 3, 1, SalesDataType.OUTFLOW,
-                SalesDataType.AVERAGE_CLOSING_PRICES, 3,beta,1 ),.0001);
+                SalesDataType.CLOSING_PRICES, 3,beta,1 ),.0001);
 
 
 

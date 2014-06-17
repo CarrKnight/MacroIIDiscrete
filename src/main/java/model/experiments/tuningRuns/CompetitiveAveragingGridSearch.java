@@ -50,9 +50,9 @@ public class CompetitiveAveragingGridSearch {
 
 
     public static void main(String[] args) throws IOException {
-        FileWriter writer ;//= new FileWriter(Paths.get("runs", "tunings", "averagingTuning.csv").toFile());
+        FileWriter writer = new FileWriter(Paths.get("runs", "tunings", "averagingTuning.csv").toFile());
 
-/*        for(float hrWeight= .1f; hrWeight<1f;hrWeight= round(hrWeight+.1f,1))
+        for(float hrWeight= .1f; hrWeight<1f;hrWeight= round(hrWeight+.1f,1))
             for(float salesWeight= .1f; salesWeight<1f;salesWeight= round(salesWeight+.1f,1))
                 for(PriceAverager.NoTradingDayPolicy hrPolicy : PriceAverager.NoTradingDayPolicy.values())
                     for(PriceAverager.NoTradingDayPolicy salesPolicy : PriceAverager.NoTradingDayPolicy.values())
@@ -75,7 +75,7 @@ public class CompetitiveAveragingGridSearch {
                 writer.flush();
 
             }
-         */
+
         writer = new FileWriter(Paths.get("runs", "tunings", "doesSpeedMatters.csv").toFile());
 
         for(int speed=1; speed<100; speed++) {

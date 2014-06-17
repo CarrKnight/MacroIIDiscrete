@@ -273,16 +273,18 @@ public class OneLinkSupplyChainScenarioRegressionTest
     }
 
     @Test
-public void problematicScenario1() throws Exception {
+    public void problematicScenario1() throws Exception {
         final OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(3, 100, 0, false,
                 Paths.get("runs","problematic.csv").toFile());
         checkBeefMonopolistResult(result);
     }
     @Test
-public void problematicScenario2() throws Exception {
-        final OneLinkSupplyChainResult result =  OneLinkSupplyChainResult.beefMonopolistOneRun(-817614354l, 100, 0, false, true,
-                Paths.get("runs","problematic.csv").toFile(), Paths.get("runs","problematic.log").toFile());;
-        checkBeefMonopolistResult(result);
+    public void problematicScenario2() throws Exception {
+            final OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(0, 100, 0, true, true,
+                    Paths.get("runs", "problematic.csv").toFile(), Paths.get("runs", "problematic.log").toFile());
+
+            checkBeefMonopolistResult(result);
+
     }
 
     /*
@@ -320,7 +322,7 @@ public void problematicScenario2() throws Exception {
 
     //here the food is actually a monopolist "acting competitive"
     @Test
-public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws ExecutionException, InterruptedException {
+    public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws ExecutionException, InterruptedException {
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
         ExecutorService testRunner = Executors.newFixedThreadPool(1);
@@ -516,7 +518,7 @@ public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws 
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(-1559036002l, 100, 0, false, true, null, null);
+                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextLong(), 100, 0, false, true, null, null);
                         }
                     });
 
@@ -623,10 +625,10 @@ public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws 
 
     }
 
- 
 
 
-    
+
+
 
     @Test
     public  void beefLearnedBeefMonopolistStickyPID() throws ExecutionException, InterruptedException {
@@ -988,7 +990,7 @@ public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws 
     }
 
     private OneLinkSupplyChainResult testFoodMonopolistWithFixedProductionRun(int random, final boolean competitorsLearned, int speed, float divideGainsByThis,
-                                                                               File csvFileToWrite) {
+                                                                              File csvFileToWrite) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 =
                 new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, OneLinkSupplyChainScenario.OUTPUT_GOOD)
@@ -1052,7 +1054,7 @@ public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws 
         return new OneLinkSupplyChainResult(averageBeefPrice.getMean(),averageFoodPrice.getMean(),averageBeefProduced.getMean(), macroII);
 
     }
-      
+
 
 
 
