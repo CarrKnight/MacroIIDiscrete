@@ -51,7 +51,7 @@ public class RecursiveSalePredictorTest {
 
         data.start(model,department);
         //put in price data
-        when(department.getAverageClosingPrice()).thenReturn(5f,4f,3f,2f,1f);
+        when(department.getLastClosingPrice()).thenReturn(5,4,3,2,1);
         when(department.getTodayOutflow()).thenReturn(5,4,3,2,1);
         when(model.getMainScheduleTime()).thenReturn(0d);
         for(int i=0; i<5; i++) //should be well fed now!

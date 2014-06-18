@@ -126,7 +126,7 @@ public class CascadePToPIDController implements Controller {
         pid1.adjust(firstTarget,Math.min(firstInput,firstTarget*5),isActive,state,user,phase);
         //to avoid exxaggerating in disinvesting, the recorded inventory is never more than twice the target
         //slave
-        secondTarget = (float) (Math.signum(pid1.getCurrentMV())*Math.sqrt(Math.abs(pid1.getCurrentMV())));
+        secondTarget = pid1.getCurrentMV();
         //
 
         ControllerInput secondPIDInput = ControllerInput.simplePIDTarget(secondTarget,secondInput);

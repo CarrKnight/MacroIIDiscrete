@@ -387,7 +387,7 @@ public class StickyPricesCSVPrinter {
                     //and make it learned!
                     salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(2));
                     scenario.getMonopolist().getHRs().iterator().next().setPredictor(new FixedIncreasePurchasesPredictor(1));
-                    salesDepartment.setAveragedPrice(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
+                    salesDepartment.setPriceAverager(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
 
                     //run the model
                     for(int i=0; i<5000; i++)
@@ -479,7 +479,7 @@ public class StickyPricesCSVPrinter {
         final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
         final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, proportionalGain, integralGain, 0f, 0);
         salesDepartment.setAskPricingStrategy(strategy);
-        salesDepartment.setAveragedPrice(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
+        salesDepartment.setPriceAverager(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
 
         //and make it learned!
         salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(demandSlope));
@@ -707,7 +707,7 @@ public class StickyPricesCSVPrinter {
         final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
         final SalesControlWithFixedInventoryAndPID strategy = new SalesControlWithFixedInventoryAndPID(salesDepartment,100, proportionalGain, integralGain, 0f);
         salesDepartment.setAskPricingStrategy(strategy);
-        salesDepartment.setAveragedPrice(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
+        salesDepartment.setPriceAverager(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
 
         //and make it learned!
         salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(demandSlope));
@@ -753,7 +753,7 @@ public class StickyPricesCSVPrinter {
             final SalesDepartment salesDepartment = firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
             final SalesControlWithFixedInventoryAndPID strategy = new SalesControlWithFixedInventoryAndPID(salesDepartment,100, proportionalGain, integralGain, 0f);
             salesDepartment.setAskPricingStrategy(strategy);
-            salesDepartment.setAveragedPrice(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
+            salesDepartment.setPriceAverager(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
 
             //all impacts are 0 because it's perfect competitive
             salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
@@ -806,7 +806,7 @@ public class StickyPricesCSVPrinter {
                 else
                 {
                     final SimpleFlowSellerPID askPricingStrategy = new SimpleFlowSellerPID(department, proportionalGain, integralGain, 0, speed);
-                    department.setAveragedPrice(new WeightedMovingAverage<>(2)); // no need to MA
+                    department.setPriceAverager(new WeightedMovingAverage<>(2)); // no need to MA
                     department.setAskPricingStrategy(askPricingStrategy);
 
                 }
@@ -1249,7 +1249,7 @@ public class StickyPricesCSVPrinter {
 
             //now set the right parameters
             final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
-            salesDepartment.setAveragedPrice(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
+            salesDepartment.setPriceAverager(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
 
             //learning
             assert salesDepartment.getPredictorStrategy() instanceof RecursiveSalePredictor;
@@ -1315,7 +1315,7 @@ public class StickyPricesCSVPrinter {
             for(Firm firm : scenario.getCompetitors() )
             {
                 final SalesDepartment salesDepartment = firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
-                salesDepartment.setAveragedPrice(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
+                salesDepartment.setPriceAverager(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
                 //learning
                 assert salesDepartment.getPredictorStrategy() instanceof RecursiveSalePredictor;
             }

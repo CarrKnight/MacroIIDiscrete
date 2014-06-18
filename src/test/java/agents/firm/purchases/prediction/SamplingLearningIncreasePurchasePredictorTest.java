@@ -71,12 +71,12 @@ public class SamplingLearningIncreasePurchasePredictorTest
 
 
 
-        //this should regress to p=101.9 -2.6  * q
+        //this should regress to p=66.17 + 2.5  * q
         //now Q doesn't matter anymore, only previous Price
 
         when(department.getAveragedClosingPrice()).thenReturn(200f);
         //the sales predictor will be predict for 9 (yesterdayVolume + 1)
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 203,.0001f); //200+2.6 (rounded)
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 202.5,.0001f); //200+2.5 (rounded)
 
     }
 

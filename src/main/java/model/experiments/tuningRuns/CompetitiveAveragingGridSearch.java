@@ -14,9 +14,7 @@ import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
-import agents.firm.utilities.ExponentialPriceAverager;
-import agents.firm.utilities.PriceAverager;
-import agents.firm.utilities.WeightedPriceAverager;
+import agents.firm.utilities.*;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.scenario.MonopolistScenario;
@@ -50,7 +48,7 @@ public class CompetitiveAveragingGridSearch {
 
 
     public static void main(String[] args) throws IOException {
-        FileWriter writer = new FileWriter(Paths.get("runs", "tunings", "averagingTuning.csv").toFile());
+        FileWriter writer;/* = new FileWriter(Paths.get("runs", "tunings","averaging", "averagingTuning.csv").toFile());
 
         for(float hrWeight= .1f; hrWeight<1f;hrWeight= round(hrWeight+.1f,1))
             for(float salesWeight= .1f; salesWeight<1f;salesWeight= round(salesWeight+.1f,1))
@@ -63,28 +61,43 @@ public class CompetitiveAveragingGridSearch {
                         writer.write(line+"\n");
                     }
 
+               */
 
-        writer = new FileWriter(Paths.get("runs", "tunings", "weightedAveragingTuning.csv").toFile());
-        for(int hrDays = 1; hrDays <=30; hrDays++)
-            for(int salesDays = 1; salesDays <=30; salesDays++)
+        writer = new FileWriter(Paths.get("runs", "tunings","averaging", "intervalTuning.csv").toFile());
+
+        for(float hrWeight= .1f; hrWeight<1f;hrWeight= round(hrWeight+.1f,1))
+            for(float salesWeight= .1f; salesWeight<1f;salesWeight= round(salesWeight+.1f,1))
             {
-                final CompetitiveAveragingResult r = weightedRun(hrDays,salesDays);
-                final String line = hrDays + "," + salesDays + "," + r.getPrice() + "," + r.getQuantity() + "," + r.getStd();
+                final CompetitiveAveragingResult r = intervalRuns(hrWeight, salesWeight);
+                final String line = hrWeight + ","  + salesWeight + ","+ r.getPrice() + "," + r.getQuantity() + "," + r.getStd();
+                System.out.println(line);
+                writer.write(line+"\n");
+                writer.flush();
+            }
+        writer.close();
+        writer = new FileWriter(Paths.get("runs", "tunings","averaging", "weightedAveragingTuning.csv").toFile());
+        for(int hrDays = 1; hrDays <=10; hrDays++)
+            for(int salesDays = 1; salesDays <=10; salesDays++)
+                for (boolean hrDecorated : new boolean[]{ false, true })
+                    for (boolean salesDecorated : new boolean[]{ false, true })
+            {
+                final CompetitiveAveragingResult r = weightedRun(hrDays,salesDays,hrDecorated,salesDecorated);
+                final String line = hrDays + "," + salesDays + "," + hrDecorated + ","+ salesDecorated + ","+ r.getPrice() + "," + r.getQuantity() + "," + r.getStd();
                 System.out.println(line);
                 writer.write(line+"\n");
                 writer.flush();
 
             }
 
-        writer = new FileWriter(Paths.get("runs", "tunings", "doesSpeedMatters.csv").toFile());
+        writer = new FileWriter(Paths.get("runs", "tunings", "averaging","doesSpeedMatters.csv").toFile());
 
-        for(int speed=1; speed<100; speed++) {
+    /*    for(int speed=1; speed<100; speed++) {
             final CompetitiveAveragingResult r = exponentialRuns(.8f, PriceAverager.NoTradingDayPolicy.COUNT_AS_LAST_CLOSING_PRICE, .8f,
                     PriceAverager.NoTradingDayPolicy.COUNT_AS_LAST_CLOSING_PRICE, speed);
             final String line = speed + "," + r.getPrice() + "," + r.getQuantity() + "," + r.getStd();
             System.out.println(line);
             writer.write(line+"\n");
-        }
+        }       */
 
 
     }
@@ -99,7 +112,7 @@ public class CompetitiveAveragingGridSearch {
         SummaryStatistics averageStandardDeviation = new SummaryStatistics();
         for (int i = 0; i < 5; i++)
         {
-            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            final MacroII macroII = new MacroII(i);
             final TripolistScenario scenario1 = new TripolistScenario(macroII);
 
             scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
@@ -164,9 +177,8 @@ public class CompetitiveAveragingGridSearch {
 
     }
 
-
-
-    public static CompetitiveAveragingResult weightedRun(int hrDays, int salesDays){
+    public static CompetitiveAveragingResult intervalRuns(float hrWeight ,
+                                                             float salesWeight){
 
         SummaryStatistics averageResultingPrice = new SummaryStatistics();
         SummaryStatistics averageResultingQuantity = new SummaryStatistics();
@@ -196,9 +208,86 @@ public class CompetitiveAveragingGridSearch {
             for (Firm firm : scenario1.getCompetitors()) {
                 for (HumanResources hr : firm.getHRs()) {
                     hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
-                    hr.setPriceAverager(new WeightedPriceAverager(hrDays));
+                    hr.setPriceAverager(new AveragerOverSmallIntervalOnly(hrWeight));
                 }
-                firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPriceAverager(new WeightedPriceAverager(salesDays));
+                firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPriceAverager(new AveragerOverSmallIntervalOnly(salesWeight));
+                firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+            }
+
+
+            while (macroII.schedule.getTime() < 10000) {
+                macroII.schedule.step(macroII);
+            }
+
+            SummaryStatistics prices = new SummaryStatistics();
+            SummaryStatistics quantities = new SummaryStatistics();
+            for (int j = 0; j < 500; j++) {
+                macroII.schedule.step(macroII);
+                prices.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice());
+                quantities.addValue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayVolume());
+
+
+            }
+
+
+
+
+            //okay?
+            averageResultingPrice.addValue(prices.getMean());
+            averageResultingQuantity.addValue(quantities.getMean());
+            averageStandardDeviation.addValue(prices.getStandardDeviation());
+
+        }
+
+        //okay?
+        return new CompetitiveAveragingResult(averageResultingPrice.getMean(),averageResultingQuantity.getMean(),averageStandardDeviation.getMean());
+
+
+    }
+
+
+
+
+
+    public static CompetitiveAveragingResult weightedRun(int hrDays, int salesDays,boolean decoratedHr,boolean decoratedSales){
+
+        SummaryStatistics averageResultingPrice = new SummaryStatistics();
+        SummaryStatistics averageResultingQuantity = new SummaryStatistics();
+        SummaryStatistics averageStandardDeviation = new SummaryStatistics();
+        for (int i = 0; i < 5; i++)
+        {
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            final TripolistScenario scenario1 = new TripolistScenario(macroII);
+
+            scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+            scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
+            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
+            scenario1.setAdditionalCompetitors(4);
+            scenario1.setWorkersToBeRehiredEveryDay(true);
+            scenario1.setDemandIntercept(102);
+
+
+            scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
+
+
+            //assign scenario
+            macroII.setScenario(scenario1);
+
+            macroII.start();
+
+            macroII.schedule.step(macroII);
+            for (Firm firm : scenario1.getCompetitors()) {
+                for (HumanResources hr : firm.getHRs()) {
+                    hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
+                    PriceAverager priceAverager = new WeightedPriceAverager(hrDays);
+                    if(decoratedHr)
+                        priceAverager = new NoTradingOverrideAveragerDecorator(priceAverager);
+                    hr.setPriceAverager(priceAverager);
+                }
+                PriceAverager priceAverager = new WeightedPriceAverager(salesDays);
+                if(decoratedSales)
+                    priceAverager = new NoTradingOverrideAveragerDecorator(priceAverager);
+                firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPriceAverager(priceAverager);
                 firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
             }
 

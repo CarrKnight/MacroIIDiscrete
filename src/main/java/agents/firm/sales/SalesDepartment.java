@@ -17,7 +17,6 @@ import agents.firm.sales.prediction.RegressionSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.decorators.AskReservationPriceDecorator;
-import agents.firm.utilities.NoTradingOverrideAveragerDecorator;
 import agents.firm.utilities.PriceAverager;
 import agents.firm.utilities.WeightedPriceAverager;
 import com.google.common.base.Preconditions;
@@ -126,7 +125,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     /**
      * average last week price weighted by outflow
      */
-    private PriceAverager averagedPrice = new NoTradingOverrideAveragerDecorator( new WeightedPriceAverager(2));
+    private PriceAverager priceAverager = new WeightedPriceAverager(4);
 
 
 
@@ -366,7 +365,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
                 if(!isActive())
                     return;
 
-                averagedPrice.endOfTheDay(SalesDepartment.this);
+                priceAverager.endOfTheDay(SalesDepartment.this);
                 model.scheduleTomorrow(ActionOrder.ADJUST_PRICES,this);
 
             }
@@ -1295,7 +1294,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      */
     public double getAveragedLastPrice(){
 
-            return averagedPrice.getAveragedPrice();
+            return priceAverager.getAveragedPrice();
 
 
 
@@ -1355,12 +1354,12 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     }
 
 
-    public void setAveragedPrice(WeightedMovingAverage<Integer, Double> averagedPrice) {
-        // this.averagedPrice = averagedPrice;
+    public void setPriceAverager(WeightedMovingAverage<Integer, Double> priceAverager) {
+        // this.priceAverager = priceAverager;
     }
 
     public void setPriceAverager(PriceAverager averagedPrice) {
-        this.averagedPrice = averagedPrice;
+        this.priceAverager = averagedPrice;
     }
 
 

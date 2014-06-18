@@ -8,7 +8,6 @@ package model.gui;
 
 import financial.market.GeographicalMarket;
 import javafx.scene.Cursor;
-import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import model.gui.market.GeographicalMarketPresentation;
@@ -36,12 +35,12 @@ public class MouseModeSwitcherTest extends GuiTest{
     private ControllableGeographicalScenario scenario;
 
     @Override
-    protected Parent getRootNode() {
+    protected BorderPane getRootNode() {
+
         geographicalMarketPresentation = mock(GeographicalMarketPresentation.class);
         geographicalPane = new Pane();
         when(geographicalMarketPresentation.getGeographicalMap()).thenReturn(geographicalPane);
         scenario = mock(ControllableGeographicalScenario.class);
-        //todo try to put this in @Before
         //border pane with titled pane in the bottom
         BorderPane root = new BorderPane();
         root.setCenter(geographicalPane);
@@ -89,6 +88,12 @@ public class MouseModeSwitcherTest extends GuiTest{
         click(geographicalPane.localToScene(90,10));
         verify(scenario,times(1)).createNewProducer(any(Location.class),any(GeographicalMarket.class),anyString());
         verify(scenario,times(1)).createNewConsumer(any(Location.class),any(GeographicalMarket.class),anyInt()); //this happened
+
+
+        getRootNode().setVisible(false);
+        getRootNode().setCenter(null);
+        getRootNode().setBottom(null);
+
     }
     @Test
     public void testByUsingNames() throws Exception {
@@ -122,7 +127,9 @@ public class MouseModeSwitcherTest extends GuiTest{
         click(geographicalPane.localToScene(90, 10));
         verify(scenario,times(1)).createNewProducer(any(Location.class), any(GeographicalMarket.class), anyString());
         verify(scenario,times(1)).createNewConsumer(any(Location.class), any(GeographicalMarket.class), anyInt()); //this happened
-
+        getRootNode().setVisible(false);
+        getRootNode().setCenter(null);
+        getRootNode().setBottom(null);
     }
 
 

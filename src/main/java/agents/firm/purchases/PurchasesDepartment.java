@@ -17,7 +17,7 @@ import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.purchases.pricing.decorators.MaximumBidPriceDecorator;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
-import agents.firm.utilities.AveragerOverSmallIntervalOnly;
+import agents.firm.utilities.LastClosingPriceEcho;
 import agents.firm.utilities.PriceAverager;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
@@ -167,7 +167,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
     /**
      * average last week price weighted by outflow
      */
-    private PriceAverager priceAverager  = new AveragerOverSmallIntervalOnly(.9f);
+    private PriceAverager priceAverager  = new LastClosingPriceEcho(this);
 
 
 

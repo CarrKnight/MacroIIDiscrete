@@ -78,7 +78,7 @@ public class LearningIncreasePurchasesPredictorTest
         PurchasesDepartment department = mock(PurchasesDepartment.class);
         when(department.getAveragedClosingPrice()).thenReturn(200f);
         //the sales predictor will be predict for 9 (yesterdayVolume + 1)
-        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 203,.0001f); //200+2.6 (rounded)
+        Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 202.6,.0001f); //200+2.6 (rounded)
 
     }
 

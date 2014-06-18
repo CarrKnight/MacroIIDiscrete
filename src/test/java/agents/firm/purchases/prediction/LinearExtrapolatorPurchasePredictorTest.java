@@ -168,7 +168,7 @@ public class LinearExtrapolatorPurchasePredictorTest
         {
             //fake 200 days of observations
             when(department.getNumberOfWorkersWhoConsumeWhatWePurchase()).thenReturn(workers.get(day));
-            when(department.getTodayAverageClosingPrice()).thenReturn(prices.get(day));
+            when(department.getLastClosingPrice()).thenReturn(prices.get(day).intValue());
             when(macroII.getMainScheduleTime()).thenReturn(Double.valueOf(day));
 
             data.step(macroII);
@@ -201,8 +201,8 @@ public class LinearExtrapolatorPurchasePredictorTest
         //p2=32.5904 p1=32
         //delta workers -1!
         when(department.getAveragedClosingPrice()).thenReturn(100f);
-        Assert.assertEquals(100,predictor.predictPurchasePriceWhenIncreasingProduction(department),.0001f); //this is the reverse of what we expect when estimating supply shocks, but that's because the data is pure bogus
-        Assert.assertEquals(100, predictor.predictPurchasePriceWhenDecreasingProduction(department),.0001f); //this is the reverse of what we expect when estimating supply shocks, but that's because the data is pure bogus
+        Assert.assertEquals(100-0.360,predictor.predictPurchasePriceWhenIncreasingProduction(department),.0001f); //this is the reverse of what we expect when estimating supply shocks, but that's because the data is pure bogus
+        Assert.assertEquals(100+0.360, predictor.predictPurchasePriceWhenDecreasingProduction(department),.0001f); //this is the reverse of what we expect when estimating supply shocks, but that's because the data is pure bogus
 
         Assert.assertEquals(-0.360,predictor.getCurrentSlope(),.001f); //this is the reverse of what we expect when estimating supply shocks, but that's because the data is pure bogus
 
