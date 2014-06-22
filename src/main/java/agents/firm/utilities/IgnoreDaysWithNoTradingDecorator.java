@@ -10,7 +10,7 @@ import agents.firm.Department;
 
 /**
  * <h4>Description</h4>
- * <p> A very simple decorator that overrides the usual average when the previous day the department failed to trade anything
+ * <p>
  * <p>
  * <p>
  * <h4>Notes</h4>
@@ -20,18 +20,14 @@ import agents.firm.Department;
  * <h4>References</h4>
  *
  * @author carrknight
- * @version 2014-06-15
+ * @version 2014-06-22
  * @see
  */
-public class NoTradingOverrideAveragerDecorator implements PriceAverager {
-
-    private boolean overrideActive;
+public class IgnoreDaysWithNoTradingDecorator implements PriceAverager {
 
     private final PriceAverager decorated;
 
-
-
-    public NoTradingOverrideAveragerDecorator(PriceAverager decorated) {
+    public IgnoreDaysWithNoTradingDecorator(PriceAverager decorated) {
         this.decorated = decorated;
     }
 
@@ -42,9 +38,9 @@ public class NoTradingOverrideAveragerDecorator implements PriceAverager {
      */
     @Override
     public void endOfTheDay(Department department) {
-
-        overrideActive = department.getTodayTrades() <=0;
-        decorated.endOfTheDay(department);
+        if(department.getTodayTrades() > 0)
+            decorated.endOfTheDay(department);
+        //otherwise the decorated doesn't learn about this
 
 
     }
@@ -52,21 +48,8 @@ public class NoTradingOverrideAveragerDecorator implements PriceAverager {
     @Override
     public float getAveragedPrice(Department department) {
 
-        if(!overrideActive)
-            return  decorated.getAveragedPrice(department);
-        else{
-            return  -1;
-        }
+        return decorated.getAveragedPrice(department);
 
 
-
-    }
-
-    public PriceAverager getDecorated() {
-        return decorated;
-    }
-
-    public boolean isOverrideActive() {
-        return overrideActive;
     }
 }

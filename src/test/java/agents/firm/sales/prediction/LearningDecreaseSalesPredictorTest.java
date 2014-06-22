@@ -71,7 +71,7 @@ public class LearningDecreaseSalesPredictorTest
         //now Q doesn't matter anymore, only previous Price
 
         SalesDepartment department = mock(SalesDepartment.class);
-        when(department.getAveragedLastPrice()).thenReturn(200d);
+        when(department.getAveragedPrice()).thenReturn(200d);
         //the sales predictor will be predict for 9 (yesterdayVolume + 1)
         Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 100, 1), 197,.0001f); //200-2.6 (rounded)
 
@@ -124,7 +124,7 @@ public class LearningDecreaseSalesPredictorTest
 
 
         LearningDecreaseSalesPredictor predictor = new LearningDecreaseSalesPredictor(market,model );
-        when(department.getAveragedLastPrice()).thenReturn(50d); //current department pricing 100$
+        when(department.getAveragedPrice()).thenReturn(50d); //current department pricing 100$
         Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1),50,.0001f);
 
         //with one observation, it still returns whatever the sales department says

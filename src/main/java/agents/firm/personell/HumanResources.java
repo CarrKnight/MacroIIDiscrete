@@ -91,7 +91,7 @@ public class HumanResources extends PurchasesDepartment implements Agent {
 
         //step yourself at the end of production
         firm.getModel().scheduleSoon(ActionOrder.PRODUCTION, this, Priority.FINAL);
-        setPriceAverager(new LastClosingPriceEcho(this));
+        setPriceAverager(new LastClosingPriceEcho());
     }
 
     /**

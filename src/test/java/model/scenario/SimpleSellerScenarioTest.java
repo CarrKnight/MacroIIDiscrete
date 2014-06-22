@@ -590,7 +590,7 @@ public class SimpleSellerScenarioTest {
             {
                 SalesDepartment department = departments.get(k);
                 System.out.println("department " + k + ", price: " + department.getLastAskedPrice() +
-                        ", today sold: " + department.getTodayOutflow() + ", averaged price: " + department.getAveragedLastPrice() );
+                        ", today sold: " + department.getTodayOutflow() + ", averaged price: " + department.getAveragedPrice() );
 
 
             }
@@ -653,7 +653,7 @@ public class SimpleSellerScenarioTest {
         for(int k=0; k< scenario.getNumberOfSellers(); k++)
         {
             SalesDepartment department = departments.get(k);
-            assertEquals(86,department.getAveragedLastPrice(),1d);
+            assertEquals(86,department.getAveragedPrice(),1d);
         }
     }
 

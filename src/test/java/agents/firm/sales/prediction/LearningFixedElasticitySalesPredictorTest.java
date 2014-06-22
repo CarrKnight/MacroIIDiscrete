@@ -71,7 +71,7 @@ public class LearningFixedElasticitySalesPredictorTest {
         //now Q doesn't matter anymore, only previous Price
 
         SalesDepartment department = mock(SalesDepartment.class);
-        when(department.getAveragedLastPrice()).thenReturn(200d);
+        when(department.getAveragedPrice()).thenReturn(200d);
         when(market.getObservationRecordedThisDay(MarketDataType.CLOSING_PRICE,2)).thenReturn(81d);
         when(market.getObservationRecordedThisDay(MarketDataType.VOLUME_CONSUMED,2)).thenReturn(8d);
         //the sales predictor will be predicting for 9 (yesterdayVolume + 1)
@@ -126,7 +126,7 @@ public class LearningFixedElasticitySalesPredictorTest {
 
 
         LearningFixedElasticitySalesPredictor predictor = new LearningFixedElasticitySalesPredictor(market,model );
-        when(department.getAveragedLastPrice()).thenReturn(50d);
+        when(department.getAveragedPrice()).thenReturn(50d);
         Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1),50,.0001f);
 
         //with one observation, it still returns whatever the sales department says

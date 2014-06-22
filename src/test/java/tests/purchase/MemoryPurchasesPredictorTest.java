@@ -19,6 +19,7 @@ import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.dummies.DummySeller;
+import model.utilities.pid.CascadePIDController;
 import org.junit.Test;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -97,7 +98,10 @@ public class MemoryPurchasesPredictorTest {
         market.start(model);
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartmentIntegrated(
-                10000000,f,market,PurchasesFixedPID.class,null,null).getDepartment();
+                10000000,f,market,null,null,null).getDepartment();
+        final PurchasesFixedPID pricingStrategy = new PurchasesFixedPID(dept, 6, CascadePIDController.class,model);
+        dept.setControl(pricingStrategy);
+        dept.setPricingStrategy(pricingStrategy);
         dept.setPredictor(new PricingPurchasesPredictor());
  //       dept.start();
         f.registerPurchasesDepartment(dept, UndifferentiatedGoodType.GENERIC);

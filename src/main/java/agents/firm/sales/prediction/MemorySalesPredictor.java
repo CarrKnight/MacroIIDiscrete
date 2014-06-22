@@ -41,14 +41,14 @@ public class MemorySalesPredictor extends BaseSalesPredictor {
     }
 
     private float memoryLookup(SalesDepartment dept) {
-        if(Double.isNaN(dept.getAveragedLastPrice()) || dept.getAveragedLastPrice() < 0)
+        if(Double.isNaN(dept.getAveragedPrice()) || dept.getAveragedPrice() < 0)
         {
             return -1;
         }
         //do we not have anything in memory or did we screw up so badly
         //in the past term that we didn't sell a single item?
 
-        return(float)(dept.getAveragedLastPrice());
+        return(float)(dept.getAveragedPrice());
     }
 
     /**

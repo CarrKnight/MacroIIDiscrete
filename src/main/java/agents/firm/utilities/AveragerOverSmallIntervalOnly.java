@@ -49,7 +49,7 @@ public class AveragerOverSmallIntervalOnly implements PriceAverager {
     }
 
     @Override
-    public float getAveragedPrice(){
+    public float getAveragedPrice(Department department){
 
         return averager.getSmoothedObservation();
 

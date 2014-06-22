@@ -1234,16 +1234,6 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
     }
 
     /**
-     * the average closing price of today's trades, or -1 if there were no trades
-     */
-    public float getTodayAverageClosingPrice() {
-        if(getTodayInflow() == 0)
-            return -1;
-        else
-            return ((float)lastClosingPrice) / getTodayInflow();
-    }
-
-    /**
      * Predicts the future price of the next good to buy
      * @return the predicted price or -1 if there are no predictions.
      */
@@ -1272,7 +1262,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
             return -1;
 
 
-        final float smoothedObservation = priceAverager.getAveragedPrice();
+        final float smoothedObservation = priceAverager.getAveragedPrice(this);
 
         return smoothedObservation;
 

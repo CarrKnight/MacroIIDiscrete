@@ -176,7 +176,7 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
     }
 
     public double defaultPriceWithNoObservations() {
-        long lastPrice = Math.round(department.getAveragedLastPrice());  //get the last closing price
+        long lastPrice = Math.round(department.getAveragedPrice());  //get the last closing price
         //do we not have anything in memory or did we screw up so badly
         //in the past term that we didn't sell a single item?
         if(lastPrice == -1)

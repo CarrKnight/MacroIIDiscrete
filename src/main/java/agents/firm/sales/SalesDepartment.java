@@ -133,10 +133,6 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      * This is the cost of the last good the sales department managed to sell
      */
     private int lastClosingCost = -1;
-    /**
-     * the sum of all the daily closing prices, 0 if there is no trade
-     */
-    private float sumClosingPrice = 0;
 
     private int lastAskedPrice = -1;
     /**
@@ -400,7 +396,6 @@ public abstract class  SalesDepartment  implements Department, LogNode {
         //reset
         todayInflow = 0;
         todayOutflow = 0;
-        sumClosingPrice = 0;
         lastAskedPrice= -1;
         //if you still have a quote active, use it as your "last asked price"
         if(numberOfQuotesPlaced() > 0)
@@ -666,8 +661,6 @@ public abstract class  SalesDepartment  implements Department, LogNode {
         //       newResult.setPriceSold(price); //record the price of sale
         lastClosingPrice = price;
 
-        sumClosingPrice += lastClosingPrice;
-
         //tell the listeners!
         fireGoodSoldEvent(g,price);
 
@@ -741,7 +734,6 @@ public abstract class  SalesDepartment  implements Department, LogNode {
                     removeQuoteFromMarket(q);
                 lastClosingPrice = finalPrice;
 
-                sumClosingPrice += lastClosingPrice;
                 buyerSearchAlgorithm.reactToSuccess(buyer,result); //tell the search algorithm
 
                 //tell the listeners!
@@ -1215,28 +1207,6 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     }
 
     /**
-     * returns today's average closing price or -1 if there were no trade
-     * @return
-     */
-    public float getAverageClosingPrice()
-    {
-        if(lastClosingPrice == -1)
-        {
-            assert todayOutflow ==0; //-1 happens when there hasn't been a trade, ever!
-            return -1;
-        }
-        else
-
-        if(todayOutflow==0)
-        {
-            return -1;
-        }
-        else
-            return sumClosingPrice/todayOutflow;
-
-    }
-
-    /**
      * Count all the workers at plants that produce a specific output
      * @return the total number of workers
      */
@@ -1292,9 +1262,9 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      * The idea is that sometimes price goes very high to increase inventory but then there is only one sale or so, which isn't useful to know what the last price is
      * @return
      */
-    public double getAveragedLastPrice(){
+    public double getAveragedPrice(){
 
-            return priceAverager.getAveragedPrice();
+            return priceAverager.getAveragedPrice(this);
 
 
 

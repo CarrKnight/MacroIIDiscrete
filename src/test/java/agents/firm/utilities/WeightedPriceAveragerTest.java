@@ -30,7 +30,7 @@ public class WeightedPriceAveragerTest {
             averager1.endOfTheDay(department);
 
         }
-        Assert.assertEquals(9.526315789,averager1.getAveragedPrice(),.001f);
+        Assert.assertEquals(9.526315789,averager1.getAveragedPrice(department),.001f);
 
         //two more with no trades
         when(department.getTodayTrades()).thenReturn(0);
@@ -39,7 +39,7 @@ public class WeightedPriceAveragerTest {
             averager1.endOfTheDay(department);
         }
 
-        Assert.assertTrue(Float.isNaN(averager1.getAveragedPrice()));
+        Assert.assertTrue(Float.isNaN(averager1.getAveragedPrice(department)));
 
 
 

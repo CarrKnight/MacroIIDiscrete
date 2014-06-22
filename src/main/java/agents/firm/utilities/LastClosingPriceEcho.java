@@ -25,11 +25,10 @@ import agents.firm.Department;
  */
 public class LastClosingPriceEcho implements PriceAverager {
 
-    private final Department department;
 
 
-    public LastClosingPriceEcho(Department department) {
-        this.department = department;
+    public LastClosingPriceEcho() {
+
     }
 
     /**
@@ -43,7 +42,7 @@ public class LastClosingPriceEcho implements PriceAverager {
     }
 
     @Override
-    public float getAveragedPrice() {
+    public float getAveragedPrice(Department department) {
         return department.getLastClosingPrice();
 
     }

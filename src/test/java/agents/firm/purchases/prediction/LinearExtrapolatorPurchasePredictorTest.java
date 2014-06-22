@@ -82,7 +82,7 @@ public class LinearExtrapolatorPurchasePredictorTest
         {
             //fake 200 days of observations
             when(department.getNumberOfWorkersWhoConsumeWhatWePurchase()).thenReturn(day);
-            when(department.getTodayAverageClosingPrice()).thenReturn(Float.valueOf(day));
+            when(department.getAveragedClosingPrice()).thenReturn(Float.valueOf(day));
             when(macroII.getMainScheduleTime()).thenReturn(Double.valueOf(day));
 
             data.step(macroII);

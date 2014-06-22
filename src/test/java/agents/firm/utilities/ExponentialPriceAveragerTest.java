@@ -44,9 +44,9 @@ public class ExponentialPriceAveragerTest {
             averager3.endOfTheDay(department);
         }
 
-        Assert.assertEquals(0,averager1.getAveragedPrice(),.01f);
-        Assert.assertEquals(10f,averager2.getAveragedPrice(),.01f);
-        Assert.assertEquals(9.888888889f,averager3.getAveragedPrice(),.01f);
+        Assert.assertEquals(0,averager1.getAveragedPrice(department),.01f);
+        Assert.assertEquals(10f,averager2.getAveragedPrice(department),.01f);
+        Assert.assertEquals(9.888888889f,averager3.getAveragedPrice(department),.01f);
 
 
 

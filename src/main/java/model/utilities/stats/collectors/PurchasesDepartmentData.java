@@ -95,7 +95,7 @@ public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
         data.get(PurchasesDataType.INVENTORY).add((double) departmentToFollow.getCurrentInventory());
         data.get(PurchasesDataType.FAILURES_TO_CONSUME).add((double) departmentToFollow.getTodayFailuresToConsume());
         data.get(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD).add((double) departmentToFollow.getNumberOfWorkersWhoConsumeWhatWePurchase());
-        data.get(PurchasesDataType.AVERAGE_CLOSING_PRICES).add((double) departmentToFollow.getTodayAverageClosingPrice());
+        data.get(PurchasesDataType.AVERAGE_CLOSING_PRICES).add((double) departmentToFollow.getAveragedClosingPrice());
         data.get(PurchasesDataType.LAST_OFFERED_PRICE).add((double) departmentToFollow.getLastOfferedPrice());
 
         data.get(PurchasesDataType.DEMAND_GAP).add((double) departmentToFollow.estimateDemandGap());

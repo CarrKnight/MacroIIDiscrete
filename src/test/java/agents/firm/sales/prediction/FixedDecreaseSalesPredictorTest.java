@@ -33,7 +33,7 @@ public class FixedDecreaseSalesPredictorTest {
     public void testPredictSalePrice() throws Exception {
 
         SalesDepartment department = mock(SalesDepartment.class);
-        when(department.getAveragedLastPrice()).thenReturn(100d); //current department pricing 100$
+        when(department.getAveragedPrice()).thenReturn(100d); //current department pricing 100$
         when(department.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC); //type of good produced
 
 

@@ -33,7 +33,7 @@ public interface PriceAverager {
      */
     public void endOfTheDay(Department department);
 
-    public float getAveragedPrice();
+    public float getAveragedPrice(Department department);
 
 
     /**
