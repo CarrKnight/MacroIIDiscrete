@@ -82,11 +82,11 @@ public class ExponentialFilterTargetDecorator extends ControllerDecorator {
     public void adjust(ControllerInput input,  boolean isActive, MacroII simState, Steppable user,ActionOrder phase) {
         exponentialFilter.addObservation(input.getTarget(position));
         input.setTarget(position,exponentialFilter.getSmoothedObservation());
-        //System.out.println("target: " + exponentialFilter.getSmoothedObservation() + ", input: " + input.getInput(0));
+
 
 
         toDecorate.adjust(input,isActive,simState,user,phase);
-     //   System.out.println("todecorate: " + toDecorate.getCurrentMV());
+
 
     }
 

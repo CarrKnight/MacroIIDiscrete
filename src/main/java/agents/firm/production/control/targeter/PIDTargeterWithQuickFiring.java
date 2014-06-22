@@ -183,7 +183,6 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
         {
 
             //if we have the ovverride flag on, this is the time
-            //              System.out.println(" setting new wage " + newWage + ", given old wage " + oldWage + " pid mv: " + pid.getCurrentMV() + "| workers : " + hr.getPlant().getNumberOfWorkers() + ", target: " + workerTarget  );
             plantControl.setCurrentWage(newWage); //set the new wage! that'll do it!
 
             //log it!

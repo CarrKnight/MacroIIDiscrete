@@ -201,7 +201,6 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
 
 
 
-       // System.out.println("ouflow: " + outflow +", target: " + getTarget() + " ----> " + controller.getCurrentMV());
 
 
         controller.adjustOnce(outflow-getTarget(),isActive);

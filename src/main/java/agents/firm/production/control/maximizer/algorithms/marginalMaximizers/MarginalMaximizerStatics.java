@@ -60,7 +60,6 @@ public final class MarginalMaximizerStatics {
         Preconditions.checkArgument(targetWorkers != currentWorkers, "marginal from here to here is stupid");
         // assert currentWorkers == p.getNumberOfWorkers(); //I can't think of a use where this isn't true
 
-        //     System.out.println(currentWorkers + "---" + targetWorkers);
         //this function smells a bit because it keeps branching according to whether we are hiring or firing. But I really wanted a generic function.
 
 

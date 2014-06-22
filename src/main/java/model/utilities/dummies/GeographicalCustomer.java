@@ -228,7 +228,6 @@ public class GeographicalCustomer extends Customer implements HasLocation {
     }
 
     public void setDistanceExponent(double distanceExponent) {
-        System.out.println(distanceExponent);
         this.distanceExponent = distanceExponent;
     }
 }

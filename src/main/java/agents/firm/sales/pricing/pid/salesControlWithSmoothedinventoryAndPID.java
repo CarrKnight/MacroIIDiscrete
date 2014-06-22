@@ -107,7 +107,6 @@ public class salesControlWithSmoothedinventoryAndPID implements AskPricingStrate
                 salesDepartment.getModel().drawIntegrativeGain()/5,
                 salesDepartment.getModel().drawDerivativeGain());
 
-        //System.out.println(proportionalGain + " - " + integralGain + " - " + derivativeGain);
 
 
 
@@ -154,7 +153,6 @@ public class salesControlWithSmoothedinventoryAndPID implements AskPricingStrate
         movingAverage.addObservation(salesDepartment.getTodayInflow()* howManyTimesTheDailyInflowShouldTheInventoryBe);
 
         delegate.setTargetInventory((int) movingAverage.getSmoothedObservation());
-        //     System.out.println("target inventory: " + getTargetInventory() + ", actual inventory: " + salesDepartment.getHowManyToSell());
 
         ((MacroII)state).scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE,this);
 

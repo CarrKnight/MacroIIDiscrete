@@ -13,7 +13,7 @@ import agents.firm.production.Blueprint;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.control.facades.MarginalPlantControl;
-import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
+import agents.firm.purchases.prediction.PurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.SalesDepartmentOneAtATime;
@@ -21,7 +21,7 @@ import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
-import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
+import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.people.*;
 import com.google.common.base.Preconditions;
@@ -38,6 +38,7 @@ import model.utilities.logs.LogToFile;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * <h4>Description</h4>
@@ -75,6 +76,7 @@ public class FarmersAndWorkersScenario extends Scenario {
      * a list of all agents!
      */
     private final List<Firm> producers;
+    private final int firmBudget = 5000000;
 
     /**
      * total number of agents in the model
@@ -85,6 +87,24 @@ public class FarmersAndWorkersScenario extends Scenario {
      * how much gets produced daily by each worker hired.
      */
     private int linearProductionPerWorker = 10;
+
+    /**
+     * number of firms producing
+     */
+    private int numberOfFirms = 1;
+
+
+    /**
+     * optional supplier for a custom hr predictor
+     */
+    private Supplier<PurchasesPredictor> hrPredictorSupplier;
+
+
+    /**
+     * optional supplier for a custom sales predictor
+     */
+    private Supplier<SalesPredictor> salesPredictorSupplier;
+
 
     /**
      * Creates the scenario object, so that it links to the model.
@@ -124,8 +144,9 @@ public class FarmersAndWorkersScenario extends Scenario {
             people.add(createPerson(i+1,.5f,getModel(),laborMarket,goodMarket));
         }
 
-        //create monopolist!
-        producers.add(createFirm(model, laborMarket, goodMarket));
+        //create firm
+        for(int i=0; i<numberOfFirms; i++)
+            producers.add(createFirm(model, laborMarket, goodMarket));
 
 
     }
@@ -165,7 +186,7 @@ public class FarmersAndWorkersScenario extends Scenario {
     private Firm createFirm(MacroII model, OrderBookMarket laborMarket, OrderBookMarket goodMarket)
     {
         Firm firm = new Firm(model);
-        firm.receiveMany(AGRICULTURE,5000);
+        firm.receiveMany(AGRICULTURE, firmBudget);
 
         //sales department
         SalesDepartment salesDepartment = SalesDepartmentFactory.incompleteSalesDepartment(firm, goodMarket,
@@ -177,7 +198,8 @@ public class FarmersAndWorkersScenario extends Scenario {
 
         salesDepartment.setAskPricingStrategy(strategy);
 
-        salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
+        if(salesPredictorSupplier != null)
+            salesDepartment.setPredictorStrategy(salesPredictorSupplier.get());
         //finally register it!
         final GoodType goodTypeSold = MANUFACTURED;
         firm.registerSaleDepartment(salesDepartment, goodTypeSold);
@@ -192,7 +214,8 @@ public class FarmersAndWorkersScenario extends Scenario {
                 HumanResources.getHumanResourcesIntegrated(Integer.MAX_VALUE, firm,
                         laborMarket, plant, MarginalPlantControl.class, null, null);
         hr = factoryMadeHR.getDepartment();
-        hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
+        if(hrPredictorSupplier != null)
+            hr.setPredictor(hrPredictorSupplier.get());
         hr.setFixedPayStructure(true);
 
 
@@ -302,4 +325,59 @@ public class FarmersAndWorkersScenario extends Scenario {
         producers.get(0).addLogEventListener(new LogToFile(file, LogLevel.INFO,model));
     }
 
+
+    /**
+     * Sets new number of firms producing.
+     *
+     * @param numberOfFirms New value of number of firms producing.
+     */
+    public void setNumberOfFirms(int numberOfFirms) {
+        this.numberOfFirms = numberOfFirms;
+    }
+
+    /**
+     * Gets number of firms producing.
+     *
+     * @return Value of number of firms producing.
+     */
+    public int getNumberOfFirms() {
+        return numberOfFirms;
+    }
+
+
+    /**
+     * Gets optional supplier for a custom sales predictor.
+     *
+     * @return Value of optional supplier for a custom sales predictor.
+     */
+    public Supplier<SalesPredictor> getSalesPredictorSupplier() {
+        return salesPredictorSupplier;
+    }
+
+    /**
+     * Sets new optional supplier for a custom sales predictor.
+     *
+     * @param salesPredictorSupplier New value of optional supplier for a custom sales predictor.
+     */
+    public void setSalesPredictorSupplier(Supplier<SalesPredictor> salesPredictorSupplier) {
+        this.salesPredictorSupplier = salesPredictorSupplier;
+    }
+
+    /**
+     * Sets new optional supplier for a custom hr predictor.
+     *
+     * @param hrPredictorSupplier New value of optional supplier for a custom hr predictor.
+     */
+    public void setHrPredictorSupplier(Supplier<PurchasesPredictor> hrPredictorSupplier) {
+        this.hrPredictorSupplier = hrPredictorSupplier;
+    }
+
+    /**
+     * Gets optional supplier for a custom hr predictor.
+     *
+     * @return Value of optional supplier for a custom hr predictor.
+     */
+    public Supplier<PurchasesPredictor> getHrPredictorSupplier() {
+        return hrPredictorSupplier;
+    }
 }

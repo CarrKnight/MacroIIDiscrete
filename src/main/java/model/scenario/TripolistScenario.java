@@ -7,24 +7,9 @@
 package model.scenario;
 
 import agents.firm.Firm;
-import agents.firm.sales.SalesDepartment;
-import agents.firm.sales.SalesDepartmentOneAtATime;
-import agents.firm.sales.prediction.PricingSalesPredictor;
-import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
-import au.com.bytecode.opencsv.CSVWriter;
-import goods.UndifferentiatedGoodType;
 import model.MacroII;
-import model.utilities.ActionOrder;
-import model.utilities.stats.collectors.DailyStatCollector;
-import sim.engine.SimState;
-import sim.engine.Steppable;
-
-import java.io.FileWriter;
-import java.io.IOException;
 
 import java.util.LinkedList;
-
-import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 
 /**
  * <h4>Description</h4>
@@ -107,106 +92,6 @@ public class TripolistScenario extends MonopolistScenario{
 
 
 
-
-    public static void main2(String[] args)
-    {
-        //set up
-        final MacroII macroII = new MacroII(0l);
-        final TripolistScenario scenario1 = new TripolistScenario(macroII);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-        scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
-        scenario1.setControlType(MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_ALWAYS_MOVING);
-        scenario1.setAdditionalCompetitors(2);
-        scenario1.setWorkersToBeRehiredEveryDay(false);
-
-        // scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
-        scenario1.setSalesPricePreditorStrategy(PricingSalesPredictor.class);
-        //   scenario1.setPurchasesPricePreditorStrategy(PricingPurchasesPredictor.class);
-
-
-
-
-        //assign scenario
-        macroII.setScenario(scenario1);
-
-        macroII.start();
-
-
-
-        //CSV writer set up
-        try {
-            CSVWriter writer = new CSVWriter(new FileWriter("runs/monopolist/"+"tripolist0"+".csv"));
-            DailyStatCollector collector = new DailyStatCollector(macroII,writer);
-            collector.start();
-
-        } catch (IOException e) {
-            System.err.println("failed to create the file!");
-        }
-
-        //set a different writer to check the prices quotes for each sales department
-        try {
-            final CSVWriter writer2 = new CSVWriter(new FileWriter("runs/monopolist/"+"tripolistPrices"+".csv"));
-            final CSVWriter writer3 = new CSVWriter(new FileWriter("runs/monopolist/"+"tripolistQuantity"+".csv"));
-
-
-            //write the title
-            String[] title = new String[scenario1.competitors.size()];
-            String[] title2 = new String[scenario1.competitors.size()];
-
-            for(int i=0; i<scenario1.competitors.size(); i++)
-            {
-                title[i] = "price"+i;
-                title2[i] = "quantity"+i;
-
-            }
-
-
-
-            writer2.writeNext(title);
-            writer3.writeNext(title2);
-            macroII.scheduleSoon(ActionOrder.CLEANUP_DATA_GATHERING, new Steppable() {
-                @Override
-                public void step(SimState state) {
-                    try {
-                        //find the prices/quantity and write them down
-                        String[] priceline = new String[scenario1.competitors.size()];
-                        String[] quantityline = new String[scenario1.competitors.size()];
-                        //create a fake good to price
-
-                        for(int i=0; i <scenario1.competitors.size(); i++)
-                        {
-                            Firm competitor = scenario1.competitors.get(i);
-                            SalesDepartment dept = competitor.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
-
-
-
-                            quantityline[i]=Long.toString(dept.getTodayOutflow());
-                            priceline[i] = Long.toString(competitor.hypotheticalSellPrice(UndifferentiatedGoodType.GENERIC));
-                        }
-                        writer2.writeNext(priceline);    writer3.writeNext(quantityline);
-                        writer2.flush(); writer3.flush();
-                        ((MacroII) state).scheduleTomorrow(ActionOrder.CLEANUP_DATA_GATHERING, this);
-                    } catch (IOException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    }
-
-                }
-            });
-
-        } catch (IOException e) {
-            System.err.println("failed to create the file!");
-        }
-
-
-        //run!
-        while(macroII.schedule.getTime()<150000)
-        {
-            macroII.schedule.step(macroII);
-            printProgressBar(150001,(int)macroII.schedule.getSteps(),100);
-        }
-
-
-    }
 
     public LinkedList<Firm> getCompetitors() {
         return competitors;

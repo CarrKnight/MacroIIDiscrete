@@ -76,7 +76,7 @@ public class SurveyPurchasesPredictorTest {
         when(seller.askedForASaleQuote(any(EconomicAgent.class), any(GoodType.class))).thenReturn(q);
         market.registerSeller(seller);
 
-        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), 1);
+        assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(dept), 1,.01);
 
     }
 

@@ -442,7 +442,7 @@ public abstract class Market implements Deactivatable{
             lastFilledBid = buyerQuote.getPriceQuoted();
             weeklyVolume++;
             todayVolume++;
-            //System.out.println("today volume has increased to: " + todayVolume);
+
 
             //tell the listeners!
             for(TradeListener tl : tradeListeners)

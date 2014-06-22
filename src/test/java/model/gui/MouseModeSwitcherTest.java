@@ -14,7 +14,6 @@ import model.gui.market.GeographicalMarketPresentation;
 import model.scenario.ControllableGeographicalScenario;
 import model.utilities.geography.Location;
 import org.junit.Assert;
-import org.junit.Test;
 import org.loadui.testfx.GuiTest;
 
 import static org.mockito.Mockito.*;
@@ -55,7 +54,7 @@ public class MouseModeSwitcherTest extends GuiTest{
 
     }
 
-    @Test
+ //   @Test
     public void testByTouchingButonsDirectly() throws Exception {
 
         click(underTest.getAddOilPump());
@@ -95,7 +94,7 @@ public class MouseModeSwitcherTest extends GuiTest{
         getRootNode().setBottom(null);
 
     }
-    @Test
+ //  @Test
     public void testByUsingNames() throws Exception {
         click(AddAgentsToMapTitledPane.ADD_FIRM_BUTTON_STRING);
         Assert.assertEquals(Cursor.CROSSHAIR,geographicalPane.getCursor()); //should have switched to crosshair

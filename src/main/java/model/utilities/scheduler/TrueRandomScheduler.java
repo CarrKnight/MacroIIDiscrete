@@ -106,15 +106,14 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
         MersenneTwisterFast random = simState.random; //grab the random from the simstate
         assert tomorrowSamePhase.isEmpty() : "things shouldn't be scheduled here";
 
-      //  System.out.println("=============================================================");
-      //  System.out.println("day : " + ((MacroII) simState).getMainScheduleTime());
+
 
         //for each phase
         for(ActionOrder phase : ActionOrder.values())
         {
 
             currentPhase = phase; //currentPhase!
-        //    System.out.println("PHASE " + currentPhase);
+
 
 
 

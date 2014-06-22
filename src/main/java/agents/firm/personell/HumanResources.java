@@ -8,7 +8,6 @@ package agents.firm.personell;
 
 import agents.Agent;
 import agents.EconomicAgent;
-import agents.people.Person;
 import agents.firm.Firm;
 import agents.firm.production.Plant;
 import agents.firm.production.control.FactoryProducedTargetAndMaximizePlantControl;
@@ -21,6 +20,8 @@ import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
+import agents.firm.utilities.LastClosingPriceEcho;
+import agents.people.Person;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
@@ -90,7 +91,7 @@ public class HumanResources extends PurchasesDepartment implements Agent {
 
         //step yourself at the end of production
         firm.getModel().scheduleSoon(ActionOrder.PRODUCTION, this, Priority.FINAL);
-
+        setPriceAverager(new LastClosingPriceEcho(this));
     }
 
     /**

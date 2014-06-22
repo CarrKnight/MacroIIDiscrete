@@ -60,12 +60,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      * @param purchasesDepartment the department controlled by this strategy
      */
     public PurchasesFixedPID( PurchasesDepartment purchasesDepartment) {
-        super(purchasesDepartment);                                                                                //.5f,2f,.05f
-        float proportionalGain = (float) (.5f + purchasesDepartment.getRandom().nextGaussian()*.01f);
-        float integralGain = (float) (.5f + purchasesDepartment.getRandom().nextGaussian()*.05f);
-        float derivativeGain =(float) (0.01f + purchasesDepartment.getRandom().nextGaussian()*.005f);
-        rootController = new PIDController(proportionalGain,integralGain,derivativeGain,purchasesDepartment.getRandom()); //instantiate the controller
-        controller = rootController; //remember it
+       this(purchasesDepartment,50);
     }
 
 
@@ -75,10 +70,10 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      */
     public PurchasesFixedPID( PurchasesDepartment purchasesDepartment, int specificTarget) {
         super(purchasesDepartment,specificTarget);                                                                                //.5f,2f,.05f
-        float proportionalGain = (float) (.5f + purchasesDepartment.getRandom().nextGaussian()*.01f);
-        float integralGain = (float) (.5f + purchasesDepartment.getRandom().nextGaussian()*.05f);
+        float proportionalGain = (float) (.1f + purchasesDepartment.getRandom().nextGaussian()*.01f);
+        float integralGain = (float) (.1f + purchasesDepartment.getRandom().nextGaussian()*.05f);
         float derivativeGain =(float) (.01f + purchasesDepartment.getRandom().nextGaussian()*.005f);
-        rootController = new PIDController(proportionalGain,integralGain,derivativeGain,purchasesDepartment.getRandom()); //instantiate the controller
+        rootController = new CascadePToPIDController(1/30f,proportionalGain,integralGain,derivativeGain,purchasesDepartment.getRandom()); //instantiate the controller
         controller = rootController; //remember it
 
     }

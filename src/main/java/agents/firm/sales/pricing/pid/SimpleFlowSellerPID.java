@@ -280,7 +280,6 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
 
 
 
-         //   System.out.println("inflow: " + inflow + ", outflow: " + sales.getTodayOutflow() +",stockouts" + stockOuts.getStockouts() +", gap: " + gap);
             controller.adjust(0, gap,    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
                     active, (MacroII) simState, this, ActionOrder.ADJUST_PRICES);
         }

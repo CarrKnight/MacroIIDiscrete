@@ -80,7 +80,7 @@ public class LogToFile implements LogListener {
             MessageFormatter.arrayFormat(logEvent.getMessage(),logEvent.getAdditionalParameters()).getMessage() + "\n";
 
             try {
-          //      System.out.println(message);
+
                 writer.write(message);
                 writer.flush();
             }

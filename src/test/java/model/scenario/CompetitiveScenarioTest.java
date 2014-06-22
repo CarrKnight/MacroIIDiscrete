@@ -167,9 +167,9 @@ public class CompetitiveScenarioTest {
                 if(competitors>=4)
                 {
                     assertEquals(prices.getMean(), 58, 5);
-                    assertTrue(prices.getStandardDeviation() < 5);
+                    assertTrue(prices.getStandardDeviation() < 5.5);
                     assertEquals(quantities.getMean(), 44,5);
-                    assertTrue(quantities.getStandardDeviation() < 5);
+                    assertTrue(quantities.getStandardDeviation() < 5.5);
                 }
                 macroII.finish();
             }
@@ -270,9 +270,9 @@ public class CompetitiveScenarioTest {
 
 
                 assertEquals(prices.getMean(), 58, 5);
-                assertTrue(String.valueOf(prices.getStandardDeviation()),prices.getStandardDeviation() < 5);
+                assertTrue(String.valueOf(prices.getStandardDeviation()),prices.getStandardDeviation() < 5.5);
                 assertEquals(quantities.getMean(), 44,5);
-                assertTrue(String.valueOf(prices.getStandardDeviation()),quantities.getStandardDeviation() < 5);
+                assertTrue(String.valueOf(prices.getStandardDeviation()),quantities.getStandardDeviation() < 5.5);
 
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=1;
             }
@@ -365,9 +365,9 @@ public class CompetitiveScenarioTest {
                 System.out.println("standard deviations: price : " + prices.getStandardDeviation() + " , quantity: " + quantities.getStandardDeviation());
 
                 assertEquals(prices.getMean(), 58, 5);
-                assertTrue(prices.getStandardDeviation() < 5);
+                assertTrue(prices.getStandardDeviation() < 5.5);
                 assertEquals(quantities.getMean(), 44,5);
-                assertTrue(quantities.getStandardDeviation() < 5);
+                assertTrue(quantities.getStandardDeviation() < 5.5);
                 FixedDecreaseSalesPredictor.defaultDecrementDelta=1;
             }
 
@@ -559,9 +559,9 @@ public class CompetitiveScenarioTest {
                 if(competitors>=4)
                 {
                     assertEquals(prices.getMean(), 58, 5);
-//                    assertTrue(prices.getStandardDeviation() < 5);         these are probably a lot higher with stickiness
+//                    assertTrue(prices.getStandardDeviation() < 5.5);         these are probably a lot higher with stickiness
                     assertEquals(quantities.getMean(), 44,5);
-                    //         assertTrue(quantities.getStandardDeviation() < 5);
+                    //         assertTrue(quantities.getStandardDeviation() < 5.5);
                 }
             }
 

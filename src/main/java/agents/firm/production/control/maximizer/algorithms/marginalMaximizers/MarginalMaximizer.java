@@ -138,12 +138,10 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
                     return newTarget;
 
                 } else if (profitsIfWeIncrease >= profitsIfWeDecrease) { //if we increase profits going up, let's do that
-                    //    System.out.println(profitsIfWeIncrease + " ++ on day: " + owner.getModel().getMainScheduleTime());
                     assert profitsIfWeIncrease > EPSILON;
                     newTarget = currentWorkerTarget + 1;
                     return newTarget;
                 } else {
-                    //       System.out.println(profitsIfWeDecrease + " -- on day: " + owner.getModel().getMainScheduleTime());
 
                     assert profitsIfWeDecrease >= EPSILON;
 

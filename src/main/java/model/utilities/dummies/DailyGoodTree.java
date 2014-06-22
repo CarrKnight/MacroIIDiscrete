@@ -138,7 +138,6 @@ public class DailyGoodTree extends EconomicAgent
 
     private void eatEverythingAndRemoveQuotes() {
         int money= hasHowMany(market.getMoney()); //save the amount of money you have so you don't lose it
-        System.out.println(money);
         consumeAll();
         if(money > 0)
             receiveMany(market.getMoney(),money); //retrieve the money you had before
