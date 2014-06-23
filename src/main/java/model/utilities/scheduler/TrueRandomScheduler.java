@@ -45,6 +45,9 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
      */
     private EnumMap<ActionOrder,List<Steppable>[]> steppablesByPhase;
 
+
+    private EnumMap<ActionOrder,Long> timePerPhase;
+
     /**
      * The randomizer
      */
@@ -69,6 +72,10 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
     public TrueRandomScheduler(int simulationDays, MersenneTwisterFast randomizer) {
         this.randomizer =  randomizer;
         this.simulationDays = simulationDays;
+
+        timePerPhase = new EnumMap<>(ActionOrder.class);
+        for(ActionOrder o : ActionOrder.values())
+                timePerPhase.put(o,0l);
 
 
         //initialize the enums
@@ -111,6 +118,7 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
         //for each phase
         for(ActionOrder phase : ActionOrder.values())
         {
+            long timeAtStart = System.currentTimeMillis();
 
             currentPhase = phase; //currentPhase!
 
@@ -146,6 +154,8 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
             allocateTomorrowSamePhaseActions(phase);
 
 
+            long duration = System.currentTimeMillis() - timeAtStart;
+            timePerPhase.put(phase, timePerPhase.get(phase) + duration);
             //go to the next phase!
 
         }
@@ -349,5 +359,13 @@ public class TrueRandomScheduler implements Steppable, PhaseScheduler
 
     public void setSimulationDays(int simulationDays) {
         this.simulationDays = simulationDays;
+    }
+
+    public EnumMap<ActionOrder, List<Steppable>[]> getSteppablesByPhase() {
+        return steppablesByPhase;
+    }
+
+    public EnumMap<ActionOrder, Long> getTimePerPhase() {
+        return timePerPhase;
     }
 }
