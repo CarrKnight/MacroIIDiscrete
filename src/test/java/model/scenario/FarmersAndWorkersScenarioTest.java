@@ -71,7 +71,7 @@ public class FarmersAndWorkersScenarioTest {
     @Test
     public void whereIsMyMoney() throws Exception {
             final FarmersAndWorkersResult farmersAndWorkersResult = runForcedCompetitiveFarmersAndWorkersScenario(10, 1, 50, 1402602013498l,
-                    Paths.get("runs", "whereIsMyMoney.csv").toFile(), Paths.get("runs", "whereIsMyMoney.log"), 3000);
+                    Paths.get("runs", "whereIsMyMoney.csv").toFile(), Paths.get("runs", "whereIsMyMoney.log"), 6000);
         Assert.assertEquals(280, farmersAndWorkersResult.getManufacturingProduction(), 15); //5% error allowed
         Assert.assertEquals(869, farmersAndWorkersResult.getAgriculturalProduction(), 45);
         Assert.assertEquals(2.7, farmersAndWorkersResult.getManufacturingPrice(),.5);
@@ -141,7 +141,7 @@ public class FarmersAndWorkersScenarioTest {
             printProgressBar(steps+501, (int) macroII.schedule.getSteps(), 100);
             manufacturingProduction.addValue(scenario.countManufacturedProduction());
             agriculturalProduction.addValue(scenario.countAgricultureProduction());
-            manufacturingPrice.addValue(scenario.getProducers().get(0).getSalesDepartment(FarmersAndWorkersScenario.MANUFACTURED).getLastAskedPrice());
+            manufacturingPrice.addValue(scenario.getGoodMarket().getTodayAveragePrice());
         }
 
         System.out.println("Manufacturing Production: " + manufacturingProduction.getMean() +
@@ -191,7 +191,7 @@ public class FarmersAndWorkersScenarioTest {
             printProgressBar(steps+501, (int) macroII.schedule.getSteps(), 100);
             manufacturingProduction.addValue(scenario.countManufacturedProduction());
             agriculturalProduction.addValue(scenario.countAgricultureProduction());
-            manufacturingPrice.addValue(scenario.getProducers().get(0).getSalesDepartment(FarmersAndWorkersScenario.MANUFACTURED).getLastAskedPrice());
+            manufacturingPrice.addValue(scenario.getGoodMarket().getTodayAveragePrice());
         }
 
         System.out.println("Manufacturing Production: " + manufacturingProduction.getMean() +

@@ -104,6 +104,7 @@ public class FarmersAndWorkersScenario extends Scenario {
      * optional supplier for a custom sales predictor
      */
     private Supplier<SalesPredictor> salesPredictorSupplier;
+    private OrderBookMarket goodMarket;
 
 
     /**
@@ -112,7 +113,7 @@ public class FarmersAndWorkersScenario extends Scenario {
      *
      * @param model
      */
-    protected FarmersAndWorkersScenario(MacroII model) {
+    public FarmersAndWorkersScenario(MacroII model) {
         super(model);
         people = new LinkedList<>();
         producers = new LinkedList<>();
@@ -132,16 +133,16 @@ public class FarmersAndWorkersScenario extends Scenario {
         laborMarket.setPricePolicy(new BuyerSetPricePolicy());
         getMarkets().put(UndifferentiatedGoodType.LABOR, laborMarket);
 
-        OrderBookMarket goodMarket = new OrderBookMarket(MANUFACTURED);
+        goodMarket = new OrderBookMarket(MANUFACTURED);
         goodMarket.setMoney(AGRICULTURE);
-        goodMarket.setOrderHandler(new EndOfPhaseOrderHandler(),model);
+        goodMarket.setOrderHandler(new EndOfPhaseOrderHandler(), model);
         goodMarket.setPricePolicy(new ShopSetPricePolicy());
         getMarkets().put(MANUFACTURED, goodMarket);
 
 
         for(int i=0; i<numberOfAgents; i++)
         {
-            people.add(createPerson(i+1,.5f,getModel(),laborMarket,goodMarket));
+            people.add(createPerson(i+1,.5f,getModel(),laborMarket, goodMarket));
         }
 
         //create firm
@@ -379,5 +380,9 @@ public class FarmersAndWorkersScenario extends Scenario {
      */
     public Supplier<PurchasesPredictor> getHrPredictorSupplier() {
         return hrPredictorSupplier;
+    }
+
+    public OrderBookMarket getGoodMarket() {
+        return goodMarket;
     }
 }
