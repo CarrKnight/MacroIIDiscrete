@@ -55,6 +55,9 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
      */
     private int acceptableInventory = 50;
 
+
+    private float gap = 0;
+
     /**
      * are we building up inventories or can we sell?
      */
@@ -303,7 +306,6 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
      */
     @Override
     public float estimateSupplyGap() {
-        int currentInventory = department.getHowManyToSell();
         if(phase.equals(SimpleInventoryAndFlowPIDPhase.SELL) && department.getHowManyToSell() >0 )
         {
             return 0;

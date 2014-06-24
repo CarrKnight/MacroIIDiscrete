@@ -30,7 +30,7 @@ public class FarmersAndWorkersScenarioTest {
 
 
         for(int j=0; j< 5; j++) {
-            final FarmersAndWorkersResult farmersAndWorkersResult = runForcedCompetitiveFarmersAndWorkersScenario(10, 1, 200, System.currentTimeMillis(), null, null);
+            final FarmersAndWorkersResult farmersAndWorkersResult = runForcedCompetitiveFarmersAndWorkersScenario(10, 1, 200, System.currentTimeMillis(), null, null, 3000);
             Assert.assertEquals(1100, farmersAndWorkersResult.getManufacturingProduction(), 50); //5% error allowed
             Assert.assertEquals(13995, farmersAndWorkersResult.getAgriculturalProduction(), 500);
             Assert.assertEquals(10.95, farmersAndWorkersResult.getManufacturingPrice(),5);
@@ -45,7 +45,7 @@ public class FarmersAndWorkersScenarioTest {
 
         for(int j=0; j< 5; j++) {
             final FarmersAndWorkersResult farmersAndWorkersResult = runForcedCompetitiveFarmersAndWorkersScenario(10, 5, 50,
-                    System.currentTimeMillis(), null, null);
+                    System.currentTimeMillis(), null, null, 6000);
             Assert.assertEquals(280, farmersAndWorkersResult.getManufacturingProduction(), 15); //5% error allowed
             Assert.assertEquals(869, farmersAndWorkersResult.getAgriculturalProduction(), 45);
             Assert.assertEquals(2.7, farmersAndWorkersResult.getManufacturingPrice(),.5);
@@ -59,7 +59,7 @@ public class FarmersAndWorkersScenarioTest {
 
         for(int j=0; j< 5; j++) {
             final FarmersAndWorkersResult farmersAndWorkersResult = runLearningFarmersAndWorkers(10, 5, 50,
-                    System.currentTimeMillis(), null, null);
+                    System.currentTimeMillis(), null, null, 6000);
             Assert.assertEquals(280, farmersAndWorkersResult.getManufacturingProduction(), 15); //5% error allowed
             Assert.assertEquals(869, farmersAndWorkersResult.getAgriculturalProduction(), 45);
             Assert.assertEquals(2.7, farmersAndWorkersResult.getManufacturingPrice(),.5);
@@ -71,7 +71,7 @@ public class FarmersAndWorkersScenarioTest {
     @Test
     public void whereIsMyMoney() throws Exception {
             final FarmersAndWorkersResult farmersAndWorkersResult = runForcedCompetitiveFarmersAndWorkersScenario(10, 1, 50, 1402602013498l,
-                    Paths.get("runs", "whereIsMyMoney.csv").toFile(), Paths.get("runs", "whereIsMyMoney.log"));
+                    Paths.get("runs", "whereIsMyMoney.csv").toFile(), Paths.get("runs", "whereIsMyMoney.log"), 3000);
         Assert.assertEquals(280, farmersAndWorkersResult.getManufacturingProduction(), 15); //5% error allowed
         Assert.assertEquals(869, farmersAndWorkersResult.getAgriculturalProduction(), 45);
         Assert.assertEquals(2.7, farmersAndWorkersResult.getManufacturingPrice(),.5);
@@ -107,7 +107,7 @@ public class FarmersAndWorkersScenarioTest {
 
     public static FarmersAndWorkersResult runLearningFarmersAndWorkers(int productionPerWorker, int numberOfFirms,
                                                                        int numberOfAgents, long seed,
-                                                                       File csvFile, Path logFile)
+                                                                       File csvFile, Path logFile, int steps)
     {
         System.out.println(seed);
         final MacroII macroII = new MacroII(seed);
@@ -128,9 +128,9 @@ public class FarmersAndWorkersScenarioTest {
         if(logFile != null)
             scenario.attachLogger(logFile);
 
-        while (macroII.schedule.getTime() < 3000) {
+        while (macroII.schedule.getTime() < steps) {
             macroII.schedule.step(macroII);
-            printProgressBar(3501, (int) macroII.schedule.getSteps(), 100);
+            printProgressBar(steps+501, (int) macroII.schedule.getSteps(), 100);
 
         }
         SummaryStatistics manufacturingProduction = new SummaryStatistics();
@@ -138,7 +138,7 @@ public class FarmersAndWorkersScenarioTest {
         SummaryStatistics manufacturingPrice = new SummaryStatistics();
         for (int i = 0; i < 500; i++) {
             macroII.schedule.step(macroII);
-            printProgressBar(3501, (int) macroII.schedule.getSteps(), 100);
+            printProgressBar(steps+501, (int) macroII.schedule.getSteps(), 100);
             manufacturingProduction.addValue(scenario.countManufacturedProduction());
             agriculturalProduction.addValue(scenario.countAgricultureProduction());
             manufacturingPrice.addValue(scenario.getProducers().get(0).getSalesDepartment(FarmersAndWorkersScenario.MANUFACTURED).getLastAskedPrice());
@@ -155,7 +155,7 @@ public class FarmersAndWorkersScenarioTest {
 
     public static FarmersAndWorkersResult runForcedCompetitiveFarmersAndWorkersScenario(int productionPerWorker,
                                                                                         int numberOfFirms, int numberOfAgents, long seed,
-                                                                                        File csvFile, Path logFile)
+                                                                                        File csvFile, Path logFile, int steps)
     {
         System.out.println(seed);
         final MacroII macroII = new MacroII(seed);
@@ -178,9 +178,9 @@ public class FarmersAndWorkersScenarioTest {
         if(logFile != null)
             scenario.attachLogger(logFile);
 
-        while (macroII.schedule.getTime() < 3000) {
+        while (macroII.schedule.getTime() < steps) {
             macroII.schedule.step(macroII);
-            printProgressBar(3501, (int) macroII.schedule.getSteps(), 100);
+            printProgressBar(steps+501, (int) macroII.schedule.getSteps(), 100);
 
         }
         SummaryStatistics manufacturingProduction = new SummaryStatistics();
@@ -188,7 +188,7 @@ public class FarmersAndWorkersScenarioTest {
         SummaryStatistics manufacturingPrice = new SummaryStatistics();
         for (int i = 0; i < 500; i++) {
             macroII.schedule.step(macroII);
-            printProgressBar(3501, (int) macroII.schedule.getSteps(), 100);
+            printProgressBar(steps+501, (int) macroII.schedule.getSteps(), 100);
             manufacturingProduction.addValue(scenario.countManufacturedProduction());
             agriculturalProduction.addValue(scenario.countAgricultureProduction());
             manufacturingPrice.addValue(scenario.getProducers().get(0).getSalesDepartment(FarmersAndWorkersScenario.MANUFACTURED).getLastAskedPrice());

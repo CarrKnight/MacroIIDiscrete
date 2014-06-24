@@ -12,7 +12,6 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import ec.util.MersenneTwisterFast;
 import model.MacroII;
-import model.utilities.filters.ExponentialFilter;
 import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -55,156 +54,6 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     //these two tests are off mostly because I have no idea what the right numbers ought to be
 
-    /**
-     * With these parameters the beef seller waits for 100 days before changing its price
-     */
-    //@Test
-    public void testWithStickyPrices() throws InterruptedException, ExecutionException {
-        //this will take a looong time
-        final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(5);
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
-
-        //run the test 5 times!
-        for(int i=0; i <5; i++)
-        {
-            //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return testWithStickyPriceOneRun(random.nextInt());
-                        }
-                    });
-
-            testResults.add(testReceipt);
-
-        }
-
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
-        {
-            int beefPrice = (int) receipt.get().getBeefPrice();
-            Assert.assertTrue(beefPrice >= 27 && beefPrice <= 32);
-
-        }
-
-
-    }
-
-    private OneLinkSupplyChainResult testWithStickyPriceOneRun(int seed) {
-        final MacroII macroII = new MacroII(seed);
-        final OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
-        scenario1.setControlType(MarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-        //use standard PID parameters
-        scenario1.setDivideProportionalGainByThis(1f);
-        scenario1.setDivideIntegrativeGainByThis(1f);
-        //100 days delay
-        scenario1.setBeefPricingSpeed(100);
-        //add a very big filterer (since we can wait 100 turns)
-        scenario1.setBeefPriceFilterer(new ExponentialFilter<Integer>(.01f));
-
-
-        macroII.setScenario(scenario1);
-        macroII.start();
-
-
-        while(macroII.schedule.getTime()<15000)
-        {
-            macroII.schedule.step(macroII);
-            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
-        }
-
-        System.out.println("done with price: " +macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE) );
-        System.out.println();
-        //the beef price is in the ballpark
-        System.out.println("done!");
-        return new OneLinkSupplyChainResult(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),
-                macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getYesterdayVolume(), macroII);
-    }
-
-
-    /**
-     * With these parameters the beef seller adjusts its prices everyday, but only ever so slightly!
-     */
-    //@Test
-    public void testWithSlowPID() throws ExecutionException, InterruptedException {
-
-        //this will take a looong time
-        final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(5);
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
-
-        //run the test 5 times!
-        for(int i=0; i <5; i++)
-        {
-            //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return testWithSlowPidOneRun(random.nextInt());
-                        }
-                    });
-
-            testResults.add(testReceipt);
-
-        }
-
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
-        {
-            int beefPrice = (int) receipt.get().getBeefPrice();
-            Assert.assertTrue(beefPrice >= 27 && beefPrice <= 32);
-
-        }
-
-
-    }
-
-    private OneLinkSupplyChainResult testWithSlowPidOneRun(int seed) {
-        final MacroII macroII = new MacroII(seed);
-        final OneLinkSupplyChainScenario scenario1 = new OneLinkSupplyChainScenario(macroII);
-        scenario1.setControlType(MarginalMaximizer.class);
-        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-        //divide standard PID parameters by 100
-        scenario1.setDivideProportionalGainByThis(100f);
-        scenario1.setDivideIntegrativeGainByThis(100f);
-        //100 days delay
-        scenario1.setBeefPricingSpeed(0);
-        //no real need of filter at this slow speed
-        scenario1.setBeefPriceFilterer(null);
-
-
-        macroII.setScenario(scenario1);
-        macroII.start();
-
-
-        while(macroII.schedule.getTime()<15000)
-        {
-            macroII.schedule.step(macroII);
-            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
-        }
-
-        System.out.println("done with price: " +
-                macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE) );
-        System.out.println();
-        System.out.println("done!");
-        return new OneLinkSupplyChainResult(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),
-                macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getYesterdayVolume(), macroII);
-        //the beef price is in the ballpark
-    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -226,7 +75,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 1, 100, false, null));
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 1, 10, false, null));
 
             testResults.add(testReceipt);
 
@@ -257,7 +106,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 100, 0, false, null));
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 10, 0, false, null));
 
             testResults.add(testReceipt);
 
@@ -274,13 +123,12 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     @Test
     public void problematicScenario1() throws Exception {
-        final OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(3, 100, 0, false,
-                Paths.get("runs","problematic.csv").toFile());
-        checkBeefMonopolistResult(result);
+        final OneLinkSupplyChainResult result = testFoodMonopolistWithFixedProductionRun(0,true,0,10,  Paths.get("runs", "problematic.csv").toFile());
+        checkResultsOfFoodMonopolist(result);
     }
     @Test
     public void problematicScenario2() throws Exception {
-            final OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(0, 100, 0, true, true,
+            final OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(0, 10, 0, true, true,
                     Paths.get("runs", "problematic.csv").toFile(), Paths.get("runs", "problematic.log").toFile());
 
             checkBeefMonopolistResult(result);
@@ -333,18 +181,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 100, 0, true, null);
-                        }
-                    });
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 10, 0, true, null));
 
             testResults.add(testReceipt);
 
@@ -371,18 +208,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 1, 100, true, null);
-                        }
-                    });
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 1, 10, true, null));
 
             testResults.add(testReceipt);
 
@@ -423,18 +249,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 100, 0, true, true, null, null);
-                        }
-                    });
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 10, 0, true, true, null, null));
 
             testResults.add(testReceipt);
 
@@ -465,18 +280,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 100, true, true, null, null);
-                        }
-                    });
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 10, true, true, null, null));
 
             testResults.add(testReceipt);
 
@@ -509,18 +313,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextLong(), 100, 0, false, true, null, null);
-                        }
-                    });
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextLong(), 10, 0, false, true, null, null));
 
             testResults.add(testReceipt);
 
@@ -554,18 +347,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 100, false, true, null, null);
-                        }
-                    });
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 10, false, true, null, null));
 
             testResults.add(testReceipt);
 
@@ -600,18 +382,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 100, 0, true, false, null, null);
-                        }
-                    });
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 10, 0, true, false, null, null));
 
             testResults.add(testReceipt);
 
@@ -643,18 +414,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 100, true, false, null, null);
-                        }
-                    });
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 10, true, false, null, null));
 
             testResults.add(testReceipt);
 
@@ -684,18 +444,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return             OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextInt(), 100, 0, null);
-                        }
-                    });
+                    testRunner.submit(() -> OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextInt(), 10, 0, null));
 
             testResults.add(testReceipt);
 
@@ -727,18 +476,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return             OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextInt(), 1, 100, null);
-                        }
-                    });
+                    testRunner.submit(() -> OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextInt(), 1, 10, null));
 
             testResults.add(testReceipt);
 
@@ -776,19 +514,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return   OneLinkSupplyChainResult.everybodyLearningCompetitiveSlowPIDRun(random.nextInt());
-
-                        }
-                    });
+                    testRunner.submit(() -> OneLinkSupplyChainResult.everybodyLearningCompetitiveSlowPIDRun(random.nextInt()));
 
             testResults.add(testReceipt);
 
@@ -821,18 +547,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return             OneLinkSupplyChainResult.everybodyLearningCompetitiveStickyPIDRun(random.nextInt());
-                        }
-                    });
+                    testRunner.submit(() -> OneLinkSupplyChainResult.everybodyLearningCompetitiveStickyPIDRun(random.nextInt()));
 
             testResults.add(testReceipt);
 
@@ -864,18 +579,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return             OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 100, 0, false, false, null, null);
-                        }
-                    });
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 10, 0, false, false, null, null));
 
             testResults.add(testReceipt);
 
@@ -908,18 +612,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return             OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 100, false, false, null, null);
-                        }
-                    });
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 10, false, false, null, null));
 
             testResults.add(testReceipt);
 
@@ -964,18 +657,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return testFoodMonopolistWithFixedProductionRun(random.nextInt(), false, 100, 1, null);
-                        }
-                    });
+                    testRunner.submit(() -> testFoodMonopolistWithFixedProductionRun(random.nextInt(), false, 10, 1, null));
 
             testResults.add(testReceipt);
 
@@ -1072,18 +754,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return testFoodMonopolistWithFixedProductionRun(random.nextInt(), false, 0, 100, null);
-                        }
-                    });
+                    testRunner.submit(() -> testFoodMonopolistWithFixedProductionRun(random.nextInt(), false, 0, 10, null));
 
             testResults.add(testReceipt);
 
@@ -1109,18 +780,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return testFoodMonopolistWithFixedProductionRun(random.nextInt(),true,0,100, null);//Paths.get("runs","supplychai","foodMonopolist.csv").toFile());
-                        }
-                    });
+                    testRunner.submit(() -> testFoodMonopolistWithFixedProductionRun(random.nextInt(),true,0,10, null));
 
             testResults.add(testReceipt);
 
@@ -1149,18 +809,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return testFoodMonopolistWithFixedProductionRun(random.nextInt(),true,100,1, null);
-                        }
-                    });
+                    testRunner.submit(() -> testFoodMonopolistWithFixedProductionRun(random.nextInt(),true,10,1, null));
 
             testResults.add(testReceipt);
 
@@ -1202,7 +851,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
                          */
                         @Override
                         public OneLinkSupplyChainResult call() throws Exception {
-                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(),100,0,true,true,null);
+                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(),10,0,true,true,null);
                         }
                     });
 
@@ -1233,18 +882,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(), 1, 100, true, true, null);
-                        }
-                    });
+                    testRunner.submit(() -> OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(), 1, 10, true, true, null));
 
 
 
@@ -1281,18 +919,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(), 100, 0, false, false, null);
-                        }
-                    });
+                    testRunner.submit(() -> OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(), 10, 0, false, false, null));
 
             testResults.add(testReceipt);
 
@@ -1322,18 +949,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(), 1, 100, false, false, Paths.get("runs","noone.csv").toFile());
-                        }
-                    });
+                    testRunner.submit(() -> OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(), 1, 10, false, false, Paths.get("runs","noone.csv").toFile()));
 
             testResults.add(testReceipt);
 
@@ -1361,7 +977,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         scenario1.setDivideProportionalGainByThis(1f);
         scenario1.setDivideIntegrativeGainByThis(1f);
         //no delay
-        scenario1.setBeefPricingSpeed(100);
+        scenario1.setBeefPricingSpeed(10);
 
 
         macroII.setScenario(scenario1);

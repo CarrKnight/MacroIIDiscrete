@@ -88,7 +88,7 @@ public class SpeedTest {
 
         //farmersAndWorkers
         startTime = System.currentTimeMillis();
-        FarmersAndWorkersScenarioTest.runForcedCompetitiveFarmersAndWorkersScenario(10, 1, 200, System.currentTimeMillis(), null, null);
+        FarmersAndWorkersScenarioTest.runForcedCompetitiveFarmersAndWorkersScenario(10, 1, 200, System.currentTimeMillis(), null, null, 3000);
         endTime = System.currentTimeMillis();
         timeInSeconds = (endTime-startTime)/1000d;
         macroWriter.writeNext(new String[]{date,computerName, String.valueOf(timeInSeconds)});

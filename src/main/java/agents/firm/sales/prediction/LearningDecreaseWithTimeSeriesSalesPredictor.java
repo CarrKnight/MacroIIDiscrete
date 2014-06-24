@@ -366,7 +366,7 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor
 
         //now create price by lopping off the first element
         double[] todayPrice = new double[independentVariable.length-1];
-        double[] price = department.getObservationsRecordedTheseDays(SalesDataType.AVERAGE_CLOSING_PRICES, days);
+        double[] price = department.getObservationsRecordedTheseDays(SalesDataType.CLOSING_PRICES, days);
         double[] laggedPrice = new double[independentVariable.length- lag];
         double[] deltaPrice = new double[independentVariable.length- lag];
         for(int i= lag; i<laggedPrice.length+ lag; i++)

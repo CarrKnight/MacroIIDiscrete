@@ -26,7 +26,6 @@ import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.PhaseScheduler;
-import model.utilities.scheduler.RandomQueuePhaseScheduler;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -360,7 +359,7 @@ public class PlantTest {
 
         Blueprint b = Blueprint.simpleBlueprint(DifferentiatedGoodType.CAPITAL, 1, BEEF, 1);
         MacroII localMacroII =  mock(MacroII.class);
-        PhaseScheduler scheduler = mock(RandomQueuePhaseScheduler.class); when(localMacroII.getCurrentPhase()).thenReturn(ActionOrder.PRODUCTION);
+        PhaseScheduler scheduler = mock(PhaseScheduler.class); when(localMacroII.getCurrentPhase()).thenReturn(ActionOrder.PRODUCTION);
         when(localMacroII.getPhaseScheduler()).thenReturn(scheduler);  when(localMacroII.getWeekLength()).thenReturn(7f);
         Firm f = new Firm(localMacroII);
         Plant localCRS = new Plant(b,new Firm(localMacroII)); localCRS.setPlantMachinery(new LinearConstantMachinery(DifferentiatedGoodType.CAPITAL, f, 0, localCRS));

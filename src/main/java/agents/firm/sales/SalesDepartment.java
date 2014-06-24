@@ -125,7 +125,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     /**
      * average last week price weighted by outflow
      */
-    private PriceAverager priceAverager = new WeightedPriceAverager(4);
+    private PriceAverager priceAverager = new WeightedPriceAverager(10);
 
 
 

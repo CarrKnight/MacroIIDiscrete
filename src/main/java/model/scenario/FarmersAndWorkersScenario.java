@@ -22,7 +22,7 @@ import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.SalesPredictor;
-import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
+import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.people.*;
 import com.google.common.base.Preconditions;
 import financial.market.EndOfPhaseOrderHandler;
@@ -192,8 +192,8 @@ public class FarmersAndWorkersScenario extends Scenario {
         SalesDepartment salesDepartment = SalesDepartmentFactory.incompleteSalesDepartment(firm, goodMarket,
                 new SimpleBuyerSearch(goodMarket, firm), new SimpleSellerSearch(goodMarket, firm), SalesDepartmentOneAtATime.class);
         //give the sale department a simple PID
-        final SalesControlWithFixedInventoryAndPID strategy = new SalesControlWithFixedInventoryAndPID(salesDepartment,1000);
-        strategy.setGainsSlavePID(strategy.getProportionalGain() / 100, strategy.getIntegralGain() / 100, strategy.getDerivativeGain() / 100);
+        final SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly strategy = new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(salesDepartment,100,200);
+        strategy.setGains(strategy.getProportionalGain() / 50, strategy.getIntegralGain() / 50, strategy.getDerivativeGain() / 50);
 
 
         salesDepartment.setAskPricingStrategy(strategy);
@@ -322,7 +322,7 @@ public class FarmersAndWorkersScenario extends Scenario {
     public void attachLogger(Path file)
     {
         Preconditions.checkArgument(producers.size() > 0, "start hasn't been called yet!");
-        producers.get(0).addLogEventListener(new LogToFile(file, LogLevel.INFO,model));
+        producers.get(0).addLogEventListener(new LogToFile(file, LogLevel.DEBUG,model));
     }
 
 

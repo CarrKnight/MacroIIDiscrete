@@ -135,7 +135,7 @@ public class AroundShockLinearRegressionSalesPredictor extends BaseSalesPredicto
 
 
                 List<Double> quantities = new ArrayList<>(Doubles.asList(dept.getObservationsRecordedTheseDays(SalesDataType.OUTFLOW, lowestBound, upperBound)));
-                List<Double> prices = new ArrayList<>(Doubles.asList(dept.getObservationsRecordedTheseDays(SalesDataType.AVERAGE_CLOSING_PRICES, lowestBound, upperBound)));
+                List<Double> prices = new ArrayList<>(Doubles.asList(dept.getObservationsRecordedTheseDays(SalesDataType.CLOSING_PRICES, lowestBound, upperBound)));
                 List<Double> gaps = new ArrayList<>(Doubles.asList(dept.getObservationsRecordedTheseDays(SalesDataType.SUPPLY_GAP, lowestBound, upperBound)));
 
 

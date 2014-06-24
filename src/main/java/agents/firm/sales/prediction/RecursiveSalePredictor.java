@@ -9,7 +9,6 @@ package agents.firm.sales.prediction;
 import agents.firm.sales.SalesDepartment;
 import model.MacroII;
 import model.utilities.stats.collectors.DataStorage;
-import model.utilities.stats.collectors.enums.MarketDataType;
 import model.utilities.stats.collectors.enums.SalesDataType;
 
 /**
@@ -176,22 +175,7 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
     }
 
     public double defaultPriceWithNoObservations() {
-        long lastPrice = Math.round(department.getAveragedPrice());  //get the last closing price
-        //do we not have anything in memory or did we screw up so badly
-        //in the past term that we didn't sell a single item?
-        if(lastPrice == -1)
-            if(department.getTotalWorkersWhoProduceThisGood() == 0 && department.getMarket().getNumberOfObservations() > 0) //if you have no price to lookup and no production you are in a vicious circle, just lookup the market then
-                return Math.round(department.getMarket().getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
-            else
-                return -1;
-        else
-        {
-            //return your memory.
-            assert lastPrice >= 0 : lastPrice;
-
-            return lastPrice;
-
-        }
+       return delegate.predictSalePriceWhenNotChangingProduction(department);
     }
 
     @Override

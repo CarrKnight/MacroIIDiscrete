@@ -105,7 +105,7 @@ public class CompetitiveScenarioTest {
 
 
     @Test
-    public void rightPriceAndQuantityTestAsMarginalNoPID()
+    public void rightPriceAndQuantityLearningFlows()
     {
 
         for(int competitors=2;competitors<=7;competitors++)
@@ -117,7 +117,7 @@ public class CompetitiveScenarioTest {
                 final MacroII macroII = new MacroII(System.currentTimeMillis());
                 final TripolistScenario scenario1 = new TripolistScenario(macroII);
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-                scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
+                scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
                 scenario1.setAdditionalCompetitors(competitors);
                 scenario1.setWorkersToBeRehiredEveryDay(true);
@@ -186,7 +186,7 @@ public class CompetitiveScenarioTest {
 
 
     @Test
-    public void rightPriceAndQuantityTestAsMarginalNoPIDAlreadyLearned()
+    public void rightPriceAndQuantityTestAsMarginalInventoryTargetAlreadyLearned()
     {
 
         List<Integer> competitors = new LinkedList<>();
@@ -309,13 +309,7 @@ public class CompetitiveScenarioTest {
                 scenario1.setDemandIntercept(102);
 
 
-                FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
                 scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
-                //scenario1.setSalesPricePreditorStrategy(MarketSalesPredictor.class);
-                //scenario1.setSalesPricePreditorStrategy(PricingSalesPredictor.class);
-                //   scenario1.setPurchasesPricePreditorStrategy(PricingPurchasesPredictor.class);
-
-
 
                 //assign scenario
                 macroII.setScenario(scenario1);
@@ -331,7 +325,6 @@ public class CompetitiveScenarioTest {
                     firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
                 }
 
-    //            scenario1.getCompetitors().getFirst().addLogEventListener(new LogToFile(Paths.get("quickLog.log"), LogLevel.TRACE,macroII));
 
                 while(macroII.schedule.getTime()<5000)
                 {
@@ -368,7 +361,6 @@ public class CompetitiveScenarioTest {
                 assertTrue(prices.getStandardDeviation() < 5.5);
                 assertEquals(quantities.getMean(), 44,5);
                 assertTrue(quantities.getStandardDeviation() < 5.5);
-                FixedDecreaseSalesPredictor.defaultDecrementDelta=1;
             }
 
 
@@ -572,6 +564,9 @@ public class CompetitiveScenarioTest {
 
 
     }
+
+
+
 
 
 }

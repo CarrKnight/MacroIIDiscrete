@@ -6,8 +6,6 @@
 
 package model.scenario;
 
-import agents.people.AfterWorkStrategy;
-import agents.people.Person;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.FactoryProducedHumanResourcesWithMaximizerAndTargeter;
@@ -30,7 +28,9 @@ import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
-import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
+import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
+import agents.people.AfterWorkStrategy;
+import agents.people.Person;
 import agents.people.QuitJobAfterWorkStrategy;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
@@ -166,7 +166,7 @@ public class OneLinkSupplyChainScenario extends Scenario implements Deactivatabl
 
     //this is public only so that I can log it!
     @VisibleForTesting
-    public SalesControlWithFixedInventoryAndPID strategy2;
+    public SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly strategy2;
 
 
     /**
@@ -275,9 +275,9 @@ public class OneLinkSupplyChainScenario extends Scenario implements Deactivatabl
         if(!goodmarket.getGoodType().equals(OUTPUT_GOOD))
         {
 
-            strategy2 = new SalesControlWithFixedInventoryAndPID(dept, beefTargetInventory);
-            strategy2.setGainsSlavePID(strategy2.getProportionalGain()/divideProportionalGainByThis,
-                    strategy2.getIntegralGain()/divideIntegrativeGainByThis,
+            strategy2 = new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(dept,beefTargetInventory,beefTargetInventory*2 );
+            strategy2.setGains(strategy2.getProportionalGain() / divideProportionalGainByThis,
+                    strategy2.getIntegralGain() / divideIntegrativeGainByThis,
                     strategy2.getDerivativeGain());
 
 
@@ -298,8 +298,8 @@ public class OneLinkSupplyChainScenario extends Scenario implements Deactivatabl
         }
         else
         {
-            SalesControlWithFixedInventoryAndPID strategy;
-            strategy = new SalesControlWithFixedInventoryAndPID(dept, foodTargetInventory);
+            SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly strategy;
+            strategy = new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(dept, foodTargetInventory,foodTargetInventory*2);
             strategy.setInitialPrice(model.random.nextInt(30)+70);
             // strategy.setProductionCostOverride(false);
             dept.setAskPricingStrategy(strategy); //set strategy to PID
