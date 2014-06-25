@@ -38,6 +38,7 @@ import model.utilities.logs.LogToFile;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -93,6 +94,16 @@ public class FarmersAndWorkersScenario extends Scenario {
      */
     private int numberOfFirms = 1;
 
+
+    /**
+     * optional, if supplied it allows for any modification to the original/default sales-department. This is called AFTER the predictor supplier
+     */
+    private Consumer<SalesDepartment> salesDepartmentManipulator;
+
+    /**
+     * optional, if supplied it allows for any modification to the original/default hr-department. This is called AFTER the predictor supplier
+     */
+    private Consumer<HumanResources> hrManipulator;
 
     /**
      * optional supplier for a custom hr predictor
@@ -199,10 +210,17 @@ public class FarmersAndWorkersScenario extends Scenario {
 
         salesDepartment.setAskPricingStrategy(strategy);
 
+        //create custom predictor, if needed.
         if(salesPredictorSupplier != null)
             salesDepartment.setPredictorStrategy(salesPredictorSupplier.get());
         //finally register it!
         final GoodType goodTypeSold = MANUFACTURED;
+
+        //further manipulate sales if needed
+        if(salesDepartmentManipulator != null)
+            salesDepartmentManipulator.accept(salesDepartment);
+
+
         firm.registerSaleDepartment(salesDepartment, goodTypeSold);
 
         //plant
@@ -219,6 +237,9 @@ public class FarmersAndWorkersScenario extends Scenario {
             hr.setPredictor(hrPredictorSupplier.get());
         hr.setFixedPayStructure(true);
 
+        //further manipulate hr if needed
+        if(hrManipulator != null)
+            hrManipulator.accept(hr);
 
         model.addAgent(firm);
 
@@ -384,5 +405,21 @@ public class FarmersAndWorkersScenario extends Scenario {
 
     public OrderBookMarket getGoodMarket() {
         return goodMarket;
+    }
+
+    public Consumer<HumanResources> getHrManipulator() {
+        return hrManipulator;
+    }
+
+    public void setHrManipulator(Consumer<HumanResources> hrManipulator) {
+        this.hrManipulator = hrManipulator;
+    }
+
+    public Consumer<SalesDepartment> getSalesDepartmentManipulator() {
+        return salesDepartmentManipulator;
+    }
+
+    public void setSalesDepartmentManipulator(Consumer<SalesDepartment> salesDepartmentManipulator) {
+        this.salesDepartmentManipulator = salesDepartmentManipulator;
     }
 }
