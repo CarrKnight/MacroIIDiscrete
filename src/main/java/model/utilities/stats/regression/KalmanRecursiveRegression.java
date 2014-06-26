@@ -9,6 +9,8 @@ package model.utilities.stats.regression;
 import Jama.Matrix;
 import com.google.common.base.Preconditions;
 
+import java.util.Arrays;
+
 /**
  * <h4>Description</h4>
  * <p/> Properly a recursive linear regression filter, useful because most applications all learning is done online and there
@@ -175,8 +177,9 @@ public class KalmanRecursiveRegression implements RecursiveLinearRegression {
         double px[] = new double[dimensions];
         for(int i=0; i<dimensions; i++)
         {
-            for(int j=0; j<dimensions; j++)
+            for(int j=0; j<dimensions; j++) {
                 px[i] += pCovariance[i][j] * observation[j];
+            }
         }
 
         double denominator = 0;
@@ -190,7 +193,7 @@ public class KalmanRecursiveRegression implements RecursiveLinearRegression {
             {
                 kGains[i] = px[i]/denominator;
                 //          assert kGains[i]>=0 : Arrays.toString(kGains) + " <---> " + Arrays.toString(px)  + " ==== " + denominator;
-                assert !Double.isNaN(kGains[i]);
+                assert !Double.isNaN(kGains[i])  : Arrays.toString(kGains) + " <---> " + Arrays.toString(px)  + " ==== " + denominator;
                 assert !Double.isInfinite(kGains[i]) : px[i] + " --- " + denominator;
             }
         }
