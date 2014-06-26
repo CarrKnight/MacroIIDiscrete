@@ -11,11 +11,10 @@ import financial.market.Market;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.DelayBin;
 import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
 import sim.engine.Steppable;
-
-import java.util.LinkedList;
 
 /**
  * <h4>Description</h4>
@@ -35,11 +34,7 @@ import java.util.LinkedList;
  */
 public class CustomerWithDelay extends Customer {
 
-    /**
-     * how many consecutive days the closingprice/bestoffer has to be below our
-     * REAL reservation price in order for us to put the real order
-     */
-    final private int delay;
+
 
     /**
      * price asked until the delay is over (-1 means no offer)
@@ -51,7 +46,7 @@ public class CustomerWithDelay extends Customer {
      */
     final private int originalMaxPrice;
 
-    private final LinkedList<Integer> delayQueue;
+    private final DelayBin<Integer> delayQueue;
 
 
 
@@ -60,11 +55,7 @@ public class CustomerWithDelay extends Customer {
         originalMaxPrice = price;
         maxPrice = defaultPrice;
         Preconditions.checkArgument(delay>=1);
-        this.delay = delay;
-
-
-        delayQueue = new LinkedList<>();
-
+        delayQueue = new DelayBin<>(delay-1,defaultPrice);
 
 
 
@@ -93,34 +84,23 @@ public class CustomerWithDelay extends Customer {
 
     private void checkPriceStep(Market market) throws IllegalAccessException {
 
+        Integer oldPrice;
         if(market.getBestSellPrice()==-1)
-            delayQueue.addLast(market.getLastFilledAsk());
+            oldPrice = delayQueue.addAndRetrieve(market.getLastFilledAsk());
         else
-            delayQueue.addLast(market.getBestSellPrice());
+            oldPrice = delayQueue.addAndRetrieve(market.getBestSellPrice());
 
-        checkDelay();
-    }
-
-    private void checkDelay()
-    {
-
-        if(delayQueue.size() < delay)
+        if(oldPrice<= originalMaxPrice && oldPrice != -1 )
+        {
+            maxPrice = hasHowMany(UndifferentiatedGoodType.MONEY)-1;
+        }
+        else
             maxPrice = defaultPrice;
 
-        else
-        {
-            long oldPrice = delayQueue.pop();
-            if(oldPrice<= originalMaxPrice && oldPrice != -1 )
-            {
-                maxPrice = hasHowMany(UndifferentiatedGoodType.MONEY)-1;
-            }
-            else
-                maxPrice = defaultPrice;
-        }
-
-
 
     }
+
+
 
 
 
