@@ -33,12 +33,12 @@ public class ExponentialFilterTargetDecorator extends ControllerDecorator {
 
 
 
-    private final ExponentialFilter<Float> exponentialFilter;
+    private final ExponentialFilter<Float> filter;
 
     /**
      * The position of the target to smooth
      */
-    private final Integer position;
+    private final ControllerInput.Position position;
 
     /**
      * this decorator smooths through EMA the first target (position 0) that is fed in the decorated controller
@@ -47,7 +47,7 @@ public class ExponentialFilterTargetDecorator extends ControllerDecorator {
      */
     public ExponentialFilterTargetDecorator(Controller toDecorate, float weight) {
 
-        this(toDecorate, weight,0);
+        this(toDecorate, weight, ControllerInput.Position.FLOW);
 
 
 
@@ -59,10 +59,10 @@ public class ExponentialFilterTargetDecorator extends ControllerDecorator {
      * @param weight the weight of the EMA
      * @param position which target this decorator smooths (0 is the first, 1 is the second and so on)
      */
-    public ExponentialFilterTargetDecorator(Controller toDecorate, float weight, int position) {
+    public ExponentialFilterTargetDecorator(Controller toDecorate, float weight, ControllerInput.Position position) {
         super(toDecorate);
 
-        exponentialFilter = new ExponentialFilter<>(weight);
+        filter = new ExponentialFilter<>(weight);
         this.position = position;
 
 
@@ -80,8 +80,16 @@ public class ExponentialFilterTargetDecorator extends ControllerDecorator {
      */
     @Override
     public void adjust(ControllerInput input,  boolean isActive, MacroII simState, Steppable user,ActionOrder phase) {
-        exponentialFilter.addObservation(input.getTarget(position));
-        input.setTarget(position,exponentialFilter.getSmoothedObservation());
+        if(position.equals(ControllerInput.Position.FLOW)) {
+            filter.addObservation(input.getFlowTarget());
+            input = new ControllerInput(filter.getSmoothedObservation(),input.getStockTarget(),input.getFlowInput(),input.getStockInput() );
+        }
+        else{
+            assert position.equals(ControllerInput.Position.STOCK);
+            filter.addObservation(input.getStockTarget());
+            input = new ControllerInput(input.getFlowTarget(),filter.getSmoothedObservation(),input.getFlowInput(), input.getStockInput());
+
+        }
 
 
 

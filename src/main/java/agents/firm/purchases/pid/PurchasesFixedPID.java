@@ -70,10 +70,10 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      */
     public PurchasesFixedPID( PurchasesDepartment purchasesDepartment, int specificTarget) {
         super(purchasesDepartment,specificTarget);                                                                                //.5f,2f,.05f
-        float proportionalGain = (float) (.1f + purchasesDepartment.getRandom().nextGaussian()*.01f);
-        float integralGain = (float) (.1f + purchasesDepartment.getRandom().nextGaussian()*.05f);
-        float derivativeGain =(float) (.01f + purchasesDepartment.getRandom().nextGaussian()*.005f);
-        rootController = new CascadePToPIDController(1/30f,proportionalGain,integralGain,derivativeGain,purchasesDepartment.getRandom()); //instantiate the controller
+
+        final PIDController pid = ControllerFactory.buildController(PIDController.class,purchasesDepartment.getModel());
+        pid.setControllingFlows(false);
+        rootController = pid; //instantiate the controller
         controller = rootController; //remember it
 
     }
@@ -90,6 +90,8 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
     {
         super(purchasesDepartment,specificTarget);
         rootController = ControllerFactory.buildController(controllerType,model);
+        if(controllerType.equals(PIDController.class))
+            ((PIDController)rootController).setControllingFlows(false);
         controller = rootController;
 
     }
@@ -105,7 +107,9 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
     public PurchasesFixedPID( PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
                              float derivativeGain, int specificTarget) {
         super(purchasesDepartment,specificTarget);
-        rootController = new PIDController(proportionalGain,integralGain,derivativeGain,purchasesDepartment.getRandom()); //instantiate the controller
+        final PIDController pid = new PIDController(proportionalGain, integralGain, derivativeGain, purchasesDepartment.getRandom());
+        pid.setControllingFlows(false);
+        rootController = pid; //instantiate the controller
         controller = rootController; //remember it
 
 
@@ -118,9 +122,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      */
     public PurchasesFixedPID( PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
                              float derivativeGain) {
-        super(purchasesDepartment);
-        rootController = new PIDController(proportionalGain,integralGain,derivativeGain,purchasesDepartment.getRandom()); //instantiate the controller
-        controller = rootController; //remember it
+        this(purchasesDepartment, proportionalGain, integralGain, derivativeGain,50);
 
 
     }
@@ -144,7 +146,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
             getPurchasesDepartment().getFirm().logEvent(getPurchasesDepartment(),
                 MarketEvents.CHANGE_IN_POLICY,
                 getPurchasesDepartment().getFirm().getModel().getCurrentSimulationTimeInMillis(),
-                "target: " + getInventoryTarget() + ", control :" + input.getInput(0) +
+                "target: " + getInventoryTarget() + ", control :" + input.getStockTarget() +
                         "; oldprice:" + oldprice + ", newprice:" + newprice);
 
         if(oldprice != newprice) //if pid says to change prices, change prices
@@ -247,7 +249,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      * @param weight patience
      * @param position which input to filter
      */
-    public void filterInputExponentially(float weight, int position)
+    public void filterInputExponentially(float weight, ControllerInput.Position position)
     {
         Preconditions.checkState(controller != null, "You can't filter a controller that doesn't exist!");
         controller = new ExponentialFilterInputDecorator(controller,weight, position);
@@ -257,14 +259,14 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      * Decorates the controller so that the input it actually receive is the moving average rather than the point itself
      * @param size patience
      */
-    public void filterInputMovingAverage(int size, int position)
+    public void filterInputMovingAverage(int size, ControllerInput.Position position)
     {
         Preconditions.checkState(controller != null, "You can't filter a controller that doesn't exist!");
         controller = new MovingAverageFilterInputDecorator(controller,size,position);
     }
 
 
-    public void filterTargetExponentially(float weight, int position)
+    public void filterTargetExponentially(float weight, ControllerInput.Position position)
     {
         Preconditions.checkState(controller != null, "You can't filter a controller that doesn't exist!");
         controller = new ExponentialFilterTargetDecorator(controller,weight,position);

@@ -24,6 +24,7 @@ import model.utilities.ActionOrder;
 import model.utilities.dummies.DailyGoodTree;
 import model.utilities.pid.CascadePToPIDController;
 import model.utilities.pid.Controller;
+import model.utilities.pid.ControllerInput;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -151,9 +152,8 @@ public class SimpleBuyerScenario extends Scenario {
         control.setSpeed(pidPeriod);
         if(filtersOn){
             //filtering flows
-            assert !control.isInvertInputs();
-            control.filterInputExponentially(inputWeight,1);
-            control.filterTargetExponentially(inputWeight,1);
+            control.filterInputExponentially(inputWeight, ControllerInput.Position.STOCK);
+            control.filterTargetExponentially(inputWeight, ControllerInput.Position.STOCK);
 
         }
         department.setControl(control);

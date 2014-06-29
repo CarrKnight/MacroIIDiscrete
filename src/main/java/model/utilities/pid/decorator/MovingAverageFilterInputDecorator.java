@@ -31,17 +31,17 @@ import sim.engine.Steppable;
 public class MovingAverageFilterInputDecorator extends ControllerDecorator {
 
 
-    private MovingAverage<Float> ma;
+    private MovingAverage<Float> filter;
 
-    private final Integer position;
+    private final ControllerInput.Position position;
 
     public MovingAverageFilterInputDecorator(Controller toDecorate, int maSize) {
-        this(toDecorate, maSize,0);
+        this(toDecorate, maSize, ControllerInput.Position.FLOW);
     }
 
-    public MovingAverageFilterInputDecorator(Controller toDecorate, int maSize, int position) {
+    public MovingAverageFilterInputDecorator(Controller toDecorate, int maSize, ControllerInput.Position position) {
         super(toDecorate);
-        ma = new MovingAverage<>(maSize);
+        filter = new MovingAverage<>(maSize);
         this.position = position;
     }
 
@@ -56,8 +56,16 @@ public class MovingAverageFilterInputDecorator extends ControllerDecorator {
     @Override
     public void adjust(ControllerInput input, boolean isActive, MacroII simState, Steppable user, ActionOrder phase) {
 
-        ma.addObservation(input.getInput(position));
-        input.setInput(position,ma.getSmoothedObservation());
+        if(position.equals(ControllerInput.Position.FLOW)) {
+            filter.addObservation(input.getFlowInput());
+            input = new ControllerInput(input.getFlowTarget(),input.getStockTarget(),filter.getSmoothedObservation(),input.getStockInput());
+        }
+        else{
+            assert position.equals(ControllerInput.Position.STOCK);
+            filter.addObservation(input.getStockInput());
+            input = new ControllerInput(input.getFlowTarget(),input.getStockTarget(),input.getStockTarget(),filter.getSmoothedObservation());
+
+        }
         toDecorate.adjust(input,isActive,simState,user, phase);
 
 

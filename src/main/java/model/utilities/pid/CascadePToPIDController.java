@@ -31,7 +31,7 @@ import sim.engine.Steppable;
  * @see
  */
 public class CascadePToPIDController implements Controller {
-    private float secondTarget;
+    private float targetForSlavePID;
 
     /**
      * The master PID
@@ -81,8 +81,8 @@ public class CascadePToPIDController implements Controller {
      * This is the MV of the first PID and the set point of the second
      * @return y^* of the second PID
      */
-    public float getSecondTarget() {
-        return secondTarget;
+    public float getTargetForSlavePID() {
+        return targetForSlavePID;
     }
 
     /**
@@ -97,12 +97,12 @@ public class CascadePToPIDController implements Controller {
     public void adjust(ControllerInput input, boolean isActive,  MacroII simState,  Steppable user,
                        ActionOrder phase){
 
-            float targetInventory = input.getTarget(0);
-            float currentInventory = input.getInput(0);
+            float targetInventory = input.getStockTarget();
+            float currentInventory = input.getStockInput();
 
 
 
-            this.adjust(targetInventory,currentInventory,input.getTarget(1)-input.getInput(1),isActive,simState,user, phase);
+            this.adjust(targetInventory,currentInventory,input.getFlowTarget()-input.getFlowInput(),isActive,simState,user, phase);
 
 
     }
@@ -119,17 +119,19 @@ public class CascadePToPIDController implements Controller {
      * @param state   the simstate link to schedule the user
      * @param user     the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)     * @param firstTarget
      */
-    public void adjust(float firstTarget,float firstInput, float secondInput, boolean isActive,
-                        MacroII state,  Steppable user,  ActionOrder phase)
+    public void adjust(float stockTarget,float stockInput, float flowInput, boolean isActive,
+                       MacroII state,  Steppable user,  ActionOrder phase)
     {
         //master
-        pid1.adjust(firstTarget,Math.min(firstInput,firstTarget*5),isActive,state,user,phase);
-        //to avoid exxaggerating in disinvesting, the recorded inventory is never more than twice the target
+        pid1.adjust(stockTarget,Math.min(stockInput,stockTarget*5),isActive,state,user,phase); //to avoid exxaggerating in disinvesting, the recorded inventory is never more than twice the target
         //slave
-        secondTarget = pid1.getCurrentMV();
+
+        targetForSlavePID = pid1.getCurrentMV();
+        // targetForSlavePID = masterOutput > 1 ? (float)Math.log(masterOutput) : masterOutput < -1 ? -(float)Math.log(-masterOutput) : 0;
         //
 
-        ControllerInput secondPIDInput = ControllerInput.simplePIDTarget(secondTarget,secondInput);
+        assert !Float.isNaN(targetForSlavePID) && !Float.isInfinite(targetForSlavePID);
+        ControllerInput secondPIDInput = new ControllerInput(targetForSlavePID,flowInput);
         pid2.adjust(secondPIDInput, isActive, null, null, null);
 
 
@@ -182,6 +184,19 @@ public class CascadePToPIDController implements Controller {
         return pid1.getSpeed();
 
     }
+
+    /**
+     * sets the parameters for the SLAVE PID
+     *
+     * @param proportionalGain the first parameter
+     * @param integralGain     the second parameter
+     * @param derivativeGain   the third parameter
+     */
+    @Override
+    public void setGains(float proportionalGain, float integralGain, float derivativeGain) {
+        setGainsSlavePID(proportionalGain,integralGain,derivativeGain);
+    }
+
 
     /**
      * Change the gains of the second PID
@@ -293,7 +308,7 @@ public class CascadePToPIDController implements Controller {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("CascadePIDController{");
-        sb.append("secondTarget=").append(secondTarget);
+        sb.append("targetForSlavePID=").append(targetForSlavePID);
         sb.append("\n pid1=").append(pid1);
         sb.append("\n pid2Root=").append(pid2Root);
         sb.append("\n pid2=").append(pid2);

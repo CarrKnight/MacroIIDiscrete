@@ -190,6 +190,33 @@ public class ControllerFactoryTest {
             public int getSpeed() {
                 throw new RuntimeException("not implemented yet!");
             }
+
+            /**
+             * setting 3 parameters. I am using here the PID terminology even though it doesn't have to be the case.
+             *
+             * @param proportionalGain the first parameter
+             * @param integralGain     the second parameter
+             * @param derivativeGain   the third parameter
+             */
+            @Override
+            public void setGains(float proportionalGain, float integralGain, float derivativeGain) {
+                throw new RuntimeException("not implemented yet!");
+            }
+
+            @Override
+            public float getProportionalGain() {
+                throw new RuntimeException("not implemented yet!");
+            }
+
+            @Override
+            public float getIntegralGain() {
+                throw new RuntimeException("not implemented yet!");
+            }
+
+            @Override
+            public float getDerivativeGain() {
+                throw new RuntimeException("not implemented yet!");
+            }
         }
 
 

@@ -40,7 +40,7 @@ public class ExponentialFilterInputDecorator extends ControllerDecorator {
     /**
      * the position of the input to decorate
      */
-    private final Integer position;
+    private final ControllerInput.Position position;
 
     /**
      * Creates an EMA filter for the first input for the controller toDecorate
@@ -48,10 +48,10 @@ public class ExponentialFilterInputDecorator extends ControllerDecorator {
      * @param weight the exponential weight
      */
     public ExponentialFilterInputDecorator(Controller toDecorate, float weight) {
-        this(toDecorate, weight,0);
+        this(toDecorate, weight, ControllerInput.Position.FLOW);
     }
 
-    public ExponentialFilterInputDecorator(Controller toDecorate, float weight, Integer position) {
+    public ExponentialFilterInputDecorator(Controller toDecorate, float weight, ControllerInput.Position position) {
         super(toDecorate);
         filter = new ExponentialFilter<>(weight);
         this.position = position;
@@ -76,24 +76,24 @@ public class ExponentialFilterInputDecorator extends ControllerDecorator {
     @Override
     public void adjust(ControllerInput input,  boolean isActive, MacroII simState, Steppable user,ActionOrder phase) {
 
-        filter.addObservation(input.getInput(position));
-        input.setInput(position,filter.getSmoothedObservation());
+        if(position.equals(ControllerInput.Position.FLOW)) {
+            filter.addObservation(input.getFlowInput());
+            input = new ControllerInput(input.getFlowTarget(),input.getStockTarget(),filter.getSmoothedObservation(),input.getStockInput());
+        }
+        else{
+            assert position.equals(ControllerInput.Position.STOCK);
+            filter.addObservation(input.getStockInput());
+            input = new ControllerInput(input.getFlowTarget(),input.getStockTarget(),input.getStockTarget(),filter.getSmoothedObservation());
+
+        }
         toDecorate.adjust(input,isActive,simState,user,phase);
 
     }
 
-    /**
-     * Get the current u_t
-     */
-    @Override
-    public float getCurrentMV() {
-        return toDecorate.getCurrentMV();
-    }
+
 
     public ExponentialFilterInputDecorator(Controller toDecorate) {
-        super(toDecorate);
-        filter = new ExponentialFilter<>(.35f);
-        position = 0;
+        this(toDecorate,.35f);
     }
 
 

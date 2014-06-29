@@ -6,12 +6,13 @@
 
 package model.utilities.pid;
 
-import static org.junit.Assert.*;import model.MacroII;
+import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.pid.decorator.ExponentialFilterOutputDecorator;
 import org.junit.Test;
 import sim.engine.Steppable;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 /**
@@ -50,18 +51,18 @@ public class ExponentialFilterFirstOutputDecoratorTest {
         //1
         float input = 2;
         when(fakeController.getCurrentMV()).thenReturn(input*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),4f,.01f);
         //2
         input = 2;
         when(fakeController.getCurrentMV()).thenReturn(input*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),4f,.01f);
 
         //3
         input = 2;
         when(fakeController.getCurrentMV()).thenReturn(input*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),4f,.01f);
 
 
@@ -69,22 +70,22 @@ public class ExponentialFilterFirstOutputDecoratorTest {
         //1
         input = 3;
         when(fakeController.getCurrentMV()).thenReturn(input*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),4.7f,.01f);
         //2
         when(fakeController.getCurrentMV()).thenReturn(input*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),5.155f,.01f);
 
         //3
         when(fakeController.getCurrentMV()).thenReturn(input*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),5.45075f,.01f);
 
 
         //4
         when(fakeController.getCurrentMV()).thenReturn(input*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),5.6429875f,.01f);
 
 
@@ -92,33 +93,33 @@ public class ExponentialFilterFirstOutputDecoratorTest {
         //1
         input = 4;
         when(fakeController.getCurrentMV()).thenReturn(input*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),6.467941875f,.01f);
         //2
         when(fakeController.getCurrentMV()).thenReturn(input*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),7.00416221875f,.01f);
 
         //3
         when(fakeController.getCurrentMV()).thenReturn(input*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),7.3527054421875f,.01f);
 
 
         //4
         when(fakeController.getCurrentMV()).thenReturn(input*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),7.57925853742188f,.01f);
 
         //5
         when(fakeController.getCurrentMV()).thenReturn(input*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),7.72651804932422f,.01f);
 
 
         //6
         when(fakeController.getCurrentMV()).thenReturn(input*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.DAWN); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),7.82223673206074f,.01f);
 
 

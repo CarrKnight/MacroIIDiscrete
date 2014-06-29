@@ -28,7 +28,7 @@ import sim.engine.Steppable;
  * @version 2012-08-14
  * @see
  */
-public class PIDController implements Controller{
+public class PIDController implements Controller {
 
 
 
@@ -94,6 +94,8 @@ public class PIDController implements Controller{
      */
     private boolean canGoNegative = false;
 
+    private boolean controllingFlows = true;
+
 
 
 
@@ -141,7 +143,10 @@ public class PIDController implements Controller{
      */
     @Override
     public void adjust(ControllerInput input, boolean isActive, MacroII simState, Steppable user,ActionOrder phase) {
-        this.adjust(input.getTarget(0),input.getInput(0),isActive,simState,user,phase);
+        if(controllingFlows)
+            this.adjust(input.getFlowTarget(),input.getFlowInput(),isActive,simState,user,phase);
+        else
+            this.adjust(input.getStockTarget(),input.getStockInput(),isActive,simState,user,phase);
 
     }
 
@@ -366,6 +371,13 @@ public class PIDController implements Controller{
         return integral;
     }
 
+    public boolean isControllingFlows() {
+        return controllingFlows;
+    }
+
+    public void setControllingFlows(boolean controllingFlows) {
+        this.controllingFlows = controllingFlows;
+    }
 
     @Override
     public String toString() {

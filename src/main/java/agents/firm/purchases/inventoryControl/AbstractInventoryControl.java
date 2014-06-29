@@ -197,24 +197,11 @@ public abstract class AbstractInventoryControl implements InventoryControl{
 
 
     /**
-     * If invertInputs is active, the first input is the flow and the second is the stock
-     */
-    private boolean invertInputs = false;
+     * A simple utility method creating an controller
 
-    /**
-     * If invertTargets is active, the first target is the flow and the second is the stock
-     */
-    private boolean invertTargets = false;
-
-
-    /**
-     * A simple utility method creating an controller input object having at position 0 stock and at position 1 flows both as input and targets.
-     * They can be switched through invertInputs and invertTargets flags. <br>
-     * Also, target position 2 is 0 if the stock is acceptable and 1 otherwise
      * @return the controller input
      */
-    protected ControllerInput getControllerInput(float target) {
-        ControllerInput.ControllerInputBuilder inputBuilder =  new ControllerInput.ControllerInputBuilder();
+    protected ControllerInput getControllerInput(float stockTarget) {
         //prepare inputs
         int todayInflow = getPurchasesDepartment().getTodayInflow();
         int todayInventory = getPurchasesDepartment().getFirm().hasHowMany(getGoodTypeToControl());
@@ -222,43 +209,10 @@ public abstract class AbstractInventoryControl implements InventoryControl{
 
         //prepare targets
         int todayOutflow = getPurchasesDepartment().getTodayOutflow() + getPurchasesDepartment().getTodayFailuresToConsume();
-
-        if(invertInputs)
-            inputBuilder.inputs((float) todayOutflow,
-                    (float) todayInventory);
-        else
-            inputBuilder.inputs((float) todayInventory,
-                    (float) todayOutflow);
-
-        if(invertTargets)
-            inputBuilder.targets((float) todayInflow,target);
-        else
-            inputBuilder.targets(target,(float) todayInflow);
+        return new ControllerInput(todayOutflow,stockTarget,todayInflow,todayInventory);
 
 
 
-        float acceptable = rateInventory().equals(Level.ACCEPTABLE) ? 0f : -1f;
-
-        inputBuilder.targets(acceptable);
-
-
-        return inputBuilder.build();
-    }
-
-    public boolean isInvertInputs() {
-        return invertInputs;
-    }
-
-    public void setInvertInputs(boolean invertInputs) {
-        this.invertInputs = invertInputs;
-    }
-
-    public boolean isInvertTargets() {
-        return invertTargets;
-    }
-
-    public void setInvertTargets(boolean invertTargets) {
-        this.invertTargets = invertTargets;
     }
 
 

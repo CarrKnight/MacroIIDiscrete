@@ -6,8 +6,12 @@
 
 package model.utilities.pid.decorator;
 
+import model.MacroII;
+import model.utilities.ActionOrder;
 import model.utilities.NonDrawable;
 import model.utilities.pid.Controller;
+import model.utilities.pid.ControllerInput;
+import sim.engine.Steppable;
 
 /**
  * <h4>Description</h4>
@@ -83,5 +87,53 @@ public abstract class ControllerDecorator implements Controller
         sb.append("decorated=").append(toDecorate);
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public float getDerivativeGain() {
+        return toDecorate.getDerivativeGain();
+    }
+
+    @Override
+    public float getIntegralGain() {
+        return toDecorate.getIntegralGain();
+    }
+
+    @Override
+    public float getProportionalGain() {
+        return toDecorate.getProportionalGain();
+    }
+
+    /**
+     * setting 3 parameters. I am using here the PID terminology even though it doesn't have to be the case.
+     * @param proportionalGain the first parameter
+     * @param integralGain the second parameter
+     * @param derivativeGain the third parameter
+     */
+    @Override
+    public void setGains(float proportionalGain, float integralGain, float derivativeGain) {
+        toDecorate.setGains(proportionalGain, integralGain, derivativeGain);
+    }
+
+    /**
+     * The adjust is the main part of the a controller. It checks the new error and set the MV (which is the price, really)
+     *  @param input the controller input object holding the state variables (set point, current value and so on)
+     * @param isActive are we active?
+     * @param simState a link to the model (to adjust yourself)
+     * @param user the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)
+     * @param phase at which phase should this controller be rescheduled
+     *
+     */
+    @Override
+    public void adjust(ControllerInput input, boolean isActive, MacroII simState, Steppable user, ActionOrder phase) {
+        toDecorate.adjust(input, isActive, simState, user, phase);
+    }
+
+    /**
+     * Get the current u_t
+     */
+    @Override
+    public float getCurrentMV() {
+        return toDecorate.getCurrentMV();
     }
 }

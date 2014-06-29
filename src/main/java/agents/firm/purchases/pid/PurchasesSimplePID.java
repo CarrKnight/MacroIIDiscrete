@@ -50,17 +50,18 @@ public class PurchasesSimplePID extends SimpleInventoryControl implements BidPri
      * @param purchasesDepartment the department controlled by this strategy
      */
     public PurchasesSimplePID( PurchasesDepartment purchasesDepartment) {
-        super(purchasesDepartment);                                                                                //.5f,2f,.05f
-        float proportionalGain = (float) (.5f + purchasesDepartment.getRandom().nextGaussian()*.01f);
-        float integralGain = (float) (2f + purchasesDepartment.getRandom().nextGaussian()*.05f);
-        float derivativeGain =(float) (.05f + purchasesDepartment.getRandom().nextGaussian()*.005f);
-        controller = new PIDController(proportionalGain,integralGain,derivativeGain,purchasesDepartment.getRandom()); //instantiate the controller
+        this(purchasesDepartment,(float) (.5f + purchasesDepartment.getRandom().nextGaussian()*.01f),
+                (float) (2f + purchasesDepartment.getRandom().nextGaussian()*.05f),
+                (float) (.05f + purchasesDepartment.getRandom().nextGaussian()*.005f));                                                                               //.5f,2f,.05f
+
     }
 
     public PurchasesSimplePID( PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
                               float derivativeGain) {
         super(purchasesDepartment);
-        controller = new PIDController(proportionalGain,integralGain,derivativeGain,purchasesDepartment.getRandom()); //instantiate the controller
+        final PIDController pid = new PIDController(proportionalGain, integralGain, derivativeGain, purchasesDepartment.getRandom());
+        pid.setControllingFlows(false);
+        controller = pid; //instantiate the controller
     }
 
     /**
@@ -75,6 +76,8 @@ public class PurchasesSimplePID extends SimpleInventoryControl implements BidPri
     {
         super(purchasesDepartment);
         controller = ControllerFactory.buildController(controllerType, macroII);
+        if(controllerType.equals(PIDController.class))
+            ((PIDController)controller).setControllingFlows(false);
 
     }
 

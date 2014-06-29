@@ -183,7 +183,7 @@ public class SalesControlWithFixedInventoryAndPID extends BaseAskPricingStrategy
         //first PID tries to deal with difference in inventory
         //second PID is fed in AS INPUT the difference in flows, the first PID is only a P so when the inventory is of the right size
         //the first PID feeds in to the second the target 0, which means that inflows and outflows have to equalize
-        slavePIDOriginalError = input.getTarget(1)-input.getInput(1);
+        slavePIDOriginalError = input.getFlowTarget()-input.getFlowInput();
         controller.adjust(input,
                 department.getFirm().isActive(), macroII, this, ActionOrder.ADJUST_PRICES);
         roundedPrice = Math.round(controller.getCurrentMV());
@@ -296,16 +296,8 @@ public class SalesControlWithFixedInventoryAndPID extends BaseAskPricingStrategy
      */
     private ControllerInput getControllerInput()
     {
-        ControllerInput.ControllerInputBuilder inputBuilder =  new ControllerInput.ControllerInputBuilder();
-        inputBuilder.inputs((float)department.getHowManyToSell(),(float)department.getTodayOutflow());
-        inputBuilder.targets((float)getTargetInventory(), (float)department.getTodayInflow());
+        return new ControllerInput(department.getTodayInflow(),getTargetInventory(),department.getTodayOutflow(),department.getHowManyToSell());
 
-        /**
-         *  float acceptable = rateInventory().equals(Level.ACCEPTABLE) ? 0f : -1f;
-
-         inputBuilder.targets(acceptable);
-         */
-        return inputBuilder.build();
 
     }
 

@@ -6,16 +6,15 @@
 
 package agents.firm.production.control.targeter;
 
-import agents.people.Person;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Plant;
 import agents.firm.production.control.PlantControl;
 import agents.firm.production.technology.Machinery;
+import agents.people.Person;
 import com.google.common.base.Preconditions;
 import financial.MarketEvents;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.pid.ControllerInput;
 import model.utilities.pid.PIDController;
 import model.utilities.scheduler.Priority;
 import sim.engine.SimState;
@@ -167,8 +166,7 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
         }
 
         //run the controller (it will reschedule us)
-        ControllerInput input = ControllerInput.simplePIDTarget(workerTarget,hr.getPlant().getNumberOfWorkers());
-        pid.adjust(input
+        pid.adjust(workerTarget,hr.getNumberOfWorkers()
                 , active, hr.getPlant().getModel(), this,
                 ActionOrder.ADJUST_PRICES);  //i made this before standard so it acts BEFORE the maximizer
 

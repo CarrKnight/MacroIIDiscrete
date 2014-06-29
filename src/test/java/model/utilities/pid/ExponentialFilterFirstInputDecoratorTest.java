@@ -53,7 +53,7 @@ public class ExponentialFilterFirstInputDecoratorTest {
             public Object answer(InvocationOnMock invocation) throws Throwable {
 
                 //the second argument is the input of the controller
-                Float input = ((ControllerInput) invocation.getArguments()[0]).getInput(0);
+                Float input = ((ControllerInput) invocation.getArguments()[0]).getFlowInput();
                 //make sure it's equal to what we expect
                 assertEquals(input,expectedInput,.01f);
                 //print out for confirmation
@@ -76,20 +76,20 @@ public class ExponentialFilterFirstInputDecoratorTest {
         float input = 2;
         expectedInput = 2; //the first input is not smoothed!
         when(controller.getCurrentMV()).thenReturn(4f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class), ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),controller.getCurrentMV(),.0001f);  //this should be true at all times
         //2
         input = 2;
         expectedInput = 2; //input hasn't changed!
         when(controller.getCurrentMV()).thenReturn(4f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),controller.getCurrentMV(),.001f);  //this should be true at all times
 
         //3
         input = 2;
         expectedInput = 2; //input hasn't changed!
         when(controller.getCurrentMV()).thenReturn(4f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),controller.getCurrentMV(),.001f);  //this should be true at all times
 
         //now we are going to switch input to 3  (for 4 times)
@@ -97,28 +97,28 @@ public class ExponentialFilterFirstInputDecoratorTest {
         input = 3;
         expectedInput = 2.35f;
         when(controller.getCurrentMV()).thenReturn(expectedInput*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),controller.getCurrentMV(),.001f);  //this should be true at all times
 
         //2
         input = 3;
         expectedInput = 2.5775f;
         when(controller.getCurrentMV()).thenReturn(expectedInput*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),controller.getCurrentMV(),.001f);  //this should be true at all times
 
         //3
         input = 3;
         expectedInput = 2.725375f;
         when(controller.getCurrentMV()).thenReturn(expectedInput*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),controller.getCurrentMV(),.001f);  //this should be true at all times
 
         //4
         input = 3;
         expectedInput = 2.82149375f;
         when(controller.getCurrentMV()).thenReturn(expectedInput*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),controller.getCurrentMV(),.001f);  //this should be true at all times
 
         //now we are going to switch input to 4  (for 5 times)
@@ -126,14 +126,14 @@ public class ExponentialFilterFirstInputDecoratorTest {
         input = 4;
         expectedInput = 3.2339709375f;
         when(controller.getCurrentMV()).thenReturn(expectedInput*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),controller.getCurrentMV(),.001f);  //this should be true at all times
 
         //2
         input = 4;
         expectedInput = 3.502081109375f;
         when(controller.getCurrentMV()).thenReturn(expectedInput*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),controller.getCurrentMV(),.001f);  //this should be true at all times
 
         //3
@@ -141,7 +141,7 @@ public class ExponentialFilterFirstInputDecoratorTest {
         expectedInput = 3.67635272109375f;
 
         when(controller.getCurrentMV()).thenReturn(expectedInput*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),controller.getCurrentMV(),.001f);  //this should be true at all times
 
         //4
@@ -149,7 +149,7 @@ public class ExponentialFilterFirstInputDecoratorTest {
         expectedInput = 3.78962926871094f;
 
         when(controller.getCurrentMV()).thenReturn(expectedInput*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),controller.getCurrentMV(),.001f);  //this should be true at all times
 
         //5
@@ -157,14 +157,14 @@ public class ExponentialFilterFirstInputDecoratorTest {
         expectedInput = 3.86325902466211f;
 
         when(controller.getCurrentMV()).thenReturn(expectedInput*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),controller.getCurrentMV(),.001f);  //this should be true at all times
 
         //6
         input = 4;
         expectedInput = 3.91111836603037f;
         when(controller.getCurrentMV()).thenReturn(expectedInput*2f);
-        filtered.adjust(ControllerInput.simplePIDTarget(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
+        filtered.adjust(new ControllerInput(0,input),true,mock(MacroII.class),mock(Steppable.class),ActionOrder.ADJUST_PRICES); //except for current all the other arguments are useless
         assertEquals(filtered.getCurrentMV(),controller.getCurrentMV(),.001f);  //this should be true at all times
 
 

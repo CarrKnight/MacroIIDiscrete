@@ -28,8 +28,8 @@ import sim.engine.Steppable;
  * @version 2012-12-16
  * @see
  */
-public class CascadePIDController implements Controller{
-    private float secondTarget;
+public class CascadePIDController implements Controller {
+    private float targetForSlavePID;
 
     /**
      * The master PID
@@ -73,8 +73,8 @@ public class CascadePIDController implements Controller{
      * This is the MV of the first PID and the set point of the second
      * @return y^* of the second PID
      */
-    public float getSecondTarget() {
-        return secondTarget;
+    public float getTargetForSlavePID() {
+        return targetForSlavePID;
     }
 
     /**
@@ -89,7 +89,7 @@ public class CascadePIDController implements Controller{
     public void adjust(ControllerInput input, boolean isActive,  MacroII simState,  Steppable user,
                        ActionOrder phase){
 
-        this.adjust(input.getTarget(0),input.getInput(0),input.getInput(1),isActive,simState,user, phase);
+        this.adjust(input.getStockTarget(),input.getStockInput(),input.getFlowInput(),isActive,simState,user, phase);
 
     }
 
@@ -98,26 +98,26 @@ public class CascadePIDController implements Controller{
      /**
      * The adjust is the main part of the a controller. It checks the new error and set the MV (which is the price, really)
      *
-     * @param firstTarget the stock target
-     * @param firstInput the stock input
-     * @param secondInput the flow input
+     * @param stockTarget the stock target
+     * @param stockInput the stock input
+     * @param flowInput the flow input
      * @param isActive true if the pid is not turned off
      * @param state   the simstate link to schedule the user
-     * @param user     the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)     * @param firstTarget
+     * @param user     the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)
      */
-    public void adjust(float firstTarget,float firstInput, float secondInput, boolean isActive,
+    public void adjust(float stockTarget,float stockInput, float flowInput, boolean isActive,
                         MacroII state,  Steppable user,  ActionOrder phase)
     {
         //master
-        pid1.adjust(firstTarget,firstInput,isActive,state,user,phase); //to avoid exxaggerating in disinvesting, the recorded inventory is never more than twice the target
+        pid1.adjust(stockTarget,stockInput,isActive,state,user,phase); //to avoid exxaggerating in disinvesting, the recorded inventory is never more than twice the target
         //slave
 
-        secondTarget = pid1.getCurrentMV();
-        // secondTarget = masterOutput > 1 ? (float)Math.log(masterOutput) : masterOutput < -1 ? -(float)Math.log(-masterOutput) : 0;
+        targetForSlavePID = pid1.getCurrentMV();
+        // targetForSlavePID = masterOutput > 1 ? (float)Math.log(masterOutput) : masterOutput < -1 ? -(float)Math.log(-masterOutput) : 0;
         //
 
-        assert !Float.isNaN(secondTarget) && !Float.isInfinite(secondTarget);
-        ControllerInput secondPIDInput = ControllerInput.simplePIDTarget(secondTarget,secondInput);
+        assert !Float.isNaN(targetForSlavePID) && !Float.isInfinite(targetForSlavePID);
+        ControllerInput secondPIDInput = new ControllerInput(targetForSlavePID,flowInput);
         pid2.adjust(secondPIDInput, isActive, null, null, null);
 
 
@@ -171,6 +171,19 @@ public class CascadePIDController implements Controller{
 
     }
 
+
+    /**
+     * sets the parameters for the SLAVE PID
+     *
+     * @param proportionalGain the first parameter
+     * @param integralGain     the second parameter
+     * @param derivativeGain   the third parameter
+     */
+    @Override
+    public void setGains(float proportionalGain, float integralGain, float derivativeGain) {
+        setGainsSlavePID(proportionalGain,integralGain,derivativeGain);
+    }
+
     /**
      * Change the gains of the second PID
      */
@@ -200,6 +213,32 @@ public class CascadePIDController implements Controller{
      */
     public float getMasterDerivativeGain() {
         return pid1.getDerivativeGain();
+    }
+
+    /**
+     * returns the slave P
+     * @return
+     */
+    @Override
+    public float getProportionalGain() {
+        return getSlaveProportionalGain();
+    }
+    /**
+     * returns the slave I
+     * @return
+     */
+    @Override
+    public float getIntegralGain() {
+        return getSlaveIntegralGain();
+    }
+
+    /**
+     * returns the slave D
+     * @return
+     */
+    @Override
+    public float getDerivativeGain() {
+        return getSlaveDerivativeGain();
     }
 
     /**
@@ -284,6 +323,6 @@ public class CascadePIDController implements Controller{
 
     @Override
     public String toString() {
-        return "CascadePIDController{" + "secondTarget=" + secondTarget + "\n pid1=" + pid1 + "\n pid2Root=" + pid2Root + "\n pid2=" + pid2 + '}';
+        return "CascadePIDController{" + "targetForSlavePID=" + targetForSlavePID + "\n pid1=" + pid1 + "\n pid2Root=" + pid2Root + "\n pid2=" + pid2 + '}';
     }
 }

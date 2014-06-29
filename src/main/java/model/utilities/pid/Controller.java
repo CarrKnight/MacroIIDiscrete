@@ -74,5 +74,21 @@ public interface Controller {
     public int getSpeed();
 
 
+    /**
+     * setting 3 parameters. I am using here the PID terminology even though it doesn't have to be the case.
+     * @param proportionalGain the first parameter
+     * @param integralGain the second parameter
+     * @param derivativeGain the third parameter
+     */
+    public void setGains(float proportionalGain,float integralGain, float derivativeGain);
+
+
+    public float getProportionalGain();
+
+    public float getIntegralGain();
+
+    public float getDerivativeGain();
+
+
 
 }

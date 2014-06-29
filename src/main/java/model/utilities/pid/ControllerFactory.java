@@ -53,12 +53,6 @@ public class ControllerFactory
             return (C) new CascadePIDController( model.drawProportionalGain(), model.drawIntegrativeGain(), model.drawDerivativeGain(),
                     model.drawProportionalGain(), 0, 0,model.getRandom());
         }
-        else if(controllerType.equals(FlowAndStockController.class))
-        {
-            return (C) new FlowAndStockController( model.drawProportionalGain(), model.drawIntegrativeGain(), model.drawDerivativeGain(),
-                    model.drawProportionalGain(), model.drawIntegrativeGain(), model.drawDerivativeGain()
-                    ,model.getRandom());
-        }
         else if(controllerType.equals(CascadePToPIDController.class))
         {
             return (C) new CascadePToPIDController(model);

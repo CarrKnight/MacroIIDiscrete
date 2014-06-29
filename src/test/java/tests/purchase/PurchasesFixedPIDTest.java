@@ -74,7 +74,7 @@ public class PurchasesFixedPIDTest {
 
 
 
-        PurchasesFixedPID control = new PurchasesFixedPID(dept,.5f,2f,.05f);
+        PurchasesFixedPID control = new PurchasesFixedPID(dept,.5f,2f,.05f,6);
         int pidPrice = control.maxPrice(UndifferentiatedGoodType.GENERIC);
         assertEquals(pidPrice, 0);
         assertEquals(control.getInventoryTarget(), 6);
@@ -116,7 +116,7 @@ public class PurchasesFixedPIDTest {
 
 
 
-        PurchasesFixedPID control = new PurchasesFixedPID(dept,.5f,2f,.05f);
+        PurchasesFixedPID control = new PurchasesFixedPID(dept,.5f,2f,.05f,6);
         control.setInitialPrice(100);
         int pidPrice = control.maxPrice(UndifferentiatedGoodType.GENERIC);
         assertEquals(pidPrice, 100);
@@ -157,7 +157,7 @@ public class PurchasesFixedPIDTest {
 
 
 
-        PurchasesFixedPID control = new PurchasesFixedPID(dept,.5f,2f,.05f);
+        PurchasesFixedPID control = new PurchasesFixedPID(dept,.5f,2f,.05f,6);
         int pidPrice = control.maxPrice(UndifferentiatedGoodType.GENERIC);
         assertEquals(pidPrice, 0l);
        assertEquals(control.getInventoryTarget(), 6);
