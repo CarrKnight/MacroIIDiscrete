@@ -60,4 +60,18 @@ public class DelayBin<N extends Number> {
             return defaultValue;
 
     }
+
+    /**
+     * if the delay queue is full, peek the topmost element, otherwise returns default
+     */
+    public N peek(){
+        if(bin.size() == size)
+            return bin.peekFirst();
+        else
+            return defaultValue;
+    }
+
+    public int getDelay(){
+        return size;
+    }
 }

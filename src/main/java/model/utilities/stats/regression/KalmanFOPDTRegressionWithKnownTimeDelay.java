@@ -74,6 +74,7 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay {
     public float predictNextOutput(float input){
 
         final double[] betas = getBeta();
+        input = getDelay() > 0 ? delayedInput.peek() : input;
         return (float) (betas[0] + betas[1] * input + betas[2] * previousOutput);
     }
 
@@ -95,5 +96,16 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay {
     }
 
 
+    public int getDelay() {
+        return delayedInput.getDelay();
+    }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("KalmanFOPDTRegressionWithKnownTimeDelay{");
+        sb.append("gain=").append(getGain());
+        sb.append("TimeConstant=").append(getTimeConstant());
+        sb.append('}');
+        return sb.toString();
+    }
 }
