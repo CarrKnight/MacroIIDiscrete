@@ -57,10 +57,10 @@ public class KalmanFOPDTRegressionWithKnownTimeDelayTest
             float timeConstant = random.nextFloat()*maximumTimeConstant-minimumTimeConstant + minimumTimeConstant;
 
 
-            double[] betas = runLearningExperimentWithKnownDeadTime(random, proportionalParameter, integrativeParameter, 0, gain, timeConstant, random.nextInt(maximumDelay), null);
+            final KalmanFOPDTRegressionWithKnownTimeDelay result = runLearningExperimentWithKnownDeadTime(random, proportionalParameter, integrativeParameter, 0, gain, timeConstant, random.nextInt(maximumDelay), null);
 
-            Assert.assertEquals(gain, betas[1], .001);
-            Assert.assertEquals(timeConstant,betas[2],.001);
+            Assert.assertEquals(gain, result.getGain(), .001);
+            Assert.assertEquals(timeConstant,result.getTimeConstant(),.001);
             System.out.println("===================================================================== ");
 
 
@@ -87,11 +87,13 @@ public class KalmanFOPDTRegressionWithKnownTimeDelayTest
             float timeConstant = random.nextFloat()*maximumTimeConstant-minimumTimeConstant + minimumTimeConstant;
 
 
-            double[] betas = runLearningExperimentWithKnownDeadTime(random, proportionalParameter, integrativeParameter, 0, gain, timeConstant, random.nextInt(maximumDelay),
-                    () -> random.nextGaussian()*.5);
+            final KalmanFOPDTRegressionWithKnownTimeDelay result = runLearningExperimentWithKnownDeadTime(random, proportionalParameter, integrativeParameter, 0, gain, timeConstant, random.nextInt(maximumDelay),
+                    () -> random.nextGaussian() * .5);
 
-            if ( Math.abs(gain-betas[1])<.1 && Math.abs(timeConstant-betas[2])<.1 )
+            if ( Math.abs(gain-result.getGain())<.1 && Math.abs(timeConstant-result.getTimeConstant())<.1 ) {
                 successes++;
+                System.out.println("success");
+            }
             System.out.println("===================================================================== ");
 
 
@@ -103,7 +105,7 @@ public class KalmanFOPDTRegressionWithKnownTimeDelayTest
 
     }
 
-    private double[] runLearningExperimentWithKnownDeadTime(MersenneTwisterFast random, float proportionalParameter,
+    private KalmanFOPDTRegressionWithKnownTimeDelay runLearningExperimentWithKnownDeadTime(MersenneTwisterFast random, float proportionalParameter,
                                                                              float integrativeParameter, int intercept, float gain, float timeConstant, int deadTime,
                                                                              Supplier<Double> noiseMaker) {
         PIDController controller = new PIDController(proportionalParameter,integrativeParameter,0,random);
@@ -113,13 +115,13 @@ public class KalmanFOPDTRegressionWithKnownTimeDelayTest
             process.setRandomNoise(noiseMaker);
 
         //create the regression too
-        KalmanFOPDTRegressionWithKnownTimeDelay regression = new KalmanFOPDTRegressionWithKnownTimeDelay(new KalmanRecursiveRegression(3),deadTime,0); //three dimension: intercept, input and output derivative
+        KalmanFOPDTRegressionWithKnownTimeDelay regression = new KalmanFOPDTRegressionWithKnownTimeDelay(deadTime); //three dimension: intercept, input and output derivative
 
         //output starts at intercept
         float output = 0;
         //delayed input, useful for learning
 
-        for(int step =0; step < 1000; step++)
+        for(int step =0; step < 5000; step++)
         {
 
 
@@ -153,7 +155,7 @@ public class KalmanFOPDTRegressionWithKnownTimeDelayTest
         }
         System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant);
         System.out.println("learned gain: " + regression.getBeta()[1] + ", learned timeConstant: " + regression.getBeta()[2]);
-        return regression.getBeta();
+        return regression;
     }
 
 

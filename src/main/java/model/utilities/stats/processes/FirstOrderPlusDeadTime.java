@@ -31,7 +31,7 @@ public class FirstOrderPlusDeadTime implements DynamicProcess {
 
     final private double intercept;
 
-    final private double previousSteps[] = new double[2];
+    private double previousStep;
 
     final private double gain;
 
@@ -51,8 +51,7 @@ public class FirstOrderPlusDeadTime implements DynamicProcess {
         Preconditions.checkArgument(deadTime>=0);
         this.deadTime = deadTime;
         inputBin = new DelayBin<>(deadTime,intercept);
-        previousSteps[0] = intercept;
-        previousSteps[1] = intercept;
+        previousStep = intercept;
 
     }
 
@@ -62,13 +61,14 @@ public class FirstOrderPlusDeadTime implements DynamicProcess {
         //put input in the bin
         double input = inputBin.addAndRetrieve(todayInput);
 
-        double output = intercept + gain * input - timeConstant * (getCurrentDerivative());
+        double commonDenominator = 1+timeConstant;
+
+        double output = intercept/commonDenominator + (gain * input)/commonDenominator + (timeConstant * (previousStep))/commonDenominator;
         //shock it, if needed
         if(randomNoise != null)
-            output = output + randomNoise.get();
+            output = output + randomNoise.get()/commonDenominator;
         //remember your output for later
-        previousSteps[1] = previousSteps[0];
-        previousSteps[0] = output;
+        previousStep = output;
         return output;
 
 
@@ -76,9 +76,6 @@ public class FirstOrderPlusDeadTime implements DynamicProcess {
 
     }
 
-    public double getCurrentDerivative() {
-        return previousSteps[0] - previousSteps[1];
-    }
 
     private Supplier<Double> randomNoise = null;
 

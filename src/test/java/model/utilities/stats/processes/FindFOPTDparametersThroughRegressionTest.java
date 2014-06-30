@@ -6,17 +6,6 @@
 
 package model.utilities.stats.processes;
 
-import ec.util.MersenneTwisterFast;
-import model.utilities.DelayBin;
-import model.utilities.pid.PIDController;
-import model.utilities.stats.regression.KalmanRecursiveRegression;
-import model.utilities.stats.regression.RecursiveLinearRegression;
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.function.Supplier;
-
 public class FindFOPTDparametersThroughRegressionTest {
 
 
@@ -41,7 +30,7 @@ public class FindFOPTDparametersThroughRegressionTest {
 
     private final int maximumDelay =10;
 
-
+       /*
     @Test
     public void noDelayNoInterceptNoNoiseTest() throws Exception
     {
@@ -199,63 +188,6 @@ public class FindFOPTDparametersThroughRegressionTest {
     }
 
 
-    private RecursiveLinearRegression runLearningExperimentWithKnownDeadTime(MersenneTwisterFast random, float proportionalParameter,
-                                                                             float integrativeParameter, int intercept, float gain, float timeConstant, int deadTime,
-                                                                             Supplier<Double> noiseMaker) {
-        PIDController controller = new PIDController(proportionalParameter,integrativeParameter,0,random);
-        int target = 1;
-        FirstOrderPlusDeadTime process = new FirstOrderPlusDeadTime(intercept,gain,timeConstant, deadTime);
-        if(noiseMaker != null)
-            process.setRandomNoise(noiseMaker);
-
-        //create the regression too
-        RecursiveLinearRegression regression = new KalmanRecursiveRegression(3); //three dimension: intercept, input and output derivative
-
-        //output starts at intercept
-        float output = 0;
-        //delayed input, useful for learning
-        DelayBin<Float> delayedInput = new DelayBin<>(deadTime,0f);
-
-        for(int step =0; step < 5000; step++)
-        {
-
-
-            //PID step
-            controller.adjustOnce(target,output,true);
-
-            //process reacts
-            float input = controller.getCurrentMV();
-            assert !Float.isNaN(input);
-            assert !Float.isInfinite(input);
-            float currentDerivative = (float) process.getCurrentDerivative();
-            output = (float) process.newStep(input);
-
-
-            input=delayedInput.addAndRetrieve(input);
-            //regression learns
-            regression.addObservation(1, output, 1, input,- currentDerivative);
-
-
-
-
-
-            //shock target with 10%
-            if(random.nextBoolean(.10)) {
-                if (random.nextBoolean())
-                    target++;
-                else
-                    target--;
-            }
-
-
-
-        }
-        System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant);
-        System.out.println("learned gain: " + regression.getBeta()[1] + ", learned timeConstant: " + regression.getBeta()[2]);
-        return regression;
-    }
-
-
     private RecursiveLinearRegression runLearningExperimentWithUnknownDeadTime(MersenneTwisterFast random, float proportionalParameter,
                                                                              float integrativeParameter, int intercept, float gain, float timeConstant, int deadTime,
                                                                              Supplier<Double> noiseMaker) {
@@ -333,5 +265,5 @@ public class FindFOPTDparametersThroughRegressionTest {
         }
         System.out.println("learned gain: " + regressions[bestRegression].getBeta()[1] + ", learned timeConstant: " + regressions[bestRegression].getBeta()[2] + ", learned dead time: " + bestRegression);
         return regressions[bestRegression];
-    }
+    } */
 }

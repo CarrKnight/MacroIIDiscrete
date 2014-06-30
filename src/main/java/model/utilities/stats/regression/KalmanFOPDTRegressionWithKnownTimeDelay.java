@@ -34,7 +34,7 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay {
     /**
      * the previous ys observed.
      */
-    final private float[] previousOutputs = new float[2];
+    private float previousOutput = 0;
 
     /**
      * a delay bin to "delay" the input variable so that it regresses correctly
@@ -43,7 +43,12 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay {
 
 
     public KalmanFOPDTRegressionWithKnownTimeDelay(int delay) {
-        this(new GunnarsonRegularizerDecorator( new ExponentialForgettingRegressionDecorator(new KalmanRecursiveRegression(3),.995d)),delay,0);
+        this(
+              //  new GunnarsonRegularizerDecorator(
+                   //     new ExponentialForgettingRegressionDecorator(
+                                new KalmanRecursiveRegression(3)
+         //       ,.995d)     )
+                ,delay,0);
     }
 
     public KalmanFOPDTRegressionWithKnownTimeDelay(RecursiveLinearRegression regression, int delay, float initialInput) {
@@ -59,27 +64,36 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay {
 
         input = delayedInput.addAndRetrieve(input);
         //derivative
-        float derivative = getCurrentDerivative();
-        regression.addObservation(1,output,1,input,-derivative);
+        regression.addObservation(1, output, 1, input, previousOutput);
 
-        previousOutputs[1] = previousOutputs[0];
-        previousOutputs[0] = output;
+        previousOutput = output;
 
     }
 
-    private float getCurrentDerivative() {
-        return previousOutputs[0]-previousOutputs[1];
-    }
 
     public float predictNextOutput(float input){
 
         final double[] betas = getBeta();
-        return (float) (betas[0] + betas[1] * input - betas[2] * (getCurrentDerivative()));
+        return (float) (betas[0] + betas[1] * input + betas[2] * previousOutput);
     }
 
     public double[] getBeta() {
         return regression.getBeta();
     }
+
+    public float getTimeConstant(){
+        final double[] betas = getBeta();
+
+        return (float) (betas[2]/(1-betas[2]));
+    }
+
+    public float getGain()
+    {
+        final double[] betas = getBeta();
+
+        return (float) (betas[1]*(1+getTimeConstant()));
+    }
+
 
 
 }
