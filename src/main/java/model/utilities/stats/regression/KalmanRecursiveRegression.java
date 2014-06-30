@@ -50,6 +50,7 @@ public class KalmanRecursiveRegression implements RecursiveLinearRegression {
     private double noiseVariance = 1;
 
 
+
     /**
      * Sets up an initial linear regression with betas = 0 and P = diag(1)
      * @param dimensions how many betas this regression has

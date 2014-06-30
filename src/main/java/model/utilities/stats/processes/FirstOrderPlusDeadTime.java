@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package model.experiments.tuningRuns.processes;
+package model.utilities.stats.processes;
 
 import com.google.common.base.Preconditions;
 import model.utilities.DelayBin;

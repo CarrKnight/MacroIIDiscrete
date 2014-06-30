@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package model.experiments.tuningRuns.processes;
+package model.utilities.stats.processes;
 
 /**
  * <h4>Description</h4>

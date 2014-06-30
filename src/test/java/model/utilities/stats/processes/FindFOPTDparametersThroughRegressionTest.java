@@ -4,7 +4,7 @@
  * See the file "LICENSE" for more information
  */
 
-package model.experiments.tuningRuns.processes;
+package model.utilities.stats.processes;
 
 import ec.util.MersenneTwisterFast;
 import model.utilities.DelayBin;
@@ -97,6 +97,40 @@ public class FindFOPTDparametersThroughRegressionTest {
 
 
         }
+
+
+
+    }
+
+    @Test
+    public void knownDelayNoInterceptWithNoiseTest() throws Exception
+    {
+        MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
+        int successes = 0;
+        for(int experiments =0; experiments < 500; experiments++)
+        {
+
+            float proportionalParameter = random.nextFloat()*maximumP-minimumP + minimumP;
+            float integrativeParameter = random.nextFloat()*maximumI-minimumI + minimumI;
+
+
+
+            float gain = random.nextFloat()*maximumGain-minimumGain + minimumGain;
+            float timeConstant = random.nextFloat()*maximumTimeConstant-minimumTimeConstant + minimumTimeConstant;
+
+            int delay = random.nextInt(maximumDelay-minimumDelay) + minimumDelay;
+
+            RecursiveLinearRegression regression = runLearningExperimentWithKnownDeadTime(random, proportionalParameter, integrativeParameter, 0, gain, timeConstant, delay,
+                    ()->random.nextGaussian()*.5f);
+
+            if ( Math.abs(gain-regression.getBeta()[1])<.1 && Math.abs(timeConstant-regression.getBeta()[2])<.1 )
+                successes++;
+            System.out.println("===================================================================== ");
+
+
+        }
+        System.out.println(successes);
+        Assert.assertTrue(successes>400);
 
 
 
