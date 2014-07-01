@@ -35,7 +35,6 @@ public class KalmanFOPDTRegressionWithUnknownTimeDelay {
 
     private boolean minimumToBeRevalued = false;
 
-    private float previousInput = Float.NaN;
 
     public KalmanFOPDTRegressionWithUnknownTimeDelay(int... guesses) {
         Preconditions.checkArgument(guesses.length > 1, "need more than one guess, man");
@@ -59,8 +58,8 @@ public class KalmanFOPDTRegressionWithUnknownTimeDelay {
 
         for(int i=0; i< regressions.length; i++)
         {
-            if(Float.isFinite(previousInput))
-                errors[i].addObservation(Math.pow(output - regressions[i].predictNextOutput(previousInput),2));
+            if(Float.isFinite(input))
+                errors[i].addObservation(Math.pow(output - regressions[i].predictNextOutput(input),2));
             regressions[i].addObservation(output,input);
         }
 
@@ -68,7 +67,6 @@ public class KalmanFOPDTRegressionWithUnknownTimeDelay {
 
 
 
-        previousInput = input;
 
         minimumToBeRevalued = true; //lazy evaluation
 

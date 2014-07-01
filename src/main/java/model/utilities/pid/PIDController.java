@@ -160,7 +160,7 @@ public class PIDController implements Controller {
      * @param phase at which phase should this controller be rescheduled
      */
     public void adjust(float residual, boolean isActive,
-                        MacroII simState,  Steppable user,ActionOrder phase, Priority priority)
+                       MacroII simState,  Steppable user,ActionOrder phase, Priority priority)
     {
         //delegate the PID itself to adjustOnce, and worry about refactoring
         if (!adjustOnce(residual, isActive))
@@ -196,7 +196,7 @@ public class PIDController implements Controller {
      *
      */
     public void adjust(float target, float current, boolean isActive,
-                        MacroII simState,  Steppable user,ActionOrder phase) {
+                       MacroII simState,  Steppable user,ActionOrder phase) {
 
         adjust(target, current, isActive, simState, user, phase,Priority.STANDARD);
 
@@ -215,7 +215,7 @@ public class PIDController implements Controller {
      *
      */
     public void adjust(float target, float current, boolean isActive,
-                        MacroII simState,  Steppable user,ActionOrder phase, Priority priority) {
+                       MacroII simState,  Steppable user,ActionOrder phase, Priority priority) {
         //get the residual and delegate to the residual method
         float residual = target - current;
         adjust(residual,isActive,simState,user,phase,priority);
@@ -233,7 +233,7 @@ public class PIDController implements Controller {
         if(!isActive)
             return false;
 
-         //Compute residual and delegate to the other adjustOnce
+        //Compute residual and delegate to the other adjustOnce
 
         float residual = target - current; //this is your new error
         return adjustOnce(residual,isActive);
@@ -266,8 +266,12 @@ public class PIDController implements Controller {
             derivative = newError - oldError;
 
 
-        if(!windupStop || formula(derivative) >= 0)  //add to the integral if you are not at saturation (or there is no check)
-            integral+= newError; //integral!
+
+        integral += newError; //integral!
+        if(windupStop && formula(derivative) < 0)
+            integral = sumOfErrorsNecessaryForFormulaToBe0(initialPrice,oldError,newError);
+
+
 
 
 
@@ -278,6 +282,17 @@ public class PIDController implements Controller {
         return true;
     }
 
+
+    private float sumOfErrorsNecessaryForFormulaToBe0(float baseline, float errorLastPeriod, float errorThisPeriod)
+    {
+        return (
+                (- baseline
+                        - (proportionalGain * errorThisPeriod)
+                        - (derivativeGain * (errorThisPeriod-errorLastPeriod))
+                )/integralGain
+        );
+
+    }
 
 
 

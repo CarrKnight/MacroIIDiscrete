@@ -135,7 +135,7 @@ public class KalmanFOPDTRegressions
         }
 
         System.out.println(successes);
-        Assert.assertTrue(successes>450);
+        Assert.assertTrue(String.valueOf(successes),successes>450);
 
 
     }
