@@ -11,9 +11,13 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.pid.ControllerInput;
 import model.utilities.pid.PIDController;
-import model.utilities.stats.regression.KalmanFOPDTRegressionWithUnknownTimeDelay;
+import model.utilities.pid.tuners.ControlGuruTableFOPDT;
+import model.utilities.pid.tuners.PIDTuningTable;
+import model.utilities.stats.regression.SISOGuessingRegression;
 import model.utilities.stats.regression.SISORegression;
 import sim.engine.Steppable;
+
+import java.util.function.Function;
 
 /**
  * <h4>Description</h4>
@@ -30,7 +34,7 @@ import sim.engine.Steppable;
  * @version 2014-07-01
  * @see
  */
-public class FOPDTAutotuner extends ControllerDecorator {
+public class PIDAutotuner extends ControllerDecorator {
 
     /**
      * optional: if given the autotuner will not record until the department has at least one trade
@@ -45,7 +49,9 @@ public class FOPDTAutotuner extends ControllerDecorator {
 
     private int observations = 0;
 
-    public FOPDTAutotuner(PIDController toDecorate) {
+    private PIDTuningTable tuningTable = new ControlGuruTableFOPDT();
+
+    public PIDAutotuner(PIDController toDecorate) {
 
         this(toDecorate,null);
     }
@@ -56,11 +62,28 @@ public class FOPDTAutotuner extends ControllerDecorator {
      * @param toDecorate the PID controller to deal with
      * @param department nullable: if given the autotuner will not record until the department has at least one trade
      */
-    public FOPDTAutotuner(PIDController toDecorate, Department department) {
+    public PIDAutotuner(PIDController toDecorate, Department department) {
         super(toDecorate);
         decoratedCasted =toDecorate;
         this.linkedDepartment = department;
-        regression = new KalmanFOPDTRegressionWithUnknownTimeDelay(0,1,2,5,10,50,100);
+        regression = new SISOGuessingRegression(0,1,2,5,10,20);
+
+
+    }
+
+
+    /**
+     *
+     * @param toDecorate the PID controller to deal with
+     * @param department nullable: if given the autotuner will not record until the department has at least one trade
+     */
+    public PIDAutotuner(PIDController toDecorate, Function<Integer,SISORegression> regressionBuilder, PIDTuningTable tuningTable,
+                        Department department) {
+        super(toDecorate);
+        decoratedCasted =toDecorate;
+        this.linkedDepartment = department;
+        regression = new SISOGuessingRegression(regressionBuilder,0,1,2,5,10);
+        this.tuningTable = tuningTable;
 
 
     }
@@ -81,21 +104,30 @@ public class FOPDTAutotuner extends ControllerDecorator {
     public void adjust(ControllerInput input, boolean isActive, MacroII simState, Steppable user, ActionOrder phase) {
 
         if(linkedDepartment == null || linkedDepartment.hasTradedAtLeastOnce())
+        {
             learn(input);
+        }
         if(observations > afterHowManyDaysShouldTune) {
-            final float kc = (regression.getTimeConstant() / (regression.getTimeConstant() + regression.getDelay())) / regression.getGain();
-            final float ti = regression.getTimeConstant();
-            setGains(kc, kc/ti,0);
+
+            final float processGain = regression.getGain();
+            final float timeConstant = regression.getTimeConstant();
+            final int delay = regression.getDelay();
+            System.out.println(regression);
+
+            setGains(tuningTable.getProportionalParameter(processGain, timeConstant, delay),
+                    tuningTable.getIntegralParameter(processGain, timeConstant, delay),
+                    tuningTable.getDerivativeParameter(processGain, timeConstant, delay));
         }
 
         super.adjust(input, isActive, simState, user, phase);
     }
 
     private void learn(ControllerInput input) {
+
         if (isControllingFlows())
             regression.addObservation(input.getFlowInput(), getCurrentMV());
         else
-            regression.addObservation(input.getFlowTarget(), getCurrentMV());
+            regression.addObservation(input.getStockInput(), getCurrentMV());
         observations++;
     }
 
@@ -126,4 +158,14 @@ public class FOPDTAutotuner extends ControllerDecorator {
     public float getTimeConstant() {
         return regression.getTimeConstant();
     }
+
+    public PIDTuningTable getTuningTable() {
+        return tuningTable;
+    }
+
+    public void setTuningTable(PIDTuningTable tuningTable) {
+        this.tuningTable = tuningTable;
+    }
+
+
 }

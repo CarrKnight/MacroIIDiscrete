@@ -9,6 +9,9 @@ package model.utilities.stats.regression;
 import com.google.common.base.Preconditions;
 import model.utilities.filters.ExponentialFilter;
 
+import java.util.Arrays;
+import java.util.function.Function;
+
 /**
  * <h4>Description</h4>
  * <p> This works basically as a scattershot. We have multiple linear regressions, each with its own guessed delay and we pick the one with the lowest prediction error
@@ -24,27 +27,38 @@ import model.utilities.filters.ExponentialFilter;
  * @version 2014-06-30
  * @see
  */
-public class KalmanFOPDTRegressionWithUnknownTimeDelay implements SISORegression {
+public class SISOGuessingRegression implements SISORegression {
 
     private final ExponentialFilter<Double> errors[];
 
 
-    private final KalmanFOPDTRegressionWithKnownTimeDelay[] regressions;
+    private final SISORegression[] regressions;
 
     private int minimum = 0;
 
     private boolean minimumToBeRevalued = false;
 
+    /**
+     * basically builds a FOPDT regression if I tell you this is my guessed delay
+     */
+    public final  static Function<Integer,SISORegression> DEFAULT_REGRESSION_FROM_GUESS_BUILDER = KalmanFOPDTRegressionWithKnownTimeDelay::new;
 
-    public KalmanFOPDTRegressionWithUnknownTimeDelay(int... guesses) {
+
+    public SISOGuessingRegression(int... guesses) {
+       this(DEFAULT_REGRESSION_FROM_GUESS_BUILDER,guesses);
+
+
+    }
+
+    public SISOGuessingRegression(Function<Integer, SISORegression> regressionFromGuessBuilder, int... guesses) {
         Preconditions.checkArgument(guesses.length > 1, "need more than one guess, man");
         errors = new ExponentialFilter[guesses.length];
-        regressions = new KalmanFOPDTRegressionWithKnownTimeDelay[guesses.length];
+        regressions = new SISORegression[guesses.length];
         //create the various guessed regressions
         for(int i=0; i<guesses.length; i++)
         {
-            errors[i] = new ExponentialFilter<>(.005f);
-            regressions[i] = new KalmanFOPDTRegressionWithKnownTimeDelay(guesses[i]);
+            errors[i] = new ExponentialFilter<>(.001f);
+            regressions[i] = regressionFromGuessBuilder.apply(guesses[i]);
         }
 
 
@@ -53,6 +67,7 @@ public class KalmanFOPDTRegressionWithUnknownTimeDelay implements SISORegression
 
     public void addObservation(float output, float input){
 
+     //   System.out.println(output + "," + input);
         Preconditions.checkArgument(Float.isFinite(output));
         Preconditions.checkArgument(Float.isFinite(input));
 
@@ -73,10 +88,6 @@ public class KalmanFOPDTRegressionWithUnknownTimeDelay implements SISORegression
     }
 
 
-    public double[] getBeta() {
-        updateMinimumIfNeeded();
-        return regressions[minimum].getBeta();
-    }
 
     private void updateMinimumIfNeeded() {
         if(minimumToBeRevalued) {
@@ -120,5 +131,16 @@ public class KalmanFOPDTRegressionWithUnknownTimeDelay implements SISORegression
         updateMinimumIfNeeded();
 
         return regressions[minimum].getDelay();
+    }
+
+    public String getErrors() {
+        return Arrays.toString(errors);
+    }
+
+
+    @Override
+    public String toString() {
+        updateMinimumIfNeeded();
+        return regressions[minimum].toString();
     }
 }

@@ -34,7 +34,7 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay implements SISORegression {
     /**
      * the previous ys observed.
      */
-    private float previousOutput = 0;
+    private float previousOutput = Float.NaN;
 
     /**
      * a delay bin to "delay" the input variable so that it regresses correctly
@@ -63,9 +63,12 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay implements SISORegression {
         Preconditions.checkArgument(Float.isFinite(output));
         Preconditions.checkArgument(Float.isFinite(input));
 
+  //      System.out.println("u: " + input + " , y: " + output +", previous: " + previousOutput);
+
         input = delayedInput.addAndRetrieve(input);
         //derivative
-        regression.addObservation(1, output, 1, input, previousOutput);
+        if(Float.isFinite(previousOutput))
+            regression.addObservation(1, output, 1, input, previousOutput);
 
         previousOutput = output;
 
@@ -106,9 +109,10 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay implements SISORegression {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("KalmanFOPDTRegressionWithKnownTimeDelay{");
+        final StringBuilder sb = new StringBuilder("reg{");
         sb.append("gain=").append(getGain());
-        sb.append("TimeConstant=").append(getTimeConstant());
+        sb.append(" TimeConstant=").append(getTimeConstant());
+        sb.append(" Delay=").append(getDelay());
         sb.append('}');
         return sb.toString();
     }

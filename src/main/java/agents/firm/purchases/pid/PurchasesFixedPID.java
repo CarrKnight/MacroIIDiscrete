@@ -16,7 +16,10 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.pid.*;
+import model.utilities.pid.Controller;
+import model.utilities.pid.ControllerFactory;
+import model.utilities.pid.ControllerInput;
+import model.utilities.pid.PIDController;
 import model.utilities.pid.decorator.ExponentialFilterInputDecorator;
 import model.utilities.pid.decorator.ExponentialFilterOutputDecorator;
 import model.utilities.pid.decorator.ExponentialFilterTargetDecorator;
@@ -73,7 +76,8 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
 
         final PIDController pid = ControllerFactory.buildController(PIDController.class,purchasesDepartment.getModel());
         pid.setControllingFlows(false);
-        rootController = pid; //instantiate the controller
+
+        rootController = pid; // new PIDAutotuner(pid, KalmanFOPIDTRegressionWithKnownTimeDelay::new,new ShinskeyTableFOPIDT(),null); //instantiate the controller
         controller = rootController; //remember it
 
     }

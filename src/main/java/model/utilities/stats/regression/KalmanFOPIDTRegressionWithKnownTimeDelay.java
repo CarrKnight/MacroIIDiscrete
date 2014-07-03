@@ -6,6 +6,7 @@
 
 package model.utilities.stats.regression;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 /**
@@ -27,14 +28,13 @@ public class KalmanFOPIDTRegressionWithKnownTimeDelay implements SISORegression
 {
 
 
-    //todo see if you can just make this delegate to the FOPDT by feeding it differences.
 
     private final KalmanFOPDTRegressionWithKnownTimeDelay regression;
 
     /**
      * the previous ys observed.
      */
-    private float previousOutput = 0;
+    private float previousOutput = Float.NaN;
 
 
 
@@ -59,10 +59,11 @@ public class KalmanFOPIDTRegressionWithKnownTimeDelay implements SISORegression
         Preconditions.checkArgument(Float.isFinite(output));
         Preconditions.checkArgument(Float.isFinite(input));
 
-        float difference = output - previousOutput;
-        //derivative
-        regression.addObservation(difference,input);
-
+        if(Float.isFinite(previousOutput)) {
+            float difference = output - previousOutput;
+            //derivative
+            regression.addObservation(difference, input);
+        }
         previousOutput = output;
     }
 
@@ -91,5 +92,12 @@ public class KalmanFOPIDTRegressionWithKnownTimeDelay implements SISORegression
     @Override
     public int getDelay() {
         return regression.getDelay();
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("regression", regression)
+                .toString();
     }
 }

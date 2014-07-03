@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 /**
  * Create a random PID playing with a random FOPDT, see if the regression finds it
  */
-public class KalmanFOPDTRegressions
+public class SisoRegressionTests
 {
 
     private final float minimumP =.1f;
@@ -97,7 +97,7 @@ public class KalmanFOPDTRegressions
             final int deadTime = random.nextInt(maximumDelay);
             final SISORegression result =
                     runLearningExperiment(random, new FirstOrderPlusDeadTime(0, gain, timeConstant, deadTime), proportionalParameter, integrativeParameter,
-                            null, () -> new KalmanFOPDTRegressionWithUnknownTimeDelay(0,1,2,3,4,5,6,7,8,9,10)
+                            null, () -> new SISOGuessingRegression(0,1,2,3,4,5,6,7,8,9,10)
                     );
             System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant + ", and delay: " + deadTime);
             System.out.println("learned gain: " +result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
@@ -135,7 +135,7 @@ public class KalmanFOPDTRegressions
 
             final int deadTime = random.nextInt(maximumDelay);
             final SISORegression result = runLearningExperiment(random, new FirstOrderPlusDeadTime(0, gain, timeConstant, deadTime), proportionalParameter, integrativeParameter,
-                    () -> random.nextGaussian() * .5, () -> new KalmanFOPDTRegressionWithUnknownTimeDelay(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+                    () -> random.nextGaussian() * .5, () -> new SISOGuessingRegression(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
 
             System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant + ", and delay: " + deadTime);
             System.out.println("learned gain: " +result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
@@ -271,6 +271,84 @@ public class KalmanFOPDTRegressions
 
 
     }
+
+    @Test
+    public void unknownDelayNoNoiseFOIPDTTest() throws Exception
+    {
+        MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
+        for(int experiments =0; experiments < 10; experiments++)
+        {
+
+            float proportionalParameter = random.nextFloat()*maximumP-minimumP + minimumP;
+            float integrativeParameter = random.nextFloat()*maximumI-minimumI + minimumI;
+
+
+
+            float gain = random.nextFloat()*maximumGain-minimumGain + minimumGain;
+            float timeConstant = random.nextFloat()*maximumTimeConstant-minimumTimeConstant + minimumTimeConstant;
+
+
+            final int delay = random.nextInt(maximumDelay);
+            final SISORegression result = runLearningExperiment(random, new FirstOrderIntegratingPlusDeadTime(0, gain, timeConstant, delay), proportionalParameter, integrativeParameter,
+                    null, () -> new SISOGuessingRegression(KalmanFOPIDTRegressionWithKnownTimeDelay::new,0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)) ;
+
+
+            System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant + ", and delay: " + delay);
+            System.out.println("learned gain: " +result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
+
+            Assert.assertEquals(gain, result.getGain(), .001);
+            Assert.assertEquals(timeConstant,result.getTimeConstant(),.001);
+            System.out.println("===================================================================== ");
+
+
+        }
+
+
+
+    }
+
+    @Test
+    public void unknownDelayNoisyFOIPDT() throws Exception
+    {
+        MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
+        int successes = 0;
+        for(int experiments =0; experiments < 500; experiments++)
+        {
+
+            float proportionalParameter = random.nextFloat()*maximumP-minimumP + minimumP;
+            float integrativeParameter = random.nextFloat()*maximumI-minimumI + minimumI;
+
+
+
+            float gain = random.nextFloat()*maximumGain-minimumGain + minimumGain;
+            float timeConstant = random.nextFloat()*maximumTimeConstant-minimumTimeConstant + minimumTimeConstant;
+
+
+            final int delay = random.nextInt(maximumDelay);
+            final SISORegression result = runLearningExperiment(random, new FirstOrderIntegratingPlusDeadTime(0, gain, timeConstant, delay), proportionalParameter, integrativeParameter,
+                    () -> random.nextGaussian() * .5, () -> new SISOGuessingRegression(KalmanFOPIDTRegressionWithKnownTimeDelay::new,0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)) ;
+
+
+
+            System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant + ", and delay: " + delay);
+            System.out.println("learned gain: " +result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
+
+
+            if ( Math.abs(gain-result.getGain())<.1 && Math.abs(timeConstant-result.getTimeConstant())<.1 ) {
+                successes++;
+                System.out.println("success");
+            }
+            System.out.println("===================================================================== ");
+
+
+        }
+
+        System.out.println(successes);
+        Assert.assertTrue(successes>450);
+
+
+    }
+
 
     private SISORegression runLearningExperiment(MersenneTwisterFast random, DynamicProcess dynamicProcess, float proportionalParameter,
                                                  float integrativeParameter,

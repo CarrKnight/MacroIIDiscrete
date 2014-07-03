@@ -91,9 +91,9 @@ public class SimpleBuyerScenarioTest
             while(macroII.schedule.getTime()<3500)
             {
                 macroII.schedule.step(macroII);
-                System.out.println(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice());
 
             }
+            System.out.println(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice());
 
             //price should be any between 60 and 51
             assertTrue(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice() < 140);
