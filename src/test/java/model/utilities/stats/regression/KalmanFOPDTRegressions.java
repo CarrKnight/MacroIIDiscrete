@@ -8,6 +8,8 @@ package model.utilities.stats.regression;
 
 import ec.util.MersenneTwisterFast;
 import model.utilities.pid.PIDController;
+import model.utilities.stats.processes.DynamicProcess;
+import model.utilities.stats.processes.FirstOrderIntegratingPlusDeadTime;
 import model.utilities.stats.processes.FirstOrderPlusDeadTime;
 import org.junit.Assert;
 import org.junit.Test;
@@ -42,7 +44,7 @@ public class KalmanFOPDTRegressions
     private final int maximumDelay =10;
 
     @Test
-    public void knownDelayNoInterceptNoNoiseTest() throws Exception
+    public void knownDelayNoNoiseFOPDTTest() throws Exception
     {
         MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
         for(int experiments =0; experiments < 10; experiments++)
@@ -57,7 +59,13 @@ public class KalmanFOPDTRegressions
             float timeConstant = random.nextFloat()*maximumTimeConstant-minimumTimeConstant + minimumTimeConstant;
 
 
-            final KalmanFOPDTRegressionWithKnownTimeDelay result = runLearningExperimentWithKnownDeadTime(random, proportionalParameter, integrativeParameter, 0, gain, timeConstant, random.nextInt(maximumDelay), null);
+            final int delay = random.nextInt(maximumDelay);
+            final SISORegression result = runLearningExperiment(random, new FirstOrderPlusDeadTime(0, gain, timeConstant, delay), proportionalParameter, integrativeParameter,
+                    null,()->new KalmanFOPDTRegressionWithKnownTimeDelay(delay));
+
+
+            System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant + ", and delay: " + delay);
+            System.out.println("learned gain: " +result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
 
             Assert.assertEquals(gain, result.getGain(), .001);
             Assert.assertEquals(timeConstant,result.getTimeConstant(),.001);
@@ -71,7 +79,7 @@ public class KalmanFOPDTRegressions
     }
 
     @Test
-    public void unknownDelayNoInterceptNoNoiseTest() throws Exception
+    public void unknownDelayNoNoiseFOPDT() throws Exception
     {
         MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
         for(int experiments =0; experiments < 10; experiments++)
@@ -87,8 +95,12 @@ public class KalmanFOPDTRegressions
 
 
             final int deadTime = random.nextInt(maximumDelay);
-            final KalmanFOPDTRegressionWithUnknownTimeDelay result =
-                    runLearningExperimentWithUnknownDeadTime(random, proportionalParameter, integrativeParameter, 0, gain, timeConstant, deadTime, null);
+            final SISORegression result =
+                    runLearningExperiment(random, new FirstOrderPlusDeadTime(0, gain, timeConstant, deadTime), proportionalParameter, integrativeParameter,
+                            null, () -> new KalmanFOPDTRegressionWithUnknownTimeDelay(0,1,2,3,4,5,6,7,8,9,10)
+                    );
+            System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant + ", and delay: " + deadTime);
+            System.out.println("learned gain: " +result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
 
 
             Assert.assertEquals(deadTime,result.getDelay());
@@ -105,7 +117,7 @@ public class KalmanFOPDTRegressions
 
 
     @Test
-    public void unknownDelayNoInterceptWithNoiseTest() throws Exception
+    public void unknownDelayNoisyFOPDT() throws Exception
     {
         MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
         int successes = 0;
@@ -122,8 +134,11 @@ public class KalmanFOPDTRegressions
 
 
             final int deadTime = random.nextInt(maximumDelay);
-            final KalmanFOPDTRegressionWithUnknownTimeDelay result = runLearningExperimentWithUnknownDeadTime(random, proportionalParameter, integrativeParameter, 0, gain, timeConstant, deadTime,
-                    () -> random.nextGaussian() * .5);
+            final SISORegression result = runLearningExperiment(random, new FirstOrderPlusDeadTime(0, gain, timeConstant, deadTime), proportionalParameter, integrativeParameter,
+                    () -> random.nextGaussian() * .5, () -> new KalmanFOPDTRegressionWithUnknownTimeDelay(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+
+            System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant + ", and delay: " + deadTime);
+            System.out.println("learned gain: " +result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
 
             if ( Math.abs(gain-result.getGain())<.1 && Math.abs(timeConstant-result.getTimeConstant())<.1 ) {
                 successes++;
@@ -141,7 +156,7 @@ public class KalmanFOPDTRegressions
     }
 
     @Test
-    public void knownDelayNoInterceptWithNoiseTest() throws Exception
+    public void knownDelayNoisyFOPDT() throws Exception
     {
         MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
         int successes = 0;
@@ -157,8 +172,13 @@ public class KalmanFOPDTRegressions
             float timeConstant = random.nextFloat()*maximumTimeConstant-minimumTimeConstant + minimumTimeConstant;
 
 
-            final KalmanFOPDTRegressionWithKnownTimeDelay result = runLearningExperimentWithKnownDeadTime(random, proportionalParameter, integrativeParameter, 0, gain, timeConstant, random.nextInt(maximumDelay),
-                    () -> random.nextGaussian() * .5);
+            final int delay = random.nextInt(maximumDelay);
+            final SISORegression result = runLearningExperiment(random, new FirstOrderPlusDeadTime(0, gain, timeConstant, delay), proportionalParameter, integrativeParameter,
+                    () -> random.nextGaussian() * .5,()->new KalmanFOPDTRegressionWithKnownTimeDelay(delay));
+
+            System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant + ", and delay: " + delay);
+            System.out.println("learned gain: " +result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
+
 
             if ( Math.abs(gain-result.getGain())<.1 && Math.abs(timeConstant-result.getTimeConstant())<.1 ) {
                 successes++;
@@ -175,17 +195,93 @@ public class KalmanFOPDTRegressions
 
     }
 
-    private KalmanFOPDTRegressionWithKnownTimeDelay runLearningExperimentWithKnownDeadTime(MersenneTwisterFast random, float proportionalParameter,
-                                                                             float integrativeParameter, int intercept, float gain, float timeConstant, int deadTime,
-                                                                             Supplier<Double> noiseMaker) {
+
+    @Test
+    public void knownDelayNoNoiseFOIPDTTest() throws Exception
+    {
+        MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
+        for(int experiments =0; experiments < 10; experiments++)
+        {
+
+            float proportionalParameter = random.nextFloat()*maximumP-minimumP + minimumP;
+            float integrativeParameter = random.nextFloat()*maximumI-minimumI + minimumI;
+
+
+
+            float gain = random.nextFloat()*maximumGain-minimumGain + minimumGain;
+            float timeConstant = random.nextFloat()*maximumTimeConstant-minimumTimeConstant + minimumTimeConstant;
+
+
+            final int delay = random.nextInt(maximumDelay);
+            final SISORegression result = runLearningExperiment(random, new FirstOrderIntegratingPlusDeadTime(0, gain, timeConstant, delay), proportionalParameter, integrativeParameter,
+                    null,()->new KalmanFOPIDTRegressionWithKnownTimeDelay(delay));
+
+
+            System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant + ", and delay: " + delay);
+            System.out.println("learned gain: " +result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
+
+            Assert.assertEquals(gain, result.getGain(), .001);
+            Assert.assertEquals(timeConstant,result.getTimeConstant(),.001);
+            System.out.println("===================================================================== ");
+
+
+        }
+
+
+
+    }
+
+    @Test
+    public void knownDelayNoisyFOIPDT() throws Exception
+    {
+        MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
+        int successes = 0;
+        for(int experiments =0; experiments < 500; experiments++)
+        {
+
+            float proportionalParameter = random.nextFloat()*maximumP-minimumP + minimumP;
+            float integrativeParameter = random.nextFloat()*maximumI-minimumI + minimumI;
+
+
+
+            float gain = random.nextFloat()*maximumGain-minimumGain + minimumGain;
+            float timeConstant = random.nextFloat()*maximumTimeConstant-minimumTimeConstant + minimumTimeConstant;
+
+
+            final int delay = random.nextInt(maximumDelay);
+            final SISORegression result = runLearningExperiment(random, new FirstOrderIntegratingPlusDeadTime(0, gain, timeConstant, delay),
+                    proportionalParameter, integrativeParameter,
+                    () -> random.nextGaussian() * .5,()->new KalmanFOPIDTRegressionWithKnownTimeDelay(delay));
+
+            System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant + ", and delay: " + delay);
+            System.out.println("learned gain: " +result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
+
+
+            if ( Math.abs(gain-result.getGain())<.1 && Math.abs(timeConstant-result.getTimeConstant())<.1 ) {
+                successes++;
+                System.out.println("success");
+            }
+            System.out.println("===================================================================== ");
+
+
+        }
+
+        System.out.println(successes);
+        Assert.assertTrue(successes>450);
+
+
+    }
+
+    private SISORegression runLearningExperiment(MersenneTwisterFast random, DynamicProcess dynamicProcess, float proportionalParameter,
+                                                 float integrativeParameter,
+                                                 Supplier<Double> noiseMaker, Supplier<SISORegression> regressionSupplier) {
         PIDController controller = new PIDController(proportionalParameter,integrativeParameter,0,random);
         int target = 1;
-        FirstOrderPlusDeadTime process = new FirstOrderPlusDeadTime(intercept,gain,timeConstant, deadTime);
         if(noiseMaker != null)
-            process.setRandomNoise(noiseMaker);
+            dynamicProcess.setRandomNoise(noiseMaker);
 
         //create the regression too
-        KalmanFOPDTRegressionWithKnownTimeDelay regression = new KalmanFOPDTRegressionWithKnownTimeDelay(deadTime); //three dimension: intercept, input and output derivative
+        SISORegression regression = regressionSupplier.get(); //three dimension: intercept, input and output derivative
 
         //output starts at intercept
         float output = 0;
@@ -202,7 +298,7 @@ public class KalmanFOPDTRegressions
             float input = controller.getCurrentMV();
             assert !Float.isNaN(input);
             assert !Float.isInfinite(input);
-            output = (float) process.newStep(input);
+            output = (float) dynamicProcess.newStep(input);
 
 
             //regression learns
@@ -223,65 +319,11 @@ public class KalmanFOPDTRegressions
 
 
         }
-        System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant + ", and delay: " + deadTime);
-        System.out.println("learned gain: " +regression.getGain() + ", learned timeConstant: " + regression.getTimeConstant() + ", learned delay: " + regression.getDelay());
 
         return regression;
     }
 
 
-    private KalmanFOPDTRegressionWithUnknownTimeDelay runLearningExperimentWithUnknownDeadTime(MersenneTwisterFast random, float proportionalParameter,
-                                                                                           float integrativeParameter, int intercept, float gain, float timeConstant, int deadTime,
-                                                                                           Supplier<Double> noiseMaker) {
-        PIDController controller = new PIDController(proportionalParameter,integrativeParameter,0,random);
-        int target = 1;
-        FirstOrderPlusDeadTime process = new FirstOrderPlusDeadTime(intercept,gain,timeConstant, deadTime);
-        if(noiseMaker != null)
-            process.setRandomNoise(noiseMaker);
-
-        //create the regression too
-        KalmanFOPDTRegressionWithUnknownTimeDelay regression = new KalmanFOPDTRegressionWithUnknownTimeDelay(0,1,2,3,4,5,6,7,8,9,10); //three dimension: intercept, input and output derivative
-
-        //output starts at intercept
-        float output = 0;
-        //delayed input, useful for learning
-
-        for(int step =0; step < 5000; step++)
-        {
-
-
-            //PID step
-            controller.adjustOnce(target,output,true);
-
-            //process reacts
-            float input = controller.getCurrentMV();
-            assert !Float.isNaN(input);
-            assert !Float.isInfinite(input);
-            output = (float) process.newStep(input);
-
-
-            //regression learns
-            regression.addObservation(output,input);
-
-
-
-
-
-            //shock target with 10%
-            if(random.nextBoolean(.10)) {
-                if (random.nextBoolean())
-                    target++;
-                else
-                    target--;
-            }
-
-
-
-        }
-        System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant + ", and delay: " + deadTime);
-        System.out.println("learned gain: " +regression.getGain() + ", learned timeConstant: " + regression.getTimeConstant() + ", learned delay: " + regression.getDelay());
-        return regression;
-    }
 
 
 

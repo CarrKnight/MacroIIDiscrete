@@ -24,7 +24,7 @@ import model.utilities.filters.ExponentialFilter;
  * @version 2014-06-30
  * @see
  */
-public class KalmanFOPDTRegressionWithUnknownTimeDelay {
+public class KalmanFOPDTRegressionWithUnknownTimeDelay implements SISORegression {
 
     private final ExponentialFilter<Double> errors[];
 
@@ -106,6 +106,14 @@ public class KalmanFOPDTRegressionWithUnknownTimeDelay {
 
     }
 
+    @Override
+    public float predictNextOutput(float input) {
+        //find new minimum
+        updateMinimumIfNeeded();
+
+        return regressions[minimum].predictNextOutput(input);
+
+    }
 
     public int getDelay(){
         //find new minimum

@@ -6,6 +6,8 @@
 
 package model.utilities.stats.processes;
 
+import java.util.function.Supplier;
+
 /**
  * <h4>Description</h4>
  * <p> Can "step" forward, producing a new y
@@ -25,6 +27,11 @@ public interface DynamicProcess {
 
 
     public double newStep(double todayInput);
+
+
+    public Supplier<Double> getRandomNoise();
+
+    public void setRandomNoise(Supplier<Double> randomNoise);
 
 
 }

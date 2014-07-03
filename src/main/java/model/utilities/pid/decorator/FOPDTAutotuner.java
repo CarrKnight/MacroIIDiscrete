@@ -12,6 +12,7 @@ import model.utilities.ActionOrder;
 import model.utilities.pid.ControllerInput;
 import model.utilities.pid.PIDController;
 import model.utilities.stats.regression.KalmanFOPDTRegressionWithUnknownTimeDelay;
+import model.utilities.stats.regression.SISORegression;
 import sim.engine.Steppable;
 
 /**
@@ -36,7 +37,7 @@ public class FOPDTAutotuner extends ControllerDecorator {
      */
     private final Department linkedDepartment;
 
-    private final KalmanFOPDTRegressionWithUnknownTimeDelay regression;
+    private final SISORegression regression;
 
     private final PIDController decoratedCasted;
 
@@ -63,6 +64,8 @@ public class FOPDTAutotuner extends ControllerDecorator {
 
 
     }
+
+
 
 
     /**

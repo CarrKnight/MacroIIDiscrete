@@ -25,7 +25,7 @@ import model.utilities.DelayBin;
  * @version 2014-06-29
  * @see
  */
-public class KalmanFOPDTRegressionWithKnownTimeDelay {
+public class KalmanFOPDTRegressionWithKnownTimeDelay implements SISORegression {
 
 
 
@@ -58,6 +58,7 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay {
         delayedInput = new DelayBin<>(delay,initialInput);
     }
 
+    @Override
     public void addObservation(float output, float input){
         Preconditions.checkArgument(Float.isFinite(output));
         Preconditions.checkArgument(Float.isFinite(input));
@@ -71,6 +72,7 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay {
     }
 
 
+    @Override
     public float predictNextOutput(float input){
 
         final double[] betas = getBeta();
@@ -82,12 +84,14 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay {
         return regression.getBeta();
     }
 
+    @Override
     public float getTimeConstant(){
         final double[] betas = getBeta();
 
         return (float) (betas[2]/(1-betas[2]));
     }
 
+    @Override
     public float getGain()
     {
         final double[] betas = getBeta();
