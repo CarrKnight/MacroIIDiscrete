@@ -112,13 +112,13 @@ public class PIDAutotuner extends ControllerDecorator {
             final float processGain = regression.getGain();
             final float timeConstant = regression.getTimeConstant();
             final int delay = regression.getDelay();
-            System.out.println(regression);
 
             setGains(tuningTable.getProportionalParameter(processGain, timeConstant, delay),
                     tuningTable.getIntegralParameter(processGain, timeConstant, delay),
                     tuningTable.getDerivativeParameter(processGain, timeConstant, delay));
         }
 
+        System.out.println(getProportionalGain() + "," + getIntegralGain() + "!!");
         super.adjust(input, isActive, simState, user, phase);
     }
 
@@ -126,8 +126,10 @@ public class PIDAutotuner extends ControllerDecorator {
 
         if (isControllingFlows())
             regression.addObservation(input.getFlowInput(), getCurrentMV());
-        else
+        else {
+            System.out.println(input.getStockInput() + "," + getCurrentMV());
             regression.addObservation(input.getStockInput(), getCurrentMV());
+        }
         observations++;
     }
 

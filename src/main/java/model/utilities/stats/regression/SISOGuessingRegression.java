@@ -51,7 +51,7 @@ public class SISOGuessingRegression implements SISORegression {
     }
 
     public SISOGuessingRegression(Function<Integer, SISORegression> regressionFromGuessBuilder, int... guesses) {
-        Preconditions.checkArgument(guesses.length > 1, "need more than one guess, man");
+        Preconditions.checkArgument(guesses.length >= 1, "need more than one guess, man");
         errors = new ExponentialFilter[guesses.length];
         regressions = new SISORegression[guesses.length];
         //create the various guessed regressions

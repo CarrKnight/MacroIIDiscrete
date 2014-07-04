@@ -16,14 +16,10 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.pid.Controller;
-import model.utilities.pid.ControllerFactory;
-import model.utilities.pid.ControllerInput;
-import model.utilities.pid.PIDController;
-import model.utilities.pid.decorator.ExponentialFilterInputDecorator;
-import model.utilities.pid.decorator.ExponentialFilterOutputDecorator;
-import model.utilities.pid.decorator.ExponentialFilterTargetDecorator;
-import model.utilities.pid.decorator.MovingAverageFilterInputDecorator;
+import model.utilities.pid.*;
+import model.utilities.pid.decorator.*;
+import model.utilities.pid.tuners.ShinskeyTableFOPIDT;
+import model.utilities.stats.regression.KalmanFOPIDTRegressionWithKnownTimeDelay;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -75,9 +71,10 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
         super(purchasesDepartment,specificTarget);                                                                                //.5f,2f,.05f
 
         final PIDController pid = ControllerFactory.buildController(PIDController.class,purchasesDepartment.getModel());
+        pid.setGains(5.2f,0.16f,0);
         pid.setControllingFlows(false);
 
-        rootController = pid; // new PIDAutotuner(pid, KalmanFOPIDTRegressionWithKnownTimeDelay::new,new ShinskeyTableFOPIDT(),null); //instantiate the controller
+        rootController = new PIDAutotuner(pid, KalmanFOPIDTRegressionWithKnownTimeDelay::new,new ShinskeyTableFOPIDT(),null); //instantiate the controller
         controller = rootController; //remember it
 
     }

@@ -122,6 +122,9 @@ public class PIDController implements Controller {
         this.proportionalGain = proportionalGain;
         this.integralGain = integralGain;
         this.derivativeGain = derivativeGain;
+
+        if(Float.isFinite(getCurrentMV()) && Float.isFinite(getOldError()) && Float.isFinite(getNewError()) )
+            integral = sumOfErrorsNecessaryForFormulaToBeX(getCurrentMV(),initialPrice,getOldError(),getNewError());
     }
 
 
@@ -285,8 +288,14 @@ public class PIDController implements Controller {
 
     private float sumOfErrorsNecessaryForFormulaToBe0(float baseline, float errorLastPeriod, float errorThisPeriod)
     {
+        return sumOfErrorsNecessaryForFormulaToBeX(0,baseline,errorLastPeriod,errorThisPeriod);
+
+    }
+
+    private float sumOfErrorsNecessaryForFormulaToBeX(float x,float baseline, float errorLastPeriod, float errorThisPeriod)
+    {
         return (
-                (- baseline
+                (x - baseline
                         - (proportionalGain * errorThisPeriod)
                         - (derivativeGain * (errorThisPeriod-errorLastPeriod))
                 )/integralGain
