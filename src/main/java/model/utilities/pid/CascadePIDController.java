@@ -133,10 +133,11 @@ public class CascadePIDController implements Controller {
     /**
      * Set initial offset of the second PID
      * @param initialPrice the offset
+     * @param resetAfterSetting
      */
     @Override
-    public void setOffset(float initialPrice) {
-        pid2.setOffset(initialPrice);
+    public void setOffset(float initialPrice, boolean resetAfterSetting) {
+        pid2.setOffset(initialPrice, true);
     }
 
 

@@ -78,7 +78,7 @@ public class MarginalMaximizerWithUnitPID  extends MarginalMaximizer
         super(hr, control, p, owner);
         //the pid controller
         pid = new PIDController(proportional,integral,derivative,random);
-        pid.setOffset(currentWorkerSize);
+        pid.setOffset(currentWorkerSize, true);
         pid.setWindupStop(false);
         pid.setCanGoNegative(true);
     }

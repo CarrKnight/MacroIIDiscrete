@@ -677,7 +677,7 @@ public class MonopolistScenarioTest {
         for(int i=0; i<10; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
-            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            final MacroII macroII = new MacroII(1404576744501l);
             System.out.println("----------------------------------------------------------");
             System.out.println(macroII.seed());
             System.out.println("----------------------------------------------------------");

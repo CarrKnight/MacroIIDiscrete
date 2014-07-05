@@ -52,8 +52,9 @@ public interface Controller {
     /**
      * Set the "zero" of the controller
      * @param initialPrice the "zero" of the controller
+     * @param resetAfterSetting
      */
-    public void setOffset(float initialPrice);
+    public void setOffset(float initialPrice, boolean resetAfterSetting);
 
     /**
      * Get the "zero" of the controller

@@ -8,8 +8,8 @@ package model.utilities.pid.tuners;
 
 /**
  * <h4>Description</h4>
- * <p>  Found these on controlguru.com. I have no idea where they take these from. PI parameters for FOPTD
- * <p>
+ * <p> Use this when the best fit is just y(t) = a + b*u(t); no time constant and so on.
+ * <p> So all we need to do is assume u(t) = -a/b + y(t)/b
  * <p>
  * <h4>Notes</h4>
  * Created with IntelliJ
@@ -18,22 +18,18 @@ package model.utilities.pid.tuners;
  * <h4>References</h4>
  *
  * @author carrknight
- * @version 2014-07-03
+ * @version 2014-07-04
  * @see
  */
-public class ControlGuruTableFOPDT implements PIDTuningTable{
-
+public class POnlyNonDynamicTable implements PIDTuningTable {
     @Override
     public float getProportionalParameter(float processGain, float timeConstant, float intercept, int delay) {
-        return (timeConstant / (timeConstant + delay)) / processGain;
+        return 0;
     }
 
     @Override
     public float getIntegralParameter(float processGain, float timeConstant, float intercept, int delay) {
-
-        return (1 / (timeConstant + delay)) / processGain;
-
-
+        return 1f/processGain;
     }
 
     @Override
@@ -42,18 +38,18 @@ public class ControlGuruTableFOPDT implements PIDTuningTable{
     }
 
     /**
-     * never
+     * the baseline is always the intercept
      */
     @Override
     public boolean shouldISetNewBaseline(float processGain, float timeConstant, float intercept, int delay) {
-        return false;
+        return true;
     }
 
     /**
-     * never to be used, throws exception
+     * the baseline is always the intercept
      */
     @Override
     public float getBaseline(float processGain, float timeConstant, float intercept, int delay) {
-        throw new IllegalStateException("This table never sets a new baseline");
+        return -intercept/processGain;
     }
 }

@@ -30,7 +30,7 @@ public class PIDTestSimple {
     public void direction()
     {
         PIDController controller = new PIDController(1,1,0,new MersenneTwisterFast());
-        controller.setOffset(100);
+        controller.setOffset(100, true);
 
         //if the residual is positive, the mv should go up
         assertEquals(controller.getCurrentMV(),100f,.0001f);
@@ -38,7 +38,7 @@ public class PIDTestSimple {
         assertTrue(controller.getCurrentMV() > 100f);
 
 
-        controller.setOffset(100);
+        controller.setOffset(100, true);
 
         //if the residual is negative, the mv should go down
         assertEquals(controller.getCurrentMV(),100f,.0001f);

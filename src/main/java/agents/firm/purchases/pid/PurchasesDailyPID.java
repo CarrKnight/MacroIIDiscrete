@@ -162,7 +162,7 @@ public class PurchasesDailyPID extends DailyInventoryControl implements BidPrici
      * Whenever set the controller is reset
      */
     public void setInitialPrice(float initialPrice) {
-        controller.setOffset(initialPrice);
+        controller.setOffset(initialPrice, true);
     }
 
     public float getInitialPrice() {

@@ -189,7 +189,7 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
                 //we are going to just use the flow to price it, then
                 priceQuoted = Math.max(Math.round(flowPID.getCurrentMV()),0);
                 //reset stockPID
-                stockPID.setOffset(0);
+                stockPID.setOffset(0, true);
             }
             else{
                 stockPID.adjustOnce(super.getInventoryTarget(),

@@ -167,7 +167,7 @@ public class PurchasesSimplePID extends SimpleInventoryControl implements BidPri
      * Whenever set the controller is reset
      */
     public void setInitialPrice(float initialPrice) {
-        controller.setOffset(initialPrice);
+        controller.setOffset(initialPrice, true);
     }
 
     public float getInitialPrice() {

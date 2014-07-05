@@ -24,11 +24,22 @@ package model.utilities.pid.tuners;
 public interface PIDTuningTable {
 
 
-    public float getProportionalParameter(float processGain, float timeConstant, int delay);
+    public float getProportionalParameter(float processGain, float timeConstant, float intercept, int delay);
 
-    public float getIntegralParameter(float processGain, float timeConstant, int delay);
+    public float getIntegralParameter(float processGain, float timeConstant, float intercept, int delay);
 
-    public float getDerivativeParameter(float processGain, float timeConstant, int delay);
+    public float getDerivativeParameter(float processGain, float timeConstant, float intercept, int delay);
+
+    /**
+     *  if true, the tuning table will be asked for a new controller offset.
+     */
+    public boolean shouldISetNewBaseline(float processGain, float timeConstant, float intercept, int delay);
+
+    /**
+     * the new offset to put on the controller
+     */
+    public float getBaseline(float processGain, float timeConstant, float intercept, int delay);
+
 
 }
 

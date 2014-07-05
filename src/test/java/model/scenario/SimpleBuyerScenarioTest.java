@@ -57,8 +57,9 @@ public class SimpleBuyerScenarioTest
             while(macroII.schedule.getTime()<3500)
             {
                 macroII.schedule.step(macroII);
-                System.out.println(scenario.getDepartment().getLastOfferedPrice());
             }
+
+            System.out.println(scenario.getDepartment().getLastOfferedPrice());
 
             //price should be any between 60 and 51
             assertTrue(String.valueOf(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice()),macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice() < 140);
@@ -67,6 +68,7 @@ public class SimpleBuyerScenarioTest
             assertEquals(Integer.toString(scenario.getDepartment().getFirm().hasHowMany(UndifferentiatedGoodType.GENERIC)),
                     scenario.getDepartment().getFirm().hasHowMany(UndifferentiatedGoodType.GENERIC),20,1);
 
+            macroII.finish();
         }
 
 

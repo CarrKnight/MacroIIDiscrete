@@ -55,7 +55,7 @@ public class MarginalAndPIDMaximizer extends MarginalMaximizer {
                                    MersenneTwisterFast random) {
         super(hr, control, p, owner);
         pid = new PIDController(proportional,integral,derivative,random);
-        pid.setOffset(hr.getPlant().getNumberOfWorkers());
+        pid.setOffset(hr.getPlant().getNumberOfWorkers(), true);
     }
 
     /**

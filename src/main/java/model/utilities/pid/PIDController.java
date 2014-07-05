@@ -294,6 +294,10 @@ public class PIDController implements Controller {
 
     private float sumOfErrorsNecessaryForFormulaToBeX(float x,float baseline, float errorLastPeriod, float errorThisPeriod)
     {
+        //ignore nans. they mean the pid hasn't started which means they are 0
+        errorLastPeriod = Float.isNaN(errorLastPeriod) ? 0 : errorLastPeriod;
+        errorThisPeriod = Float.isNaN(errorThisPeriod) ? 0 : errorThisPeriod;
+
         return (
                 (x - baseline
                         - (proportionalGain * errorThisPeriod)
@@ -303,6 +307,14 @@ public class PIDController implements Controller {
 
     }
 
+
+    /**
+     * useful for resets
+     * @param targetMV
+     */
+    public void setIntegralSoThatTheCurrentMVIsThis(float targetMV){
+        integral = sumOfErrorsNecessaryForFormulaToBe0(initialPrice,oldError,newError);
+    }
 
 
     private float formula(float derivative) {
@@ -317,13 +329,15 @@ public class PIDController implements Controller {
     /**
      * Whenever set the PID is reset
      */
-    public void setOffset(float offset) {
+    public void setOffset(float offset, boolean resetAfterSetting) {
         this.initialPrice = offset;
-        integral = 0;
-        oldError = Float.NaN;
-        newError = Float.NaN;
-        currentMV = offset;
+        if(resetAfterSetting) {
+            integral = 0;
+            oldError = Float.NaN;
+            newError = Float.NaN;
+            currentMV = offset;
 
+        }
     }
 
     /**

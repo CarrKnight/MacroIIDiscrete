@@ -30,5 +30,9 @@ public interface SISORegression {
 
     public float getGain();
 
+
+    public float getIntercept();
+
+
     public int getDelay();
 }

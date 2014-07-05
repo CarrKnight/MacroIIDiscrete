@@ -16,10 +16,13 @@ import goods.Good;
 import goods.GoodType;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.pid.*;
+import model.utilities.pid.Controller;
+import model.utilities.pid.ControllerFactory;
+import model.utilities.pid.ControllerInput;
+import model.utilities.pid.PIDController;
 import model.utilities.pid.decorator.*;
-import model.utilities.pid.tuners.ShinskeyTableFOPIDT;
-import model.utilities.stats.regression.KalmanFOPIDTRegressionWithKnownTimeDelay;
+import model.utilities.pid.tuners.ControlGuruTableFOPDT;
+import model.utilities.stats.regression.KalmanFOPDTRegressionWithKnownTimeDelay;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -71,10 +74,10 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
         super(purchasesDepartment,specificTarget);                                                                                //.5f,2f,.05f
 
         final PIDController pid = ControllerFactory.buildController(PIDController.class,purchasesDepartment.getModel());
-        pid.setGains(5.2f,0.16f,0);
+     //   pid.setGains(5.2f,0.16f,0);
         pid.setControllingFlows(false);
 
-        rootController = new PIDAutotuner(pid, KalmanFOPIDTRegressionWithKnownTimeDelay::new,new ShinskeyTableFOPIDT(),null); //instantiate the controller
+        rootController = new PIDAutotuner(pid, KalmanFOPDTRegressionWithKnownTimeDelay::new,new ControlGuruTableFOPDT(),null); //instantiate the controller
         controller = rootController; //remember it
 
     }
@@ -90,9 +93,14 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
                              Class<? extends Controller> controllerType, MacroII model)
     {
         super(purchasesDepartment,specificTarget);
-        rootController = ControllerFactory.buildController(controllerType,model);
-        if(controllerType.equals(PIDController.class))
-            ((PIDController)rootController).setControllingFlows(false);
+        Controller instance = ControllerFactory.buildController(controllerType,model);
+        if(controllerType.equals(PIDController.class)) {
+            final PIDController pid = (PIDController) instance;
+            instance = new PIDAutotuner(pid, KalmanFOPDTRegressionWithKnownTimeDelay::new,new ControlGuruTableFOPDT(),null); //instantiate the controller
+            pid.setControllingFlows(false);
+        }
+
+        rootController = instance;
         controller = rootController;
 
     }
@@ -230,7 +238,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      * Whenever set the controller is reset
      */
     public void setInitialPrice(float initialPrice) {
-        rootController.setOffset(initialPrice);
+        rootController.setOffset(initialPrice, true);
     }
 
     public float getOffset() {

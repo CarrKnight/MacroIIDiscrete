@@ -21,7 +21,10 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.logs.LogEvent;
 import model.utilities.logs.LogLevel;
+import model.utilities.pid.Controller;
+import model.utilities.pid.ControllerInput;
 import model.utilities.pid.PIDController;
+import model.utilities.pid.decorator.PIDAutotuner;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -87,7 +90,7 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
     /**
      * The PID controller used by this firm.
      */
-    private PIDController controller;
+    private Controller controller;
 
     /**
      * The price we are currently charging.
@@ -109,6 +112,7 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
      * How many goods are left unsold at the beginning of the run
      */
     private int initialInventory = 0;
+    private PIDController rootController;
 
 
     /**
@@ -145,12 +149,12 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
 
         }
 
-        controller = new PIDController(proportionalGain,integralGain,derivativeGain,speed,sales.getRandom());
+        rootController = new PIDController(proportionalGain, integralGain, derivativeGain, speed, sales.getRandom());
+        controller = new PIDAutotuner(rootController,sales);
         //keep speed fixed if we are targeting flows rather than stock (otherwise you compare different periods and that's silly)
-        controller.setRandomSpeed(false);
         //start with a random price!
         price = sales.getRandom().nextInt(100);
-        controller.setOffset(price);
+        controller.setOffset(price, true);
 
         //schedule yourself to change prices
         if(speed == 0)
@@ -280,14 +284,14 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
 
 
 
-            controller.adjust(0, gap,    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
+            controller.adjust(new ControllerInput(-inflow,-outflow),    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
                     active, (MacroII) simState, this, ActionOrder.ADJUST_PRICES);
         }
         else
         {
             //gap =  (float) (goodsToSell - ((float) goodsSold + (float) stockOuts.getStockouts()));
             gap = goodsToSell - stockouts;
-            controller.adjust(0, gap,    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
+            controller.adjust(new ControllerInput(0,gap),    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
                     active, (MacroII)simState, this,ActionOrder.ADJUST_PRICES);
         }
 
@@ -323,7 +327,7 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
      * @param price the new price
      */
     public void setInitialPrice(int price) {
-        controller.setOffset(price);
+        controller.setOffset(price, true);
         this.price = price;
     }
 
@@ -343,7 +347,7 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
             if(g.getCostOfProduction() > price) //force to increase MV
             {
                 price = g.getCostOfProduction();
-                controller.setOffset(g.getCostOfProduction());
+                controller.setOffset(g.getCostOfProduction(), true);
             }
             return price;
         }
@@ -489,7 +493,7 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
 
 
     public void setIntegralGain(float integralGain) {
-        controller.setIntegralGain(integralGain);
+        rootController.setIntegralGain(integralGain);
     }
 
     public float getIntegralGain() {
@@ -497,7 +501,7 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
     }
 
     public void setProportionalGain(float proportionalGain) {
-        controller.setProportionalGain(proportionalGain);
+        rootController.setProportionalGain(proportionalGain);
     }
 
     public float getProportionalGain() {
@@ -509,7 +513,7 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
     }
 
     public void setDerivativeGain(float derivativeGain) {
-        controller.setDerivativeGain(derivativeGain);
+        rootController.setDerivativeGain(derivativeGain);
     }
 
     public int getSpeed() {

@@ -49,8 +49,8 @@ public abstract class ControllerDecorator implements Controller
     }
 
     @Override
-    public void setOffset(float initialPrice) {
-        toDecorate.setOffset(initialPrice);
+    public void setOffset(float initialPrice, boolean resetAfterSetting) {
+        toDecorate.setOffset(initialPrice, true);
     }
 
 

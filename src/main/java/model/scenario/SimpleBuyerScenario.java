@@ -146,8 +146,7 @@ public class SimpleBuyerScenario extends Scenario {
 
         department.setOpponentSearch(new SimpleBuyerSearch(market, firm));
         department.setSupplierSearch(new SimpleSellerSearch(market, firm));
-        //  final PurchasesFixedPID control = new PurchasesFixedPID(department,proportionalGain,integralGain,derivativeGain,targetInventory);
-        final PurchasesFixedPID control = new PurchasesFixedPID(department,targetInventory);
+        final PurchasesFixedPID control = new PurchasesFixedPID(department,targetInventory, controllerType,model);
         control.setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(1000f);
         control.setSpeed(pidPeriod);
         if(filtersOn){

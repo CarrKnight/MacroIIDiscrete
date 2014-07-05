@@ -41,15 +41,19 @@ public class PIDAutotuner extends ControllerDecorator {
      */
     private final Department linkedDepartment;
 
-    private final SISORegression regression;
+    private final SISOGuessingRegression regression;
 
     private final PIDController decoratedCasted;
 
-    private int afterHowManyDaysShouldTune = 100;
+    private int afterHowManyDaysShouldTune = 200;
 
     private int observations = 0;
 
     private PIDTuningTable tuningTable = new ControlGuruTableFOPDT();
+
+    float fallbackPolicy = Float.NaN;
+
+
 
     public PIDAutotuner(PIDController toDecorate) {
 
@@ -111,23 +115,50 @@ public class PIDAutotuner extends ControllerDecorator {
 
             final float processGain = regression.getGain();
             final float timeConstant = regression.getTimeConstant();
+            final float intercept = regression.getIntercept();
             final int delay = regression.getDelay();
 
-            setGains(tuningTable.getProportionalParameter(processGain, timeConstant, delay),
-                    tuningTable.getIntegralParameter(processGain, timeConstant, delay),
-                    tuningTable.getDerivativeParameter(processGain, timeConstant, delay));
+            System.out.println("regression results: " +processGain + "," + timeConstant + "," + delay +  "," + intercept);
+
+            if(regression.isFallbackBetter())
+                fallbackPolicy = regression.fallbackPolicy(input.getFlowTarget());
+            else {
+                fallbackPolicy = Float.NaN;
+                final float targetP = tuningTable.getProportionalParameter(processGain, timeConstant, intercept, delay);
+                final float targetI = tuningTable.getIntegralParameter(processGain, timeConstant, intercept, delay);
+                final float targetD = tuningTable.getDerivativeParameter(processGain, timeConstant, intercept, delay);
+                setGains(getProportionalGain() * .99f + targetP * .01f,
+                        getIntegralGain() * .99f + targetI * .01f,
+                        getDerivativeGain() * .99f + targetD * .01f
+                );
+
+            }
         }
 
-        System.out.println(getProportionalGain() + "," + getIntegralGain() + "!!");
         super.adjust(input, isActive, simState, user, phase);
+    }
+
+
+    /**
+     * Get the current u_t
+     */
+    @Override
+    public float getCurrentMV() {
+        //if we think there is no dynamics, hijack it
+        if(Float.isFinite(fallbackPolicy))
+            return fallbackPolicy;
+        else
+            return super.getCurrentMV();
     }
 
     private void learn(ControllerInput input) {
 
-        if (isControllingFlows())
+        if (isControllingFlows()) {
+            System.out.println(input.getFlowInput() + "," + getCurrentMV());
+
             regression.addObservation(input.getFlowInput(), getCurrentMV());
+        }
         else {
-            System.out.println(input.getStockInput() + "," + getCurrentMV());
             regression.addObservation(input.getStockInput(), getCurrentMV());
         }
         observations++;

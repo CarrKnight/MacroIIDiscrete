@@ -23,19 +23,36 @@ package model.utilities.pid.tuners;
  */
 public class ShinskeyTableFOPIDT implements PIDTuningTable {
     @Override
-    public float getProportionalParameter(float processGain, float timeConstant, int delay) {
+    public float getProportionalParameter(float processGain, float timeConstant, float intercept, int delay) {
         return 0.952f/(processGain*(timeConstant+delay));
     }
 
     @Override
-    public float getIntegralParameter(float processGain, float timeConstant, int delay) {
+    public float getIntegralParameter(float processGain, float timeConstant, float intercept, int delay) {
         float kc = 0.952f/(processGain*(timeConstant+delay));
         float ti = 4*(timeConstant + delay);
         return kc/ti;
     }
 
     @Override
-    public float getDerivativeParameter(float processGain, float timeConstant, int delay) {
+    public float getDerivativeParameter(float processGain, float timeConstant, float intercept, int delay) {
        return 0;
+    }
+
+
+    /**
+     * never
+     */
+    @Override
+    public boolean shouldISetNewBaseline(float processGain, float timeConstant, float intercept, int delay) {
+        return false;
+    }
+
+    /**
+     * never to be used, throws exception
+     */
+    @Override
+    public float getBaseline(float processGain, float timeConstant, float intercept, int delay) {
+        throw new IllegalStateException("This table never sets a new baseline");
     }
 }

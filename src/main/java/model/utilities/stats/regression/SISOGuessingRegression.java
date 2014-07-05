@@ -15,7 +15,7 @@ import java.util.function.Function;
 /**
  * <h4>Description</h4>
  * <p> This works basically as a scattershot. We have multiple linear regressions, each with its own guessed delay and we pick the one with the lowest prediction error
- * <p>
+ * <p> The regression at position 0 is always the non-dynamic default!
  * <p>
  * <h4>Notes</h4>
  * Created with IntelliJ
@@ -34,9 +34,21 @@ public class SISOGuessingRegression implements SISORegression {
 
     private final SISORegression[] regressions;
 
+
+    private float exponentialAveragingWeight = 0.01f;
+
     private int minimum = 0;
 
     private boolean minimumToBeRevalued = false;
+
+    private int howManyObservationsBeforeModelSelection = 100;
+
+    private int observations = 0;
+
+    //the linear fallback: a regression with no time dimension.
+    private final NonDynamicRegression linearFallback = new NonDynamicRegression();
+    //the error of the fallback
+    private final ExponentialFilter<Float> fallbackError;
 
     /**
      * basically builds a FOPDT regression if I tell you this is my guessed delay
@@ -45,7 +57,7 @@ public class SISOGuessingRegression implements SISORegression {
 
 
     public SISOGuessingRegression(int... guesses) {
-       this(DEFAULT_REGRESSION_FROM_GUESS_BUILDER,guesses);
+        this(DEFAULT_REGRESSION_FROM_GUESS_BUILDER,guesses);
 
 
     }
@@ -57,9 +69,10 @@ public class SISOGuessingRegression implements SISORegression {
         //create the various guessed regressions
         for(int i=0; i<guesses.length; i++)
         {
-            errors[i] = new ExponentialFilter<>(.001f);
+            errors[i] = new ExponentialFilter<>(exponentialAveragingWeight);
             regressions[i] = regressionFromGuessBuilder.apply(guesses[i]);
         }
+        fallbackError = new ExponentialFilter<>(exponentialAveragingWeight);
 
 
     }
@@ -67,23 +80,27 @@ public class SISOGuessingRegression implements SISORegression {
 
     public void addObservation(float output, float input){
 
-     //   System.out.println(output + "," + input);
+        //   System.out.println(output + "," + input);
         Preconditions.checkArgument(Float.isFinite(output));
         Preconditions.checkArgument(Float.isFinite(input));
 
+        //dynamic regression
         for(int i=0; i< regressions.length; i++)
         {
-            if(Float.isFinite(input))
+            if(Float.isFinite(input) && observations > howManyObservationsBeforeModelSelection)
                 errors[i].addObservation(Math.pow(output - regressions[i].predictNextOutput(input),2));
             regressions[i].addObservation(output,input);
         }
-
-
+        //fallback regressions
+        if(Float.isFinite(input) && observations > howManyObservationsBeforeModelSelection)
+            fallbackError.addObservation((float) Math.pow(output - linearFallback.predictNextOutput(input),2));
+        linearFallback.addObservation(output,input);
 
 
 
 
         minimumToBeRevalued = true; //lazy evaluation
+        observations++;
 
     }
 
@@ -108,6 +125,13 @@ public class SISOGuessingRegression implements SISORegression {
     }
 
 
+    @Override
+    public float getIntercept() {
+        //find new minimum
+        updateMinimumIfNeeded();
+
+        return regressions[minimum].getIntercept();  }
+
     public float getGain()
     {
         //find new minimum
@@ -126,6 +150,8 @@ public class SISOGuessingRegression implements SISORegression {
 
     }
 
+
+
     public int getDelay(){
         //find new minimum
         updateMinimumIfNeeded();
@@ -143,4 +169,24 @@ public class SISOGuessingRegression implements SISORegression {
         updateMinimumIfNeeded();
         return regressions[minimum].toString();
     }
+
+
+    /**
+     * this is true if the linear fallback has better prediction or the model selected has very small/negative time constant
+     * @return
+     */
+    public boolean isFallbackBetter(){
+        updateMinimumIfNeeded();
+        return getTimeConstant() <= .001 || fallbackError.getSmoothedObservation() <= errors[minimum].getSmoothedObservation();
+    }
+
+    /**
+     * use the fallback/linear regression for policy guidance.
+     * @param target target (that's the y)
+     * @return the policy associated with that target!
+     */
+    public float fallbackPolicy(float target){
+        return linearFallback.impliedMV(target);
+    }
+
 }

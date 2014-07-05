@@ -90,6 +90,11 @@ public class KalmanFOPIDTRegressionWithKnownTimeDelay implements SISORegression
 
 
     @Override
+    public float getIntercept() {
+        return regression.getIntercept();
+    }
+
+    @Override
     public int getDelay() {
         return regression.getDelay();
     }

@@ -157,7 +157,7 @@ public class ControllerFactoryTest {
             }
 
             @Override
-            public void setOffset(float initialPrice) {
+            public void setOffset(float initialPrice, boolean resetAfterSetting) {
                 throw new RuntimeException("not implemented yet!");
             }
 

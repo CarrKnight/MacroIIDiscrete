@@ -78,7 +78,7 @@ public class PIDHillClimber extends HillClimberMaximizer
                           float proportional, float integrative, float derivative) {
         super(weeklyFixedCosts, minimumWorkers, maximumWorkers);
         pid = new PIDController(proportional,integrative,derivative,random);
-        pid.setOffset(currentWorkers+ 1);
+        pid.setOffset(currentWorkers + 1, true);
 
     }
 

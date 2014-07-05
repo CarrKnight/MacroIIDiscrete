@@ -324,7 +324,7 @@ public class PIDTargeterWithQuickFiring implements WorkforceTargeter, Steppable 
     public void setInitialWage(long wage)
     {
         Preconditions.checkArgument(wage >=0);
-        pid.setOffset(wage);
+        pid.setOffset(wage, true);
     }
 
 

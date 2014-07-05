@@ -226,7 +226,7 @@ public class SalesControlWithFixedInventoryAndPID extends BaseAskPricingStrategy
      */
     public void setInitialPrice(long price) {
         Preconditions.checkArgument(price >= 0);
-        controller.setOffset(price);
+        controller.setOffset(price, true);
         roundedPrice = Math.round(controller.getCurrentMV());
         department.updateQuotes();
     }

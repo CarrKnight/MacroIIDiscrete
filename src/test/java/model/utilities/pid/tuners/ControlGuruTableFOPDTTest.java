@@ -17,9 +17,9 @@ public class ControlGuruTableFOPDTTest {
 
         ControlGuruTableFOPDT table = new ControlGuruTableFOPDT();
 
-        Assert.assertEquals(table.getDerivativeParameter(1f,2f,0),0,.0001f);
-        Assert.assertEquals(table.getProportionalParameter(1f,2f,0),1,.0001f);
-        Assert.assertEquals(table.getIntegralParameter(1f,2f,0),0.5,.0001f);
+        Assert.assertEquals(table.getDerivativeParameter(1f,2f, 0, 0),0,.0001f);
+        Assert.assertEquals(table.getProportionalParameter(1f,2f,0 , 0),1,.0001f);
+        Assert.assertEquals(table.getIntegralParameter(1f,2f,0 , 0),0.5,.0001f);
 
     }
 }

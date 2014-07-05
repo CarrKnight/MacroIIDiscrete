@@ -208,7 +208,7 @@ public class DailyGoodTree extends EconomicAgent
         //remove all quotes
         eatEverythingAndRemoveQuotes();
         //deregister yourself
-        market.deregisterBuyer(this);
+        market.deregisterSeller(this);
     }
 
     /**
