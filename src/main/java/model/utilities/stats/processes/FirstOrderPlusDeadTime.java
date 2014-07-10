@@ -45,18 +45,27 @@ public class FirstOrderPlusDeadTime implements DynamicProcess {
     private double previousY;
 
     public FirstOrderPlusDeadTime(double intercept, double gain, double timeConstant, int deadTime) {
+        this(intercept, gain, timeConstant, deadTime,0);
+    }
+
+
+    public FirstOrderPlusDeadTime(double intercept, double gain, double timeConstant, int deadTime, double initialOutput, Double... previousInputs) {
         this.intercept = intercept;
         this.gain = gain;
         this.timeConstant = timeConstant;
         Preconditions.checkArgument(deadTime>=0);
         this.deadTime = deadTime;
         inputBin = new DelayBin<>(deadTime,intercept);
-        previousStep = intercept;
+        previousStep = initialOutput;
+
+        Preconditions.checkArgument(previousInputs.length <= deadTime);
+        for(double oldInput : previousInputs)
+            inputBin.addAndRetrieve(oldInput);
 
     }
 
     @Override
-    public double newStep(double todayInput)
+    public double newStep(double todayInput, double... covariants)
     {
         //put input in the bin
         double input = inputBin.addAndRetrieve(todayInput);

@@ -6,6 +6,8 @@
 
 package model.utilities.filters;
 
+import com.google.common.base.Objects;
+
 /**
  * <h4>Description</h4>
  * <p/> A filter that takes exponential average of its observations
@@ -84,5 +86,10 @@ public class ExponentialFilter<T extends Number> implements Filter<T>
 
     }
 
-
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("smoothedValue", smoothedValue)
+                .toString();
+    }
 }

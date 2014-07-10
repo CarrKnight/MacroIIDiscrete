@@ -73,4 +73,10 @@ public abstract class RecursiveLinearRegressionDecorator implements RecursiveLin
     public RecursiveLinearRegression getDecorated() {
         return decorated;
     }
+
+
+    @Override
+    public String toString() {
+        return decorated.toString();
+    }
 }

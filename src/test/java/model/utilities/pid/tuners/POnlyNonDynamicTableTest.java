@@ -37,7 +37,7 @@ public class POnlyNonDynamicTableTest {
     @Test
     public void doesItWork1() throws Exception {
         final MersenneTwisterFast random = new MersenneTwisterFast();
-        PIDController controller = new PIDController(0,-1f/2f,0, random);
+        PIDController controller = new PIDController(0,-1f/2f,0);
         controller.setOffset(50, true);
         //you want to sell 20, you need to price it at 60 (today position doesn't matter)
         for(int i=0; i<100; i++) {
@@ -58,7 +58,7 @@ public class POnlyNonDynamicTableTest {
     @Test
     public void doesItWork2() throws Exception {
         final MersenneTwisterFast random = new MersenneTwisterFast();
-        PIDController controller = new PIDController(1,2,0, random);
+        PIDController controller = new PIDController(1,2,0);
         //you want to sell 20, you need to price it at 60 (today position doesn't matter)
         for(int i=0; i<500; i++) {
             int quantityTarget = random.nextInt(100);

@@ -59,13 +59,13 @@ public class CascadePToPIDController implements Controller {
                                    float proportional2, float integrative2, float derivative2,
                                    MersenneTwisterFast random) {
 
-        pid1 = new PIDController(proportional1,0,0,random);
+        pid1 = new PIDController(proportional1,0,0);
 
         //careful how you set up your controller!
         //somewhat counterintuitively we let the Master PID be a P only. Because our slave will have as input---> (Inflow-Outflow)
         //which should nicely be 0 at inventory.
 
-        pid2Root = new PIDController(proportional2,integrative2,derivative2,random);
+        pid2Root = new PIDController(proportional2,integrative2,derivative2);
         pid2 = pid2Root;
 
         setMasterCanGoNegative(true); setMasterWindupStop(false);

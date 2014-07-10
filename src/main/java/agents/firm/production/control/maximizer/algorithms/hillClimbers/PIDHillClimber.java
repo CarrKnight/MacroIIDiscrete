@@ -77,7 +77,7 @@ public class PIDHillClimber extends HillClimberMaximizer
                           int currentWorkers, MersenneTwisterFast random,
                           float proportional, float integrative, float derivative) {
         super(weeklyFixedCosts, minimumWorkers, maximumWorkers);
-        pid = new PIDController(proportional,integrative,derivative,random);
+        pid = new PIDController(proportional,integrative,derivative);
         pid.setOffset(currentWorkers + 1, true);
 
     }

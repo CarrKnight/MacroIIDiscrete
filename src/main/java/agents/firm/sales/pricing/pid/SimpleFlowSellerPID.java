@@ -149,7 +149,7 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
 
         }
 
-        rootController = new PIDController(proportionalGain, integralGain, derivativeGain, speed, sales.getRandom());
+        rootController = new PIDController(proportionalGain, integralGain, derivativeGain, speed);
         controller = new PIDAutotuner(rootController,sales);
         //keep speed fixed if we are targeting flows rather than stock (otherwise you compare different periods and that's silly)
         //start with a random price!

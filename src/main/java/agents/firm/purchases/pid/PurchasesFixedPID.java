@@ -21,7 +21,6 @@ import model.utilities.pid.ControllerFactory;
 import model.utilities.pid.ControllerInput;
 import model.utilities.pid.PIDController;
 import model.utilities.pid.decorator.*;
-import model.utilities.pid.tuners.ControlGuruTableFOPDT;
 import model.utilities.stats.regression.KalmanFOPDTRegressionWithKnownTimeDelay;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -77,7 +76,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      //   pid.setGains(5.2f,0.16f,0);
         pid.setControllingFlows(false);
 
-        rootController = new PIDAutotuner(pid, KalmanFOPDTRegressionWithKnownTimeDelay::new,new ControlGuruTableFOPDT(),null); //instantiate the controller
+        rootController = new PIDAutotuner(pid, KalmanFOPDTRegressionWithKnownTimeDelay::new, null); //instantiate the controller
         controller = rootController; //remember it
 
     }
@@ -96,7 +95,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
         Controller instance = ControllerFactory.buildController(controllerType,model);
         if(controllerType.equals(PIDController.class)) {
             final PIDController pid = (PIDController) instance;
-            instance = new PIDAutotuner(pid, KalmanFOPDTRegressionWithKnownTimeDelay::new,new ControlGuruTableFOPDT(),null); //instantiate the controller
+            instance = new PIDAutotuner(pid, KalmanFOPDTRegressionWithKnownTimeDelay::new, null); //instantiate the controller
             pid.setControllingFlows(false);
         }
 
@@ -116,7 +115,7 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
     public PurchasesFixedPID( PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
                              float derivativeGain, int specificTarget) {
         super(purchasesDepartment,specificTarget);
-        final PIDController pid = new PIDController(proportionalGain, integralGain, derivativeGain, purchasesDepartment.getRandom());
+        final PIDController pid = new PIDController(proportionalGain, integralGain, derivativeGain);
         pid.setControllingFlows(false);
         rootController = pid; //instantiate the controller
         controller = rootController; //remember it

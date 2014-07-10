@@ -59,7 +59,7 @@ public class PurchasesSimplePID extends SimpleInventoryControl implements BidPri
     public PurchasesSimplePID( PurchasesDepartment purchasesDepartment, float proportionalGain, float integralGain,
                               float derivativeGain) {
         super(purchasesDepartment);
-        final PIDController pid = new PIDController(proportionalGain, integralGain, derivativeGain, purchasesDepartment.getRandom());
+        final PIDController pid = new PIDController(proportionalGain, integralGain, derivativeGain);
         pid.setControllingFlows(false);
         controller = pid; //instantiate the controller
     }

@@ -11,7 +11,6 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.pid.ControllerInput;
 import model.utilities.pid.PIDController;
-import model.utilities.pid.tuners.ShinskeyTableFOPIDT;
 import model.utilities.stats.processes.FirstOrderIntegratingPlusDeadTime;
 import model.utilities.stats.processes.FirstOrderPlusDeadTime;
 import model.utilities.stats.regression.KalmanFOPIDTRegressionWithKnownTimeDelay;
@@ -41,7 +40,7 @@ public class AutotunerTest {
     private PIDAutotuner runLearningExperimentWithUnknownDeadTime(MersenneTwisterFast random, float proportionalParameter,
                                                                                                float integrativeParameter, int intercept, float gain, float timeConstant, int deadTime,
                                                                                                Supplier<Double> noiseMaker) throws FileNotFoundException {
-        PIDAutotuner controller = new PIDAutotuner(new PIDController(proportionalParameter,integrativeParameter,0,random));
+        PIDAutotuner controller = new PIDAutotuner(new PIDController(proportionalParameter,integrativeParameter,0));
         PrintWriter writer = new PrintWriter(Paths.get("tmp.csv").toFile());
         controller.setAfterHowManyDaysShouldTune(1000);
         int target = 10;
@@ -97,8 +96,8 @@ public class AutotunerTest {
     private PIDAutotuner runLearningFOIPDT(MersenneTwisterFast random, float proportionalParameter,
                                                                   float integrativeParameter, int intercept, float gain, float timeConstant, int deadTime,
                                                                   Supplier<Double> noiseMaker) throws FileNotFoundException {
-        PIDAutotuner controller = new PIDAutotuner(new PIDController(proportionalParameter,integrativeParameter,0,random),
-                KalmanFOPIDTRegressionWithKnownTimeDelay::new,new ShinskeyTableFOPIDT(),null);
+        PIDAutotuner controller = new PIDAutotuner(new PIDController(proportionalParameter,integrativeParameter,0),
+                KalmanFOPIDTRegressionWithKnownTimeDelay::new, null);
         PrintWriter writer = new PrintWriter(Paths.get("tmp2.csv").toFile());
         controller.setAfterHowManyDaysShouldTune(1000);
         int target = 100;

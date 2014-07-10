@@ -353,7 +353,7 @@ public class SisoRegressionTests
     private SISORegression runLearningExperiment(MersenneTwisterFast random, DynamicProcess dynamicProcess, float proportionalParameter,
                                                  float integrativeParameter,
                                                  Supplier<Double> noiseMaker, Supplier<SISORegression> regressionSupplier) {
-        PIDController controller = new PIDController(proportionalParameter,integrativeParameter,0,random);
+        PIDController controller = new PIDController(proportionalParameter,integrativeParameter,0);
         int target = 1;
         if(noiseMaker != null)
             dynamicProcess.setRandomNoise(noiseMaker);

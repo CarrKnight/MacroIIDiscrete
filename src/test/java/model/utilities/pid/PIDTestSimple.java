@@ -6,7 +6,6 @@
 
 package model.utilities.pid;
 
-import ec.util.MersenneTwisterFast;
 import static org.junit.Assert.*;import org.junit.Test;
 
 /**
@@ -29,7 +28,7 @@ public class PIDTestSimple {
     @Test
     public void direction()
     {
-        PIDController controller = new PIDController(1,1,0,new MersenneTwisterFast());
+        PIDController controller = new PIDController(1,1,0);
         controller.setOffset(100, true);
 
         //if the residual is positive, the mv should go up

@@ -7,10 +7,7 @@
 package agents.firm.sales.pricing;
 
 import agents.firm.sales.SalesDepartment;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
-import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
-import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
-import agents.firm.sales.pricing.pid.salesControlWithSmoothedinventoryAndPID;
+import agents.firm.sales.pricing.pid.*;
 import ec.util.MersenneTwisterFast;
 import goods.Good;
 import model.utilities.Deactivatable;
@@ -103,6 +100,7 @@ public interface AskPricingStrategy extends Deactivatable, LogNode {
             rules.add(SalesControlWithFixedInventoryAndPID.class);
             rules.add(salesControlWithSmoothedinventoryAndPID.class);
             rules.add(SimpleFlowSellerPID.class);
+            rules.add(SimpleStockSellerPID.class);
 
 
             //remove not drawables

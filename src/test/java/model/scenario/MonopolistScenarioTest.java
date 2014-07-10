@@ -15,6 +15,7 @@ import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
+import agents.firm.sales.pricing.pid.SimpleStockSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
 import financial.market.Market;
 import goods.UndifferentiatedGoodType;
@@ -705,6 +706,65 @@ public class MonopolistScenarioTest {
                 macroII.schedule.step(macroII);
                 //make sure the labor market is functioning properly!
                 marketSanityCheck(macroII, scenario1);
+            }
+
+            System.out.println(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getYesterdayVolume());
+
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
+            assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice(), 79,1);
+            if(i==0)
+            {
+
+                scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("runs","lamerbuy.csv").toFile());
+                scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs","lamersell.csv").toFile());
+            }
+
+            macroII.finish();
+
+
+
+
+
+
+        }
+
+
+    }
+
+    @Test
+    public void rightPriceAndQuantityTestAsMarginalSimpleInventory()
+    {
+        for(int i=0; i<10; i++)
+        {
+            //we know the profit maximizing equilibrium is q=220, price = 72
+            final MacroII macroII = new MacroII(1404576744501l);
+            System.out.println("----------------------------------------------------------");
+            System.out.println(macroII.seed());
+            System.out.println("----------------------------------------------------------");
+            MonopolistScenario scenario1 = new MonopolistScenario(macroII);
+            //    scenario1.setAlwaysMoving(true);
+            //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
+            macroII.setScenario(scenario1);
+            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
+            scenario1.setAskPricingStrategy(SimpleStockSellerPID.class);
+            if(macroII.random.nextBoolean())
+                scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            else
+                scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+
+
+            //csv writer
+
+
+
+
+            macroII.start();
+
+            while(macroII.schedule.getTime()<5000)
+            {
+                macroII.schedule.step(macroII);
+                System.out.println((macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice()));
+                //make sure the labor market is functioning properly!
             }
 
             System.out.println(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getYesterdayVolume());

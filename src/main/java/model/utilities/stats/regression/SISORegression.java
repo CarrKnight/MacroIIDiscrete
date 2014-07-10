@@ -6,6 +6,8 @@
 
 package model.utilities.stats.regression;
 
+import model.utilities.stats.processes.DynamicProcess;
+
 /**
  * <h4>Description</h4>
  * <p> An interface for the regressions dealing with Single Input Single Output control models. I assume all the implementations are iterative or at the very least can deal with data being fed iteratively.
@@ -22,17 +24,25 @@ package model.utilities.stats.regression;
  * @see
  */
 public interface SISORegression {
-    public void addObservation(float output, float input);
+    /**
+     * add a new observation
+     * @param output the y of the sistem
+     * @param input the input of the system
+     * @param intercepts any other variable that affects y but it is not controlled like u is.
+     */
+    public void addObservation(double output, double input, double... intercepts);
 
-    public float predictNextOutput(float input);
+    public double predictNextOutput(double input, double... intercepts);
 
-    public float getTimeConstant();
+    public double getTimeConstant();
 
-    public float getGain();
+    public double getGain();
 
 
-    public float getIntercept();
+    public double getIntercept();
 
 
     public int getDelay();
+
+    public DynamicProcess generateDynamicProcessImpliedByRegression();
 }

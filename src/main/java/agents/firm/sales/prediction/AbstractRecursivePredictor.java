@@ -261,7 +261,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                     }
                 }
             }
-            //    Preconditions.checkState(!Double.isNaN(regression.getBeta()[1]));
+            //    Preconditions.checkState(!Double.isNaN(regression.getBetas()[1]));
 
         }
 

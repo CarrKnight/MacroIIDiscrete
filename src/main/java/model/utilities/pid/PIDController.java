@@ -6,7 +6,6 @@
 
 package model.utilities.pid;
 
-import ec.util.MersenneTwisterFast;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
@@ -100,17 +99,34 @@ public class PIDController implements Controller {
 
 
 
-    public PIDController(float proportionalGain, float integralGain, float derivativeGain, MersenneTwisterFast random) {
-        this(proportionalGain,integralGain,derivativeGain,0,random);
+    public PIDController(float proportionalGain, float integralGain, float derivativeGain) {
+        this(proportionalGain,integralGain,derivativeGain,0);
 
     }
 
 
-    public PIDController(float proportionalGain, float integralGain, float derivativeGain, int speed, MersenneTwisterFast random) {
+    public PIDController(float proportionalGain, float integralGain, float derivativeGain, int speed) {
         this.proportionalGain = proportionalGain;
         this.integralGain = integralGain;
         this.derivativeGain = derivativeGain;
         this.speed = speed;
+
+    }
+
+    public PIDController(PIDController toClone){
+        this.proportionalGain = toClone.proportionalGain;
+        this.integralGain = toClone.integralGain;
+        this.derivativeGain=toClone.derivativeGain;
+        this.canGoNegative = toClone.canGoNegative;
+        this.controllingFlows = toClone.controllingFlows;
+        this.randomSpeed = toClone.randomSpeed;
+        this.initialPrice = toClone.initialPrice;
+        this.windupStop = toClone.windupStop;
+        this.currentMV = toClone.currentMV;
+        this.newError = toClone.newError;
+        this.oldError = toClone.oldError;
+        this.speed = toClone.speed;
+        this.integral = toClone.integral;
 
     }
 
@@ -123,7 +139,7 @@ public class PIDController implements Controller {
         this.integralGain = integralGain;
         this.derivativeGain = derivativeGain;
 
-        if(Float.isFinite(getCurrentMV()) && Float.isFinite(getOldError()) && Float.isFinite(getNewError()) )
+        if(Float.isFinite(getCurrentMV()) && Float.isFinite(getOldError()) && Float.isFinite(getNewError()) && integralGain != 0 )
             integral = sumOfErrorsNecessaryForFormulaToBeX(getCurrentMV(),initialPrice,getOldError(),getNewError());
     }
 

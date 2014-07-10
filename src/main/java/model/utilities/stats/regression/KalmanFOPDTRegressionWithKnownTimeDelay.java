@@ -8,6 +8,8 @@ package model.utilities.stats.regression;
 
 import com.google.common.base.Preconditions;
 import model.utilities.DelayBin;
+import model.utilities.stats.processes.DynamicProcess;
+import model.utilities.stats.processes.FirstOrderPlusDeadTime;
 
 /**
  * <h4>Description</h4>
@@ -34,40 +36,44 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay implements SISORegression {
     /**
      * the previous ys observed.
      */
-    private float previousOutput = Float.NaN;
+    private double previousOutput = Double.NaN;
 
     /**
      * a delay bin to "delay" the input variable so that it regresses correctly
      */
-    final private DelayBin<Float> delayedInput;
+    final private DelayBin<Double> delayedInput;
 
 
     public KalmanFOPDTRegressionWithKnownTimeDelay(int delay) {
         this(
-              //  new GunnarsonRegularizerDecorator(
                    //     new ExponentialForgettingRegressionDecorator(
-                                new KalmanRecursiveRegression(3)
-         //       ,.995d)     )
+                               new AutovarianceReweighterDecorator(new KalmanRecursiveRegression(3),5,1,2)
                 ,delay,0);
     }
 
-    public KalmanFOPDTRegressionWithKnownTimeDelay(RecursiveLinearRegression regression, int delay, float initialInput) {
+
+
+    public KalmanFOPDTRegressionWithKnownTimeDelay(RecursiveLinearRegression regression, int delay, double initialInput) {
         Preconditions.checkArgument(delay>=0);
         Preconditions.checkArgument(regression.getBeta().length == 3); //should be of dimension 3!
         this.regression = regression;
         delayedInput = new DelayBin<>(delay,initialInput);
     }
 
+
+
+
     @Override
-    public void addObservation(float output, float input){
-        Preconditions.checkArgument(Float.isFinite(output));
-        Preconditions.checkArgument(Float.isFinite(input));
+    public void addObservation(double output, double input, double... intercepts){
+        Preconditions.checkArgument(Double.isFinite(output));
+        Preconditions.checkArgument(Double.isFinite(input));
+        Preconditions.checkArgument(intercepts == null || intercepts.length == 0, "This regression doesn't take additional intercepts");
 
   //      System.out.println("u: " + input + " , y: " + output +", previous: " + previousOutput);
 
         input = delayedInput.addAndRetrieve(input);
         //derivative
-        if(Float.isFinite(previousOutput))
+        if(Double.isFinite(previousOutput))
             regression.addObservation(1, output, 1, input, previousOutput);
 
         previousOutput = output;
@@ -76,36 +82,36 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay implements SISORegression {
 
 
     @Override
-    public float predictNextOutput(float input){
+    public double predictNextOutput(double input, double... intercepts){
 
-        final double[] betas = getBeta();
+        final double[] betas = getBetas();
         input = getDelay() > 0 ? delayedInput.peek() : input;
         return (float) (betas[0] + betas[1] * input + betas[2] * previousOutput);
     }
 
-    public double[] getBeta() {
+    public double[] getBetas() {
         return regression.getBeta();
     }
 
     @Override
-    public float getTimeConstant(){
-        final double[] betas = getBeta();
+    public double getTimeConstant(){
+        final double[] betas = getBetas();
 
         return (float) (betas[2]/(1-betas[2]));
     }
 
     @Override
-    public float getGain()
+    public double getGain()
     {
-        final double[] betas = getBeta();
+        final double[] betas = getBetas();
 
         return (float) (betas[1]*(1+getTimeConstant()));
     }
 
 
     @Override
-    public float getIntercept() {
-        return (float) getBeta()[0];
+    public double getIntercept() {
+        return (float) getBetas()[0];
     }
 
     public int getDelay() {
@@ -120,5 +126,20 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay implements SISORegression {
         sb.append(" Delay=").append(getDelay());
         sb.append('}');
         return sb.toString();
+    }
+
+    /**
+     * Retrieves all that is currently in queue.
+     * @param arrayClass
+     */
+    public Double[] peekInputQueue() {
+        return delayedInput.peekAll(Double.class);
+    }
+
+    @Override
+    public DynamicProcess generateDynamicProcessImpliedByRegression() {
+        final double[] betas = getBetas();
+
+        return new FirstOrderPlusDeadTime(betas[0],getGain(),getTimeConstant(),getDelay(),previousOutput,delayedInput.peekAll(Double.class));
     }
 }

@@ -42,18 +42,28 @@ public class FirstOrderIntegratingPlusDeadTime implements DynamicProcess {
 
 
     public FirstOrderIntegratingPlusDeadTime(double intercept, double gain, double timeConstant, int deadTime) {
+        this(intercept, gain, timeConstant, deadTime,0,0);
+
+    }
+
+    public FirstOrderIntegratingPlusDeadTime(double intercept, double gain, double timeConstant, int deadTime, double yesterdayOutput, double twoDaysAgoOutput, Double... previousInputs) {
         this.intercept = intercept;
         this.gain = gain;
         this.timeConstant = timeConstant;
         Preconditions.checkArgument(deadTime >= 0);
+
+        Preconditions.checkArgument(previousInputs.length <= deadTime);
         inputBin = new DelayBin<>(deadTime,intercept);
-        previousStep[0] = intercept;
-        previousStep[1] = intercept;
+        for(double oldInput: previousInputs)
+            inputBin.addAndRetrieve(oldInput);
+
+        previousStep[0] = yesterdayOutput;
+        previousStep[1] = twoDaysAgoOutput;
 
     }
 
     @Override
-    public double newStep(double todayInput) {
+    public double newStep(double todayInput, double... covariants) {
 
         double oldDifferential = previousStep[0]-previousStep[1];
         double commonDenominator = 1+timeConstant;

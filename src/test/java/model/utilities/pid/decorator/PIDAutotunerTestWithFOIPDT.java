@@ -9,7 +9,6 @@ package model.utilities.pid.decorator;
 import au.com.bytecode.opencsv.CSVReader;
 import model.utilities.pid.ControllerInput;
 import model.utilities.pid.PIDController;
-import model.utilities.pid.tuners.ShinskeyTableFOPIDT;
 import model.utilities.stats.regression.KalmanFOPIDTRegressionWithKnownTimeDelay;
 import org.junit.Assert;
 import org.junit.Test;
@@ -57,7 +56,7 @@ public class PIDAutotunerTestWithFOIPDT
         when(pid.isControllingFlows()).thenReturn(false);
 
         PIDAutotuner pidAutotuner = new PIDAutotuner(pid, KalmanFOPIDTRegressionWithKnownTimeDelay::new,
-                new ShinskeyTableFOPIDT(),null);
+                null);
 
 
 

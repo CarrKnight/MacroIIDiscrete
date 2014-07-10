@@ -8,6 +8,7 @@ package model.utilities;
 
 import com.google.common.base.Preconditions;
 
+import java.lang.reflect.Array;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -32,7 +33,7 @@ public class DelayBin<N extends Number> {
 
     private final int size;
 
-    private final Deque<N> bin = new LinkedList<>();
+    private final Deque<N> bin;
 
     private final N defaultValue;
 
@@ -41,7 +42,18 @@ public class DelayBin<N extends Number> {
         Preconditions.checkState(size>=0);
         this.size = size;
         this.defaultValue = defaultValue;
+        bin = new LinkedList<>();
     }
+
+
+    public DelayBin(DelayBin<N> toCopy){
+        this.size = toCopy.size;
+        this.defaultValue = toCopy.defaultValue;
+        this.bin = new LinkedList<>(toCopy.bin);
+
+
+    }
+
 
     /**
      * add element last and pop first element or return default value if not enough elements in the bin
@@ -71,7 +83,32 @@ public class DelayBin<N extends Number> {
             return defaultValue;
     }
 
+    /**
+     * Retrieves all that is currently in queue.
+     */
+    public N[] peekAll(Class<? extends N> arrayClass){
+
+        @SuppressWarnings("unchecked")
+        N[]toReturn = (N[])Array.newInstance(arrayClass,bin.size());
+
+        int i=0;
+        for(N number: bin)
+        {
+            toReturn[i] = number;
+            i++;
+        }
+
+
+        return toReturn;
+
+    }
+
+
     public int getDelay(){
         return size;
     }
+
+
+
+
 }

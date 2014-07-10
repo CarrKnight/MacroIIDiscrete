@@ -116,9 +116,9 @@ public class FlowAndStockFixedPID extends FixedInventoryControl implements BidPr
     {
         super(dept);
         //create the 2 PIDs
-        flowPIDRoot = new PIDController(proportionalGain,integralGain,derivativeGain, speed, dept.getRandom());
+        flowPIDRoot = new PIDController(proportionalGain,integralGain,derivativeGain, speed);
         flowPID = flowPIDRoot;
-        stockPID = new PIDController(proportionalGain,integralGain,derivativeGain, speed, dept.getRandom());
+        stockPID = new PIDController(proportionalGain,integralGain,derivativeGain, speed);
         stockPID.setCanGoNegative(true); stockPID.setWindupStop(false);
 
 

@@ -8,6 +8,8 @@ package model.utilities.stats.regression;
 
 import com.google.common.base.Preconditions;
 import model.utilities.DelayBin;
+import model.utilities.stats.processes.DynamicProcess;
+import model.utilities.stats.processes.LinearNonDynamicProcess;
 
 /**
  * <h4>Description</h4>
@@ -29,7 +31,7 @@ public class NonDynamicRegression implements SISORegression {
 
     private final RecursiveLinearRegression regression;
 
-    private final DelayBin<Float> delayedInput;
+    private final DelayBin<Double> delayedInput;
 
     public NonDynamicRegression() {
        this(new KalmanRecursiveRegression(2));
@@ -43,37 +45,37 @@ public class NonDynamicRegression implements SISORegression {
     public NonDynamicRegression(RecursiveLinearRegression regression, int delay) {
         Preconditions.checkArgument(regression.getBeta().length == 2);
         this.regression = regression;
-        delayedInput = new DelayBin<>(delay,0f);
+        delayedInput = new DelayBin<>(delay,0d);
     }
 
     @Override
-    public void addObservation(float output, float input) {
-        Preconditions.checkArgument(Float.isFinite(output));
-        Preconditions.checkArgument(Float.isFinite(input));
+    public void addObservation(double output, double input, double... intercepts) {
+        Preconditions.checkArgument(Double.isFinite(output));
+        Preconditions.checkArgument(Double.isFinite(input));
 
-        input = delayedInput.addAndRetrieve(input);
+        double delayed = delayedInput.addAndRetrieve(input);
         //derivative
-        regression.addObservation(1, output, 1, input);
+        regression.addObservation(1, output, 1, delayed);
 
 
     }
 
     @Override
-    public float predictNextOutput(float input) {
+    public double predictNextOutput(double input, double... intercepts) {
 
 
-        return (float) (regression.getBeta()[0] + regression.getBeta()[1] * input);
+        return regression.getBeta()[0] + regression.getBeta()[1] * input;
 
     }
 
     @Override
-    public float getTimeConstant() {
+    public double getTimeConstant() {
         return 0;
     }
 
     @Override
-    public float getGain() {
-        return (float) regression.getBeta()[1];
+    public double getGain() {
+        return regression.getBeta()[1];
     }
 
     @Override
@@ -83,8 +85,8 @@ public class NonDynamicRegression implements SISORegression {
 
 
     @Override
-    public float getIntercept() {
-        return (float) regression.getBeta()[0];
+    public double getIntercept() {
+        return regression.getBeta()[0];
     }
 
 
@@ -93,7 +95,13 @@ public class NonDynamicRegression implements SISORegression {
      * @param target the target to achieve
      * @return the policy that supposedly is associated with it
      */
-    public float impliedMV(float target){
-          return (float) ((target-regression.getBeta()[0])/regression.getBeta()[1]);
+    public double impliedMV(double target){
+          return (target-regression.getBeta()[0])/regression.getBeta()[1];
+    }
+
+
+    @Override
+    public DynamicProcess generateDynamicProcessImpliedByRegression() {
+        return  new LinearNonDynamicProcess(getDelay(),regression.getBeta()[0],regression.getBeta()[1],delayedInput.peekAll(Double.class));
     }
 }

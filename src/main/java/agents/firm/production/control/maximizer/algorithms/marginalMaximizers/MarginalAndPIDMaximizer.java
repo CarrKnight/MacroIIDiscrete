@@ -54,7 +54,7 @@ public class MarginalAndPIDMaximizer extends MarginalMaximizer {
                                     Firm owner, float proportional, float integral, float derivative,
                                    MersenneTwisterFast random) {
         super(hr, control, p, owner);
-        pid = new PIDController(proportional,integral,derivative,random);
+        pid = new PIDController(proportional,integral,derivative);
         pid.setOffset(hr.getPlant().getNumberOfWorkers(), true);
     }
 

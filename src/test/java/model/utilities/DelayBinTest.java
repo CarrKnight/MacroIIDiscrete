@@ -23,11 +23,20 @@ public class DelayBinTest {
             int retrieved = fiver.addAndRetrieve(i);
             Assert.assertEquals(-1, retrieved);
         }
+
+        Integer[] in = fiver.peekAll(Integer.class);
+        Assert.assertEquals(5,in.length);
+        for(int i=0; i<5;i++)
+            Assert.assertEquals(i,(int)in[i]);
+
+
+
         //after you have 5 in the bin, you start retrieving old values
         for (int i = 0; i < 5; i++) {
             int retrieved = fiver.addAndRetrieve(100);
             Assert.assertEquals(i, retrieved);
         }
+
     }
 
 

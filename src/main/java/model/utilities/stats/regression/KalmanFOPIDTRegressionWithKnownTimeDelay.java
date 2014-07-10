@@ -8,6 +8,8 @@ package model.utilities.stats.regression;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import model.utilities.stats.processes.DynamicProcess;
+import model.utilities.stats.processes.FirstOrderIntegratingPlusDeadTime;
 
 /**
  * <h4>Description</h4>
@@ -34,7 +36,12 @@ public class KalmanFOPIDTRegressionWithKnownTimeDelay implements SISORegression
     /**
      * the previous ys observed.
      */
-    private float previousOutput = Float.NaN;
+    private double previousOutput = Double.NaN;
+
+    /**
+     * the previous ys observed.
+     */
+    private double twoStepsAgoOutput = Double.NaN;
 
 
 
@@ -42,12 +49,12 @@ public class KalmanFOPIDTRegressionWithKnownTimeDelay implements SISORegression
         this(
                 //  new GunnarsonRegularizerDecorator(
                 //     new ExponentialForgettingRegressionDecorator(
-                new KalmanRecursiveRegression(3)
+                new AutovarianceReweighterDecorator(new KalmanRecursiveRegression(3),5,1,2)
                 //       ,.995d)     )
                 ,delay,0);
     }
 
-    public KalmanFOPIDTRegressionWithKnownTimeDelay(RecursiveLinearRegression regression, int delay, float initialInput) {
+    public KalmanFOPIDTRegressionWithKnownTimeDelay(RecursiveLinearRegression regression, int delay, double initialInput) {
         Preconditions.checkArgument(delay >= 0);
         Preconditions.checkArgument(regression.getBeta().length == 3); //should be of dimension 3!
         this.regression = new KalmanFOPDTRegressionWithKnownTimeDelay(regression,delay,initialInput);
@@ -55,20 +62,21 @@ public class KalmanFOPIDTRegressionWithKnownTimeDelay implements SISORegression
 
 
     @Override
-    public void addObservation(float output, float input){
-        Preconditions.checkArgument(Float.isFinite(output));
-        Preconditions.checkArgument(Float.isFinite(input));
+    public void addObservation(double output, double input, double... intercepts){
+        Preconditions.checkArgument(Double.isFinite(output));
+        Preconditions.checkArgument(Double.isFinite(input));
 
-        if(Float.isFinite(previousOutput)) {
-            float difference = output - previousOutput;
+        if(Double.isFinite(previousOutput)) {
+            double difference = output - previousOutput;
             //derivative
             regression.addObservation(difference, input);
         }
+        twoStepsAgoOutput = previousOutput;
         previousOutput = output;
     }
 
     @Override
-    public float predictNextOutput(float input){
+    public double predictNextOutput(double input, double... intercepts){
 
         return regression.predictNextOutput(input) + previousOutput;
 
@@ -76,21 +84,21 @@ public class KalmanFOPIDTRegressionWithKnownTimeDelay implements SISORegression
 
 
     @Override
-    public float getTimeConstant() {
+    public double getTimeConstant() {
 
         return regression.getTimeConstant();
 
     }
 
     @Override
-    public float getGain() {
+    public double getGain() {
         return regression.getGain();
 
     }
 
 
     @Override
-    public float getIntercept() {
+    public double getIntercept() {
         return regression.getIntercept();
     }
 
@@ -104,5 +112,13 @@ public class KalmanFOPIDTRegressionWithKnownTimeDelay implements SISORegression
         return Objects.toStringHelper(this)
                 .add("regression", regression)
                 .toString();
+    }
+
+
+    @Override
+    public DynamicProcess generateDynamicProcessImpliedByRegression() {
+         return new FirstOrderIntegratingPlusDeadTime(getIntercept(),getGain(),getTimeConstant(),getDelay(),
+                 previousOutput,twoStepsAgoOutput,regression.peekInputQueue()
+                 );
     }
 }

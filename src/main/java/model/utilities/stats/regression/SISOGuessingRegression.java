@@ -8,6 +8,7 @@ package model.utilities.stats.regression;
 
 import com.google.common.base.Preconditions;
 import model.utilities.filters.ExponentialFilter;
+import model.utilities.stats.processes.DynamicProcess;
 
 import java.util.Arrays;
 import java.util.function.Function;
@@ -48,7 +49,7 @@ public class SISOGuessingRegression implements SISORegression {
     //the linear fallback: a regression with no time dimension.
     private final NonDynamicRegression linearFallback = new NonDynamicRegression();
     //the error of the fallback
-    private final ExponentialFilter<Float> fallbackError;
+    private final ExponentialFilter<Double> fallbackError;
 
     /**
      * basically builds a FOPDT regression if I tell you this is my guessed delay
@@ -70,6 +71,7 @@ public class SISOGuessingRegression implements SISORegression {
         for(int i=0; i<guesses.length; i++)
         {
             errors[i] = new ExponentialFilter<>(exponentialAveragingWeight);
+            errors[i].addObservation(0d); //reset it
             regressions[i] = regressionFromGuessBuilder.apply(guesses[i]);
         }
         fallbackError = new ExponentialFilter<>(exponentialAveragingWeight);
@@ -78,24 +80,24 @@ public class SISOGuessingRegression implements SISORegression {
     }
 
 
-    public void addObservation(float output, float input){
+    public void addObservation(double output, double input, double... intercepts){
 
         //   System.out.println(output + "," + input);
-        Preconditions.checkArgument(Float.isFinite(output));
-        Preconditions.checkArgument(Float.isFinite(input));
+        Preconditions.checkArgument(Double.isFinite(output));
+        Preconditions.checkArgument(Double.isFinite(input));
+
 
         //dynamic regression
         for(int i=0; i< regressions.length; i++)
         {
-            if(Float.isFinite(input) && observations > howManyObservationsBeforeModelSelection)
-                errors[i].addObservation(Math.pow(output - regressions[i].predictNextOutput(input),2));
-            regressions[i].addObservation(output,input);
+            if(Double.isFinite(input) && observations > howManyObservationsBeforeModelSelection)
+                errors[i].addObservation(Math.pow(output - regressions[i].predictNextOutput(input,intercepts),2));
+            regressions[i].addObservation(output,input,intercepts);
         }
         //fallback regressions
-        if(Float.isFinite(input) && observations > howManyObservationsBeforeModelSelection)
-            fallbackError.addObservation((float) Math.pow(output - linearFallback.predictNextOutput(input),2));
-        linearFallback.addObservation(output,input);
-
+        if(Double.isFinite(input) && observations > howManyObservationsBeforeModelSelection)
+            fallbackError.addObservation(Math.pow(output - linearFallback.predictNextOutput(input,intercepts),2));
+        linearFallback.addObservation(output,input,intercepts);
 
 
 
@@ -116,7 +118,7 @@ public class SISOGuessingRegression implements SISORegression {
         }
     }
 
-    public float getTimeConstant(){
+    public double getTimeConstant(){
         //find new minimum
         updateMinimumIfNeeded();
 
@@ -126,13 +128,13 @@ public class SISOGuessingRegression implements SISORegression {
 
 
     @Override
-    public float getIntercept() {
+    public double getIntercept() {
         //find new minimum
         updateMinimumIfNeeded();
 
         return regressions[minimum].getIntercept();  }
 
-    public float getGain()
+    public double getGain()
     {
         //find new minimum
         updateMinimumIfNeeded();
@@ -142,7 +144,7 @@ public class SISOGuessingRegression implements SISORegression {
     }
 
     @Override
-    public float predictNextOutput(float input) {
+    public double predictNextOutput(double input, double... intercepts) {
         //find new minimum
         updateMinimumIfNeeded();
 
@@ -177,7 +179,7 @@ public class SISOGuessingRegression implements SISORegression {
      */
     public boolean isFallbackBetter(){
         updateMinimumIfNeeded();
-        return getTimeConstant() <= .001 || fallbackError.getSmoothedObservation() <= errors[minimum].getSmoothedObservation();
+        return fallbackError.getSmoothedObservation() <= errors[minimum].getSmoothedObservation();
     }
 
     /**
@@ -185,8 +187,18 @@ public class SISOGuessingRegression implements SISORegression {
      * @param target target (that's the y)
      * @return the policy associated with that target!
      */
-    public float fallbackPolicy(float target){
+    public double fallbackPolicy(double target){
         return linearFallback.impliedMV(target);
     }
 
+    @Override
+    public DynamicProcess generateDynamicProcessImpliedByRegression() {
+        //find new minimum
+        updateMinimumIfNeeded();
+
+        if(isFallbackBetter())
+            return linearFallback.generateDynamicProcessImpliedByRegression();
+        else
+            return regressions[minimum].generateDynamicProcessImpliedByRegression();
+    }
 }

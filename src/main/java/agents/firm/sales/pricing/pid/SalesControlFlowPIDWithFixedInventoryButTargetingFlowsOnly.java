@@ -124,7 +124,7 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
         this.department = department;
         this.minimumInventory = minimumInventory;
         this.acceptableInventory = acceptableInventory;
-        controller = new PIDController(proportionalGain,integrativeGain,derivativeGain,random);
+        controller = new PIDController(proportionalGain,integrativeGain,derivativeGain);
         controller.setOffset(50 + random.nextInt(51), true);
         isActive=true;
         state.scheduleSoon(ActionOrder.ADJUST_PRICES,this);

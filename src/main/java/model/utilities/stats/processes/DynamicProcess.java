@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 /**
  * <h4>Description</h4>
  * <p> Can "step" forward, producing a new y
- * <p>
+ * <p> It's usually single input single output but there may be other variables of interest, those are covariants
  * <p>
  * <h4>Notes</h4>
  * Created with IntelliJ
@@ -26,12 +26,14 @@ import java.util.function.Supplier;
 public interface DynamicProcess {
 
 
-    public double newStep(double todayInput);
+    public double newStep(double todayInput, double... covariants);
 
 
     public Supplier<Double> getRandomNoise();
 
     public void setRandomNoise(Supplier<Double> randomNoise);
+
+
 
 
 }

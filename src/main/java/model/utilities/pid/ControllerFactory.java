@@ -46,7 +46,7 @@ public class ControllerFactory
         {
             return (C) new PIDController(
                     model.drawProportionalGain(), model.drawIntegrativeGain(), model.drawDerivativeGain(),
-            model.drawPIDSpeed(), model.random);
+            model.drawPIDSpeed());
         }
         else if(controllerType.equals(CascadePIDController.class))
         {

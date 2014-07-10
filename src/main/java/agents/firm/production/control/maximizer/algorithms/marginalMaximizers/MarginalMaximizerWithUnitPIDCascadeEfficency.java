@@ -77,7 +77,7 @@ public class MarginalMaximizerWithUnitPIDCascadeEfficency extends MarginalMaximi
     public void setupLookup(int daysToAverage,float proportional, float integrative, float derivative, Market market)
     {
         changeLookup = new ChangeLookupMAMarket(market,daysToAverage,getHr().getFirm().getModel());
-        lookAhead = new PIDController(proportional,integrative,derivative,getHr().getRandom());
+        lookAhead = new PIDController(proportional,integrative,derivative);
         lookAhead.setCanGoNegative(true); lookAhead.setWindupStop(false);
         assert lookAhead.getCurrentMV()==0;
     }
