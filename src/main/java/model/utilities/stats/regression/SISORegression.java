@@ -32,6 +32,12 @@ public interface SISORegression {
      */
     public void addObservation(double output, double input, double... intercepts);
 
+
+    /**
+     * get notified that an observation is skipped. This is usually to avoid having fake/wrong y_t - y_{t-1} from not considering the skipped observation
+     */
+    public void skipObservation(double skippedOutput, double skippedInput, double... skippedIntercepts);
+
     public double predictNextOutput(double input, double... intercepts);
 
     public double getTimeConstant();

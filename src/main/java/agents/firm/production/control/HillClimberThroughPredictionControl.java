@@ -491,7 +491,6 @@ public class HillClimberThroughPredictionControl implements PlantControl, PlantL
             long currentProfits = owner.getAggregateProfits();
             float percentDifference = (Math.abs((bestProfits-currentProfits)/(float)bestProfits));
 
-            System.out.println("profits used to be: " + bestProfits +" , but now are: " + currentProfits +", a percentage change of : "  + percentDifference);
 
             //quit this loop if the current profits are a lot different from what we remember
             if((currentProfits>0 && bestProfits==0) || bestProfits != 0 && percentDifference>.05)

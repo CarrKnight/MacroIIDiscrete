@@ -254,7 +254,7 @@ public class MonopolistScenario extends Scenario {
      * create a 100 dummy buyers
      */
     private void createDemand() {
-        for(int i=1; i< 100; i++)
+        for(int i=1; i< Math.max(100,demandIntercept+1); i++)
         {
 
 

@@ -61,11 +61,15 @@ public class SimpleStockSellerPID extends BaseAskPricingStrategy implements Step
         this.tunedController.setAdditionalInterceptsExtractor(controllerInput -> new double[]{controllerInput.getFlowTarget()});
         //keep it paused until you start piling up stuff
         tunedController.setPaused(true);
-
+        tunedController.setExcludeLinearFallback(true);
         tunedController.setAfterHowManyDaysShouldTune(200);
+
         //random initial price
         price = sales.getRandom().nextInt(100);
         tunedController.setOffset(price, true);
+        tunedController.setValidateInput(controllerInput -> !(department.numberOfObservations() == 0 ||
+                department.getTodayOutflow() == 0 ||
+                department.getHowManyToSell() == 0));
 
         //schedule yourself
         sales.getFirm().getModel().scheduleSoon(ActionOrder.ADJUST_PRICES, this);
@@ -81,7 +85,6 @@ public class SimpleStockSellerPID extends BaseAskPricingStrategy implements Step
                 department.getHowManyToSell()),true,(MacroII)state,this,ActionOrder.ADJUST_PRICES);
         price = Math.round(tunedController.getCurrentMV());
 
-        System.out.println("target Inv: " + targetInventory + ", current inv: " + department.getHowManyToSell() );
 
         handleNewEvent(new LogEvent(this, LogLevel.DEBUG,
                 "PID policy change, inventory: {}, target:{}, newprice:{}",department.getHowManyToSell(),targetInventory,tunedController.getCurrentMV()));

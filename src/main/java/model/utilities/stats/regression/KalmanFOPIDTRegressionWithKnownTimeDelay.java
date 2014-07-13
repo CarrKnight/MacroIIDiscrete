@@ -69,10 +69,27 @@ public class KalmanFOPIDTRegressionWithKnownTimeDelay implements SISORegression
         if(Double.isFinite(previousOutput)) {
             double difference = output - previousOutput;
             //derivative
-            regression.addObservation(difference, input);
+            regression.addObservation(difference, input,intercepts);
         }
         twoStepsAgoOutput = previousOutput;
         previousOutput = output;
+    }
+
+
+    /**
+     * get notified that an observation is skipped. This is usually to avoid having fake/wrong y_t - y_{t-1} from not considering the skipped observation
+     *
+     * @param skippedOutput
+     * @param skippedInput
+     * @param skippedIntercepts
+     */
+    @Override
+    public void skipObservation(double skippedOutput, double skippedInput, double... skippedIntercepts) {
+        regression.skipObservation(skippedOutput - previousOutput,skippedInput,skippedIntercepts);
+
+
+        twoStepsAgoOutput = previousOutput;
+        previousOutput = skippedOutput;
     }
 
     @Override

@@ -316,13 +316,13 @@ public class MonopolistScenarioTest {
 
         //run the tests on failures first
         LinkedList<Long> previouslyFailedSeeds = new LinkedList<>();
-        previouslyFailedSeeds.add(1386003448078l);
-        previouslyFailedSeeds.add(1386001620319l);
-        previouslyFailedSeeds.add(1386000975892l);
-        previouslyFailedSeeds.add(1385965894319l);
-        previouslyFailedSeeds.add(1386007873067l);
-        previouslyFailedSeeds.add(1386019418405l);
-        previouslyFailedSeeds.add(1386020834125l);
+     //   previouslyFailedSeeds.add(1386003448078l);
+     //   previouslyFailedSeeds.add(1386001620319l);
+    //    previouslyFailedSeeds.add(1386000975892l);
+   //     previouslyFailedSeeds.add(1385965894319l);
+  //      previouslyFailedSeeds.add(1386007873067l);
+  //      previouslyFailedSeeds.add(1386019418405l);
+   //     previouslyFailedSeeds.add(1386020834125l);
         previouslyFailedSeeds.add(1386089949520l);
         previouslyFailedSeeds.add(1386194999853l);
         previouslyFailedSeeds.add(1386263994865l);
@@ -362,7 +362,7 @@ public class MonopolistScenarioTest {
             scenario1.setWorkersToBeRehiredEveryDay(true);
             //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
             if(macroII.random.nextBoolean())
-                scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
+                scenario1.setAskPricingStrategy(SimpleStockSellerPID.class);
             else
                 scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
 

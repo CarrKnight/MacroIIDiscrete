@@ -80,6 +80,18 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay implements SISORegression {
 
     }
 
+    /**
+     * get notified that an observation is skipped. This is usually to avoid having fake/wrong y_t - y_{t-1} from not considering the skipped observation
+     *
+     * @param skippedOutput
+     * @param skippedInput
+     * @param skippedIntercepts
+     */
+    @Override
+    public void skipObservation(double skippedOutput, double skippedInput, double... skippedIntercepts) {
+        delayedInput.addAndRetrieve(skippedInput);
+        previousOutput = skippedOutput;
+    }
 
     @Override
     public double predictNextOutput(double input, double... intercepts){

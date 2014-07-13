@@ -60,6 +60,13 @@ public class NonDynamicRegression implements SISORegression {
 
     }
 
+    /**
+     * ignored
+     */
+    @Override
+    public void skipObservation(double skippedOutput, double skippedInput, double... skippedIntercepts) {
+    }
+
     @Override
     public double predictNextOutput(double input, double... intercepts) {
 

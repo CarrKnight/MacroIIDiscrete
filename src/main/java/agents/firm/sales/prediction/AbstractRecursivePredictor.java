@@ -235,11 +235,13 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                         else
                             observation = Doubles.concat(new double[]{1},laggedIndependentVariable);
 
-
+            //            if(this instanceof RecursiveSalePredictor)
 
                         //add it to the regression (DeltaP ~ 1 + laggedP + laggedX)
                         if(!usingWeights || weight > .001)
                         {
+
+
                             regression.addObservation(weight, price, observation);
                             numberOfValidObservations++;
 

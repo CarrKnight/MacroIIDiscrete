@@ -92,7 +92,7 @@ public class PIGradientDescent
 
         double originalITAE = computeITAE(new PIDController(originalController),systemRegression.generateDynamicProcessImpliedByRegression(),
                 (float) desiredTarget,howManyStepsToSimulate,covariants);
-        System.out.println(originalITAE);
+     //   System.out.println(originalITAE);
 
         /***
          *     .----------------.
@@ -107,10 +107,10 @@ public class PIGradientDescent
          *    | '--------------' |
          *     '----------------'
          */
-        PIDController pIncreasedPID = new PIDController(originalController); pIncreasedPID.setProportionalGain((float) (originalController.getProportionalGain()+derivativeStepSize));
+        PIDController pIncreasedPID = new PIDController(originalController); pIncreasedPID.setGains((float) (originalController.getProportionalGain()+derivativeStepSize),originalController.getIntegralGain(),originalController.getDerivativeGain());
         double pIncreasedITAE = computeITAE(pIncreasedPID,systemRegression.generateDynamicProcessImpliedByRegression(),
                 (float) desiredTarget,howManyStepsToSimulate,covariants);
-        PIDController pDecreasedPID = new PIDController(originalController); pDecreasedPID.setProportionalGain((float) (originalController.getProportionalGain()-derivativeStepSize));
+        PIDController pDecreasedPID = new PIDController(originalController); pDecreasedPID.setGains((float) (originalController.getProportionalGain()-derivativeStepSize),originalController.getIntegralGain(),originalController.getDerivativeGain());
         double pDecreasedITAE = computeITAE(pDecreasedPID,systemRegression.generateDynamicProcessImpliedByRegression(),
                 (float) desiredTarget,howManyStepsToSimulate,covariants);
         double pDerivative = (pIncreasedITAE-pDecreasedITAE)/(2*derivativeStepSize);
@@ -127,10 +127,10 @@ public class PIGradientDescent
          *    | '--------------' |
          *     '----------------'
          */
-        PIDController iIncreasedPID = new PIDController(originalController); iIncreasedPID.setIntegralGain((float) (originalController.getIntegralGain()+derivativeStepSize));
+        PIDController iIncreasedPID = new PIDController(originalController); iIncreasedPID.setGains(originalController.getProportionalGain(),(float) (originalController.getIntegralGain()+derivativeStepSize),originalController.getDerivativeGain());
         double iIncreasedITAE = computeITAE(iIncreasedPID,systemRegression.generateDynamicProcessImpliedByRegression(),
                 (float) desiredTarget,howManyStepsToSimulate,covariants);
-        PIDController iDecreasedPID = new PIDController(originalController); iDecreasedPID.setIntegralGain((float) (originalController.getIntegralGain()-derivativeStepSize));
+        PIDController iDecreasedPID = new PIDController(originalController); iDecreasedPID.setGains(originalController.getProportionalGain(),(float) (originalController.getIntegralGain()-derivativeStepSize),originalController.getDerivativeGain());
         double iDecreasedITAE = computeITAE(iDecreasedPID,systemRegression.generateDynamicProcessImpliedByRegression(),
                 (float) desiredTarget,howManyStepsToSimulate,covariants);
         double iDerivative = (iIncreasedITAE-iDecreasedITAE)/(2*derivativeStepSize);

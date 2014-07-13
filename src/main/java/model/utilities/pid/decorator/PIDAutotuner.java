@@ -16,8 +16,8 @@ import model.utilities.stats.regression.SISOGuessingRegression;
 import model.utilities.stats.regression.SISORegression;
 import sim.engine.Steppable;
 
-import java.util.Arrays;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * <h4>Description</h4>
@@ -48,6 +48,12 @@ public class PIDAutotuner extends ControllerDecorator {
     private int afterHowManyDaysShouldTune = 200;
 
     private int observations = 0;
+
+    /**
+     * returns true whenever the new observation is "valid" as in, we should learn from this.
+     * By default accepts everyhing
+     */
+    private Predicate<ControllerInput> validateInput = controllerInput -> true;
 
 
     float fallbackPolicy = Float.NaN;
@@ -114,31 +120,30 @@ public class PIDAutotuner extends ControllerDecorator {
     @Override
     public void adjust(ControllerInput input, boolean isActive, MacroII simState, Steppable user, ActionOrder phase) {
 
-        if(!paused && (linkedDepartment!=null && linkedDepartment.hasTradedAtLeastOnce()) )
-        {
-            learn(input);
-        }
-        if(observations > afterHowManyDaysShouldTune && notStuckAtEquilibrium()) {
+        final boolean validInput = !paused &&
+                (linkedDepartment != null && linkedDepartment.hasTradedAtLeastOnce())
+                && validateInput.test(input);
+
+        learn(input,!validInput );
+
+        if(observations > afterHowManyDaysShouldTune) {
 
             //if it's time to tune, run a gradient descent and try to minimize ITAE given your best guess of what the real model is.
 
-     /*       final float processGain = (float) regression.getGain();
-            final float timeConstant = (float) regression.getTimeConstant();
-            final float intercept = (float) regression.getIntercept();
-            final int delay = regression.getDelay();
-
-            System.out.println("regression results: kp: " +processGain + ", Tm: " + timeConstant + ", delay: " + delay +  ",intercept: " + intercept);
-            */
-
-            PIGradientDescent descent = new PIGradientDescent(regression,decoratedCasted,isControllingFlows() ? input.getFlowTarget() : input.getStockTarget(),
-                    additionalInterceptsExtractor == null ? null : additionalInterceptsExtractor.apply(input));
-
-            final PIGradientDescent.PIDGains newGains = descent.getNewGains();
-            System.out.println(newGains);
-            decoratedCasted.setGains(newGains.getProportional(),newGains.getIntegral(),newGains.getDerivative());
+            tune(input);
         }
 
         super.adjust(input, isActive, simState, user, phase);
+    }
+
+    private void tune(ControllerInput input) {
+        PIGradientDescent descent = new PIGradientDescent(regression,decoratedCasted,isControllingFlows() ? input.getFlowTarget() : input.getStockTarget(),
+                additionalInterceptsExtractor == null ? null : additionalInterceptsExtractor.apply(input));
+
+        final PIGradientDescent.PIDGains newGains = descent.getNewGains();
+        System.out.println(newGains);
+        System.out.println(regression);
+        decoratedCasted.setGains(newGains.getProportional(),newGains.getIntegral(),newGains.getDerivative());
     }
 
     private boolean notStuckAtEquilibrium() {
@@ -158,20 +163,24 @@ public class PIDAutotuner extends ControllerDecorator {
             return super.getCurrentMV();
     }
 
-    private void learn(ControllerInput input) {
+    private void learn(ControllerInput input, boolean ignoreThisObservation) {
 
         final double[] additionalVariables = additionalInterceptsExtractor == null ? null : additionalInterceptsExtractor.apply(input);
+        double output =   decoratedCasted.isControllingFlows()? input.getFlowInput() : input.getStockInput();
+        double policy =   decoratedCasted.getCurrentMV();
 
-        if (isControllingFlows()) {
-            regression.addObservation(input.getFlowInput(), getCurrentMV(),additionalVariables);
+        if(ignoreThisObservation) {
+            regression.skipObservation(output, policy, additionalVariables);
+        }
+        else
+        {
+            regression.addObservation(output, policy, additionalVariables);
+            observations++;
 
         }
-        else {
-            System.out.println("learning: stock: " + input.getStockInput() + ", policy: " + getCurrentMV() + ", z: " + Arrays.toString(additionalVariables));
-            regression.addObservation(input.getStockInput(), getCurrentMV(),additionalVariables);
-        }
-        observations++;
+
     }
+
 
     public boolean isControllingFlows() {
         return decoratedCasted.isControllingFlows();
@@ -187,6 +196,7 @@ public class PIDAutotuner extends ControllerDecorator {
 
     public void setAfterHowManyDaysShouldTune(int afterHowManyDaysShouldTune) {
         this.afterHowManyDaysShouldTune = afterHowManyDaysShouldTune;
+
     }
 
     public int getDelay() {
@@ -216,5 +226,13 @@ public class PIDAutotuner extends ControllerDecorator {
 
     public void setAdditionalInterceptsExtractor(Function<ControllerInput, double[]> additionalInterceptsExtractor) {
         this.additionalInterceptsExtractor = additionalInterceptsExtractor;
+    }
+
+    public void setValidateInput(Predicate<ControllerInput> validateInput) {
+        this.validateInput = validateInput;
+    }
+
+    public void setExcludeLinearFallback(boolean excludeLinearFallback) {
+        regression.setExcludeLinearFallback(excludeLinearFallback);
     }
 }

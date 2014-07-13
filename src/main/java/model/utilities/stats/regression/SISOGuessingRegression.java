@@ -42,7 +42,7 @@ public class SISOGuessingRegression implements SISORegression {
 
     private boolean minimumToBeRevalued = false;
 
-    private int howManyObservationsBeforeModelSelection = 100;
+    private int howManyObservationsBeforeModelSelection = 150;
 
     private int observations = 0;
 
@@ -55,6 +55,11 @@ public class SISOGuessingRegression implements SISORegression {
      * basically builds a FOPDT regression if I tell you this is my guessed delay
      */
     public final  static Function<Integer,SISORegression> DEFAULT_REGRESSION_FROM_GUESS_BUILDER = KalmanFOPDTRegressionWithKnownTimeDelay::new;
+
+    /**
+     * if this is set to true, the linear fallback is always ignored
+     */
+    private boolean excludeLinearFallback = false;
 
 
     public SISOGuessingRegression(int... guesses) {
@@ -107,6 +112,22 @@ public class SISOGuessingRegression implements SISORegression {
     }
 
 
+    /**
+     * get notified that an observation is skipped. This is usually to avoid having fake/wrong y_t - y_{t-1} from not considering the skipped observation
+     *
+     * @param skippedOutput
+     * @param skippedInput
+     * @param skippedIntercepts
+     */
+    @Override
+    public void skipObservation(double skippedOutput, double skippedInput, double... skippedIntercepts) {
+        Preconditions.checkArgument(Double.isFinite(skippedOutput));
+        Preconditions.checkArgument(Double.isFinite(skippedInput));
+        for (SISORegression regression : regressions)
+            regression.skipObservation(skippedOutput, skippedInput, skippedIntercepts);
+        linearFallback.skipObservation(skippedOutput, skippedInput, skippedIntercepts);
+
+    }
 
     private void updateMinimumIfNeeded() {
         if(minimumToBeRevalued) {
@@ -169,7 +190,10 @@ public class SISOGuessingRegression implements SISORegression {
     @Override
     public String toString() {
         updateMinimumIfNeeded();
-        return regressions[minimum].toString();
+        if(isFallbackBetter())
+            return linearFallback.toString();
+        else
+            return regressions[minimum].toString();
     }
 
 
@@ -178,6 +202,8 @@ public class SISOGuessingRegression implements SISORegression {
      * @return
      */
     public boolean isFallbackBetter(){
+        if(excludeLinearFallback)
+            return false;
         updateMinimumIfNeeded();
         return fallbackError.getSmoothedObservation() <= errors[minimum].getSmoothedObservation();
     }
@@ -200,5 +226,22 @@ public class SISOGuessingRegression implements SISORegression {
             return linearFallback.generateDynamicProcessImpliedByRegression();
         else
             return regressions[minimum].generateDynamicProcessImpliedByRegression();
+    }
+
+
+    public int getHowManyObservationsBeforeModelSelection() {
+        return howManyObservationsBeforeModelSelection;
+    }
+
+    public void setHowManyObservationsBeforeModelSelection(int howManyObservationsBeforeModelSelection) {
+        this.howManyObservationsBeforeModelSelection = howManyObservationsBeforeModelSelection;
+    }
+
+    public boolean isExcludeLinearFallback() {
+        return excludeLinearFallback;
+    }
+
+    public void setExcludeLinearFallback(boolean excludeLinearFallback) {
+        this.excludeLinearFallback = excludeLinearFallback;
     }
 }

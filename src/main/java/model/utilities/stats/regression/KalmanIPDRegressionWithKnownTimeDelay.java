@@ -72,14 +72,30 @@ public class KalmanIPDRegressionWithKnownTimeDelay implements SISORegression {
         Preconditions.checkArgument(intercepts.length == 1); //there should be an additional item!
 
         input = delayedInput.addAndRetrieve(input);
-        //derivative
+
         if(Double.isFinite(previousOutput))
+            //netflow = inflow - outflow
+            //netflow - inflow = -outflow
             regression.addObservation(1, output-previousOutput-intercepts[0],1, input);
         //basically we regress deltay on u: changes on inventory ~ inflow + outflow
         //one of the flow is from "outside" the department. The other is controlled by its policy.
         previousOutput = output;
 
 
+    }
+
+
+    /**
+     * get notified that an observation is skipped. This is usually to avoid having fake/wrong y_t - y_{t-1} from not considering the skipped observation
+     *
+     * @param skippedOutput
+     * @param skippedInput
+     * @param skippedIntercepts
+     */
+    @Override
+    public void skipObservation(double skippedOutput, double skippedInput, double... skippedIntercepts) {
+        delayedInput.addAndRetrieve(skippedInput);
+        previousOutput = skippedOutput;
     }
 
     @Override
@@ -118,5 +134,10 @@ public class KalmanIPDRegressionWithKnownTimeDelay implements SISORegression {
         final double[] beta = regression.getBeta();
 
         return new IntegratorPlusDeadTime(beta[0],beta[1],1,previousOutput,getDelay(),delayedInput.peekAll(Double.class));
+    }
+
+    @Override
+    public String toString() {
+        return "y_t = y_{t-1} + " + regression.getBeta()[0] + " + " + regression.getBeta()[1] + "* u(t-"+getDelay()+")";
     }
 }
