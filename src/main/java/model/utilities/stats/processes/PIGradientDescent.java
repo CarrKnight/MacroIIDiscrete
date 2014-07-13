@@ -43,11 +43,13 @@ public class PIGradientDescent
 
     private final double maximizationStepSize;
 
+    private final double stepSizeLimit = .3;
+
     private final double covariants[];
 
 
     public PIGradientDescent(SISORegression systemRegression, PIDController originalController, double desiredTarget, double... covariants) {
-        this(systemRegression,originalController,desiredTarget,100,.01,.01,covariants);
+        this(systemRegression,originalController,desiredTarget,100,.01,.0001,covariants);
     }
 
     public PIGradientDescent(SISORegression systemRegression, PIDController originalController, double desiredTarget, int howManyStepsToSimulate,
@@ -138,8 +140,10 @@ public class PIGradientDescent
 
 
         //return x + alpha * nablaX
-        return new PIDGains( (float)(originalController.getProportionalGain() - maximizationStepSize * Math.signum(pDerivative)),
-                (float) (originalController.getIntegralGain() - maximizationStepSize *  Math.signum(iDerivative)),
+        final double pStep = Math.signum(pDerivative) * Math.min(Math.abs(maximizationStepSize * pDerivative),stepSizeLimit);
+        final double iStep = Math.signum(iDerivative) * Math.min(Math.abs(maximizationStepSize * iDerivative),stepSizeLimit);
+        return new PIDGains( (float)(originalController.getProportionalGain() - pStep),
+                (float) (originalController.getIntegralGain() - iStep),
                 originalController.getDerivativeGain());
 
 
