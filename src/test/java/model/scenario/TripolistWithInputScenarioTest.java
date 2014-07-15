@@ -90,7 +90,7 @@ public class TripolistWithInputScenarioTest {
     @Test
     public void monopolistMarginal()
     {
-        for(int i=0; i<5; i++)
+        for(int i=0; i<50; i++)
         {
             //we know the profit maximizing equilibrium is q=220, price = 72
             final MacroII macroII = new MacroII(System.currentTimeMillis());

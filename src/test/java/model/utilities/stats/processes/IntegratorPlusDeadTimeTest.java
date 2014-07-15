@@ -18,10 +18,12 @@ public class IntegratorPlusDeadTimeTest {
         IntegratorPlusDeadTime process = new IntegratorPlusDeadTime(2,-2,.90,0, 0);
 
         double y=0;
-        for(int i=0; i<14; i++)
-            y= process.newStep(i,5);
+        for(int i=0; i<14; i++) {
+            y = process.newStep(i, 5);
+            System.out.println(y);
+        }
 
-        Assert.assertEquals(y,-58.630377,.00001);
+        Assert.assertEquals(y,-71.7673396284,.00001);
 
 
     }

@@ -111,4 +111,9 @@ public class NonDynamicRegression implements SISORegression {
     public DynamicProcess generateDynamicProcessImpliedByRegression() {
         return  new LinearNonDynamicProcess(getDelay(),regression.getBeta()[0],regression.getBeta()[1],delayedInput.peekAll(Double.class));
     }
+
+    public String toString() {
+        double[] beta = regression.getBeta();
+        return "nonlinear: y = " + beta[0] + " + " + beta[1] + " * x";
+    }
 }

@@ -56,7 +56,7 @@ public class LinearNonDynamicProcess implements DynamicProcess {
                 sum+=covariant;
         double error = randomNoise == null ? 0 : randomNoise.get();
 
-        return intercept + slope * delayBin.addAndRetrieve(todayInput) + sum;
+        return intercept + slope * delayBin.addAndRetrieve(todayInput) + sum + error;
 
     }
 
