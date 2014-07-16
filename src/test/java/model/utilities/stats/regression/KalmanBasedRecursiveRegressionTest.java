@@ -31,7 +31,7 @@ import java.util.List;
  * @version 2013-11-10
  * @see
  */
-public class RecursiveLinearRegressionTest {
+public class KalmanBasedRecursiveRegressionTest {
 
     private double[] x;
     private double[] y;

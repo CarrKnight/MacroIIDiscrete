@@ -37,7 +37,7 @@ public class ExponentialForgettingRegressionDecoratorTest {
     @Test
     public void testRegularize() throws Exception {
 
-        RecursiveLinearRegression regression = mock(RecursiveLinearRegression.class);
+        KalmanBasedRecursiveRegression regression = mock(KalmanBasedRecursiveRegression.class);
         double[][] pMatrix = new double[3][3];
         int number = 0;
         for(int i=0; i<3; i++)

@@ -14,7 +14,7 @@ import model.utilities.logs.*;
 import model.utilities.stats.regression.ExponentialForgettingRegressionDecorator;
 import model.utilities.stats.regression.GunnarsonRegularizerDecorator;
 import model.utilities.stats.regression.KalmanRecursiveRegression;
-import model.utilities.stats.regression.RecursiveLinearRegression;
+import model.utilities.stats.regression.KalmanBasedRecursiveRegression;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -153,7 +153,7 @@ public class AbstractOpenLoopRecursivePredictor implements Steppable, Deactivata
         return delegate.defaultPriceWithNoObservations();
     }
 
-    public void setRegression(RecursiveLinearRegression regression) {
+    public void setRegression(KalmanBasedRecursiveRegression regression) {
         delegate.setRegression(regression);
     }
 

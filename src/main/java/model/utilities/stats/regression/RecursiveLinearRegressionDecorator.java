@@ -21,11 +21,11 @@ package model.utilities.stats.regression;
  * @version 2013-12-06
  * @see
  */
-public abstract class RecursiveLinearRegressionDecorator implements RecursiveLinearRegression {
+public abstract class RecursiveLinearRegressionDecorator implements KalmanBasedRecursiveRegression {
 
-    private final RecursiveLinearRegression decorated;
+    private final KalmanBasedRecursiveRegression decorated;
 
-    public RecursiveLinearRegressionDecorator(RecursiveLinearRegression decorated) {
+    public RecursiveLinearRegressionDecorator(KalmanBasedRecursiveRegression decorated) {
         this.decorated = decorated;
     }
 
@@ -70,7 +70,7 @@ public abstract class RecursiveLinearRegressionDecorator implements RecursiveLin
         return decorated.getTrace();
     }
 
-    public RecursiveLinearRegression getDecorated() {
+    public KalmanBasedRecursiveRegression getDecorated() {
         return decorated;
     }
 

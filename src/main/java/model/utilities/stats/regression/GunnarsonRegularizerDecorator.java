@@ -27,11 +27,11 @@ import Jama.Matrix;
 public class GunnarsonRegularizerDecorator extends RecursiveLinearRegressionDecorator {
     private double mu =0.00001d;
 
-    public GunnarsonRegularizerDecorator(RecursiveLinearRegression decorated) {
+    public GunnarsonRegularizerDecorator(KalmanBasedRecursiveRegression decorated) {
         super(decorated);
     }
 
-    public GunnarsonRegularizerDecorator(RecursiveLinearRegression decorated, double mu) {
+    public GunnarsonRegularizerDecorator(KalmanBasedRecursiveRegression decorated, double mu) {
         super(decorated);
         this.mu = mu;
     }

@@ -8,17 +8,17 @@ package model.utilities.stats.regression;
 
 /**
  * <h4>Description</h4>
- * <p/>
- * <p/>
- * <p/>
+ * <p> The simplest idea of recursive regression, you can add on observation at time and hopefully you'll get betas for this.
+ * <p>
+ * <p>
  * <h4>Notes</h4>
  * Created with IntelliJ
- * <p/>
- * <p/>
+ * <p>
+ * <p>
  * <h4>References</h4>
  *
  * @author carrknight
- * @version 2013-12-06
+ * @version 2014-07-15
  * @see
  */
 public interface RecursiveLinearRegression {
@@ -27,14 +27,4 @@ public interface RecursiveLinearRegression {
     double[] getBeta();
 
     double[] setBeta(int index, double newValue);
-
-    double getNoiseVariance();
-
-    void setNoiseVariance(double noiseVariance);
-
-    double[][] getpCovariance();
-
-    void setPCovariance(double[][] pCovariance);
-
-    double getTrace();
 }

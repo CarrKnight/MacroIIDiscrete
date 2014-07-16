@@ -27,7 +27,7 @@ import java.util.Arrays;
  * @version 2013-11-10
  * @see
  */
-public class KalmanRecursiveRegression implements RecursiveLinearRegression {
+public class KalmanRecursiveRegression implements KalmanBasedRecursiveRegression {
 
     final private int dimensions;
 

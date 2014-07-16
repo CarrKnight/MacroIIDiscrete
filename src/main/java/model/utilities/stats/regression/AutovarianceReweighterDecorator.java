@@ -38,7 +38,7 @@ public class AutovarianceReweighterDecorator extends RecursiveLinearRegressionDe
      */
     private float scaleFactor = Float.NaN;
 
-    public AutovarianceReweighterDecorator(RecursiveLinearRegression decorated, int observationWindow, int... independentVariablesToObserve) {
+    public AutovarianceReweighterDecorator(KalmanBasedRecursiveRegression decorated, int observationWindow, int... independentVariablesToObserve) {
         super(decorated);
         dependentVariableVariance = new MovingVariance(observationWindow);
         this.independentVariablesToObserve = independentVariablesToObserve;

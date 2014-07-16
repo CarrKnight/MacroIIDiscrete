@@ -19,7 +19,7 @@ import model.utilities.stats.collectors.DataStorage;
 import model.utilities.stats.regression.ExponentialForgettingRegressionDecorator;
 import model.utilities.stats.regression.GunnarsonRegularizerDecorator;
 import model.utilities.stats.regression.KalmanRecursiveRegression;
-import model.utilities.stats.regression.RecursiveLinearRegression;
+import model.utilities.stats.regression.KalmanBasedRecursiveRegression;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -112,7 +112,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
     /**
      * the linear regression object we are going to update
      */
-    private RecursiveLinearRegression regression;
+    private KalmanBasedRecursiveRegression regression;
 
     /**
      * how much time it takes for the dependent variable to affect price?
@@ -487,7 +487,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
         return regression.getBeta().clone();
     }
 
-    public RecursiveLinearRegression getRegression() {
+    public KalmanBasedRecursiveRegression getRegression() {
         return regression;
     }
 
@@ -503,7 +503,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
         this.usingWeights = usingWeights;
     }
 
-    public void setRegression(RecursiveLinearRegression regression) {
+    public void setRegression(KalmanBasedRecursiveRegression regression) {
         this.regression = regression;
     }
 

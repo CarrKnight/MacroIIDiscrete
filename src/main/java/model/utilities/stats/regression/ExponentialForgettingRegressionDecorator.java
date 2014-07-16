@@ -26,11 +26,11 @@ public class ExponentialForgettingRegressionDecorator extends RecursiveLinearReg
 
     private double lambda = .99d;
 
-    public ExponentialForgettingRegressionDecorator(RecursiveLinearRegression decorated) {
+    public ExponentialForgettingRegressionDecorator(KalmanBasedRecursiveRegression decorated) {
         super(decorated);
     }
 
-    public ExponentialForgettingRegressionDecorator(RecursiveLinearRegression decorated, double lambda) {
+    public ExponentialForgettingRegressionDecorator(KalmanBasedRecursiveRegression decorated, double lambda) {
         super(decorated);
         this.lambda = lambda;
     }

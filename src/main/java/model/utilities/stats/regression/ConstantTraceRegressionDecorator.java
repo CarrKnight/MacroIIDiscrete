@@ -26,11 +26,11 @@ public class ConstantTraceRegressionDecorator extends RecursiveLinearRegressionD
     private double constant = 1000;
 
 
-    public ConstantTraceRegressionDecorator(RecursiveLinearRegression decorated) {
+    public ConstantTraceRegressionDecorator(KalmanBasedRecursiveRegression decorated) {
         super(decorated);
     }
 
-    public ConstantTraceRegressionDecorator(RecursiveLinearRegression decorated, double constant) {
+    public ConstantTraceRegressionDecorator(KalmanBasedRecursiveRegression decorated, double constant) {
         super(decorated);
         this.constant = constant;
     }

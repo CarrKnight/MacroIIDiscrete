@@ -23,7 +23,7 @@ public class AutovarianceReweighterDecoratorTest {
     public void deathToEquilibriumLearning() throws Exception {
 
         ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
-        RecursiveLinearRegression decorated = mock(RecursiveLinearRegression.class);
+        KalmanBasedRecursiveRegression decorated = mock(KalmanBasedRecursiveRegression.class);
         //only care about y and the first non-intercept
         AutovarianceReweighterDecorator decorator = new AutovarianceReweighterDecorator(decorated,5,1);
 
