@@ -34,7 +34,8 @@ public class NonDynamicRegression implements SISORegression {
     private final DelayBin<Double> delayedInput;
 
     public NonDynamicRegression() {
-       this(new KalmanRecursiveRegression(2));
+       this( new SelectiveForgettingDecorator(
+               new KalmanRecursiveRegression(2),3000,.99));
     }
 
     public NonDynamicRegression(RecursiveLinearRegression regression) {

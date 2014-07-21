@@ -8,6 +8,7 @@ package model.utilities.stats.regression;
 
 import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
+import com.google.common.base.Objects;
 
 /**
  * <h4>Description</h4>
@@ -29,19 +30,19 @@ public class SelectiveForgettingDecorator extends RecursiveLinearRegressionDecor
 
 
 
-    private final double minEigenvalue;
+    private final double centerEigenvector;
 
     private final double forgettingFactor;
 
 
-    public SelectiveForgettingDecorator(KalmanBasedRecursiveRegression decorated, double minEigenvalue, double forgettingFactor) {
+    public SelectiveForgettingDecorator(KalmanBasedRecursiveRegression decorated, double centerEigenvector, double forgettingFactor) {
         super(decorated);
-        this.minEigenvalue = minEigenvalue;
+        this.centerEigenvector = centerEigenvector;
         this.forgettingFactor = forgettingFactor;
     }
 
     public SelectiveForgettingDecorator(KalmanBasedRecursiveRegression decorated) {
-        this(decorated,0.5,.98);
+        this(decorated,1000,.99);
     }
 
 
@@ -64,7 +65,9 @@ public class SelectiveForgettingDecorator extends RecursiveLinearRegressionDecor
         //bind the eigenvalues
 
         for (int i = 0; i < realEigenvalues.length; i++) {
-            realEigenvalues[i] = realEigenvalues[i] > minEigenvalue ? realEigenvalues[i] : realEigenvalues[i] / .98;
+            realEigenvalues[i] = realEigenvalues[i] > centerEigenvector ?
+                    realEigenvalues[i] * forgettingFactor :
+                    realEigenvalues[i] / forgettingFactor;
         }
         //turn it into a matrix
         Matrix forgot = new Matrix(realEigenvalues.length, realEigenvalues.length);
@@ -75,7 +78,6 @@ public class SelectiveForgettingDecorator extends RecursiveLinearRegressionDecor
 
         setPCovariance(newP.getArray());
 
-        originalP = new Matrix(getpCovariance());
    //     System.out.println(Arrays.toString(getBeta()));
   //      System.out.println(Arrays.deepToString(originalP.eig().getD().getArray()));
    //     System.out.println(Arrays.toString(originalP.eig().getRealEigenvalues()));
@@ -86,5 +88,11 @@ public class SelectiveForgettingDecorator extends RecursiveLinearRegressionDecor
 
 
 
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(getBeta())
+                .toString();
     }
 }

@@ -6,6 +6,8 @@
 
 package model.utilities.stats.regression;
 
+import Jama.EigenvalueDecomposition;
+import Jama.Matrix;
 import au.com.bytecode.opencsv.CSVReader;
 import ec.util.MersenneTwisterFast;
 import org.junit.Assert;
@@ -137,7 +139,7 @@ public class SelectiveForgettingDecoratorTest {
         MersenneTwisterFast random = new MersenneTwisterFast();
 
         //do 2000 steps at one regression, 2000 at equilibrium, 2000 at new regression
-        KalmanBasedRecursiveRegression regression = new SelectiveForgettingDecorator(new KalmanRecursiveRegression(2));
+        KalmanBasedRecursiveRegression regression = new SelectiveForgettingDecorator(new KalmanRecursiveRegression(2),3000,.99);
         int randomIntercept = random.nextInt(500);
         int randomSlope = random.nextInt(6)-3;
         double xObservation=0; double yObservation;
@@ -148,20 +150,22 @@ public class SelectiveForgettingDecoratorTest {
             regression.addObservation(1,yObservation,1,xObservation);
 
         }
-        System.out.println(Arrays.toString(regression.getBeta()) + "--------" + randomSlope + "," + randomIntercept);
-        Assert.assertEquals(randomIntercept,regression.getBeta()[0],1);
+        System.out.println(Arrays.toString(regression.getBeta()) + "--------|" + randomSlope + "," + randomIntercept);
+        System.out.println(Arrays.deepToString(regression.getpCovariance()));
         Assert.assertEquals(randomSlope,regression.getBeta()[1],.25);
 
         //stuck at equilibrium
-        for(int step =0; step < 2000; step ++)
+        for(int step =0; step < 20000; step ++)
         {
             yObservation = randomIntercept + randomSlope * xObservation + random.nextGaussian() * 3;
             regression.addObservation(1,yObservation,1,xObservation);
 
         }
-        System.out.println(Arrays.toString(regression.getBeta()) + "--------" + randomSlope + "," + randomIntercept);
-        Assert.assertEquals(randomIntercept,regression.getBeta()[0],1);
+        System.out.println(Arrays.toString(regression.getBeta()) + "--------|" + randomSlope + "," + randomIntercept);
+        System.out.println(Arrays.deepToString(regression.getpCovariance()));
         Assert.assertEquals(randomSlope,regression.getBeta()[1],.25);
+        yObservation = randomIntercept + randomSlope * xObservation + random.nextGaussian() * 3;
+        regression.addObservation(1,yObservation,1,xObservation);
 
         //new slope!
         randomIntercept = random.nextInt(500);
@@ -173,10 +177,38 @@ public class SelectiveForgettingDecoratorTest {
             regression.addObservation(1,yObservation,1,xObservation);
 
         }
-        System.out.println(Arrays.toString(regression.getBeta()) + "--------" + randomSlope + "," + randomIntercept);
-        Assert.assertEquals(randomIntercept,regression.getBeta()[0],1);
+        System.out.println(Arrays.toString(regression.getBeta()) + "--------|" + randomSlope + "," + randomIntercept);
+        System.out.println(Arrays.deepToString(regression.getpCovariance()));
+
         Assert.assertEquals(randomSlope,regression.getBeta()[1],.25);
 
     }
+
+    //what does it mean to multiply eigenvalues?
+    @Test
+    public void differenceBetweenDiscountingEigenValuesAndDiscountingDirectly()
+    {
+        MersenneTwisterFast randomizer = new MersenneTwisterFast(1l);
+        Matrix generatingX = new Matrix(new double[]{randomizer.nextDouble(),randomizer.nextDouble(),randomizer.nextDouble()},3);
+        Matrix p = generatingX.times(generatingX.transpose());
+        System.out.println(Arrays.deepToString(p.getArray()));
+
+        System.out.println(Arrays.deepToString(p.times(1d / .99).getArray()));
+
+        //now eigen-multiply, it should be the same matrix!
+        final EigenvalueDecomposition eig = p.eig();
+        final double[] realEigenvalues = eig.getRealEigenvalues();
+        for(int i=0; i< realEigenvalues.length; i++)
+            realEigenvalues[i] *= 1/.99f;
+
+        Matrix forgot = new Matrix(realEigenvalues.length, realEigenvalues.length);
+        for (int i = 0; i < realEigenvalues.length; i++)
+            forgot.set(i, i, realEigenvalues[i]);
+        //by using transpose I am already assuming simmetricity, which I think it's fine, given that
+        Matrix newP = eig.getV().times(forgot.times(eig.getV().transpose()));
+        System.out.println(Arrays.deepToString(newP.getArray()));
+
+    }
+
 
 }

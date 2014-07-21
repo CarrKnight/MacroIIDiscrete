@@ -47,8 +47,9 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay implements SISORegression {
     public KalmanFOPDTRegressionWithKnownTimeDelay(int delay) {
         this(
                    //     new ExponentialForgettingRegressionDecorator(
-                               new AutovarianceReweighterDecorator(new KalmanRecursiveRegression(3),5,1,2)
-                ,delay,0);
+                new ExponentialForgettingRegressionDecorator(
+                        new KalmanRecursiveRegression(3),.99d,100000) ,delay,0);
+
     }
 
 

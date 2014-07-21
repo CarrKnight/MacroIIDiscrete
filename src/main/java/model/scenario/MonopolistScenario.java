@@ -660,6 +660,7 @@ public class MonopolistScenario extends Scenario {
         demand.clear();
         setDemandSlope(slope);
         setDemandIntercept(intercept);
+        assert goodMarket.getBuyers().size() == 0;
 
         createDemand();
 

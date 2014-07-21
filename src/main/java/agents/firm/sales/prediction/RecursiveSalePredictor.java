@@ -29,6 +29,9 @@ import model.utilities.stats.collectors.enums.SalesDataType;
 public class RecursiveSalePredictor extends AbstractRecursivePredictor implements SalesPredictor{
 
 
+    public static final int DEFAULT_INDEPENDENT_LAGS = 1;
+    public static final int DEFAULT_MOVING_AVERAGE_SIZE = 1;
+    public static final int DEFAULT_PRICE_LAGS = 0;
     /**
      * whether our x is workers or outflow
      */
@@ -46,8 +49,10 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
     private final FixedDecreaseSalesPredictor delegate = new FixedDecreaseSalesPredictor();
 
 
+
+
     public RecursiveSalePredictor(MacroII model, SalesDepartment department) {
-        this(model, department,AbstractRecursivePredictor.defaultPriceLags,AbstractRecursivePredictor.defaultIndependentLags,defaultMovingAverageSize);
+        this(model, department, DEFAULT_PRICE_LAGS, DEFAULT_INDEPENDENT_LAGS, DEFAULT_MOVING_AVERAGE_SIZE);
     }
 
     public RecursiveSalePredictor(MacroII model, SalesDepartment department,int movingAverageSize) {

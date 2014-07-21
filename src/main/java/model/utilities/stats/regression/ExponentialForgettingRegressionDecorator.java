@@ -26,6 +26,9 @@ public class ExponentialForgettingRegressionDecorator extends RecursiveLinearReg
 
     private double lambda = .99d;
 
+
+    private double maxTrace = Double.MAX_VALUE;
+
     public ExponentialForgettingRegressionDecorator(KalmanBasedRecursiveRegression decorated) {
         super(decorated);
     }
@@ -35,6 +38,12 @@ public class ExponentialForgettingRegressionDecorator extends RecursiveLinearReg
         this.lambda = lambda;
     }
 
+    public ExponentialForgettingRegressionDecorator(KalmanBasedRecursiveRegression decorated, double lambda, double maxTrace) {
+        super(decorated);
+        this.lambda = lambda;
+        this.maxTrace = maxTrace;
+    }
+
     @Override
     public void addObservation(double observationWeight, double y, double... observation) {
         super.addObservation(observationWeight, y, observation);
@@ -42,6 +51,11 @@ public class ExponentialForgettingRegressionDecorator extends RecursiveLinearReg
         int dimensions = observation.length;
         double[][] pCovariance = getpCovariance();
 
+        double trace = 0;
+        for(int i=0; i< dimensions; i++)
+            trace += pCovariance[i][i];
+        if(trace > maxTrace)
+            return;
         //reweight by forgetting factor
         for(int i=0;i<dimensions; i++)
             for(int j=0; j<dimensions; j++)

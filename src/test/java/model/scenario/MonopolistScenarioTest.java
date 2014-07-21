@@ -20,6 +20,8 @@ import au.com.bytecode.opencsv.CSVWriter;
 import financial.market.Market;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
+import model.utilities.logs.LogLevel;
+import model.utilities.logs.LogToConsole;
 import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.enums.PurchasesDataType;
 import model.utilities.stats.collectors.enums.SalesDataType;
@@ -493,6 +495,8 @@ public class MonopolistScenarioTest {
     public void rightPriceAndQuantityTestRandomControlRandomSlopesWithShift()
     {        //run the tests on failures first
         LinkedList<Long> previouslyFailedSeeds = new LinkedList<>();
+        previouslyFailedSeeds.add(1405625557302l);
+        previouslyFailedSeeds.add(1405722912876l);
         previouslyFailedSeeds.add(1386003448078l);
         previouslyFailedSeeds.add(1386001620319l);
         previouslyFailedSeeds.add(1386000975892l);
@@ -532,10 +536,10 @@ public class MonopolistScenarioTest {
             macroII.setScenario(scenario1);
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
             scenario1.setWorkersToBeRehiredEveryDay(true);
-            if(macroII.random.nextBoolean())
+        //    if(macroII.random.nextBoolean())
                 scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
-            else
-                scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
+//            else
+//                scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
 
             if(macroII.random.nextBoolean())
                 scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
@@ -546,7 +550,12 @@ public class MonopolistScenarioTest {
             System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
             System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
 
+
             macroII.start();
+            macroII.schedule.step(macroII);
+
+            scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getPredictorStrategy().addLogEventListener(new LogToConsole(LogLevel.DEBUG,macroII));
+
             while(macroII.schedule.getTime()<5000)
                 macroII.schedule.step(macroII);
 
@@ -554,7 +563,12 @@ public class MonopolistScenarioTest {
             System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
             System.out.flush();
             int profitMaximizingLaborForce = MonopolistScenario.findWorkerTargetThatMaximizesProfits(p0,p1,w0,w1,a);
-            assertEquals(scenario1.monopolist.getTotalWorkers(), profitMaximizingLaborForce,2);
+            System.out.println("sales slope: " + (scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).predictSalePriceAfterIncreasingProduction(0,1) -
+                            scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).predictSalePriceWhenNotChangingPoduction()) );
+            System.out.println("purchaseSlope slope: " + (scenario1.monopolist.getHRs().iterator().next().predictPurchasePriceWhenIncreasingProduction() -
+                            scenario1.monopolist.getHRs().iterator().next().predictPurchasePriceWhenNoChangeInProduction())
+            );
+            assertEquals(scenario1.monopolist.getTotalWorkers(), profitMaximizingLaborForce, 2);
 
 
 
@@ -577,6 +591,12 @@ public class MonopolistScenarioTest {
 
             System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
             System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
+            System.out.println("sales slope: " + (scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).predictSalePriceAfterIncreasingProduction(0,1) -
+                    scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).predictSalePriceWhenNotChangingPoduction())
+            );
+            System.out.println("purchaseSlope slope: " + (scenario1.monopolist.getHRs().iterator().next().predictPurchasePriceWhenIncreasingProduction() -
+                            scenario1.monopolist.getHRs().iterator().next().predictPurchasePriceWhenNoChangeInProduction())
+            );
             System.out.flush();
 
 
@@ -1060,7 +1080,6 @@ public class MonopolistScenarioTest {
             while (macroII.schedule.getTime() < 5000) {
                 macroII.schedule.step(macroII);
                 //make sure the labor market is functioning properly!
-                marketSanityCheck(macroII, scenario1);
             }
 
             System.out.println(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getYesterdayVolume());

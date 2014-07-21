@@ -16,13 +16,11 @@ import model.utilities.filters.ExponentialFilter;
 import model.utilities.filters.MovingAverage;
 import model.utilities.logs.*;
 import model.utilities.stats.collectors.DataStorage;
-import model.utilities.stats.regression.ExponentialForgettingRegressionDecorator;
-import model.utilities.stats.regression.GunnarsonRegularizerDecorator;
-import model.utilities.stats.regression.KalmanRecursiveRegression;
-import model.utilities.stats.regression.KalmanBasedRecursiveRegression;
+import model.utilities.stats.regression.*;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -87,11 +85,10 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
         this.model = model;
         this.priceLags=priceLags;
         this.independentLags = independentLags;
-        this.regression = new GunnarsonRegularizerDecorator(
+        this.regression =
                 new ExponentialForgettingRegressionDecorator(
                         new KalmanRecursiveRegression(1+priceLags+ independentLags,initialCoefficients)
-                     //   ,.9999d));
-                        ,.999d ));
+                        ,.99d,100000 );
 
         //this.regression = new KalmanRecursiveRegression(1+priceLags+ independentLags,initialCoefficients);
 
@@ -112,7 +109,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
     /**
      * the linear regression object we are going to update
      */
-    private KalmanBasedRecursiveRegression regression;
+    private RecursiveLinearRegression regression;
 
     /**
      * how much time it takes for the dependent variable to affect price?
@@ -201,7 +198,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
 
                     double[] gaps =  data.getObservationsRecordedTheseDays(getDisturbanceType(),
                             today - Math.max(priceLags, independentLags + timeDelay)+1, today);
-                    ExponentialFilter<Double> ma = new ExponentialFilter<>(gaps.length);
+                    ExponentialFilter<Double> ma = new ExponentialFilter< >(gaps.length);
 
 
 
@@ -240,7 +237,8 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                         //add it to the regression (DeltaP ~ 1 + laggedP + laggedX)
                         if(!usingWeights || weight > .001)
                         {
-
+                            handleNewEvent( new LogEvent(this,LogLevel.DEBUG,"{} predictor regressing {} over observation: {} and weight: {} \n {}",
+                                    this.getClass(),price, Arrays.toString(observation),weight,regression));
 
                             regression.addObservation(weight, price, observation);
                             numberOfValidObservations++;
@@ -487,13 +485,10 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
         return regression.getBeta().clone();
     }
 
-    public KalmanBasedRecursiveRegression getRegression() {
+    public RecursiveLinearRegression getRegression() {
         return regression;
     }
 
-    public double getTrace() {
-        return regression.getTrace();
-    }
 
     public boolean isUsingWeights() {
         return usingWeights;
