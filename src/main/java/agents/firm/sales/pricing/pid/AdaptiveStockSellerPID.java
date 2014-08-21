@@ -36,7 +36,7 @@ import sim.engine.Steppable;
  * @version 2014-07-05
  * @see
  */
-public class SimpleStockSellerPID extends BaseAskPricingStrategy implements Steppable
+public class AdaptiveStockSellerPID extends BaseAskPricingStrategy implements Steppable
 {
 
     private int targetInventory;
@@ -49,11 +49,11 @@ public class SimpleStockSellerPID extends BaseAskPricingStrategy implements Step
     private int price;
 
 
-    public SimpleStockSellerPID(SalesDepartment department) {
+    public AdaptiveStockSellerPID(SalesDepartment department) {
         this(department,100, new PIDController(department.getModel().drawProportionalGain(),department.getModel().drawIntegrativeGain(),0f));
     }
 
-    public SimpleStockSellerPID(SalesDepartment sales, int targetInventory, PIDController pid) {
+    public AdaptiveStockSellerPID(SalesDepartment sales, int targetInventory, PIDController pid) {
         this.department = sales;
         this.targetInventory = targetInventory;
         pid.setControllingFlows(false);

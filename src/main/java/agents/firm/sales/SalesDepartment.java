@@ -1323,11 +1323,6 @@ public abstract class  SalesDepartment  implements Department, LogNode {
         return lastClosingPrice >=0 ; //lastclosing price is -1 until one trade occurs!
     }
 
-
-    public void setPriceAverager(WeightedMovingAverage<Integer, Double> priceAverager) {
-        // this.priceAverager = priceAverager;
-    }
-
     public void setPriceAverager(PriceAverager averagedPrice) {
         this.priceAverager = averagedPrice;
     }

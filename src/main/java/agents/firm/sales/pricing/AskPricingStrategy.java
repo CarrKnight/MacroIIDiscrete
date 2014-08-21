@@ -100,7 +100,8 @@ public interface AskPricingStrategy extends Deactivatable, LogNode {
             rules.add(SalesControlWithFixedInventoryAndPID.class);
             rules.add(salesControlWithSmoothedinventoryAndPID.class);
             rules.add(SimpleFlowSellerPID.class);
-            rules.add(SimpleStockSellerPID.class);
+            rules.add(AdaptiveFlowSellerPID.class);
+            rules.add(AdaptiveStockSellerPID.class);
 
 
             //remove not drawables

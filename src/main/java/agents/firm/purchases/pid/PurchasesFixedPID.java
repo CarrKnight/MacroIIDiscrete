@@ -76,8 +76,8 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
      //   pid.setGains(5.2f,0.16f,0);
         pid.setControllingFlows(false);
 
-        rootController = new PIDAutotuner(pid, KalmanFOPDTRegressionWithKnownTimeDelay::new, null); //instantiate the controller
-        controller = rootController; //remember it
+        rootController = pid;//instantiate the controller
+        controller = pid;
 
     }
 
@@ -92,14 +92,8 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
                              Class<? extends Controller> controllerType, MacroII model)
     {
         super(purchasesDepartment,specificTarget);
-        Controller instance = ControllerFactory.buildController(controllerType,model);
-        if(controllerType.equals(PIDController.class)) {
-            final PIDController pid = (PIDController) instance;
-            instance = new PIDAutotuner(pid, KalmanFOPDTRegressionWithKnownTimeDelay::new, null); //instantiate the controller
-            pid.setControllingFlows(false);
-        }
+        rootController = ControllerFactory.buildController(controllerType,model);
 
-        rootController = instance;
         controller = rootController;
 
     }
@@ -250,6 +244,15 @@ public class PurchasesFixedPID extends FixedInventoryControl implements BidPrici
     }
 
 
+    /**
+     * decorates the control with an auto-tuner to dynamically find P and I
+     */
+    public void makeAdaptive(){
+        Preconditions.checkState(getKindOfController().equals(PIDController.class),"Autotuning only works on standard PID");
+            controller = new PIDAutotuner((PIDController)rootController,
+                    KalmanFOPDTRegressionWithKnownTimeDelay::new, null);
+
+    }
 
 
     /**

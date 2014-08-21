@@ -10,6 +10,7 @@ import agents.firm.purchases.inventoryControl.DailyInventoryControl;
 import agents.firm.purchases.inventoryControl.FixedInventoryControl;
 import agents.firm.purchases.inventoryControl.InventoryControl;
 import agents.firm.purchases.inventoryControl.SimpleInventoryControl;
+import agents.firm.purchases.pid.AdaptivePurchasesFixedPID;
 import agents.firm.purchases.pid.PurchasesDailyPID;
 import agents.firm.purchases.pid.PurchasesFixedPID;
 import agents.firm.purchases.pid.PurchasesSimplePID;
@@ -70,6 +71,7 @@ public class PurchasesRuleFactory {
         integratedRules = new ArrayList<>();
         integratedRules.add(PurchasesDailyPID.class);
         integratedRules.add(PurchasesFixedPID .class);
+        integratedRules.add(AdaptivePurchasesFixedPID.class);
         integratedRules.add(PurchasesSimplePID .class);
 
         assert integratedRules.size() > 0;

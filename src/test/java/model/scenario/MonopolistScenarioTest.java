@@ -15,7 +15,7 @@ import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
-import agents.firm.sales.pricing.pid.SimpleStockSellerPID;
+import agents.firm.sales.pricing.pid.AdaptiveStockSellerPID;
 import au.com.bytecode.opencsv.CSVWriter;
 import financial.market.Market;
 import goods.UndifferentiatedGoodType;
@@ -364,7 +364,7 @@ public class MonopolistScenarioTest {
             scenario1.setWorkersToBeRehiredEveryDay(true);
             //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
             if(macroII.random.nextBoolean())
-                scenario1.setAskPricingStrategy(SimpleStockSellerPID.class);
+                scenario1.setAskPricingStrategy(AdaptiveStockSellerPID.class);
             else
                 scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
 
@@ -766,7 +766,7 @@ public class MonopolistScenarioTest {
             //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
             macroII.setScenario(scenario1);
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
-            scenario1.setAskPricingStrategy(SimpleStockSellerPID.class);
+            scenario1.setAskPricingStrategy(AdaptiveStockSellerPID.class);
             if(macroII.random.nextBoolean())
                 scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
             else

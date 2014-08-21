@@ -32,7 +32,7 @@ import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
-import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
+import agents.firm.sales.pricing.pid.AdaptiveFlowSellerPID;
 import agents.people.QuitJobAfterWorkStrategy;
 import com.google.common.base.Preconditions;
 import financial.market.EndOfPhaseOrderHandler;
@@ -141,7 +141,7 @@ public class MonopolistScenario extends Scenario {
     /**
      * the strategy used by the sales department of the monopolist
      */
-    protected Class<? extends AskPricingStrategy> askPricingStrategy = SimpleFlowSellerPID.class;
+    protected Class<? extends AskPricingStrategy> askPricingStrategy = AdaptiveFlowSellerPID.class;
 
     /**
      * The type of sales predictor the sales department should use

@@ -90,7 +90,7 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
     /**
      * The PID controller used by this firm.
      */
-    private Controller controller;
+    protected Controller controller;
 
     /**
      * The price we are currently charging.
@@ -150,7 +150,7 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
         }
 
         rootController = new PIDController(proportionalGain, integralGain, derivativeGain, speed);
-        controller = new PIDAutotuner(rootController,sales);
+        controller = rootController;
         //keep speed fixed if we are targeting flows rather than stock (otherwise you compare different periods and that's silly)
         //start with a random price!
         price = sales.getRandom().nextInt(100);
@@ -231,6 +231,13 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
         stockOuts.sellThisEvent(owner,dept, 1);
     }
 
+    /**
+     * adds an auto-tuner to the controller to change dynamically the P and the I
+     */
+    public void makeAdaptive(){
+        controller = new PIDAutotuner(rootController,sales);
+
+    }
 
     /**
      * Tell the listener a trade has been carried out
