@@ -30,7 +30,6 @@ import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.experiments.tuningRuns.MarginalMaximizerPIDTuning;
 import model.scenario.*;
-import model.utilities.filters.WeightedMovingAverage;
 import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import model.utilities.stats.collectors.enums.SalesDataType;
@@ -65,64 +64,56 @@ public class StickyPricesCSVPrinter {
 
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
-        //simpleSellerRuns();
-        //runWithDelay(50,0,11,true,true,0) ;
-//        simpleDelaySweep(50,50,50,5);
-        //  sampleMonopolistRunLearned(0,101,1,1,14,.1f,.1f,"sampleMonopolist.csv");
-        //  sampleCompetitiveRunLearned(0, 101, 1, 1, 14, .1f, .1f, "sampleCompetitive.csv");
-        //    woodMonopolistSweep(new BigDecimal("0.01"),new BigDecimal("1"),new BigDecimal("0.01"),new BigDecimal("1"),new BigDecimal(".01"),5);
+        //SELLERS
+        //figure 1 to 5
+        simpleSellerRuns();
+        //figure 6-7
+        simpleDelaySweep(50,50,50,5);
 
-        //     badlyOptimizedNoInventorySupplyChain(0,.08f,.16f,0,Paths.get("runs","supplychai","paper","badlyOptimized.csv").toFile());
-        //    badlyOptimizedNoInventorySupplyChain(0,.08f/100f,.16f/100f, 0, Paths.get("runs","supplychai","paper","slowedBadlyOptimized.csv").toFile());
-        //        badlyOptimizedNoInventorySupplyChain(0,.08f,.16f, 100, Paths.get("runs","supplychai","paper","stickyBadlyOptimized.csv").toFile());
+        //ONE SECTOR
+        //figure 8
+        sampleMonopolistRunLearned(0,101,1,1,14,.1f,.1f,"sampleMonopolist.csv");
+        //figure 9
+        sampleCompetitiveRunLearned(0, 101, 1, 1, 14, .1f, .1f, "sampleCompetitive.csv");
+        //figure 10
+        woodMonopolistSweep(new BigDecimal("0.01"),new BigDecimal("1"),new BigDecimal("0.01"),new BigDecimal("1"),new BigDecimal(".01"),5);
 
+        //SUPPLY CHAIN
+        //figure 11
+        badlyOptimizedNoInventorySupplyChain(0,.08f,.16f,0,Paths.get("runs","supplychai","paper","badlyOptimized.csv").toFile());
+        //figure 12
+        badlyOptimizedNoInventorySupplyChain(0,.08f,.16f, 100, Paths.get("runs","supplychai","paper","stickyBadlyOptimized.csv").toFile());
+        //figure 13
+        woodMonopolistSupplyChainSweep();
 
-        //runWithoutDelayWithInventory();
-        //runWithDelayWithInventory(10, 0, 1, true, false, 0);
-        //runWithDelayWithInventory(10,10,1,true,false,0);
-        //   simpleInventorySweep(50,50,50,5);
-
-
-        //    sampleMonopolistRunLearnedWithInventory(0,101,1,1,14,.1f,.1f,"sampleMonopolistInv.csv");
-        //    sampleCompetitiveRunLearnedWithInventory(0, 101, 1, 1, 14, .1f, .1f, "sampleCompetitiveInv.csv");
-
-
-        //learnedsupply chains
-        //oneHundredAllLearnedRuns(Paths.get("runs", "supplychai", "paper", "learnedInventoryChain100.csv").toFile());
-        //oneHundredAllLearnedCompetitiveRuns(Paths.get("runs", "supplychai", "paper", "learnedCompetitiveInventoryChain100.csv").toFile());
-        //oneHundredAllLearnedFoodRuns(Paths.get("runs", "supplychai", "paper", "learnedInventoryFoodChain100.csv").toFile());
-
-        /*
-        competitiveSweepRun(1);
-        competitiveSweepRun(2);
-        competitiveSweepRun(3);
-        competitiveSweepRun(4);
-        competitiveSweepRun(5);
-        competitiveSweepRun(5);
-        competitiveSweepRun(6);
-        competitiveSweepRun(7);
-        */
-
-        //stickiness vs maximization stickiness
-        //woodMonopolistSupplyChainSweep();
-
-        //what happens if one guy is more or less sticky than the others?
-       // differentStickinessSweep();
+        //INVENTORY
+        //figure 14
+        runWithoutDelayWithInventory();
+        //figure 15
+        runWithDelayWithInventory(10, 0, 1, true, false, 0);
+        //figure 16
+        runWithDelayWithInventory(10,10,1,true,false,0);
+        //figure 17
+        sampleMonopolistRunLearnedWithInventory(0,101,1,1,14,.1f,.1f,"sampleMonopolistInv.csv");
+        //figure 18
+        sampleCompetitiveRunLearnedWithInventory(0, 101, 1, 1, 14, .1f, .1f, "sampleCompetitiveInv.csv");
 
 
+        //Market Structure
+        //figure 19-20-21
+        oneHundredAllLearnedRuns(Paths.get("runs", "supplychai", "paper", "learnedInventoryChain100.csv").toFile());
+        oneHundredAllLearnedCompetitiveRuns(Paths.get("runs", "supplychai", "paper", "learnedCompetitiveInventoryChain100.csv").toFile());
+        oneHundredAllLearnedFoodRuns(Paths.get("runs", "supplychai", "paper", "learnedInventoryFoodChain100.csv").toFile());
 
+        //figure 22-23
+        oneHundredLearningMonopolist(Paths.get("runs", "supplychai", "paper", "100Monopolists.csv").toFile());
+        oneHundredLearningCompetitive(Paths.get("runs", "supplychai", "paper", "100Competitive.csv").toFile());
 
+        //figure 24-25-26
+        oneHundredAllLearningRuns(Paths.get("runs", "supplychai", "paper", "learningInventoryChain100.csv").toFile());
+        oneHundredAllLearningCompetitiveRuns(Paths.get("runs", "supplychai", "paper", "learningCompetitiveInventoryChain100.csv").toFile());
+        oneHundredAllLearningFoodRuns(Paths.get("runs", "supplychai", "paper", "learningInventoryFoodChain100.csv").toFile());
 
-//        oneHundredLearningMonopolist(Paths.get("runs", "supplychai", "paper", "100Monopolists.csv").toFile());
-        //      oneHundredLearningCompetitive(Paths.get("runs", "supplychai", "paper", "100Competitive.csv").toFile());
-
-        //     oneHundredAllLearningRuns(Paths.get("runs", "supplychai", "paper", "learningInventoryChain100.csv").toFile());
-        //    oneHundredAllLearningCompetitiveRuns(Paths.get("runs", "supplychai", "paper", "learningCompetitiveInventoryChain100.csv").toFile());
-        //    oneHundredAllLearningFoodRuns(Paths.get("runs", "supplychai", "paper", "learningInventoryFoodChain100.csv").toFile());
-
-
-
-        //beefMonopolistRuns()
 
 
         //to prove the point that average frequency ought to be above 0:
@@ -141,14 +132,19 @@ public class StickyPricesCSVPrinter {
     private static void simpleSellerRuns()
     {
 
+        //figure 1
         runWithoutDelay();
         System.out.println("done");
+        //figure 2
         runWithDelay(10,0,1, true, false, 100);
         System.out.println("done");
+        //figure 3
         runWithDelay(20,0,1, true, false, 100);
         System.out.println("done");
+        //figure 4
         runWithDelay(20,20,1, true, false, 100);
         System.out.println("done");
+        //figure 5
         runWithDelay(20,0,10, true, false, 100);
 
 
@@ -387,7 +383,6 @@ public class StickyPricesCSVPrinter {
                     //and make it learned!
                     salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(2));
                     scenario.getMonopolist().getHRs().iterator().next().setPredictor(new FixedIncreasePurchasesPredictor(1));
-                    salesDepartment.setPriceAverager(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
 
                     //run the model
                     for(int i=0; i<5000; i++)
@@ -479,7 +474,6 @@ public class StickyPricesCSVPrinter {
         final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
         final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, proportionalGain, integralGain, 0f, 0);
         salesDepartment.setAskPricingStrategy(strategy);
-        salesDepartment.setPriceAverager(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
 
         //and make it learned!
         salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(demandSlope));
@@ -525,7 +519,6 @@ public class StickyPricesCSVPrinter {
             final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, proportionalGain + (float)macroII.random.nextGaussian()/100f,
                     integralGain + (float)macroII.random.nextGaussian()/100f, 0f, 0); //added a bit of noise
             salesDepartment.setAskPricingStrategy(strategy);
-            //salesDepartment.setPriceAverager(new WeightedMovingAverage<Long, Double>(2)); //doesn't really need/care about Moving averages!
 
             //all impacts are 0 because it's perfect competitive
             salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
@@ -613,7 +606,6 @@ public class StickyPricesCSVPrinter {
             final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, proportionalGain + (float)macroII.random.nextGaussian()/100f,
                     integralGain + (float)macroII.random.nextGaussian()/100f, 0f, 0); //added a bit of noise
             salesDepartment.setAskPricingStrategy(strategy);
-            //salesDepartment.setPriceAverager(new WeightedMovingAverage<Long, Double>(2)); //doesn't really need/care about Moving averages!
 
             //all impacts are 0 because it's perfect competitive
             salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
@@ -707,7 +699,6 @@ public class StickyPricesCSVPrinter {
         final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
         final SalesControlWithFixedInventoryAndPID strategy = new SalesControlWithFixedInventoryAndPID(salesDepartment,100, proportionalGain, integralGain, 0f);
         salesDepartment.setAskPricingStrategy(strategy);
-        salesDepartment.setPriceAverager(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
 
         //and make it learned!
         salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(demandSlope));
@@ -753,7 +744,6 @@ public class StickyPricesCSVPrinter {
             final SalesDepartment salesDepartment = firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
             final SalesControlWithFixedInventoryAndPID strategy = new SalesControlWithFixedInventoryAndPID(salesDepartment,100, proportionalGain, integralGain, 0f);
             salesDepartment.setAskPricingStrategy(strategy);
-            salesDepartment.setPriceAverager(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
 
             //all impacts are 0 because it's perfect competitive
             salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
@@ -806,7 +796,6 @@ public class StickyPricesCSVPrinter {
                 else
                 {
                     final SimpleFlowSellerPID askPricingStrategy = new SimpleFlowSellerPID(department, proportionalGain, integralGain, 0, speed);
-                    department.setPriceAverager(new WeightedMovingAverage<>(2)); // no need to MA
                     department.setAskPricingStrategy(askPricingStrategy);
 
                 }
@@ -1249,7 +1238,6 @@ public class StickyPricesCSVPrinter {
 
             //now set the right parameters
             final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
-            salesDepartment.setPriceAverager(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
 
             //learning
             assert salesDepartment.getPredictorStrategy() instanceof RecursiveSalePredictor;
@@ -1315,7 +1303,6 @@ public class StickyPricesCSVPrinter {
             for(Firm firm : scenario.getCompetitors() )
             {
                 final SalesDepartment salesDepartment = firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
-                salesDepartment.setPriceAverager(new WeightedMovingAverage<>(2)); //doesn't really need/care about Moving averages!
                 //learning
                 assert salesDepartment.getPredictorStrategy() instanceof RecursiveSalePredictor;
             }
@@ -1363,7 +1350,7 @@ public class StickyPricesCSVPrinter {
 
     public static double[] beefMonopolistOneRun(long seed, float divideMonopolistGainsByThis, int monopolistSpeed,
                                                 final boolean beefLearned, final boolean foodLearned,  int maximizationSpeed,
-                                                 File csvFileToWrite) {
+                                                File csvFileToWrite) {
         SummaryStatistics distance = new SummaryStatistics();
         SummaryStatistics last1000Distance = new SummaryStatistics();
 
@@ -1609,7 +1596,6 @@ public class StickyPricesCSVPrinter {
             strategy.setTargetInventory(1000);
             strategy.setSpeed(normalStickiness);
             salesDepartment.setAskPricingStrategy(strategy);
-            //salesDepartment.setPriceAverager(new WeightedMovingAverage<Long, Double>(2)); //doesn't really need/care about Moving averages!
 
             //all impacts are 0 because it's perfect competitive
             salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
