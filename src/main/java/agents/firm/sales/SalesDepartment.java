@@ -31,7 +31,6 @@ import goods.UndifferentiatedGoodType;
 import javafx.beans.value.ObservableDoubleValue;
 import model.MacroII;
 import model.utilities.ActionOrder;
-import model.utilities.filters.WeightedMovingAverage;
 import model.utilities.logs.*;
 import model.utilities.stats.collectors.SalesData;
 import model.utilities.stats.collectors.enums.SalesDataType;
@@ -144,6 +143,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     private boolean aboutToUpdateQuotes = false;
 
     private SalesData data;
+    private List<Good> goodsToRequote;
 
     public SalesDepartment(SellerSearchAlgorithm sellerSearchAlgorithm, Market market,  MacroII model, Firm firm, BuyerSearchAlgorithm buyerSearchAlgorithm) {
         data = new SalesData();
@@ -594,6 +594,9 @@ public abstract class  SalesDepartment  implements Department, LogNode {
             removeQuoteFromMarket(q);
             toReturn = true;
         }
+        else if( aboutToUpdateQuotes){
+            goodsToRequote.remove(g);
+        }
 
 
         //make sure there is no trace in the tosell and  wait list
@@ -939,40 +942,52 @@ public abstract class  SalesDepartment  implements Department, LogNode {
         aboutToUpdateQuotes=true;
 
         //get all the quotes to remove
-        final List<Quote> goodsToRequote = new LinkedList<>(getAllQuotes());
+        final Collection<Quote> allQuotes = new LinkedList<>(getAllQuotes());
+        if(allQuotes.isEmpty()) {
+            assert numberOfQuotesPlaced() == 0;
+            return;
+
+        }
+        assert numberOfQuotesPlaced() > 0;
+        goodsToRequote = new LinkedList<>();
+
         //forget the old quotes
-        for(Quote q: goodsToRequote)
+        for(Quote q: allQuotes)
         {
             if(q != null)
             {
                 forgetTheQuoteAssociatedWithThisGood(q.getGood());
                 removeQuoteFromMarket(q);
             }
+            goodsToRequote.add(q.getGood());
         }
+
+
+
         assert numberOfQuotesPlaced() == 0 : "quotesCurrentlyPlaced: " + numberOfQuotesPlaced();
 
         //when you can, requote
         if(goodsToRequote.size() > 0)
-            model.scheduleSoon(ActionOrder.TRADE,new Steppable() {
-                @Override
-                public void step(SimState state) {
-                    aboutToUpdateQuotes=false;
-                    //go through all the old quotes
-                    if(market.getGoodType().isDifferentiated())
-                    {
-                        for (Quote q : goodsToRequote) {
-                            if (q != null && firm.has(q.getGood())) //it might have been consumed it in the process for whatever reason
-                                //resell it tomorrow
-                                newGoodsToSellEvent(q.getGood());//sell it again
-                        }
+            model.scheduleSoon(ActionOrder.TRADE, state -> {
+                aboutToUpdateQuotes=false;
+                //go through all the old quotes
+                if(market.getGoodType().isDifferentiated())
+                {
+                    for (Good g : goodsToRequote) {
+                        if (firm.has(g)) //it might have been consumed it in the process for whatever reason
+                            //resell it tomorrow
+                            newGoodsToSellEvent(g);//sell it again
                     }
-                    else
-                    {
-                        newGoodsToSellEvent(Math.min(goodsToRequote.size(),quotesManager.numberOfGoodsToSell()));
-                    }
-
-
                 }
+                else
+                {
+                    final int howManyToRequote = Math.min(goodsToRequote.size(), quotesManager.numberOfGoodsToSell());
+                    assert howManyToRequote>=0;
+                    if(howManyToRequote > 0) //don't bother running the rest if you have nothing to update really (because you consumed it all)
+                        newGoodsToSellEvent(howManyToRequote);
+                }
+
+
             });
 
 
@@ -1264,7 +1279,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
      */
     public double getAveragedPrice(){
 
-            return priceAverager.getAveragedPrice(this);
+        return priceAverager.getAveragedPrice(this);
 
 
 

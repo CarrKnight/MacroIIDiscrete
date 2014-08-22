@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
@@ -64,6 +65,9 @@ public class StickyPricesCSVPrinter {
 
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
+        //create directory
+        Files.createDirectories(Paths.get("runs", "supplychai", "paper"));
+
         //SELLERS
         //figure 1 to 5
         simpleSellerRuns();

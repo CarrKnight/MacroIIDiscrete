@@ -49,7 +49,7 @@ public class SimpleSellerScenarioTest {
     @Test
     public void rightPriceAndQuantityTestWithNoInventoryNoShift()
     {
-        for(int i=0; i<5; i++)
+        for(int i=0; i<10; i++)
         {
             //to sell 4 you need to price them between 60 and 51 everytime
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -57,6 +57,7 @@ public class SimpleSellerScenarioTest {
             scenario.setSellerStrategy(SimpleFlowSellerPID.class);
             scenario.setDemandShifts(false);
             scenario.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+            scenario.setDestroyUnsoldInventoryEachDay(i%2==0); //half of the times
             scenario.setDemandSlope(-10);
 
 
