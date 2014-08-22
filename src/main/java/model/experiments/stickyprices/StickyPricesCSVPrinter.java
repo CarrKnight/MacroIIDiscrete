@@ -68,52 +68,52 @@ public class StickyPricesCSVPrinter {
         //create directory
         Files.createDirectories(Paths.get("runs", "supplychai", "paper"));
 
-        //SELLERS
-        //figure 1 to 5
+        System.out.println("SELLERS");
+        System.out.println("figure 1 to 5");
         simpleSellerRuns();
-        //figure 6-7
+        System.out.println("figure 6-7");
         simpleDelaySweep(50,50,50,5);
 
-        //ONE SECTOR
-        //figure 8
+        System.out.println("ONE SECTOR");
+        System.out.println("figure 8");
         sampleMonopolistRunLearned(0,101,1,1,14,.1f,.1f,"sampleMonopolist.csv");
-        //figure 9
+        System.out.println("figure 9");
         sampleCompetitiveRunLearned(0, 101, 1, 1, 14, .1f, .1f, "sampleCompetitive.csv");
-        //figure 10
+        System.out.println("figure 10");
         woodMonopolistSweep(new BigDecimal("0.01"),new BigDecimal("1"),new BigDecimal("0.01"),new BigDecimal("1"),new BigDecimal(".01"),5);
 
-        //SUPPLY CHAIN
-        //figure 11
+        System.out.println("SUPPLY CHAIN");
+        System.out.println("figure 11");
         badlyOptimizedNoInventorySupplyChain(0,.08f,.16f,0,Paths.get("runs","supplychai","paper","badlyOptimized.csv").toFile());
-        //figure 12
+        System.out.println("figure 12");
         badlyOptimizedNoInventorySupplyChain(0,.08f,.16f, 100, Paths.get("runs","supplychai","paper","stickyBadlyOptimized.csv").toFile());
-        //figure 13
+        System.out.println("figure 13");
         woodMonopolistSupplyChainSweep();
 
-        //INVENTORY
-        //figure 14
+        System.out.println("INVENTORY");
+        System.out.println("figure 14");
         runWithoutDelayWithInventory();
-        //figure 15
+        System.out.println("figure 15");
         runWithDelayWithInventory(10, 0, 1, true, false, 0);
-        //figure 16
+        System.out.println("figure 16");
         runWithDelayWithInventory(10,10,1,true,false,0);
-        //figure 17
+        System.out.println("figure 17");
         sampleMonopolistRunLearnedWithInventory(0,101,1,1,14,.1f,.1f,"sampleMonopolistInv.csv");
-        //figure 18
+        System.out.println("figure 18");
         sampleCompetitiveRunLearnedWithInventory(0, 101, 1, 1, 14, .1f, .1f, "sampleCompetitiveInv.csv");
 
 
-        //Market Structure
-        //figure 19-20-21
+        System.out.println("Market Structure");
+        System.out.println("figure 19-20-21");
         oneHundredAllLearnedRuns(Paths.get("runs", "supplychai", "paper", "learnedInventoryChain100.csv").toFile());
         oneHundredAllLearnedCompetitiveRuns(Paths.get("runs", "supplychai", "paper", "learnedCompetitiveInventoryChain100.csv").toFile());
         oneHundredAllLearnedFoodRuns(Paths.get("runs", "supplychai", "paper", "learnedInventoryFoodChain100.csv").toFile());
 
-        //figure 22-23
+        System.out.println("figure 22-23");
         oneHundredLearningMonopolist(Paths.get("runs", "supplychai", "paper", "100Monopolists.csv").toFile());
         oneHundredLearningCompetitive(Paths.get("runs", "supplychai", "paper", "100Competitive.csv").toFile());
 
-        //figure 24-25-26
+        System.out.println("figure 24-25-26");
         oneHundredAllLearningRuns(Paths.get("runs", "supplychai", "paper", "learningInventoryChain100.csv").toFile());
         oneHundredAllLearningCompetitiveRuns(Paths.get("runs", "supplychai", "paper", "learningCompetitiveInventoryChain100.csv").toFile());
         oneHundredAllLearningFoodRuns(Paths.get("runs", "supplychai", "paper", "learningInventoryFoodChain100.csv").toFile());
@@ -306,7 +306,8 @@ public class StickyPricesCSVPrinter {
                     //runNumber!
                     final SimpleSellerScenario run = runWithDelay(demandDelay, speed, divider, false, true, runNumber);
 
-                    final double[] pricesInRun = run.getDepartments().get(0).getData().getObservationsRecordedTheseDays(SalesDataType.LAST_ASKED_PRICE, 0, 14999);
+                    final double[] pricesInRun = run.getDepartments().get(0).getData().
+                            getObservationsRecordedTheseDays(SalesDataType.LAST_ASKED_PRICE, 0, 14999);
                     for(double price : pricesInRun)
                     {
                         totalDistance += Math.pow(price-51,2);

@@ -86,6 +86,5 @@ public abstract class DataStorage<T extends  Enum<T>> extends DataStorageSkeleto
     @Override
     public void turnOff() {
         active = false;
-        data.clear();
     }
 }
