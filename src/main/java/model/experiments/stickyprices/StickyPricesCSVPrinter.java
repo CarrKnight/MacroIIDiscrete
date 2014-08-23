@@ -23,6 +23,7 @@ import agents.firm.sales.prediction.RecursiveSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
+import agents.firm.utilities.LastClosingPriceEcho;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.base.Preconditions;
 import financial.market.Market;
@@ -65,8 +66,12 @@ public class StickyPricesCSVPrinter {
 
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
+        //set defaults
+        MonopolistScenario.defaultControlType = MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL;
+
+
         //create directory
-        Files.createDirectories(Paths.get("runs", "supplychai", "paper"));
+        Files.createDirectories(Paths.get("runs", "supplychai", "rawdata"));
 
         System.out.println("SELLERS");
         System.out.println("figure 1 to 5");
@@ -79,14 +84,17 @@ public class StickyPricesCSVPrinter {
         sampleMonopolistRunLearned(0,101,1,1,14,.1f,.1f,"sampleMonopolist.csv");
         System.out.println("figure 9");
         sampleCompetitiveRunLearned(0, 101, 1, 1, 14, .1f, .1f, "sampleCompetitive.csv");
+
         System.out.println("figure 10");
         woodMonopolistSweep(new BigDecimal("0.01"),new BigDecimal("1"),new BigDecimal("0.01"),new BigDecimal("1"),new BigDecimal(".01"),5);
 
+
         System.out.println("SUPPLY CHAIN");
         System.out.println("figure 11");
-        badlyOptimizedNoInventorySupplyChain(0,.08f,.16f,0,Paths.get("runs","supplychai","paper","badlyOptimized.csv").toFile());
+        badlyOptimizedNoInventorySupplyChain(0,.08f,.16f,0,Paths.get("runs","supplychai","rawdata","badlyOptimized.csv").toFile());
         System.out.println("figure 12");
-        badlyOptimizedNoInventorySupplyChain(0,.08f,.16f, 100, Paths.get("runs","supplychai","paper","stickyBadlyOptimized.csv").toFile());
+        badlyOptimizedNoInventorySupplyChain(0,.08f,.16f, 50, Paths.get("runs","supplychai","rawdata","stickyBadlyOptimized.csv").toFile());
+
         System.out.println("figure 13");
         woodMonopolistSupplyChainSweep();
 
@@ -105,26 +113,26 @@ public class StickyPricesCSVPrinter {
 
         System.out.println("Market Structure");
         System.out.println("figure 19-20-21");
-        oneHundredAllLearnedRuns(Paths.get("runs", "supplychai", "paper", "learnedInventoryChain100.csv").toFile());
-        oneHundredAllLearnedCompetitiveRuns(Paths.get("runs", "supplychai", "paper", "learnedCompetitiveInventoryChain100.csv").toFile());
-        oneHundredAllLearnedFoodRuns(Paths.get("runs", "supplychai", "paper", "learnedInventoryFoodChain100.csv").toFile());
+        oneHundredAllLearnedRuns(Paths.get("runs", "supplychai", "rawdata", "learnedInventoryChain100.csv").toFile());
+        oneHundredAllLearnedCompetitiveRuns(Paths.get("runs", "supplychai", "rawdata", "learnedCompetitiveInventoryChain100.csv").toFile());
+        oneHundredAllLearnedFoodRuns(Paths.get("runs", "supplychai", "rawdata", "learnedInventoryFoodChain100.csv").toFile());
 
         System.out.println("figure 22-23");
-        oneHundredLearningMonopolist(Paths.get("runs", "supplychai", "paper", "100Monopolists.csv").toFile());
-        oneHundredLearningCompetitive(Paths.get("runs", "supplychai", "paper", "100Competitive.csv").toFile());
+        oneHundredLearningMonopolist(Paths.get("runs", "supplychai", "rawdata", "100Monopolists.csv").toFile());
+        oneHundredLearningCompetitive(Paths.get("runs", "supplychai", "rawdata", "100Competitive.csv").toFile());
 
         System.out.println("figure 24-25-26");
-        oneHundredAllLearningRuns(Paths.get("runs", "supplychai", "paper", "learningInventoryChain100.csv").toFile());
-        oneHundredAllLearningCompetitiveRuns(Paths.get("runs", "supplychai", "paper", "learningCompetitiveInventoryChain100.csv").toFile());
-        oneHundredAllLearningFoodRuns(Paths.get("runs", "supplychai", "paper", "learningInventoryFoodChain100.csv").toFile());
+        oneHundredAllLearningRuns(Paths.get("runs", "supplychai", "rawdata", "learningInventoryChain100.csv").toFile());
+        oneHundredAllLearningCompetitiveRuns(Paths.get("runs", "supplychai", "rawdata", "learningCompetitiveInventoryChain100.csv").toFile());
+        oneHundredAllLearningFoodRuns(Paths.get("runs", "supplychai", "rawdata", "learningInventoryFoodChain100.csv").toFile());
 
 
 
         //to prove the point that average frequency ought to be above 0:
    /*     PeriodicMaximizer.setDefaultAverageCheckFrequency(1);
         sampleCompetitiveRunLearned(0, 101, 1, 1, 14, .1f, .1f, "sampleCompetitiveEverydayCheck.csv");
-        badlyOptimizedNoInventorySupplyChain(0,.08f,.16f,0,Paths.get("runs","supplychai","paper","badlyOptimizedEveryday.csv").toFile());
-        badlyOptimizedNoInventorySupplyChain(0,.08f,.16f, 100, Paths.get("runs","supplychai","paper","stickyBadlyOptimizedEveryday.csv").toFile());
+        badlyOptimizedNoInventorySupplyChain(0,.08f,.16f,0,Paths.get("runs","supplychai","rawdata","badlyOptimizedEveryday.csv").toFile());
+        badlyOptimizedNoInventorySupplyChain(0,.08f,.16f, 100, Paths.get("runs","supplychai","rawdata","stickyBadlyOptimizedEveryday.csv").toFile());
         PeriodicMaximizer.setDefaultAverageCheckFrequency(20); //reset back
         */
 
@@ -176,7 +184,7 @@ public class StickyPricesCSVPrinter {
         //fix the pid parameters
 
 
-        DailyStatCollector.addDailyStatCollectorToModel(Paths.get("runs", "supplychai", "paper", "simpleSeller.csv").toFile(), macroII);
+        DailyStatCollector.addDailyStatCollectorToModel(Paths.get("runs", "supplychai", "rawdata", "simpleSeller.csv").toFile(), macroII);
         macroII.start();
         final SimpleFlowSellerPID askPricingStrategy = new SimpleFlowSellerPID(scenario.getDepartments().get(0),
                 .1f, .1f, 0f, 0);
@@ -241,7 +249,7 @@ public class StickyPricesCSVPrinter {
         {
             //i use the sales department data as it shows the "offered" price rather than just the closing one
             final String filename = pidSpeed == 0 && dividePIParametersByThis == 1 ? "simpleSeller_withDelays" + buyerDelay + ".csv" : "simpleSeller_demandDelay" + buyerDelay + "speed" + pidSpeed + "slowness" + dividePIParametersByThis + ".csv";
-            scenario.getDepartments().get(0).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper", filename).toFile());
+            scenario.getDepartments().get(0).getData().writeToCSVFile(Paths.get("runs", "supplychai", "rawdata", filename).toFile());
         }
 
 
@@ -260,28 +268,28 @@ public class StickyPricesCSVPrinter {
         long seed = 0;
 
         //all learned
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed, 100, 0, true, true, Paths.get("runs", "supplychai", "paper", "everybodyLearnedSlow_withInventory.csv").toFile(), null);
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,true,true, Paths.get("runs","supplychai","paper","everybodyLearnedSticky_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed, 100, 0, true, true, Paths.get("runs", "supplychai", "rawdata", "everybodyLearnedSlow_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,true,true, Paths.get("runs","supplychai","rawdata","everybodyLearnedSticky_withInventory.csv").toFile(), null);
         //beef learned
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,true,false, Paths.get("runs","supplychai","paper","beefLearnedSlow_withInventory.csv").toFile(), null);
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,true,false, Paths.get("runs","supplychai","paper","beefLearnedSticky_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,true,false, Paths.get("runs","supplychai","rawdata","beefLearnedSlow_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,true,false, Paths.get("runs","supplychai","rawdata","beefLearnedSticky_withInventory.csv").toFile(), null);
         //food learned
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,false,true, Paths.get("runs","supplychai","paper","foodLearnedSlow_withInventory.csv").toFile(), null);
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,false,true, Paths.get("runs","supplychai","paper","foodLearnedSticky_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,false,true, Paths.get("runs","supplychai","rawdata","foodLearnedSlow_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,false,true, Paths.get("runs","supplychai","rawdata","foodLearnedSticky_withInventory.csv").toFile(), null);
         //learning
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,false,false, Paths.get("runs","supplychai","paper","learningSlow_withInventory.csv").toFile(), null);
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,false,false, Paths.get("runs","supplychai","paper","learningSticky_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,false,false, Paths.get("runs","supplychai","rawdata","learningSlow_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,false,false, Paths.get("runs","supplychai","rawdata","learningSticky_withInventory.csv").toFile(), null);
 
 
         //non sticky
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,0,true,true, Paths.get("runs","supplychai","paper","nonsticky_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,0,true,true, Paths.get("runs","supplychai","rawdata","nonsticky_withInventory.csv").toFile(), null);
     }
 
 
     //go through many possible combination of delaying PID to see their effects!
     private static void simpleDelaySweep(int maxDivider,int maxSpeed, int demandDelay, int experimentsPerSetup) throws IOException {
 
-        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs", "supplychai", "paper","delaySweep.csv").toFile()));
+        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs", "supplychai", "rawdata","delaySweep.csv").toFile()));
         writer.writeNext(new String[]{"speed","divider","distance","variance","success"});
 
 
@@ -343,7 +351,7 @@ public class StickyPricesCSVPrinter {
     private static void woodMonopolistSweep(final BigDecimal minimumP, final BigDecimal maximumP, final BigDecimal minimumI, final BigDecimal maximumI,
                                             final BigDecimal increment,final int runsPerParameterCombination) throws IOException {
 
-        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs", "supplychai", "paper","monoSweep.csv").toFile()));
+        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs", "supplychai", "rawdata","monoSweep.csv").toFile()));
         writer.writeNext(new String[]{"P","I","distance","variance","success"});
 
 
@@ -375,6 +383,9 @@ public class StickyPricesCSVPrinter {
                     scenario.setDailyWageSlope(1);
                     scenario.setDailyWageIntercept(0);
                     scenario.setAskPricingStrategy(SimpleFlowSellerPID.class);
+                    scenario.setWorkersToBeRehiredEveryDay(true);
+                    scenario.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
+
 
                     //start it and have one step
                     macroII.start();
@@ -493,7 +504,7 @@ public class StickyPricesCSVPrinter {
 
 
 
-        salesDepartment.getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper",filename).toFile());
+        salesDepartment.getData().writeToCSVFile(Paths.get("runs", "supplychai", "rawdata",filename).toFile());
 
     }
 
@@ -540,7 +551,7 @@ public class StickyPricesCSVPrinter {
 
 
 
-        macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper",filename).toFile());
+        macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "rawdata",filename).toFile());
 
     }
 
@@ -549,7 +560,7 @@ public class StickyPricesCSVPrinter {
     //sweep over the period of maximization to see what happens if the frequency is too high or too low.
     private static void competitiveSweepRun(int additionalCompetitors) throws IOException {
 
-        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs", "supplychai", "paper","competitivePeriodSweep" + additionalCompetitors +".csv").toFile()));
+        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs", "supplychai", "rawdata","competitivePeriodSweep" + additionalCompetitors +".csv").toFile()));
         writer.writeNext(new String[]{"speed","distance","finaldistance","variance"});
 
         for(int speed =1; speed < 30; speed++)
@@ -667,7 +678,7 @@ public class StickyPricesCSVPrinter {
 
 
         if(filename != null)
-            macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper",filename).toFile());
+            macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "rawdata",filename).toFile());
 
 
         return new double[]{distance.getMean(),finalDistance.getMean(),finalPrice.getVariance()};
@@ -718,7 +729,7 @@ public class StickyPricesCSVPrinter {
 
 
 
-        salesDepartment.getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper",filename).toFile());
+        salesDepartment.getData().writeToCSVFile(Paths.get("runs", "supplychai", "rawdata",filename).toFile());
 
     }
 
@@ -765,7 +776,7 @@ public class StickyPricesCSVPrinter {
 
 
 
-        macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper",filename).toFile());
+        macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "rawdata",filename).toFile());
 
     }
 
@@ -795,6 +806,7 @@ public class StickyPricesCSVPrinter {
             @Override
             protected SalesDepartment createSalesDepartment(Firm firm, Market goodmarket) {
                 SalesDepartment department = super.createSalesDepartment(firm, goodmarket);
+                department.setPriceAverager(new LastClosingPriceEcho());
                 if(goodmarket.getGoodType().equals(OneLinkSupplyChainScenario.OUTPUT_GOOD))  {
                     department.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
                 }
@@ -808,8 +820,18 @@ public class StickyPricesCSVPrinter {
             }
 
             @Override
+            protected PurchasesDepartment createPurchaseDepartment(Blueprint blueprint, Firm firm) {
+                final PurchasesDepartment purchaseDepartment = super.createPurchaseDepartment(blueprint, firm);
+                if(purchaseDepartment != null)
+                   purchaseDepartment.setPriceAverager(new LastClosingPriceEcho());
+                return purchaseDepartment;
+            }
+
+            @Override
             protected HumanResources createPlant(Blueprint blueprint, Firm firm, Market laborMarket) {
                 HumanResources hr = super.createPlant(blueprint, firm, laborMarket);
+                hr.setPriceAverager(new LastClosingPriceEcho());
+
                 if(blueprint.getOutputs().containsKey(OneLinkSupplyChainScenario.INPUT_GOOD))
                 {
                     hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
@@ -890,7 +912,7 @@ public class StickyPricesCSVPrinter {
         //fix the pid parameters
 
 
-        DailyStatCollector.addDailyStatCollectorToModel(Paths.get("runs", "supplychai", "paper", "simpleInventorySeller.csv").toFile(), macroII);
+        DailyStatCollector.addDailyStatCollectorToModel(Paths.get("runs", "supplychai", "rawdata", "simpleInventorySeller.csv").toFile(), macroII);
         macroII.start();
 
         final SalesControlWithFixedInventoryAndPID askPricingStrategy = new SalesControlWithFixedInventoryAndPID(scenario.getDepartments().get(0),100,
@@ -962,7 +984,7 @@ public class StickyPricesCSVPrinter {
             final String filename = pidSpeed == 0 && dividePIParametersByThis == 1 ? "inventory_withDelays" + buyerDelay + ".csv"
                     : "inventory_demandDelay" + buyerDelay + "speed" + pidSpeed + "slowness" + dividePIParametersByThis + ".csv";
 
-            scenario.getDepartments().get(0).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper", filename).toFile());
+            scenario.getDepartments().get(0).getData().writeToCSVFile(Paths.get("runs", "supplychai", "rawdata", filename).toFile());
         }
 
 
@@ -978,7 +1000,7 @@ public class StickyPricesCSVPrinter {
     //go through many possible combination of delaying PID to see their effects!
     private static void simpleInventorySweep(int maxDivider,int maxSpeed, int demandDelay, int experimentsPerSetup) throws IOException {
 
-        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs", "supplychai", "paper","inventorySweep.csv").toFile()));
+        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs", "supplychai", "rawdata","inventorySweep.csv").toFile()));
         writer.writeNext(new String[]{"speed","divider","distance","variance","success"});
 
 
@@ -1483,7 +1505,7 @@ public class StickyPricesCSVPrinter {
     //sweep over the period of maximization to see what happens if the frequency is too high or too low.
     private static void woodMonopolistSupplyChainSweep() throws IOException {
 
-        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs", "supplychai", "paper","woodMonopolistStickinessesSweep.csv").toFile()));
+        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs", "supplychai", "rawdata","woodMonopolistStickinessesSweep.csv").toFile()));
         final String[] header = {"decisionSpeed", "stickiness", "distance", "finaldistance"};
         System.out.println(Arrays.toString(header));
         writer.writeNext(header);
@@ -1522,7 +1544,7 @@ public class StickyPricesCSVPrinter {
     //sweep over the period of maximization to see what happens if the frequency is too high or too low.
     private static void differentStickinessSweep() throws IOException {
 
-        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs", "supplychai", "paper","differentStickinessCompetition.csv").toFile()));
+        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs", "supplychai", "rawdata","differentStickinessCompetition.csv").toFile()));
         writer.writeNext(new String[]{"specialSpeed","normalSpeed","distance","finaldistance","variance","normalCash","specialCash"});
 
         for(int normalSpeed = 1; normalSpeed <50; normalSpeed++)
@@ -1668,7 +1690,7 @@ public class StickyPricesCSVPrinter {
 
 
         if(filename != null)
-            macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "paper",filename).toFile());
+            macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "supplychai", "rawdata",filename).toFile());
 
 
         return new double[]{distance.getMean(),finalDistance.getMean(),finalPrice.getVariance(),cashCompetitors.getMean(),cashSpecial};

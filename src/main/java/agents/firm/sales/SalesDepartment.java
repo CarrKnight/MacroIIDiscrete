@@ -1288,6 +1288,14 @@ public abstract class  SalesDepartment  implements Department, LogNode {
 
 
     /**
+     * last price set for a good. Might not have been sold/bought
+     */
+    @Override
+    public int getLastSetPrice() {
+        return lastAskedPrice;
+    }
+
+    /**
      * This is a little bit weird to predict, but basically you want to know what will be "tomorrow" price if you don't change production.
      * Most predictors simply return today closing price, because maybe this will be useful in some cases. It's used by Marginal Maximizer Statics
      * @return predicted price

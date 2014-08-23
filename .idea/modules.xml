@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BarebonesMultithreadedZeroKnowledgeTraders/BarebonesMultithreadedZeroKnowledgeTraders.iml" filepath="$PROJECT_DIR$/BarebonesMultithreadedZeroKnowledgeTraders/BarebonesMultithreadedZeroKnowledgeTraders.iml" />
       <module fileurl="file://$PROJECT_DIR$/MacroIIDiscrete.iml" filepath="$PROJECT_DIR$/MacroIIDiscrete.iml" />
     </modules>
   </component>

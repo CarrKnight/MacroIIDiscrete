@@ -56,6 +56,11 @@ public interface Department {
      */
     public int getLastClosingPrice();
 
+    /**
+     * last price set for a good. Might not have been sold/bought
+     */
+    public int getLastSetPrice();
+
     public MacroII getModel();
 
 }

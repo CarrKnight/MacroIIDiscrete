@@ -1252,6 +1252,15 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
         return lastOfferedPrice;
     }
 
+
+    /**
+     * alias of lastOfferedPrice
+     */
+    @Override
+    public int getLastSetPrice() {
+        return getLastOfferedPrice();
+    }
+
     public int getStartingDay() {
         return purchasesData.getStartingDay();
     }

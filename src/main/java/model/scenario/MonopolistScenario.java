@@ -107,7 +107,6 @@ public class MonopolistScenario extends Scenario {
     private int buyerDelay=0;
 
 
-
     public MonopolistScenario(MacroII macroII) {
         super(macroII);
         workers= new LinkedList<>();
@@ -121,11 +120,13 @@ public class MonopolistScenario extends Scenario {
      */
     private boolean fixedPayStructure = true;
 
+    static public MonopolistScenarioIntegratedControlEnum defaultControlType = MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_SIMPLE;
+
     /**
      * this is somewhat of an ugly trick to get the gui to be able to select the kind of class
      * the human resource should use. Mason GUI knows how to deal with enums
      */
-    private MonopolistScenarioIntegratedControlEnum controlType = MonopolistScenarioIntegratedControlEnum.HILL_CLIMBER_SIMPLE;
+    private MonopolistScenarioIntegratedControlEnum controlType = defaultControlType;
 
     protected  OrderBookMarket goodMarket;
 
