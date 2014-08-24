@@ -16,10 +16,18 @@ import model.utilities.filters.ExponentialFilter;
 import model.utilities.filters.MovingAverage;
 import model.utilities.logs.*;
 import model.utilities.stats.collectors.DataStorage;
-import model.utilities.stats.regression.*;
+import model.utilities.stats.regression.ExponentialForgettingRegressionDecorator;
+import model.utilities.stats.regression.KalmanBasedRecursiveRegression;
+import model.utilities.stats.regression.KalmanRecursiveRegression;
+import model.utilities.stats.regression.RecursiveLinearRegression;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -48,16 +56,17 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
 
     public static int defaultMovingAverageSize = 1;
 
+    /**
+     * Where to write what we are actually regressing.
+     */
+    private BufferedWriter regressionInputsWriter;
+
 
     /**
      * activated only if independent lag is 1
      */
     private MovingAverage<Float> x[];
 
-    /**
-     * activated only if independent lag is 1
-     */
-    private MovingAverage<Float> y;
 
 
     private boolean usingWeights =true;
@@ -86,10 +95,10 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
         this.priceLags=priceLags;
         this.independentLags = independentLags;
         this.regression =
-                new ExponentialForgettingRegressionDecorator(
-                        new KalmanRecursiveRegression(1+priceLags+ independentLags,initialCoefficients)
-                        ,.99d,100000 );
-
+               //      new ExponentialForgettingRegressionDecorator(
+                new KalmanRecursiveRegression(1+priceLags+ independentLags,initialCoefficients)
+               //      ,.99d,.1) //very small scale forgetting. Good just to avoid getting stuck.
+        ;
         //this.regression = new KalmanRecursiveRegression(1+priceLags+ independentLags,initialCoefficients);
 
         if(priceLags > 0) //if there a y lag in there
@@ -102,6 +111,9 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
 
         //keep scheduling yourself until you aren't active anymore
         model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE,this);
+
+
+
 
     }
 
@@ -216,9 +228,9 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                         else
                             weight=1;
 
-                        //smooth x and y
-                        y.addObservation(price);
-                        price = y.getSmoothedObservation();
+                        double originalX = laggedIndependentVariable[0];
+
+                        //smooth x
                         for(int i=0; i<x.length; i++)
                         {
                             x[i].addObservation(laggedIndependentVariable[i]);
@@ -232,13 +244,26 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                         else
                             observation = Doubles.concat(new double[]{1},laggedIndependentVariable);
 
-            //            if(this instanceof RecursiveSalePredictor)
+
+
 
                         //add it to the regression (DeltaP ~ 1 + laggedP + laggedX)
                         if(!usingWeights || weight > .001)
                         {
                             handleNewEvent( new LogEvent(this,LogLevel.DEBUG,"{} predictor regressing {} over observation: {} and weight: {} \n {}",
                                     this.getClass(),price, Arrays.toString(observation),weight,regression));
+
+
+                            if(regressionInputsWriter != null)
+                                try {
+                                    regressionInputsWriter.write(price + "," +weight + "," +observation[1] +"," + originalX);
+                                    regressionInputsWriter.newLine();
+                                    regressionInputsWriter.flush();
+                                    System.out.println(Arrays.toString(regression.getBeta()));
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
 
                             regression.addObservation(weight, price, observation);
                             numberOfValidObservations++;
@@ -505,12 +530,18 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
     final
     public void resetMovingAverages(int movingAverageSize)
     {
-        y = new MovingAverage<>(movingAverageSize);
         x = new MovingAverage[independentLags];
         for(int i=0; i<x.length; i++)
             x[i] = new MovingAverage<>(movingAverageSize);
     }
 
+
+    public void logRegressionInput(Path pathToFile) throws IOException {
+        Files.deleteIfExists(pathToFile);
+        regressionInputsWriter = Files.newBufferedWriter(pathToFile, StandardOpenOption.CREATE_NEW);
+        regressionInputsWriter.write("y,weight,x,originalX");
+        regressionInputsWriter.newLine();
+    }
 
 
     /***

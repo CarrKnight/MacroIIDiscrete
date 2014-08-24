@@ -17,8 +17,8 @@ import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.purchases.pricing.decorators.MaximumBidPriceDecorator;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
+import agents.firm.utilities.LastClosingPriceEcho;
 import agents.firm.utilities.PriceAverager;
-import agents.firm.utilities.WeightedPriceAverager;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
@@ -194,7 +194,7 @@ public class PurchasesDepartment implements Deactivatable, Department, LogNode {
 
         counter = new InflowOutflowCounter(model,firm,goodType);
         purchasesData = new PurchasesDepartmentData();
-        priceAverager   = new WeightedPriceAverager(4);
+        priceAverager   = new LastClosingPriceEcho();
 
 
 

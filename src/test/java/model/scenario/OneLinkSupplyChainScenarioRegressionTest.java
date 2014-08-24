@@ -129,7 +129,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     @Test
     public void problematicScenario2() throws Exception {
             final OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(0, 10, 0, true, true,
-                    Paths.get("runs", "problematic.csv").toFile(), Paths.get("runs", "problematic.log").toFile());
+                    Paths.get("runs", "problematic.csv").toFile(), Paths.get("runs", "problematic.log").toFile(), null);
 
             checkBeefMonopolistResult(result);
 
@@ -249,7 +249,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 10, 0, true, true, null, null));
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 10, 0, true, true, null, null, null));
 
             testResults.add(testReceipt);
 
@@ -280,7 +280,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 10, true, true, null, null));
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 50, true, true, null, null, null));
 
             testResults.add(testReceipt);
 
@@ -313,7 +313,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextLong(), 10, 0, false, true, null, null));
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextLong(), 50, 0, false, true, null, null, null));
 
             testResults.add(testReceipt);
 
@@ -347,7 +347,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 10, false, true, null, null));
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 10, false, true, null, null, null));
 
             testResults.add(testReceipt);
 
@@ -382,7 +382,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 10, 0, true, false, null, null));
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 10, 0, true, false, null, null, null));
 
             testResults.add(testReceipt);
 
@@ -414,7 +414,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 10, true, false, null, null));
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 10, true, false, null, null, null));
 
             testResults.add(testReceipt);
 
@@ -579,7 +579,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 10, 0, false, false, null, null));
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 10, 0, false, false, null, null, null));
 
             testResults.add(testReceipt);
 
@@ -612,7 +612,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 10, false, false, null, null));
+                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 10, false, false, null, null, null));
 
             testResults.add(testReceipt);
 
@@ -949,7 +949,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(), 1, 10, false, false, Paths.get("runs","noone.csv").toFile()));
+                    testRunner.submit(() -> OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(), 1, 10,
+                            false, false, Paths.get("runs","noone.csv").toFile()));
 
             testResults.add(testReceipt);
 
@@ -959,6 +960,18 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             checkResultsOfFoodMonopolist(receipt.get());
         }
+
+
+
+    }
+
+
+    @Test
+    public void printOutRegressionForLearningBeefMonopolist() throws Exception {
+        OneLinkSupplyChainResult.beefMonopolistOneRun(0, 1, 100,
+                false, true, Paths.get("testresources","BeefMonopolistOutput.csv").toFile(),null,
+                Paths.get("testresources","BeefMonopolistRegression.csv")
+        );
 
 
 

@@ -26,6 +26,8 @@ import model.utilities.stats.collectors.enums.MarketDataType;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
@@ -64,7 +66,7 @@ public class OneLinkSupplyChainResult {
 
     public static OneLinkSupplyChainResult beefMonopolistOneRun(long random, float divideMonopolistGainsByThis, int monopolistSpeed,
                                                                 final boolean beefLearned, final boolean foodLearned,
-                                                                File csvFileToWrite, File logFileToWrite) {
+                                                                File csvFileToWrite, File logFileToWrite, Path regressionLogToWrite) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
 
@@ -79,6 +81,14 @@ public class OneLinkSupplyChainResult {
                 else{
                     assert dept.getPredictorStrategy() instanceof RecursiveSalePredictor; //assuming here nothing has been changed and we are still dealing with recursive sale predictors
                     dept.setPredictorStrategy( new RecursiveSalePredictor(model,dept,500));
+                    //if you need, print out the regression results for the beef monopolist
+                    if(regressionLogToWrite != null)
+                        try {
+                            ((RecursiveSalePredictor)dept.getPredictorStrategy()).logRegressionInput(regressionLogToWrite);
+                        } catch (IOException e) {
+                            System.err.println("failed to log the predictor!");
+                            e.printStackTrace();
+                        }
                 }
             }
 
@@ -182,8 +192,8 @@ public class OneLinkSupplyChainResult {
     }
 
     public static OneLinkSupplyChainResult beefMonopolistFixedProductionsOneRun(long seed,
-                                                                          float divideMonopolistGainsByThis, int monopolistSpeed, final boolean foodLearned,
-                                                                           File csvFileToWrite) {
+                                                                                float divideMonopolistGainsByThis, int monopolistSpeed, final boolean foodLearned,
+                                                                                File csvFileToWrite) {
         final MacroII macroII = new MacroII(seed);
         final OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist scenario1 = new OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist(macroII, OneLinkSupplyChainScenario.INPUT_GOOD){
             @Override
@@ -259,7 +269,7 @@ public class OneLinkSupplyChainResult {
     }
 
     public static OneLinkSupplyChainResult everybodyLearnedCompetitivePIDRun(long random, final float dividePIByThis, final int beefPricingSpeed,
-                                                                        File csvFileToWrite) {
+                                                                             File csvFileToWrite) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
 
@@ -412,9 +422,10 @@ public class OneLinkSupplyChainResult {
 
 
 
+
     public static OneLinkSupplyChainResult foodMonopolistOneRun(long random, float divideMonopolistGainsByThis, int beefSpeed,
                                                                 final boolean beefLearned, final boolean foodLearned,
-                                                                 File csvFileToWrite) {
+                                                                File csvFileToWrite) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
 
@@ -428,7 +439,7 @@ public class OneLinkSupplyChainResult {
                 }
                 else{
                     assert dept.getPredictorStrategy() instanceof RecursiveSalePredictor; //assuming here nothing has been changed and we are still dealing with recursive sale predictors
-            //        dept.setPredictorStrategy( new RecursiveSalePredictor(model,dept,500));
+
                 }
             }
 
@@ -439,7 +450,7 @@ public class OneLinkSupplyChainResult {
                 if(foodLearned)
                     department.setPredictor(new FixedIncreasePurchasesPredictor(1));
                 else{
-                  //  department.setPredictor(new RecursivePurchasesPredictor(macroII,department,500));
+                    //  department.setPredictor(new RecursivePurchasesPredictor(macroII,department,500));
                 }
 
             }

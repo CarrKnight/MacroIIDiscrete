@@ -17,8 +17,8 @@ import agents.firm.sales.prediction.RegressionSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.decorators.AskReservationPriceDecorator;
+import agents.firm.utilities.LastClosingPriceEcho;
 import agents.firm.utilities.PriceAverager;
-import agents.firm.utilities.WeightedPriceAverager;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
@@ -124,7 +124,7 @@ public abstract class  SalesDepartment  implements Department, LogNode {
     /**
      * average last week price weighted by outflow
      */
-    private PriceAverager priceAverager = new WeightedPriceAverager(10);
+    private PriceAverager priceAverager = new LastClosingPriceEcho();
 
 
 

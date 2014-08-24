@@ -80,7 +80,7 @@ public class SpeedTest {
 
         //supplychain
         startTime = System.currentTimeMillis();
-        OneLinkSupplyChainResult.beefMonopolistOneRun(0,100,0,true,true,null, null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(0,100,0,true,true,null, null, null);
         endTime = System.currentTimeMillis();
         timeInSeconds = (endTime-startTime)/1000d;
         supplyChainWriter.writeNext(new String[]{date,computerName, String.valueOf(timeInSeconds)});

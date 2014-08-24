@@ -35,6 +35,7 @@
     <orderEntry type="library" name="Maven: org.powermock:powermock-reflect:1.5" level="project" />
     <orderEntry type="library" name="Maven: org.objenesis:objenesis:1.2" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.17.1-GA" level="project" />
+    <orderEntry type="library" scope="TEST" name="cpsuite-1.2.6" level="project" />
   </component>
 </module>
 

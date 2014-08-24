@@ -40,7 +40,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
@@ -69,6 +68,7 @@ public class StickyPricesCSVPrinter {
         //set defaults
         MonopolistScenario.defaultControlType = MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL;
 
+        /*
 
         //create directory
         Files.createDirectories(Paths.get("runs", "supplychai", "rawdata"));
@@ -83,7 +83,10 @@ public class StickyPricesCSVPrinter {
         System.out.println("figure 8");
         sampleMonopolistRunLearned(0,101,1,1,14,.1f,.1f,"sampleMonopolist.csv");
         System.out.println("figure 9");
+
+
         sampleCompetitiveRunLearned(0, 101, 1, 1, 14, .1f, .1f, "sampleCompetitive.csv");
+
 
         System.out.println("figure 10");
         woodMonopolistSweep(new BigDecimal("0.01"),new BigDecimal("1"),new BigDecimal("0.01"),new BigDecimal("1"),new BigDecimal(".01"),5);
@@ -108,6 +111,7 @@ public class StickyPricesCSVPrinter {
         System.out.println("figure 17");
         sampleMonopolistRunLearnedWithInventory(0,101,1,1,14,.1f,.1f,"sampleMonopolistInv.csv");
         System.out.println("figure 18");
+         */
         sampleCompetitiveRunLearnedWithInventory(0, 101, 1, 1, 14, .1f, .1f, "sampleCompetitiveInv.csv");
 
 
@@ -268,21 +272,21 @@ public class StickyPricesCSVPrinter {
         long seed = 0;
 
         //all learned
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed, 100, 0, true, true, Paths.get("runs", "supplychai", "rawdata", "everybodyLearnedSlow_withInventory.csv").toFile(), null);
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,true,true, Paths.get("runs","supplychai","rawdata","everybodyLearnedSticky_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed, 100, 0, true, true, Paths.get("runs", "supplychai", "rawdata", "everybodyLearnedSlow_withInventory.csv").toFile(), null, null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,true,true, Paths.get("runs","supplychai","rawdata","everybodyLearnedSticky_withInventory.csv").toFile(), null, null);
         //beef learned
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,true,false, Paths.get("runs","supplychai","rawdata","beefLearnedSlow_withInventory.csv").toFile(), null);
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,true,false, Paths.get("runs","supplychai","rawdata","beefLearnedSticky_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,true,false, Paths.get("runs","supplychai","rawdata","beefLearnedSlow_withInventory.csv").toFile(), null, null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,true,false, Paths.get("runs","supplychai","rawdata","beefLearnedSticky_withInventory.csv").toFile(), null, null);
         //food learned
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,false,true, Paths.get("runs","supplychai","rawdata","foodLearnedSlow_withInventory.csv").toFile(), null);
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,false,true, Paths.get("runs","supplychai","rawdata","foodLearnedSticky_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,false,true, Paths.get("runs","supplychai","rawdata","foodLearnedSlow_withInventory.csv").toFile(), null, null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,false,true, Paths.get("runs","supplychai","rawdata","foodLearnedSticky_withInventory.csv").toFile(), null, null);
         //learning
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,false,false, Paths.get("runs","supplychai","rawdata","learningSlow_withInventory.csv").toFile(), null);
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,false,false, Paths.get("runs","supplychai","rawdata","learningSticky_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,false,false, Paths.get("runs","supplychai","rawdata","learningSlow_withInventory.csv").toFile(), null, null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,false,false, Paths.get("runs","supplychai","rawdata","learningSticky_withInventory.csv").toFile(), null, null);
 
 
         //non sticky
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,0,true,true, Paths.get("runs","supplychai","rawdata","nonsticky_withInventory.csv").toFile(), null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,0,true,true, Paths.get("runs","supplychai","rawdata","nonsticky_withInventory.csv").toFile(), null, null);
     }
 
 
@@ -1069,7 +1073,7 @@ public class StickyPricesCSVPrinter {
         //run the test 5 times!
         for(long i=0; i <100; i++)
         {
-            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(i, 1, 100, true, true, null, null);
+            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(i, 1, 100, true, true, null, null, null);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());
@@ -1099,7 +1103,7 @@ public class StickyPricesCSVPrinter {
         //run the test 5 times!
         for(long i=0; i <100; i++)
         {
-            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(i, 1, 100, false, false, null, null);
+            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(i, 1, 100, false, false, null, null, null);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());

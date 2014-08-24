@@ -61,7 +61,7 @@ public class MonopolistScenarioTest {
     {
 
         //run the test 5 times
-        for(int i=0; i<50; i++)
+        for(int i=0; i<10; i++)
         {
             long seed = System.currentTimeMillis();
 
