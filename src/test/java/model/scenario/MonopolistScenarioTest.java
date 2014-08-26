@@ -341,68 +341,8 @@ public class MonopolistScenarioTest {
 
             final MacroII macroII = new MacroII(seed);
             MonopolistScenario scenario1 = new MonopolistScenario(macroII);
+            testRandomSlopeMonopolist(i, macroII, scenario1);
 
-
-
-
-
-            //generate random parameters for labor supply and good demand
-            int p0= macroII.random.nextInt(100)+100; int p1= macroII.random.nextInt(3)+1;
-            scenario1.setDemandIntercept(p0); scenario1.setDemandSlope(p1);
-            int w0=macroII.random.nextInt(10)+10; int w1=macroII.random.nextInt(3)+1;
-            scenario1.setDailyWageIntercept(w0); scenario1.setDailyWageSlope(w1);
-            int a=macroII.random.nextInt(3)+1;
-            scenario1.setLaborProductivity(a);
-
-
-            //    scenario1.setAlwaysMoving(true);
-            //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
-            macroII.setScenario(scenario1);
-            //choose a control at random, but avoid always moving
-
-            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
-            scenario1.setWorkersToBeRehiredEveryDay(true);
-            //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
-            if(macroII.random.nextBoolean())
-                scenario1.setAskPricingStrategy(AdaptiveStockSellerPID.class);
-            else
-                scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
-
-            if(macroII.random.nextBoolean())
-                scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
-            else
-                scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-
-
-            System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
-            System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
-
-            macroII.start();
-            while(macroII.schedule.getTime()<5000)
-                macroII.schedule.step(macroII);
-
-
-            //the pi maximizing labor force employed is:
-            int profitMaximizingLaborForce = MonopolistScenario.findWorkerTargetThatMaximizesProfits(p0,p1,w0,w1,a);
-            int profitMaximizingQuantity = profitMaximizingLaborForce*a;
-            int profitMaximizingPrice = p0 - p1 * profitMaximizingQuantity;
-
-            System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
-            System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
-            System.out.flush();
-
-
-            scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("lamerbuy.csv").toFile());
-            scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("lamersell.csv").toFile());
-
-
-            //you must be at most wrong by two (not well tuned and anyway sometimes it's hard!)
-            assertEquals(scenario1.monopolist.getTotalWorkers(), profitMaximizingLaborForce,2);
-
-
-
-            System.out.println(i + "---------------------------------------------------------------------------------------------");
-            macroII.finish();
 
         }
 
@@ -410,6 +350,69 @@ public class MonopolistScenarioTest {
 
 
 
+    }
+
+    public static void testRandomSlopeMonopolist(int seed, MacroII macroII, MonopolistScenario scenario1) {
+        //generate random parameters for labor supply and good demand
+        int p0= macroII.random.nextInt(100)+100;
+        int p1= macroII.random.nextInt(3)+1;
+        scenario1.setDemandIntercept(p0);
+        scenario1.setDemandSlope(p1);
+        int w0=macroII.random.nextInt(10)+10;
+        int w1=macroII.random.nextInt(3)+1;
+        scenario1.setDailyWageIntercept(w0);
+        scenario1.setDailyWageSlope(w1);
+        int a=macroII.random.nextInt(3)+1;
+        scenario1.setLaborProductivity(a);
+
+
+        //    scenario1.setAlwaysMoving(true);
+        //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
+        macroII.setScenario(scenario1);
+        //choose a control at random, but avoid always moving
+
+        scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
+        scenario1.setWorkersToBeRehiredEveryDay(true);
+        //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
+        if(macroII.random.nextBoolean())
+            scenario1.setAskPricingStrategy(AdaptiveStockSellerPID.class);
+        else
+            scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
+
+        if(macroII.random.nextBoolean())
+            scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
+        else
+            scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+
+
+        System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
+        System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
+
+        macroII.start();
+        while(macroII.schedule.getTime()<5000)
+            macroII.schedule.step(macroII);
+
+
+        //the pi maximizing labor force employed is:
+        int profitMaximizingLaborForce = MonopolistScenario.findWorkerTargetThatMaximizesProfits(p0,p1,w0,w1,a);
+        int profitMaximizingQuantity = profitMaximizingLaborForce*a;
+        int profitMaximizingPrice = p0 - p1 * profitMaximizingQuantity;
+
+        System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
+        System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
+        System.out.flush();
+
+
+        scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("lamerbuy.csv").toFile());
+        scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("lamersell.csv").toFile());
+
+
+        //you must be at most wrong by two (not well tuned and anyway sometimes it's hard!)
+        assertEquals(scenario1.monopolist.getTotalWorkers(), profitMaximizingLaborForce,2);
+
+
+        System.out.println(seed + "---------------------------------------------------------------------------------------------");
+        macroII.finish();
     }
 
     @Test

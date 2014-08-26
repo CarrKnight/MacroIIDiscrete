@@ -62,6 +62,9 @@ public class SISOGuessingRegression implements SISORegression {
     private boolean excludeLinearFallback = false;
 
 
+    private boolean roundError = false;
+
+
     public SISOGuessingRegression(int... guesses) {
         this(DEFAULT_REGRESSION_FROM_GUESS_BUILDER,guesses);
 
@@ -95,12 +98,16 @@ public class SISOGuessingRegression implements SISORegression {
         //dynamic regression
         for(int i=0; i< regressions.length; i++)
         {
-            if(Double.isFinite(input) && observations > howManyObservationsBeforeModelSelection)
-                errors[i].addObservation(Math.pow(output - regressions[i].predictNextOutput(input,intercepts),2));
+            if(Double.isFinite(input) && hasEnoughObservations()) {
+                double error = output - regressions[i].predictNextOutput(input, intercepts);
+                if(roundError)
+                    error = Math.round(error);
+                errors[i].addObservation(Math.pow(error,2));
+            }
             regressions[i].addObservation(output,input,intercepts);
         }
         //fallback regressions
-        if(Double.isFinite(input) && observations > howManyObservationsBeforeModelSelection)
+        if(Double.isFinite(input) && hasEnoughObservations())
             fallbackError.addObservation(Math.pow(output - linearFallback.predictNextOutput(input,intercepts),2));
         linearFallback.addObservation(output,input,intercepts);
 
@@ -109,6 +116,10 @@ public class SISOGuessingRegression implements SISORegression {
         minimumToBeRevalued = true; //lazy evaluation
         observations++;
 
+    }
+
+    public boolean hasEnoughObservations() {
+        return observations > howManyObservationsBeforeModelSelection;
     }
 
 
@@ -133,7 +144,8 @@ public class SISOGuessingRegression implements SISORegression {
         if(minimumToBeRevalued) {
             minimum = 0;
             for (int i = 1; i < regressions.length; i++)
-                if (errors[i].getSmoothedObservation() < errors[minimum].getSmoothedObservation())
+                if (errors[i].getSmoothedObservation() < errors[minimum].getSmoothedObservation() ||
+                        (regressions[i].getTimeConstant() > 0 && regressions[minimum].getTimeConstant() < 0))
                     minimum = i;
             minimumToBeRevalued = false;
         }
@@ -205,7 +217,8 @@ public class SISOGuessingRegression implements SISORegression {
         if(excludeLinearFallback)
             return false;
         updateMinimumIfNeeded();
-        return fallbackError.getSmoothedObservation() <= errors[minimum].getSmoothedObservation();
+        return regressions[minimum].getTimeConstant() < 0 || //negative time constant is basically always bad news. Avoid avoid avoid
+                fallbackError.getSmoothedObservation() <= errors[minimum].getSmoothedObservation();
     }
 
     /**
@@ -243,5 +256,13 @@ public class SISOGuessingRegression implements SISORegression {
 
     public void setExcludeLinearFallback(boolean excludeLinearFallback) {
         this.excludeLinearFallback = excludeLinearFallback;
+    }
+
+    public boolean isRoundError() {
+        return roundError;
+    }
+
+    public void setRoundError(boolean roundError) {
+        this.roundError = roundError;
     }
 }

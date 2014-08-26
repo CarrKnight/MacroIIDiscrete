@@ -6,6 +6,8 @@
 
 package model.utilities.stats.processes;
 
+import com.google.common.base.Preconditions;
+
 import java.util.function.Supplier;
 
 /**
@@ -28,11 +30,30 @@ public interface DynamicProcess {
 
     public double newStep(double todayInput, double... covariants);
 
-
     public Supplier<Double> getRandomNoise();
 
     public void setRandomNoise(Supplier<Double> randomNoise);
 
+    /**
+     * utility method to simulate a series of steps where the input is fixed
+     * @param toSimulate process to step
+     * @param steps how many steps
+     * @param fixedInput the input throughout these new steps
+     * @param covariants the  fixed covariants, if any
+     * @return
+     */
+    public static double simulateManyStepsWithFixedInput(DynamicProcess toSimulate, int steps, double fixedInput,
+                                                         double... covariants){
+        Preconditions.checkArgument(steps>1);
+        Preconditions.checkArgument(toSimulate != null);             assert toSimulate != null;
+        double output = Double.NaN;
+        for(int i=0; i<steps; i++) {
+            output = toSimulate.newStep(fixedInput,covariants);
+        }
+        assert !Double.isNaN(output);
+        return output;
+
+    }
 
 
 

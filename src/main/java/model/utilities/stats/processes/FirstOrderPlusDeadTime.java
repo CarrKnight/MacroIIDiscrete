@@ -72,7 +72,7 @@ public class FirstOrderPlusDeadTime implements DynamicProcess {
 
         double commonDenominator = 1+timeConstant;
 
-        double output = intercept/commonDenominator + (gain * input)/commonDenominator + (timeConstant * (previousStep))/commonDenominator;
+        double output = intercept + (gain * input)/commonDenominator + (timeConstant * (previousStep))/commonDenominator;
         //shock it, if needed
         if(randomNoise != null)
             output = output + randomNoise.get()/commonDenominator;
