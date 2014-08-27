@@ -72,10 +72,10 @@ public class SimpleHiringScenarioTest {
             for(HumanResources hr : scenario.getHrs())
             {
                 averageWorkers += hr.getNumberOfWorkers();
-                int day = hr.getPurchasesData().getLastObservedDay();
+                int day = hr.getData().getLastObservedDay();
                 Assert.assertEquals(hr.getNumberOfWorkers(), hr.getTodayInflow());
                 //yesterday hires are today workforce:
-                Assert.assertEquals(hr.getPurchasesData().getObservationRecordedThisDay(PurchasesDataType.INFLOW, day - 1),hr.getPlant().getNumberOfWorkersDuringProduction(),.0001d);
+                Assert.assertEquals(hr.getData().getObservationRecordedThisDay(PurchasesDataType.INFLOW, day - 1),hr.getPlant().getNumberOfWorkersDuringProduction(),.0001d);
                 System.out.println("average wage paid: " + hr.getAveragedClosingPrice() + " , last offered wages: " + hr.getLastOfferedPrice() + ", today we hired: " + hr.getTodayInflow() + ", target: " + hr.getWorkerTarget());
                 Assert.assertEquals(intercept + slope *16,hr.getAveragedClosingPrice(),.4); //everybody's averages need to be correct + o -
             }

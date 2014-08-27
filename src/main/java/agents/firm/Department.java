@@ -7,6 +7,7 @@
 package agents.firm;
 
 import model.MacroII;
+import model.utilities.stats.collectors.DataStorage;
 
 /**
  * <h4>Description</h4>
@@ -25,7 +26,7 @@ import model.MacroII;
  * @version 2012-08-21
  * @see
  */
-public interface Department {
+public interface Department<T extends  Enum<T> > {
 
     /**
      * what is the most recent day this department has memory of
@@ -62,5 +63,10 @@ public interface Department {
     public int getLastSetPrice();
 
     public MacroII getModel();
+
+    public DataStorage<T> getData();
+
+
+
 
 }

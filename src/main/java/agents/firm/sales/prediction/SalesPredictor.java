@@ -10,6 +10,7 @@ import agents.firm.sales.SalesDepartment;
 import ec.util.MersenneTwisterFast;
 import financial.market.Market;
 import model.MacroII;
+import model.utilities.Deactivatable;
 import model.utilities.NonDrawable;
 import model.utilities.logs.LogNode;
 
@@ -33,7 +34,7 @@ import java.util.ArrayList;
  * @version 2012-07-26
  * @see
  */
-public interface SalesPredictor extends LogNode {
+public interface SalesPredictor extends LogNode, Deactivatable {
 
 
 
@@ -69,12 +70,6 @@ public interface SalesPredictor extends LogNode {
      */
     public float predictSalePriceWhenNotChangingProduction(SalesDepartment dept);
 
-    /**
-     * Call this to kill the predictor
-     */
-    public void turnOff();
-
-
 
     /**
      * This is the static generator to create random or non-random buyerSearchAlgorithm.
@@ -106,6 +101,7 @@ public interface SalesPredictor extends LogNode {
             rules.add(RegressionSalePredictor.class);
             rules.add(RegressionWeightedSalePredictor.class);
             rules.add(SamplingLearningDecreaseSalesPredictor.class);
+            rules.add(SISOGuessingSalesPredictor.class);
             rules.add(SurveySalesPredictor.class);
             assert rules.size() > 0; // there should be at least one!!
         }
@@ -179,7 +175,8 @@ public interface SalesPredictor extends LogNode {
                     return rule.getConstructor(SalesDepartment.class).newInstance(department);
                 if(rule.equals(SamplingLearningDecreaseSalesPredictor.class))
                     return rule.getConstructor().newInstance();
-                if(rule.equals(RecursiveSalePredictor.class) || rule.equals(OpenLoopRecursiveSalesPredictor.class))
+                if(rule.equals(RecursiveSalePredictor.class) || rule.equals(OpenLoopRecursiveSalesPredictor.class) ||
+                        rule.equals(SISOGuessingSalesPredictor.class))
                     return rule.getConstructor(MacroII.class,SalesDepartment.class).newInstance(department.getModel(),department);
                 if(rule.equals(RegressionSalePredictor.class) || rule.equals(RegressionWeightedSalePredictor.class)
                         || rule.equals(LearningDecreaseSalesPredictor.class) || rule.equals(LearningFixedElasticitySalesPredictor.class))

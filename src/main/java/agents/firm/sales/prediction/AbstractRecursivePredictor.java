@@ -16,7 +16,6 @@ import model.utilities.filters.ExponentialFilter;
 import model.utilities.filters.MovingAverage;
 import model.utilities.logs.*;
 import model.utilities.stats.collectors.DataStorage;
-import model.utilities.stats.regression.ExponentialForgettingRegressionDecorator;
 import model.utilities.stats.regression.KalmanBasedRecursiveRegression;
 import model.utilities.stats.regression.KalmanRecursiveRegression;
 import model.utilities.stats.regression.RecursiveLinearRegression;
@@ -95,9 +94,9 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
         this.priceLags=priceLags;
         this.independentLags = independentLags;
         this.regression =
-               //      new ExponentialForgettingRegressionDecorator(
+    //                 new ExponentialForgettingRegressionDecorator(
                 new KalmanRecursiveRegression(1+priceLags+ independentLags,initialCoefficients)
-               //      ,.99d,.1) //very small scale forgetting. Good just to avoid getting stuck.
+       //              ,.999d,.001) //very small scale forgetting. Good just to avoid getting stuck.
         ;
         //this.regression = new KalmanRecursiveRegression(1+priceLags+ independentLags,initialCoefficients);
 
@@ -135,7 +134,7 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
 
     private int numberOfValidObservations = 0;
 
-    private int initialOpenLoopLearningTime=50;
+    private int initialOpenLoopLearningTime=500;
 
     /**
      * the first burnoutPeriod observations are just ignored
@@ -244,6 +243,16 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                         else
                             observation = Doubles.concat(new double[]{1},laggedIndependentVariable);
 
+                        if(regressionInputsWriter != null)
+                            try {
+                                regressionInputsWriter.write(price + "," +weight + "," +observation[1] +"," + originalX);
+                                regressionInputsWriter.newLine();
+                                regressionInputsWriter.flush();
+                                System.out.println(Arrays.toString(regression.getBeta()));
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
 
 
 
@@ -254,16 +263,6 @@ public abstract class AbstractRecursivePredictor  implements Steppable, Deactiva
                                     this.getClass(),price, Arrays.toString(observation),weight,regression));
 
 
-                            if(regressionInputsWriter != null)
-                                try {
-                                    regressionInputsWriter.write(price + "," +weight + "," +observation[1] +"," + originalX);
-                                    regressionInputsWriter.newLine();
-                                    regressionInputsWriter.flush();
-                                    System.out.println(Arrays.toString(regression.getBeta()));
-
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
 
                             regression.addObservation(weight, price, observation);
                             numberOfValidObservations++;

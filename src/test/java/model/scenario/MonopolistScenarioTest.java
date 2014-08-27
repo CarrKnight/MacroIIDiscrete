@@ -250,7 +250,7 @@ public class MonopolistScenarioTest {
         //run the test 15 times
         for(int i=0; i<5; i++)
         {
-            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            final MacroII macroII = new MacroII(1409111395812l);
 
 
 
@@ -403,7 +403,7 @@ public class MonopolistScenarioTest {
         System.out.flush();
 
 
-        scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("lamerbuy.csv").toFile());
+        scenario1.monopolist.getHRs().iterator().next().getData().writeToCSVFile(Paths.get("lamerbuy.csv").toFile());
         scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("lamersell.csv").toFile());
 
 
@@ -473,7 +473,7 @@ public class MonopolistScenarioTest {
             System.out.flush();
 
 
-            scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("lamerbuy.csv").toFile());
+            scenario1.monopolist.getHRs().iterator().next().getData().writeToCSVFile(Paths.get("lamerbuy.csv").toFile());
             scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("lamersell.csv").toFile());
 
 
@@ -738,7 +738,7 @@ public class MonopolistScenarioTest {
             if(i==0)
             {
 
-                scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("runs","lamerbuy.csv").toFile());
+                scenario1.monopolist.getHRs().iterator().next().getData().writeToCSVFile(Paths.get("runs","lamerbuy.csv").toFile());
                 scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs","lamersell.csv").toFile());
             }
 
@@ -861,7 +861,7 @@ public class MonopolistScenarioTest {
             if(i==0)
             {
 
-                scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("runs","lamerbuy.csv").toFile());
+                scenario1.monopolist.getHRs().iterator().next().getData().writeToCSVFile(Paths.get("runs","lamerbuy.csv").toFile());
                 scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs","lamersell.csv").toFile());
             }
 
@@ -928,7 +928,7 @@ public class MonopolistScenarioTest {
             if(i==0)
             {
 
-                scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("runs","lamerbuy.csv").toFile());
+                scenario1.monopolist.getHRs().iterator().next().getData().writeToCSVFile(Paths.get("runs","lamerbuy.csv").toFile());
                 scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs","lamersell.csv").toFile());
             }
 
@@ -994,7 +994,7 @@ public class MonopolistScenarioTest {
             if(i==0)
             {
 
-                scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("runs","lamerbuy.csv").toFile());
+                scenario1.monopolist.getHRs().iterator().next().getData().writeToCSVFile(Paths.get("runs","lamerbuy.csv").toFile());
                 scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs","lamersell.csv").toFile());
             }
 
@@ -1155,7 +1155,7 @@ public class MonopolistScenarioTest {
             assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice(), 79, 1);
             if (i == 0) {
 
-                scenario1.monopolist.getHRs().iterator().next().getPurchasesData().writeToCSVFile(Paths.get("runs", "lamerbuy.csv").toFile());
+                scenario1.monopolist.getHRs().iterator().next().getData().writeToCSVFile(Paths.get("runs", "lamerbuy.csv").toFile());
                 scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "lamersell.csv").toFile());
             }
 

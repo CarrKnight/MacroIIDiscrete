@@ -87,6 +87,7 @@ public interface PurchasesPredictor
             rules.add(MarketPurchasesPredictor  .class);
             rules.add(OpenLoopRecursivePurchasesPredictor   .class);
             rules.add(PricingPurchasesPredictor   .class);
+            rules.add(SISOGuessingPurchasesPredictor   .class);
             rules.add(RecursivePurchasesPredictor   .class);
             rules.add(MemoryPurchasesPredictor  .class);
             rules.add(SamplingLearningIncreasePurchasePredictor   .class);
@@ -168,7 +169,8 @@ public interface PurchasesPredictor
                             newInstance(department.getMarket(), department.getModel());
                 if(rule.equals(SamplingLearningIncreasePurchasePredictor.class))
                     return rule.getConstructor().newInstance(department.getModel());
-                if(rule.equals(RecursivePurchasesPredictor.class) || rule.equals(OpenLoopRecursivePurchasesPredictor.class))
+                if(rule.equals(RecursivePurchasesPredictor.class) || rule.equals(OpenLoopRecursivePurchasesPredictor.class)  ||
+                        rule.equals(SISOGuessingPurchasesPredictor.class))
                     return rule.getConstructor(MacroII.class,PurchasesDepartment.class).newInstance(department.getModel(),department);
                 if(rule.equals(LinearExtrapolatorPurchasePredictor.class) || rule.equals(AroundShockLinearRegressionPurchasePredictor.class))
                     return rule.getConstructor(PurchasesDepartment.class).newInstance(department);

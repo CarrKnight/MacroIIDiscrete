@@ -212,7 +212,7 @@ public class TripolistWithInputScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            scenario1.getMonopolist().getPurchaseDepartment(TripolistWithInputScenario.INPUT).getPurchasesData().writeToCSVFile(Paths.get("runs","test.csv").toFile());
+            scenario1.getMonopolist().getPurchaseDepartment(TripolistWithInputScenario.INPUT).getData().writeToCSVFile(Paths.get("runs","test.csv").toFile());
             System.out.println(i + " ----- " + scenario1.monopolist.getTotalWorkers() + " ... " + macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice() + " ----> " + macroII.seed());
             assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
             assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice(), 87,1);

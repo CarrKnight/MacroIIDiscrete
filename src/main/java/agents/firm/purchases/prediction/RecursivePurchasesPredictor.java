@@ -104,7 +104,7 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
 
     @Override
     public DataStorage getData() {
-        return department.getPurchasesData();
+        return department.getData();
     }
 
     @Override
