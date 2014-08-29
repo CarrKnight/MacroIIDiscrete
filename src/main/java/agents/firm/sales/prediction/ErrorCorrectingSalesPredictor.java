@@ -11,6 +11,9 @@ import model.MacroII;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import model.utilities.stats.regression.ErrorCorrectingRegressionOneStep;
 
+import java.io.IOException;
+import java.nio.file.Path;
+
 /**
  * Error correcting model as a base for predicting marginals
  * Created by carrknight on 8/29/14.
@@ -23,10 +26,10 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
 
     public ErrorCorrectingSalesPredictor(MacroII model, SalesDepartment department) {
         this.collector = new RegressionDataCollector<>(department,SalesDataType.WORKERS_PRODUCING_THIS_GOOD,
-                SalesDataType.LAST_ASKED_PRICE,SalesDataType.SUPPLY_GAP);
+                SalesDataType.CLOSING_PRICES,SalesDataType.SUPPLY_GAP);
         collector.setxValidator(collector.getxValidator().and(y -> y > 0));
         collector.setyValidator(collector.getyValidator().and(x -> x >0));
-        base = new SISOPredictorBase<>(model,collector,new ErrorCorrectingRegressionOneStep(.98f),null);
+        base = new SISOPredictorBase<>(model,collector,new ErrorCorrectingRegressionOneStep(.9999f),null);
         base.setBurnOut(100);
 
     }
@@ -45,7 +48,7 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
     public float predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
         double slope = base.getRegression().getGain();
         float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float)slope : 0;
-        System.out.println("slope: " + toAdd);
+        //System.out.println("slope: " + toAdd);
         return  dept.getLastClosingPrice() + toAdd;
     }
 
@@ -80,5 +83,9 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
     public void turnOff() {
         super.turnOff();
         base.turnOff();
+    }
+
+    public void setDebugWriter(Path pathToDebugFileToWrite) throws IOException {
+        base.setDebugWriter(pathToDebugFileToWrite);
     }
 }

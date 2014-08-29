@@ -11,13 +11,12 @@ import agents.firm.Department;
 import agents.firm.Firm;
 import agents.firm.purchases.inventoryControl.InventoryControl;
 import agents.firm.purchases.inventoryControl.Level;
+import agents.firm.purchases.prediction.ErrorCorrectingPurchasePredictor;
 import agents.firm.purchases.prediction.PurchasesPredictor;
-import agents.firm.purchases.prediction.RecursivePurchasesPredictor;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.purchases.pricing.decorators.MaximumBidPriceDecorator;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
-import agents.firm.utilities.ExponentialPriceAverager;
 import agents.firm.utilities.LastClosingPriceEcho;
 import agents.firm.utilities.PriceAverager;
 import com.google.common.base.Preconditions;
@@ -62,7 +61,7 @@ public class PurchasesDepartment implements Deactivatable, Department<PurchasesD
     private boolean active = true;
 
     public static Class<? extends PurchasesPredictor> defaultPurchasePredictor =
-            RecursivePurchasesPredictor.class;
+            ErrorCorrectingPurchasePredictor.class;
     /**
      * The weekly budget given by the firm to this purchase department to carry out its tasks
      */
@@ -195,7 +194,7 @@ public class PurchasesDepartment implements Deactivatable, Department<PurchasesD
 
         counter = new InflowOutflowCounter(model,firm,goodType);
         purchasesData = new PurchasesDepartmentData();
-        priceAverager   = new ExponentialPriceAverager(.8f, PriceAverager.NoTradingDayPolicy.IGNORE);
+        priceAverager   = new LastClosingPriceEcho();
 
 
 

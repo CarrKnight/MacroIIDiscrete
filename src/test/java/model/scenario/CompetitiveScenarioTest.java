@@ -285,7 +285,7 @@ public class CompetitiveScenarioTest {
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
                 scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
-                scenario1.setAdditionalCompetitors( 4);
+                scenario1.setAdditionalCompetitors(competitor);
                 scenario1.setWorkersToBeRehiredEveryDay(true);
                 scenario1.setDemandIntercept(102);
 

@@ -107,7 +107,8 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
             if(debugWriter != null)
             {
                 try {
-                    debugWriter.write(dependentVariable + ", " + independentVariable + "," + (gap != 0 ? 0 : 1));
+                    debugWriter.write(dependentVariable + ", " + independentVariable + ","
+                            + (Math.abs(gap) > 100 ? 1 : 0));
                     debugWriter.newLine();
                     debugWriter.flush();
                 } catch (IOException e) {
@@ -172,7 +173,7 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
     }
 
     public void setDebugWriter(Path pathToDebugFileToWrite) throws IOException {
-        //pathToDebugFileToWrite.toFile().createNewFile();
+        Files.deleteIfExists(pathToDebugFileToWrite);
         this.debugWriter = Files.newBufferedWriter(pathToDebugFileToWrite, StandardOpenOption.CREATE);
         debugWriter.write("y,x,skipped");
         debugWriter.newLine();

@@ -11,13 +11,12 @@ import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.purchases.PurchasesDepartment;
+import agents.firm.purchases.prediction.ErrorCorrectingPurchasePredictor;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
-import agents.firm.purchases.prediction.RecursivePurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.ErrorCorrectingSalesPredictor;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
-import agents.firm.sales.prediction.RecursiveSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import financial.market.Market;
 import model.MacroII;
@@ -82,7 +81,11 @@ public class OneLinkSupplyChainResult {
                 }
                 else{
                     assert dept.getPredictorStrategy() instanceof ErrorCorrectingSalesPredictor; //assuming here nothing has been changed and we are still dealing with recursive sale predictors
-
+                    try {
+                        ((ErrorCorrectingSalesPredictor)dept.getPredictorStrategy()).setDebugWriter(regressionLogToWrite);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -432,7 +435,6 @@ public class OneLinkSupplyChainResult {
                     dept.setPredictorStrategy(predictor);
                 }
                 else{
-                    assert dept.getPredictorStrategy() instanceof RecursiveSalePredictor; //assuming here nothing has been changed and we are still dealing with recursive sale predictors
 
                 }
             }
@@ -444,10 +446,10 @@ public class OneLinkSupplyChainResult {
                 if(foodLearned)
                     department.setPredictor(new FixedIncreasePurchasesPredictor(1));
                 else{
-                    final RecursivePurchasesPredictor predictor = new RecursivePurchasesPredictor(macroII, department);
+                    final ErrorCorrectingPurchasePredictor predictor = new ErrorCorrectingPurchasePredictor(macroII, department);
                     try {
                         if(regressionCSV != null)
-                            predictor.logRegressionInput(regressionCSV);
+                            predictor.setDebugWriter(regressionCSV);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -480,6 +482,14 @@ public class OneLinkSupplyChainResult {
                 {
                     if(foodLearned)
                         hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
+                    else{
+                        try {
+                            ErrorCorrectingPurchasePredictor predictor = new ErrorCorrectingPurchasePredictor(model,hr);
+                            predictor.setDebugWriter(Paths.get("runs","tmp2.csv"));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
                 return hr;
             }

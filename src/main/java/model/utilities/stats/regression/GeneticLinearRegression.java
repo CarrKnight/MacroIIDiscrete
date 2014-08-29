@@ -6,7 +6,6 @@
 
 package model.utilities.stats.regression;
 
-import com.sun.istack.internal.Nullable;
 import org.uncommons.maths.random.MersenneTwisterRNG;
 import org.uncommons.watchmaker.framework.*;
 import org.uncommons.watchmaker.framework.factories.AbstractCandidateFactory;

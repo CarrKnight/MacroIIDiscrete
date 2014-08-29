@@ -115,6 +115,8 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
         int newTarget = -1;
 
         try{
+  //          if(owner.getModel().random.nextBoolean(.05))
+    //            return currentWorkerTarget + 5;
 
             float profitsIfWeIncrease = currentWorkerTarget < p.maximumWorkersPossible() ? //if we can increase production
                     MarginalMaximizerStatics.computeMarginalProfits(owner, p, hr, plantControl, policy, currentWorkerTarget, currentWorkerTarget + 1) //check marginal profits

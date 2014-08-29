@@ -7,7 +7,6 @@
 package financial.utilities;
 
 import agents.EconomicAgent;
-import com.sun.istack.internal.Nullable;
 
 
 /**

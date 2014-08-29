@@ -41,7 +41,7 @@ public class ErrorCorrectingRegressionOneStep implements SISORegression {
             regression = new KalmanRecursiveRegression(4);
         else
             regression = new ExponentialForgettingRegressionDecorator(
-                    new KalmanRecursiveRegression(4),.99,1);
+                    new KalmanRecursiveRegression(4),forgettingFactor,1);
     }
 
     /**
@@ -129,7 +129,5 @@ public class ErrorCorrectingRegressionOneStep implements SISORegression {
         return null;
     }
 
-    public int getNumberOfObservations() {
-        return numberOfObservations;
-    }
+
 }

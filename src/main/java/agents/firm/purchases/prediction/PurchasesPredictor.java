@@ -92,6 +92,7 @@ public interface PurchasesPredictor
             rules.add(MemoryPurchasesPredictor  .class);
             rules.add(SamplingLearningIncreasePurchasePredictor   .class);
             rules.add(SurveyPurchasesPredictor   .class);
+            rules.add(ErrorCorrectingPurchasePredictor   .class);
 
 
             rules.removeIf(aClass -> aClass.isAnnotationPresent(NonDrawable.class));
@@ -170,7 +171,7 @@ public interface PurchasesPredictor
                 if(rule.equals(SamplingLearningIncreasePurchasePredictor.class))
                     return rule.getConstructor().newInstance(department.getModel());
                 if(rule.equals(RecursivePurchasesPredictor.class) || rule.equals(OpenLoopRecursivePurchasesPredictor.class)  ||
-                        rule.equals(SISOGuessingPurchasesPredictor.class))
+                        rule.equals(SISOGuessingPurchasesPredictor.class) || rule.equals(ErrorCorrectingPurchasePredictor.class))
                     return rule.getConstructor(MacroII.class,PurchasesDepartment.class).newInstance(department.getModel(),department);
                 if(rule.equals(LinearExtrapolatorPurchasePredictor.class) || rule.equals(AroundShockLinearRegressionPurchasePredictor.class))
                     return rule.getConstructor(PurchasesDepartment.class).newInstance(department);

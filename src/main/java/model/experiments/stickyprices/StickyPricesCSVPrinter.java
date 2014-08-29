@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
@@ -68,7 +69,7 @@ public class StickyPricesCSVPrinter {
         //set defaults
         MonopolistScenario.defaultControlType = MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL;
 
-        /*
+
 
         //create directory
         Files.createDirectories(Paths.get("runs", "supplychai", "rawdata"));
@@ -111,7 +112,7 @@ public class StickyPricesCSVPrinter {
         System.out.println("figure 17");
         sampleMonopolistRunLearnedWithInventory(0,101,1,1,14,.1f,.1f,"sampleMonopolistInv.csv");
         System.out.println("figure 18");
-         */
+
         sampleCompetitiveRunLearnedWithInventory(0, 101, 1, 1, 14, .1f, .1f, "sampleCompetitiveInv.csv");
 
 
