@@ -6,40 +6,28 @@
 
 package agents.firm.sales.prediction;
 
-import agents.firm.Department;
 import agents.firm.sales.SalesDepartment;
 import model.MacroII;
-import model.utilities.Deactivatable;
 import model.utilities.stats.collectors.enums.SalesDataType;
-import model.utilities.stats.regression.SISOGuessingRegression;
+import model.utilities.stats.regression.ErrorCorrectingRegressionOneStep;
 
 /**
- * A multiple model regression where one gets chosen to predict, possibly by simulating.
- * Created by carrknight on 8/26/14.
+ * Error correcting model as a base for predicting marginals
+ * Created by carrknight on 8/29/14.
  */
-public class SISOGuessingSalesPredictor extends BaseSalesPredictor implements Deactivatable {
-
+public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
 
     private final RegressionDataCollector<SalesDataType> collector;
 
-    /**
-     * the sales department to use
-     */
-    private final SalesDepartment toFollow;
+    private final SISOPredictorBase<SalesDataType,ErrorCorrectingRegressionOneStep> base;
 
-    /**
-     * the set of regressions to use
-     */
-    private final SISOPredictorBase<SalesDataType,SISOGuessingRegression> basePredictor;
-
-
-    public SISOGuessingSalesPredictor(MacroII model, SalesDepartment toFollow) {
-        this.toFollow = toFollow;
-        collector = new RegressionDataCollector<>(toFollow,SalesDataType.WORKERS_PRODUCING_THIS_GOOD,
-                SalesDataType.CLOSING_PRICES,SalesDataType.SUPPLY_GAP);
-        collector.setDataValidator(collector.getDataValidator().and(Department::hasTradedAtLeastOnce));
-        collector.setyValidator(price-> Double.isFinite(price) && price > 0); // we don't want -1 prices
-        basePredictor =  SISOPredictorBase.buildDefaultSISOGuessingRegression(model,collector);
+    public ErrorCorrectingSalesPredictor(MacroII model, SalesDepartment department) {
+        this.collector = new RegressionDataCollector<>(department,SalesDataType.WORKERS_PRODUCING_THIS_GOOD,
+                SalesDataType.LAST_ASKED_PRICE,SalesDataType.SUPPLY_GAP);
+        collector.setxValidator(collector.getxValidator().and(y -> y > 0));
+        collector.setyValidator(collector.getyValidator().and(x -> x >0));
+        base = new SISOPredictorBase<>(model,collector,new ErrorCorrectingRegressionOneStep(.98f),null);
+        base.setBurnOut(100);
 
     }
 
@@ -55,21 +43,10 @@ public class SISOGuessingSalesPredictor extends BaseSalesPredictor implements De
      */
     @Override
     public float predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
-
-        final float predicted = predictYAfterChangingXBy(1);
-        if(Float.isFinite(predicted))
-            return predicted;
-        else return (float) toFollow.getAveragedPrice();
-    }
-
-    /**
-     * predict (by simulation) what will be Y after X is changed by "increaseStep"
-     * @param increaseStep can be negative or 0
-     * @return the prediction or NaN if no prediction is available
-     */
-    public float predictYAfterChangingXBy(int increaseStep) {
-       return basePredictor.predictYAfterChangingXBy(increaseStep);
-
+        double slope = base.getRegression().getGain();
+        float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float)slope : 0;
+        System.out.println("slope: " + toAdd);
+        return  dept.getLastClosingPrice() + toAdd;
     }
 
     /**
@@ -82,10 +59,9 @@ public class SISOGuessingSalesPredictor extends BaseSalesPredictor implements De
      */
     @Override
     public float predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
-        final float predicted = predictYAfterChangingXBy(-1);
-        if(Float.isFinite(predicted))
-            return predicted;
-        else return (float) toFollow.getAveragedPrice();
+        double slope = base.getRegression().getGain();
+        float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float)slope : 0;
+        return  dept.getLastClosingPrice() - toAdd;
     }
 
     /**
@@ -97,17 +73,12 @@ public class SISOGuessingSalesPredictor extends BaseSalesPredictor implements De
      */
     @Override
     public float predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
-        final float predicted = predictYAfterChangingXBy(0);
-        if(Float.isFinite(predicted))
-            return predicted;
-        else return (float) toFollow.getAveragedPrice();
+        return  dept.getLastClosingPrice();
     }
 
-    /**
-     * Call this to kill the predictor
-     */
     @Override
     public void turnOff() {
-        basePredictor.turnOff();
+        super.turnOff();
+        base.turnOff();
     }
 }

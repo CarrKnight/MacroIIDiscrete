@@ -12,6 +12,7 @@ import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
 import model.utilities.stats.processes.DynamicProcess;
 import model.utilities.stats.regression.SISOGuessingRegression;
+import model.utilities.stats.regression.SISORegression;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -20,17 +21,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.function.Consumer;
 
 /**
- * This is the part of the SISO guessing predictor that runs the regression, schedules itself and so on.
+ * A general structure for autoscheduling collecting and regressing to be used by any predictor that needs it.
  * Created by carrknight on 8/27/14.
  */
-public class SISOGuessingPredictorBase<T extends Enum<T>> implements Deactivatable, Steppable{
+public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> implements Deactivatable, Steppable{
 
+    private static final int DEFAULT_BURNOUT = 500;
     /**
      * how many observations before we start actually predicting
      */
-    private int burnOut = 500;
+    private int burnOut = DEFAULT_BURNOUT;
 
     /**
      * how many steps into the future to simulate!
@@ -42,20 +45,34 @@ public class SISOGuessingPredictorBase<T extends Enum<T>> implements Deactivatab
     /**
      * the set of regressions to use
      */
-    private final SISOGuessingRegression regression;
+    private final R regression;
 
 
     private BufferedWriter debugWriter;
 
 
-    public SISOGuessingPredictorBase(MacroII model,
-                                     RegressionDataCollector<T> collector) {
+    public static <K extends Enum<K>> SISOPredictorBase<K,SISOGuessingRegression> buildDefaultSISOGuessingRegression(MacroII model,
+                                                                                                         RegressionDataCollector<K> collector){
+        return new SISOPredictorBase<>(model,collector,new SISOGuessingRegression(0,1,10,20,50,100),
+                regression1 -> {
+                    regression1.setRoundError(true);
+                    regression1.setHowManyObservationsBeforeModelSelection(DEFAULT_BURNOUT);
+                });
+
+    }
+
+
+
+
+    public SISOPredictorBase(MacroII model, RegressionDataCollector<T> collector, R regression,
+                             Consumer<R> regressionInitialization) {
         this.collector =collector;
         this.collector.setDataValidator(collector.getDataValidator().and(Department::hasTradedAtLeastOnce));
         this.collector.setyValidator(price-> Double.isFinite(price) && price > 0); // we don't want -1 prices
-        regression = new SISOGuessingRegression(0,1,10,20,50,100);
-        regression.setRoundError(true);
-        regression.setHowManyObservationsBeforeModelSelection(burnOut);
+        this.regression = regression;
+        if(regressionInitialization != null)
+            regressionInitialization.accept(regression);
+
         //schedule yourself
         model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE,this);
     }
@@ -72,25 +89,25 @@ public class SISOGuessingPredictorBase<T extends Enum<T>> implements Deactivatab
 
         collector.collect();
         if(collector.isLatestObservationValid()) {
-            //gather the quantity sold
-            double quantity = collector.getLastObservedX();
-            //gather price
-            double price = collector.getLastObservedY();
+            //gather the independentVariable sold
+            double independentVariable = collector.getLastObservedX();
+            //gather dependentVariable
+            double dependentVariable = collector.getLastObservedY();
 
             //check weight
             double gap = collector.getLastObservedGap();
             //regress
-            assert price > 0;
+            assert dependentVariable > 0;
 
             if (Math.abs(gap) > 100)
-                regression.skipObservation(price, quantity);
+                regression.skipObservation(dependentVariable, independentVariable);
             else {
-                regression.addObservation(price, quantity);
+                regression.addObservation(dependentVariable, independentVariable);
             }
             if(debugWriter != null)
             {
                 try {
-                    debugWriter.write(price + ", " + quantity + "," + (gap != 0 ? 0 : 1));
+                    debugWriter.write(dependentVariable + ", " + independentVariable + "," + (gap != 0 ? 0 : 1));
                     debugWriter.newLine();
                     debugWriter.flush();
                 } catch (IOException e) {
@@ -113,7 +130,7 @@ public class SISOGuessingPredictorBase<T extends Enum<T>> implements Deactivatab
      * @return the prediction or NaN if no prediction is available
      */
     public float predictYAfterChangingXBy(int increaseStep) {
-        if(regression.hasEnoughObservations() && collector.isLastXValid()) {
+        if(readyForPrediction() && collector.isLastXValid()) {
             final float predictedPrice = (float) DynamicProcess.simulateManyStepsWithFixedInput(regression.generateDynamicProcessImpliedByRegression(),
                     stepsIntoTheFutureToSimulate, collector.getLastObservedX() + increaseStep);
             return Math.max(predictedPrice,0);
@@ -121,7 +138,12 @@ public class SISOGuessingPredictorBase<T extends Enum<T>> implements Deactivatab
         else return Float.NaN;
     }
 
-
+    /**
+     * are there enough observations to make a call?
+     */
+    public boolean readyForPrediction() {
+        return regression.getNumberOfObservations() > burnOut;
+    }
 
 
     /**
@@ -139,7 +161,6 @@ public class SISOGuessingPredictorBase<T extends Enum<T>> implements Deactivatab
 
     public void setBurnOut(int burnOut) {
         this.burnOut = burnOut;
-        regression.setHowManyObservationsBeforeModelSelection(burnOut);
     }
 
     public int getStepsIntoTheFutureToSimulate() {
@@ -162,5 +183,9 @@ public class SISOGuessingPredictorBase<T extends Enum<T>> implements Deactivatab
     @Override
     public String toString() {
         return regression.toString();
+    }
+
+    public R getRegression() {
+        return regression;
     }
 }

@@ -12,8 +12,8 @@ import agents.firm.Firm;
 import agents.firm.production.Plant;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
+import agents.firm.sales.prediction.ErrorCorrectingSalesPredictor;
 import agents.firm.sales.prediction.RegressionSalePredictor;
-import agents.firm.sales.prediction.SISOGuessingSalesPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.decorators.AskReservationPriceDecorator;
@@ -88,7 +88,8 @@ public abstract class  SalesDepartment  implements Department<SalesDataType>, Lo
     protected BuyerSearchAlgorithm buyerSearchAlgorithm;
     protected SellerSearchAlgorithm sellerSearchAlgorithm;
 
-    public static final Class<? extends  SalesPredictor> defaultPredictorStrategy = SISOGuessingSalesPredictor.class;
+    public static final Class<? extends  SalesPredictor> defaultPredictorStrategy =
+            ErrorCorrectingSalesPredictor.class;
 
     /**
      * This is the strategy to predict future sale prices when the order book is not visible.

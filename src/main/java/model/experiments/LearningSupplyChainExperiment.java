@@ -168,7 +168,8 @@ public class LearningSupplyChainExperiment {
 
 
 
-        ((Firm)macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getSellers().iterator().next()).getPurchaseDepartment(OneLinkSupplyChainScenario.INPUT_GOOD).getPurchasesData().writeToCSVFile(Paths.get("runs","supplychai","beefBuying.csv").toFile());
+        ((Firm)macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getSellers().iterator().next()).getPurchaseDepartment(OneLinkSupplyChainScenario.INPUT_GOOD).
+                getData().writeToCSVFile(Paths.get("runs","supplychai","beefBuying.csv").toFile());
 
         System.out.println("beef price: " +averageBeefPrice.getMean() );
         System.out.println("food price: " +averageFoodPrice.getMean() );

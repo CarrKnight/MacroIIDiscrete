@@ -41,6 +41,9 @@ public class KalmanIPDRegressionWithKnownTimeDelay implements SISORegression {
      */
     final private DelayBin<Double> delayedInput;
 
+    private int numberOfObservations = 0;
+
+
     public KalmanIPDRegressionWithKnownTimeDelay(int delay) {
         this(
                 //     new ExponentialForgettingRegressionDecorator(
@@ -74,10 +77,12 @@ public class KalmanIPDRegressionWithKnownTimeDelay implements SISORegression {
 
         input = delayedInput.addAndRetrieve(input);
 
-        if(Double.isFinite(previousOutput))
+        if(Double.isFinite(previousOutput)) {
             //netflow = inflow - outflow
             //netflow - inflow = -outflow
-            regression.addObservation(1, output-previousOutput-intercepts[0],1, input);
+            regression.addObservation(1, output - previousOutput - intercepts[0], 1, input);
+            numberOfObservations++;
+        }
         //basically we regress deltay on u: changes on inventory ~ inflow + outflow
         //one of the flow is from "outside" the department. The other is controlled by its policy.
         previousOutput = output;
@@ -140,5 +145,9 @@ public class KalmanIPDRegressionWithKnownTimeDelay implements SISORegression {
     @Override
     public String toString() {
         return "y_t = y_{t-1} + " + regression.getBeta()[0] + " + " + regression.getBeta()[1] + "* u(t-"+getDelay()+")";
+    }
+
+    public int getNumberOfObservations() {
+        return numberOfObservations;
     }
 }

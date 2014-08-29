@@ -39,7 +39,7 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
     /**
      * use delegate if it's a simple linear regression
      */
-    private final FixedIncreasePurchasesPredictor delegate = new FixedIncreasePurchasesPredictor();
+    private final FixedIncreasePurchasesPredictor delegate = new FixedIncreasePurchasesPredictor(0);
 
 
     public RecursivePurchasesPredictor(MacroII model,PurchasesDepartment department) {
@@ -89,7 +89,7 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
         if(regressingOnWorkers)
                 return PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD;
         else
-            return PurchasesDataType.INFLOW;
+            return PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD;
 
     }
 
@@ -98,7 +98,7 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
         if(department.getPricingStrategyClass().equals(CheaterPricing.class))
             return PurchasesDataType.CLOSING_PRICES;
         else
-            return PurchasesDataType.LAST_OFFERED_PRICE;
+            return PurchasesDataType.CLOSING_PRICES;
 
     }
 

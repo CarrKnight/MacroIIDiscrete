@@ -170,7 +170,7 @@ public class RecursiveSalePredictor extends AbstractRecursivePredictor implement
     }
 
     public Enum getYVariableType() {
-        return SalesDataType.LAST_ASKED_PRICE;
+        return SalesDataType.AVERAGE_CLOSING_PRICES;
     }
 
     public int modifyStepIfNeeded(int step) {

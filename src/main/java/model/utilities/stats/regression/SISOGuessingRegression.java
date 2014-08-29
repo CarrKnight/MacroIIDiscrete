@@ -265,4 +265,8 @@ public class SISOGuessingRegression implements SISORegression {
     public void setRoundError(boolean roundError) {
         this.roundError = roundError;
     }
+
+    public int getNumberOfObservations() {
+        return observations;
+    }
 }

@@ -12,8 +12,10 @@ import agents.firm.production.Blueprint;
 import agents.firm.production.control.maximizer.algorithms.marginalMaximizers.MarginalMaximizer;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
+import agents.firm.purchases.prediction.RecursivePurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
+import agents.firm.sales.prediction.ErrorCorrectingSalesPredictor;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.prediction.RecursiveSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
@@ -79,16 +81,8 @@ public class OneLinkSupplyChainResult {
                     dept.setPredictorStrategy(predictor);
                 }
                 else{
-                    assert dept.getPredictorStrategy() instanceof RecursiveSalePredictor; //assuming here nothing has been changed and we are still dealing with recursive sale predictors
-                    dept.setPredictorStrategy( new RecursiveSalePredictor(model,dept,500));
-                    //if you need, print out the regression results for the beef monopolist
-                    if(regressionLogToWrite != null)
-                        try {
-                            ((RecursiveSalePredictor)dept.getPredictorStrategy()).logRegressionInput(regressionLogToWrite);
-                        } catch (IOException e) {
-                            System.err.println("failed to log the predictor!");
-                            e.printStackTrace();
-                        }
+                    assert dept.getPredictorStrategy() instanceof ErrorCorrectingSalesPredictor; //assuming here nothing has been changed and we are still dealing with recursive sale predictors
+
                 }
             }
 
@@ -425,7 +419,7 @@ public class OneLinkSupplyChainResult {
 
     public static OneLinkSupplyChainResult foodMonopolistOneRun(long random, float divideMonopolistGainsByThis, int beefSpeed,
                                                                 final boolean beefLearned, final boolean foodLearned,
-                                                                File csvFileToWrite) {
+                                                                File csvFileToWrite, Path regressionCSV) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
 
@@ -450,7 +444,15 @@ public class OneLinkSupplyChainResult {
                 if(foodLearned)
                     department.setPredictor(new FixedIncreasePurchasesPredictor(1));
                 else{
-                    //  department.setPredictor(new RecursivePurchasesPredictor(macroII,department,500));
+                    final RecursivePurchasesPredictor predictor = new RecursivePurchasesPredictor(macroII, department);
+                    try {
+                        if(regressionCSV != null)
+                            predictor.logRegressionInput(regressionCSV);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    department.setPredictor(predictor);
+
                 }
 
             }
@@ -535,7 +537,8 @@ public class OneLinkSupplyChainResult {
         System.out.println("produced: " + averageBeefProduced.getMean() );
         System.out.println();
 
-        ((Firm)(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getSellers().iterator().next())).getPurchaseDepartment(OneLinkSupplyChainScenario.INPUT_GOOD).getPurchasesData().writeToCSVFile(
+        ((Firm)(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getSellers().iterator().next())).getPurchaseDepartment(OneLinkSupplyChainScenario.INPUT_GOOD).
+                getData().writeToCSVFile(
                 Paths.get("runs","purchases.csv").toFile());
 
 

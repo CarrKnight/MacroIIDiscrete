@@ -33,6 +33,8 @@ public class NonDynamicRegression implements SISORegression {
 
     private final DelayBin<Double> delayedInput;
 
+    private int observations;
+
     public NonDynamicRegression() {
        this( new ExponentialForgettingRegressionDecorator(
                new KalmanRecursiveRegression(2),.98,10));
@@ -57,6 +59,7 @@ public class NonDynamicRegression implements SISORegression {
         double delayed = delayedInput.addAndRetrieve(input);
         //derivative
         regression.addObservation(1, output, 1, delayed);
+        observations++;
 
 
     }
@@ -116,5 +119,9 @@ public class NonDynamicRegression implements SISORegression {
     public String toString() {
         double[] beta = regression.getBeta();
         return "nonlinear: y = " + beta[0] + " + " + beta[1] + " * x";
+    }
+
+    public int getNumberOfObservations() {
+        return observations;
     }
 }

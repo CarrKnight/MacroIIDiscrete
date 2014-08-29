@@ -43,6 +43,9 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay implements SISORegression {
      */
     final private DelayBin<Double> delayedInput;
 
+    private int numberOfObservations = 0;
+
+
 
     public KalmanFOPDTRegressionWithKnownTimeDelay(int delay) {
         this(
@@ -78,6 +81,8 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay implements SISORegression {
             regression.addObservation(1, output, 1, input, previousOutput);
 
         previousOutput = output;
+
+        numberOfObservations++;
 
     }
 
@@ -154,5 +159,9 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay implements SISORegression {
         final double[] betas = getBetas();
 
         return new FirstOrderPlusDeadTime(betas[0],getGain(),getTimeConstant(),getDelay(),previousOutput,delayedInput.peekAll(Double.class));
+    }
+
+    public int getNumberOfObservations() {
+        return numberOfObservations;
     }
 }

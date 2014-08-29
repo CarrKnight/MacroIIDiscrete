@@ -137,4 +137,9 @@ public class KalmanFOPIDTRegressionWithKnownTimeDelay implements SISORegression
                  previousOutput,twoStepsAgoOutput,regression.peekInputQueue()
                  );
     }
+
+    @Override
+    public int getNumberOfObservations() {
+        return regression.getNumberOfObservations();
+    }
 }

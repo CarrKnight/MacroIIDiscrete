@@ -1194,7 +1194,7 @@ public class StickyPricesCSVPrinter {
         //run the test 5 times!
         for(long i=0; i <100; i++)
         {
-            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.foodMonopolistOneRun(i,1,100,true,true,null);
+            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.foodMonopolistOneRun(i,1,100,true,true,null, null);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());
@@ -1222,7 +1222,7 @@ public class StickyPricesCSVPrinter {
         //run the test 5 times!
         for(long i=0; i <100; i++)
         {
-            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.foodMonopolistOneRun(i,1,100,false,false,null);
+            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.foodMonopolistOneRun(i,1,100,false,false,null, null);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());

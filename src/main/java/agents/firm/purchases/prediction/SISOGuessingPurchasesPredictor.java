@@ -6,15 +6,16 @@
 
 package agents.firm.purchases.prediction;
 
+import agents.firm.Department;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.sales.prediction.RegressionDataCollector;
-import agents.firm.sales.prediction.SISOGuessingPredictorBase;
+import agents.firm.sales.prediction.SISOPredictorBase;
 import model.MacroII;
 import model.utilities.stats.collectors.enums.PurchasesDataType;
+import model.utilities.stats.regression.SISOGuessingRegression;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * The purchases alter-ego of the SISO GuessingSales Predictor
@@ -34,7 +35,7 @@ public class SISOGuessingPurchasesPredictor implements PurchasesPredictor  {
     /**
      * the set of regressions to use
      */
-    private final SISOGuessingPredictorBase<PurchasesDataType> regression;
+    private final SISOPredictorBase<PurchasesDataType,SISOGuessingRegression> regression;
 
 
     public SISOGuessingPurchasesPredictor(MacroII model, PurchasesDepartment toFollow) {
@@ -43,14 +44,10 @@ public class SISOGuessingPurchasesPredictor implements PurchasesPredictor  {
         PurchasesDataType xType = PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD;
         collector = new RegressionDataCollector<>(toFollow,xType,PurchasesDataType.CLOSING_PRICES,
                 PurchasesDataType.DEMAND_GAP);
-        collector.setDataValidator(collector.getDataValidator().and(dep-> dep.hasTradedAtLeastOnce()));
+        collector.setDataValidator(collector.getDataValidator().and(Department::hasTradedAtLeastOnce));
         collector.setyValidator(price-> Double.isFinite(price) && price > 0); // we don't want -1 prices
-        regression = new SISOGuessingPredictorBase<>(model,collector);
-        try {
-            regression.setDebugWriter(Paths.get("runs","tmp2.csv"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        regression = SISOPredictorBase.buildDefaultSISOGuessingRegression(model,collector);
+
     }
 
 

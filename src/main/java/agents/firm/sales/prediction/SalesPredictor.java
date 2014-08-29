@@ -86,6 +86,7 @@ public interface SalesPredictor extends LogNode, Deactivatable {
         static {
             rules = new ArrayList<>(); //read all the rules
             rules.add(AroundShockLinearRegressionSalesPredictor.class);
+            rules.add(ErrorCorrectingSalesPredictor.class);
             rules.add(FixedDecreaseSalesPredictor.class);
             rules.add(FixedFormulaFakePredictor.class);
             rules.add(LearningDecreaseSalesPredictor.class);
@@ -176,7 +177,7 @@ public interface SalesPredictor extends LogNode, Deactivatable {
                 if(rule.equals(SamplingLearningDecreaseSalesPredictor.class))
                     return rule.getConstructor().newInstance();
                 if(rule.equals(RecursiveSalePredictor.class) || rule.equals(OpenLoopRecursiveSalesPredictor.class) ||
-                        rule.equals(SISOGuessingSalesPredictor.class))
+                        rule.equals(SISOGuessingSalesPredictor.class) || rule.equals(ErrorCorrectingSalesPredictor.class))
                     return rule.getConstructor(MacroII.class,SalesDepartment.class).newInstance(department.getModel(),department);
                 if(rule.equals(RegressionSalePredictor.class) || rule.equals(RegressionWeightedSalePredictor.class)
                         || rule.equals(LearningDecreaseSalesPredictor.class) || rule.equals(LearningFixedElasticitySalesPredictor.class))

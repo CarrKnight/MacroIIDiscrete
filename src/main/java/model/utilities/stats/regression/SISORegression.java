@@ -44,6 +44,8 @@ public interface SISORegression {
 
     public double getGain();
 
+    public int getNumberOfObservations();
+
 
     public double getIntercept();
 
