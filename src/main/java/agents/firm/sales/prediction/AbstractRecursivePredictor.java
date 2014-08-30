@@ -49,11 +49,11 @@ import java.util.LinkedList;
 public abstract class AbstractRecursivePredictor  implements Steppable, Deactivatable, LogNode
 {
 
-    public static int defaultPriceLags = 0;
+    public final static int defaultPriceLags = 0;
 
-    public static int defaultIndependentLags = 1;
+    public final static int defaultIndependentLags = 1;
 
-    public static int defaultMovingAverageSize = 1;
+    public final static int defaultMovingAverageSize = 1;
 
     /**
      * Where to write what we are actually regressing.

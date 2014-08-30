@@ -277,7 +277,6 @@ public class CompetitiveScenarioTest {
             float averageResultingQuantity = 0;
             for(int i=0; i<5; i++)
             {
-                FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
 
                 final MacroII macroII = new MacroII(System.currentTimeMillis());   //1387582416533
                 final TripolistScenario scenario1 = new TripolistScenario(macroII);
@@ -290,7 +289,6 @@ public class CompetitiveScenarioTest {
                 scenario1.setDemandIntercept(102);
 
 
-                FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
                 scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
 
 
@@ -305,6 +303,8 @@ public class CompetitiveScenarioTest {
                 {
                     for(HumanResources hr : firm.getHRs())
                         hr.setPredictor(new FixedIncreasePurchasesPredictor(0));
+                    for(SalesDepartment dept : firm.getSalesDepartments().values())
+                        dept.setPredictorStrategy(new FixedDecreaseSalesPredictor(0));
                 }
 
 
@@ -350,7 +350,6 @@ public class CompetitiveScenarioTest {
                 assertEquals(quantities.getMean(), 44,5);
 //                assertTrue(String.valueOf(prices.getStandardDeviation()),quantities.getStandardDeviation() < 5.5);
 
-                FixedDecreaseSalesPredictor.defaultDecrementDelta=1;
             }
 
 
@@ -373,7 +372,6 @@ public class CompetitiveScenarioTest {
 
             for(int i=0; i<5; i++)
             {
-                FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
 
                 final MacroII macroII = new MacroII(System.currentTimeMillis());
                 final TripolistScenario scenario1 = new TripolistScenario(macroII);
@@ -465,7 +463,6 @@ public class CompetitiveScenarioTest {
             System.out.println(strategy.getSimpleName());
             for(int i=0; i<5; i++)
             {
-                FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
 
                 final MacroII macroII = new MacroII(System.currentTimeMillis());
                 final TripolistScenario scenario1 = new TripolistScenario(macroII);
@@ -477,8 +474,6 @@ public class CompetitiveScenarioTest {
                 scenario1.setDemandIntercept(102);
 
 
-                FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
-                scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
                 //scenario1.setSalesPricePreditorStrategy(MarketSalesPredictor.class);
                 //scenario1.setSalesPricePreditorStrategy(PricingSalesPredictor.class);
                 //   scenario1.setPurchasesPricePreditorStrategy(PricingPurchasesPredictor.class);
@@ -541,7 +536,6 @@ public class CompetitiveScenarioTest {
 
                 assertEquals(averagePrice, 57, 5);
                 assertEquals(averageQ, 44,5);
-                FixedDecreaseSalesPredictor.defaultDecrementDelta=1;
             }
         }
 

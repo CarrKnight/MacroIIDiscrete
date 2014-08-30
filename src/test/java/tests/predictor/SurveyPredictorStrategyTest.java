@@ -13,6 +13,7 @@ import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.prediction.SurveySalesPredictor;
+import agents.firm.sales.pricing.AskPricingStrategy;
 import financial.market.ImmediateOrderHandler;
 import financial.market.Market;
 import financial.market.OrderBookMarket;
@@ -25,6 +26,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * <h4>Description</h4>
@@ -82,7 +86,6 @@ public class SurveyPredictorStrategyTest {
     @Test
     public void scenario2() throws Exception {
 
-        Market.TESTING_MODE = true;
 
 
 
@@ -130,7 +133,6 @@ public class SurveyPredictorStrategyTest {
     @Test
     public void scenario3() throws Exception {
 
-        Market.TESTING_MODE = true;
 
         model = new MacroII(100);
         market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC){ //break the order book so that the best buyer is not visible anymore
@@ -181,7 +183,6 @@ public class SurveyPredictorStrategyTest {
     //empty market
     @Test
     public void scenario4() throws Exception {
-        Market.TESTING_MODE = true;
 
 
         model = new MacroII(100);
@@ -200,16 +201,17 @@ public class SurveyPredictorStrategyTest {
     @Test
     public void scenario5() throws Exception {
 
-        Market.TESTING_MODE = true;
 
 
 
         model = new MacroII(100);
+        model.start();
         market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         market.setOrderHandler(new ImmediateOrderHandler(),model);
         f = new Firm(model);
         department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         f.registerSaleDepartment(department, UndifferentiatedGoodType.GENERIC);
+        department.start(model);
 
 
 
@@ -235,11 +237,14 @@ public class SurveyPredictorStrategyTest {
         department.getFirm().receive(sold,null);
         //hack to simulate sellThis without actually calling it
         department.sellThis(sold);
+        final AskPricingStrategy pricer = mock(AskPricingStrategy.class);
+        when(pricer.price(any())).thenReturn(250);
+        department.setAskPricingStrategy(pricer);
+        model.schedule.step(model);
 
+        //market.submitSellQuote(department.getFirm(),250,sold);
 
-        market.submitSellQuote(department.getFirm(),250,sold);
-
-        assertTrue(buyer3.has(sold));
+      //  assertTrue(buyer3.has(sold)); dummy buyers consume immediately
         assertTrue(!f.has(sold));
         assertEquals(50, buyer3.hasHowMany(UndifferentiatedGoodType.MONEY));
         assertEquals(250, f.hasHowMany(UndifferentiatedGoodType.MONEY));

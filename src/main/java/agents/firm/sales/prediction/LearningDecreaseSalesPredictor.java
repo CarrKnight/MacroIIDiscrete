@@ -12,6 +12,7 @@ import financial.market.Market;
 import model.MacroII;
 import model.utilities.logs.LogEvent;
 import model.utilities.logs.LogLevel;
+import model.utilities.stats.collectors.PeriodicMarketObserver;
 
 /**
  * <h4>Description</h4>
@@ -52,19 +53,23 @@ public class LearningDecreaseSalesPredictor extends BaseSalesPredictor {
     public LearningDecreaseSalesPredictor(Market market, MacroII model)
     {
 
-        this(market, model,true);
+        this(market, model, PeriodicMarketObserver.defaultDailyProbabilityOfObserving,true);
 
     }
 
-    public LearningDecreaseSalesPredictor(Market market, MacroII model,boolean weighted)
+
+
+    public LearningDecreaseSalesPredictor(Market market, MacroII model,float observationProbability,boolean weighted)
     {
         if(weighted)
-            regressor = new RegressionWeightedSalePredictor(market,model);
+            regressor = new RegressionWeightedSalePredictor(market,model,observationProbability);
         else
-            regressor = new RegressionSalePredictor(market,model);
+            regressor = new RegressionSalePredictor(market,model,observationProbability);
         predictor = new FixedDecreaseSalesPredictor(0);
 
     }
+
+
 
 
 

@@ -186,4 +186,12 @@ public class LearningIncreasePurchasesPredictor implements PurchasesPredictor {
         return predictor.predictPurchasePriceWhenNoChangeInProduction(dept);
     }
 
+
+    public float getDailyProbabilityOfObserving() {
+        return observer.getDailyProbabilityOfObserving();
+    }
+
+    public void setDailyProbabilityOfObserving(float dailyProbabilityOfObserving) {
+        observer.setDailyProbabilityOfObserving(dailyProbabilityOfObserving);
+    }
 }

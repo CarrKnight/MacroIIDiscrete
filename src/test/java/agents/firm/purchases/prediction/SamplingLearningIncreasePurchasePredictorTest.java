@@ -11,13 +11,13 @@ import agents.firm.purchases.PurchasesDepartment;
 import financial.market.Market;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
-import model.utilities.stats.collectors.PeriodicMarketObserver;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import model.utilities.stats.collectors.enums.PurchasesDataType;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * <h4>Description</h4>
@@ -39,7 +39,6 @@ public class SamplingLearningIncreasePurchasePredictorTest
     @Test
     public void testPredictSalePrice() throws Exception
     {
-        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1f;
 
 
 
@@ -89,14 +88,13 @@ public class SamplingLearningIncreasePurchasePredictorTest
     @Test
     public void testExtremes()
     {
-        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1f;
+    //    PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1f;
 
         //no observations, should return whatever the sales department says
         Market market = mock(Market.class);
         MacroII model = new MacroII(System.currentTimeMillis());
         PurchasesDepartment department = mock(PurchasesDepartment.class);
 
-        FixedIncreasePurchasesPredictor.defaultIncrementDelta=0;
 
 
         when(department.getLastObservedDay()).thenReturn(0);
@@ -106,7 +104,7 @@ public class SamplingLearningIncreasePurchasePredictorTest
 
 
 
-        SamplingLearningIncreasePurchasePredictor predictor = new SamplingLearningIncreasePurchasePredictor();
+        SamplingLearningIncreasePurchasePredictor predictor = new SamplingLearningIncreasePurchasePredictor(0);
         when(department.getAveragedClosingPrice()).thenReturn(50f);
         Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50,.0001f);
 
@@ -154,7 +152,6 @@ public class SamplingLearningIncreasePurchasePredictorTest
         Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50,.0001f);
 
 
-        FixedIncreasePurchasesPredictor.defaultIncrementDelta=1;
 
     }
     

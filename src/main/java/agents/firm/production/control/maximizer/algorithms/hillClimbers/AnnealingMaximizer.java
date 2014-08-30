@@ -26,9 +26,9 @@ import ec.util.MersenneTwisterFast;
  */
 public class AnnealingMaximizer extends HillClimberMaximizer {
 
-    public static float initialTemperature =1f;
+    public static final float initialTemperature =1f;
 
-    public static float temperatureDecay =.7f;
+    public static final float temperatureDecay =.7f;
 
 
     /**
@@ -112,21 +112,6 @@ public class AnnealingMaximizer extends HillClimberMaximizer {
     }
 
 
-    public static float getInitialTemperature() {
-        return initialTemperature;
-    }
-
-    public static void setInitialTemperature(float initialTemperature) {
-        AnnealingMaximizer.initialTemperature = initialTemperature;
-    }
-
-    public static float getTemperatureDecay() {
-        return temperatureDecay;
-    }
-
-    public static void setTemperatureDecay(float temperatureDecay) {
-        AnnealingMaximizer.temperatureDecay = temperatureDecay;
-    }
 
     public float getTemperature() {
         return temperature;

@@ -240,7 +240,7 @@ public class SimpleInventoryControlTest {
     public void InventoryRatingShouldBuy() throws IllegalAccessException     //basically like above it's testing that buy gets called but without stubs so with full functioning market instead
     {
 
-        Market.TESTING_MODE = true;
+        model.start();
 
 
         Firm f = new Firm(model); f.receiveMany(UndifferentiatedGoodType.MONEY,1000);
@@ -289,7 +289,7 @@ public class SimpleInventoryControlTest {
         //you could buy 10 but your max price is 80 so you end up buying only 8!
         dept.buy(); //goooooooooo
         market.start(model);
-        model.getPhaseScheduler().step(model);
+        model.schedule.step(model);
         assertEquals(f.hasHowMany(UndifferentiatedGoodType.GENERIC), 8);
 
         //when the dust settles...
@@ -302,14 +302,12 @@ public class SimpleInventoryControlTest {
 
 
 
-        Market.TESTING_MODE = false;
     }
 
 
     @Test
     public void gracefulTurnOff() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
 
-        Market.TESTING_MODE = true;
 
         Firm f = new Firm(model); f.receiveMany(UndifferentiatedGoodType.MONEY,1000);
         Plant plant = new Plant( Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC,6, DifferentiatedGoodType.CAPITAL,1),f);

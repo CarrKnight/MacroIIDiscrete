@@ -56,7 +56,6 @@ public class MarketPredictorStrategyTest {
     @Test
     public void scenario1() throws Exception {
 
-        Market.TESTING_MODE = true;
 
         model = new MacroII(100);
         market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
@@ -85,7 +84,6 @@ public class MarketPredictorStrategyTest {
     public void scenario2() throws Exception {
 
 
-        Market.TESTING_MODE = true;
 
 
         model = new MacroII(100);
@@ -129,7 +127,6 @@ public class MarketPredictorStrategyTest {
     @Test
     public void scenario3() throws Exception {
 
-        Market.TESTING_MODE = true;
 
         model = new MacroII(100);
         market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC){ //break the order book so that the best buyer is not visible anymore
@@ -199,21 +196,19 @@ public class MarketPredictorStrategyTest {
     public void scenario5() throws Exception {
 
 
-        Market.TESTING_MODE = true;
 
 
         model = new MacroII(100);
+    //    model.start();
         market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         market.setOrderHandler(new ImmediateOrderHandler(),model);
         f = new Firm(model);
         department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         f.registerSaleDepartment(department, UndifferentiatedGoodType.GENERIC);
-
-
-
         strategy = new MarketSalesPredictor();
         department.setPredictorStrategy(strategy);
-
+      //  model.addAgent(f);
+        department.start(model);
 
 
 

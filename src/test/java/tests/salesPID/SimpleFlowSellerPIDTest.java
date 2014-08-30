@@ -12,7 +12,6 @@ import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
-import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import goods.DifferentiatedGoodType;
@@ -50,7 +49,6 @@ public class SimpleFlowSellerPIDTest {
     public void scenario1()
     {
 
-        Market.TESTING_MODE = true;
         System.out.println("-------------------------------------------------------------------------------------");
         System.out.println("SimpleFlowSeller scenario1");
 
@@ -121,7 +119,6 @@ public class SimpleFlowSellerPIDTest {
     public void scenario2()   //like scenario 1 but the initial price is set very high
     {
 
-        Market.TESTING_MODE = true;
         System.out.println("-------------------------------------------------------------------------------------");
         System.out.println("SimpleFlowSeller scenario1");
 
@@ -193,29 +190,33 @@ public class SimpleFlowSellerPIDTest {
     public void scenario4()  //like scenario 2 but production costs are 80
     {
 
-        Market.TESTING_MODE = true;
         System.out.println("-------------------------------------------------------------------------------------");
         System.out.println("SimpleFlowSeller scenario4");
 
 
         MacroII model = new MacroII(1l);
+        model.start();
+
         Firm firm = new Firm(model);
         OrderBookMarket market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
-        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, market, new SimpleBuyerSearch(market, firm), new SimpleSellerSearch(market, firm), agents.firm.sales.SalesDepartmentAllAtOnce.class);
+        SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, market, new SimpleBuyerSearch(market, firm),
+                new SimpleSellerSearch(market, firm), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept);
         strategy.setProductionCostOverride(true);
         dept.setAskPricingStrategy(strategy);
-        dept.start(model);
-        model.start();
-
+        firm.registerSaleDepartment(dept, DifferentiatedGoodType.CAPITAL);
         strategy.setInitialPrice(150);
 
 
-        firm.registerSaleDepartment(dept, DifferentiatedGoodType.CAPITAL);
+        model.addAgent(firm);
+     //   dept.start(model);
+
+
+
 
         List<Quote> quotes =new LinkedList<>();
 
-        for(int j=0;j<100;j++){ //do 100 times!
+        for(int j=0;j<300;j++){ //do 100 times!
 
 
 
@@ -242,7 +243,6 @@ public class SimpleFlowSellerPIDTest {
 
 
 
-            model.scheduleSoon(ActionOrder.ADJUST_PRICES,strategy);
             model.schedule.step(model);
 
             System.out.println("seller price :" + dept.hypotheticalSalePrice(80));

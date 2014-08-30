@@ -564,7 +564,7 @@ public abstract class  SalesDepartment  implements Department<SalesDataType>, Lo
         {
             removeQuoteFromMarket(oldQuote);
         }
-        assert !isThisGoodBeingSold(g);
+        assert !isThisGoodBeingSold(g) || !g.getType().isDifferentiated();
         logOutflow(g, finalPrice);
         PurchaseResult toReturn =  PurchaseResult.SUCCESS;
         toReturn.setPriceTrade(finalPrice);

@@ -19,15 +19,11 @@ import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
-import au.com.bytecode.opencsv.CSVWriter;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
-import model.utilities.stats.collectors.DailyStatCollector;
 import org.junit.Test;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 import static org.junit.Assert.assertEquals;
 
@@ -212,7 +208,6 @@ public class TripolistWithInputScenarioTest {
                 macroII.schedule.step(macroII);
 
 
-            scenario1.getMonopolist().getPurchaseDepartment(TripolistWithInputScenario.INPUT).getData().writeToCSVFile(Paths.get("runs","test.csv").toFile());
             System.out.println(i + " ----- " + scenario1.monopolist.getTotalWorkers() + " ... " + macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice() + " ----> " + macroII.seed());
             assertEquals(scenario1.monopolist.getTotalWorkers(), 14,1);
             assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice(), 87,1);
@@ -435,9 +430,7 @@ public class TripolistWithInputScenarioTest {
 
 
         //create stat collector
-        CSVWriter writer = new CSVWriter(new FileWriter("runs/5LearnedMonopolists.csv"));
-        DailyStatCollector collector = new DailyStatCollector(macroII,writer);
-        collector.start();
+
 
 
 

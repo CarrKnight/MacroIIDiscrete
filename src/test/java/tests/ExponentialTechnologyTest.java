@@ -14,7 +14,6 @@ import agents.firm.production.technology.DRSExponentialMachinery;
 import agents.firm.production.technology.ExponentialMachinery;
 import agents.firm.production.technology.IRSExponentialMachinery;
 import agents.people.Person;
-import financial.market.Market;
 import goods.DifferentiatedGoodType;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
@@ -42,7 +41,7 @@ public class ExponentialTechnologyTest {
     @Before
     public void setup(){
 
-        Market.TESTING_MODE =true;
+        
 
 
         Blueprint b = new Blueprint.Builder().output(UndifferentiatedGoodType.GENERIC,2).build(); //create a simple output
@@ -86,7 +85,7 @@ public class ExponentialTechnologyTest {
     @Test
     public void testHypotheticalExpectedWaitingTime() throws Exception {
 
-        Market.TESTING_MODE =true;
+        
 
         assertEquals(1.0f, crs.hypotheticalWaitingTime(1), .0001f);
         assertEquals(1.0f, irs.hypotheticalWaitingTime(1), .0001f);
@@ -117,7 +116,7 @@ public class ExponentialTechnologyTest {
     @Test
     public void testExpectedWaitingTime() throws Exception {
 
-        Market.TESTING_MODE =true;
+        
 
 
         assertEquals(0.5f, crs.expectedWaitingTime(), .0001f);
@@ -129,7 +128,7 @@ public class ExponentialTechnologyTest {
 
     @Test
     public void testExpectedWeeklyProduction() throws Exception {
-        Market.TESTING_MODE =true;
+        
 
         assertEquals(2f * 2.0f * p.getModel().getWeekLength(), crs.weeklyThroughput(UndifferentiatedGoodType.GENERIC), .0001f);
         assertEquals(2f * 4.0f * p.getModel().getWeekLength(), irs.weeklyThroughput(UndifferentiatedGoodType.GENERIC), .0001f);
@@ -140,7 +139,7 @@ public class ExponentialTechnologyTest {
     @Test
     public void testMarginalProductOfWorker() throws Exception {
 
-        Market.TESTING_MODE =true;
+        
 
         assertEquals(2f * p.getModel().getWeekLength(), crs.marginalProductOfWorker(UndifferentiatedGoodType.GENERIC), .0001f);
         assertEquals(2f * 5.0f * p.getModel().getWeekLength(), irs.marginalProductOfWorker(UndifferentiatedGoodType.GENERIC), .0001f);

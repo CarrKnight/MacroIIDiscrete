@@ -11,7 +11,6 @@ import financial.market.Market;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
-import model.utilities.stats.collectors.PeriodicMarketObserver;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import org.junit.Assert;
 import org.junit.Test;
@@ -42,12 +41,12 @@ public class LearningDecreaseSalesPredictorTest
     @Test
     public void testPredictSalePrice() throws Exception
     {
-        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1f;
+
 
         Market market = mock(Market.class);
         when(market.getYesterdayVolume()).thenReturn(1);
         MacroII model = new MacroII(System.currentTimeMillis());
-        LearningDecreaseSalesPredictor predictor = new LearningDecreaseSalesPredictor(market,model );
+        LearningDecreaseSalesPredictor predictor = new LearningDecreaseSalesPredictor(market,model,1f,true );
 
         //observation 1
         when(market.getNumberOfObservations()).thenReturn(1,2,3);
@@ -91,9 +90,8 @@ public class LearningDecreaseSalesPredictorTest
 
         Market market = mock(Market.class);
         MacroII macroII = mock(MacroII.class);
-        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = .2f;
 
-        new LearningDecreaseSalesPredictor(market,macroII);
+        new LearningDecreaseSalesPredictor(market,macroII,.2f,true);
 
         verify(macroII).scheduleAnotherDay(any(ActionOrder.class),any(Steppable.class),
                 anyInt(),any(Priority.class));
@@ -104,7 +102,6 @@ public class LearningDecreaseSalesPredictorTest
     @Test
     public void testExtremes()
     {
-        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1f;
 
         //no observations, should return whatever the sales department says
         Market market = mock(Market.class);
@@ -123,7 +120,7 @@ public class LearningDecreaseSalesPredictorTest
                 });
 
 
-        LearningDecreaseSalesPredictor predictor = new LearningDecreaseSalesPredictor(market,model );
+        LearningDecreaseSalesPredictor predictor = new LearningDecreaseSalesPredictor(market,model ,1f,true);
         when(department.getAveragedPrice()).thenReturn(50d); //current department pricing 100$
         Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1),50,.0001f);
 

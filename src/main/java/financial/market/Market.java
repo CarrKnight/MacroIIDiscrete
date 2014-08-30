@@ -112,10 +112,6 @@ public abstract class Market implements Deactivatable{
      */
     protected double lastMarkup = -1;
 
-    /**
-     * If this is true, there is no data collection. Useful for testing only
-     */
-    public static boolean  TESTING_MODE = false;
 
     /**
      * the inspector showing the closing prices

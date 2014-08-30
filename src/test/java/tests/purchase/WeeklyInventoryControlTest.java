@@ -86,7 +86,6 @@ public class WeeklyInventoryControlTest {
     @Test
     public void demandGap()
     {
-        Market.TESTING_MODE = true;
         model.setWeekLength(100);
 
 
@@ -237,6 +236,7 @@ public class WeeklyInventoryControlTest {
 
         PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(0, f, market, DailyInventoryControl.class,
                 null, null, null).getDepartment();
+        when(f.removePlantCreationListener(any())).thenReturn(true);
 
         DailyInventoryControl control = new DailyInventoryControl(dept);
         control.setHowManyDaysOfInventoryToHold(7);
@@ -276,7 +276,6 @@ public class WeeklyInventoryControlTest {
     @Test
     public void InventoryRating()
     {
-        Market.TESTING_MODE = true;
         model.setWeekLength(100);
 
 

@@ -59,6 +59,19 @@ public class RegressionSalePredictor extends BaseSalesPredictor{
     }
 
     /**
+     * The PeriodicMarketObserver is created straight into the constructor
+     * @param market the market to observe
+     * @param macroII a link to the model to schedule yourself
+     */
+    public RegressionSalePredictor(Market market, MacroII macroII, float observationProbability)
+    {
+
+        this(new PeriodicMarketObserver(market,macroII,observationProbability));
+
+    }
+
+
+    /**
      * Give a premade observer to sale predictor. The observer will be turned Off when the predictor is turned off!
      * @param observer
      */

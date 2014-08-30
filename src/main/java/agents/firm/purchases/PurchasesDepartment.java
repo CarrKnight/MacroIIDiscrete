@@ -60,7 +60,7 @@ public class PurchasesDepartment implements Deactivatable, Department<PurchasesD
 
     private boolean active = true;
 
-    public static Class<? extends PurchasesPredictor> defaultPurchasePredictor =
+    public final static Class<? extends PurchasesPredictor> defaultPurchasePredictor =
             ErrorCorrectingPurchasePredictor.class;
     /**
      * The weekly budget given by the firm to this purchase department to carry out its tasks

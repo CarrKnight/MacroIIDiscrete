@@ -18,7 +18,6 @@ import agents.firm.sales.pricing.CostAskPricing;
 import agents.firm.sales.pricing.PriceFollower;
 import agents.firm.sales.pricing.UndercuttingAskPricing;
 import financial.market.ImmediateOrderHandler;
-import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import goods.DifferentiatedGoodType;
@@ -104,7 +103,7 @@ public class SalesDepartmentTest {
     @Test
     public void testSellThis() throws Exception {
 
-        Market.TESTING_MODE = true;
+        
 
 
         assertEquals(dept.getMarket().getBestBuyPrice(), 100l); //all the others should have been taken
@@ -174,7 +173,7 @@ public class SalesDepartmentTest {
     @Test
     public void testReactToFilledQuote() throws Exception {
 
-        Market.TESTING_MODE = true;
+        
 
 
 

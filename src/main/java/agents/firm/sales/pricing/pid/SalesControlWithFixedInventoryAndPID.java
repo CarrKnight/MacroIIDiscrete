@@ -53,7 +53,7 @@ public class SalesControlWithFixedInventoryAndPID extends BaseAskPricingStrategy
 
     private float slavePIDOriginalError = 0;
 
-    public static int defaultTargetInventory =  100;
+    public static final int defaultTargetInventory =  100;
 
     /**
      * A controller to change prices as inventory changes. By default it's a cascade control

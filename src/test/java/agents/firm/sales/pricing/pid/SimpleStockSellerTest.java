@@ -119,7 +119,6 @@ public class SimpleStockSellerTest {
             scenario1.setDemandIntercept(102);
 
 
-            FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
             scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
 
 

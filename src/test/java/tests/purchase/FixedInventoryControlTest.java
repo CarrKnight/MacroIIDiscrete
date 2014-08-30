@@ -57,6 +57,7 @@ public class FixedInventoryControlTest {
     @Before
     public void setup(){
         model = new MacroII(1);
+        model.start();
         market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
 
     }
@@ -173,7 +174,6 @@ public class FixedInventoryControlTest {
 
         for(int k=0; k<100; k++){ //do this test 100 times because it used to fail only every now and then
             setup();
-            Market.TESTING_MODE = true;
             market.start(model);
 
 
@@ -216,7 +216,7 @@ public class FixedInventoryControlTest {
             assertEquals(f.hasHowMany(UndifferentiatedGoodType.GENERIC), 0);
             //now force the first buy, hopefully it'll cascade up until the firm has inventory 6
             dept.buy(); //goooooooooo
-            dept.getFirm().getModel().getPhaseScheduler().step(dept.getFirm().getModel());
+            dept.getFirm().getModel().schedule.step(dept.getFirm().getModel());
             assertEquals(dept.toString(), f.hasHowMany(UndifferentiatedGoodType.GENERIC), 8);
 
             //when the dust settles...
@@ -228,7 +228,6 @@ public class FixedInventoryControlTest {
 
 
 
-            Market.TESTING_MODE = false;
 
 
         }

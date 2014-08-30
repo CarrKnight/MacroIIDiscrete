@@ -16,8 +16,6 @@ import model.MacroII;
 import model.scenario.MonopolistScenario;
 import org.junit.Test;
 
-import java.io.File;
-
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -88,7 +86,7 @@ public class AbstractWorkerLearningPredictorTest {
 
 
 
-            scenario1.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(new File("test.csv"));
+            scenario1.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(null);
             assertEquals(predictor.getDecrementDelta(), (double) (p1), .5d);
 
 

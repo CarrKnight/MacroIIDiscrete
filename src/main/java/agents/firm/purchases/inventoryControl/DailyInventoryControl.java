@@ -242,14 +242,16 @@ public class DailyInventoryControl extends AbstractInventoryControl implements P
      */
     @Override
     public void turnOff() {
-        super.turnOff();
-        //stop listening to plant creation
-        boolean successfullyRemoved = getPurchasesDepartment().getFirm().removePlantCreationListener(this);
-        assert successfullyRemoved;
-        for(Plant p :plantsListened)    //this might be useless if plants are turnedoff before the strategy
-            p.removeListener(this); //stop listening!
-        plantsListened.clear();
+        if(isActive()) {
+            //stop listening to plant creation
+            boolean successfullyRemoved = getPurchasesDepartment().getFirm().removePlantCreationListener(this);
 
+            assert successfullyRemoved;
+            for (Plant p : plantsListened)    //this might be useless if plants are turnedoff before the strategy
+                p.removeListener(this); //stop listening!
+            plantsListened.clear();
+        }
+        super.turnOff();
 
     }
 

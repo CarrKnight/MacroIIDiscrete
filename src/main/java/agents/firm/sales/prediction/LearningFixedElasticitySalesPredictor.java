@@ -8,6 +8,7 @@ package agents.firm.sales.prediction;
 
 import financial.market.Market;
 import model.MacroII;
+import model.utilities.stats.collectors.PeriodicMarketObserver;
 import org.apache.commons.collections15.Transformer;
 
 /**
@@ -51,15 +52,13 @@ public class LearningFixedElasticitySalesPredictor extends LearningDecreaseSales
     };
 
 
-    public LearningFixedElasticitySalesPredictor(Market market, MacroII model) {
-        super(market, model);
-        regressor.setPriceTransformer(logTransformer,expTransformer);
-        regressor.setQuantityTransformer(logTransformer);
+    public LearningFixedElasticitySalesPredictor(Market market, MacroII model ) {
+        this(market,model, PeriodicMarketObserver.defaultDailyProbabilityOfObserving,true);
 
     }
 
-    public LearningFixedElasticitySalesPredictor(Market market, MacroII model, boolean weighted) {
-        super(market, model, weighted);
+    public LearningFixedElasticitySalesPredictor(Market market, MacroII model,float observationProbability, boolean weighted) {
+        super(market, model, observationProbability,weighted);
         regressor.setPriceTransformer(logTransformer,expTransformer);
         regressor.setQuantityTransformer(logTransformer);
     }

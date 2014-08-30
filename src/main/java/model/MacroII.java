@@ -371,11 +371,6 @@ public class MacroII extends SimState{
         double time =  getMainScheduleTime();
 
 
-        if(time <= 0 && Market.TESTING_MODE ) //in tests if schedule is not initiated it will be <0, so floor it
-            time = 1;
-//        assert time >= 0: time;
-
-
 
 
         return  Math.round(time * (1000*60*60*24d));

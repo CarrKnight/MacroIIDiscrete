@@ -16,7 +16,6 @@ import org.junit.Test;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 
@@ -71,7 +70,7 @@ public class FarmersAndWorkersScenarioTest {
     @Test
     public void whereIsMyMoney() throws Exception {
             final FarmersAndWorkersResult farmersAndWorkersResult = runForcedCompetitiveFarmersAndWorkersScenario(10, 1, 50, 1402602013498l,
-                    Paths.get("runs", "whereIsMyMoney.csv").toFile(), Paths.get("runs", "whereIsMyMoney.log"), 6000);
+                    null, null, 6000);
         Assert.assertEquals(280, farmersAndWorkersResult.getManufacturingProduction(), 15); //5% error allowed
         Assert.assertEquals(869, farmersAndWorkersResult.getAgriculturalProduction(), 45);
         Assert.assertEquals(2.7, farmersAndWorkersResult.getManufacturingPrice(),.5);

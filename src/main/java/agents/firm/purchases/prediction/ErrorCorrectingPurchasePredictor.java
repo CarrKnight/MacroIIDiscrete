@@ -27,7 +27,8 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
 
     public ErrorCorrectingPurchasePredictor(MacroII model, PurchasesDepartment department) {
 
-        final PurchasesDataType xVariable = department.getGoodType().isLabor() ?  PurchasesDataType.WORKERS_TARGETED : PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD;
+        final PurchasesDataType xVariable = department.getGoodType().isLabor() ?  PurchasesDataType.WORKERS_TARGETED :
+                PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD;
         this.collector = new RegressionDataCollector<>(department, xVariable,
                 PurchasesDataType.CLOSING_PRICES,PurchasesDataType.DEMAND_GAP);
         collector.setxValidator(collector.getxValidator().and(y -> y > 0));

@@ -14,7 +14,6 @@ import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.MemorySalesPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import financial.market.ImmediateOrderHandler;
-import financial.market.Market;
 import financial.market.OrderBookMarket;
 import goods.Good;
 import goods.UndifferentiatedGoodType;
@@ -55,7 +54,6 @@ public class MemoryPredictorStrategyTest {
     @Test
     public void scenario1() throws Exception {
 
-        Market.TESTING_MODE = true;
 
         model = new MacroII(100);
         market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
@@ -84,7 +82,6 @@ public class MemoryPredictorStrategyTest {
     @Test
     public void scenario2() throws Exception {
 
-        Market.TESTING_MODE = true;
 
 
 
@@ -128,7 +125,6 @@ public class MemoryPredictorStrategyTest {
     //as 2, but best bid is invisible
     @Test
     public void scenario3() throws Exception {
-        Market.TESTING_MODE = true;
 
 
         model = new MacroII(100);
@@ -179,7 +175,6 @@ public class MemoryPredictorStrategyTest {
     //empty market
     @Test
     public void scenario4() throws Exception {
-        Market.TESTING_MODE = true;
 
 
         model = new MacroII(100);

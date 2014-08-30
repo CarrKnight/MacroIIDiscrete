@@ -201,7 +201,6 @@ public class PurchasesFixedPIDTest {
     //this time without mocks
     @Test
     public void simpleFullTestFromBelow() throws NoSuchFieldException, IllegalAccessException {
-        Market.TESTING_MODE = true;
 
         MacroII model = new MacroII(1l);
         Market market = new OrderBookBlindMarket(UndifferentiatedGoodType.GENERIC);
@@ -264,7 +263,6 @@ public class PurchasesFixedPIDTest {
 
         }
 
-        Market.TESTING_MODE = false;
         //I expect the price to go high so that the firm builds up its reserves and then drop so that it only needs to buy 2 a adjust to keep things constant
         assertTrue(dept.maxPrice(UndifferentiatedGoodType.GENERIC, market) >= 20 && dept.maxPrice(UndifferentiatedGoodType.GENERIC, market) <= 30);
 

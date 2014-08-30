@@ -34,6 +34,10 @@ public class RegressionWeightedSalePredictor extends RegressionSalePredictor {
         super(market, macroII);
     }
 
+
+    public RegressionWeightedSalePredictor(Market market, MacroII macroII,float observationalProbability) {
+        super(market, macroII,observationalProbability);
+    }
     /**
      * Give a premade observer to sale predictor. The observer will be turned Off when the predictor is turned off!
      *

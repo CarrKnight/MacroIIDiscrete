@@ -95,7 +95,7 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor
 
 
 
-    public static int defaultInitialDecrementDelta = 0;
+    public static final int defaultInitialDecrementDelta = 0;
 
 
 

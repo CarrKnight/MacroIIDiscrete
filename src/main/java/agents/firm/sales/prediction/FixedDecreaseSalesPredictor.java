@@ -26,7 +26,7 @@ import com.google.common.base.Preconditions;
  */
 public class FixedDecreaseSalesPredictor extends BaseSalesPredictor {
 
-    public static float defaultDecrementDelta = 1;
+    public static final float defaultDecrementDelta = 1;
     /**
      * by how much we increase/decrease the price predicted in respect to current departmental price
      */

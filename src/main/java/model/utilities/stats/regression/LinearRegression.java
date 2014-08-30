@@ -39,7 +39,7 @@ public class LinearRegression implements UnivariateRegression
      */
     private double slope = Double.NaN;
 
-    public static boolean shortcut = false;
+    public static final boolean shortcut = false;
 
 
     /**

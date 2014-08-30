@@ -9,16 +9,12 @@ package agents.firm.sales.prediction;
 import agents.firm.sales.SalesDepartment;
 import financial.market.Market;
 import model.MacroII;
-import model.utilities.ActionOrder;
-import model.utilities.scheduler.Priority;
-import model.utilities.stats.collectors.PeriodicMarketObserver;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import org.junit.Assert;
 import org.junit.Test;
-import sim.engine.Steppable;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * <h4>Description</h4>
@@ -41,14 +37,13 @@ public class LearningFixedElasticitySalesPredictorTest {
     @Test
     public void testPredictSalePrice() throws Exception
     {
-        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1f;
 
 
 
         Market market = mock(Market.class);
         when(market.getYesterdayVolume()).thenReturn(1);
         MacroII model = new MacroII(System.currentTimeMillis());
-        LearningFixedElasticitySalesPredictor predictor = new LearningFixedElasticitySalesPredictor(market,model );
+        LearningFixedElasticitySalesPredictor predictor = new LearningFixedElasticitySalesPredictor(market,model,1f,true );
 
         //observation 1
         when(market.getNumberOfObservations()).thenReturn(1,2,3);
@@ -87,26 +82,12 @@ public class LearningFixedElasticitySalesPredictorTest {
     }
 
 
-    @Test
-    public void testScheduledProperly()
-    {
-
-        Market market = mock(Market.class);
-        MacroII macroII = mock(MacroII.class);
-        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = .2f;
-
-        new LearningFixedElasticitySalesPredictor(market,macroII);
-
-        verify(macroII).scheduleAnotherDay(any(ActionOrder.class),any(Steppable.class),
-                anyInt(),any(Priority.class));
-    }
 
 
     //Check defaults
     @Test
     public void testExtremes()
     {
-        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1f;
 
         //no observations, should return whatever the sales department says
         Market market = mock(Market.class);
@@ -125,7 +106,7 @@ public class LearningFixedElasticitySalesPredictorTest {
                 });
 
 
-        LearningFixedElasticitySalesPredictor predictor = new LearningFixedElasticitySalesPredictor(market,model );
+        LearningFixedElasticitySalesPredictor predictor = new LearningFixedElasticitySalesPredictor(market,model,1,true );
         when(department.getAveragedPrice()).thenReturn(50d);
         Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1),50,.0001f);
 

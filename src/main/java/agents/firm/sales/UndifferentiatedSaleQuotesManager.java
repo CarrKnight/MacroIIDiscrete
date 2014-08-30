@@ -144,7 +144,7 @@ public class UndifferentiatedSaleQuotesManager implements SaleQuotesManager {
         Preconditions.checkArgument(q != null);
         Preconditions.checkArgument(q.getGood() != null);
         final boolean removedCorrectly = quotes.remove(q);
-        assert removedCorrectly;
+//        assert removedCorrectly; not necesarilly true if the quote is cleared immediately
 
         goodsToSell--;
         Preconditions.checkState(goodsToSell >= 0);

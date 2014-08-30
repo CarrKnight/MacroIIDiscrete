@@ -60,6 +60,8 @@ public class PurchasesRuleFactory {
         bidPricingRules.add(SurveyMaxPricing .class);
         bidPricingRules.add(UrgentPriceFollowerStrategy .class);
         bidPricingRules.add(ZeroIntelligenceBidPricing .class);
+        bidPricingRules.add(AdaptivePurchasesFixedPID.class);
+
         assert bidPricingRules.size() > 0; // there should be at least one!!
 
         inventoryControlRules = new ArrayList<>(); //read all the inventoryControlRules
@@ -71,7 +73,6 @@ public class PurchasesRuleFactory {
         integratedRules = new ArrayList<>();
         integratedRules.add(PurchasesDailyPID.class);
         integratedRules.add(PurchasesFixedPID .class);
-        integratedRules.add(AdaptivePurchasesFixedPID.class);
         integratedRules.add(PurchasesSimplePID .class);
 
         assert integratedRules.size() > 0;

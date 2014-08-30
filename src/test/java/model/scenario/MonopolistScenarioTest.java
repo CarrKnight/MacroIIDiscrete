@@ -12,25 +12,21 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
+import agents.firm.sales.pricing.pid.AdaptiveStockSellerPID;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
-import agents.firm.sales.pricing.pid.AdaptiveStockSellerPID;
-import au.com.bytecode.opencsv.CSVWriter;
 import financial.market.Market;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.logs.LogLevel;
 import model.utilities.logs.LogToConsole;
-import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.enums.PurchasesDataType;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import org.junit.Assert;
 import org.junit.Test;
 import tests.MemoryLeakVerifier;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 
@@ -206,14 +202,7 @@ public class MonopolistScenarioTest {
             else
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
 
-            //csv writer
-            try {
-                CSVWriter writer = new CSVWriter(new FileWriter("runs/maximizerTest.csv"));
-                DailyStatCollector collector = new DailyStatCollector(macroII,writer);
-                collector.start();
-            } catch (IOException e) {
-                System.err.println("failed to create the file!");
-            }
+
 
             macroII.start();
             while(macroII.schedule.getTime()<10000)
@@ -403,10 +392,6 @@ public class MonopolistScenarioTest {
         System.out.flush();
 
 
-        scenario1.monopolist.getHRs().iterator().next().getData().writeToCSVFile(Paths.get("lamerbuy.csv").toFile());
-        scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("lamersell.csv").toFile());
-
-
         //you must be at most wrong by two (not well tuned and anyway sometimes it's hard!)
         assertEquals(scenario1.monopolist.getTotalWorkers(), profitMaximizingLaborForce,2);
 
@@ -472,9 +457,6 @@ public class MonopolistScenarioTest {
             System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
             System.out.flush();
 
-
-            scenario1.monopolist.getHRs().iterator().next().getData().writeToCSVFile(Paths.get("lamerbuy.csv").toFile());
-            scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("lamersell.csv").toFile());
 
 
             //you must be at most wrong by two (not well tuned and anyway sometimes it's hard!)
@@ -735,12 +717,7 @@ public class MonopolistScenarioTest {
 
             assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
             assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice(), 79,1);
-            if(i==0)
-            {
 
-                scenario1.monopolist.getHRs().iterator().next().getData().writeToCSVFile(Paths.get("runs","lamerbuy.csv").toFile());
-                scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs","lamersell.csv").toFile());
-            }
 
             macroII.finish();
 
@@ -858,12 +835,7 @@ public class MonopolistScenarioTest {
 
             assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
             assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice(), 79,1);
-            if(i==0)
-            {
 
-                scenario1.monopolist.getHRs().iterator().next().getData().writeToCSVFile(Paths.get("runs","lamerbuy.csv").toFile());
-                scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs","lamersell.csv").toFile());
-            }
 
             macroII.finish();
 
@@ -925,12 +897,6 @@ public class MonopolistScenarioTest {
 
             assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
             assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice(), 79,1);
-            if(i==0)
-            {
-
-                scenario1.monopolist.getHRs().iterator().next().getData().writeToCSVFile(Paths.get("runs","lamerbuy.csv").toFile());
-                scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs","lamersell.csv").toFile());
-            }
 
 
 
@@ -991,14 +957,6 @@ public class MonopolistScenarioTest {
 
             assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
             assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice(), 79,1);
-            if(i==0)
-            {
-
-                scenario1.monopolist.getHRs().iterator().next().getData().writeToCSVFile(Paths.get("runs","lamerbuy.csv").toFile());
-                scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs","lamersell.csv").toFile());
-            }
-
-
 
 
             macroII.finish();
@@ -1056,13 +1014,6 @@ public class MonopolistScenarioTest {
 
 
 
-            try {
-                CSVWriter writer = new CSVWriter(new FileWriter("runs/maximizerTest.csv"));
-                DailyStatCollector collector = new DailyStatCollector(macroII,writer);
-                collector.start();
-            } catch (IOException e) {
-                System.err.println("failed to create the file!");
-            }
 
             macroII.start();
             while(macroII.schedule.getTime()<5000)
@@ -1153,11 +1104,7 @@ public class MonopolistScenarioTest {
 
             assertEquals(scenario1.monopolist.getTotalWorkers(), 22, 1);
             assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice(), 79, 1);
-            if (i == 0) {
 
-                scenario1.monopolist.getHRs().iterator().next().getData().writeToCSVFile(Paths.get("runs", "lamerbuy.csv").toFile());
-                scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs", "lamersell.csv").toFile());
-            }
 
             macroII.finish();
             macroII = null;

@@ -89,7 +89,7 @@ public class MemoryPurchasesPredictorTest {
         /**********************************************
          * THIS IS A COPY OF PURCHASES FIXED PID TEST
          *********************************************/
-        Market.TESTING_MODE = true;
+        
 
         final MacroII model = new MacroII(1);
         final Firm f = new Firm(model);
@@ -188,14 +188,13 @@ public class MemoryPurchasesPredictorTest {
             });
 
 
-            model.getPhaseScheduler().step(model);
+            model.schedule.step(model);
             System.out.println(inventoryAtProduction[0] + " ---> " + control.maxPrice(UndifferentiatedGoodType.GENERIC));
 
 
 
         }
 
-        Market.TESTING_MODE = false;
         //I expect the price to go high so that the firm builds up its reserves and then drop so that it only needs to buy 2 a adjust to keep things constant
         assertTrue(dept.maxPrice(UndifferentiatedGoodType.GENERIC, market) >= 20 && dept.maxPrice(UndifferentiatedGoodType.GENERIC, market) <= 30);
         assertEquals(f.hasHowMany(UndifferentiatedGoodType.GENERIC), 6); //has 6 but I just consumed 2

@@ -26,7 +26,7 @@ import com.google.common.base.Preconditions;
  */
 public class FixedIncreasePurchasesPredictor implements PurchasesPredictor {
 
-    public static float defaultIncrementDelta = 1f;
+    public static final float defaultIncrementDelta = 1f;
     /**
      * by how much we increase/decrease the price predicted in respect to current departmental price
      */

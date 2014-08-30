@@ -106,9 +106,8 @@ public class RegressionSalePredictorTest {
 
         Market market = mock(Market.class);
         MacroII macroII = mock(MacroII.class);
-        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = .2f;
 
-        RegressionSalePredictor predictor = new RegressionSalePredictor(market, macroII);
+        RegressionSalePredictor predictor = new RegressionSalePredictor(market, macroII,.2f);
 
         //grab through reflection the reference to the observer!
         Field field = RegressionSalePredictor.class.getDeclaredField("observer");
@@ -130,7 +129,6 @@ public class RegressionSalePredictorTest {
     @Test
     public void testExtremes()
     {
-        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1f;
 
         //no observations, should return whatever the sales department says
         Market market = mock(Market.class);
@@ -149,7 +147,7 @@ public class RegressionSalePredictorTest {
                 });
 
 
-        RegressionSalePredictor predictor = new RegressionSalePredictor(market,model );
+        RegressionSalePredictor predictor = new RegressionSalePredictor(market,model,1f );
         when(department.hypotheticalSalePrice()).thenReturn(50);
         Assert.assertEquals(predictor.predictSalePriceAfterIncreasingProduction(department, 1000, 1), 50,.0001f);
 

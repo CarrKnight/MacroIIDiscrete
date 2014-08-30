@@ -72,7 +72,9 @@ public class PurchasesDepartmentTest {
         //make sure stuff gets generated at random!
         for(int i=0; i < 10; i++)
         {
-            PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(1000,firm,mock(Market.class),
+            final Market mock = mock(Market.class);
+            when(mock.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
+            PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(1000,firm, mock,
                     (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
 
 
@@ -107,8 +109,10 @@ public class PurchasesDepartmentTest {
         //make sure stuff gets generated at random with integrated stuff!
         for(int i=0; i < 10; i++)
         {
+            final Market mock = mock(Market.class);
+            when(mock.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
             PurchasesDepartment dept = PurchasesDepartment.
-                    getPurchasesDepartmentIntegrated(1000,firm,mock(Market.class),null,null,null).getDepartment() ;
+                    getPurchasesDepartmentIntegrated(1000,firm,mock,null,null,null).getDepartment() ;
 
 
             Field field = PurchasesDepartment.class.getDeclaredField("control");
@@ -141,7 +145,9 @@ public class PurchasesDepartmentTest {
         //make sure stuff gets generated when the string name is correct
         for(int i=0; i < 10; i++)
         {
-            PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(1000, firm, mock(Market.class), "FixedInventoryControl",
+            final Market mock = mock(Market.class);
+            when(mock.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
+            PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(1000, firm, mock, "FixedInventoryControl",
                     "SurveyMaxPricing", "SimpleBuyerSearch", "SimpleSellerSearch").getDepartment() ;
 
 
@@ -184,7 +190,9 @@ public class PurchasesDepartmentTest {
         when(firm.getModel()).thenReturn(model);
 
 
-        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(1,firm,mock(Market.class),
+        final Market mock = mock(Market.class);
+        when(mock.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
+        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(1,firm, mock,
                 (Class<? extends InventoryControl>) null,null,null,null).getDepartment();
 
 
@@ -215,9 +223,10 @@ public class PurchasesDepartmentTest {
     @Test
     public void testReactToFilledQuote() throws Exception {
 
-        Market.TESTING_MODE = true;
+        
 
         MacroII model = new MacroII(System.currentTimeMillis());
+        model.start();
         Firm firm = new Firm(model);
         firm.receiveMany(UndifferentiatedGoodType.MONEY,100000);
         Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
@@ -229,7 +238,7 @@ public class PurchasesDepartmentTest {
 
         firm.registerPurchasesDepartment(dept, DifferentiatedGoodType.CAPITAL);
         dept.buy(); //place a bid or whatever
-        model.getPhaseScheduler().step(model);
+        model.schedule.step(model);
         Field field = PurchasesDepartment.class.getDeclaredField("quotePlaced");
         field.setAccessible(true);
         Quote q = (Quote) field.get(dept);
@@ -247,7 +256,7 @@ public class PurchasesDepartmentTest {
         Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,firm,10);
         seller.receive(good,null );
         market.submitSellQuote(seller,0,good);
-        model.getPhaseScheduler().step(model);
+        model.schedule.step(model);
 
 
 
@@ -262,7 +271,6 @@ public class PurchasesDepartmentTest {
 
 
 
-        Market.TESTING_MODE = false;
 
 
 
@@ -276,10 +284,11 @@ public class PurchasesDepartmentTest {
 
     @Test
     public void testShop() throws Exception {
-        Market.TESTING_MODE = true;
+        
 
 
         MacroII model = new MacroII(1);
+        model.start();
         Firm firm = new Firm(model);
         firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
         Market market = new OrderBookBlindMarket(DifferentiatedGoodType.CAPITAL);
@@ -312,7 +321,7 @@ public class PurchasesDepartmentTest {
 
 
         dept.shop(); //shop should find and trade with the seller1
-        model.getPhaseScheduler().step(model);
+        model.schedule.step(model);
 
         assertTrue(firm.has(good));
         assertTrue(!firm.has(good2));
@@ -321,7 +330,6 @@ public class PurchasesDepartmentTest {
 
 
 
-        Market.TESTING_MODE = false;
 
 
 
@@ -336,10 +344,11 @@ public class PurchasesDepartmentTest {
     @Test
     public void testBuy() throws Exception {
 
-        Market.TESTING_MODE = true;
+        
 
 
         MacroII model = new MacroII(1);
+        model.start();
         Firm firm = new Firm(model);
         firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
         final Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
@@ -378,7 +387,7 @@ public class PurchasesDepartmentTest {
         //now cascade!
         dept.buy();
 
-        model.getPhaseScheduler().step(model);
+        model.schedule.step(model);
 
 
         assertEquals(firm.hasHowMany(DifferentiatedGoodType.CAPITAL), 3);
@@ -467,8 +476,11 @@ public class PurchasesDepartmentTest {
         field = Inventory.class.getDeclaredField("listeners");
         field.setAccessible(true);
         Set<InventoryListener> listeners = (Set<InventoryListener>) field.get(inventory);
-        assertTrue(listeners.size() == 1);
-        assertTrue(listeners.iterator().next() instanceof DailyInventoryControl);
+        assertTrue(listeners.size() >= 1);
+        boolean found = false;
+        for(InventoryListener il : listeners)
+            found = found || il instanceof DailyInventoryControl;
+        assertTrue(found);
 
 
 
@@ -613,7 +625,7 @@ public class PurchasesDepartmentTest {
     public void testUpdatePrices() throws Exception
     {
 
-        Market.TESTING_MODE = true;
+        
 
 
         MacroII model = new MacroII(1);
@@ -654,10 +666,11 @@ public class PurchasesDepartmentTest {
     {
 
         //this is a copy of shop, after it's done we make sure the budget was updated
-        Market.TESTING_MODE = true;
+        
 
 
         MacroII model = new MacroII(1);
+        model.start();
         Firm firm = new Firm(model);
         firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
         Market market = new OrderBookBlindMarket(DifferentiatedGoodType.CAPITAL);
@@ -690,7 +703,7 @@ public class PurchasesDepartmentTest {
 
 
         dept.shop(); //shop should find and trade with the seller1
-        model.getPhaseScheduler().step(model);
+        model.schedule.step(model);
 
         assertEquals(firm.hasHowMany(DifferentiatedGoodType.CAPITAL),1);
         //should have paid 125!
@@ -698,7 +711,7 @@ public class PurchasesDepartmentTest {
 
 
 
-        Market.TESTING_MODE = false;
+
 
         assertEquals(dept.getAvailableBudget(), 75);
 
@@ -715,10 +728,12 @@ public class PurchasesDepartmentTest {
 
         //this is a copy of testbuy
 
-        Market.TESTING_MODE = true;
+        
 
 
         MacroII model = new MacroII(1);
+        model.start();
+
         Firm firm = new Firm(model);
         firm.receiveMany(UndifferentiatedGoodType.MONEY,1000);
         final Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
@@ -756,7 +771,7 @@ public class PurchasesDepartmentTest {
 
         //now cascade!
         dept.buy();
-        model.getPhaseScheduler().step(model);
+        model.schedule.step(model);
 
 
         assertEquals(firm.hasHowMany(DifferentiatedGoodType.CAPITAL), 3);
@@ -773,7 +788,7 @@ public class PurchasesDepartmentTest {
 
         //this is a copy of testbuy
 
-        Market.TESTING_MODE = true;
+        
 
 
         MacroII model = new MacroII(1);
@@ -802,7 +817,7 @@ public class PurchasesDepartmentTest {
     public void testGetMarket() throws Exception {
         //this is a copy of testbuy
 
-        Market.TESTING_MODE = true;
+        
 
 
         MacroII model = new MacroII(1);
@@ -824,7 +839,7 @@ public class PurchasesDepartmentTest {
 
         //this is a copy of testbuy
 
-        Market.TESTING_MODE = true;
+        
 
 
         MacroII model = new MacroII(1);

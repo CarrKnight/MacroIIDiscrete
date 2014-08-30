@@ -63,7 +63,7 @@ public class PurchasesWeeklyPIDTest {
     @Test
     public void simpleStubTestFromBelow(){
 
-        Market.TESTING_MODE = true;
+        
 
         PurchasesDepartment dept = mock(PurchasesDepartment.class); //new stub
         Firm firm = mock(Firm.class); //new stub
@@ -124,7 +124,7 @@ public class PurchasesWeeklyPIDTest {
     @Test
     public void simpleStubTestFromAbove(){
 
-        Market.TESTING_MODE = true;
+        
 
         PurchasesDepartment dept = mock(PurchasesDepartment.class); //new stub
         Firm firm = mock(Firm.class); //new stub
@@ -186,7 +186,7 @@ public class PurchasesWeeklyPIDTest {
     @Test
     public void simpleStubTestMidway(){
 
-        Market.TESTING_MODE = true;
+        
 
         PurchasesDepartment dept = mock(PurchasesDepartment.class); //new stub
         Firm firm = mock(Firm.class); //new stub
@@ -264,7 +264,7 @@ public class PurchasesWeeklyPIDTest {
     @Test
     public void fullDressRehearsal() throws NoSuchFieldException, IllegalAccessException {
 
-        Market.TESTING_MODE = true;
+        
 
         final MacroII model = new MacroII(1){
             @Override
@@ -354,7 +354,6 @@ public class PurchasesWeeklyPIDTest {
         while(model.schedule.getSteps() < 5000);
 
 
-        Market.TESTING_MODE = false;
         //I expect the price to go high so that the firm builds up its reserves and then drop so that it only needs to buy 2 a adjust to keep things constant
         //   assertTrue(dept.maxPrice(GoodType.GENERIC,market) >= 60 && dept.maxPrice(GoodType.GENERIC,market) <= 60);
     //    assertEquals(f.hasHowMany(GoodType.GENERIC),25); //has 6 but I just consumed 2

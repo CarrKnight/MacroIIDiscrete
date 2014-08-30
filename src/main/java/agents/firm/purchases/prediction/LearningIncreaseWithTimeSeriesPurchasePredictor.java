@@ -281,4 +281,12 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictor implements Purchase
     public void setUsingWeights(boolean usingWeights) {
         this.usingWeights = usingWeights;
     }
+
+    public float getDailyProbabilityOfObserving() {
+        return observer.getDailyProbabilityOfObserving();
+    }
+
+    public void setDailyProbabilityOfObserving(float dailyProbabilityOfObserving) {
+        observer.setDailyProbabilityOfObserving(dailyProbabilityOfObserving);
+    }
 }

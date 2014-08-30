@@ -103,7 +103,7 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
     /**
      * The probability of observing placed at constructor if no other is specified
      */
-    public static float defaultDailyProbabilityOfObserving =  0.142f;
+    public static final float defaultDailyProbabilityOfObserving =  0.142f;
 
     /**
      * if "isExact" is set to true, the market observer doesn't check "at random" but at fixed intervals of size 1/probabilityOfObserving
@@ -118,7 +118,15 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
      */
     public PeriodicMarketObserver(Market market, MacroII macroII)
     {
+
+        this(market,macroII,defaultDailyProbabilityOfObserving);
+    }
+
+
+    public PeriodicMarketObserver(Market market, MacroII macroII, float dailyProbabilityOfObserving)
+    {
         this.market = market;
+        this.dailyProbabilityOfObserving = dailyProbabilityOfObserving;
         days = new ArrayList<>();
 
 
@@ -490,6 +498,7 @@ public class PeriodicMarketObserver implements Steppable, Deactivatable {
     public void setExact(boolean exact) {
         isExact = exact;
     }
+
 
 
 

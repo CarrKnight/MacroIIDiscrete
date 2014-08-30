@@ -97,11 +97,11 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
      */
     int price = 0;
 
-    public static boolean flowTargetingDefault = true;
+    public static final boolean flowTargetingDefault = true;
     /**
      * if flow targeting is true, then rather than trying to keep inventory at level 0 at any check you just try to keep inflow and outflow constant
      */
-    boolean flowTargeting = flowTargetingDefault;
+    private boolean flowTargeting = flowTargetingDefault;
 
     /**
      * This is the object we use to guess our stockouts
@@ -527,5 +527,11 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
         return controller.getSpeed();
     }
 
+    public boolean isFlowTargeting() {
+        return flowTargeting;
+    }
 
+    public void setFlowTargeting(boolean flowTargeting) {
+        this.flowTargeting = flowTargeting;
+    }
 }

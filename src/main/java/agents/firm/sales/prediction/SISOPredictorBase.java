@@ -153,6 +153,12 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
     @Override
     public void turnOff() {
         active = false;
+        if(debugWriter != null)
+            try {
+                debugWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 
 

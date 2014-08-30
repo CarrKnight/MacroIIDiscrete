@@ -69,7 +69,6 @@ public class WhenDoesAveragingMatters {
 
 
     public static void learnedRun(int competitors, Class<? extends AskPricingStrategy> pricing, int weightedAverageSize){
-        FixedDecreaseSalesPredictor.defaultDecrementDelta=0;
 
         final MacroII macroII = new MacroII(System.currentTimeMillis());
         final TripolistScenario scenario1 = new TripolistScenario(macroII);

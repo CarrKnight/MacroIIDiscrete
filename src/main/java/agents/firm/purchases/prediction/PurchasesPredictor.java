@@ -181,7 +181,7 @@ public interface PurchasesPredictor
 
             } catch (SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException |
                     NoSuchMethodException |InvocationTargetException  ex  ) {
-                throw new RuntimeException("failed to instantiate " + ex.getMessage());
+                throw new RuntimeException("with rule: " + rule + " failed to instantiate " + ex.getMessage());
             }
 
         }

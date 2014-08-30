@@ -47,9 +47,17 @@ public class SamplingLearningIncreasePurchasePredictor extends  AbstractWorkerLe
 
     public SamplingLearningIncreasePurchasePredictor() {
 
+       this(FixedIncreasePurchasesPredictor.defaultIncrementDelta);
+
+
+    }
+
+
+    public SamplingLearningIncreasePurchasePredictor(float defaultSlope) {
+
         super();
 
-        predictor = new FixedIncreasePurchasesPredictor();
+        predictor = new FixedIncreasePurchasesPredictor(defaultSlope);
 
 
     }
@@ -196,4 +204,7 @@ public class SamplingLearningIncreasePurchasePredictor extends  AbstractWorkerLe
         }
         return shockDays.get(i);
     }
+
+
+
 }

@@ -181,7 +181,6 @@ public class StickyPricesCSVPrinter {
         scenario.setDemandIntercept(101);
         scenario.setDemandShifts(false);
         scenario.setSellerStrategy(SimpleFlowSellerPID.class); // no inventory
-        SimpleFlowSellerPID.flowTargetingDefault = false; //needs to be false here because inventory readings at dawn are misinformative.
         scenario.setDestroyUnsoldInventoryEachDay(true);
         scenario.setNumberOfSellers(1);
         scenario.setInflowPerSeller(50);
@@ -193,6 +192,7 @@ public class StickyPricesCSVPrinter {
         macroII.start();
         final SimpleFlowSellerPID askPricingStrategy = new SimpleFlowSellerPID(scenario.getDepartments().get(0),
                 .1f, .1f, 0f, 0);
+        askPricingStrategy.setFlowTargeting(false);
         scenario.getDepartments().get(0).setAskPricingStrategy(askPricingStrategy);
         askPricingStrategy.setInitialPrice(80); //so the run is the same for all possible runs
 
@@ -219,7 +219,6 @@ public class StickyPricesCSVPrinter {
         scenario.setDemandIntercept(101);
         scenario.setDemandShifts(false);
         scenario.setSellerStrategy(SimpleFlowSellerPID.class); // no inventory
-        SimpleFlowSellerPID.flowTargetingDefault = false; //needs to be false here because inventory readings at dawn are misinformative.
         scenario.setDestroyUnsoldInventoryEachDay(true);
         scenario.setNumberOfSellers(1);
         scenario.setInflowPerSeller(50);
@@ -232,6 +231,8 @@ public class StickyPricesCSVPrinter {
         float proportionalAndIntegralGain = .1f / dividePIParametersByThis;
         final SimpleFlowSellerPID askPricingStrategy = new SimpleFlowSellerPID(scenario.getDepartments().get(0),
                 proportionalAndIntegralGain, proportionalAndIntegralGain, 0f, pidSpeed);
+        askPricingStrategy.setFlowTargeting(false);
+
         if(!randomize)
             askPricingStrategy.setInitialPrice(80); //so the run is the same for all possible runs
         else
@@ -360,7 +361,6 @@ public class StickyPricesCSVPrinter {
         writer.writeNext(new String[]{"P","I","distance","variance","success"});
 
 
-        SimpleFlowSellerPID.flowTargetingDefault=true;
         BigDecimal currentP = minimumP;
         while(currentP.compareTo(maximumP) <= 0)
         {
@@ -400,6 +400,7 @@ public class StickyPricesCSVPrinter {
                     final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
                     final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, currentP.floatValue(), currentI.floatValue(), 0f, 0);
                     salesDepartment.setAskPricingStrategy(strategy);
+                    strategy.setFlowTargeting(false);
 
                     //and make it learned!
                     salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(2));

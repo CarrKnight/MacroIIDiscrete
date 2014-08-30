@@ -15,7 +15,6 @@ import agents.firm.sales.prediction.PricingSalesPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.UndercuttingAskPricing;
 import financial.market.ImmediateOrderHandler;
-import financial.market.Market;
 import financial.market.OrderBookMarket;
 import goods.DifferentiatedGoodType;
 import goods.Good;
@@ -27,7 +26,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 /**
  * <h4>Description</h4>
@@ -91,7 +90,6 @@ public class PricingPredictorStrategyTest {
     @Test
     public void scenario2() throws Exception {
 
-        Market.TESTING_MODE = true;
 
 
 
@@ -140,7 +138,6 @@ public class PricingPredictorStrategyTest {
     @Test
     public void scenario3() throws Exception {
 
-        Market.TESTING_MODE = true;
 
         model = new MacroII(100);
         market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL){ //break the order book so that the best buyer is not visible anymore
@@ -217,18 +214,17 @@ public class PricingPredictorStrategyTest {
     @Test
     public void scenario5() throws Exception {
 
-        Market.TESTING_MODE = true;
 
 
 
         model = new MacroII(100);
+        model.start();
         market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
         market.setOrderHandler(new ImmediateOrderHandler(),model);
         f = new Firm(model);
         department = SalesDepartmentFactory.incompleteSalesDepartment(f, market, new SimpleBuyerSearch(market, f), new SimpleSellerSearch(market, f), agents.firm.sales.SalesDepartmentAllAtOnce.class);
         f.registerSaleDepartment(department, DifferentiatedGoodType.CAPITAL);
-
-
+        department.start(model);
 
         strategy = new PricingSalesPredictor();
         department.setPredictorStrategy(strategy);

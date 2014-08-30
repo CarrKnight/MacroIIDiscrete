@@ -43,7 +43,6 @@ public class LearningIncreasePurchasesPredictorTest
     @Test
     public void testPredictSalePrice() throws Exception
     {
-        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1f;
 
 
 
@@ -53,6 +52,7 @@ public class LearningIncreasePurchasesPredictorTest
         MacroII model = new MacroII(System.currentTimeMillis());
         LearningIncreasePurchasesPredictor predictor = new LearningIncreasePurchasesPredictor(market,model );
         predictor.setUsingWeights(true);
+        predictor.setDailyProbabilityOfObserving(1f);
 
         //observation 1
         when(market.getNumberOfObservations()).thenReturn(1,2,3);
@@ -91,9 +91,9 @@ public class LearningIncreasePurchasesPredictorTest
 
         Market market = mock(Market.class);
         MacroII macroII = mock(MacroII.class);
-        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = .2f;
 
-        new LearningIncreasePurchasesPredictor(market,macroII);
+        final LearningIncreasePurchasesPredictor learningIncreasePurchasesPredictor =
+                new LearningIncreasePurchasesPredictor(new PeriodicMarketObserver(market,macroII,1f));
 
         verify(macroII).scheduleAnotherDay(any(ActionOrder.class),any(Steppable.class),
                 anyInt(),any(Priority.class));
@@ -104,7 +104,6 @@ public class LearningIncreasePurchasesPredictorTest
     @Test
     public void testExtremes()
     {
-        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1f;
 
         //no observations, should return whatever the sales department says
         Market market = mock(Market.class);
@@ -125,7 +124,7 @@ public class LearningIncreasePurchasesPredictorTest
 
 
 
-        LearningIncreasePurchasesPredictor predictor = new LearningIncreasePurchasesPredictor(market,model );
+        LearningIncreasePurchasesPredictor predictor = new LearningIncreasePurchasesPredictor(new PeriodicMarketObserver(market,model,1f) );
         when(department.getAveragedClosingPrice()).thenReturn(50f);
         Assert.assertEquals(predictor.predictPurchasePriceWhenIncreasingProduction(department), 50,.0001f);
 

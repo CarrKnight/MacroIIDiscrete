@@ -19,11 +19,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
 
 import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 
@@ -67,23 +66,19 @@ public class OneLinkSupplyChainScenarioRegressionTest
     public void testBeefMonopolistFixedProductionWithStickyPrices() throws ExecutionException, InterruptedException {
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
-            //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 1, 10, false, null));
 
-            testResults.add(testReceipt);
+
+            testResults.add(OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 1, 10, false, null));
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            OneLinkSupplyChainResult result = receipt.get();
             checkBeefMonopolistResult(result);
 
         }
@@ -98,23 +93,23 @@ public class OneLinkSupplyChainScenarioRegressionTest
     public void testBeefMonopolistFixedProductionWithSlowPID() throws ExecutionException, InterruptedException {
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 10, 0, false, null));
+            
+                    testResults.add(OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 10, 0, false, null));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            OneLinkSupplyChainResult result = receipt.get();
+            
             checkBeefMonopolistResult(result);
         }
 
@@ -123,13 +118,13 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     @Test
     public void problematicScenario1() throws Exception {
-        final OneLinkSupplyChainResult result = testFoodMonopolistWithFixedProductionRun(0,true,0,10,  Paths.get("runs", "problematic.csv").toFile());
+        final OneLinkSupplyChainResult result = testFoodMonopolistWithFixedProductionRun(0,true,0,10, null);
         checkResultsOfFoodMonopolist(result);
     }
     @Test
     public void problematicScenario2() throws Exception {
             final OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(0, 10, 0, true, true,
-                    Paths.get("runs", "problematic.csv").toFile(), Paths.get("runs", "problematic.log").toFile(), null);
+                    null, null, null);
 
             checkBeefMonopolistResult(result);
 
@@ -173,23 +168,22 @@ public class OneLinkSupplyChainScenarioRegressionTest
     public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws ExecutionException, InterruptedException {
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(1);
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 10, 0, true, null));
+            
+                    testResults.add(OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 10, 0, true, null));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            OneLinkSupplyChainResult result = receipt.get();
+            
             checkBeefMonopolistResult(result);
         }
     }
@@ -200,23 +194,23 @@ public class OneLinkSupplyChainScenarioRegressionTest
     public void testBeefMonopolistFixedProductionWithStickyPricesAlreadyLearned() throws ExecutionException, InterruptedException {
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 1, 10, true, null));
+            
+                    testResults.add(OneLinkSupplyChainResult.beefMonopolistFixedProductionsOneRun(random.nextInt(), 1, 10, true, null));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            OneLinkSupplyChainResult result = receipt.get();
+            
             checkBeefMonopolistResult(result);
         }
 
@@ -241,24 +235,24 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(
+            
+                    testResults.add(OneLinkSupplyChainResult.beefMonopolistOneRun(
                             random.nextInt(), 10, 0, true, true, null, null, null));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            OneLinkSupplyChainResult result = receipt.get();
+            
             checkBeefMonopolistResult(result);
         }
 
@@ -273,23 +267,23 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 50, true, true, null, null, null));
+            
+                    testResults.add(OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 50, true, true, null, null, null));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            OneLinkSupplyChainResult result = receipt.get();
+            
             checkBeefMonopolistResult(result);
         }
 
@@ -305,27 +299,27 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.
+            
+                    testResults.add(OneLinkSupplyChainResult.
                             beefMonopolistOneRun(0, 50, 0, false, true, null, null,
-                                    Paths.get("runs","tmp3.csv")));
+                                    null));
 
-            testResults.add(testReceipt);
+            
 
         }
 
         List<OneLinkSupplyChainResult> results = new LinkedList<>();
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            results.add(receipt.get());
+            results.add(result);
         }
 
 
@@ -341,26 +335,26 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(),
+            
+                    testResults.add(OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(),
                             1, 50, false, true, null, null, null));
 
-            testResults.add(testReceipt);
+            
 
         }
 
         List<OneLinkSupplyChainResult> results = new LinkedList<>();
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            results.add(receipt.get());
+            results.add(result);
         }
 
 
@@ -378,23 +372,23 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 10, 0, true, false, null, null, null));
+            
+                    testResults.add(OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 10, 0, true, false, null, null, null));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            OneLinkSupplyChainResult result = receipt.get();
+            
             checkBeefMonopolistResult(result);
         }
 
@@ -410,23 +404,22 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 10, true, false, null, null, null));
+            
+                    testResults.add(OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 1, 10, true, false, null, null, null));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            OneLinkSupplyChainResult result = receipt.get();
+            
             checkBeefMonopolistResult(result);
         }
 
@@ -440,23 +433,23 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextInt(), 10, 0, null));
+            
+                    testResults.add(OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextInt(), 10, 0, null));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            OneLinkSupplyChainResult result = receipt.get();
+
             checkCompetitiveResult(result);
         }
 
@@ -472,23 +465,23 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextInt(), 1, 10, null));
+            
+                    testResults.add(OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextInt(), 1, 10, null));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            OneLinkSupplyChainResult result = receipt.get();
+            
             checkCompetitiveResult(result);
         }
 
@@ -510,23 +503,23 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.everybodyLearningCompetitiveSlowPIDRun(random.nextInt()));
+            
+                    testResults.add(OneLinkSupplyChainResult.everybodyLearningCompetitiveSlowPIDRun(random.nextInt()));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            OneLinkSupplyChainResult result = receipt.get();
+            
             checkCompetitiveResult(result);
         }
 
@@ -543,23 +536,23 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.everybodyLearningCompetitiveStickyPIDRun(random.nextInt()));
+            
+                    testResults.add(OneLinkSupplyChainResult.everybodyLearningCompetitiveStickyPIDRun(random.nextInt()));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            OneLinkSupplyChainResult result = receipt.get();
+            
             checkCompetitiveResult(result);
         }
 
@@ -575,23 +568,23 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 10, 0, false, false, null, null, null));
+            
+                    testResults.add(OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(), 10, 0, false, false, null, null, null));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            OneLinkSupplyChainResult result = receipt.get();
+            
             checkBeefMonopolistResult(result);
         }
 
@@ -608,25 +601,25 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(),
+            
+                    testResults.add(OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(),
                             1, 50, false, false, null, null, null));
 
-            testResults.add(testReceipt);
+            
 
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            OneLinkSupplyChainResult result = receipt.get();
+            
             checkBeefMonopolistResult(result);
         }
 
@@ -654,23 +647,23 @@ public class OneLinkSupplyChainScenarioRegressionTest
     public void testFoodMonopolistWithStickyPricesAndFixedQuantity() throws ExecutionException, InterruptedException {
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> testFoodMonopolistWithFixedProductionRun(random.nextInt(), false, 10, 1, null));
+            
+                    testResults.add(testFoodMonopolistWithFixedProductionRun(random.nextInt(), false, 10, 1, null));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            checkResultsOfFoodMonopolist(receipt.get());
+            checkResultsOfFoodMonopolist(result);
         }
 
 
@@ -751,23 +744,23 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> testFoodMonopolistWithFixedProductionRun(random.nextInt(), false, 0, 10, null));
+            
+                    testResults.add(testFoodMonopolistWithFixedProductionRun(random.nextInt(), false, 0, 10, null));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            checkResultsOfFoodMonopolist(receipt.get());
+            checkResultsOfFoodMonopolist(result);
         }
 
     }
@@ -777,23 +770,23 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> testFoodMonopolistWithFixedProductionRun(random.nextInt(),true,0,10, null));
+            
+                    testResults.add(testFoodMonopolistWithFixedProductionRun(random.nextInt(),true,0,10, null));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            checkResultsOfFoodMonopolist(receipt.get());
+            checkResultsOfFoodMonopolist(result);
         }
 
     }
@@ -806,23 +799,23 @@ public class OneLinkSupplyChainScenarioRegressionTest
     public void testFoodMonopolistWithStickyPricesAndFixedQuantityAndLearnedCompetitors() throws ExecutionException, InterruptedException {
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> testFoodMonopolistWithFixedProductionRun(random.nextInt(),true,10,1, null));
+            
+                    testResults.add(testFoodMonopolistWithFixedProductionRun(random.nextInt(),true,10,1, null));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            checkResultsOfFoodMonopolist(receipt.get());
+            checkResultsOfFoodMonopolist(result);
         }
 
 
@@ -839,35 +832,27 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(new Callable<OneLinkSupplyChainResult>(){
-                        /**
-                         * Computes a result, or throws an exception if unable to do so.
-                         *
-                         * @return computed result
-                         * @throws Exception if unable to compute a result
-                         */
-                        @Override
-                        public OneLinkSupplyChainResult call() throws Exception {
-                            return OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(),10,
-                                    0,true,true,null, null);
-                        }
-                    });
+            
+                    testResults.add(
+                        OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(),10,
+                                    0,true,true,null, null)
 
-            testResults.add(testReceipt);
+                    );
+
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            checkResultsOfFoodMonopolist(receipt.get());
+            checkResultsOfFoodMonopolist(result);
         }
 
 
@@ -880,26 +865,26 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.foodMonopolistOneRun(
+            
+                    testResults.add(OneLinkSupplyChainResult.foodMonopolistOneRun(
                             random.nextInt(), 1, 10, true, true, null, null));
 
 
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            checkResultsOfFoodMonopolist(receipt.get());
+            checkResultsOfFoodMonopolist(result);
         }
 
 
@@ -918,24 +903,24 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.foodMonopolistOneRun(
+            
+                    testResults.add(OneLinkSupplyChainResult.foodMonopolistOneRun(
                             random.nextInt(), 10, 0, false, false, null, null));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            checkResultsOfFoodMonopolist(receipt.get());
+            checkResultsOfFoodMonopolist(result);
         }
 
 
@@ -949,24 +934,24 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
-        ExecutorService testRunner = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()) ;
-        ArrayList<Future<OneLinkSupplyChainResult>> testResults = new ArrayList<>(5);
+        
+        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
         for(int i=0; i <5; i++)
         {
             //run the test, add it as a future so I can check the results!
-            Future<OneLinkSupplyChainResult> testReceipt =
-                    testRunner.submit(() -> OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(), 1, 100,
-                            false, false, Paths.get("runs","noone.csv").toFile(), Paths.get("runs","tmp.csv") ));
+            
+                    testResults.add(OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(), 1, 100,
+                            false, false,null, null ));
 
-            testResults.add(testReceipt);
+            
 
         }
 
-        for(Future<OneLinkSupplyChainResult> receipt : testResults)
+        for(OneLinkSupplyChainResult result : testResults)
         {
-            checkResultsOfFoodMonopolist(receipt.get());
+            checkResultsOfFoodMonopolist(result);
         }
 
 
@@ -976,52 +961,6 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
 
-    private OneLinkSupplyChainResult learningFoodMonopolistStickyPIDRun(int random) {
-        final MacroII macroII = new MacroII(random);
-        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
-        scenario1.setControlType(MarginalMaximizer.class);        scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-        scenario1.setBeefPriceFilterer(null);
-
-        //competition!
-        scenario1.setNumberOfBeefProducers(5);
-        scenario1.setNumberOfFoodProducers(1);
-
-        scenario1.setDivideProportionalGainByThis(1f);
-        scenario1.setDivideIntegrativeGainByThis(1f);
-        //no delay
-        scenario1.setBeefPricingSpeed(10);
-
-
-        macroII.setScenario(scenario1);
-        macroII.start();
-
-
-        while(macroII.schedule.getTime()<14000)
-        {
-            macroII.schedule.step(macroII);
-            printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
-        }
-
-
-        //I used to assert this:
-        //Assert.assertEquals(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE),85,6 );
-        //but that's too hard because while on average the price hovers there, competition is noisy. Sometimes a lot.
-        //so what I did was to attach a daily stat collector and then check the average of the last 10 prices
-        float averageFoodPrice = 0;
-        float averageBeefProduced = 0;
-        float averageBeefPrice=0;
-        for(int j=0; j< 1000; j++)
-        {
-            //make the model run one more day:
-            macroII.schedule.step(macroII);
-            averageFoodPrice += macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
-            averageBeefProduced+= macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getYesterdayVolume();
-            averageBeefPrice+= macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
-
-        }
-
-        return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f, macroII);
-    }
 
 
 
