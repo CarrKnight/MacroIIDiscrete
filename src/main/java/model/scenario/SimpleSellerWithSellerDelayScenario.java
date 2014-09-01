@@ -12,7 +12,7 @@ import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.pricing.AskPricingStrategy;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
+import agents.firm.sales.pricing.pid.InventoryBufferSalesControl;
 import com.google.common.base.Preconditions;
 import financial.market.OrderBookMarket;
 import goods.UndifferentiatedGoodType;
@@ -117,7 +117,7 @@ public class SimpleSellerWithSellerDelayScenario extends SimpleSellerScenario {
                         new SimpleSellerSearch(market, seller), salesDepartmentType);
                 seller.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
 
-                SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly strategy = AskPricingStrategy.Factory.newAskPricingStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class,dept);
+                InventoryBufferSalesControl strategy = AskPricingStrategy.Factory.newAskPricingStrategy(InventoryBufferSalesControl.class,dept);
                 if(sellerDelay > 0 )
                     strategy.setSpeed(sellerDelay);
 

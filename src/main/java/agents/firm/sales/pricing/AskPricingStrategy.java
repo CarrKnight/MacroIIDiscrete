@@ -96,10 +96,11 @@ public interface AskPricingStrategy extends Deactivatable, LogNode {
             rules.add(PriceFollower.class);
             rules.add(PriceImitator.class);
             rules.add(UndercuttingAskPricing .class);
-            rules.add(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
+            rules.add(InventoryBufferSalesControl.class);
             rules.add(SalesControlWithFixedInventoryAndPID.class);
             rules.add(salesControlWithSmoothedinventoryAndPID.class);
             rules.add(SimpleFlowSellerPID.class);
+            rules.add(SimpleStockSeller.class);
             rules.add(AdaptiveFlowSellerPID.class);
             rules.add(AdaptiveStockSellerPID.class);
 

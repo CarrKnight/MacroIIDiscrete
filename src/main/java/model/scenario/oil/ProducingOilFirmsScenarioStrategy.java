@@ -25,7 +25,7 @@ import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
+import agents.firm.sales.pricing.pid.InventoryBufferSalesControl;
 import financial.market.GeographicalMarket;
 import financial.market.Market;
 import goods.GoodType;
@@ -58,8 +58,8 @@ public class ProducingOilFirmsScenarioStrategy implements OilFirmsScenarioStrate
 
     private final static Function<SalesDepartment,? extends AskPricingStrategy> DEFAULT_ASK_PRICING_STRATEGY =
             (t) ->{
-                final SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly toReturn =
-                        new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(t, 10,20);
+                final InventoryBufferSalesControl toReturn =
+                        new InventoryBufferSalesControl(t, 10,20);
                 return toReturn;
 
             };

@@ -6,6 +6,7 @@
 
 package model.scenario;
 
+import agents.firm.sales.pricing.pid.InventoryBufferSalesControl;
 import agents.people.AfterWorkStrategy;
 import agents.people.Person;
 import agents.firm.Firm;
@@ -142,7 +143,7 @@ public class MonopolistScenario extends Scenario {
     /**
      * the strategy used by the sales department of the monopolist
      */
-    protected Class<? extends AskPricingStrategy> askPricingStrategy = AdaptiveFlowSellerPID.class;
+    protected Class<? extends AskPricingStrategy> askPricingStrategy = InventoryBufferSalesControl.class;
 
     /**
      * The type of sales predictor the sales department should use

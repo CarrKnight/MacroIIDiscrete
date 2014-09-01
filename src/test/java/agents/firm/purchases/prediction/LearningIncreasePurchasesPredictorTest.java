@@ -50,9 +50,8 @@ public class LearningIncreasePurchasesPredictorTest
 
         when(market.getYesterdayVolume()).thenReturn(1);
         MacroII model = new MacroII(System.currentTimeMillis());
-        LearningIncreasePurchasesPredictor predictor = new LearningIncreasePurchasesPredictor(market,model );
+        LearningIncreasePurchasesPredictor predictor = new LearningIncreasePurchasesPredictor(new PeriodicMarketObserver(market,model,1) );
         predictor.setUsingWeights(true);
-        predictor.setDailyProbabilityOfObserving(1f);
 
         //observation 1
         when(market.getNumberOfObservations()).thenReturn(1,2,3);
@@ -93,7 +92,7 @@ public class LearningIncreasePurchasesPredictorTest
         MacroII macroII = mock(MacroII.class);
 
         final LearningIncreasePurchasesPredictor learningIncreasePurchasesPredictor =
-                new LearningIncreasePurchasesPredictor(new PeriodicMarketObserver(market,macroII,1f));
+                new LearningIncreasePurchasesPredictor(new PeriodicMarketObserver(market,macroII,.2f));
 
         verify(macroII).scheduleAnotherDay(any(ActionOrder.class),any(Steppable.class),
                 anyInt(),any(Priority.class));

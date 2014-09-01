@@ -92,7 +92,7 @@ public class SISOGuessingRegression implements SISORegression {
 
         //   System.out.println(output + "," + input);
         Preconditions.checkArgument(Double.isFinite(output));
-        Preconditions.checkArgument(Double.isFinite(input));
+        Preconditions.checkArgument(Double.isFinite(input), output + "," + input);
 
 
         //dynamic regression

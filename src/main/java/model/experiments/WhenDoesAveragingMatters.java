@@ -13,7 +13,7 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
+import agents.firm.sales.pricing.pid.InventoryBufferSalesControl;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.utilities.WeightedPriceAverager;
 import goods.UndifferentiatedGoodType;
@@ -46,7 +46,7 @@ public class WhenDoesAveragingMatters {
         for(int competitors = 0; competitors<5; competitors++) {
             for (int average = 1; average < 20; average += 5) {
                 System.out.println("competitors: " + competitors + ", average: " + average);
-                learnedRun(competitors, SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class, average);
+                learnedRun(competitors, InventoryBufferSalesControl.class, average);
             }
             System.out.println("==================================================");
         }

@@ -7,6 +7,7 @@
 package model.utilities.stats.regression;
 
 import com.google.common.base.Preconditions;
+import model.utilities.DelayBin;
 import model.utilities.stats.processes.DynamicProcess;
 
 /**
@@ -36,18 +37,29 @@ public class ErrorCorrectingRegressionOneStep implements SISORegression {
 
     private boolean varietyOutput = false;
 
+    /**
+     * here we put the x to delay it, if necessary
+     */
+    private final DelayBin<Double> delayBin;
+
+
 
     public ErrorCorrectingRegressionOneStep() {
-        regression = new ExponentialForgettingRegressionDecorator(
-                new KalmanRecursiveRegression(4),.99,1);
+        this(.99f);
     }
 
     public ErrorCorrectingRegressionOneStep(float forgettingFactor) {
+        this(forgettingFactor,0);
+    }
+
+    public ErrorCorrectingRegressionOneStep(float forgettingFactor, int delay){
+        delayBin = new DelayBin<>(delay,Double.NaN);
         if(forgettingFactor >= 1)
             regression = new KalmanRecursiveRegression(4);
         else
             regression = new ExponentialForgettingRegressionDecorator(
                     new KalmanRecursiveRegression(4),forgettingFactor,1);
+
     }
 
     /**
@@ -60,6 +72,8 @@ public class ErrorCorrectingRegressionOneStep implements SISORegression {
     @Override
     public void addObservation(double output, double input, double... ignored) {
         Preconditions.checkArgument(Double.isFinite(output) && Double.isFinite(input), "arguments must be finite");
+
+        input = delayBin.addAndRetrieve(input);
 
         double deltaInput = input - previousInput;
         double deltaOutput = output - previousOutput;
@@ -91,7 +105,7 @@ public class ErrorCorrectingRegressionOneStep implements SISORegression {
     @Override
     public void skipObservation(double skippedOutput, double skippedInput, double... skippedIntercepts) {
 
-        previousInput = Double.NaN;
+        previousInput = delayBin.addAndRetrieve(Double.NaN);
         previousOutput = Double.NaN;
     }
 

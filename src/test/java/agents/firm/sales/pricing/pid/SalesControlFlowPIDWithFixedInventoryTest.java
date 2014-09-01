@@ -41,7 +41,7 @@ public class SalesControlFlowPIDWithFixedInventoryTest {
         SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
         when(department.getFirm()).then(RETURNS_MOCKS);
         MacroII state = mock(MacroII.class); when(state.getCurrentPhase()).thenReturn(ActionOrder.ADJUST_PRICES);
-        SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly pricing = new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(department,10,50,state,0,0,0,new MersenneTwisterFast());
+        InventoryBufferSalesControl pricing = new InventoryBufferSalesControl(department,10,50,state,0,0,0,new MersenneTwisterFast());
 
 
         //go through the build up phase
@@ -58,14 +58,14 @@ public class SalesControlFlowPIDWithFixedInventoryTest {
         when(department.getHowManyToSell()).thenReturn(50);
         pricing.step(state);
         assertEquals(pricing.getTarget(),5); //because you are done building up
-        assertEquals(pricing.getPhase(), SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.SimpleInventoryAndFlowPIDPhase.SELL);
+        assertEquals(pricing.getPhase(), InventoryBufferSalesControl.SimpleInventoryAndFlowPIDPhase.SELL);
 
         //inventory goes down, but we should still be in sell phase
         when(department.getTodayInflow()).thenReturn(5);
         when(department.getHowManyToSell()).thenReturn(25);
         pricing.step(state);
         assertEquals(pricing.getTarget(),5); //still you should do your job, even though you are below that limit
-        assertEquals(pricing.getPhase(), SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.SimpleInventoryAndFlowPIDPhase.SELL);
+        assertEquals(pricing.getPhase(), InventoryBufferSalesControl.SimpleInventoryAndFlowPIDPhase.SELL);
 
 
         //back to buildup
@@ -73,7 +73,7 @@ public class SalesControlFlowPIDWithFixedInventoryTest {
         when(department.getHowManyToSell()).thenReturn(5);
         pricing.step(state);
         assertEquals(pricing.getTarget(),0); //back to buildup!
-        assertEquals(pricing.getPhase(), SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.SimpleInventoryAndFlowPIDPhase.BUILDUP);
+        assertEquals(pricing.getPhase(), InventoryBufferSalesControl.SimpleInventoryAndFlowPIDPhase.BUILDUP);
 
 
 
@@ -87,7 +87,7 @@ public class SalesControlFlowPIDWithFixedInventoryTest {
         SalesDepartment department = mock(SalesDepartmentAllAtOnce.class);
         when(department.getFirm()).then(RETURNS_MOCKS);
 
-        SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly pricing = new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(department,10,50,state,0,0,0,new MersenneTwisterFast());
+        InventoryBufferSalesControl pricing = new InventoryBufferSalesControl(department,10,50,state,0,0,0,new MersenneTwisterFast());
 
         verify(state).scheduleSoon(ActionOrder.ADJUST_PRICES,pricing);
         pricing.step(state);
@@ -104,7 +104,7 @@ public class SalesControlFlowPIDWithFixedInventoryTest {
         when(department.getFirm()).then(RETURNS_MOCKS);
 
         MacroII state = mock(MacroII.class); when(state.getCurrentPhase()).thenReturn(ActionOrder.ADJUST_PRICES);
-        SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly pricing = new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(department,10,50,state,2,1,.01f,new MersenneTwisterFast());
+        InventoryBufferSalesControl pricing = new InventoryBufferSalesControl(department,10,50,state,2,1,.01f,new MersenneTwisterFast());
         pricing.setInitialPrice(100); //so it's not 0
         //outflow stays at 0 for most of the test
         when(department.getTodayOutflow()).thenReturn(0);

@@ -16,9 +16,13 @@ import model.utilities.ActionOrder;
 import model.utilities.filters.Filter;
 import model.utilities.logs.LogEvent;
 import model.utilities.logs.LogLevel;
+import model.utilities.pid.Controller;
+import model.utilities.pid.ControllerInput;
 import model.utilities.pid.PIDController;
 import sim.engine.SimState;
 import sim.engine.Steppable;
+
+import java.util.function.Function;
 
 /**
  * <h4>Description</h4>
@@ -40,7 +44,7 @@ import sim.engine.Steppable;
  * @version 2013-03-19
  * @see
  */
-public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends BaseAskPricingStrategy implements Steppable {
+public class InventoryBufferSalesControl extends BaseAskPricingStrategy implements Steppable {
 
     private final SalesDepartment department;
 
@@ -64,9 +68,14 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
     private SimpleInventoryAndFlowPIDPhase phase = SimpleInventoryAndFlowPIDPhase.BUILDUP;
 
     /**
-     * The PID controller that deals with it
+     * The PID controller that prices it
      */
-    private PIDController controller;
+    private PIDController rootController;
+
+    /**
+     * A possibly decorated root
+     */
+    protected Controller controller;
 
     /**
      * if given, this will filter the outflow from the sales department to deal with infrequent changes
@@ -90,7 +99,7 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
      * Build a simple inventory and flow pid with preset inventory levels
      * @param department the sales department to inform
      */
-    public SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(SalesDepartment department) {
+    public InventoryBufferSalesControl(SalesDepartment department) {
         this(department,10,50,department.getFirm().getModel(),
                 department.getFirm().getModel().drawProportionalGain()/5f,
                 department.getFirm().getModel().drawIntegrativeGain()/5f,
@@ -98,8 +107,8 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
                 department.getRandom());
     }
 
-    public SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(SalesDepartment department,
-                                                                      int minimumInventory, int acceptableInventory) {
+    public InventoryBufferSalesControl(SalesDepartment department,
+                                       int minimumInventory, int acceptableInventory) {
         this(department,minimumInventory,acceptableInventory,department.getFirm().getModel(),
                 department.getFirm().getModel().drawProportionalGain()/5f,
                 department.getFirm().getModel().drawIntegrativeGain()/5f,
@@ -118,13 +127,16 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
      * @param derivativeGain  the D of the PID
      * @param random the randomizer
      */
-    public SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(SalesDepartment department, int minimumInventory, int acceptableInventory,
-                                                                      MacroII state, float proportionalGain, float integrativeGain, float derivativeGain,
-                                                                      MersenneTwisterFast random) {
+    public InventoryBufferSalesControl(SalesDepartment department, int minimumInventory, int acceptableInventory,
+                                       MacroII state, float proportionalGain, float integrativeGain, float derivativeGain,
+                                       MersenneTwisterFast random) {
         this.department = department;
         this.minimumInventory = minimumInventory;
         this.acceptableInventory = acceptableInventory;
-        controller = new PIDController(proportionalGain,integrativeGain,derivativeGain);
+
+        rootController = new PIDController(proportionalGain,integrativeGain,derivativeGain);
+        rootController.setInvertSign(true);
+        controller = rootController;
         controller.setOffset(50 + random.nextInt(51), true);
         isActive=true;
         state.scheduleSoon(ActionOrder.ADJUST_PRICES,this);
@@ -206,7 +218,7 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
 
 
 
-        controller.adjustOnce(outflow-getTarget(),isActive);
+        controller.adjust(new ControllerInput(getTarget(),outflow), isActive,(MacroII)state,null,null);
 
         handleNewEvent(new LogEvent(this, LogLevel.DEBUG, "inventory: {}, outlow:{}, target:{}\n whichphase? {}, oldPrice: {}, newprice{}",
                 department.getHowManyToSell(),outflow,getTarget(),phase,oldprice,controller.getCurrentMV()));
@@ -363,7 +375,7 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
     }
 
     public void setDerivativeGain(float derivativeGain) {
-        controller.setDerivativeGain(derivativeGain);
+        rootController.setDerivativeGain(derivativeGain);
     }
 
     public float getDerivativeGain() {
@@ -371,7 +383,7 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
     }
 
     public void setIntegralGain(float integralGain) {
-        controller.setIntegralGain(integralGain);
+        rootController.setIntegralGain(integralGain);
     }
 
     public float getIntegralGain() {
@@ -379,7 +391,7 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
     }
 
     public void setProportionalGain(float proportionalGain) {
-        controller.setProportionalGain(proportionalGain);
+        rootController.setProportionalGain(proportionalGain);
     }
 
     public float getProportionalGain() {
@@ -397,7 +409,7 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
         department.getFirm().getModel().scheduleSoon(ActionOrder.THINK,new Steppable() {
             @Override
             public void step(SimState state) {
-                if(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.this.outflowFilter != outflowFilter) //stop if you changed filter
+                if(InventoryBufferSalesControl.this.outflowFilter != outflowFilter) //stop if you changed filter
                     return;
 
                 //add observation
@@ -412,6 +424,15 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
 
         );
 
+    }
+
+
+    /**
+     * Decorate (usually to add autotuning) the controller by passing a code fragment that returns the fully decorated
+     * controller given the root pid controller. Ignores/destroy previous decorations.
+      */
+    public void decorateController(Function<PIDController,Controller> decorationMaker){
+        controller = decorationMaker.apply(rootController);
     }
 
     public SalesDepartment getDepartment() {

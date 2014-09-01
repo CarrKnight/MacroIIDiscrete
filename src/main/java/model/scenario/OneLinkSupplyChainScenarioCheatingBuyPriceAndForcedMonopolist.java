@@ -23,7 +23,7 @@ import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
+import agents.firm.sales.pricing.pid.InventoryBufferSalesControl;
 import au.com.bytecode.opencsv.CSVWriter;
 import financial.market.Market;
 import goods.DifferentiatedGoodType;
@@ -238,8 +238,8 @@ public class OneLinkSupplyChainScenarioCheatingBuyPriceAndForcedMonopolist exten
 
                         if(goodmarket.getGoodType().equals(OneLinkSupplyChainScenario.INPUT_GOOD))
                         {
-                            SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly askPricingStrategy =
-                                    new SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(department);
+                            InventoryBufferSalesControl askPricingStrategy =
+                                    new InventoryBufferSalesControl(department);
                             department.setAskPricingStrategy(askPricingStrategy);
 
                             askPricingStrategy.setProportionalGain(askPricingStrategy.getProportionalGain()/divideProportionalGainByThis);

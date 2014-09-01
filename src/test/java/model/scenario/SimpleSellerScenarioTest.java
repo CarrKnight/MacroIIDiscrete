@@ -10,7 +10,7 @@ import agents.firm.Firm;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
+import agents.firm.sales.pricing.pid.InventoryBufferSalesControl;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import agents.firm.sales.pricing.pid.salesControlWithSmoothedinventoryAndPID;
@@ -686,7 +686,7 @@ public class SimpleSellerScenarioTest {
         {
             final MacroII macroII = new MacroII(System.currentTimeMillis());
             SimpleSellerScenario scenario = setup102minusq(macroII,1);
-            scenario.setSellerStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
+            scenario.setSellerStrategy(InventoryBufferSalesControl.class);
 
 
 
@@ -771,7 +771,7 @@ public class SimpleSellerScenarioTest {
         {
             final MacroII macroII = new MacroII(System.currentTimeMillis());
             SimpleSellerScenario scenario = setup102minusq(macroII,4);
-            scenario.setSellerStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
+            scenario.setSellerStrategy(InventoryBufferSalesControl.class);
 
 
 
@@ -880,7 +880,7 @@ public class SimpleSellerScenarioTest {
         {
             final MacroII macroII = new MacroII(System.currentTimeMillis());
             SimpleSellerScenario scenario = setup102minusqUnequal(macroII);
-            scenario.setSellerStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
+            scenario.setSellerStrategy(InventoryBufferSalesControl.class);
 
 
 

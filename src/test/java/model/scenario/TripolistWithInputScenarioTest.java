@@ -17,7 +17,7 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
+import agents.firm.sales.pricing.pid.InventoryBufferSalesControl;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
@@ -238,7 +238,7 @@ public class TripolistWithInputScenarioTest {
                 scenario1.setAdditionalCompetitors(competitors);
                 macroII.setScenario(scenario1);
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
-                scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
+                scenario1.setAskPricingStrategy(InventoryBufferSalesControl.class);
                 if(macroII.random.nextBoolean())
                     scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
                 else

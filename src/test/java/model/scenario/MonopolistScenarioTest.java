@@ -15,7 +15,7 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.ErrorCorrectingSalesPredictor;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.pricing.pid.AdaptiveStockSellerPID;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
+import agents.firm.sales.pricing.pid.InventoryBufferSalesControl;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import financial.market.Market;
@@ -453,7 +453,7 @@ public class MonopolistScenarioTest {
             scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
             scenario1.setWorkersToBeRehiredEveryDay(true);
             //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
-            scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
+            scenario1.setAskPricingStrategy(InventoryBufferSalesControl.class);
 
 
             System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);

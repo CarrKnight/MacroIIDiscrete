@@ -133,7 +133,7 @@ public class AdaptiveStockSellerPID extends BaseAskPricingStrategy implements St
      */
     @Override
     public float estimateSupplyGap() {
-        if(!department.hasTradedAtLeastOnce() || department.getHowManyToSell() == 0 || department.getTodayOutflow() == 0 )
+        if(!department.hasTradedAtLeastOnce() || department.getHowManyToSell() == 0 )
             return  1000;
         else
             return 0;

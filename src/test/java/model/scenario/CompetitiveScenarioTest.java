@@ -16,7 +16,7 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.prediction.MarketSalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
-import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
+import agents.firm.sales.pricing.pid.InventoryBufferSalesControl;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import goods.UndifferentiatedGoodType;
@@ -122,7 +122,7 @@ public class CompetitiveScenarioTest {
                 final MacroII macroII = new MacroII(System.currentTimeMillis());
                 final TripolistScenario scenario1 = new TripolistScenario(macroII);
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-                scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
+                scenario1.setAskPricingStrategy(InventoryBufferSalesControl.class);
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
                 scenario1.setAdditionalCompetitors(competitors);
                 scenario1.setWorkersToBeRehiredEveryDay(true);
@@ -413,7 +413,7 @@ public class CompetitiveScenarioTest {
                 final MacroII macroII = new MacroII(System.currentTimeMillis());
                 final TripolistScenario scenario1 = new TripolistScenario(macroII);
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-                scenario1.setAskPricingStrategy(SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class);
+                scenario1.setAskPricingStrategy(InventoryBufferSalesControl.class);
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
                 scenario1.setAdditionalCompetitors(competitors);
                 scenario1.setWorkersToBeRehiredEveryDay(true);
@@ -490,7 +490,7 @@ public class CompetitiveScenarioTest {
 
         //  System.out.println("FORCED COMPETITIVE FIRMS: " + (competitors+1));
         Class<? extends AskPricingStrategy> strategies[] = new Class[2];
-        strategies[1] = SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly.class;
+        strategies[1] = InventoryBufferSalesControl.class;
         strategies[0] = SalesControlWithFixedInventoryAndPID.class;
         //    strategies[2] = SalesControlWithFixedInventoryAndPID.class;
 

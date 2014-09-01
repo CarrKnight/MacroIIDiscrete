@@ -95,6 +95,11 @@ public class PIDController implements Controller {
 
     private boolean controllingFlows = true;
 
+    /**
+     * when this is true, error is -(target-process variable)
+     */
+    private boolean invertSign = false;
+
 
 
 
@@ -271,6 +276,10 @@ public class PIDController implements Controller {
         if(!isActive)
             return false;
 
+        if(invertSign)
+            residual = -residual;
+
+
         /*************************
          *RECORDING
          ************************/
@@ -441,5 +450,13 @@ public class PIDController implements Controller {
         sb.append(", derivativeGain=").append(derivativeGain);
         sb.append('}');
         return sb.toString();
+    }
+
+    public boolean isInvertSign() {
+        return invertSign;
+    }
+
+    public void setInvertSign(boolean invertSign) {
+        this.invertSign = invertSign;
     }
 }

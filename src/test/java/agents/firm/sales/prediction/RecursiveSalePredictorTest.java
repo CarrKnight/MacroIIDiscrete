@@ -16,7 +16,8 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * <h4>Description</h4>
@@ -88,6 +89,7 @@ public class RecursiveSalePredictorTest {
         data.start(model,department);
         //put in price data
         when(department.getLastClosingPrice()).thenReturn(5,4,3,2,1);
+        when(department.getAveragedPrice()).thenReturn(5d,4d,3d,2d,1d);
         when(department.getLastAskedPrice()).thenReturn(5,4,3,2,1);
         when(department.getTodayOutflow()).thenReturn(5,4,3,2,1);
         RecursiveSalePredictor predictor = new RecursiveSalePredictor(model,department,new double[]{0,1,0,0,0,0,0},3,3,1);

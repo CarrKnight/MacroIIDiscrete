@@ -29,7 +29,8 @@ public class FarmersAndWorkersScenarioTest {
 
 
         for(int j=0; j< 5; j++) {
-            final FarmersAndWorkersResult farmersAndWorkersResult = runForcedCompetitiveFarmersAndWorkersScenario(10, 1, 200, System.currentTimeMillis(), null, null, 3000);
+            final FarmersAndWorkersResult farmersAndWorkersResult = runForcedCompetitiveFarmersAndWorkersScenario(10,
+                    1, 200, System.currentTimeMillis(), null, null, 3000);
             Assert.assertEquals(1100, farmersAndWorkersResult.getManufacturingProduction(), 50); //5% error allowed
             Assert.assertEquals(13995, farmersAndWorkersResult.getAgriculturalProduction(), 500);
             Assert.assertEquals(10.95, farmersAndWorkersResult.getManufacturingPrice(),5);

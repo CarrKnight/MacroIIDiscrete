@@ -42,7 +42,7 @@ public class AbstractWorkerLearningPredictorTest {
 
 
         //run the test 15 times
-        for(int i=0; i<30; i++)
+        for(int i=0; i<10; i++)
         {
           //  final MacroII macroII = new MacroII(1384099470750);
             final MacroII macroII = new MacroII(System.currentTimeMillis());
@@ -85,8 +85,7 @@ public class AbstractWorkerLearningPredictorTest {
                 macroII.schedule.step(macroII);
 
 
-
-            scenario1.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(null);
+            System.out.println("predicted: " + predictor.getDecrementDelta() + ", target: " + p1 );
             assertEquals(predictor.getDecrementDelta(), (double) (p1), .5d);
 
 
