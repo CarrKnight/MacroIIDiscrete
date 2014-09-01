@@ -9,6 +9,7 @@ package model.utilities.stats.regression;
 import com.google.common.base.Preconditions;
 import model.utilities.DelayBin;
 import model.utilities.stats.processes.DynamicProcess;
+import model.utilities.stats.processes.ErrorCorrectingDynamicProcess;
 
 /**
  * A simple 1-step error correcting model. See here: http://springschool.politics.ox.ac.uk/spring_school/OxfordECM.pdf
@@ -151,7 +152,14 @@ public class ErrorCorrectingRegressionOneStep implements SISORegression {
 
     @Override
     public DynamicProcess generateDynamicProcessImpliedByRegression() {
-        return null;
+
+        final double[] betas = regression.getBeta();
+        if(delayBin.getDelay() > 0)
+            return new ErrorCorrectingDynamicProcess(betas[0],betas[1],betas[2],betas[3],previousOutput,previousInput,delayBin);
+        else
+            return new ErrorCorrectingDynamicProcess(betas[0],betas[1],betas[2],betas[3],previousOutput,previousInput);
+
+
     }
 
 
