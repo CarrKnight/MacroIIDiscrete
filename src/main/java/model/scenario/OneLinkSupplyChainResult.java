@@ -24,6 +24,8 @@ import model.utilities.logs.LogLevel;
 import model.utilities.logs.LogToFile;
 import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.enums.MarketDataType;
+import model.utilities.stats.collectors.enums.PurchasesDataType;
+import model.utilities.stats.collectors.enums.SalesDataType;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import java.io.File;
@@ -82,7 +84,8 @@ public class OneLinkSupplyChainResult {
                 else{
                     assert dept.getPredictorStrategy() instanceof ErrorCorrectingSalesPredictor; //assuming here nothing has been changed and we are still dealing with recursive sale predictors
                     try {
-                        ((ErrorCorrectingSalesPredictor)dept.getPredictorStrategy()).setDebugWriter(regressionLogToWrite);
+                        if(regressionLogToWrite!=null)
+                            ((ErrorCorrectingSalesPredictor)dept.getPredictorStrategy()).setDebugWriter(regressionLogToWrite);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -159,20 +162,27 @@ public class OneLinkSupplyChainResult {
         while(macroII.schedule.getTime()<14000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
+            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
         }
 
 
         SummaryStatistics averageFoodPrice = new SummaryStatistics();
         SummaryStatistics averageBeefProduced = new SummaryStatistics();
         SummaryStatistics averageBeefPrice= new SummaryStatistics();
+        SummaryStatistics averageSalesSlope= new SummaryStatistics();
+        SummaryStatistics averageHrSlope= new SummaryStatistics();
+        final Firm monopolist = (Firm) scenario1.getMarkets().get(OneLinkSupplyChainScenario.INPUT_GOOD).getSellers().iterator().next();
         for(int j=0; j< 1000; j++)
         {
             //make the model run one more day:
             macroII.schedule.step(macroII);
+            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+
             averageFoodPrice.addValue(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
             averageBeefProduced.addValue(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getYesterdayVolume());
             averageBeefPrice.addValue(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
+            averageSalesSlope.addValue(monopolist.getSalesDepartment(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(SalesDataType.PREDICTED_DEMAND_SLOPE));
+            averageHrSlope.addValue(monopolist.getHRs().iterator().next().getLatestObservation(PurchasesDataType.PREDICTED_SUPPLY_SLOPE));
         }
 
 
@@ -180,7 +190,11 @@ public class OneLinkSupplyChainResult {
         System.out.println("beef price: " +averageBeefPrice.getMean() );
         System.out.println("food price: " + averageFoodPrice.getMean() );
         System.out.println("produced: " + averageBeefProduced.getMean() );
+        System.out.println("sales slope: " + averageSalesSlope.getMean() );
+        System.out.println("supply slope: " + averageHrSlope.getMean() );
         System.out.println();
+
+        macroII.finish();
 
         return new OneLinkSupplyChainResult(averageBeefPrice.getMean(),
                 averageFoodPrice.getMean(), averageBeefProduced.getMean(), macroII);
@@ -524,7 +538,7 @@ public class OneLinkSupplyChainResult {
         while(macroII.schedule.getTime()<14000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
+            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
         }
 
 
@@ -535,6 +549,8 @@ public class OneLinkSupplyChainResult {
         {
             //make the model run one more day:
             macroII.schedule.step(macroII);
+            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+
             averageFoodPrice.addValue(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
             averageBeefProduced.addValue(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getYesterdayVolume());
             averageBeefPrice.addValue(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
@@ -550,6 +566,7 @@ public class OneLinkSupplyChainResult {
         ((Firm)(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getSellers().iterator().next())).getPurchaseDepartment(OneLinkSupplyChainScenario.INPUT_GOOD).
                 getData().writeToCSVFile(
                 Paths.get("runs","purchases.csv").toFile());
+        macroII.finish();
 
 
         return new OneLinkSupplyChainResult(averageBeefPrice.getMean(),

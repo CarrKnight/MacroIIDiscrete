@@ -96,7 +96,7 @@ public class FixWagesPlantControlTest {
 
 
     public void hiringTest() throws NoSuchFieldException, IllegalAccessException {
-        Market.TESTING_MODE = true;
+        
 
 
         System.out.println("--------------------------------------------------------------------------------------");
@@ -229,7 +229,7 @@ public class FixWagesPlantControlTest {
 
 
     public void hiringTestFromAbove() throws NoSuchFieldException, IllegalAccessException {
-        Market.TESTING_MODE = true;
+        
 
         System.out.println("--------------------------------------------------------------------------------------");
         System.out.println("FIXWAGES (from above):");

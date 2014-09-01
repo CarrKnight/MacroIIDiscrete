@@ -91,7 +91,7 @@ public class SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly  extends
      * @param department the sales department to inform
      */
     public SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly(SalesDepartment department) {
-        this(department,10,200,department.getFirm().getModel(),
+        this(department,10,50,department.getFirm().getModel(),
                 department.getFirm().getModel().drawProportionalGain()/5f,
                 department.getFirm().getModel().drawIntegrativeGain()/5f,
                 department.getFirm().getModel().drawDerivativeGain(),

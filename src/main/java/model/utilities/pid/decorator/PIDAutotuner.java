@@ -141,8 +141,8 @@ public class PIDAutotuner extends ControllerDecorator {
                 additionalInterceptsExtractor == null ? null : additionalInterceptsExtractor.apply(input));
 
         final PIGradientDescent.PIDGains newGains = descent.getNewGains();
-        System.out.println(newGains);
-        System.out.println(regression);
+        //System.out.println(newGains);
+        //System.out.println(regression);
         decoratedCasted.setGains(newGains.getProportional(),newGains.getIntegral(),newGains.getDerivative());
     }
 

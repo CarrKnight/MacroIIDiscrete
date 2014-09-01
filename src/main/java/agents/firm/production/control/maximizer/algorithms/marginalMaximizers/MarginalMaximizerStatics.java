@@ -228,6 +228,9 @@ public final class MarginalMaximizerStatics {
 
             pricePerUnit = pricePerUnit < 0 ? policy.replaceUnknownPrediction(department.getMarket(), p.getRandom()) : pricePerUnit;
 
+            if(pricePerUnit < 0)
+                assert pricePerUnit == -1 : "suspicious negative price";
+
             department.handleNewEvent(new LogEvent(department, LogLevel.INFO,
                     "today workers: {}, tomorrow workers:{}, predicted future price: {}, predicted  current price: {}, actual price: {}",
                     currentWorkers,targetWorkers,pricePerUnit,oldPrice,department.getLastClosingPrice()));

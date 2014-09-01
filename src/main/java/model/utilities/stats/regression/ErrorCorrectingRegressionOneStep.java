@@ -31,6 +31,12 @@ public class ErrorCorrectingRegressionOneStep implements SISORegression {
 
     private final KalmanBasedRecursiveRegression regression;
 
+    private boolean varietyInput = false;
+
+
+    private boolean varietyOutput = false;
+
+
     public ErrorCorrectingRegressionOneStep() {
         regression = new ExponentialForgettingRegressionDecorator(
                 new KalmanRecursiveRegression(4),.99,1);
@@ -61,7 +67,10 @@ public class ErrorCorrectingRegressionOneStep implements SISORegression {
         if(Double.isFinite(deltaInput) &&  Double.isFinite(deltaOutput))
         {
             assert Double.isFinite(previousInput);
+            varietyInput = varietyInput || (previousInput != input);
             assert Double.isFinite(previousOutput);
+            varietyOutput = varietyOutput || (previousOutput != output);
+
             numberOfObservations++;
             regression.addObservation(1,deltaOutput,1,deltaInput,previousOutput,previousInput);
         }
@@ -82,8 +91,8 @@ public class ErrorCorrectingRegressionOneStep implements SISORegression {
     @Override
     public void skipObservation(double skippedOutput, double skippedInput, double... skippedIntercepts) {
 
-        previousInput = skippedInput;
-        previousOutput = skippedOutput;
+        previousInput = Double.NaN;
+        previousOutput = Double.NaN;
     }
 
     @Override
@@ -106,6 +115,8 @@ public class ErrorCorrectingRegressionOneStep implements SISORegression {
 
     @Override
     public double getGain() {
+        if(!varietyOutput || !varietyInput) //avoid collinearity, please.
+            return  0;
         return -regression.getBeta()[3]/regression.getBeta()[2];
     }
 

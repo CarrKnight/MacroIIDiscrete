@@ -144,7 +144,6 @@ public class CustomerWithDelayTest
 
         OrderBookMarket market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         market.setOrderHandler(new ImmediateOrderHandler(),mock(MacroII.class));
-        Market.TESTING_MODE = true;
         market.setPricePolicy(new ShopSetPricePolicy());
         CustomerWithDelay delay = new CustomerWithDelay(mock(MacroII.class),100,5,market);
         delay.receiveMany(UndifferentiatedGoodType.MONEY, 101);;
@@ -199,7 +198,6 @@ public class CustomerWithDelayTest
         updateMethod.invoke(delay,market);
         assertEquals(delay.getMaxPrice(), -1);
 
-        Market.TESTING_MODE = false;
 
 
     }

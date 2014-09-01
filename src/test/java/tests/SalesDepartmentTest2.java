@@ -18,7 +18,6 @@ import agents.firm.sales.prediction.SurveySalesPredictor;
 import agents.firm.sales.pricing.PriceFollower;
 import agents.firm.sales.pricing.UndercuttingAskPricing;
 import financial.market.ImmediateOrderHandler;
-import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.AveragePricePolicy;
 import financial.utilities.BuyerSetPricePolicy;
@@ -126,7 +125,7 @@ public class SalesDepartmentTest2 {
     @Test
     public void testSellThis() throws Exception {
 
-        Market.TESTING_MODE = true;
+        
         dept1.start(model);
         dept2.start(model);
         market.setPricePolicy(new AveragePricePolicy());
@@ -273,7 +272,7 @@ public class SalesDepartmentTest2 {
     public void testReactToFilledQuote() throws Exception {
 
 
-        Market.TESTING_MODE = true;
+        
         market.setPricePolicy(new AveragePricePolicy());
 
         //make sure it throws errors when it's not set up correctly

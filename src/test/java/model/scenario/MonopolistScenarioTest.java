@@ -7,10 +7,12 @@
 package model.scenario;
 
 import agents.EconomicAgent;
+import agents.firm.personell.HumanResources;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
+import agents.firm.sales.prediction.ErrorCorrectingSalesPredictor;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.pricing.pid.AdaptiveStockSellerPID;
 import agents.firm.sales.pricing.pid.SalesControlFlowPIDWithFixedInventoryButTargetingFlowsOnly;
@@ -307,19 +309,22 @@ public class MonopolistScenarioTest {
 
         //run the tests on failures first
         LinkedList<Long> previouslyFailedSeeds = new LinkedList<>();
-        //   previouslyFailedSeeds.add(1386003448078l);
-        //   previouslyFailedSeeds.add(1386001620319l);
-        //    previouslyFailedSeeds.add(1386000975892l);
-        //     previouslyFailedSeeds.add(1385965894319l);
-        //      previouslyFailedSeeds.add(1386007873067l);
-        //      previouslyFailedSeeds.add(1386019418405l);
-        //     previouslyFailedSeeds.add(1386020834125l);
+        previouslyFailedSeeds.add(1409388720784l);
+        previouslyFailedSeeds.add(1386007873067l);
+
+        previouslyFailedSeeds.add(1386283852300l);
+
+        previouslyFailedSeeds.add(1386003448078l);
+        previouslyFailedSeeds.add(1386001620319l);
+        previouslyFailedSeeds.add(1386000975892l);
+        previouslyFailedSeeds.add(1385965894319l);
+        previouslyFailedSeeds.add(1386019418405l);
+        previouslyFailedSeeds.add(1409375048870l);
         previouslyFailedSeeds.add(1386089949520l);
         previouslyFailedSeeds.add(1386194999853l);
         previouslyFailedSeeds.add(1386263994865l);
         previouslyFailedSeeds.add(1386278630528l);
         previouslyFailedSeeds.add(1386280613790l);
-        previouslyFailedSeeds.add(1386283852300l);
         previouslyFailedSeeds.add(1386345532821l);
 
 
@@ -364,7 +369,7 @@ public class MonopolistScenarioTest {
         scenario1.setWorkersToBeRehiredEveryDay(true);
         //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
         if(macroII.random.nextBoolean())
-            scenario1.setAskPricingStrategy(AdaptiveStockSellerPID.class);
+            scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
         else
             scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
 
@@ -378,6 +383,13 @@ public class MonopolistScenarioTest {
         System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
 
         macroII.start();
+        macroII.schedule.step(macroII);
+        try {
+            final SalesDepartment department = scenario1.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
+            ((ErrorCorrectingSalesPredictor)department.getPredictorStrategy()).setDebugWriter(Paths.get("runs", "tmp.csv"));
+
+        }catch (Exception e){}
+
         while(macroII.schedule.getTime()<5000)
             macroII.schedule.step(macroII);
 
@@ -387,6 +399,10 @@ public class MonopolistScenarioTest {
         int profitMaximizingQuantity = profitMaximizingLaborForce*a;
         int profitMaximizingPrice = p0 - p1 * profitMaximizingQuantity;
 
+        System.out.println("sales learned slope: " + scenario1.getMonopolist().
+                getSalesDepartment(UndifferentiatedGoodType.GENERIC).getLatestObservation(SalesDataType.PREDICTED_DEMAND_SLOPE));
+        final HumanResources hr = scenario1.getMonopolist().getHRs().iterator().next();
+        System.out.println("hr learned slope: " + (hr.predictPurchasePriceWhenIncreasingProduction()-hr.predictPurchasePriceWhenNoChangeInProduction()));
         System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
         System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
         System.out.flush();

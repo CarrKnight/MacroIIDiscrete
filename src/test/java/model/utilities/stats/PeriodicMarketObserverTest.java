@@ -41,13 +41,12 @@ public class PeriodicMarketObserverTest {
     {
 
 
-        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = 1f;
 
 
 
         Market market = mock(Market.class);
         MacroII model = new MacroII(System.currentTimeMillis());
-        PeriodicMarketObserver observer = new PeriodicMarketObserver(market,model );
+        PeriodicMarketObserver observer = new PeriodicMarketObserver(market,model,1f );
 
         //observations should all go!
         when(market.getLatestObservation(MarketDataType.CLOSING_PRICE)).thenReturn(1d);
@@ -100,9 +99,8 @@ public class PeriodicMarketObserverTest {
     {
         Market market = mock(Market.class);
         MacroII macroII = mock(MacroII.class);
-        PeriodicMarketObserver.defaultDailyProbabilityOfObserving = .2f;
 
-        new PeriodicMarketObserver(market,macroII );
+        new PeriodicMarketObserver(market,macroII,.2f );
 
         verify(macroII).scheduleAnotherDay(any(ActionOrder.class),any(Steppable.class),
                 anyInt(),any(Priority.class));

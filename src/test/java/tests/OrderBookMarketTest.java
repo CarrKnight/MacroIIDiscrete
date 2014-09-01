@@ -9,7 +9,6 @@ package tests;
 import agents.EconomicAgent;
 import agents.people.Person;
 import financial.market.ImmediateOrderHandler;
-import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import goods.Good;
@@ -18,9 +17,7 @@ import model.MacroII;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -38,7 +35,7 @@ public class OrderBookMarketTest {
 
     @Before
     public void setUp() throws Exception {
-        Market.TESTING_MODE = true;
+        ;
         market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         model = new MacroII(1);
         buyer = new Person(model){

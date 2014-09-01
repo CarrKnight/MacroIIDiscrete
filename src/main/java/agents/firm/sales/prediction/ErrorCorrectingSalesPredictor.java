@@ -29,8 +29,8 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
                 SalesDataType.CLOSING_PRICES,SalesDataType.SUPPLY_GAP);
         collector.setxValidator(collector.getxValidator().and(y -> y > 0));
         collector.setyValidator(collector.getyValidator().and(x -> x >0));
-        base = new SISOPredictorBase<>(model,collector,new ErrorCorrectingRegressionOneStep(.9999f),null);
-        base.setBurnOut(100);
+        base = new SISOPredictorBase<>(model,collector,new ErrorCorrectingRegressionOneStep(.98f),null);
+        base.setBurnOut(300);
 
     }
 
@@ -47,9 +47,11 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
     @Override
     public float predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
         double slope = base.getRegression().getGain();
-        float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float)slope : 0;
-        //System.out.println("slope: " + toAdd);
-        return  dept.getLastClosingPrice() + toAdd;
+        float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float) slope : 0;
+    //    System.out.println("slope: " + toAdd);
+        if(dept.getLastClosingPrice() == -1)
+            return -1;
+        return  Math.max(dept.getLastClosingPrice() + toAdd,0);
     }
 
     /**
@@ -63,8 +65,10 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
     @Override
     public float predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
         double slope = base.getRegression().getGain();
-        float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float)slope : 0;
-        return  dept.getLastClosingPrice() - toAdd;
+        float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float) slope : 0;
+        if(dept.getLastClosingPrice() == -1)
+            return -1;
+        return  Math.max(dept.getLastClosingPrice() - toAdd,0);
     }
 
     /**

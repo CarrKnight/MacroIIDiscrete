@@ -6,7 +6,6 @@
 
 package agents.firm.purchases.prediction;
 
-import agents.firm.personell.HumanResources;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.sales.prediction.RegressionDataCollector;
 import agents.firm.sales.prediction.SISOPredictorBase;
@@ -33,8 +32,8 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
                 PurchasesDataType.CLOSING_PRICES,PurchasesDataType.DEMAND_GAP);
         collector.setxValidator(collector.getxValidator().and(y -> y > 0));
         collector.setyValidator(collector.getyValidator().and(x -> x >0));
-        base = new SISOPredictorBase<>(model,collector,new ErrorCorrectingRegressionOneStep(.9999f),null);
-        base.setBurnOut(100);
+        base = new SISOPredictorBase<>(model,collector,new ErrorCorrectingRegressionOneStep(.98f),null);
+        base.setBurnOut(300);
 
 
     }
@@ -50,10 +49,12 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
     @Override
     public float predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
         double slope = base.getRegression().getGain();
-        float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float)slope : 0;
-        if(dept instanceof HumanResources)
-            System.out.println("slope: " + toAdd);
-        return  dept.getLastClosingPrice() + toAdd;
+        float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float) slope : 0;
+//        if(dept instanceof HumanResources)
+//            System.out.println("slope: " + toAdd);
+        if(dept.getLastClosingPrice() == -1)
+            return -1;
+        return  Math.max(dept.getLastClosingPrice() + toAdd,0);
     }
 
     /**
@@ -65,8 +66,10 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
     @Override
     public float predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         double slope = base.getRegression().getGain();
-        float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float)slope : 0;
-        return  dept.getLastClosingPrice() - toAdd;
+        float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float) slope : 0;
+        if(dept.getLastClosingPrice() == -1)
+            return -1;
+        return  Math.max( dept.getLastClosingPrice() - toAdd,0);
     }
 
     /**

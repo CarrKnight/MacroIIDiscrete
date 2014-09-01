@@ -276,8 +276,8 @@ public class SalesControlWithFixedInventoryAndPID extends BaseAskPricingStrategy
 
         //return department.getHowManyToSell() - targetInventory;
 
-        if(department.getHowManyToSell() == 0)
-            return 100;
+        if(department.getHowManyToSell() == 0 || !department.hasTradedAtLeastOnce()) //don't have anything to sell or didn't sell anything
+            return 1000;
         else
         {
             return 0;

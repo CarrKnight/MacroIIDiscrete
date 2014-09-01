@@ -239,7 +239,7 @@ public class DiscreteSlowPlantControlTest {
     //moved to running the test in the monopoly scenario
     public void monopolyScenario() throws IllegalAccessException, NoSuchFieldException {
 
-        Market.TESTING_MODE = true;
+        
         System.out.println("-------------------------------------------------------------------------------------");
         System.out.println("SimpleFlowSeller scenario1");
 
@@ -326,7 +326,7 @@ public class DiscreteSlowPlantControlTest {
     //  @Test
     public void duopolyScenario() throws IllegalAccessException, NoSuchFieldException {
 
-        Market.TESTING_MODE = true;
+        
         System.out.println("-------------------------------------------------------------------------------------");
         System.out.println("Duopoly scenario1");
 
@@ -433,7 +433,7 @@ public class DiscreteSlowPlantControlTest {
     //    @Test
     public void tripolyScenario() throws IllegalAccessException, NoSuchFieldException {
 
-        Market.TESTING_MODE = true;
+        
         System.out.println("-------------------------------------------------------------------------------------");
         System.out.println("Duopoly scenario1");
 

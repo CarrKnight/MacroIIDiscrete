@@ -14,7 +14,6 @@ import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.MarkupFollower;
 import financial.market.ImmediateOrderHandler;
-import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import goods.DifferentiatedGoodType;
@@ -26,7 +25,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 /**
  * <h4>Description</h4>
@@ -82,7 +81,7 @@ public class MarkupFollowerTest {
     @Test
     public void imitationTest() throws Exception {
 
-        Market.TESTING_MODE = true;
+        
         Firm seller = new Firm(model){
             @Override
             public void reactToFilledAskedQuote(Quote quoteFilled, Good g, int price, EconomicAgent agent) {
@@ -117,7 +116,6 @@ public class MarkupFollowerTest {
 
 
 
-        Market.TESTING_MODE = false;
 
     }
 

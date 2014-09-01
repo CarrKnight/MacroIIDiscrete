@@ -6,7 +6,6 @@
 
 package tests.plantcontrol;
 
-import agents.people.Person;
 import agents.firm.Firm;
 import agents.firm.cost.InputCostStrategy;
 import agents.firm.personell.HumanResources;
@@ -22,8 +21,8 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.prediction.PricingSalesPredictor;
 import agents.firm.utilities.ProfitReport;
+import agents.people.Person;
 import financial.market.ImmediateOrderHandler;
-import financial.market.Market;
 import financial.market.OrderBookBlindMarket;
 import financial.market.OrderBookMarket;
 import goods.DifferentiatedGoodType;
@@ -39,7 +38,8 @@ import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * <h4>Description</h4>
@@ -72,101 +72,103 @@ public class ProfitCheckPlantControlTest {
     @Test
     public void hiringTest() throws NoSuchFieldException, IllegalAccessException {
 
-            Market.TESTING_MODE = true;
 
 
-            System.out.println("--------------------------------------------------------------------------------------");
 
-            MacroII model = new MacroII(10);
-            Firm firm = new Firm(model);
-            firm.receiveMany(UndifferentiatedGoodType.MONEY, 1000000000);
-            Plant p = new Plant(Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC, 1, UndifferentiatedGoodType.GENERIC, 1), firm);
-            p.setPlantMachinery(new IRSExponentialMachinery(DifferentiatedGoodType.CAPITAL, firm, 10, p, 1f));
-            p.setCostStrategy(new InputCostStrategy(p));
+        System.out.println("--------------------------------------------------------------------------------------");
 
-            firm.addPlant(p);
+        MacroII model = new MacroII(10);
+        Firm firm = new Firm(model);
+        firm.receiveMany(UndifferentiatedGoodType.MONEY, 1000000000);
+        Plant p = new Plant(Blueprint.simpleBlueprint(UndifferentiatedGoodType.GENERIC, 1, UndifferentiatedGoodType.GENERIC, 1), firm);
+        p.setPlantMachinery(new IRSExponentialMachinery(DifferentiatedGoodType.CAPITAL, firm, 10, p, 1f));
+        p.setCostStrategy(new InputCostStrategy(p));
 
-
-            model.schedule = mock(Schedule.class);  //give it a fake schedule; this way we control time!
-            final List<Steppable> steppableList = new LinkedList<>();
-
-            //make this always profitable
-            SalesDepartment dept = mock(SalesDepartmentAllAtOnce.class);
-            dept.setPredictorStrategy(new PricingSalesPredictor());
-            when(dept.getLastClosingCost()).thenReturn(1);
-            when(dept.getLastClosingPrice()).thenReturn(2);
-            //should be profitable
-            firm.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
+        firm.addPlant(p);
 
 
-            OrderBookMarket market = new OrderBookBlindMarket(UndifferentiatedGoodType.LABOR);
-            market.setOrderHandler(new ImmediateOrderHandler(), model);
-            assertEquals(p.maximumWorkersPossible(), 100);
-            HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000, firm, market,
-                    p, ProfitCheckPlantControl.class, null, null).getDepartment(); //create!!!
+        model.schedule = mock(Schedule.class);  //give it a fake schedule; this way we control time!
+        final List<Steppable> steppableList = new LinkedList<>();
 
-            humanResources.setPredictor(new PricingPurchasesPredictor());
+        //make this always profitable
+        SalesDepartment dept = mock(SalesDepartmentAllAtOnce.class);
+        dept.setPredictorStrategy(new PricingSalesPredictor());
+        when(dept.getLastClosingCost()).thenReturn(1);
+        when(dept.getLastClosingPrice()).thenReturn(2);
+        //should be profitable
+        firm.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
 
-            Field field = PurchasesDepartment.class.getDeclaredField("control");
-            field.setAccessible(true);
-            ProfitCheckPlantControl control = (ProfitCheckPlantControl) field.get(humanResources);
 
-            for (int i = 0; i < 200; i++) {
-                Person worker = new Person(model, 0, i, market);
-                worker.start(model);
-            }
-            //make them search for job
+        OrderBookMarket market = new OrderBookBlindMarket(UndifferentiatedGoodType.LABOR);
+        market.setOrderHandler(new ImmediateOrderHandler(), model);
+        assertEquals(p.maximumWorkersPossible(), 100);
+        HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000, firm, market,
+                p, ProfitCheckPlantControl.class, null, null).getDepartment(); //create!!!
 
-            model.getPhaseScheduler().step(model);
+        humanResources.setPredictor(new PricingPurchasesPredictor());
 
-            //there should be 200 asks
-            assertEquals(200, market.getSellers().size());
-            assertEquals(1, market.getBuyers().size());  //the human resources should be the only one registerd
-            assertTrue(market.getBuyers().contains(humanResources.getFirm()));
 
-            //check before start
-            assertTrue(!steppableList.contains(control));
-            assertTrue(p.getNumberOfWorkers() == 0);
+        Field field = PurchasesDepartment.class.getDeclaredField("control");
+        field.setAccessible(true);
+        ProfitCheckPlantControl control = (ProfitCheckPlantControl) field.get(humanResources);
 
-            //start the human resources
-            humanResources.start(model);
-            //some stuff might have happened, but surely the control should have called "schedule in"
-            assertTrue(control.toString(), !steppableList.contains(control));
+
+        for (int i = 0; i < 200; i++) {
+            Person worker = new Person(model, 0, i, market);
+            worker.start(model);
+        }
+        //make them search for job
+
+        model.getPhaseScheduler().step(model);
+
+        //there should be 200 asks
+        assertEquals(200, market.getSellers().size());
+        assertEquals(1, market.getBuyers().size());  //the human resources should be the only one registerd
+        assertTrue(market.getBuyers().contains(humanResources.getFirm()));
+
+        //check before start
+        assertTrue(!steppableList.contains(control));
+        assertTrue(p.getNumberOfWorkers() == 0);
+
+        //start the human resources
+        humanResources.start(model);
+        //some stuff might have happened, but surely the control should have called "schedule in"
+        assertTrue(control.toString(), !steppableList.contains(control));
 //        assertTrue(p.getNumberOfWorkers() > 0);
 
 
-            ProfitReport profits = mock(ProfitReport.class);
-            firm.setProfitReport(profits);
+        ProfitReport profits = mock(ProfitReport.class);
+        firm.setProfitReport(profits);
 
 
-            //now "adjust" 5000 times
-            for (int i = 0; i < 5000; i++) {
+        //now "adjust" 5000 times
+        for (int i = 0; i < 6000; i++) {
 
-                when(profits.getPlantProfits(p)).thenReturn(p.getNumberOfWorkers() * 2f);
+            when(profits.getPlantProfits(p)).thenReturn(p.getNumberOfWorkers() * 2f);
 
-                //put the stuff to adjust in its own list
-                Set<Steppable> toStep = new HashSet<>(steppableList);
-                steppableList.clear();
-                int oldTarget = control.getTarget();
-                int oldWage = humanResources.maxPrice(UndifferentiatedGoodType.LABOR, market);
-
-
-                //notice that this is un-natural as profitStep occurs only once every 3 pid steps in reality
-                model.getPhaseScheduler().step(model);
+            //put the stuff to adjust in its own list
+            Set<Steppable> toStep = new HashSet<>(steppableList);
+            steppableList.clear();
+            int oldTarget = control.getTarget();
+            int oldWage = humanResources.maxPrice(UndifferentiatedGoodType.LABOR, market);
 
 
-                int newWage = humanResources.maxPrice(UndifferentiatedGoodType.LABOR, market);
-                System.out.println("old wage:" + oldWage + " , new wage: " + newWage + " , worker size: " + p.getNumberOfWorkers() + ", old target: " + oldTarget + ", new target: " + control.getTarget());
+            //notice that this is un-natural as profitStep occurs only once every 3 pid steps in reality
+            model.getPhaseScheduler().step(model);
+
+
+            int newWage = humanResources.maxPrice(UndifferentiatedGoodType.LABOR, market);
+            System.out.println("old wage:" + oldWage + " , new wage: " + newWage + " , worker size: " + p.getNumberOfWorkers() + ", old target: " + oldTarget + ", new target: " + control.getTarget());
 
 
 //            assertTrue(steppableList.contains(control));
 
 
 
-            }
-            System.out.println("--------------------------------------------------------------------------------------");
+        }
+        System.out.println("--------------------------------------------------------------------------------------");
 
-            assertTrue(p.getNumberOfWorkers() == 100);
+        assertTrue(p.getNumberOfWorkers() == 100);
 
 
 
@@ -176,7 +178,7 @@ public class ProfitCheckPlantControlTest {
 
     @Test
     public void hiringTestFromAbove() throws NoSuchFieldException, IllegalAccessException {
-        Market.TESTING_MODE = true;
+
 
         MacroII model = new MacroII(10);
         Firm firm = new Firm(model); firm.receiveMany(UndifferentiatedGoodType.MONEY,1000000000);
@@ -236,7 +238,7 @@ public class ProfitCheckPlantControlTest {
         model.getPhaseScheduler().step(model);
 
         //there should be 200 asks
-   //     System.out.println("what?");
+        //     System.out.println("what?");
 
         assertEquals(200, market.getSellers().size());
         assertEquals(1,market.getBuyers().size());  //the human resources should be the only one registerd
@@ -252,7 +254,7 @@ public class ProfitCheckPlantControlTest {
         humanResources.start(model);
         //some stuff might have happened, but surely the control should have called "schedule in"
         assertTrue(control.toString(),!steppableList.contains(control));
-     //   assertTrue(p.getNumberOfWorkers() > 0);
+        //   assertTrue(p.getNumberOfWorkers() > 0);
 
         ProfitReport profits = mock(ProfitReport.class);
         firm.setProfitReport(profits);

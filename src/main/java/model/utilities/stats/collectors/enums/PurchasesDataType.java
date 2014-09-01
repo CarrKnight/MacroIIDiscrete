@@ -37,6 +37,8 @@ public enum PurchasesDataType {
 
     DEMAND_GAP,
 
+    PREDICTED_SUPPLY_SLOPE,
+
     WORKERS_CONSUMING_THIS_GOOD,
     AVERAGE_CLOSING_PRICES, /**
      * this is 0 for the purchase department, it is only valid for HR

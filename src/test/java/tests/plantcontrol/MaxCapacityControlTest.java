@@ -63,7 +63,7 @@ public class MaxCapacityControlTest {
 
     @Test
     public void hiringTest() throws NoSuchFieldException, IllegalAccessException {
-        Market.TESTING_MODE = true;
+        
 
         MacroII model = new MacroII(10);
         Firm firm = new Firm(model); firm.receiveMany(UndifferentiatedGoodType.MONEY,1000000000);

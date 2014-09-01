@@ -19,6 +19,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,7 +63,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     /**
      * force the beef monopolist to target the right production
      */
-    @Test
+ //   @Test
     public void testBeefMonopolistFixedProductionWithStickyPrices() throws ExecutionException, InterruptedException {
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
@@ -89,7 +90,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     }
 
-    @Test
+ //   @Test
     public void testBeefMonopolistFixedProductionWithSlowPID() throws ExecutionException, InterruptedException {
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
@@ -116,12 +117,12 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     }
 
-    @Test
+//    @Test
     public void problematicScenario1() throws Exception {
         final OneLinkSupplyChainResult result = testFoodMonopolistWithFixedProductionRun(0,true,0,10, null);
         checkResultsOfFoodMonopolist(result);
     }
-    @Test
+ //   @Test
     public void problematicScenario2() throws Exception {
             final OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(0, 10, 0, true, true,
                     null, null, null);
@@ -164,7 +165,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
     //here the food is actually a monopolist "acting competitive"
-    @Test
+//    @Test
     public void testBeefMonopolistFixedProductionWithSlowPIDAlreadyLearned() throws ExecutionException, InterruptedException {
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
@@ -190,7 +191,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
 
-    @Test
+ //   @Test
     public void testBeefMonopolistFixedProductionWithStickyPricesAlreadyLearned() throws ExecutionException, InterruptedException {
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
@@ -230,7 +231,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
     //here both the beef monopolist and the food competitors have given predictors.
-    @Test
+ //   @Test
     public  void everybodyLearnedBeefMonopolistSlowPID() throws ExecutionException, InterruptedException {
 
         //this will take a looong time
@@ -262,7 +263,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
     //here both the beef monopolist and the food competitors have given predictors.
-    @Test
+ //   @Test
     public  void everybodyLearnedBeefMonopolistStickyPID() throws ExecutionException, InterruptedException {
 
         //this will take a looong time
@@ -294,7 +295,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
     //here the food competitors are given good predictors
-    @Test
+ //   @Test
     public  void foodLearnedBeefMonopolistSlowPID() throws ExecutionException, InterruptedException {
 
         //this will take a looong time
@@ -330,7 +331,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     }
 
     //here the food competitors are given good predictors
-    @Test
+//    @Test
     public  void foodLearnedBeefMonopolistStickyPID() throws ExecutionException, InterruptedException {
 
         //this will take a looong time
@@ -367,7 +368,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
     //here the food competitors are given good predictors
-    @Test
+ //   @Test
     public  void beefLearnedBeefMonopolistSlowPID() throws ExecutionException, InterruptedException {
 
         //this will take a looong time
@@ -399,7 +400,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
 
-    @Test
+ //   @Test
     public  void beefLearnedBeefMonopolistStickyPID() throws ExecutionException, InterruptedException {
 
         //this will take a looong time
@@ -427,7 +428,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
 
-    @Test
+ //   @Test
     public  void everybodyLearnedCompetitiveSlowPID() throws ExecutionException, InterruptedException {
 
 
@@ -459,7 +460,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     }
 
-    @Test
+ //   @Test
     public  void everybodyLearnedCompetitiveStickyPID() throws ExecutionException, InterruptedException {
 
 
@@ -602,25 +603,15 @@ public class OneLinkSupplyChainScenarioRegressionTest
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
         
-        ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
-        for(int i=0; i <5; i++)
-        {
+        for(int i=0; i <5; i++) {
             //run the test, add it as a future so I can check the results!
-            
-                    testResults.add(OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(),
-                            1, 50, false, false, null, null, null));
 
-            
+            checkBeefMonopolistResult(OneLinkSupplyChainResult.beefMonopolistOneRun(random.nextInt(),
+                    1, 50, false, false, null, null, Paths.get("runs","tmp.csv")));
 
 
-        }
-
-        for(OneLinkSupplyChainResult result : testResults)
-        {
-            
-            checkBeefMonopolistResult(result);
         }
 
 
@@ -643,7 +634,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     /**
      * force the beef monopolist to target the right production
      */
-    @Test
+//    @Test
     public void testFoodMonopolistWithStickyPricesAndFixedQuantity() throws ExecutionException, InterruptedException {
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
@@ -739,7 +730,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
 
 
-    @Test
+ //   @Test
     public void testFoodMonopolistWithSlowPIDAndFixedQuantity() throws ExecutionException, InterruptedException {
 
         //this will take a looong time
@@ -765,7 +756,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     }
 
-    @Test
+//    @Test
     public void testFoodMonopolistWithSlowPIDAndFixedQuantityAndLearnedCompetitors() throws ExecutionException, InterruptedException {
 
         //this will take a looong time
@@ -795,7 +786,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     /**
      * force the beef monopolist to target the right production
      */
-    @Test
+ //   @Test
     public void testFoodMonopolistWithStickyPricesAndFixedQuantityAndLearnedCompetitors() throws ExecutionException, InterruptedException {
         //this will take a looong time
         final MersenneTwisterFast random = new MersenneTwisterFast(System.currentTimeMillis());
@@ -807,7 +798,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             
-                    testResults.add(testFoodMonopolistWithFixedProductionRun(random.nextInt(),true,10,1, null));
+                    testResults.add(testFoodMonopolistWithFixedProductionRun(random.nextInt(),true,50,1, null));
 
             
 
@@ -826,7 +817,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     // Now the food monopolist isn't told to produce the right amount, but it knows the price drops by 2 every increase in production
     //////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Test
+  //  @Test
     public  void alreadyLearnedFoodMonopolistSlowPID() throws ExecutionException, InterruptedException {
 
 
@@ -859,7 +850,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
 
     }
 
-    @Test
+ //   @Test
     public  void alreadyLearnedFoodMonopolistStickyPID() throws ExecutionException, InterruptedException {
 
 

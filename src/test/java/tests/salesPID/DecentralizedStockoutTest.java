@@ -195,7 +195,7 @@ public class DecentralizedStockoutTest {
     @Test
     public void fullyDressedTest() throws NoSuchFieldException, IllegalAccessException {
 
-        Market.TESTING_MODE = true;
+        
         //like before but without stubs
         MacroII model = new MacroII(1l);
         Firm owner = new Firm(model);

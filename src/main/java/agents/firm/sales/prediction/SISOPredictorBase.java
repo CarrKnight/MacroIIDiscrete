@@ -99,7 +99,8 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
             //regress
             assert dependentVariable > 0;
 
-            if (Math.abs(gap) > 100)
+            final boolean skipped = Math.abs(gap) > 100;
+            if (skipped)
                 regression.skipObservation(dependentVariable, independentVariable);
             else {
                 regression.addObservation(dependentVariable, independentVariable);
@@ -108,7 +109,7 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
             {
                 try {
                     debugWriter.write(dependentVariable + ", " + independentVariable + ","
-                            + (Math.abs(gap) > 100 ? 1 : 0));
+                            + (skipped ? 1 : 0));
                     debugWriter.newLine();
                     debugWriter.flush();
                 } catch (IOException e) {

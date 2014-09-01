@@ -13,7 +13,6 @@ import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentFactory;
 import agents.firm.sales.pricing.UndercuttingAskPricing;
 import financial.market.ImmediateOrderHandler;
-import financial.market.Market;
 import financial.market.OrderBookMarket;
 import financial.utilities.Quote;
 import goods.DifferentiatedGoodType;
@@ -25,7 +24,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 /**
  * <h4>Description</h4>
@@ -61,7 +60,7 @@ public class UndercuttingPricingTest {
     @Before
     public void setup(){
 
-        Market.TESTING_MODE = true;
+        
 
         model = new MacroII(10);
         model.setCluelessDefaultMarkup(.20f);
@@ -79,7 +78,7 @@ public class UndercuttingPricingTest {
 
     @Test
     public void imitationTest() throws Exception {
-        Market.TESTING_MODE = true;
+        
 
 
         Firm seller = new Firm(model){    //don't want to deal with it
