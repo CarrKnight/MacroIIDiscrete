@@ -545,7 +545,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             
-                    testResults.add(OneLinkSupplyChainResult.everybodyLearningCompetitiveStickyPIDRun(random.nextInt()));
+                    testResults.add(OneLinkSupplyChainResult.everybodyLearningCompetitiveStickyPIDRun(random.nextInt(), 1f, 50));
 
             
 

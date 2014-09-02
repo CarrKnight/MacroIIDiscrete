@@ -21,6 +21,8 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.prediction.RecursiveSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
+import agents.firm.sales.pricing.AskPricingStrategy;
+import agents.firm.sales.pricing.pid.InventoryBufferSalesControl;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import agents.firm.utilities.LastClosingPriceEcho;
@@ -31,6 +33,9 @@ import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.experiments.tuningRuns.MarginalMaximizerPIDTuning;
 import model.scenario.*;
+import model.utilities.pid.Controller;
+import model.utilities.pid.PIDController;
+import model.utilities.pid.decorator.PIDStickinessTuner;
 import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.enums.MarketDataType;
 import model.utilities.stats.collectors.enums.SalesDataType;
@@ -40,10 +45,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 
 import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 
@@ -65,6 +70,8 @@ import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgr
 public class StickyPricesCSVPrinter {
 
 
+    private static final int DEFAULT_STICKINESS =50;
+
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         //set defaults
         MonopolistScenario.defaultControlType = MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL;
@@ -72,7 +79,7 @@ public class StickyPricesCSVPrinter {
 
 
         //create directory
-        Files.createDirectories(Paths.get("runs", "supplychai", "rawdata"));
+ /*       Files.createDirectories(Paths.get("runs", "supplychai", "rawdata"));
 
         System.out.println("SELLERS");
         System.out.println("figure 1 to 5");
@@ -90,7 +97,7 @@ public class StickyPricesCSVPrinter {
 
 
         System.out.println("figure 10");
-        woodMonopolistSweep(new BigDecimal("0.01"),new BigDecimal("1"),new BigDecimal("0.01"),new BigDecimal("1"),new BigDecimal(".01"),5);
+        woodMonopolistSweep(new BigDecimal("0.01"),new BigDecimal("2"),new BigDecimal("0.01"),new BigDecimal(".2"),new BigDecimal(".01"),5);
 
 
         System.out.println("SUPPLY CHAIN");
@@ -118,20 +125,35 @@ public class StickyPricesCSVPrinter {
 
         System.out.println("Market Structure");
         System.out.println("figure 19-20-21");
-        oneHundredAllLearnedRuns(Paths.get("runs", "supplychai", "rawdata", "learnedInventoryChain100.csv").toFile());
+
+
+        oneHundredAllLearnedRuns(Paths.get("runs", "supplychai", "rawdata", "learnedInventoryChain100.csv").toFile(),
+                department -> {
+            SalesControlWithFixedInventoryAndPID strategy = new SalesControlWithFixedInventoryAndPID(department);
+            strategy.setSpeed(DEFAULT_STICKINESS);
+            return strategy;
+        }, null);
         oneHundredAllLearnedCompetitiveRuns(Paths.get("runs", "supplychai", "rawdata", "learnedCompetitiveInventoryChain100.csv").toFile());
         oneHundredAllLearnedFoodRuns(Paths.get("runs", "supplychai", "rawdata", "learnedInventoryFoodChain100.csv").toFile());
+
 
         System.out.println("figure 22-23");
         oneHundredLearningMonopolist(Paths.get("runs", "supplychai", "rawdata", "100Monopolists.csv").toFile());
         oneHundredLearningCompetitive(Paths.get("runs", "supplychai", "rawdata", "100Competitive.csv").toFile());
 
         System.out.println("figure 24-25-26");
-        oneHundredAllLearningRuns(Paths.get("runs", "supplychai", "rawdata", "learningInventoryChain100.csv").toFile());
+        oneHundredAllLearningRuns(Paths.get("runs", "supplychai", "rawdata", "learningInventoryChain100.csv").toFile(),
+                department -> {
+                    SalesControlWithFixedInventoryAndPID strategy = new SalesControlWithFixedInventoryAndPID(department);
+                    strategy.setSpeed(DEFAULT_STICKINESS);
+                    return strategy;
+                }, null);
         oneHundredAllLearningCompetitiveRuns(Paths.get("runs", "supplychai", "rawdata", "learningCompetitiveInventoryChain100.csv").toFile());
         oneHundredAllLearningFoodRuns(Paths.get("runs", "supplychai", "rawdata", "learningInventoryFoodChain100.csv").toFile());
 
+*/
 
+        tuningTrial(0,.08f,.16f,0,Paths.get("runs", "supplychai", "rawdata","tuningTrial.csv").toFile());
 
         //to prove the point that average frequency ought to be above 0:
    /*     PeriodicMaximizer.setDefaultAverageCheckFrequency(1);
@@ -400,7 +422,7 @@ public class StickyPricesCSVPrinter {
                     final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
                     final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, currentP.floatValue(), currentI.floatValue(), 0f, 0);
                     salesDepartment.setAskPricingStrategy(strategy);
-                    strategy.setFlowTargeting(false);
+             //       strategy.setFlowTargeting(false);
 
                     //and make it learned!
                     salesDepartment.setPredictorStrategy(new FixedDecreaseSalesPredictor(2));
@@ -787,7 +809,30 @@ public class StickyPricesCSVPrinter {
     }
 
 
-    private static void badlyOptimizedNoInventorySupplyChain(int seed, final float proportionalGain, final float integralGain, final int speed, File csvFileToWrite)
+    private static void tuningTrial(int seed, final float proportionalGain,
+                                final float integralGain, final int initialSpeed,File csvFileToWrite){
+
+
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,1,true,true,new Function<SalesDepartment, AskPricingStrategy>() {
+            @Override
+            public AskPricingStrategy apply(SalesDepartment department) {
+                InventoryBufferSalesControl pricer = new InventoryBufferSalesControl(department,100,200,department.getModel(),
+                        proportionalGain,integralGain,0,department.getModel().getRandom());
+                pricer.decorateController(new Function<PIDController, Controller>() {
+                    @Override
+                    public Controller apply(PIDController pidController) {
+                        final PIDStickinessTuner pidStickinessTuner = new PIDStickinessTuner(pidController, department);
+                        pidStickinessTuner.setAfterHowManyDaysShouldTune(1000);
+                        return pidStickinessTuner;
+                    }
+                });
+                return pricer;
+            }
+        },null,csvFileToWrite,null,null);
+    }
+
+    private static void badlyOptimizedNoInventorySupplyChain(int seed, final float proportionalGain,
+                                                             final float integralGain, final int speed, File csvFileToWrite)
     {
         final MacroII macroII = new MacroII(seed);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
@@ -1064,7 +1109,10 @@ public class StickyPricesCSVPrinter {
 
 
 
-    private static void oneHundredAllLearnedRuns(File csvFileToWrite) throws ExecutionException, InterruptedException, IOException {
+    private static void oneHundredAllLearnedRuns(File csvFileToWrite,
+                                                 Function<SalesDepartment, AskPricingStrategy> woodPricingFactory,
+                                                 Function<SalesDepartment, AskPricingStrategy> furniturePricingFactory)
+            throws ExecutionException, InterruptedException, IOException {
 
         CSVWriter writer = new CSVWriter(new FileWriter(csvFileToWrite));
         writer.writeNext(new String[]{"production","beefPrice","foodPrice"});
@@ -1075,7 +1123,8 @@ public class StickyPricesCSVPrinter {
         //run the test 5 times!
         for(long i=0; i <100; i++)
         {
-            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(i, 1, 100, true, true, null, null, null);
+            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(i, 1, DEFAULT_STICKINESS, true,
+                    true, woodPricingFactory, furniturePricingFactory,null, null, null);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());
@@ -1094,7 +1143,9 @@ public class StickyPricesCSVPrinter {
 
 
 
-    private static void oneHundredAllLearningRuns(File csvFileToWrite) throws ExecutionException, InterruptedException, IOException {
+    private static void oneHundredAllLearningRuns(File csvFileToWrite,
+                                                  Function<SalesDepartment, AskPricingStrategy> woodPricingFactory,
+                                                  Function<SalesDepartment, AskPricingStrategy> furniturePricingFactory) throws ExecutionException, InterruptedException, IOException {
 
         CSVWriter writer = new CSVWriter(new FileWriter(csvFileToWrite));
         writer.writeNext(new String[]{"production","beefPrice","foodPrice"});
@@ -1105,7 +1156,10 @@ public class StickyPricesCSVPrinter {
         //run the test 5 times!
         for(long i=0; i <100; i++)
         {
-            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(i, 1, 100, false, false, null, null, null);
+
+            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(i, 1, DEFAULT_STICKINESS, false, false,
+                    woodPricingFactory,furniturePricingFactory,
+                    null, null, null);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());
@@ -1137,7 +1191,7 @@ public class StickyPricesCSVPrinter {
         //run the test 5 times!
         for(long i=0; i <100; i++)
         {
-            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(i,1,100,null);
+            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(i,1, DEFAULT_STICKINESS,null);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());
@@ -1167,7 +1221,7 @@ public class StickyPricesCSVPrinter {
         //run the test 5 times!
         for(long i=0; i <100; i++)
         {
-            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.everybodyLearningCompetitiveStickyPIDRun(i);
+            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.everybodyLearningCompetitiveStickyPIDRun(i, 1f, DEFAULT_STICKINESS);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());
@@ -1196,7 +1250,7 @@ public class StickyPricesCSVPrinter {
         //run the test 5 times!
         for(long i=0; i <100; i++)
         {
-            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.foodMonopolistOneRun(i,1,100,true,true,null, null);
+            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.foodMonopolistOneRun(i,1, DEFAULT_STICKINESS,true,true,null, null);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());
@@ -1224,7 +1278,7 @@ public class StickyPricesCSVPrinter {
         //run the test 5 times!
         for(long i=0; i <100; i++)
         {
-            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.foodMonopolistOneRun(i,1,100,false,false,null, null);
+            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.foodMonopolistOneRun(i,1, DEFAULT_STICKINESS,false,false,null, null);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());
@@ -1446,7 +1500,7 @@ public class StickyPricesCSVPrinter {
 
         //competition!
         scenario1.setNumberOfBeefProducers(1);
-        scenario1.setBeefTargetInventory(1000);
+        scenario1.setBeefTargetInventory(100);
         scenario1.setNumberOfFoodProducers(5);
 
         scenario1.setDivideProportionalGainByThis(divideMonopolistGainsByThis);
@@ -1626,7 +1680,7 @@ public class StickyPricesCSVPrinter {
         for(final Firm firm : scenario.getCompetitors()){
             final SalesDepartment salesDepartment = firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
             final SalesControlWithFixedInventoryAndPID strategy = new SalesControlWithFixedInventoryAndPID(salesDepartment); //added a bit of noise
-            strategy.setTargetInventory(1000);
+            strategy.setTargetInventory(100);
             strategy.setSpeed(normalStickiness);
             salesDepartment.setAskPricingStrategy(strategy);
 
@@ -1638,7 +1692,7 @@ public class StickyPricesCSVPrinter {
         //now change it again to the first one (which is identified as "monopolist"); that guy will be our special
         final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
         final SalesControlWithFixedInventoryAndPID strategy = new SalesControlWithFixedInventoryAndPID(salesDepartment); //added a bit of noise
-        strategy.setTargetInventory(1000);
+        strategy.setTargetInventory(100);
         strategy.setSpeed(specialStickiness);
         salesDepartment.setAskPricingStrategy(strategy);
 

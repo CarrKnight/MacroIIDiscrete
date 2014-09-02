@@ -80,6 +80,7 @@ public class PIGradientDescent
         {
             float output = (float) process.newStep(pid.getCurrentMV(),covariants);
 
+            if(pid.getSpeed() ==0 || t % (pid.getSpeed()+1) == 0 )
             pid.adjust(desiredTarget,output,true,null,null, ActionOrder.DAWN);
             errorSum += t * Math.abs(output-desiredTarget);
         }

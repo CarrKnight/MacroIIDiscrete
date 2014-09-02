@@ -28,11 +28,11 @@ import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import agents.firm.sales.exploration.SimpleBuyerSearch;
 import agents.firm.sales.exploration.SimpleSellerSearch;
+import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.InventoryBufferSalesControl;
 import agents.people.AfterWorkStrategy;
 import agents.people.Person;
 import agents.people.QuitJobAfterWorkStrategy;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import financial.market.EndOfPhaseOrderHandler;
 import financial.market.Market;
@@ -52,6 +52,7 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 
 import java.util.LinkedList;
+import java.util.function.Function;
 
 
 /**
@@ -164,10 +165,27 @@ public class OneLinkSupplyChainScenario extends Scenario implements Deactivatabl
     private int foodMultiplier = 1;
 
 
-    //this is public only so that I can log it!
-    @VisibleForTesting
-    public InventoryBufferSalesControl strategy2;
+    private Function<SalesDepartment, AskPricingStrategy> beefPricingFactory = dept -> {
+        InventoryBufferSalesControl strategy2 = new InventoryBufferSalesControl(dept,beefTargetInventory,beefTargetInventory*2 );
+        strategy2.setGains(strategy2.getProportionalGain() / divideProportionalGainByThis,
+                strategy2.getIntegralGain() / divideIntegrativeGainByThis,
+                strategy2.getDerivativeGain());
 
+
+        strategy2.setInitialPrice(50);
+        //if you can, filter it!
+        strategy2.setSpeed(beefPricingSpeed);
+        return strategy2;
+    };
+
+
+    private Function<SalesDepartment, AskPricingStrategy > foodPricingFactory = department -> {
+        InventoryBufferSalesControl strategy;
+        strategy = new InventoryBufferSalesControl(department, foodTargetInventory,foodTargetInventory*2);
+        strategy.setInitialPrice(model.random.nextInt(30)+70);
+        // strategy.setProductionCostOverride(false);
+        return strategy;
+    };
 
     /**
      * Called by MacroII, it creates agents and then schedules them.
@@ -275,16 +293,7 @@ public class OneLinkSupplyChainScenario extends Scenario implements Deactivatabl
         if(!goodmarket.getGoodType().equals(OUTPUT_GOOD))
         {
 
-            strategy2 = new InventoryBufferSalesControl(dept,beefTargetInventory,beefTargetInventory*2 );
-            strategy2.setGains(strategy2.getProportionalGain() / divideProportionalGainByThis,
-                    strategy2.getIntegralGain() / divideIntegrativeGainByThis,
-                    strategy2.getDerivativeGain());
-
-
-            strategy2.setInitialPrice(50);
-            //if you can, filter it!
-            strategy2.setSpeed(beefPricingSpeed);
-            dept.setAskPricingStrategy(strategy2);
+            dept.setAskPricingStrategy(beefPricingFactory.apply(dept));
 
 /*            SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept);
             strategy.setGains(strategy.getProportionalGain()/divideProportionalGainByThis,strategy.getIntegralGain()/divideIntegrativeGainByThis,0);
@@ -298,11 +307,8 @@ public class OneLinkSupplyChainScenario extends Scenario implements Deactivatabl
         }
         else
         {
-            InventoryBufferSalesControl strategy;
-            strategy = new InventoryBufferSalesControl(dept, foodTargetInventory,foodTargetInventory*2);
-            strategy.setInitialPrice(model.random.nextInt(30)+70);
-            // strategy.setProductionCostOverride(false);
-            dept.setAskPricingStrategy(strategy); //set strategy to PID
+
+            dept.setAskPricingStrategy(foodPricingFactory.apply(dept));
         }
 
         return dept;
@@ -691,6 +697,21 @@ public class OneLinkSupplyChainScenario extends Scenario implements Deactivatabl
     @Override
     public void turnOff() {
         maximizers.clear();
-        strategy2 = null;
+    }
+
+    public Function<SalesDepartment, AskPricingStrategy> getBeefPricingFactory() {
+        return beefPricingFactory;
+    }
+
+    public void setBeefPricingFactory(Function<SalesDepartment, AskPricingStrategy> beefPricingFactory) {
+        this.beefPricingFactory = beefPricingFactory;
+    }
+
+    public Function<SalesDepartment, AskPricingStrategy> getFoodPricingFactory() {
+        return foodPricingFactory;
+    }
+
+    public void setFoodPricingFactory(Function<SalesDepartment, AskPricingStrategy> foodPricingFactory) {
+        this.foodPricingFactory = foodPricingFactory;
     }
 }

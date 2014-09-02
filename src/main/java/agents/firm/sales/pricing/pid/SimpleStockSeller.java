@@ -120,7 +120,8 @@ public class SimpleStockSeller extends BaseAskPricingStrategy implements Steppab
      */
     @Override
     public float estimateSupplyGap() {
-        if(department.getHowManyToSell() == 0 || department.getTodayOutflow() == 0 )
+        if(department.getHowManyToSell() == 0 || Math.abs(department.getHowManyToSell() - targetInventory)/targetInventory > .2 //if you are very far from target, prices aren't very good indicators
+                ||department.getTodayOutflow() == 0 )
             return  1000;
         else
             return 0;
@@ -158,5 +159,19 @@ public class SimpleStockSeller extends BaseAskPricingStrategy implements Steppab
     }
 
 
+    /**
+     * Get the sampling speed of the controller (how often it updates, in days)
+     * @return the sampling speed
+     */
+    public int getSpeed() {
+        return controller.getSpeed();
+    }
 
+    /**
+     * Set the sampling speed of the controller (how often it updates, in days)
+     * @param samplingSpeed the sampling speed
+     */
+    public void setSpeed(int samplingSpeed) {
+        controller.setSpeed(samplingSpeed);
+    }
 }

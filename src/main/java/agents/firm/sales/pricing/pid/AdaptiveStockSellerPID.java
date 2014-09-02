@@ -16,7 +16,6 @@ import model.utilities.logs.LogLevel;
 import model.utilities.pid.ControllerInput;
 import model.utilities.pid.PIDController;
 import model.utilities.pid.decorator.PIDAutotuner;
-import model.utilities.stats.regression.KalmanIPDRegressionWithKnownTimeDelay;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
@@ -50,14 +49,15 @@ public class AdaptiveStockSellerPID extends BaseAskPricingStrategy implements St
 
 
     public AdaptiveStockSellerPID(SalesDepartment department) {
-        this(department,100, new PIDController(department.getModel().drawProportionalGain(),department.getModel().drawIntegrativeGain(),0f));
+        this(department,100, new PIDController(department.getModel().drawProportionalGain()/5f,
+                department.getModel().drawIntegrativeGain()/5f,0f));
     }
 
     public AdaptiveStockSellerPID(SalesDepartment sales, int targetInventory, PIDController pid) {
         this.department = sales;
         this.targetInventory = targetInventory;
         pid.setControllingFlows(false);
-        this.tunedController = new PIDAutotuner(pid, KalmanIPDRegressionWithKnownTimeDelay::new, department);
+        this.tunedController = new PIDAutotuner(pid, department);
         this.tunedController.setAdditionalInterceptsExtractor(controllerInput -> new double[]{controllerInput.getFlowTarget()});
         //keep it paused until you start piling up stuff
         tunedController.setPaused(true);

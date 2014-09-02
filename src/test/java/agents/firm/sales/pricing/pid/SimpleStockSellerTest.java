@@ -16,6 +16,7 @@ import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.scenario.MonopolistScenario;
+import model.scenario.MonopolistScenarioTest;
 import model.scenario.TripolistScenario;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.junit.Test;
@@ -29,67 +30,19 @@ public class SimpleStockSellerTest {
 
 
     @Test
-    public void testAlreadyLearnedMonopolist() throws Exception {
+    public void testLearningMonopolist() throws Exception {
         //run the test 5 times
         for(int i=0; i<5; i++)
         {
-            long seed = System.currentTimeMillis();
+            int seed = (int)System.currentTimeMillis();
 
             final MacroII macroII = new MacroII(seed);
             MonopolistScenario scenario1 = new MonopolistScenario(macroII);
 
-
-
-
-
-            //generate random parameters for labor supply and good demand
-            int p0= macroII.random.nextInt(100)+100; int p1= macroII.random.nextInt(3)+1;
-            scenario1.setDemandIntercept(p0); scenario1.setDemandSlope(p1);
-            int w0=macroII.random.nextInt(10)+10; int w1=macroII.random.nextInt(3)+1;
-            scenario1.setDailyWageIntercept(w0); scenario1.setDailyWageSlope(w1);
-            int a=macroII.random.nextInt(3)+1;
-            scenario1.setLaborProductivity(a);
-
-
-            //    scenario1.setAlwaysMoving(true);
-            //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
-            macroII.setScenario(scenario1);
-            //choose a control at random, but avoid always moving
-
-            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
-            scenario1.setWorkersToBeRehiredEveryDay(true);
-            //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
-            scenario1.setAskPricingStrategy(SimpleStockSeller.class);
-
-
-            System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
-            System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
-
-            macroII.start();
-            macroII.schedule.step(macroII);
-            scenario1.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC).setPredictorStrategy(new FixedDecreaseSalesPredictor(p1));
-            scenario1.getMonopolist().getHRs().iterator().next().setPredictor(new FixedIncreasePurchasesPredictor(w1));
-            while(macroII.schedule.getTime()<5000)
-                macroII.schedule.step(macroII);
-
-
-            //the pi maximizing labor force employed is:
-            int profitMaximizingLaborForce = MonopolistScenario.findWorkerTargetThatMaximizesProfits(p0,p1,w0,w1,a);
-            int profitMaximizingQuantity = profitMaximizingLaborForce*a;
-
-            System.out.println(p0 + "," + p1 + "," + w0 + "," + w1 +"," + a);
-            System.out.println(scenario1.getControlType() + "," + scenario1.getAskPricingStrategy() + "," + scenario1.getSalesDepartmentType() + " -- " + macroII.seed());
-            System.out.flush();
-
-            //you must be at most wrong by two (not well tuned and anyway sometimes it's hard!)
-            assertEquals(scenario1.getMonopolist().getTotalWorkers(), profitMaximizingLaborForce,2);
-
-
-
-            System.out.println(i + "---------------------------------------------------------------------------------------------");
-            macroII.finish();
+            MonopolistScenarioTest.testRandomSlopeMonopolist(seed, macroII, scenario1, SimpleStockSeller.class);
 
         }
+
 
 
 
@@ -119,7 +72,7 @@ public class SimpleStockSellerTest {
             scenario1.setDemandIntercept(102);
 
 
-            scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
+  //          scenario1.setSalesPricePreditorStrategy(FixedDecreaseSalesPredictor.class);
 
 
 

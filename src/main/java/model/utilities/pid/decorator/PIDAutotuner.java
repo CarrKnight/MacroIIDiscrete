@@ -41,13 +41,13 @@ public class PIDAutotuner extends ControllerDecorator {
      */
     private final Department linkedDepartment;
 
-    private final SISOGuessingRegression regression;
+    protected final SISOGuessingRegression regression;
 
-    private final PIDController decoratedCasted;
+    protected final PIDController decoratedCasted;
 
-    private int afterHowManyDaysShouldTune = 200;
+    protected int afterHowManyDaysShouldTune = 200;
 
-    private int observations = 0;
+    protected int observations = 0;
 
     /**
      * returns true whenever the new observation is "valid" as in, we should learn from this.
@@ -64,10 +64,11 @@ public class PIDAutotuner extends ControllerDecorator {
     private boolean paused = false;
 
 
+
     /**
      * optional, if there are additional intercepts to feed to the regression, fill in this function
      */
-    private Function<ControllerInput,double[]> additionalInterceptsExtractor;
+    protected Function<ControllerInput,double[]> additionalInterceptsExtractor;
 
 
 
@@ -137,7 +138,7 @@ public class PIDAutotuner extends ControllerDecorator {
         super.adjust(input, isActive, simState, user, phase);
     }
 
-    private void tune(ControllerInput input) {
+    protected void tune(ControllerInput input) {
         PIGradientDescent descent = new PIGradientDescent(regression,decoratedCasted,isControllingFlows() ? input.getFlowTarget() : input.getStockTarget(),
                 additionalInterceptsExtractor == null ? null : additionalInterceptsExtractor.apply(input));
 

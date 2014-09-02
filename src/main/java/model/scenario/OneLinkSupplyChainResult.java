@@ -18,6 +18,7 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.ErrorCorrectingSalesPredictor;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
+import agents.firm.sales.pricing.AskPricingStrategy;
 import financial.market.Market;
 import model.MacroII;
 import model.utilities.logs.LogLevel;
@@ -32,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.function.Function;
 
 import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 
@@ -68,8 +70,17 @@ public class OneLinkSupplyChainResult {
     }
 
     public static OneLinkSupplyChainResult beefMonopolistOneRun(long random, float divideMonopolistGainsByThis, int monopolistSpeed,
+                                                                final boolean beefLearned, final boolean foodLearned)
+    {
+        return beefMonopolistOneRun(random, divideMonopolistGainsByThis, monopolistSpeed, beefLearned, foodLearned,null,null,null);
+    }
+
+    public static OneLinkSupplyChainResult beefMonopolistOneRun(long random, float divideMonopolistGainsByThis, int monopolistSpeed,
                                                                 final boolean beefLearned, final boolean foodLearned,
-                                                                File csvFileToWrite, File logFileToWrite, Path regressionLogToWrite) {
+                                                                Function<SalesDepartment, AskPricingStrategy> woodPricingFactory,
+                                                                Function<SalesDepartment, AskPricingStrategy> furniturePricingFactory,
+                                                                File csvFileToWrite, File logFileToWrite, Path regressionLogToWrite)
+    {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
 
@@ -132,9 +143,16 @@ public class OneLinkSupplyChainResult {
         scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
         scenario1.setBeefPriceFilterer(null);
 
+        if(woodPricingFactory!=null)
+            scenario1.setBeefPricingFactory(woodPricingFactory);
+        if(furniturePricingFactory!=null)
+            scenario1.setFoodPricingFactory(furniturePricingFactory);
+
+
         //competition!
         scenario1.setNumberOfBeefProducers(1);
-        scenario1.setBeefTargetInventory(1000);
+        scenario1.setBeefTargetInventory(100);
+        scenario1.setFoodTargetInventory(100);
         scenario1.setNumberOfFoodProducers(5);
 
         scenario1.setDivideProportionalGainByThis(divideMonopolistGainsByThis);
@@ -199,7 +217,14 @@ public class OneLinkSupplyChainResult {
         return new OneLinkSupplyChainResult(averageBeefPrice.getMean(),
                 averageFoodPrice.getMean(), averageBeefProduced.getMean(), macroII);
 
+    }
 
+    public static OneLinkSupplyChainResult beefMonopolistOneRun(long random, float divideMonopolistGainsByThis, int monopolistSpeed,
+                                                                final boolean beefLearned, final boolean foodLearned,
+                                                                File csvFileToWrite, File logFileToWrite, Path regressionLogToWrite) {
+
+        return beefMonopolistOneRun(random, divideMonopolistGainsByThis, monopolistSpeed, beefLearned, foodLearned,null,null,
+                csvFileToWrite,logFileToWrite,regressionLogToWrite);
     }
 
     public static OneLinkSupplyChainResult beefMonopolistFixedProductionsOneRun(long seed,
@@ -240,8 +265,8 @@ public class OneLinkSupplyChainResult {
         scenario1.setBeefPricingSpeed(monopolistSpeed);
         //no need for filter with the cheating price
         scenario1.setBeefPriceFilterer(null);
-        scenario1.setBeefTargetInventory(1000);
-
+        scenario1.setBeefTargetInventory(100);
+        scenario1.setFoodTargetInventory(100);
         //add csv writer if needed
         if(csvFileToWrite != null)
             DailyStatCollector.addDailyStatCollectorToModel(csvFileToWrite,macroII);
@@ -514,9 +539,9 @@ public class OneLinkSupplyChainResult {
 
         //competition!
         scenario1.setNumberOfBeefProducers(5);
-        scenario1.setBeefTargetInventory(200);
+        scenario1.setBeefTargetInventory(100);
         scenario1.setNumberOfFoodProducers(1);
-        scenario1.setFoodTargetInventory(30);
+        scenario1.setFoodTargetInventory(100);
 
         scenario1.setDivideProportionalGainByThis(divideMonopolistGainsByThis);
         scenario1.setDivideIntegrativeGainByThis(divideMonopolistGainsByThis);
@@ -575,7 +600,7 @@ public class OneLinkSupplyChainResult {
 
     }
 
-    public static OneLinkSupplyChainResult everybodyLearningCompetitiveStickyPIDRun(long random) {
+    public static OneLinkSupplyChainResult everybodyLearningCompetitiveStickyPIDRun(long random, float timidity, int stickiness) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
 
@@ -587,10 +612,10 @@ public class OneLinkSupplyChainResult {
         scenario1.setNumberOfBeefProducers(5);
         scenario1.setNumberOfFoodProducers(5);
 
-        scenario1.setDivideProportionalGainByThis(1f);
-        scenario1.setDivideIntegrativeGainByThis(1f);
+        scenario1.setDivideProportionalGainByThis(timidity);
+        scenario1.setDivideIntegrativeGainByThis(timidity);
         //no delay
-        scenario1.setBeefPricingSpeed(50);
+        scenario1.setBeefPricingSpeed(stickiness);
 
 
         macroII.setScenario(scenario1);

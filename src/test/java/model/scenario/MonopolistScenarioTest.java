@@ -14,6 +14,7 @@ import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.prediction.ErrorCorrectingSalesPredictor;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
+import agents.firm.sales.pricing.AskPricingStrategy;
 import agents.firm.sales.pricing.pid.AdaptiveStockSellerPID;
 import agents.firm.sales.pricing.pid.InventoryBufferSalesControl;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
@@ -346,7 +347,10 @@ public class MonopolistScenarioTest {
 
     }
 
-    public static void testRandomSlopeMonopolist(int seed, MacroII macroII, MonopolistScenario scenario1) {
+    public static void testRandomSlopeMonopolist(int seed, MacroII macroII, MonopolistScenario scenario1,
+                                                 Class<? extends AskPricingStrategy> strategy)
+    {
+
         //generate random parameters for labor supply and good demand
         int p0= macroII.random.nextInt(100)+100;
         int p1= macroII.random.nextInt(3)+1;
@@ -368,10 +372,7 @@ public class MonopolistScenarioTest {
         scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
         scenario1.setWorkersToBeRehiredEveryDay(true);
         //choose a sales control at random, but don't mix hill-climbing with inventory building since they aren't really compatible
-        if(macroII.random.nextBoolean())
-            scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
-        else
-            scenario1.setAskPricingStrategy(SimpleFlowSellerPID.class);
+        scenario1.setAskPricingStrategy(strategy);
 
         if(macroII.random.nextBoolean())
             scenario1.setSalesDepartmentType(SalesDepartmentAllAtOnce.class);
@@ -414,6 +415,11 @@ public class MonopolistScenarioTest {
 
         System.out.println(seed + "---------------------------------------------------------------------------------------------");
         macroII.finish();
+    }
+
+    public static void testRandomSlopeMonopolist(int seed, MacroII macroII, MonopolistScenario scenario1) {
+
+        testRandomSlopeMonopolist(seed,macroII,scenario1,macroII.random.nextBoolean() ? InventoryBufferSalesControl.class : SimpleFlowSellerPID.class);
     }
 
     @Test
