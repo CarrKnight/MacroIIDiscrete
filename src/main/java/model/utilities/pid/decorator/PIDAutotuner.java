@@ -9,6 +9,8 @@ package model.utilities.pid.decorator;
 import agents.firm.Department;
 import model.MacroII;
 import model.utilities.ActionOrder;
+import model.utilities.logs.LogEvent;
+import model.utilities.logs.LogLevel;
 import model.utilities.pid.ControllerInput;
 import model.utilities.pid.PIDController;
 import model.utilities.stats.processes.PIGradientDescent;
@@ -104,7 +106,6 @@ public class PIDAutotuner extends ControllerDecorator {
         this.linkedDepartment = department;
         regression = new SISOGuessingRegression(regressionBuilder,0);
 
-
     }
 
 
@@ -134,8 +135,17 @@ public class PIDAutotuner extends ControllerDecorator {
 
             tune(input);
         }
+        //log
+        log();
 
         super.adjust(input, isActive, simState, user, phase);
+    }
+
+    public void log() {
+        if(linkedDepartment != null)
+            linkedDepartment.handleNewEvent(new LogEvent(this, LogLevel.TRACE,"tuned with following gains and speed {},{},{},{}",
+                    decoratedCasted.getProportionalGain(),decoratedCasted.getIntegralGain(),decoratedCasted.getDerivativeGain(),
+                    decoratedCasted.getSpeed()));
     }
 
     protected void tune(ControllerInput input) {
@@ -143,8 +153,7 @@ public class PIDAutotuner extends ControllerDecorator {
                 additionalInterceptsExtractor == null ? null : additionalInterceptsExtractor.apply(input));
 
         final PIGradientDescent.PIDGains newGains = descent.getNewGains();
-        System.out.println(newGains);
-        System.out.println(regression);
+
         decoratedCasted.setGains(newGains.getProportional(),newGains.getIntegral(),newGains.getDerivative());
     }
 

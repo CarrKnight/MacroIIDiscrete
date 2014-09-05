@@ -9,33 +9,37 @@ package agents.firm.sales.prediction;
 import agents.firm.sales.SalesDepartment;
 import model.MacroII;
 import model.utilities.stats.collectors.enums.SalesDataType;
-import model.utilities.stats.regression.ErrorCorrectingRegressionOneStep;
+import model.utilities.stats.regression.AutoRegressiveWithInputRegression;
+import model.utilities.stats.regression.SISORegression;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
 /**
- * Error correcting model as a base for predicting marginals
- * Created by carrknight on 8/29/14.
+ * Sales predictor fitting Y on 2 lags of itself, X and 2 lags of X. Because of very likely stationarity, the regression is actually on deltas.
+ * Created by carrknight on 9/5/14.
  */
-public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
+public class AutoRegressiveSalesPredictor extends BaseSalesPredictor {
+
 
     private final RegressionDataCollector<SalesDataType> collector;
 
-    private final SISOPredictorBase<SalesDataType,ErrorCorrectingRegressionOneStep> base;
+    private final SISOPredictorBase<SalesDataType,
+            SISORegression> base;
+    private final static SalesDataType INDEPENDENT_VARIABLE =
+            SalesDataType.WORKERS_PRODUCING_THIS_GOOD;
 
-    public ErrorCorrectingSalesPredictor(MacroII model,
-                                         SalesDepartment department) {
-        this.collector = new RegressionDataCollector<>(department,SalesDataType.WORKERS_PRODUCING_THIS_GOOD,
-                SalesDataType.CLOSING_PRICES,SalesDataType.SUPPLY_GAP);
+
+    public AutoRegressiveSalesPredictor(MacroII model,
+                                        SalesDepartment department) {
+        this.collector = new RegressionDataCollector<>(department,
+                INDEPENDENT_VARIABLE,
+                SalesDataType.LAST_ASKED_PRICE,SalesDataType.SUPPLY_GAP);
         collector.setxValidator(collector.getxValidator().and(y -> y > 0));
         collector.setyValidator(collector.getyValidator().and(x -> x >0));
-        base = new SISOPredictorBase<>(model,collector,new ErrorCorrectingRegressionOneStep(.98f),null);
+        base = new SISOPredictorBase<>(model,collector,new AutoRegressiveWithInputRegression(5,5),null);
         base.setBurnOut(300);
-
     }
-
-
 
     /**
      * This is called by the firm when it wants to predict the price they can sell to if they increase production
@@ -47,12 +51,12 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
      */
     @Override
     public float predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
-        double slope = base.getRegression().getGain();
-        float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float) slope : 0;
-    //    System.out.println("slope: " + toAdd);
-        if(dept.getLastClosingPrice() == -1)
-            return -1;
-        return  Math.max(dept.getLastClosingPrice() + toAdd,0);
+        final float prediction = base.predictYAfterChangingXBy(1);
+
+        if(!base.readyForPrediction() || Float.isNaN(prediction))
+            return dept.getLastClosingPrice();
+
+        return prediction;
     }
 
     /**
@@ -65,11 +69,13 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
      */
     @Override
     public float predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
-        double slope = base.getRegression().getGain();
-        float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float) slope : 0;
-        if(dept.getLastClosingPrice() == -1)
-            return -1;
-        return  Math.max(dept.getLastClosingPrice() - toAdd,0);
+        final float prediction = base.predictYAfterChangingXBy(-1);
+
+        if(!base.readyForPrediction() || Float.isNaN(prediction))
+            return dept.getLastClosingPrice();
+
+        return prediction;
+
     }
 
     /**
@@ -81,7 +87,13 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
      */
     @Override
     public float predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
-        return  dept.getLastClosingPrice();
+        final float prediction = base.predictYAfterChangingXBy(0);
+
+        if(!base.readyForPrediction() || Float.isNaN(prediction))
+            return dept.getLastClosingPrice();
+
+        return prediction;
+
     }
 
     @Override
@@ -90,7 +102,7 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
         base.turnOff();
     }
 
-    public void setDebugWriter(Path pathToDebugFileToWrite) throws IOException {
-        base.setDebugWriter(pathToDebugFileToWrite);
+    public void setDebugWriter(Path regressionLogToWrite) throws IOException {
+        base.setDebugWriter(regressionLogToWrite);
     }
 }

@@ -80,6 +80,8 @@ public class ErrorCorrectingDynamicProcess implements DynamicProcess {
 
     }
 
+
+
     @Override
     public Supplier<Double> getRandomNoise() {
         return noise;

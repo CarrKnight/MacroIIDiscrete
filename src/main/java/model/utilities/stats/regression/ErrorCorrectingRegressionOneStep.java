@@ -6,13 +6,10 @@
 
 package model.utilities.stats.regression;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import model.utilities.DelayBin;
 import model.utilities.stats.processes.DynamicProcess;
 import model.utilities.stats.processes.ErrorCorrectingDynamicProcess;
-
-import java.util.Arrays;
 
 /**
  * A simple 1-step error correcting model. See here: http://springschool.politics.ox.ac.uk/spring_school/OxfordECM.pdf
@@ -117,11 +114,7 @@ public class ErrorCorrectingRegressionOneStep implements SISORegression {
 
     @Override
     public double predictNextOutput(double input, double... intercepts) {
-        final double[] coefficients = regression.getBeta();
-        double deltaInput = input - previousInput;
-
-        return previousOutput + coefficients[0] + coefficients[1]*deltaInput +
-                coefficients[2]* previousOutput + coefficients[3]*previousInput;
+        return generateDynamicProcessImpliedByRegression().newStep(input);
     }
 
     /**
@@ -170,8 +163,15 @@ public class ErrorCorrectingRegressionOneStep implements SISORegression {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
-                .add("betas: ", Arrays.toString(regression.getBeta()))
-                .toString();
+        return "attracted to: y="+ getIntercept()  + " + x *" +getGain() + ",at speed of: " + getTimeConstant() + " and delay: "
+                + getDelay();
+    }
+
+    public double getPreviousOutput() {
+        return previousOutput;
+    }
+
+    public double getPreviousInput() {
+        return previousInput;
     }
 }

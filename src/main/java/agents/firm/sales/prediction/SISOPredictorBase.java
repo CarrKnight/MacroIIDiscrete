@@ -43,6 +43,11 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
     private final RegressionDataCollector<T> collector;
 
     /**
+     * if this is true, gap is ignored and every observation counts
+     */
+    private boolean ignoreGap = false;
+
+    /**
      * the set of regressions to use
      */
     private final R regression;
@@ -62,7 +67,9 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
     }
 
 
-
+    public SISOPredictorBase(MacroII model, RegressionDataCollector<T> collector, R regression){
+        this(model, collector, regression,null);
+    }
 
     public SISOPredictorBase(MacroII model, RegressionDataCollector<T> collector, R regression,
                              Consumer<R> regressionInitialization) {
@@ -81,7 +88,7 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
 
     @Override
     public void step(SimState state) {
-        if(!active)
+        if(!isActive())
             return;
 
 
@@ -99,7 +106,7 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
             //regress
             assert dependentVariable > 0;
 
-            final boolean skipped = Math.abs(gap) > 100;
+            final boolean skipped = !ignoreGap && Math.abs(gap) > 100 ;
             if (skipped)
                 regression.skipObservation(dependentVariable, independentVariable);
             else {
@@ -124,6 +131,9 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
 
     }
 
+    public boolean isActive() {
+        return active;
+    }
 
 
     /**
@@ -195,5 +205,13 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
 
     public R getRegression() {
         return regression;
+    }
+
+    public boolean isIgnoreGap() {
+        return ignoreGap;
+    }
+
+    public void setIgnoreGap(boolean ignoreGap) {
+        this.ignoreGap = ignoreGap;
     }
 }

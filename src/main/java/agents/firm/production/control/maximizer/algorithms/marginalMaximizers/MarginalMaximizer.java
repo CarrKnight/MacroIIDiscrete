@@ -145,7 +145,7 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
                     return newTarget;
                 } else {
 
-                    assert profitsIfWeDecrease >= EPSILON;
+                    assert profitsIfWeDecrease >= EPSILON : profitsIfWeDecrease;
 
 
                     newTarget = Math.max(currentWorkerTarget - 1, 0);

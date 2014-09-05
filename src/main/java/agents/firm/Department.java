@@ -7,6 +7,7 @@
 package agents.firm;
 
 import model.MacroII;
+import model.utilities.logs.LogNode;
 import model.utilities.stats.collectors.DataStorage;
 
 /**
@@ -26,7 +27,7 @@ import model.utilities.stats.collectors.DataStorage;
  * @version 2012-08-21
  * @see
  */
-public interface Department<T extends  Enum<T> > {
+public interface Department<T extends  Enum<T> > extends LogNode {
 
     /**
      * what is the most recent day this department has memory of

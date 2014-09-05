@@ -590,7 +590,7 @@ public class CompetitiveScenarioTest {
     public void rightPriceAndQuantityTestAsMarginalNoPIDStickyLearned()
     {
 
-        for(int competitors=2;competitors<=7;competitors++)
+        for(int competitors=4;competitors<=7;competitors++)
         {
             System.out.println("FORCED COMPETITIVE FIRMS: " + (competitors+1));
             float averageResultingPrice = 0;
@@ -601,7 +601,7 @@ public class CompetitiveScenarioTest {
                 final MacroII macroII = new MacroII(System.currentTimeMillis());
                 final TripolistScenario scenario1 = new TripolistScenario(macroII);
                 scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
-                scenario1.setAskPricingStrategy(SalesControlWithFixedInventoryAndPID.class);
+                scenario1.setAskPricingStrategy(InventoryBufferSalesControl.class);
                 scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
                 scenario1.setAdditionalCompetitors(competitors);
                 scenario1.setWorkersToBeRehiredEveryDay(true);

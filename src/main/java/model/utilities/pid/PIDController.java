@@ -132,6 +132,7 @@ public class PIDController implements Controller {
         this.oldError = toClone.oldError;
         this.speed = toClone.speed;
         this.integral = toClone.integral;
+        this.invertSign = toClone.invertSign;
 
     }
 

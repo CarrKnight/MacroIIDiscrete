@@ -27,6 +27,7 @@ public class StickinessDescent
 
     private final int howManyStepsToSimulate;
 
+
     public StickinessDescent(SISORegression systemRegression, PIDController originalController, double desiredTarget, int howManyStepsToSimulate) {
         this.systemRegression = systemRegression;
         this.originalController = originalController;
@@ -68,7 +69,7 @@ public class StickinessDescent
         if(originalController.getSpeed() >0)
         {
             PIDController flexible = new PIDController(originalController);
-            stickierPID.setSpeed(originalController.getSpeed()-1);
+            flexible.setSpeed(originalController.getSpeed()-1);
             flexibleITAE = computeITAE(flexible,systemRegression.generateDynamicProcessImpliedByRegression(),
                     (float) desiredTarget,howManyStepsToSimulate);
         }
@@ -78,7 +79,8 @@ public class StickinessDescent
 
 
 
-        //return x + alpha * nablaX
+        //choose the lowest
+        System.out.println(flexibleITAE + " --- " + originalITAE + " -----"  + stickyITAE);
         if(originalITAE <= stickyITAE && originalITAE <= flexibleITAE)
             return originalController.getSpeed();
         if(stickyITAE <= originalITAE && stickyITAE <= flexibleITAE)
@@ -93,4 +95,7 @@ public class StickinessDescent
 
 
     }
+
+
+
 }

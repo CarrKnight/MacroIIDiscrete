@@ -70,10 +70,10 @@ public class PIGradientDescent
      * @param process the process that governs the outside world
      * @param desiredTarget the pid target
      * @param howManyStepsToSimulate how far into the future to simulate
-     * @param covariants additional variable to feed the dynamic process
-     * @return the integral time absolute error of this pid with this process
+     * @param covariants additional variable to feed the dynamic process  @return the integral time absolute error of this pid with this process
      */
-    public static double computeITAE(PIDController pid, DynamicProcess process, float desiredTarget, int howManyStepsToSimulate, double... covariants)
+    public static double computeITAE(PIDController pid, DynamicProcess process, float desiredTarget, int howManyStepsToSimulate,
+                                     double... covariants)
     {
         double errorSum =0;
         for(int t=1; t<=howManyStepsToSimulate; t++)
@@ -81,7 +81,7 @@ public class PIGradientDescent
             float output = (float) process.newStep(pid.getCurrentMV(),covariants);
 
             if(pid.getSpeed() ==0 || t % (pid.getSpeed()+1) == 0 )
-            pid.adjust(desiredTarget,output,true,null,null, ActionOrder.DAWN);
+                pid.adjust(desiredTarget,output,true,null,null, ActionOrder.DAWN);
             errorSum += t * Math.abs(output-desiredTarget);
         }
 
@@ -94,8 +94,8 @@ public class PIGradientDescent
     {
 
         double originalITAE = computeITAE(new PIDController(originalController),systemRegression.generateDynamicProcessImpliedByRegression(),
-                (float) desiredTarget,howManyStepsToSimulate,covariants);
-     //   System.out.println(originalITAE);
+                (float) desiredTarget,howManyStepsToSimulate, covariants);
+        //   System.out.println(originalITAE);
 
         /***
          *     .----------------.
@@ -112,10 +112,10 @@ public class PIGradientDescent
          */
         PIDController pIncreasedPID = new PIDController(originalController); pIncreasedPID.setGains((float) (originalController.getProportionalGain()+derivativeStepSize),originalController.getIntegralGain(),originalController.getDerivativeGain());
         double pIncreasedITAE = computeITAE(pIncreasedPID,systemRegression.generateDynamicProcessImpliedByRegression(),
-                (float) desiredTarget,howManyStepsToSimulate,covariants);
+                (float) desiredTarget,howManyStepsToSimulate, covariants);
         PIDController pDecreasedPID = new PIDController(originalController); pDecreasedPID.setGains((float) (originalController.getProportionalGain()-derivativeStepSize),originalController.getIntegralGain(),originalController.getDerivativeGain());
         double pDecreasedITAE = computeITAE(pDecreasedPID,systemRegression.generateDynamicProcessImpliedByRegression(),
-                (float) desiredTarget,howManyStepsToSimulate,covariants);
+                (float) desiredTarget,howManyStepsToSimulate, covariants);
         double pDerivative = (pIncreasedITAE-pDecreasedITAE)/(2*derivativeStepSize);
         /***
          *     .----------------.
@@ -132,10 +132,10 @@ public class PIGradientDescent
          */
         PIDController iIncreasedPID = new PIDController(originalController); iIncreasedPID.setGains(originalController.getProportionalGain(),(float) (originalController.getIntegralGain()+derivativeStepSize),originalController.getDerivativeGain());
         double iIncreasedITAE = computeITAE(iIncreasedPID,systemRegression.generateDynamicProcessImpliedByRegression(),
-                (float) desiredTarget,howManyStepsToSimulate,covariants);
+                (float) desiredTarget,howManyStepsToSimulate, covariants);
         PIDController iDecreasedPID = new PIDController(originalController); iDecreasedPID.setGains(originalController.getProportionalGain(),(float) (originalController.getIntegralGain()-derivativeStepSize),originalController.getDerivativeGain());
         double iDecreasedITAE = computeITAE(iDecreasedPID,systemRegression.generateDynamicProcessImpliedByRegression(),
-                (float) desiredTarget,howManyStepsToSimulate,covariants);
+                (float) desiredTarget,howManyStepsToSimulate, covariants);
         double iDerivative = (iIncreasedITAE-iDecreasedITAE)/(2*derivativeStepSize);
 
 
