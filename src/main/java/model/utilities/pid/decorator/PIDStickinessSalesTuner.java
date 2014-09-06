@@ -66,7 +66,7 @@ public class PIDStickinessSalesTuner extends ControllerDecorator implements Step
                 SalesDataType.OUTFLOW,SalesDataType.SUPPLY_GAP);
         collector.setDataValidator(dept->dept.hasTradedAtLeastOnce());
         collector.setxValidator(x -> Double.isFinite(x) && x >= 0);
-        collector.setyValidator(y -> Double.isFinite(y) && y > 0);
+        collector.setyValidator(y -> Double.isFinite(y) && y >= 0);
 
         regression = new SISOPredictorBase<>(model,collector,new AutoRegressiveWithInputRegression(5,5));
         model.registerDeactivable(this); //turn off when the model does
@@ -119,6 +119,20 @@ public class PIDStickinessSalesTuner extends ControllerDecorator implements Step
             return;
 
         final int numberOfObservations = regression.getRegression().getNumberOfObservations();
+
+        if(log != null)
+        {
+
+            try {
+                log.write(state.schedule.getTime() + "," + controller.getSpeed());
+                log.newLine();
+                log.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
         if(numberOfObservations >= observationsBeforeTuning &&
                 (numberOfObservations - observationsBeforeTuning) % maximizationFrequency == 0 )
             tune();
@@ -143,6 +157,9 @@ public class PIDStickinessSalesTuner extends ControllerDecorator implements Step
             Files.deleteIfExists(logToWrite);
             Files.createFile(logToWrite);
             this.log = Files.newBufferedWriter(logToWrite);
+            log.write("time,speed");
+            log.newLine();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

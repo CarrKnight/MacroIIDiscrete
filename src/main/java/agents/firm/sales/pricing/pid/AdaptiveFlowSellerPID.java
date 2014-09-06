@@ -7,6 +7,7 @@
 package agents.firm.sales.pricing.pid;
 
 import agents.firm.sales.SalesDepartment;
+import model.utilities.pid.decorator.PIDAutotuner;
 
 /**
  * Just a facade to simple flow seller PID which forces it to be adaptive from the start
@@ -22,12 +23,12 @@ public class AdaptiveFlowSellerPID extends SimpleFlowSellerPID{
      */
     public AdaptiveFlowSellerPID(SalesDepartment sales) {
         super(sales);
-        makeAdaptive();
+        decorateController(pid -> new PIDAutotuner(pid, getSales()));
     }
 
     public AdaptiveFlowSellerPID(SalesDepartment sales, float proportionalGain, float integralGain, float derivativeGain, int speed) {
         super(sales, proportionalGain, integralGain, derivativeGain, speed);
-        makeAdaptive();
+        decorateController( pid -> new PIDAutotuner(pid,getSales()));
 
     }
 }

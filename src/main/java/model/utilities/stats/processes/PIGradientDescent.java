@@ -78,9 +78,9 @@ public class PIGradientDescent
         double errorSum =0;
         for(int t=1; t<=howManyStepsToSimulate; t++)
         {
-            float output = (float) process.newStep(pid.getCurrentMV(),covariants);
-
-            if(pid.getSpeed() ==0 || t % (pid.getSpeed()+1) == 0 )
+            float output = (float) Math.max(process.newStep(pid.getCurrentMV(),covariants),0);
+            int speed = pid.getSpeed() + 1;
+            if(t % (speed) == 0 )
                 pid.adjust(desiredTarget,output,true,null,null, ActionOrder.DAWN);
             errorSum += t * Math.abs(output-desiredTarget);
         }

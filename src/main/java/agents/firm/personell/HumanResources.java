@@ -20,7 +20,6 @@ import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.pricing.BidPricingStrategy;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
-import agents.firm.utilities.LastClosingPriceEcho;
 import agents.people.Person;
 import com.google.common.base.Preconditions;
 import ec.util.MersenneTwisterFast;
@@ -508,13 +507,17 @@ public class HumanResources extends PurchasesDepartment implements Agent {
      */
     @Override
     public int estimateDemandGap() {
-        return getNumberOfWorkers() - ((PlantControl)super.getPricingStrategy()).getTarget();
+        return getNumberOfWorkers() - getWorkerTarget();
 
     }
 
     public int getWorkerTarget()
     {
-        return ((PlantControl)getPricingStrategy()).getTarget();
+        if(getPricingStrategy() instanceof PlantControl)
+            return ((PlantControl)getPricingStrategy()).getTarget();
+        else
+            //we aren't really having a target then
+        return 0;
 
     }
 

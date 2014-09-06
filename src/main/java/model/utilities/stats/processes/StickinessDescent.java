@@ -41,6 +41,8 @@ public class StickinessDescent
 
         double originalITAE = computeITAE(new PIDController(originalController),systemRegression.generateDynamicProcessImpliedByRegression(),
                 (float) desiredTarget,howManyStepsToSimulate);
+        assert !(Double.isNaN(originalITAE ));
+
         //   System.out.println(originalITAE);
 
         /***
@@ -56,6 +58,7 @@ public class StickinessDescent
         stickierPID.setSpeed(originalController.getSpeed()+1);
         double stickyITAE = computeITAE(stickierPID,systemRegression.generateDynamicProcessImpliedByRegression(),
                 (float) desiredTarget,howManyStepsToSimulate);
+        assert !(Double.isNaN(stickyITAE ));
         /***
          *              ____
          *             |    |

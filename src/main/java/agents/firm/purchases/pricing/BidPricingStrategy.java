@@ -27,6 +27,8 @@ import model.utilities.Deactivatable;
  */
 public interface BidPricingStrategy extends Deactivatable {
 
+
+
     /**
      * Answer the purchase strategy question: how much am I willing to pay for a good of this type?
      * @param type the type of good you want to buy

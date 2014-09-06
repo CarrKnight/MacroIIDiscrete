@@ -24,9 +24,10 @@ import model.utilities.logs.LogLevel;
 import model.utilities.pid.Controller;
 import model.utilities.pid.ControllerInput;
 import model.utilities.pid.PIDController;
-import model.utilities.pid.decorator.PIDAutotuner;
 import sim.engine.SimState;
 import sim.engine.Steppable;
+
+import java.util.function.Function;
 
 
 /**
@@ -150,6 +151,7 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
         }
 
         rootController = new PIDController(proportionalGain, integralGain, derivativeGain, speed);
+        rootController.setInvertSign(true);
         controller = rootController;
         //keep speed fixed if we are targeting flows rather than stock (otherwise you compare different periods and that's silly)
         //start with a random price!
@@ -231,13 +233,15 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
         stockOuts.sellThisEvent(owner,dept, 1);
     }
 
-    /**
-     * adds an auto-tuner to the controller to change dynamically the P and the I
-     */
-    public void makeAdaptive(){
-        controller = new PIDAutotuner(rootController,sales);
 
+
+
+
+    public void decorateController(Function<PIDController,Controller> decorationMaker)
+    {
+        controller = decorationMaker.apply(rootController);
     }
+
 
     /**
      * Tell the listener a trade has been carried out
@@ -291,13 +295,13 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
 
 
 
-            controller.adjust(new ControllerInput(-inflow,-outflow),    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
+            controller.adjust(new ControllerInput(inflow,outflow),    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
                     active, (MacroII) simState, this, ActionOrder.ADJUST_PRICES);
         }
         else
         {
             //gap =  (float) (goodsToSell - ((float) goodsSold + (float) stockOuts.getStockouts()));
-            gap = goodsToSell - stockouts;
+            gap = stockouts - goodsToSell ;
             controller.adjust(new ControllerInput(0,gap),    //notice how I write: flowOut-flowIn, this is because price should go DOWN if flowIn>flowOut
                     active, (MacroII)simState, this,ActionOrder.ADJUST_PRICES);
         }
