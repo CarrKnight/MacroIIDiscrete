@@ -42,7 +42,7 @@ public class LearningIncreaseWithTimeSeriesPurchasePredictorTest {
     public void testing() throws IOException {
 
         //read data from file!
-        CSVReader reader = new CSVReader(new FileReader( Paths.get("testresources","regressionTest.csv").toFile()));
+        CSVReader reader = new CSVReader(new FileReader( Paths.get("testresources", "src/test/resources/regressionTest.csv").toFile()));
         reader.readNext(); //ignore the header!
 
         ArrayList<Double> prices = new ArrayList<>(900);

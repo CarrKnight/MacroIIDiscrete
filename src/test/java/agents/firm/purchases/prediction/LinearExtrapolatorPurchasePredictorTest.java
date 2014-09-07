@@ -136,7 +136,7 @@ public class LinearExtrapolatorPurchasePredictorTest
 
 
         //read data from file!
-        CSVReader reader = new CSVReader(new FileReader(Paths.get("testresources", "EMAtest.csv").toFile()));
+        CSVReader reader = new CSVReader(new FileReader(Paths.get("testresources", "src/test/resources/EMAtest.csv").toFile()));
         reader.readNext(); //ignore the header!
 
         ArrayList<Float> prices = new ArrayList<>(200);

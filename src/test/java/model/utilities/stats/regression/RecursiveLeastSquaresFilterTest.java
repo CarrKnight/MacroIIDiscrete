@@ -34,7 +34,7 @@ public class RecursiveLeastSquaresFilterTest {
     public void setUp() throws Exception
     {
 
-        try (CSVReader reader = new CSVReader(new FileReader(Paths.get("testresources", "recursive.csv").toFile())))
+        try (CSVReader reader = new CSVReader(new FileReader(Paths.get("testresources", "src/test/resources/recursive.csv").toFile())))
         {
 
             List<String[]> lines = reader.readAll();
@@ -53,7 +53,7 @@ public class RecursiveLeastSquaresFilterTest {
 
         }
 
-        try (CSVReader reader = new CSVReader(new FileReader(Paths.get("testresources", "tolearn.csv").toFile())))
+        try (CSVReader reader = new CSVReader(new FileReader(Paths.get("testresources", "src/test/resources/tolearn.csv").toFile())))
         {
 
             List<String[]> lines = reader.readAll();

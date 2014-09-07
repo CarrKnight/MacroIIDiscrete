@@ -55,9 +55,9 @@ public class SpeedTest {
     @Before
     public void setUp() throws Exception {
 
-        monopolistWriter = new CSVWriter(new FileWriter(Paths.get("testresources","timing","monopolistTime.csv").toFile(),true));
-        supplyChainWriter = new CSVWriter(new FileWriter(Paths.get("testresources","timing","supplyChainTime.csv").toFile(),true));
-        macroWriter = new CSVWriter(new FileWriter(Paths.get("testresources","timing","macroTime.csv").toFile(),true));
+        monopolistWriter = new CSVWriter(new FileWriter(Paths.get("testresources", "src/test/resources/timing","monopolistTime.csv").toFile(),true));
+        supplyChainWriter = new CSVWriter(new FileWriter(Paths.get("testresources", "src/test/resources/timing","supplyChainTime.csv").toFile(),true));
+        macroWriter = new CSVWriter(new FileWriter(Paths.get("testresources", "src/test/resources/timing","macroTime.csv").toFile(),true));
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date currentDay = new Date();
         date = dateFormat.format(currentDay);

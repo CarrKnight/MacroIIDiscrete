@@ -521,14 +521,8 @@ public class OneLinkSupplyChainResult {
                 {
                     if(foodLearned)
                         hr.setPredictor(new FixedIncreasePurchasesPredictor(1));
-                    else{
-                        try {
-                            ErrorCorrectingPurchasePredictor predictor = new ErrorCorrectingPurchasePredictor(model,hr);
-                            predictor.setDebugWriter(Paths.get("runs","tmp2.csv"));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
+
+
                 }
                 return hr;
             }
