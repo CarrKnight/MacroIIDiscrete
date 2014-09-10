@@ -1,0 +1,46 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+mainClassName = 'model.experiments.stickyprices.StickyPricesCSVPrinter'
+
+dependencies {
+  compile "ch.qos.logback:logback-classic:1.0.13"
+  compile "com.google.guava:guava:16.0.1"
+  compile "org.apache.commons:commons-math3:3.2"
+  compile "gov.nist.math:jama:1.0.3"
+  compile "jfree:jfreechart:1.0.13" 
+  testCompile "junit:junit:4.11"  
+  compile "jfree:jfreechart:1.0.13"  
+  compile "net.sf.jung:jung-algorithms:2.0.1"
+  compile "net.sf.jung:jung-graph-impl:2.0.1"
+  compile "net.sf.jung:jung-visualization:2.0.1"
+  compile "net.sf.opencsv:opencsv:2.3"
+  testCompile "org.loadui:testFx:3.1.2"
+  testCompile "org.powermock:powermock-core:1.5"
+  testCompile "org.powermock:powermock-api-mockito:1.5"
+  testCompile "org.powermock:powermock-module-junit4:1.5"
+  compile files('mason/mason.16.jar')
+  compile "net.sf.opencsv:opencsv:2.3"
+  compile 'org.uncommons.watchmaker:watchmaker-framework:0.7.1'
+}
+
+
+jar {
+    baseName = 'stickyPrices'
+    version =  '0.1.0'
+}
+
+test{
+    maxParallelForks = Math.max(Runtime.runtime.availableProcessors() -1,1)
+}
+
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.0'
+}

@@ -79,7 +79,7 @@ public class StickyPricesCSVPrinter {
         //set defaults
         MonopolistScenario.defaultControlType = MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL;
         //create directory
-        Files.createDirectories(Paths.get("rawdata"));
+        Files.createDirectories(Paths.get("runs", "rawdata"));
 
 
 
@@ -101,44 +101,46 @@ public class StickyPricesCSVPrinter {
 
         System.out.println("figure 10");
 
-        woodMonopolistSweep(new BigDecimal("0.00"),new BigDecimal("3"),new BigDecimal("0.00"),new BigDecimal("3"),new BigDecimal(".1"),5);
+        woodMonopolistSweep(new BigDecimal("0.00"),new BigDecimal("3"),new BigDecimal("0.00"),new BigDecimal("3"),new BigDecimal(".01"),1);
 
 
 
         System.out.println("SUPPLY CHAIN");
         System.out.println("figure 11");
-        badlyOptimizedNoInventorySupplyChain(0,0.3f,2f,0,Paths.get("rawdata","badlyOptimized.csv").toFile(), false);
+        badlyOptimizedNoInventorySupplyChain(0,0f,2f,0,Paths.get("runs","rawdata","badlyOptimized.csv").toFile(), false);
         System.out.println("figure 12");
-        badlyOptimizedNoInventorySupplyChain(0,0.3f,2f, 100, Paths.get("rawdata","stickyBadlyOptimized.csv").toFile(),false);
-
+        badlyOptimizedNoInventorySupplyChain(0,0f,.2f,0,Paths.get("runs","rawdata","timidBadlyOptimized.csv").toFile(), false);
         System.out.println("figure 13");
+        badlyOptimizedNoInventorySupplyChain(0,0f,.2f, 100, Paths.get("runs","rawdata","stickyBadlyOptimized.csv").toFile(),false);
+
+        System.out.println("figure 14");
         woodMonopolistSupplyChainSweep();
 
 
         System.out.println("Market Structure");
-      System.out.println("figure 14-15-16");
+      System.out.println("figure 15-16-17");
 
 
-        oneHundredAllLearnedRuns(Paths.get("rawdata", "learnedInventoryChain100.csv").toFile(),null
+        oneHundredAllLearnedRuns(Paths.get("runs","rawdata", "learnedInventoryChain100.csv").toFile(),null
         , null);
-        oneHundredAllLearnedCompetitiveRuns(Paths.get("rawdata", "learnedCompetitiveInventoryChain100.csv").toFile());
-        oneHundredAllLearnedFoodRuns(Paths.get("rawdata", "learnedInventoryFoodChain100.csv").toFile());
+        oneHundredAllLearnedCompetitiveRuns(Paths.get("runs","rawdata", "learnedCompetitiveInventoryChain100.csv").toFile());
+        oneHundredAllLearnedFoodRuns(Paths.get("runs","rawdata", "learnedInventoryFoodChain100.csv").toFile());
 
 
-        System.out.println("figure 17-18");
-        oneHundredLearningMonopolist(Paths.get("rawdata", "100Monopolists.csv").toFile());
-        oneHundredLearningCompetitive(Paths.get("rawdata", "100Competitive.csv").toFile());
+        System.out.println("figure 18-19");
+        oneHundredLearningMonopolist(Paths.get("runs","rawdata", "100Monopolists.csv").toFile());
+        oneHundredLearningCompetitive(Paths.get("runs","rawdata", "100Competitive.csv").toFile());
 
-        System.out.println("figure 19-20-21");
-        oneHundredAllLearningRuns(Paths.get("rawdata", "learningInventoryChain100.csv").toFile(),
+        System.out.println("figure 20-21-22");
+        oneHundredAllLearningRuns(Paths.get("runs","rawdata", "learningInventoryChain100.csv").toFile(),
                 null, null);
-        oneHundredAllLearningCompetitiveRuns(Paths.get("rawdata", "learningCompetitiveInventoryChain100.csv").toFile());
-        oneHundredAllLearningFoodRuns(Paths.get("rawdata", "learningInventoryFoodChain100.csv").toFile());
+        oneHundredAllLearningCompetitiveRuns(Paths.get("runs","rawdata", "learningCompetitiveInventoryChain100.csv").toFile());
+        oneHundredAllLearningFoodRuns(Paths.get("runs","rawdata", "learningInventoryFoodChain100.csv").toFile());
 
 
 
-        System.out.println("figure 22");
-        badlyOptimizedNoInventorySupplyChain(0,0.1f,0.1f,0,Paths.get("rawdata","tuningTrial.csv").toFile(), true);
+        System.out.println("figure 23");
+        badlyOptimizedNoInventorySupplyChain(0,0f,0.2f,0,Paths.get("runs","rawdata","tuningTrial.csv").toFile(), true);
 
 
     }
@@ -188,7 +190,7 @@ public class StickyPricesCSVPrinter {
         //fix the pid parameters
 
 
-        DailyStatCollector.addDailyStatCollectorToModel(Paths.get("rawdata", "simpleSeller.csv").toFile(), macroII);
+        DailyStatCollector.addDailyStatCollectorToModel(Paths.get("runs","rawdata", "simpleSeller.csv").toFile(), macroII);
         macroII.start();
         final SimpleFlowSellerPID askPricingStrategy = new SimpleFlowSellerPID(scenario.getDepartments().get(0),
                 .1f, .1f, 0f, 0);
@@ -255,7 +257,7 @@ public class StickyPricesCSVPrinter {
         {
             //i use the sales department data as it shows the "offered" price rather than just the closing one
             final String filename = pidSpeed == 0 && dividePIParametersByThis == 1 ? "simpleSeller_withDelays" + buyerDelay + ".csv" : "simpleSeller_demandDelay" + buyerDelay + "speed" + pidSpeed + "slowness" + dividePIParametersByThis + ".csv";
-            scenario.getDepartments().get(0).getData().writeToCSVFile(Paths.get("rawdata", filename).toFile());
+            scenario.getDepartments().get(0).getData().writeToCSVFile(Paths.get("runs","rawdata", filename).toFile());
         }
 
 
@@ -274,28 +276,28 @@ public class StickyPricesCSVPrinter {
         long seed = 0;
 
         //all learned
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed, 100, 0, true, true, Paths.get("rawdata", "everybodyLearnedSlow_withInventory.csv").toFile(), null, null);
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,true,true, Paths.get("rawdata","everybodyLearnedSticky_withInventory.csv").toFile(), null, null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed, 100, 0, true, true, Paths.get("runs","rawdata", "everybodyLearnedSlow_withInventory.csv").toFile(), null, null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,true,true, Paths.get("runs","rawdata","everybodyLearnedSticky_withInventory.csv").toFile(), null, null);
         //beef learned
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,true,false, Paths.get("rawdata","beefLearnedSlow_withInventory.csv").toFile(), null, null);
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,true,false, Paths.get("rawdata","beefLearnedSticky_withInventory.csv").toFile(), null, null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,true,false, Paths.get("runs","rawdata","beefLearnedSlow_withInventory.csv").toFile(), null, null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,true,false, Paths.get("runs","rawdata","beefLearnedSticky_withInventory.csv").toFile(), null, null);
         //food learned
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,false,true, Paths.get("rawdata","foodLearnedSlow_withInventory.csv").toFile(), null, null);
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,false,true, Paths.get("rawdata","foodLearnedSticky_withInventory.csv").toFile(), null, null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,false,true, Paths.get("runs","rawdata","foodLearnedSlow_withInventory.csv").toFile(), null, null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,false,true, Paths.get("runs","rawdata","foodLearnedSticky_withInventory.csv").toFile(), null, null);
         //learning
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,false,false, Paths.get("rawdata","learningSlow_withInventory.csv").toFile(), null, null);
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,false,false, Paths.get("rawdata","learningSticky_withInventory.csv").toFile(), null, null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,100,0,false,false, Paths.get("runs","rawdata","learningSlow_withInventory.csv").toFile(), null, null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,100,false,false, Paths.get("runs","rawdata","learningSticky_withInventory.csv").toFile(), null, null);
 
 
         //non sticky
-        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,0,true,true, Paths.get("rawdata","nonsticky_withInventory.csv").toFile(), null, null);
+        OneLinkSupplyChainResult.beefMonopolistOneRun(seed,1,0,true,true, Paths.get("runs","rawdata","nonsticky_withInventory.csv").toFile(), null, null);
     }
 
 
     //go through many possible combination of delaying PID to see their effects!
     private static void simpleDelaySweep(int maxDivider,int maxSpeed, int demandDelay, int experimentsPerSetup) throws IOException {
 
-        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("rawdata","delaySweep.csv").toFile()));
+        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs","rawdata","delaySweep.csv").toFile()));
         writer.writeNext(new String[]{"speed","divider","distance","variance","success"});
 
 
@@ -357,7 +359,7 @@ public class StickyPricesCSVPrinter {
     private static void woodMonopolistSweep(final BigDecimal minimumP, final BigDecimal maximumP, final BigDecimal minimumI, final BigDecimal maximumI,
                                             final BigDecimal increment,final int runsPerParameterCombination) throws IOException {
 
-        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("rawdata","monoSweep.csv").toFile()));
+        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs","rawdata","monoSweep.csv").toFile()));
         writer.writeNext(new String[]{"P","I","distance","variance","success"});
 
 
@@ -417,12 +419,13 @@ public class StickyPricesCSVPrinter {
                     float totalDistance = 0;
                     SummaryStatistics prices = new SummaryStatistics();
                     //run the model
-                    double price = 0;
+                    double price = 0; double quantity = 0;
                     for(int i=0; i<1000; i++)
                     {
                         macroII.schedule.step(macroII);
                         price = strategy.getTargetPrice();
-                        totalDistance +=  i*Math.pow(Math.min(price - 68, price - 67), 2);
+                        quantity = salesDepartment.getTodayInflow();
+                        totalDistance +=  Math.pow(Math.min(price - (102-2*quantity), price - (102-2*quantity-1)), 2);
                         prices.addValue(price);
                     }
 
@@ -518,7 +521,7 @@ public class StickyPricesCSVPrinter {
 
 
 
-        salesDepartment.getData().writeToCSVFile(Paths.get("rawdata",filename).toFile());
+        salesDepartment.getData().writeToCSVFile(Paths.get("runs","rawdata",filename).toFile());
 
     }
 
@@ -565,7 +568,7 @@ public class StickyPricesCSVPrinter {
 
 
 
-        macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("rawdata",filename).toFile());
+        macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs","rawdata",filename).toFile());
 
     }
 
@@ -574,7 +577,7 @@ public class StickyPricesCSVPrinter {
     //sweep over the period of maximization to see what happens if the frequency is too high or too low.
     private static void competitiveSweepRun(int additionalCompetitors) throws IOException {
 
-        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("rawdata","competitivePeriodSweep" + additionalCompetitors +".csv").toFile()));
+        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs","rawdata","competitivePeriodSweep" + additionalCompetitors +".csv").toFile()));
         writer.writeNext(new String[]{"speed","distance","finaldistance","variance"});
 
         for(int speed =1; speed < 30; speed++)
@@ -692,7 +695,7 @@ public class StickyPricesCSVPrinter {
 
 
         if(filename != null)
-            macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("rawdata",filename).toFile());
+            macroII.getMarket(UndifferentiatedGoodType.GENERIC).getData().writeToCSVFile(Paths.get("runs","rawdata",filename).toFile());
 
 
         return new double[]{distance.getMean(),finalDistance.getMean(),finalPrice.getVariance()};
@@ -762,13 +765,15 @@ public class StickyPricesCSVPrinter {
                 }
                 else
                 {
-                    final SimpleFlowSellerPID askPricingStrategy = new SimpleFlowSellerPID(department, proportionalGain, integralGain, 0, speed);
+                    final InventoryBufferSalesControl askPricingStrategy =
+                            new InventoryBufferSalesControl(department,10,200,macroII, proportionalGain, integralGain, 0, macroII.getRandom());
+                    askPricingStrategy.setSpeed(speed);
                     if(tuning)
                         askPricingStrategy.decorateController(pidController -> {
                             final PIDStickinessSalesTuner pidStickinessSalesTuner = new PIDStickinessSalesTuner(pidController,
                                     department,department.getModel());
                             pidStickinessSalesTuner.setObservationsBeforeTuning(500);
-                            pidStickinessSalesTuner.setLogToWrite(Paths.get("rawdata","stickLog.csv"));
+                            pidStickinessSalesTuner.setLogToWrite(Paths.get("runs","rawdata","stickLog.csv"));
                             return pidStickinessSalesTuner;
                         });
                     department.setAskPricingStrategy(askPricingStrategy);
@@ -1313,14 +1318,14 @@ public class StickyPricesCSVPrinter {
     //sweep over the period of maximization to see what happens if the frequency is too high or too low.
     private static void woodMonopolistSupplyChainSweep() throws IOException {
 
-        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("rawdata","woodMonopolistStickinessesSweep.csv").toFile()));
+        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs","rawdata","woodMonopolistStickinessesSweep.csv").toFile()));
         final String[] header = {"decisionSpeed", "stickiness", "distance", "finaldistance"};
         System.out.println(Arrays.toString(header));
         writer.writeNext(header);
 
         for(int speed =1; speed < 30; speed++)
         {
-            for(int stickiness = 0; stickiness < 100; stickiness++)
+            for(int stickiness = 0; stickiness < 50; stickiness++)
             {
                 SummaryStatistics distance = new SummaryStatistics();
                 SummaryStatistics finalDistance = new SummaryStatistics();

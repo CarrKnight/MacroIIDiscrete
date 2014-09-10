@@ -18,7 +18,7 @@ import model.utilities.pid.ControllerInput;
 import model.utilities.pid.PIDController;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import model.utilities.stats.processes.StickinessDescent;
-import model.utilities.stats.regression.AutoRegressiveWithInputRegression;
+import model.utilities.stats.regression.ErrorCorrectingRegressionOneStep;
 import model.utilities.stats.regression.SISORegression;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -68,7 +68,7 @@ public class PIDStickinessSalesTuner extends ControllerDecorator implements Step
         collector.setxValidator(x -> Double.isFinite(x) && x >= 0);
         collector.setyValidator(y -> Double.isFinite(y) && y >= 0);
 
-        regression = new SISOPredictorBase<>(model,collector,new AutoRegressiveWithInputRegression(5,5));
+        regression = new SISOPredictorBase<>(model,collector,new ErrorCorrectingRegressionOneStep());
         model.registerDeactivable(this); //turn off when the model does
 
         model.scheduleSoon(ActionOrder.ADJUST_PRICES,this);
@@ -153,7 +153,6 @@ public class PIDStickinessSalesTuner extends ControllerDecorator implements Step
 
     public void setLogToWrite(Path logToWrite) {
         try {
-            Files.createDirectories(logToWrite);
             Files.deleteIfExists(logToWrite);
             Files.createFile(logToWrite);
             this.log = Files.newBufferedWriter(logToWrite);

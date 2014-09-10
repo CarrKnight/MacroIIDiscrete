@@ -6,7 +6,6 @@
 
 package model.utilities.stats.regression;
 
-import com.google.common.base.Objects;
 import com.google.common.primitives.Doubles;
 import model.utilities.stats.processes.AutoRegressiveWithInputProcess;
 
@@ -134,8 +133,7 @@ public class AutoRegressiveWithInputRegression implements SISORegression {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
-                .add("regression", Arrays.toString(getBeta()))
-                .toString();
+        return Arrays.toString(getBeta());
+
     }
 }

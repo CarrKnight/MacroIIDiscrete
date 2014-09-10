@@ -1,9 +1,3 @@
 <component name="CopyrightManager">
-  <settings default="">
-    <module2copyright>
-      <element module="Production" copyright="MIT" />
-      <element module="Tests" copyright="MIT" />
-    </module2copyright>
-    <LanguageOptions name="JAVA" />
-  </settings>
+  <settings default="" />
 </component>
