@@ -14,6 +14,7 @@ import model.utilities.stats.collectors.enums.PurchasesDataType;
 import model.utilities.stats.regression.AutoRegressiveWithInputRegression;
 
 /**
+ * A predictor that uses a distributed lag time-series
  * Created by carrknight on 9/5/14.
  */
 public class AutoRegressivePurchasesPredictor
@@ -45,6 +46,14 @@ public class AutoRegressivePurchasesPredictor
 
     }
 
+
+    public AutoRegressivePurchasesPredictor(SISOPredictorBase<PurchasesDataType,
+            AutoRegressiveWithInputRegression> base, PurchasesDataType xVariable) {
+        this.base = base;
+        this.xVariable = xVariable;
+        this.collector = base.getCollector();
+    }
+
     /**
      * Predicts the future price of the next good to buy
      *
@@ -57,6 +66,8 @@ public class AutoRegressivePurchasesPredictor
 
         if(!base.readyForPrediction() || Float.isNaN(prediction))
             return dept.getLastClosingPrice();
+        else
+            assert (prediction>=0);
 
         return prediction;
     }
@@ -73,6 +84,8 @@ public class AutoRegressivePurchasesPredictor
 
         if(!base.readyForPrediction() || Float.isNaN(prediction))
             return dept.getLastClosingPrice();
+        else
+            assert (prediction>=0);
 
         return prediction;    }
 
@@ -88,6 +101,8 @@ public class AutoRegressivePurchasesPredictor
 
         if(!base.readyForPrediction() || Float.isNaN(prediction))
             return dept.getLastClosingPrice();
+        else
+            assert (prediction>=0);
 
         return prediction;
     }

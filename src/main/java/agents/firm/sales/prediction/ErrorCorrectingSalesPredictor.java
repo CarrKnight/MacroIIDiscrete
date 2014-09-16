@@ -24,14 +24,18 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
 
     private final SISOPredictorBase<SalesDataType,ErrorCorrectingRegressionOneStep> base;
 
+    private final FixedDecreaseSalesPredictor predictor;
+
     public ErrorCorrectingSalesPredictor(MacroII model,
                                          SalesDepartment department) {
         this.collector = new RegressionDataCollector<>(department,SalesDataType.WORKERS_PRODUCING_THIS_GOOD,
                 SalesDataType.CLOSING_PRICES,SalesDataType.SUPPLY_GAP);
         collector.setxValidator(collector.getxValidator().and(y -> y > 0));
         collector.setyValidator(collector.getyValidator().and(x -> x >0));
-        base = new SISOPredictorBase<>(model,collector,new ErrorCorrectingRegressionOneStep(.98f),null);
+        base = new SISOPredictorBase<>(model,collector,new ErrorCorrectingRegressionOneStep(),null);
         base.setBurnOut(300);
+
+        predictor = new FixedDecreaseSalesPredictor();
 
     }
 
@@ -49,10 +53,8 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
     public float predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
         double slope = base.getRegression().getGain();
         float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float) slope : 0;
-    //    System.out.println("slope: " + toAdd);
-        if(dept.getLastClosingPrice() == -1)
-            return -1;
-        return  Math.max(dept.getLastClosingPrice() + toAdd,0);
+        predictor.setDecrementDelta(-toAdd);
+        return predictor.predictSalePriceAfterIncreasingProduction(dept,expectedProductionCost,1);
     }
 
     /**
@@ -67,9 +69,8 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
     public float predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
         double slope = base.getRegression().getGain();
         float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float) slope : 0;
-        if(dept.getLastClosingPrice() == -1)
-            return -1;
-        return  Math.max(dept.getLastClosingPrice() - toAdd,0);
+        predictor.setDecrementDelta(-toAdd);
+        return predictor.predictSalePriceAfterDecreasingProduction(dept,expectedProductionCost,1);
     }
 
     /**
@@ -81,7 +82,7 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
      */
     @Override
     public float predictSalePriceWhenNotChangingProduction(SalesDepartment dept) {
-        return  dept.getLastClosingPrice();
+       return predictor.predictSalePriceWhenNotChangingProduction(dept);
     }
 
     @Override

@@ -14,10 +14,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.FileReader;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class PIDAutotunerTestWithFOIPDT
 {
@@ -30,7 +30,7 @@ public class PIDAutotunerTestWithFOIPDT
         /////////////////////////////////////////
         //read csv
         //read data from file!
-        CSVReader reader = new CSVReader(new FileReader( Paths.get("testresources", "FOIPDT.csv").toFile()));
+        CSVReader reader = new CSVReader(new FileReader( getClass().getResource("/testresources/FOIPDT.csv").getFile()));
         reader.readNext(); //ignore the header!
 
         ArrayList<Float> output = new ArrayList<>();

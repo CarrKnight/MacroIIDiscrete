@@ -131,6 +131,8 @@ public class GeographicalMarketPresentationTest {
     }
 
 
+
+
     @Test
     public void testChangeColor() throws Exception {
         //the whole setup is stolen from: testSellsToTheHighestCustomer in dressedSimpleSellerTest
@@ -243,6 +245,8 @@ public class GeographicalMarketPresentationTest {
         {
             Assert.assertEquals(1,customers[i].hasHowMany(OIL));
             Assert.assertEquals(customers[i].getLastSupplier(),seller);
+            MarketPresentationTest.waitForRunLater();
+
             Assert.assertEquals(presentation.getPortraitList().get(customers[i]).getColor(), firmExpectedColor);
 
         }

@@ -46,10 +46,12 @@ public class SimpleStockSeller extends BaseAskPricingStrategy implements Steppab
 
     public SimpleStockSeller(SalesDepartment department) {
         this(department,100,
-                new PIDController(department.getModel().drawProportionalGain()/5,department.getModel().drawIntegrativeGain()/5f,0f));
+                new PIDController(department.getModel().drawProportionalGain()/5,department.getModel().drawIntegrativeGain()/5f,0f),
+                department.getRandom().nextInt(100),department.getModel());
     }
 
-    public SimpleStockSeller(SalesDepartment sales, int targetInventory, PIDController pid) {
+    public SimpleStockSeller(SalesDepartment sales, int targetInventory, PIDController pid, int initialPrice,
+                             MacroII model) {
         Preconditions.checkArgument(targetInventory > 0, "target inventory should be positive");
         this.department = sales;
         this.targetInventory = targetInventory;
@@ -57,10 +59,10 @@ public class SimpleStockSeller extends BaseAskPricingStrategy implements Steppab
         rootController = pid;
         controller = pid;
         //random initial price
-        price = sales.getRandom().nextInt(100);
+        price = initialPrice;
         rootController.setOffset(price,true);
         //schedule yourself
-        sales.getFirm().getModel().scheduleSoon(ActionOrder.ADJUST_PRICES, this);
+        model.scheduleSoon(ActionOrder.ADJUST_PRICES, this);
 
     }
 

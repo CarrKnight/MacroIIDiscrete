@@ -1,0 +1,2 @@
+Here I store static methods that can be used by any tests, including acceptance and integration.
+It shouldn't include @Test methods.

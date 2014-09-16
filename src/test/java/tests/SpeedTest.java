@@ -10,11 +10,9 @@ import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.pricing.pid.SalesControlWithFixedInventoryAndPID;
 import au.com.bytecode.opencsv.CSVWriter;
 import model.MacroII;
-import model.scenario.FarmersAndWorkersScenarioTest;
+import model.scenario.FarmersStatics;
 import model.scenario.MonopolistScenario;
 import model.scenario.OneLinkSupplyChainResult;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.io.FileWriter;
 import java.net.InetAddress;
@@ -24,20 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * <h4>Description</h4>
- * <p> Writing down a csv with how much time it takes to run simple models. This should finally provide some sort of time series of how fast the program is going.
- * <p> Monopolist scenario is the simplest, has a bit of everything but really only one firm. Suplly chain has a lot going on, learning is off but you have many firms which is a pain.
- * Macro is easy on firms but has lots of customers trading with one another, utility functions and all that.
- * <p>
- * <h4>Notes</h4>
- * Created with IntelliJ
- * <p>
- * <p>
- * <h4>References</h4>
- *
- * @author carrknight
- * @version 2014-06-11
- * @see
+ * Turned off until I get a better performance monitor
  */
 public class SpeedTest {
 
@@ -52,8 +37,8 @@ public class SpeedTest {
 
     private String computerName;
 
-    @Before
     public void setUp() throws Exception {
+
 
         monopolistWriter = new CSVWriter(new FileWriter(Paths.get("testresources", "src/test/resources/timing","monopolistTime.csv").toFile(),true));
         supplyChainWriter = new CSVWriter(new FileWriter(Paths.get("testresources", "src/test/resources/timing","supplyChainTime.csv").toFile(),true));
@@ -67,7 +52,6 @@ public class SpeedTest {
     }
 
 
-    @Test
     public void takeTime() throws Exception {
 
         //monopolist
@@ -88,7 +72,7 @@ public class SpeedTest {
 
         //farmersAndWorkers
         startTime = System.currentTimeMillis();
-        FarmersAndWorkersScenarioTest.runForcedCompetitiveFarmersAndWorkersScenario(10, 1, 200, System.currentTimeMillis(), null, null, 3000);
+        FarmersStatics.runForcedCompetitiveFarmersAndWorkersScenario(10, 1, 200, System.currentTimeMillis(), null, null, 3000);
         endTime = System.currentTimeMillis();
         timeInSeconds = (endTime-startTime)/1000d;
         macroWriter.writeNext(new String[]{date,computerName, String.valueOf(timeInSeconds)});

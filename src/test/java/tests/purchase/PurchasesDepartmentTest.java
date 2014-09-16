@@ -223,61 +223,53 @@ public class PurchasesDepartmentTest {
     @Test
     public void testReactToFilledQuote() throws Exception {
 
-        
-
-        MacroII model = new MacroII(System.currentTimeMillis());
-        model.start();
-        Firm firm = new Firm(model);
-        firm.receiveMany(UndifferentiatedGoodType.MONEY,100000);
-        Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
-        market.start(model);
+        for (int i = 0; i < 100; i++) {
 
 
-        PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100000,firm,market,
-                FixedInventoryControl.class,null,null,null).getDepartment();
+            MacroII model = new MacroII(System.currentTimeMillis());
+            model.start();
+            Firm firm = new Firm(model);
+            firm.receiveMany(UndifferentiatedGoodType.MONEY, 100000);
+            Market market = new OrderBookMarket(DifferentiatedGoodType.CAPITAL);
+            market.start(model);
 
-        firm.registerPurchasesDepartment(dept, DifferentiatedGoodType.CAPITAL);
-        dept.buy(); //place a bid or whatever
-        model.schedule.step(model);
-        Field field = PurchasesDepartment.class.getDeclaredField("quotePlaced");
-        field.setAccessible(true);
-        Quote q = (Quote) field.get(dept);
-        assertTrue(q != null);
-        assertTrue(q.getPriceQuoted() > 0);
 
-        //if I put in a bad quote it should throw an exception
-        try{
-            dept.reactToFilledQuote(Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,firm,10),10,null);
-            fail();
+            PurchasesDepartment dept = PurchasesDepartment.getPurchasesDepartment(100000, firm, market,
+                    FixedInventoryControl.class, null, null, null).getDepartment();
+
+
+            firm.registerPurchasesDepartment(dept, DifferentiatedGoodType.CAPITAL);
+            dept.buy(); //place a bid or whatever
+            model.schedule.step(model);
+            Field field = PurchasesDepartment.class.getDeclaredField("quotePlaced");
+            field.setAccessible(true);
+            Quote q = (Quote) field.get(dept);
+            assertTrue(q != null);
+            assertTrue(q.getPriceQuoted() >= 0);
+
+            //if I put in a bad quote it should throw an exception
+            try {
+                dept.reactToFilledQuote(Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL, firm, 10), 10, null);
+                fail();
+            } catch (AssertionError e) {
+            }
+
+            DummySeller seller = new DummySeller(model, 0);
+            market.registerSeller(seller);
+            Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL, firm, 10);
+            seller.receive(good, null);
+            market.submitSellQuote(seller, 0, good);
+            model.schedule.step(model);
+
+
+            field = PurchasesDepartment.class.getDeclaredField("quotePlaced");
+            field.setAccessible(true);
+            Quote newQuote = (Quote) field.get(dept);
+            assertTrue(newQuote != null); //a new quote is needed.
+            assertTrue(q != newQuote);
+
+
         }
-        catch (AssertionError e){}
-
-        DummySeller seller = new DummySeller(model,0); market.registerSeller(seller);
-        Good good = Good.getInstanceOfDifferentiatedGood(DifferentiatedGoodType.CAPITAL,firm,10);
-        seller.receive(good,null );
-        market.submitSellQuote(seller,0,good);
-        model.schedule.step(model);
-
-
-
-        field = PurchasesDepartment.class.getDeclaredField("quotePlaced");
-        field.setAccessible(true);
-        Quote newQuote = (Quote) field.get(dept);
-        assertTrue(newQuote != null); //a new quote is needed.
-        assertTrue(q != newQuote);
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     }

@@ -8,7 +8,7 @@ package agents.firm.sales.pricing.pid;
 
 import model.MacroII;
 import model.scenario.MonopolistScenario;
-import model.scenario.MonopolistScenarioTest;
+import model.scenario.OneSectorStatics;
 import org.junit.Test;
 
 public class AdaptiveFlowSellerPIDTest
@@ -25,7 +25,7 @@ public class AdaptiveFlowSellerPIDTest
             final MacroII macroII = new MacroII(seed);
             MonopolistScenario scenario1 = new MonopolistScenario(macroII);
 
-            MonopolistScenarioTest.testRandomSlopeMonopolist(seed, macroII, scenario1, AdaptiveFlowSellerPID.class);
+            OneSectorStatics.testRandomSlopeMonopolist(seed, macroII, scenario1, AdaptiveFlowSellerPID.class);
 
         }
 

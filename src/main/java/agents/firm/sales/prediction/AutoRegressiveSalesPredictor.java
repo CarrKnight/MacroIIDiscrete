@@ -10,7 +10,6 @@ import agents.firm.sales.SalesDepartment;
 import model.MacroII;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import model.utilities.stats.regression.AutoRegressiveWithInputRegression;
-import model.utilities.stats.regression.SISORegression;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -25,7 +24,7 @@ public class AutoRegressiveSalesPredictor extends BaseSalesPredictor {
     private final RegressionDataCollector<SalesDataType> collector;
 
     private final SISOPredictorBase<SalesDataType,
-            SISORegression> base;
+            AutoRegressiveWithInputRegression> base;
     private final static SalesDataType INDEPENDENT_VARIABLE =
             SalesDataType.WORKERS_PRODUCING_THIS_GOOD;
 
@@ -39,6 +38,13 @@ public class AutoRegressiveSalesPredictor extends BaseSalesPredictor {
         collector.setyValidator(collector.getyValidator().and(x -> x >0));
         base = new SISOPredictorBase<>(model,collector,new AutoRegressiveWithInputRegression(5,5),null);
         base.setBurnOut(300);
+    }
+
+
+    public AutoRegressiveSalesPredictor(SISOPredictorBase<SalesDataType, AutoRegressiveWithInputRegression> base)
+    {
+        this.base = base;
+        this.collector = base.getCollector();
     }
 
     /**
@@ -55,7 +61,8 @@ public class AutoRegressiveSalesPredictor extends BaseSalesPredictor {
 
         if(!base.readyForPrediction() || Float.isNaN(prediction))
             return dept.getLastClosingPrice();
-
+        else
+            assert (prediction>=0);
         return prediction;
     }
 
@@ -73,7 +80,8 @@ public class AutoRegressiveSalesPredictor extends BaseSalesPredictor {
 
         if(!base.readyForPrediction() || Float.isNaN(prediction))
             return dept.getLastClosingPrice();
-
+        else
+            assert (prediction>=0);
         return prediction;
 
     }
@@ -91,6 +99,8 @@ public class AutoRegressiveSalesPredictor extends BaseSalesPredictor {
 
         if(!base.readyForPrediction() || Float.isNaN(prediction))
             return dept.getLastClosingPrice();
+        else
+            assert (prediction>=0);
 
         return prediction;
 

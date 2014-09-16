@@ -94,7 +94,7 @@ public class KalmanFOPIDTRegressionWithKnownTimeDelay implements SISORegression
     @Override
     public double predictNextOutput(double input, double... intercepts){
 
-        return regression.predictNextOutput(input) + previousOutput;
+        return  generateDynamicProcessImpliedByRegression().newStep(input,intercepts);
 
     }
 

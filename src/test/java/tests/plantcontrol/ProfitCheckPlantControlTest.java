@@ -102,7 +102,7 @@ public class ProfitCheckPlantControlTest {
         OrderBookMarket market = new OrderBookBlindMarket(UndifferentiatedGoodType.LABOR);
         market.setOrderHandler(new ImmediateOrderHandler(), model);
         assertEquals(p.maximumWorkersPossible(), 100);
-        HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000, firm, market,
+        HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(100000000, firm, market,
                 p, ProfitCheckPlantControl.class, null, null).getDepartment(); //create!!!
 
         humanResources.setPredictor(new PricingPurchasesPredictor());
@@ -151,10 +151,12 @@ public class ProfitCheckPlantControlTest {
             steppableList.clear();
             int oldTarget = control.getTarget();
             int oldWage = humanResources.maxPrice(UndifferentiatedGoodType.LABOR, market);
-
+            if(firm.hasHowMany(UndifferentiatedGoodType.MONEY) < 1000000)
+                firm.receiveMany(UndifferentiatedGoodType.MONEY,1000000);
 
             //notice that this is un-natural as profitStep occurs only once every 3 pid steps in reality
             model.getPhaseScheduler().step(model);
+
 
 
             int newWage = humanResources.maxPrice(UndifferentiatedGoodType.LABOR, market);
@@ -211,7 +213,7 @@ public class ProfitCheckPlantControlTest {
         OrderBookMarket market = new OrderBookBlindMarket(UndifferentiatedGoodType.LABOR);
         market.setOrderHandler(new ImmediateOrderHandler(),model);
         assertEquals(p.maximumWorkersPossible(), 100);
-        HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(10000000,
+        HumanResources humanResources = HumanResources.getHumanResourcesIntegrated(100000000,
                 firm,market,p,ProfitCheckPlantControl.class,null,null).getDepartment(); //create!!!
 //        firm.registerHumanResources(p,humanResources);
 

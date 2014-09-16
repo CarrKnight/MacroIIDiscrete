@@ -18,6 +18,7 @@ import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
 import agents.firm.sales.SalesDepartment;
 import agents.firm.sales.SalesDepartmentOneAtATime;
+import agents.firm.sales.prediction.ErrorCorrectingSalesPredictor;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.prediction.RecursiveSalePredictor;
 import agents.firm.sales.prediction.SalesPredictor;
@@ -77,7 +78,6 @@ public class StickyPricesCSVPrinter {
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         //set defaults
-        MonopolistScenario.defaultControlType = MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL;
         //create directory
         Files.createDirectories(Paths.get("runs", "rawdata"));
 
@@ -1080,7 +1080,7 @@ public class StickyPricesCSVPrinter {
             final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
 
             //learning
-            assert salesDepartment.getPredictorStrategy() instanceof RecursiveSalePredictor;
+            assert salesDepartment.getPredictorStrategy() instanceof ErrorCorrectingSalesPredictor;
 
 
             //run the model

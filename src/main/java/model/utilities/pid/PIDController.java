@@ -6,6 +6,7 @@
 
 package model.utilities.pid;
 
+import com.google.common.base.Preconditions;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.scheduler.Priority;
@@ -297,9 +298,14 @@ public class PIDController implements Controller {
 
 
         integral += newError; //integral!
-        if(windupStop && formula(derivative) < 0)
-            integral = sumOfErrorsNecessaryForFormulaToBe0(initialPrice,oldError,newError);
-
+        if(windupStop && formula(derivative) < 0) {
+            if (integralGain != 0)
+                integral = sumOfErrorsNecessaryForFormulaToBe0(initialPrice, oldError, newError);
+            else {
+                currentMV = 0;
+                return true;
+            }
+        }
 
 
 
@@ -314,6 +320,7 @@ public class PIDController implements Controller {
 
     private float sumOfErrorsNecessaryForFormulaToBe0(float baseline, float errorLastPeriod, float errorThisPeriod)
     {
+        Preconditions.checkArgument(Float.isFinite(baseline));
         return sumOfErrorsNecessaryForFormulaToBeX(0,baseline,errorLastPeriod,errorThisPeriod);
 
     }

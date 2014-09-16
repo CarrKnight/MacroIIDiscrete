@@ -19,7 +19,6 @@ import org.mockito.stubbing.Answer;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.*;
@@ -135,8 +134,8 @@ public class LinearExtrapolatorPurchasePredictorTest
         MacroII macroII = mock(MacroII.class);  when(macroII.getCurrentPhase()).thenReturn(ActionOrder.CLEANUP_DATA_GATHERING);
 
 
-        //read data from file!
-        CSVReader reader = new CSVReader(new FileReader(Paths.get("testresources", "src/test/resources/EMAtest.csv").toFile()));
+        //read data from file
+        CSVReader reader = new CSVReader(new FileReader(getClass().getResource("/EMAtest.csv").getFile()));
         reader.readNext(); //ignore the header!
 
         ArrayList<Float> prices = new ArrayList<>(200);

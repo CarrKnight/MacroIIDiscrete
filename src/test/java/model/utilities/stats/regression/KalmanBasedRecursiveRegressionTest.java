@@ -6,15 +6,11 @@
 
 package model.utilities.stats.regression;
 
-import au.com.bytecode.opencsv.CSVReader;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.FileReader;
-import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * <h4>Description</h4>
@@ -32,72 +28,28 @@ import java.util.List;
  * @see
  */
 public class KalmanBasedRecursiveRegressionTest {
-
-    private double[] x;
-    private double[] y;
-    private double[] weights;
-
-
-    private double[] x1;
-    private double[] y1;
-    private double[] weights1;
-
-
+    private final RegressionTestData data = new RegressionTestData();
 
 
     @Before
     public void setUp() throws Exception
     {
 
-        try (CSVReader reader = new CSVReader(new FileReader(Paths.get("testresources", "src/test/resources/recursive.csv").toFile())))
-        {
-
-            List<String[]> lines = reader.readAll();
-            x = new double[lines.size()-1];
-            y = new double[lines.size()-1];
-            weights = new double[lines.size()-1];
-            for(int i=1; i< lines.size(); i++)
-            {   String[] line = lines.get(i);
-
-                x[i-1] = Double.parseDouble(line[1]);
-                y[i-1] = Double.parseDouble(line[2]);
-                weights[i-1] = Double.parseDouble(line[3]);
-
-            }
-
-
-        }
-
-        try (CSVReader reader = new CSVReader(new FileReader(Paths.get("testresources", "src/test/resources/tolearn.csv").toFile())))
-        {
-
-            List<String[]> lines = reader.readAll();
-            x1 = new double[lines.size()-1];
-            y1 = new double[lines.size()-1];
-            weights1 = new double[lines.size()-1];
-            for(int i=1; i< lines.size(); i++)   //skip header
-            {   String[] line = lines.get(i);
-
-                x1[i-1] = Double.parseDouble(line[1]);
-                y1[i-1] = Double.parseDouble(line[2]);
-                weights1[i-1] = Double.parseDouble(line[3]);
-
-            }
-
-
-        }
+        data.initializeData();
 
 
     }
 
+
     @Test
-    public void testUnweightedRegression() throws Exception {
-        //2 dimensions, x + intercept
+    public void testUnweightedRegression() throws Exception 
+    {
+        //2 dimensions, data.getX() + intercept
         RecursiveLinearRegression regression = new KalmanRecursiveRegression(2);
 
-        for(int i=0; i < x.length; i++)
+        for(int i=0; i < data.getX().length; i++)
         {
-            regression.addObservation(1,y[i],1,x[i]);
+            regression.addObservation(1,data.getY()[i],1,data.getX()[i]);
         }
         Assert.assertEquals(2,regression.getBeta()[1],.1d);
         Assert.assertEquals(4.992,regression.getBeta()[0],.1d);
@@ -107,12 +59,12 @@ public class KalmanBasedRecursiveRegressionTest {
 
     @Test
     public void testWeightedRegression() throws Exception {
-        //2 dimensions, x + intercept
+        //2 dimensions, data.getX() + intercept
         RecursiveLinearRegression regression = new KalmanRecursiveRegression(2);
 
-        for(int i=0; i < x.length; i++)
+        for(int i=0; i < data.getX().length; i++)
         {
-            regression.addObservation(weights[i],y[i],1,x[i]);
+            regression.addObservation(data.getWeights()[i],data.getY()[i],1,data.getX()[i]);
         }
         Assert.assertEquals(1.997189,regression.getBeta()[1],.1d);
         Assert.assertEquals(4.994421,regression.getBeta()[0],.1d);
@@ -126,14 +78,14 @@ public class KalmanBasedRecursiveRegressionTest {
     {
 
         KalmanRecursiveRegression regression = new KalmanRecursiveRegression(2);
-        Assert.assertEquals(y1[0], 50, .0001);
-        Assert.assertEquals(x1[0], 1, .0001);
-        Assert.assertEquals(weights1[0], 100, 0);
+        Assert.assertEquals(data.getY1()[0], 50, .0001);
+        Assert.assertEquals(data.getX1()[0], 1, .0001);
+        Assert.assertEquals(data.getWeights1()[0], 100, 0);
 
-        for(int i=0; i<x1.length; i++)
+        for(int i=0; i<data.getX1().length; i++)
         {
-            double weight = 2d/(1d+Math.exp(Math.abs(weights1[i])));
-            regression.addObservation(weight,y1[i],1,x1[i]);
+            double weight = 2d/(1d+Math.exp(Math.abs(data.getWeights1()[i])));
+            regression.addObservation(weight,data.getY1()[i],1,data.getX1()[i]);
             System.out.println(regression.getBeta()[1]);
 
 

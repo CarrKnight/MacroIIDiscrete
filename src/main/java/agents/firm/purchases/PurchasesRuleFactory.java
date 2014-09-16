@@ -60,7 +60,8 @@ public class PurchasesRuleFactory {
         bidPricingRules.add(SurveyMaxPricing .class);
         bidPricingRules.add(UrgentPriceFollowerStrategy .class);
         bidPricingRules.add(ZeroIntelligenceBidPricing .class);
-        bidPricingRules.add(AdaptivePurchasesFixedPID.class);
+        bidPricingRules.add(AdaptivePurchasesFixedPID .class);
+
 
         assert bidPricingRules.size() > 0; // there should be at least one!!
 

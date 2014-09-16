@@ -8,7 +8,7 @@ package agents.firm.purchases.prediction;
 
 import model.MacroII;
 import model.scenario.MonopolistScenario;
-import model.scenario.MonopolistScenarioTest;
+import model.scenario.OneSectorStatics;
 import org.junit.Test;
 
 public class ErrorCorrectingPurchasePredictorTest {
@@ -24,7 +24,7 @@ public class ErrorCorrectingPurchasePredictorTest {
             MacroII model = new MacroII(seed);
             MonopolistScenario scenario = new MonopolistScenario(model);
             scenario.setPurchasesPricePreditorStrategy(ErrorCorrectingPurchasePredictor.class);
-            MonopolistScenarioTest.testRandomSlopeMonopolist((int) seed, model, scenario);
+            OneSectorStatics.testRandomSlopeMonopolist((int) seed, model, scenario);
         }
 
 

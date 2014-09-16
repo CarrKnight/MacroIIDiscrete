@@ -8,7 +8,7 @@ package agents.firm.sales.prediction;
 
 import model.MacroII;
 import model.scenario.MonopolistScenario;
-import model.scenario.MonopolistScenarioTest;
+import model.scenario.OneSectorStatics;
 import org.junit.Test;
 
 public class SISOGuessingSalesPredictorTest {
@@ -24,7 +24,7 @@ public class SISOGuessingSalesPredictorTest {
             MacroII model = new MacroII(seed);
             MonopolistScenario scenario = new MonopolistScenario(model);
             scenario.setSalesPricePreditorStrategy(SISOGuessingSalesPredictor.class);
-            MonopolistScenarioTest.testRandomSlopeMonopolist((int)seed,model,scenario);
+            OneSectorStatics.testRandomSlopeMonopolist((int) seed, model, scenario);
         }
 
 

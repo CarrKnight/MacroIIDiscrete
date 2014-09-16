@@ -1,38 +1,85 @@
 apply plugin: 'java'
-apply plugin: 'application'
+
+//this split integration-acceptance-unit comes from : https://github.com/tommysdk/showcase/blob/master/test-categories/build.gradle
 
 repositories {
     mavenLocal()
     mavenCentral()
 }
 
-mainClassName = 'model.experiments.stickyprices.StickyPricesCSVPrinter'
+sourceCompatibility = 1.8
 
-dependencies {
-  compile "ch.qos.logback:logback-classic:1.0.13"
-  compile "com.google.guava:guava:16.0.1"
-  compile "org.apache.commons:commons-math3:3.2"
-  compile "gov.nist.math:jama:1.0.3"
-  compile "jfree:jfreechart:1.0.13" 
-  testCompile "junit:junit:4.11"  
-  compile "jfree:jfreechart:1.0.13"  
-  compile "net.sf.jung:jung-algorithms:2.0.1"
-  compile "net.sf.jung:jung-graph-impl:2.0.1"
-  compile "net.sf.jung:jung-visualization:2.0.1"
-  compile "net.sf.opencsv:opencsv:2.3"
-  testCompile "org.loadui:testFx:3.1.2"
-  testCompile "org.powermock:powermock-core:1.5"
-  testCompile "org.powermock:powermock-api-mockito:1.5"
-  testCompile "org.powermock:powermock-module-junit4:1.5"
-  compile files('mason/mason.16.jar')
-  compile "net.sf.opencsv:opencsv:2.3"
-  compile 'org.uncommons.watchmaker:watchmaker-framework:0.7.1'
+
+
+sourceSets {
+  main {
+    java {
+      srcDir 'src/main/java'
+    }
+    resources {
+      srcDir 'src/main/resources'
+    }
+  }
+  test {
+    java {
+      srcDir 'src/test/java'
+      srcDir 'src/test/infrastructure'
+    }
+    resources {
+      srcDir 'src/test/resources'
+    }
+  }
+  integrationTest {
+    java {
+      srcDir 'src/test-integration/java'
+      srcDir 'src/test/infrastructure'
+    }
+    resources {
+      srcDir 'src/test-integration/resources'
+    }
+    compileClasspath += sourceSets.main.runtimeClasspath
+  }
+  acceptanceTest {
+    java {
+      srcDir 'src/test-acceptance/java'
+      srcDir 'src/test/infrastructure'
+    }
+    resources {
+      srcDir 'src/test-acceptance/resources'
+    }
+    compileClasspath += sourceSets.main.runtimeClasspath
+  }
 }
 
-
-jar {
-    baseName = 'stickyPrices'
-    version =  '0.1.0'
+dependencies {
+    compile "ch.qos.logback:logback-classic:1.0.13"
+    compile "com.google.guava:guava:16.0.1"
+    compile "org.apache.commons:commons-math3:3.2"
+    compile "gov.nist.math:jama:1.0.3"
+    compile "jfree:jfreechart:1.0.13"
+    compile "jfree:jfreechart:1.0.13"
+    compile "net.sf.jung:jung-algorithms:2.0.1"
+    compile "net.sf.jung:jung-graph-impl:2.0.1"
+    compile "net.sf.jung:jung-visualization:2.0.1"
+    compile "net.sf.opencsv:opencsv:2.3"
+    compile files('mason/mason.16.jar')
+    compile "net.sf.opencsv:opencsv:2.3"
+    compile 'org.uncommons.watchmaker:watchmaker-framework:0.7.1'
+    testCompile "junit:junit:4.11"
+    testCompile "org.loadui:testFx:3.1.2"
+    testCompile "org.powermock:powermock-core:1.5"
+    testCompile "org.powermock:powermock-api-mockito:1.5"
+    testCompile "org.powermock:powermock-module-junit4:1.5"
+    integrationTestCompile "junit:junit:4.11"
+    integrationTestCompile "org.loadui:testFx:3.1.2"
+    integrationTestCompile "org.powermock:powermock-core:1.5"
+    integrationTestCompile "org.powermock:powermock-api-mockito:1.5"
+    integrationTestCompile "org.powermock:powermock-module-junit4:1.5"
+    acceptanceTestCompile "junit:junit:4.11"
+    acceptanceTestCompile "org.loadui:testFx:3.1.2"
+    acceptanceTestCompile "org.powermock:powermock-core:1.5"
+    acceptanceTestCompile "org.powermock:powermock-api-mockito:1.5"
+    acceptanceTestCompile "org.powermock:powermock-module-junit4:1.5"
 }
 
 test{
@@ -40,7 +87,50 @@ test{
 }
 
 
+println '\n'
+println 'Build script runs unit tests located in src/test by default'
+println 'Run integration tests located in src/test-integration by executing \'gradle integrationTest\''
+println 'Run acceptance tests located in src/test-acceptance by executing \'gradle acceptanceTest\''
+println '\n'
+
+
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.0'
+}
+
+task integrationTest(type: Test) {
+    description = "Runs integration tests"
+    testClassesDir = sourceSets.integrationTest.output.classesDir
+    classpath += sourceSets.test.runtimeClasspath + sourceSets.integrationTest.runtimeClasspath
+    useJUnit()
+    testLogging {
+      events "passed", "skipped", "failed"
+    }
+    reports.junitXml.destination = "$buildDir/test-results/integration"  
+    reports.html.destination = "$buildDir/reports/integration"
+
+    
+}
+
+
+task acceptanceTest(type: Test) {
+    description = "Runs acceptance tests"
+    testClassesDir = sourceSets.acceptanceTest.output.classesDir
+    classpath += sourceSets.test.runtimeClasspath + sourceSets.acceptanceTest.runtimeClasspath
+    useJUnit()
+    testLogging {
+      events "passed", "skipped", "failed"
+    }
+    reports.junitXml.destination = "$buildDir/test-results/acceptance"  
+    reports.html.destination = "$buildDir/reports/acceptance"
+
+}
+
+
+test {
+  useJUnit()
+  testLogging {
+    events "passed", "skipped", "failed"
+  }
 }

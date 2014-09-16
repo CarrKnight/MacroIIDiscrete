@@ -14,6 +14,7 @@ import model.utilities.logs.LogLevel;
 import model.utilities.pid.ControllerInput;
 import model.utilities.pid.PIDController;
 import model.utilities.stats.processes.PIGradientDescent;
+import model.utilities.stats.regression.AutoRegressiveWithInputRegression;
 import model.utilities.stats.regression.SISOGuessingRegression;
 import model.utilities.stats.regression.SISORegression;
 import sim.engine.Steppable;
@@ -89,7 +90,7 @@ public class PIDAutotuner extends ControllerDecorator {
         super(toDecorate);
         decoratedCasted =toDecorate;
         this.linkedDepartment = department;
-        regression = new SISOGuessingRegression(0,1,2,5,10,20);
+        regression = new SISOGuessingRegression(integer -> new AutoRegressiveWithInputRegression(integer,integer),1,2,5,10,20);
 
 
     }
@@ -153,7 +154,7 @@ public class PIDAutotuner extends ControllerDecorator {
                 additionalInterceptsExtractor == null ? null : additionalInterceptsExtractor.apply(input));
 
         final PIGradientDescent.PIDGains newGains = descent.getNewGains();
-
+        System.out.println(newGains);
         decoratedCasted.setGains(newGains.getProportional(),newGains.getIntegral(),newGains.getDerivative());
     }
 
@@ -245,5 +246,9 @@ public class PIDAutotuner extends ControllerDecorator {
 
     public void setExcludeLinearFallback(boolean excludeLinearFallback) {
         regression.setExcludeLinearFallback(excludeLinearFallback);
+    }
+
+    public String describeRegression() {
+        return regression.toString();
     }
 }

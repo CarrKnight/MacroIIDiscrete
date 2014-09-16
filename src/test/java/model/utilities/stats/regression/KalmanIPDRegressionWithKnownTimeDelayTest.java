@@ -72,7 +72,7 @@ public class KalmanIPDRegressionWithKnownTimeDelayTest {
         PIDController controller = new PIDController(.01f,.002f,0); controller.setCanGoNegative(true); controller.setWindupStop(false);
         int target = 100;
         int inflow = 3;
-        for(int i=0; i<1000; i++)
+        for(int i=0; i<5000; i++)
         {
             controller.adjust(target, stock, true, mock(MacroII.class), mock(Steppable.class), ActionOrder.DAWN);
             final Float input = policy.addAndRetrieve(controller.getCurrentMV());
@@ -94,8 +94,9 @@ public class KalmanIPDRegressionWithKnownTimeDelayTest {
         }
 
 
-        Assert.assertEquals(-50d,ipd.getIntercept(),.01f);
         Assert.assertEquals(2,ipd.getGain(),.01f);
+        Assert.assertEquals(-50d,ipd.getIntercept(),.01f);
+
 
     }
 }

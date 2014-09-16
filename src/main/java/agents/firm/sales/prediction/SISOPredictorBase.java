@@ -214,4 +214,8 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
     public void setIgnoreGap(boolean ignoreGap) {
         this.ignoreGap = ignoreGap;
     }
+
+    public RegressionDataCollector<T> getCollector() {
+        return collector;
+    }
 }

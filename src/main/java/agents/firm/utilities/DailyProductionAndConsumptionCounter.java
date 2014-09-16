@@ -269,7 +269,7 @@ public class DailyProductionAndConsumptionCounter implements Steppable, Deactiva
         if(counter == null)
             counter = 0;
         counter+=n;
-        assert counter > 0;
+        assert counter > 0 : counter;
 
         map.put(type, counter);
 

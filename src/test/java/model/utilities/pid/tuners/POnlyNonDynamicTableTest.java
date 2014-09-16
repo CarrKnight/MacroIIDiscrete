@@ -65,6 +65,7 @@ public class POnlyNonDynamicTableTest {
             float currentDemand = Math.max(Math.round(100 - 2 * controller.getCurrentMV()),0);
             currentDemand = Float.isNaN(currentDemand)? 0 : currentDemand;
             controller.adjust(quantityTarget, currentDemand, true, mock(MacroII.class), null, ActionOrder.DAWN);
+            System.out.println(currentDemand + " -- " + controller.getCurrentMV());
         }
 
         controller.setGains(0,-1f/2f,0);

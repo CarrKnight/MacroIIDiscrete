@@ -24,6 +24,8 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
 
     private final SISOPredictorBase<PurchasesDataType,ErrorCorrectingRegressionOneStep> base;
 
+    private final FixedIncreasePurchasesPredictor predictor;
+
     public ErrorCorrectingPurchasePredictor(MacroII model, PurchasesDepartment department) {
 
         final PurchasesDataType xVariable = department.getGoodType().isLabor() ?  PurchasesDataType.WORKERS_TARGETED :
@@ -35,6 +37,7 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
         base = new SISOPredictorBase<>(model,collector,new ErrorCorrectingRegressionOneStep(.98f),null);
         base.setBurnOut(300);
 
+        predictor = new FixedIncreasePurchasesPredictor();
 
     }
 
@@ -50,11 +53,8 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
     public float predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
         double slope = base.getRegression().getGain();
         float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float) slope : 0;
-//        if(dept instanceof HumanResources)
-//            System.out.println("slope: " + toAdd);
-        if(dept.getLastClosingPrice() == -1)
-            return -1;
-        return  Math.max(dept.getLastClosingPrice() + toAdd,0);
+        predictor.setIncrementDelta(toAdd);
+        return predictor.predictPurchasePriceWhenIncreasingProduction(dept);
     }
 
     /**
@@ -67,9 +67,8 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
     public float predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         double slope = base.getRegression().getGain();
         float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float) slope : 0;
-        if(dept.getLastClosingPrice() == -1)
-            return -1;
-        return  Math.max( dept.getLastClosingPrice() - toAdd,0);
+        predictor.setIncrementDelta(toAdd);
+        return predictor.predictPurchasePriceWhenDecreasingProduction(dept);
     }
 
     /**
@@ -80,7 +79,7 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
      */
     @Override
     public float predictPurchasePriceWhenNoChangeInProduction(PurchasesDepartment dept) {
-        return  dept.getLastClosingPrice();
+        return  predictor.predictPurchasePriceWhenNoChangeInProduction(dept);
     }
 
     /**

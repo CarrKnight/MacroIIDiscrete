@@ -36,13 +36,13 @@ public class SISOGuessingRegression implements SISORegression {
     private final SISORegression[] regressions;
 
 
-    private float exponentialAveragingWeight = 0.01f;
+    private float exponentialAveragingWeight = 0.1f;
 
     private int minimum = 0;
 
     private boolean minimumToBeRevalued = false;
 
-    private int howManyObservationsBeforeModelSelection = 150;
+    private int howManyObservationsBeforeModelSelection = 500;
 
     private int observations = 0;
 
@@ -133,8 +133,7 @@ public class SISOGuessingRegression implements SISORegression {
      */
     @Override
     public void skipObservation(double skippedOutput, double skippedInput, double... skippedIntercepts) {
-        Preconditions.checkArgument(Double.isFinite(skippedOutput));
-        Preconditions.checkArgument(Double.isFinite(skippedInput));
+
         for (SISORegression regression : regressions)
             regression.skipObservation(skippedOutput, skippedInput, skippedIntercepts);
         linearFallback.skipObservation(skippedOutput, skippedInput, skippedIntercepts);

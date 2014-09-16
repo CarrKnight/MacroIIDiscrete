@@ -10,14 +10,16 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.BufferedReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.FileReader;
 
 public class ErrorCorrectingRegressionOneStepTest {
 
     @Test
     public void testRegressionFromCSV() throws Exception {
-        final BufferedReader dataReader = Files.newBufferedReader(Paths.get("testresources", "src/test/resources/ECModel.csv"));
+        final BufferedReader dataReader =new BufferedReader(
+                new FileReader(
+                        getClass().getResource("/testresources/ECModel.csv").
+                                getFile()));
         //throw away the header
         dataReader.readLine();
 
