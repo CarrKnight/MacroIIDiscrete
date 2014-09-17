@@ -43,14 +43,16 @@ public class KalmanFOPIDTRegressionWithKnownTimeDelay implements SISORegression
      */
     private double twoStepsAgoOutput = Double.NaN;
 
-
-
-    public KalmanFOPIDTRegressionWithKnownTimeDelay(int delay) {
+    public KalmanFOPIDTRegressionWithKnownTimeDelay(int delay, float forgettingFactor) {
         this(
-                     new ExponentialForgettingRegressionDecorator(
-                        new KalmanRecursiveRegression(3),.995,10)
+                new ExponentialForgettingRegressionDecorator(
+                        new KalmanRecursiveRegression(3),forgettingFactor,10)
                 //       ,.995d)     )
                 ,delay,0);
+    }
+
+    public KalmanFOPIDTRegressionWithKnownTimeDelay(int delay) {
+        this(delay,.995f);
     }
 
     public KalmanFOPIDTRegressionWithKnownTimeDelay(RecursiveLinearRegression regression, int delay, double initialInput) {

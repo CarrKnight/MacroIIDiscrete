@@ -11,7 +11,7 @@ import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
 import model.utilities.stats.processes.DynamicProcess;
-import model.utilities.stats.regression.SISOGuessingRegression;
+import model.utilities.stats.regression.MultipleModelRegressionWithSwitching;
 import model.utilities.stats.regression.SISORegression;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -56,9 +56,9 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
     private BufferedWriter debugWriter;
 
 
-    public static <K extends Enum<K>> SISOPredictorBase<K,SISOGuessingRegression> buildDefaultSISOGuessingRegression(MacroII model,
+    public static <K extends Enum<K>> SISOPredictorBase<K,MultipleModelRegressionWithSwitching> buildDefaultSISOGuessingRegression(MacroII model,
                                                                                                          RegressionDataCollector<K> collector){
-        return new SISOPredictorBase<>(model,collector,new SISOGuessingRegression(0,1,10,20,50,100),
+        return new SISOPredictorBase<>(model,collector,new MultipleModelRegressionWithSwitching(0,1,10,20,50,100),
                 regression1 -> {
                     regression1.setRoundError(true);
                     regression1.setHowManyObservationsBeforeModelSelection(DEFAULT_BURNOUT);

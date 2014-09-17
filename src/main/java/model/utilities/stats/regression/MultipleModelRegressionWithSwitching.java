@@ -7,6 +7,7 @@
 package model.utilities.stats.regression;
 
 import com.google.common.base.Preconditions;
+import javafx.util.Pair;
 import model.utilities.filters.ExponentialFilter;
 import model.utilities.stats.processes.DynamicProcess;
 
@@ -28,7 +29,7 @@ import java.util.function.Function;
  * @version 2014-06-30
  * @see
  */
-public class SISOGuessingRegression implements SISORegression {
+public class MultipleModelRegressionWithSwitching implements SISORegression {
 
     private final ExponentialFilter<Double> errors[];
 
@@ -66,13 +67,13 @@ public class SISOGuessingRegression implements SISORegression {
     private boolean roundError = false;
 
 
-    public SISOGuessingRegression(int... guesses) {
+    public MultipleModelRegressionWithSwitching(int... guesses) {
         this(DEFAULT_REGRESSION_FROM_GUESS_BUILDER,guesses);
 
 
     }
 
-    public SISOGuessingRegression(Function<Integer, SISORegression> regressionFromGuessBuilder, int... guesses) {
+    public MultipleModelRegressionWithSwitching(Function<Integer, SISORegression> regressionFromGuessBuilder, int... guesses) {
         Preconditions.checkArgument(guesses.length >= 1, "need more than one guess, man");
         errors = new ExponentialFilter[guesses.length];
         regressions = new SISORegression[guesses.length];
@@ -84,6 +85,40 @@ public class SISOGuessingRegression implements SISORegression {
             regressions[i] = regressionFromGuessBuilder.apply(guesses[i]);
         }
         fallbackError = new ExponentialFilter<>(exponentialAveragingWeight);
+
+
+    }
+
+    /**
+     * the constructor to have an heterogeneous set of regressions to choose from!
+     * @param regressionBuilders the regression builder
+     */
+    public MultipleModelRegressionWithSwitching(Pair<Function<Integer, SISORegression>,Integer[]>... regressionBuilders) {
+        Preconditions.checkArgument(regressionBuilders.length >= 1, "need at least one regression builder");
+
+        int totalSize = 0;
+        for(Pair<Function<Integer, SISORegression>,Integer[]> p : regressionBuilders) {
+            Preconditions.checkArgument(p.getValue().length > 0, "at least one regression has no guesses");
+            totalSize += p.getValue().length;
+        }
+        errors = new ExponentialFilter[totalSize];
+        regressions = new SISORegression[totalSize];
+
+
+        int i=0;
+        for(Pair<Function<Integer, SISORegression>,Integer[]> p : regressionBuilders)
+        {
+            for(Integer guess : p.getValue())
+            {
+                errors[i] = new ExponentialFilter<>();
+                errors[i].addObservation(0d);
+                regressions[i] = p.getKey().apply(guess);
+                i++;
+            }
+        }
+        fallbackError = new ExponentialFilter<>(exponentialAveragingWeight);
+
+        assert  i==totalSize;
 
 
     }
@@ -120,7 +155,7 @@ public class SISOGuessingRegression implements SISORegression {
     }
 
     public boolean hasEnoughObservations() {
-        return observations > howManyObservationsBeforeModelSelection;
+        return observations >= howManyObservationsBeforeModelSelection;
     }
 
 
@@ -247,6 +282,7 @@ public class SISOGuessingRegression implements SISORegression {
     }
 
     public void setHowManyObservationsBeforeModelSelection(int howManyObservationsBeforeModelSelection) {
+
         this.howManyObservationsBeforeModelSelection = howManyObservationsBeforeModelSelection;
     }
 
@@ -269,4 +305,12 @@ public class SISOGuessingRegression implements SISORegression {
     public int getNumberOfObservations() {
         return observations;
     }
+
+    public int getNumberOfModels(){
+        return regressions.length;
+    }
+
+
+
+
 }

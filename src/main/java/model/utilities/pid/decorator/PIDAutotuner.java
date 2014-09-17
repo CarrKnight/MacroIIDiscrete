@@ -7,6 +7,7 @@
 package model.utilities.pid.decorator;
 
 import agents.firm.Department;
+import com.google.common.annotations.VisibleForTesting;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.logs.LogEvent;
@@ -15,7 +16,7 @@ import model.utilities.pid.ControllerInput;
 import model.utilities.pid.PIDController;
 import model.utilities.stats.processes.PIGradientDescent;
 import model.utilities.stats.regression.AutoRegressiveWithInputRegression;
-import model.utilities.stats.regression.SISOGuessingRegression;
+import model.utilities.stats.regression.MultipleModelRegressionWithSwitching;
 import model.utilities.stats.regression.SISORegression;
 import sim.engine.Steppable;
 
@@ -44,13 +45,13 @@ public class PIDAutotuner extends ControllerDecorator {
      */
     private final Department linkedDepartment;
 
-    protected final SISOGuessingRegression regression;
+    private final MultipleModelRegressionWithSwitching regression;
 
-    protected final PIDController decoratedCasted;
+    private final PIDController decoratedCasted;
 
-    protected int afterHowManyDaysShouldTune = 200;
+    private int afterHowManyDaysShouldTune = 200;
 
-    protected int observations = 0;
+    private int observations = 0;
 
     /**
      * returns true whenever the new observation is "valid" as in, we should learn from this.
@@ -87,10 +88,8 @@ public class PIDAutotuner extends ControllerDecorator {
      * @param department nullable: if given the autotuner will not record until the department has at least one trade
      */
     public PIDAutotuner(PIDController toDecorate, Department department) {
-        super(toDecorate);
-        decoratedCasted =toDecorate;
-        this.linkedDepartment = department;
-        regression = new SISOGuessingRegression(integer -> new AutoRegressiveWithInputRegression(integer,integer),1,2,5,10,20);
+        this(toDecorate,integer -> new AutoRegressiveWithInputRegression(integer,integer),department);
+
 
 
     }
@@ -105,7 +104,7 @@ public class PIDAutotuner extends ControllerDecorator {
         super(toDecorate);
         decoratedCasted =toDecorate;
         this.linkedDepartment = department;
-        regression = new SISOGuessingRegression(regressionBuilder,0);
+        regression = new MultipleModelRegressionWithSwitching(regressionBuilder,0,2,4,6,10);
 
     }
 
@@ -250,5 +249,10 @@ public class PIDAutotuner extends ControllerDecorator {
 
     public String describeRegression() {
         return regression.toString();
+    }
+
+    @VisibleForTesting
+    public MultipleModelRegressionWithSwitching getRegression() {
+        return regression;
     }
 }

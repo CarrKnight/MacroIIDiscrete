@@ -8,6 +8,7 @@ package model.utilities.pid.decorator;
 
 import ec.util.MersenneTwisterFast;
 import model.MacroII;
+import model.scenario.RegressionStatics;
 import model.utilities.ActionOrder;
 import model.utilities.pid.ControllerInput;
 import model.utilities.pid.PIDController;
@@ -19,8 +20,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.nio.file.Paths;
 import java.util.function.Supplier;
 
 import static org.mockito.Mockito.mock;
@@ -43,7 +42,8 @@ public class AutotunerTest {
     public void tuneFOIPDT() throws Exception {
 
         MacroII model = model = new MacroII(0);
-        final PIDAutotuner autotuner = runLearningExperimentWithUnknownDeadTime(model.getRandom(), model.drawProportionalGain(), model.drawIntegrativeGain(), null,
+        final PIDAutotuner autotuner = runLearningExperimentWithUnknownDeadTime(model.getRandom(),
+                model.drawProportionalGain(), model.drawIntegrativeGain(), null,
                 new FirstOrderIntegratingPlusDeadTime(-10, 1.5f, 0.3f, 5));
         System.out.println(autotuner.getDelay() + "-----" + autotuner.getGain() + " ----" + autotuner.getTimeConstant());
         System.out.println(autotuner.describeRegression());
@@ -55,9 +55,9 @@ public class AutotunerTest {
     private PIDAutotuner runLearningExperimentWithUnknownDeadTime(MersenneTwisterFast random, float proportionalParameter,
                                                                   float integrativeParameter,
                                                                   Supplier<Double> noiseMaker, DynamicProcess systemDynamic) throws FileNotFoundException {
-        PIDAutotuner controller = new PIDAutotuner(new PIDController(proportionalParameter,integrativeParameter,0));
-        PrintWriter writer = new PrintWriter(Paths.get("tmp.csv").toFile());
-        controller.setAfterHowManyDaysShouldTune(1000);
+        PIDAutotuner controller =
+                new PIDAutotuner(new PIDController(proportionalParameter,integrativeParameter,0));
+        controller.setAfterHowManyDaysShouldTune(1001);
         int target = 10;
         DynamicProcess process = systemDynamic ;
         if(noiseMaker != null)
@@ -69,7 +69,6 @@ public class AutotunerTest {
         //output starts at intercept
         float output = 0;
         //delayed input, useful for learning
-        writer.println("input" + "," + "output" + "," + "target" + "," + "proportional" + "," + "integrative");
 
         SummaryStatistics errorBeforeTuning = new SummaryStatistics();
 
@@ -78,7 +77,6 @@ public class AutotunerTest {
 
         for(int step =0; step < 2000; step++)
         {
-
 
             //PID step
             controller.adjust(new ControllerInput(target,output),true,mock(MacroII.class),null, ActionOrder.DAWN);
@@ -89,8 +87,7 @@ public class AutotunerTest {
             assert !Float.isInfinite(input);
             output = (float) process.newStep(input);
 
-            writer.println(input + "," + output + "," + target + "," + controller.getProportionalGain() + "," + controller.getIntegralGain());
-            System.out.println(input + "," + output + "," + target + "," + controller.getProportionalGain() + "," + controller.getIntegralGain());
+
 
 
             if(step <= 1000)
@@ -99,7 +96,6 @@ public class AutotunerTest {
                 errorAfterTuning.addValue(Math.pow(target-output,2));
             if(step>1900)
                 finalError.addValue(Math.pow(target-output,2));
-
 
 
             //shock target with 10%
@@ -115,8 +111,17 @@ public class AutotunerTest {
         }
         System.out.println("errors: " + errorBeforeTuning.getMean() + " --- " + errorAfterTuning.getMean());
         System.out.println("final error: " + finalError.getMean());
+        System.out.println("regression: " + controller.getRegression());
+
+        RegressionStatics.tracksAcceptably(controller.getRegression(), process,
+                RegressionStatics.MAXIMUM_ABS_ERROR, 100,
+                Math.max(controller.getCurrentMV(), RegressionStatics.FIXED_INPUT));
         Assert.assertTrue(errorAfterTuning.getMean() < errorBeforeTuning.getMean());
-        Assert.assertTrue(finalError.getMean() < 10);
+        //either have a very low error, or at least have improved by a factor of over 100
+        Assert.assertTrue(finalError.getMean() < 10 || finalError.getMean() < errorBeforeTuning.getMean() / 100 );
+
+
+
         return controller;
 
     }

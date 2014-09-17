@@ -30,6 +30,11 @@ public class IntegratedAutoRegressiveWithInputRegression implements SISORegressi
         deltaRegression = new AutoRegressiveWithInputRegression(deltaXLags,deltaYLags);
     }
 
+    public IntegratedAutoRegressiveWithInputRegression(int deltaXLags,int deltaYLags, float forgettingFactor) {
+        deltaRegression = new AutoRegressiveWithInputRegression(deltaXLags,deltaYLags,forgettingFactor);
+    }
+
+
 
     /**
      * add a new observation

@@ -35,14 +35,15 @@ public class SelectiveForgettingDecorator extends RecursiveLinearRegressionDecor
     private final double forgettingFactor;
 
 
-    public SelectiveForgettingDecorator(KalmanBasedRecursiveRegression decorated, double centerEigenvector, double forgettingFactor) {
+    public SelectiveForgettingDecorator(KalmanBasedRecursiveRegression decorated,
+                                        double centerEigenvector, double forgettingFactor) {
         super(decorated);
         this.centerEigenvector = centerEigenvector;
         this.forgettingFactor = forgettingFactor;
     }
 
     public SelectiveForgettingDecorator(KalmanBasedRecursiveRegression decorated) {
-        this(decorated,1000,.99);
+        this(decorated,1000,.999);
     }
 
 

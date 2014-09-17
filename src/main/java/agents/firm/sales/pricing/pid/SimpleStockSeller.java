@@ -122,7 +122,9 @@ public class SimpleStockSeller extends BaseAskPricingStrategy implements Steppab
      */
     @Override
     public float estimateSupplyGap() {
-        if(department.getHowManyToSell() == 0 || Math.abs(department.getHowManyToSell() - targetInventory)/targetInventory > .2 //if you are very far from target, prices aren't very good indicators
+        if(department.getHowManyToSell() == 0 || Math.abs(department.getHowManyToSell() - targetInventory)/targetInventory > .2
+        //if you are very far from target, prices aren't very good indicators
+                || Math.abs(department.getTodayInflow()-department.getTodayOutflow())/targetInventory > .2 //if you are trading too much that's also not very informative
                 ||department.getTodayOutflow() == 0 )
             return  1000;
         else

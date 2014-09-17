@@ -6,6 +6,7 @@
 
 package agents.firm.purchases.prediction;
 
+import agents.firm.Department;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.sales.prediction.RegressionDataCollector;
 import agents.firm.sales.prediction.SISOPredictorBase;
@@ -32,8 +33,10 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
                 PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD;
         this.collector = new RegressionDataCollector<>(department, xVariable,
                 PurchasesDataType.CLOSING_PRICES,PurchasesDataType.DEMAND_GAP);
-        collector.setxValidator(collector.getxValidator().and(y -> y > 0));
-        collector.setyValidator(collector.getyValidator().and(x -> x >0));
+        collector.setDataValidator(collector.getDataValidator().and(Department::hasTradedAtLeastOnce));
+        collector.setxValidator(collector.getxValidator().and(x -> x > 0));
+        collector.setyValidator(collector.getyValidator().and(y -> department.getGoodType().isLabor() ? y >=0 :
+                y >0));
         base = new SISOPredictorBase<>(model,collector,new ErrorCorrectingRegressionOneStep(.98f),null);
         base.setBurnOut(300);
 

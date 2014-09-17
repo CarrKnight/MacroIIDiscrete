@@ -56,7 +56,7 @@ public class SimpleFlowSellerPIDTest {
         Firm firm = new Firm(model);
         OrderBookMarket market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, market, new SimpleBuyerSearch(market, firm), new SimpleSellerSearch(market, firm), agents.firm.sales.SalesDepartmentAllAtOnce.class);
-        SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept,.1f,.1f,0f,0);
+        SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept,.1f,.1f,0f,0, dept.getMarket(), dept.getRandom().nextInt(100), dept.getFirm().getModel());
         dept.setAskPricingStrategy(strategy);
 
         //register sale department

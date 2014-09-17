@@ -7,11 +7,11 @@
 package model.utilities.stats.regression;
 
 import ec.util.MersenneTwisterFast;
+import model.scenario.RegressionStatics;
 import model.utilities.pid.PIDController;
 import model.utilities.stats.processes.DynamicProcess;
 import model.utilities.stats.processes.FirstOrderIntegratingPlusDeadTime;
 import model.utilities.stats.processes.FirstOrderPlusDeadTime;
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,11 +20,9 @@ import java.util.function.Supplier;
 /**
  * Create a random PID playing with a random FOPDT, see if the regression finds it
  */
-public class SisoRegressionTests
+public class SISORegressionTests
 {
 
-    public static final double MAXIMUM_ABS_ERROR = 1d;
-    public static final double FIXED_INPUT = 1d;
     private final float minimumP =.1f;
 
     private final float maximumP =.3f;
@@ -71,7 +69,7 @@ public class SisoRegressionTests
             System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant + ", and delay: " + delay);
             System.out.println("learned gain: " +result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
 
-            Assert.assertTrue(tracksAcceptably(result,originalProcess,MAXIMUM_ABS_ERROR,100, FIXED_INPUT));
+            Assert.assertTrue(RegressionStatics.tracksAcceptably(result, originalProcess, RegressionStatics.MAXIMUM_ABS_ERROR, 100, RegressionStatics.FIXED_INPUT));
             System.out.println("===================================================================== ");
 
 
@@ -101,13 +99,13 @@ public class SisoRegressionTests
             final FirstOrderPlusDeadTime originalProcess = new FirstOrderPlusDeadTime(0, gain, timeConstant, deadTime);
             final SISORegression result =
                     runLearningExperiment(random, originalProcess, proportionalParameter, integrativeParameter,
-                            null, () -> new SISOGuessingRegression(0,1,2,3,4,5,6,7,8,9,10)
+                            null, () -> new MultipleModelRegressionWithSwitching(0,1,2,3,4,5,6,7,8,9,10)
                     );
             System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant + ", and delay: " + deadTime);
             System.out.println("learned gain: " +result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
 
 
-            Assert.assertTrue(tracksAcceptably(result, originalProcess,MAXIMUM_ABS_ERROR, 100, FIXED_INPUT));
+            Assert.assertTrue(RegressionStatics.tracksAcceptably(result, originalProcess, RegressionStatics.MAXIMUM_ABS_ERROR, 100, RegressionStatics.FIXED_INPUT));
             System.out.println("===================================================================== ");
 
 
@@ -138,12 +136,12 @@ public class SisoRegressionTests
             final int deadTime = random.nextInt(maximumDelay);
             final FirstOrderPlusDeadTime originalProcess = new FirstOrderPlusDeadTime(0, gain, timeConstant, deadTime);
             final SISORegression result = runLearningExperiment(random, originalProcess, proportionalParameter, integrativeParameter,
-                    () -> random.nextGaussian() * .5, () -> new SISOGuessingRegression(integer ->
+                    () -> random.nextGaussian() * .5, () -> new MultipleModelRegressionWithSwitching(integer ->
                             new KalmanFOPDTRegressionWithKnownTimeDelay(integer),0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
 
             System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant + ", and delay: " + deadTime);
             System.out.println("learned gain: " + result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
-            if (tracksAcceptably(result,originalProcess, MAXIMUM_ABS_ERROR,100, FIXED_INPUT) ) {
+            if (RegressionStatics.tracksAcceptably(result, originalProcess, RegressionStatics.MAXIMUM_ABS_ERROR, 100, RegressionStatics.FIXED_INPUT) ) {
                 successes++;
                 System.out.println("success");
             }
@@ -185,7 +183,7 @@ public class SisoRegressionTests
             System.out.println("learned gain: " +result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
 
 
-            if (tracksAcceptably(result,originalProcess,MAXIMUM_ABS_ERROR,100, FIXED_INPUT) ) {
+            if (RegressionStatics.tracksAcceptably(result, originalProcess, RegressionStatics.MAXIMUM_ABS_ERROR, 100, RegressionStatics.FIXED_INPUT) ) {
                 successes++;
                 System.out.println("success");
             }
@@ -226,7 +224,7 @@ public class SisoRegressionTests
             System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant + ", and delay: " + delay);
             System.out.println("learned gain: " +result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
 
-            Assert.assertTrue(tracksAcceptably(result, originalProcess, MAXIMUM_ABS_ERROR, 100, FIXED_INPUT));
+            Assert.assertTrue(RegressionStatics.tracksAcceptably(result, originalProcess, RegressionStatics.MAXIMUM_ABS_ERROR, 100, RegressionStatics.FIXED_INPUT));
             System.out.println("===================================================================== ");
 
 
@@ -264,7 +262,7 @@ public class SisoRegressionTests
             System.out.println("learned gain: " +result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
 
 
-            if ( tracksAcceptably(result,originalProcess,MAXIMUM_ABS_ERROR,100, FIXED_INPUT)) {
+            if ( RegressionStatics.tracksAcceptably(result, originalProcess, RegressionStatics.MAXIMUM_ABS_ERROR * 10, 100, RegressionStatics.FIXED_INPUT)) {
                 successes++;
                 System.out.println("success");
             }
@@ -299,13 +297,14 @@ public class SisoRegressionTests
             final FirstOrderIntegratingPlusDeadTime originalProcess = new FirstOrderIntegratingPlusDeadTime(0, gain, timeConstant, delay);
             final SISORegression result = runLearningExperiment(random,
                     originalProcess, proportionalParameter, integrativeParameter,
-                    null, () -> new SISOGuessingRegression(integer -> new AutoRegressiveWithInputRegression(integer,integer), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)) ;
+                    null, () -> new MultipleModelRegressionWithSwitching(integer ->
+                            new AutoRegressiveWithInputRegression(integer,integer), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)) ;
 
 
             System.out.println("actual gain: " + gain + ", actual timeConstant: " + timeConstant + ", and delay: " + delay);
             System.out.println("learned gain: " +result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
 
-            final boolean condition = tracksAcceptably(result, originalProcess, MAXIMUM_ABS_ERROR, 100, FIXED_INPUT);
+            final boolean condition = RegressionStatics.tracksAcceptably(result, originalProcess, RegressionStatics.MAXIMUM_ABS_ERROR, 100, RegressionStatics.FIXED_INPUT);
             Assert.assertTrue(condition);
             System.out.println("===================================================================== ");
 
@@ -337,7 +336,8 @@ public class SisoRegressionTests
             final FirstOrderIntegratingPlusDeadTime originalProcess = new FirstOrderIntegratingPlusDeadTime(0, gain, timeConstant, delay);
             final SISORegression result = runLearningExperiment(random,
                     originalProcess, proportionalParameter, integrativeParameter,
-                    () -> random.nextGaussian() * .5, () -> new SISOGuessingRegression(KalmanFOPIDTRegressionWithKnownTimeDelay::new,0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)) ;
+                    () -> random.nextGaussian() * .5, () ->
+                            new MultipleModelRegressionWithSwitching(KalmanFOPIDTRegressionWithKnownTimeDelay::new,0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)) ;
 
 
 
@@ -345,7 +345,8 @@ public class SisoRegressionTests
             System.out.println("learned gain: " +result.getGain() + ", learned timeConstant: " + result.getTimeConstant() + ", learned delay: " + result.getDelay());
 
 
-            if ( tracksAcceptably(result,originalProcess,MAXIMUM_ABS_ERROR,100, FIXED_INPUT) ) {
+            if ( RegressionStatics.tracksAcceptably(result, originalProcess,
+                    RegressionStatics.MAXIMUM_ABS_ERROR*10, 100, RegressionStatics.FIXED_INPUT) ) {
                 successes++;
                 System.out.println("success");
             }
@@ -411,29 +412,6 @@ public class SisoRegressionTests
 
         return regression;
     }
-
-
-
-
-    private boolean tracksAcceptably(SISORegression regression, DynamicProcess originalProcess,
-                                     double maximumAbsError, int horizon, double fixedInput){
-
-        DynamicProcess regressionProcess = regression.generateDynamicProcessImpliedByRegression();
-        originalProcess.setRandomNoise(() -> 0d); //remove noise for testing
-
-
-        SummaryStatistics absoluteDistance = new SummaryStatistics();
-        for(int i=0; i<horizon; i++)
-        {
-            absoluteDistance.addValue(Math.abs(regressionProcess.newStep(fixedInput)-originalProcess.newStep(fixedInput)));
-        }
-
-        System.out.println("absolute tracking error: " + absoluteDistance.getMean());
-        return absoluteDistance.getMean() < maximumAbsError;
-
-    }
-
-
 
 
 }

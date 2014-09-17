@@ -27,12 +27,25 @@ public class AutoRegressiveWithInputRegression implements SISORegression {
 
     private int numberOfObservations = 0;
 
-    public AutoRegressiveWithInputRegression(int maxInputLag, int maxOutputLag) {
+    public AutoRegressiveWithInputRegression(int maxInputLag, int maxOutputLag,float forgettingFactor)
+    {
+
+        forgettingFactor = Math.min(forgettingFactor,1);
+        forgettingFactor = Math.max(forgettingFactor,0);
+
+        maxInputLag = Math.max(maxInputLag,1);
+        maxOutputLag = Math.max(maxOutputLag,1);
+
 
         inputLags = new double[maxInputLag];
         outputLags = new double[maxOutputLag];
         regression = new ExponentialForgettingRegressionDecorator(
-                new KalmanRecursiveRegression(1+1+maxInputLag+maxOutputLag),.99d,10d); //the lags + the intercept + the input unlagged
+                new KalmanRecursiveRegression(1+1+maxInputLag+maxOutputLag),forgettingFactor,10d); //the lags + the intercept + the input unlagged
+    }
+
+    public AutoRegressiveWithInputRegression(int maxInputLag, int maxOutputLag) {
+
+        this(maxInputLag, maxOutputLag,.99f);
 
     }
 

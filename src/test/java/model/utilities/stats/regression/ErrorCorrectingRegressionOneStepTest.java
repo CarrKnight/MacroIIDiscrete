@@ -18,7 +18,7 @@ public class ErrorCorrectingRegressionOneStepTest {
     public void testRegressionFromCSV() throws Exception {
         final BufferedReader dataReader =new BufferedReader(
                 new FileReader(
-                        getClass().getResource("/testresources/ECModel.csv").
+                        getClass().getResource("/ECModel.csv").
                                 getFile()));
         //throw away the header
         dataReader.readLine();

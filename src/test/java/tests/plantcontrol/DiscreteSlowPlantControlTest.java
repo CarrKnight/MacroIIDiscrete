@@ -250,7 +250,7 @@ public class DiscreteSlowPlantControlTest {
         OrderBookMarket labor = new OrderBookMarket(UndifferentiatedGoodType.LABOR);
 
         SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, market, new SimpleBuyerSearch(market, firm), new SimpleSellerSearch(market, firm), SalesDepartmentAllAtOnce.class);
-        SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept,.8f,.30f,.01f,10);
+        SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept,.8f,.30f,.01f,10, dept.getMarket(), dept.getRandom().nextInt(100), dept.getFirm().getModel());
         strategy.setProductionCostOverride(true);
         dept.setAskPricingStrategy(strategy);
         //  dept.setAskPricingStrategy(new EverythingMustGoAdaptive(dept));
@@ -339,7 +339,7 @@ public class DiscreteSlowPlantControlTest {
         OrderBookMarket labor = new OrderBookMarket(UndifferentiatedGoodType.LABOR);
 
         SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, market, new SimpleBuyerSearch(market, firm), new SimpleSellerSearch(market, firm), SalesDepartmentAllAtOnce.class);
-        SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept,.3f,.16f,.01f,10);
+        SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept,.3f,.16f,.01f,10, dept.getMarket(), dept.getRandom().nextInt(100), dept.getFirm().getModel());
         dept.setAskPricingStrategy(strategy);
         //  dept.setAskPricingStrategy(new EverythingMustGoAdaptive(dept));
         firm.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
@@ -356,7 +356,7 @@ public class DiscreteSlowPlantControlTest {
         final Firm firm2 = new Firm(model); firm2.receiveMany(UndifferentiatedGoodType.MONEY,100000000);
 
         SalesDepartment dept2 = SalesDepartmentFactory.incompleteSalesDepartment(firm2, market, new SimpleBuyerSearch(market, firm2), new SimpleSellerSearch(market, firm2), SalesDepartmentAllAtOnce.class);
-        SimpleFlowSellerPID strategy2 = new SimpleFlowSellerPID(dept2,.3f,.16f,.01f,10);
+        SimpleFlowSellerPID strategy2 = new SimpleFlowSellerPID(dept2,.3f,.16f,.01f,10, dept2.getMarket(), dept2.getRandom().nextInt(100), dept2.getFirm().getModel());
         dept2.setAskPricingStrategy(strategy2);
         //  dept2.setAskPricingStrategy(new EverythingMustGoAdaptive(dept2));
         firm2.registerSaleDepartment(dept2, UndifferentiatedGoodType.GENERIC);
@@ -446,7 +446,7 @@ public class DiscreteSlowPlantControlTest {
         OrderBookMarket labor = new OrderBookMarket(UndifferentiatedGoodType.LABOR);
 
         SalesDepartment dept = SalesDepartmentFactory.incompleteSalesDepartment(firm, market, new SimpleBuyerSearch(market, firm), new SimpleSellerSearch(market, firm), SalesDepartmentAllAtOnce.class);
-        SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept,.3f,.16f,.01f,10);
+        SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(dept,.3f,.16f,.01f,10, dept.getMarket(), dept.getRandom().nextInt(100), dept.getFirm().getModel());
         dept.setAskPricingStrategy(strategy);
         //  dept.setAskPricingStrategy(new EverythingMustGoAdaptive(dept));
         firm.registerSaleDepartment(dept, UndifferentiatedGoodType.GENERIC);
@@ -467,7 +467,7 @@ public class DiscreteSlowPlantControlTest {
         final Firm firm2 = new Firm(model); firm2.receiveMany(UndifferentiatedGoodType.MONEY,100000000);
 
         SalesDepartment dept2 = SalesDepartmentFactory.incompleteSalesDepartment(firm2, market, new SimpleBuyerSearch(market, firm2), new SimpleSellerSearch(market, firm2), SalesDepartmentAllAtOnce.class);
-        SimpleFlowSellerPID strategy2 = new SimpleFlowSellerPID(dept2,.3f,.16f,.01f,10);
+        SimpleFlowSellerPID strategy2 = new SimpleFlowSellerPID(dept2,.3f,.16f,.01f,10, dept2.getMarket(), dept2.getRandom().nextInt(100), dept2.getFirm().getModel());
         dept2.setAskPricingStrategy(strategy2);
         //  dept2.setAskPricingStrategy(new EverythingMustGoAdaptive(dept2));
         firm2.registerSaleDepartment(dept2, UndifferentiatedGoodType.GENERIC);
@@ -488,7 +488,7 @@ public class DiscreteSlowPlantControlTest {
         final Firm firm3 = new Firm(model); firm3.receiveMany(UndifferentiatedGoodType.MONEY,100000000);
 
         SalesDepartment dept3 = SalesDepartmentFactory.incompleteSalesDepartment(firm3, market, new SimpleBuyerSearch(market, firm3), new SimpleSellerSearch(market, firm3), SalesDepartmentAllAtOnce.class);
-        SimpleFlowSellerPID strategy3 = new SimpleFlowSellerPID(dept3,.3f,.16f,.01f,10);
+        SimpleFlowSellerPID strategy3 = new SimpleFlowSellerPID(dept3,.3f,.16f,.01f,10, dept3.getMarket(), dept3.getRandom().nextInt(100), dept3.getFirm().getModel());
         dept3.setAskPricingStrategy(strategy3);
         //  dept3.setAskPricingStrategy(new EverythingMustGoAdaptive(dept3));
         firm3.registerSaleDepartment(dept3, UndifferentiatedGoodType.GENERIC);

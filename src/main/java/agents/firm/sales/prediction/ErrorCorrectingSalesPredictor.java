@@ -30,8 +30,9 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
                                          SalesDepartment department) {
         this.collector = new RegressionDataCollector<>(department,SalesDataType.WORKERS_PRODUCING_THIS_GOOD,
                 SalesDataType.CLOSING_PRICES,SalesDataType.SUPPLY_GAP);
-        collector.setxValidator(collector.getxValidator().and(y -> y > 0));
-        collector.setyValidator(collector.getyValidator().and(x -> x >0));
+        collector.setDataValidator(collector.getDataValidator().and((dept)->dept.hasTradedAtLeastOnce()));
+        collector.setxValidator(collector.getxValidator().and(x -> x >=0));
+        collector.setyValidator(collector.getyValidator().and(y -> y >0));
         base = new SISOPredictorBase<>(model,collector,new ErrorCorrectingRegressionOneStep(),null);
         base.setBurnOut(300);
 

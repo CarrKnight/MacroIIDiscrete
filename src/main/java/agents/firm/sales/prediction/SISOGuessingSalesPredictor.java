@@ -11,7 +11,7 @@ import agents.firm.sales.SalesDepartment;
 import model.MacroII;
 import model.utilities.Deactivatable;
 import model.utilities.stats.collectors.enums.SalesDataType;
-import model.utilities.stats.regression.SISOGuessingRegression;
+import model.utilities.stats.regression.MultipleModelRegressionWithSwitching;
 
 /**
  * A multiple model regression where one gets chosen to predict, possibly by simulating.
@@ -30,7 +30,7 @@ public class SISOGuessingSalesPredictor extends BaseSalesPredictor implements De
     /**
      * the set of regressions to use
      */
-    private final SISOPredictorBase<SalesDataType,SISOGuessingRegression> basePredictor;
+    private final SISOPredictorBase<SalesDataType,MultipleModelRegressionWithSwitching> basePredictor;
 
 
     public SISOGuessingSalesPredictor(MacroII model, SalesDepartment toFollow) {

@@ -12,7 +12,7 @@ import agents.firm.sales.prediction.RegressionDataCollector;
 import agents.firm.sales.prediction.SISOPredictorBase;
 import model.MacroII;
 import model.utilities.stats.collectors.enums.PurchasesDataType;
-import model.utilities.stats.regression.SISOGuessingRegression;
+import model.utilities.stats.regression.MultipleModelRegressionWithSwitching;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -35,7 +35,7 @@ public class SISOGuessingPurchasesPredictor implements PurchasesPredictor  {
     /**
      * the set of regressions to use
      */
-    private final SISOPredictorBase<PurchasesDataType,SISOGuessingRegression> regression;
+    private final SISOPredictorBase<PurchasesDataType,MultipleModelRegressionWithSwitching> regression;
 
 
     public SISOGuessingPurchasesPredictor(MacroII model, PurchasesDepartment toFollow) {

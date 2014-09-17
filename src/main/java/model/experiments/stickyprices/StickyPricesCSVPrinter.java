@@ -193,7 +193,7 @@ public class StickyPricesCSVPrinter {
         DailyStatCollector.addDailyStatCollectorToModel(Paths.get("runs","rawdata", "simpleSeller.csv").toFile(), macroII);
         macroII.start();
         final SimpleFlowSellerPID askPricingStrategy = new SimpleFlowSellerPID(scenario.getDepartments().get(0),
-                .1f, .1f, 0f, 0);
+                .1f, .1f, 0f, 0, scenario.getDepartments().get(0).getMarket(), scenario.getDepartments().get(0).getRandom().nextInt(100), scenario.getDepartments().get(0).getFirm().getModel());
         askPricingStrategy.setFlowTargeting(false);
         scenario.getDepartments().get(0).setAskPricingStrategy(askPricingStrategy);
         askPricingStrategy.setInitialPrice(80); //so the run is the same for all possible runs
@@ -232,7 +232,7 @@ public class StickyPricesCSVPrinter {
         //change the PI values if needed!
         float proportionalAndIntegralGain = .1f / dividePIParametersByThis;
         final SimpleFlowSellerPID askPricingStrategy = new SimpleFlowSellerPID(scenario.getDepartments().get(0),
-                proportionalAndIntegralGain, proportionalAndIntegralGain, 0f, pidSpeed);
+                proportionalAndIntegralGain, proportionalAndIntegralGain, 0f, pidSpeed, scenario.getDepartments().get(0).getMarket(), scenario.getDepartments().get(0).getRandom().nextInt(100), scenario.getDepartments().get(0).getFirm().getModel());
         askPricingStrategy.setFlowTargeting(false);
 
         if(!randomize)
@@ -401,7 +401,7 @@ public class StickyPricesCSVPrinter {
                     //now set the right parameters
                     final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
                     final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, currentP.floatValue(),
-                            currentI.floatValue(), 0f, 0);
+                            currentI.floatValue(), 0f, 0, salesDepartment.getMarket(), salesDepartment.getRandom().nextInt(100), salesDepartment.getFirm().getModel());
                   //  strategy.setInitialPrice(102);
                     //start them all at the same price, otherwise you advantage the slow by being so slow initially that they end up being right later
 
@@ -505,7 +505,7 @@ public class StickyPricesCSVPrinter {
 
         //now set the right parameters
         final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
-        final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, proportionalGain, integralGain, 0f, 0);
+        final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, proportionalGain, integralGain, 0f, 0, salesDepartment.getMarket(), salesDepartment.getRandom().nextInt(100), salesDepartment.getFirm().getModel());
         salesDepartment.setAskPricingStrategy(strategy);
 
         //and make it learned!
@@ -550,7 +550,7 @@ public class StickyPricesCSVPrinter {
         for(final Firm firm : scenario.getCompetitors()){
             final SalesDepartment salesDepartment = firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
             final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, proportionalGain + (float)macroII.random.nextGaussian()/100f,
-                    integralGain + (float)macroII.random.nextGaussian()/100f, 0f, 0); //added a bit of noise
+                    integralGain + (float)macroII.random.nextGaussian()/100f, 0f, 0, salesDepartment.getMarket(), salesDepartment.getRandom().nextInt(100), salesDepartment.getFirm().getModel()); //added a bit of noise
             salesDepartment.setAskPricingStrategy(strategy);
 
             //all impacts are 0 because it's perfect competitive
@@ -637,7 +637,7 @@ public class StickyPricesCSVPrinter {
         for(final Firm firm : scenario.getCompetitors()){
             final SalesDepartment salesDepartment = firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
             final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, proportionalGain + (float)macroII.random.nextGaussian()/100f,
-                    integralGain + (float)macroII.random.nextGaussian()/100f, 0f, 0); //added a bit of noise
+                    integralGain + (float)macroII.random.nextGaussian()/100f, 0f, 0, salesDepartment.getMarket(), salesDepartment.getRandom().nextInt(100), salesDepartment.getFirm().getModel()); //added a bit of noise
             salesDepartment.setAskPricingStrategy(strategy);
 
             //all impacts are 0 because it's perfect competitive
@@ -719,7 +719,7 @@ public class StickyPricesCSVPrinter {
                     department.addLogEventListener(new LogToFile(departmentLog,
                             LogLevel.TRACE,department.getModel()));
                 SimpleFlowSellerPID pricer = new SimpleFlowSellerPID(department,
-                        proportionalGain,integralGain,0,0);
+                        proportionalGain,integralGain,0,0, department.getMarket(), department.getRandom().nextInt(100), department.getFirm().getModel());
                 pricer.decorateController(new Function<PIDController, Controller>() {
                     @Override
                     public Controller apply(PIDController pidController) {

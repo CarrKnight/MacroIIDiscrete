@@ -122,24 +122,25 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
      */
     public SimpleFlowSellerPID( SalesDepartment sales) {
         this(sales, sales.getFirm().getModel().drawProportionalGain()/5,  sales.getFirm().getModel().drawIntegrativeGain()/5,
-                sales.getFirm().getModel().drawDerivativeGain(),sales.getFirm().getModel().drawPIDSpeed()  );
+                sales.getFirm().getModel().drawDerivativeGain(),sales.getFirm().getModel().drawPIDSpeed(), sales.getMarket(),
+                sales.getRandom().nextInt(100), sales.getModel());
     }
 
 
     public SimpleFlowSellerPID(final SalesDepartment sales, float proportionalGain, float integralGain, float derivativeGain,
-                               int speed) {
+                               int speed, Market market, int initialPrice, final MacroII model) {
         this.sales = sales;
-        market =sales.getMarket();
+        this.market = market;
         //addSalesDepartmentListener yourself as a listener!
         sales.addSalesDepartmentListener(this);
-        market.addTradeListener(this);
+        this.market.addTradeListener(this);
 
-        if(market.areAllQuotesVisibile()) //if the order book is visible
+        if(this.market.areAllQuotesVisibile()) //if the order book is visible
         {
             //listen to bids
-            market.addBidListener(this);
+            this.market.addBidListener(this);
             //use the order book stockouts
-            stockOuts = new AfterTradeCounter(market,sales);
+            stockOuts = new AfterTradeCounter(this.market,sales);
         }
         else
         {
@@ -155,41 +156,41 @@ public class SimpleFlowSellerPID extends BaseAskPricingStrategy implements Trade
         controller = rootController;
         //keep speed fixed if we are targeting flows rather than stock (otherwise you compare different periods and that's silly)
         //start with a random price!
-        price = sales.getRandom().nextInt(100);
+        price = initialPrice;
         controller.setOffset(price, true);
 
         //schedule yourself to change prices
         if(speed == 0)
-            sales.getFirm().getModel().scheduleSoon(ActionOrder.ADJUST_PRICES, this);
+            model.scheduleSoon(ActionOrder.ADJUST_PRICES, this);
         else
-            sales.getFirm().getModel().scheduleAnotherDay(ActionOrder.ADJUST_PRICES,this,speed);
+            model.scheduleAnotherDay(ActionOrder.ADJUST_PRICES, this, speed);
         //schedule yourself also to annoy reset stockflow
-        sales.getFirm().getModel().scheduleSoon(ActionOrder.PREPARE_TO_TRADE,new Steppable() {
+        model.scheduleSoon(ActionOrder.PREPARE_TO_TRADE, new Steppable() {
             @Override
             public void step(SimState state) {
-                if(!active)
+                if (!active)
                     return;
 
                 //reset counters
-                goodsSold =0;
+                goodsSold = 0;
                 goodsToSell = sales.getHowManyToSell();
                 initialInventory = goodsToSell;
 
 
                 //reschedule automatically
-                sales.getFirm().getModel().scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE,this);
+                model.scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE, this);
 
             }
 
 
         });
-        sales.getFirm().getModel().scheduleSoon(ActionOrder.THINK, new Steppable() {
+        model.scheduleSoon(ActionOrder.THINK, new Steppable() {
             @Override
             public void step(SimState simState) {
-                if(!active)
+                if (!active)
                     return;
                 //we changed the prices, need to update the stockout counter
-                stockOuts.newPIDStep(market);
+                stockOuts.newPIDStep(SimpleFlowSellerPID.this.market);
 
             }
         });
