@@ -16,6 +16,7 @@ import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import com.google.common.base.Preconditions;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
+import model.utilities.stats.collectors.enums.PurchasesDataType;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
@@ -31,6 +32,73 @@ import static org.junit.Assert.assertEquals;
  */
 public class OneSectorStatics {
 
+
+    public static void testClassicMonopolistScenaro(Class<? extends AskPricingStrategy> askPricingStrategy)
+    {
+
+        testClassicMonopolistScenaro(askPricingStrategy,(hr)-> PurchasesPredictor.Factory.newPurchasesPredictor(
+                HumanResources.defaultPurchasePredictor,hr),
+                (sales)-> SalesPredictor.Factory.newSalesPredictor(SalesDepartment.defaultPredictorStrategy,sales) );
+
+    }
+
+    public static void testClassicMonopolistScenaro(Class<? extends AskPricingStrategy> askPricingStrategy,
+                                                    Function<HumanResources, PurchasesPredictor> hrPredictor,
+                                                    Function<SalesDepartment, SalesPredictor> salesPredictor)
+    {
+
+        for(int i=0; i<5; i++)
+        {
+            //we know the profit maximizing equilibrium is q=220, price = 72
+            final MacroII macroII = new MacroII(System.currentTimeMillis());
+            System.out.println("----------------------------------------------------------");
+            System.out.println(macroII.seed());
+            System.out.println("----------------------------------------------------------");
+            MonopolistScenario scenario1 = new MonopolistScenario(macroII);
+            //    scenario1.setAlwaysMoving(true);
+            //   MonopolistScenario scenario1 = new MonopolistScenario(macroII);
+            macroII.setScenario(scenario1);
+            scenario1.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
+            scenario1.setAskPricingStrategy(askPricingStrategy);
+            scenario1.setSalesDepartmentType(SalesDepartmentOneAtATime.class);
+
+            //csv writer
+
+
+
+
+            macroII.start();
+            macroII.schedule.step(macroII);
+            final SalesDepartment dept = scenario1.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
+            dept.setPredictorStrategy(salesPredictor.apply(dept));
+            final HumanResources hr = scenario1.getMonopolist().getHRs().iterator().next();
+            hr.setPredictor(hrPredictor.apply(hr));
+
+            while(macroII.schedule.getTime()<5000)
+            {
+                macroII.schedule.step(macroII);
+
+            }
+
+            System.out.println(scenario1.monopolist.getTotalWorkers());
+            System.out.println(scenario1.monopolist.getSalesDepartment(UndifferentiatedGoodType.GENERIC).
+                    getData().getLatestObservation(SalesDataType.PREDICTED_DEMAND_SLOPE));
+            System.out.println(scenario1.monopolist.getHRs().iterator().next().getData().getLatestObservation(PurchasesDataType.PREDICTED_SUPPLY_SLOPE));
+
+            assertEquals(scenario1.monopolist.getTotalWorkers(), 22,1);
+            assertEquals(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastPrice(), 79,1);
+
+
+            macroII.finish();
+
+
+
+
+
+
+        }
+
+    }
 
     public static void testRandomSlopeMonopolist(int seed, MacroII macroII, MonopolistScenario scenario1,
                                                  Class<? extends AskPricingStrategy> strategy)
