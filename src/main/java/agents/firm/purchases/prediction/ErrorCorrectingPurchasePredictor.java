@@ -35,11 +35,12 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
         this.collector = new RegressionDataCollector<>(department, xVariable,
                 PurchasesDataType.CLOSING_PRICES,PurchasesDataType.DEMAND_GAP);
         collector.setDataValidator(collector.getDataValidator().and(Department::hasTradedAtLeastOnce));
-        collector.setxValidator(collector.getxValidator().and(x -> x > 0));
-        collector.setyValidator(collector.getyValidator().and(y -> department.getGoodType().isLabor() ? y >=0 :
-                y >0));
+        collector.setxValidator(collector.getxValidator().and(x -> x >= 0));
+        collector.setyValidator(collector.getyValidator().and(y -> y>0));
         final MultipleModelRegressionWithSwitching switching = new MultipleModelRegressionWithSwitching(
-                new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(.98f), new Integer[]{0})
+                new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(.98f), new Integer[]{0}),
+                new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(.99f), new Integer[]{0}),
+                new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(1), new Integer[]{0})
         );
         switching.setHowManyObservationsBeforeModelSelection(300);
         switching.setExcludeLinearFallback(false);

@@ -15,6 +15,7 @@ import model.utilities.stats.regression.MultipleModelRegressionWithSwitching;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Error correcting model as a base for predicting marginals
@@ -36,13 +37,20 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
         collector.setxValidator(collector.getxValidator().and(x -> x >=0));
         collector.setyValidator(collector.getyValidator().and(y -> y >0));
         final MultipleModelRegressionWithSwitching switching = new MultipleModelRegressionWithSwitching(
-                new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(.98f), new Integer[]{0})
+                new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(.98f), new Integer[]{0}),
+                new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(.99f), new Integer[]{0}),
+                new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(1), new Integer[]{0})
         );
         switching.setHowManyObservationsBeforeModelSelection(300);
         switching.setExcludeLinearFallback(false);
         switching.setRoundError(true);
         base = new SISOPredictorBase<>(model,collector,switching,null);
         base.setBurnOut(300);
+        try {
+            base.setDebugWriter(Paths.get("tmp.csv"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         predictor = new FixedDecreaseSalesPredictor();
 
