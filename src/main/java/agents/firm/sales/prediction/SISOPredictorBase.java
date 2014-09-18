@@ -6,7 +6,6 @@
 
 package agents.firm.sales.prediction;
 
-import agents.firm.Department;
 import model.MacroII;
 import model.utilities.ActionOrder;
 import model.utilities.Deactivatable;
@@ -54,11 +53,13 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
 
 
     private BufferedWriter debugWriter;
+    private int maximumGap = 100;
 
 
     public static <K extends Enum<K>> SISOPredictorBase<K,MultipleModelRegressionWithSwitching> buildDefaultSISOGuessingRegression(MacroII model,
                                                                                                          RegressionDataCollector<K> collector){
-        return new SISOPredictorBase<>(model,collector,new MultipleModelRegressionWithSwitching(0,1,10,20,50,100),
+        return new SISOPredictorBase<>(model,collector,
+                new MultipleModelRegressionWithSwitching(0,1,10,20,50,100),
                 regression1 -> {
                     regression1.setRoundError(true);
                     regression1.setHowManyObservationsBeforeModelSelection(DEFAULT_BURNOUT);
@@ -74,8 +75,6 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
     public SISOPredictorBase(MacroII model, RegressionDataCollector<T> collector, R regression,
                              Consumer<R> regressionInitialization) {
         this.collector =collector;
-        this.collector.setDataValidator(collector.getDataValidator().and(Department::hasTradedAtLeastOnce));
-        this.collector.setyValidator(price-> Double.isFinite(price) && price > 0); // we don't want -1 prices
         this.regression = regression;
         if(regressionInitialization != null)
             regressionInitialization.accept(regression);
@@ -104,9 +103,9 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
             //check weight
             double gap = collector.getLastObservedGap();
             //regress
-            assert dependentVariable > 0;
+            assert collector.isLastYValid();
 
-            final boolean skipped = !ignoreGap && Math.abs(gap) > 100 ;
+            final boolean skipped = !ignoreGap && Math.abs(gap) > maximumGap;
             if (skipped)
                 regression.skipObservation(dependentVariable, independentVariable);
             else {
@@ -154,7 +153,7 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
      * are there enough observations to make a call?
      */
     public boolean readyForPrediction() {
-        return regression.getNumberOfObservations() > burnOut;
+        return regression.getNumberOfObservations() >= burnOut;
     }
 
 
@@ -205,6 +204,14 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
 
     public R getRegression() {
         return regression;
+    }
+
+    public int getMaximumGap() {
+        return maximumGap;
+    }
+
+    public void setMaximumGap(int maximumGap) {
+        this.maximumGap = maximumGap;
     }
 
     public boolean isIgnoreGap() {
