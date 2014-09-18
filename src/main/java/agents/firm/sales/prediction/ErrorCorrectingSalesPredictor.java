@@ -7,9 +7,11 @@
 package agents.firm.sales.prediction;
 
 import agents.firm.sales.SalesDepartment;
+import javafx.util.Pair;
 import model.MacroII;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import model.utilities.stats.regression.ErrorCorrectingRegressionOneStep;
+import model.utilities.stats.regression.MultipleModelRegressionWithSwitching;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -22,7 +24,7 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
 
     private final RegressionDataCollector<SalesDataType> collector;
 
-    private final SISOPredictorBase<SalesDataType,ErrorCorrectingRegressionOneStep> base;
+    private final SISOPredictorBase<SalesDataType,MultipleModelRegressionWithSwitching> base;
 
     private final FixedDecreaseSalesPredictor predictor;
 
@@ -33,7 +35,13 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
         collector.setDataValidator(collector.getDataValidator().and((dept)->dept.hasTradedAtLeastOnce()));
         collector.setxValidator(collector.getxValidator().and(x -> x >=0));
         collector.setyValidator(collector.getyValidator().and(y -> y >0));
-        base = new SISOPredictorBase<>(model,collector,new ErrorCorrectingRegressionOneStep(),null);
+        final MultipleModelRegressionWithSwitching switching = new MultipleModelRegressionWithSwitching(
+                new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(.98f), new Integer[]{0})
+        );
+        switching.setHowManyObservationsBeforeModelSelection(300);
+        switching.setExcludeLinearFallback(false);
+        switching.setRoundError(true);
+        base = new SISOPredictorBase<>(model,collector,switching,null);
         base.setBurnOut(300);
 
         predictor = new FixedDecreaseSalesPredictor();

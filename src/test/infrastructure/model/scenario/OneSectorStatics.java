@@ -20,6 +20,8 @@ import model.utilities.stats.collectors.enums.SalesDataType;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;
@@ -181,7 +183,7 @@ public class OneSectorStatics {
             System.out.println(prices.getMean() + " - " + quantities.getMean() + "/"  +
                     "----" + macroII.seed() + " | " + macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastDaysAveragePrice());
             System.out.println("standard deviations: price : " + prices.getStandardDeviation() + " , quantity: " + quantities.getStandardDeviation());
-
+            printSlopes(scenario1);
 
             assertEquals(prices.getMean(), 58, 5);
 //                assertTrue(String.valueOf(prices.getStandardDeviation()),prices.getStandardDeviation() < 5.5);
@@ -189,5 +191,21 @@ public class OneSectorStatics {
 //                assertTrue(String.valueOf(prices.getStandardDeviation()),quantities.getStandardDeviation() < 5.5);
 
         }
+    }
+
+    public static void printSlopes(TripolistScenario scenario1) {
+        int additionalCompetitors = scenario1.getAdditionalCompetitors();
+        //slopes
+        double[] salesSlopes = new double[additionalCompetitors+1];
+        double[] hrSlopes = new double[additionalCompetitors+1];
+        final LinkedList<Firm> competitorList = scenario1.getCompetitors();
+        for(int k=0; k<salesSlopes.length; k++)
+        {
+            salesSlopes[k] =competitorList.get(k).getSalesDepartment(UndifferentiatedGoodType.GENERIC).getLatestObservation(SalesDataType.PREDICTED_DEMAND_SLOPE);
+            final HumanResources hr = competitorList.get(k).getHRs().iterator().next();
+            hrSlopes[k] =  hr.predictPurchasePriceWhenIncreasingProduction()-hr.predictPurchasePriceWhenNoChangeInProduction();
+        }
+        System.out.println("learned sales slopes: " + Arrays.toString(salesSlopes));
+        System.out.println("learned purchases slopes: " + Arrays.toString(hrSlopes));
     }
 }

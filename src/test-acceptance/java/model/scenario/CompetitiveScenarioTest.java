@@ -22,13 +22,11 @@ import agents.firm.sales.pricing.pid.SimpleFlowSellerPID;
 import goods.UndifferentiatedGoodType;
 import model.MacroII;
 import model.utilities.stats.collectors.enums.MarketDataType;
-import model.utilities.stats.collectors.enums.SalesDataType;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -181,7 +179,7 @@ public class CompetitiveScenarioTest {
 
                 System.out.println(prices.getMean() + " - " + quantities.getMean() +"/" +target.getMean()+ "----" + macroII.seed() + " | " + macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastDaysAveragePrice());
                 System.out.println("standard deviations: price : " + prices.getStandardDeviation() + " , quantity: " + quantities.getStandardDeviation());
-                printSlopes(scenario1);
+                OneSectorStatics.printSlopes(scenario1);
 
 
                 if(competitors>=4)
@@ -200,22 +198,6 @@ public class CompetitiveScenarioTest {
 
 
 
-    }
-
-    public static void printSlopes(TripolistScenario scenario1) {
-        int additionalCompetitors = scenario1.getAdditionalCompetitors();
-        //slopes
-        double[] salesSlopes = new double[additionalCompetitors+1];
-        double[] hrSlopes = new double[additionalCompetitors+1];
-        final LinkedList<Firm> competitorList = scenario1.getCompetitors();
-        for(int k=0; k<salesSlopes.length; k++)
-        {
-            salesSlopes[k] =competitorList.get(k).getSalesDepartment(UndifferentiatedGoodType.GENERIC).getLatestObservation(SalesDataType.PREDICTED_DEMAND_SLOPE);
-            final HumanResources hr = competitorList.get(k).getHRs().iterator().next();
-            hrSlopes[k] =  hr.predictPurchasePriceWhenIncreasingProduction()-hr.predictPurchasePriceWhenNoChangeInProduction();
-        }
-        System.out.println("learned sales slopes: " + Arrays.toString(salesSlopes));
-        System.out.println("learned purchases slopes: " + Arrays.toString(hrSlopes));
     }
 
     @Test
@@ -278,7 +260,7 @@ public class CompetitiveScenarioTest {
 
                 System.out.println(prices.getMean() + " - " + quantities.getMean() +"/" +target.getMean()+ "----" + macroII.seed() + " | " + macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastDaysAveragePrice());
                 System.out.println("standard deviations: price : " + prices.getStandardDeviation() + " , quantity: " + quantities.getStandardDeviation());
-                printSlopes(scenario1);
+                OneSectorStatics.printSlopes(scenario1);
                 if(competitors>=4)
                 {
                     assertEquals(prices.getMean(), 58, 5);

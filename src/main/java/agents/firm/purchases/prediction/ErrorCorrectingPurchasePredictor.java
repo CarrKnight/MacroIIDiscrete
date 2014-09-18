@@ -10,9 +10,11 @@ import agents.firm.Department;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.sales.prediction.RegressionDataCollector;
 import agents.firm.sales.prediction.SISOPredictorBase;
+import javafx.util.Pair;
 import model.MacroII;
 import model.utilities.stats.collectors.enums.PurchasesDataType;
 import model.utilities.stats.regression.ErrorCorrectingRegressionOneStep;
+import model.utilities.stats.regression.MultipleModelRegressionWithSwitching;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -23,22 +25,29 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
 
     private final RegressionDataCollector<PurchasesDataType> collector;
 
-    private final SISOPredictorBase<PurchasesDataType,ErrorCorrectingRegressionOneStep> base;
+    private final SISOPredictorBase<PurchasesDataType,MultipleModelRegressionWithSwitching> base;
 
     private final FixedIncreasePurchasesPredictor predictor;
 
     public ErrorCorrectingPurchasePredictor(MacroII model, PurchasesDepartment department) {
 
-        final PurchasesDataType xVariable = department.getGoodType().isLabor() ?  PurchasesDataType.WORKERS_TARGETED :
-                PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD;
+        final PurchasesDataType xVariable = PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD;
         this.collector = new RegressionDataCollector<>(department, xVariable,
                 PurchasesDataType.CLOSING_PRICES,PurchasesDataType.DEMAND_GAP);
         collector.setDataValidator(collector.getDataValidator().and(Department::hasTradedAtLeastOnce));
         collector.setxValidator(collector.getxValidator().and(x -> x > 0));
         collector.setyValidator(collector.getyValidator().and(y -> department.getGoodType().isLabor() ? y >=0 :
                 y >0));
-        base = new SISOPredictorBase<>(model,collector,new ErrorCorrectingRegressionOneStep(.98f),null);
-        base.setBurnOut(300);
+        final MultipleModelRegressionWithSwitching switching = new MultipleModelRegressionWithSwitching(
+                new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(.98f), new Integer[]{0})
+        );
+        switching.setHowManyObservationsBeforeModelSelection(300);
+        switching.setExcludeLinearFallback(false);
+        switching.setRoundError(true);
+        base = new SISOPredictorBase<>(model,collector, switching,null);
+
+
+
 
         predictor = new FixedIncreasePurchasesPredictor();
 

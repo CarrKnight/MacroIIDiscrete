@@ -11,7 +11,7 @@ import model.scenario.MonopolistScenario;
 import model.scenario.OneSectorStatics;
 import org.junit.Test;
 
-public class ErrorCorrectingPurchasePredictorTest {
+public class ErrorCorrectingPurchasePredictorIntegrationTest {
 
 
     @Test
@@ -26,6 +26,17 @@ public class ErrorCorrectingPurchasePredictorTest {
             scenario.setPurchasesPricePreditorStrategy(ErrorCorrectingPurchasePredictor.class);
             OneSectorStatics.testRandomSlopeMonopolist((int) seed, model, scenario);
         }
+
+
+
+
+    }
+
+    @Test
+    public void inCompetitiveSetting() throws Exception {
+
+        OneSectorStatics.testCompetitiveHrCustomPredictor((hr) -> new ErrorCorrectingPurchasePredictor(hr.getModel(), hr));
+    //    OneSectorStatics.testCompetitiveHrCustomPredictor((hr)-> new ErrorCorrectingPurchasePredictor(hr.getModel(),hr));
 
 
 

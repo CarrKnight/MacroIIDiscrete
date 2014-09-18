@@ -143,8 +143,12 @@ public class MultipleModelRegressionWithSwitching implements SISORegression {
             regressions[i].addObservation(output,input,intercepts);
         }
         //fallback regressions
-        if(Double.isFinite(input) && hasEnoughObservations())
-            fallbackError.addObservation(Math.pow(output - linearFallback.predictNextOutput(input,intercepts),2));
+        if(Double.isFinite(input) && hasEnoughObservations()) {
+            double error = output - linearFallback.predictNextOutput(input, intercepts);
+            if(roundError)
+                error = Math.round(error);
+            fallbackError.addObservation(Math.pow(error,2));
+        }
         linearFallback.addObservation(output,input,intercepts);
 
 

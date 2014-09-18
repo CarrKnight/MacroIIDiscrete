@@ -68,4 +68,63 @@ public class RegressionDataCollectorTest {
         Assert.assertFalse(haircut.isLastGapValid());
 
     }
+
+    @Test
+    public void dataValidatorWorks()
+    {
+
+        SalesDepartment department = mock(SalesDepartment.class);
+        SalesData data = mock(SalesData.class);
+        when(department.getData()).thenReturn(data);
+        when(department.numberOfObservations()).thenReturn(1);
+        when(data.numberOfObservations()).thenReturn(1);
+        //they all return 0
+        when(data.getLatestObservation(SalesDataType.CLOSING_PRICES)).
+                thenReturn(0d);
+        when(data.getLatestObservation(SalesDataType.HOW_MANY_TO_SELL)).
+                thenReturn(0d);
+        when(data.getLatestObservation(SalesDataType.SUPPLY_GAP)).
+                thenReturn(0d);
+
+
+        RegressionDataCollector<SalesDataType> collector =
+                new RegressionDataCollector<>(department,SalesDataType.CLOSING_PRICES,
+                        SalesDataType.HOW_MANY_TO_SELL,SalesDataType.SUPPLY_GAP);
+
+        //set validators always true
+        collector.setxValidator((x)->true);
+        collector.setyValidator((y)->true);
+        collector.setGapValidator((gap)->true);
+        collector.setDataValidator((dept)->true);
+
+        collector.collect();
+        Assert.assertTrue(collector.isLastXValid());
+        Assert.assertTrue(collector.isLastYValid());
+        Assert.assertTrue(collector.isLastGapValid());
+        Assert.assertTrue(collector.isLatestObservationValid());
+
+        collector.setxValidator((x)->false);
+        collector.collect();
+        Assert.assertTrue(!collector.isLastXValid());
+        Assert.assertTrue(collector.isLastYValid());
+        Assert.assertTrue(collector.isLastGapValid());
+        Assert.assertTrue(!collector.isLatestObservationValid());
+
+        collector.setxValidator((x)->true);
+        collector.setyValidator((y)->false);
+        Assert.assertTrue(collector.isLastXValid());
+        Assert.assertTrue(!collector.isLastYValid());
+        Assert.assertTrue(collector.isLastGapValid());
+        Assert.assertTrue(!collector.isLatestObservationValid());
+
+        collector.setyValidator((y)->true);
+        collector.setGapValidator((gap)->false);
+        Assert.assertTrue(collector.isLastXValid());
+        Assert.assertTrue(collector.isLastYValid());
+        Assert.assertTrue(!collector.isLastGapValid());
+        Assert.assertTrue(!collector.isLatestObservationValid());
+
+
+
+    }
 }
