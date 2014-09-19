@@ -94,36 +94,41 @@ public class SISOPredictorBase<T extends Enum<T>,R extends SISORegression> imple
         assert state instanceof MacroII;
 
         collector.collect();
+
+        //gather the independentVariable sold
+        double independentVariable = collector.getLastObservedX();
+        //gather dependentVariable
+        double dependentVariable = collector.getLastObservedY();
+        boolean skipped = true;
         if(collector.isLatestObservationValid()) {
-            //gather the independentVariable sold
-            double independentVariable = collector.getLastObservedX();
-            //gather dependentVariable
-            double dependentVariable = collector.getLastObservedY();
+
 
             //check weight
             double gap = collector.getLastObservedGap();
             //regress
             assert collector.isLastYValid();
 
-            final boolean skipped = !ignoreGap && Math.abs(gap) > maximumGap;
+            skipped = !ignoreGap && Math.abs(gap) > maximumGap;
             if (skipped)
                 regression.skipObservation(dependentVariable, independentVariable);
             else {
                 regression.addObservation(dependentVariable, independentVariable);
             }
-            if(debugWriter != null)
-            {
-                try {
-                    debugWriter.write(dependentVariable + ", " + independentVariable + ","
-                            + (skipped ? 1 : 0));
-                    debugWriter.newLine();
-                    debugWriter.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+
+
+
+        }
+
+        if(debugWriter != null)
+        {
+            try {
+                debugWriter.write(dependentVariable + ", " + independentVariable + ","
+                        + (skipped ? 1 : 0));
+                debugWriter.newLine();
+                debugWriter.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-
         }
         //restep
         ((MacroII) state).scheduleTomorrow(ActionOrder.PREPARE_TO_TRADE,this);

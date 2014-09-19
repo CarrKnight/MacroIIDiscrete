@@ -155,4 +155,43 @@ public class MultipleModelRegressionWithSwitchingTest
         verify(regression,times(1)).addObservation(1,1);
 
     }
+
+    @Test
+    public void linearFallbackFTW()
+    {
+
+        //we are going to pass an easy line and make the mock regression fail.
+        //This test became necessary when i embarrassingly noticed i fucked up the getter. The getters, man, come on.
+
+        Function<Integer, SISORegression> fakeBuilder = mock(Function.class);
+        final SISORegression regression = mock(SISORegression.class);
+        when(fakeBuilder.apply(1)).thenReturn(regression);
+        when(regression.predictNextOutput(anyDouble(),anyDouble())).thenReturn(99999d); //sucks at predicting
+        MultipleModelRegressionWithSwitching switcher = new MultipleModelRegressionWithSwitching(fakeBuilder,1);
+        switcher.setHowManyObservationsBeforeModelSelection(50);
+        switcher.setExcludeLinearFallback(false);
+
+        for(int i=0; i<100; i++)
+        {
+            switcher.addObservation(i,i); //45 degree line
+        }
+        //linear fallback should win this easy
+        Assert.assertTrue(switcher.isFallbackBetter());
+
+        //make sure getGains and company refer to the linear fallback
+        when(regression.getGain()).thenReturn(1000d);
+        when(regression.getIntercept()).thenReturn(1000d);
+        when(regression.getDelay()).thenReturn(1000);
+        when(regression.getTimeConstant()).thenReturn(1000d);
+
+        //the regression parameters should come from the linear regression
+        Assert.assertEquals(switcher.getGain(),1,.001d);
+        Assert.assertEquals(switcher.getIntercept(),0,.001d);
+        Assert.assertEquals(switcher.getTimeConstant(),0,.001d);
+        Assert.assertEquals(switcher.getDelay(),0);
+
+
+
+
+    }
 }

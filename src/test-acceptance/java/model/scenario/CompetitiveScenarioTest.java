@@ -637,6 +637,8 @@ public class CompetitiveScenarioTest {
 
                 System.out.println(prices.getMean() + " - " + quantities.getMean() +"/" +target.getMean()+ "----" + macroII.seed() + " | " + macroII.getMarket(UndifferentiatedGoodType.GENERIC).getLastDaysAveragePrice());
                 System.out.println("standard deviations: price : " + prices.getStandardDeviation() + " , quantity deviation: " + quantities.getStandardDeviation());
+                OneSectorStatics.printSlopes(scenario1);
+
                 if(competitors>=4)
                 {
                     assertEquals(prices.getMean(), 58, 5);

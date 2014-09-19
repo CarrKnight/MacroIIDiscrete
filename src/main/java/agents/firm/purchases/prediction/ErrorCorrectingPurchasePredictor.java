@@ -18,6 +18,7 @@ import model.utilities.stats.regression.MultipleModelRegressionWithSwitching;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
 
@@ -33,13 +34,13 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
 
         final PurchasesDataType xVariable = PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD;
         this.collector = new RegressionDataCollector<>(department, xVariable,
-                PurchasesDataType.CLOSING_PRICES,PurchasesDataType.DEMAND_GAP);
+                PurchasesDataType.LAST_OFFERED_PRICE,PurchasesDataType.DEMAND_GAP);
         collector.setDataValidator(collector.getDataValidator().and(Department::hasTradedAtLeastOnce));
         collector.setxValidator(collector.getxValidator().and(x -> x >= 0));
         collector.setyValidator(collector.getyValidator().and(y -> y>0));
         final MultipleModelRegressionWithSwitching switching = new MultipleModelRegressionWithSwitching(
+                new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(.96f), new Integer[]{0}),
                 new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(.98f), new Integer[]{0}),
-                new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(.99f), new Integer[]{0}),
                 new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(1), new Integer[]{0})
         );
         switching.setHowManyObservationsBeforeModelSelection(300);
@@ -48,7 +49,10 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
         base = new SISOPredictorBase<>(model,collector, switching,null);
 
 
-
+        try{
+            base.setDebugWriter(Paths.get("tmp.csv"));
+        }
+        catch (Exception e){};
 
         predictor = new FixedIncreasePurchasesPredictor();
 
@@ -66,7 +70,7 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
     public float predictPurchasePriceWhenIncreasingProduction(PurchasesDepartment dept) {
         double slope = base.getRegression().getGain();
         float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float) slope : 0;
-        predictor.setIncrementDelta(toAdd);
+        predictor.setIncrementDelta(Math.max(toAdd,0));
         return predictor.predictPurchasePriceWhenIncreasingProduction(dept);
     }
 
@@ -80,7 +84,7 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
     public float predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
         double slope = base.getRegression().getGain();
         float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float) slope : 0;
-        predictor.setIncrementDelta(toAdd);
+        predictor.setIncrementDelta(Math.max(toAdd,0));
         return predictor.predictPurchasePriceWhenDecreasingProduction(dept);
     }
 

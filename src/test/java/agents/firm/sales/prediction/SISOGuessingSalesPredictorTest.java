@@ -17,6 +17,9 @@ public class SISOGuessingSalesPredictorTest {
     @Test
     public void inMonopolistSetting() throws Exception {
 
+
+
+
         for(int i=0; i<10; i++) {
             //this is basically random-slopes:
             long seed = System.currentTimeMillis();

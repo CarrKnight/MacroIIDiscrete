@@ -56,7 +56,7 @@ public class MultipleModelRegressionWithSwitching implements SISORegression {
      * basically builds a FOPDT regression if I tell you this is my guessed delay
      */
     public final  static Function<Integer,SISORegression> DEFAULT_REGRESSION_FROM_GUESS_BUILDER = integer ->
-            new ErrorCorrectingRegressionOneStep(ErrorCorrectingRegressionOneStep.DEFAULT_FORGETTING_FACTOR,integer);
+            new NonDynamicRegression(new KalmanRecursiveRegression(2),integer);
 
     /**
      * if this is set to true, the linear fallback is always ignored
@@ -193,8 +193,8 @@ public class MultipleModelRegressionWithSwitching implements SISORegression {
     public double getTimeConstant(){
         //find new minimum
         updateMinimumIfNeeded();
-
-        return regressions[minimum].getTimeConstant();
+        final SISORegression regression = isFallbackBetter() ? linearFallback : regressions[minimum];
+        return regression.getTimeConstant();
 
     }
 
@@ -203,15 +203,18 @@ public class MultipleModelRegressionWithSwitching implements SISORegression {
     public double getIntercept() {
         //find new minimum
         updateMinimumIfNeeded();
+        final SISORegression regression = isFallbackBetter() ? linearFallback : regressions[minimum];
+        return regression.getIntercept();
 
-        return regressions[minimum].getIntercept();  }
+        }
 
     public double getGain()
     {
         //find new minimum
         updateMinimumIfNeeded();
 
-        return regressions[minimum].getGain();
+        final SISORegression regression = isFallbackBetter() ? linearFallback : regressions[minimum];
+        return regression.getGain();
 
     }
 
@@ -220,7 +223,8 @@ public class MultipleModelRegressionWithSwitching implements SISORegression {
         //find new minimum
         updateMinimumIfNeeded();
 
-        return regressions[minimum].predictNextOutput(input);
+        final SISORegression regression = isFallbackBetter() ? linearFallback : regressions[minimum];
+        return regression.predictNextOutput(input);
 
     }
 
@@ -229,8 +233,9 @@ public class MultipleModelRegressionWithSwitching implements SISORegression {
     public int getDelay(){
         //find new minimum
         updateMinimumIfNeeded();
+        final SISORegression regression = isFallbackBetter() ? linearFallback : regressions[minimum];
 
-        return regressions[minimum].getDelay();
+        return regression.getDelay();
     }
 
     public String getErrors() {
@@ -241,10 +246,9 @@ public class MultipleModelRegressionWithSwitching implements SISORegression {
     @Override
     public String toString() {
         updateMinimumIfNeeded();
-        if(isFallbackBetter())
-            return linearFallback.toString();
-        else
-            return regressions[minimum].toString();
+        final SISORegression regression = isFallbackBetter() ? linearFallback : regressions[minimum];
+
+        return regression.toString();
     }
 
 
@@ -260,24 +264,14 @@ public class MultipleModelRegressionWithSwitching implements SISORegression {
                 fallbackError.getSmoothedObservation() <= errors[minimum].getSmoothedObservation();
     }
 
-    /**
-     * use the fallback/linear regression for policy guidance.
-     * @param target target (that's the y)
-     * @return the policy associated with that target!
-     */
-    public double fallbackPolicy(double target){
-        return linearFallback.impliedMV(target);
-    }
-
     @Override
     public DynamicProcess generateDynamicProcessImpliedByRegression() {
         //find new minimum
         updateMinimumIfNeeded();
 
-        if(isFallbackBetter())
-            return linearFallback.generateDynamicProcessImpliedByRegression();
-        else
-            return regressions[minimum].generateDynamicProcessImpliedByRegression();
+        final SISORegression regression = isFallbackBetter() ? linearFallback : regressions[minimum];
+
+        return regression.generateDynamicProcessImpliedByRegression();
     }
 
 

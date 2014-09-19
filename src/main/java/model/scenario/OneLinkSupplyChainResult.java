@@ -180,7 +180,7 @@ public class OneLinkSupplyChainResult {
         while(macroII.schedule.getTime()<14000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+            
         }
 
 
@@ -194,7 +194,7 @@ public class OneLinkSupplyChainResult {
         {
             //make the model run one more day:
             macroII.schedule.step(macroII);
-            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+            
 
             averageFoodPrice.addValue(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
             averageBeefProduced.addValue(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getYesterdayVolume());
@@ -282,7 +282,7 @@ public class OneLinkSupplyChainResult {
         while(macroII.schedule.getTime()<15000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+            
             if(macroII.schedule.getTime() >= 14500)
             {
                 averageFoodPrice.addValue(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
@@ -368,7 +368,7 @@ public class OneLinkSupplyChainResult {
         while(macroII.schedule.getTime()<14000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
+            
             //       System.out.println(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
         }
 
@@ -425,7 +425,7 @@ public class OneLinkSupplyChainResult {
         while(macroII.schedule.getTime()<14000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
+            
         }
 
 
@@ -557,7 +557,7 @@ public class OneLinkSupplyChainResult {
         while(macroII.schedule.getTime()<14000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+            
         }
 
 
@@ -568,7 +568,7 @@ public class OneLinkSupplyChainResult {
         {
             //make the model run one more day:
             macroII.schedule.step(macroII);
-            printProgressBar(15001,(int)macroII.schedule.getSteps(),100);
+            
 
             averageFoodPrice.addValue(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
             averageBeefProduced.addValue(macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getYesterdayVolume());
