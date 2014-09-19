@@ -148,10 +148,10 @@ public class OneLinkSupplyChainScenarioRegressionTest
         System.out.println();
         //the food price is in the ballpark
         //with competition, you are better off testing an MA
-        return (Math.abs(result.getQuantity()-17)<3 &&
-                Math.abs(result.getBeefPrice()-85)<5 &&
-                Math.abs(result.getFoodPrice()-17)<5
-        );
+        final boolean success = Math.abs(result.getQuantity() - 17) < 3 &&
+                Math.abs(result.getFoodPrice() - 85) < 5 &&
+                Math.abs(result.getBeefPrice() - 17) < 5;
+        return success;
 
     }
 
@@ -541,7 +541,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             
-                    testResults.add(OneLinkSupplyChainResult.everybodyLearningCompetitiveStickyPIDRun(random.nextInt(), 1f, 50));
+                    testResults.add(OneLinkSupplyChainResult.everybodyLearningCompetitiveStickyPIDRun(random.nextInt(), 1f,
+                            100));
 
             
 

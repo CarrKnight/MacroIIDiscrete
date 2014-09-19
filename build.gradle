@@ -1,6 +1,8 @@
 apply plugin: 'java'
+apply plugin: 'application'
 
-//this split integration-acceptance-unit comes from : https://github.com/tommysdk/showcase/blob/master/test-categories/build.gradle
+mainClassName = 'model.experiments.stickyprices.StickyPricesCSVPrinter'
+
 
 repositories {
     mavenLocal()
@@ -9,6 +11,7 @@ repositories {
 
 sourceCompatibility = 1.8
 
+//this split integration-acceptance-unit comes from : https://github.com/tommysdk/showcase/blob/master/test-categories/build.gradle
 
 
 sourceSets {
