@@ -436,6 +436,7 @@ public class OneLinkSupplyChainResult {
         float averageFoodPrice = 0;
         float averageBeefProduced = 0;
         float averageBeefPrice=0;
+
         for(int j=0; j< 1000; j++)
         {
             //make the model run one more day:
@@ -443,6 +444,7 @@ public class OneLinkSupplyChainResult {
             averageFoodPrice += macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
             averageBeefProduced+= macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).countTodayProductionByRegisteredSellers();
             averageBeefPrice+= macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
+
         }
 
         System.out.println("beef price: " +averageBeefPrice/1000f );
