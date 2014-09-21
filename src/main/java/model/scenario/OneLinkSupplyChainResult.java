@@ -6,6 +6,7 @@
 
 package model.scenario;
 
+import agents.EconomicAgent;
 import agents.firm.Firm;
 import agents.firm.personell.HumanResources;
 import agents.firm.production.Blueprint;
@@ -19,7 +20,9 @@ import agents.firm.sales.prediction.ErrorCorrectingSalesPredictor;
 import agents.firm.sales.prediction.FixedDecreaseSalesPredictor;
 import agents.firm.sales.prediction.SalesPredictor;
 import agents.firm.sales.pricing.AskPricingStrategy;
+import com.google.common.base.Preconditions;
 import financial.market.Market;
+import javafx.collections.ObservableSet;
 import model.MacroII;
 import model.utilities.logs.LogLevel;
 import model.utilities.logs.LogToFile;
@@ -33,6 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.function.Function;
 
 import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
@@ -208,8 +212,7 @@ public class OneLinkSupplyChainResult {
         System.out.println("beef price: " +averageBeefPrice.getMean() );
         System.out.println("food price: " + averageFoodPrice.getMean() );
         System.out.println("produced: " + averageBeefProduced.getMean() );
-        System.out.println("sales slope: " + averageSalesSlope.getMean() );
-        System.out.println("supply slope: " + averageHrSlope.getMean() );
+        extractAndPrintSlopesOfBeefSellers(macroII);
         System.out.println();
 
         macroII.finish();
@@ -369,7 +372,6 @@ public class OneLinkSupplyChainResult {
         {
             macroII.schedule.step(macroII);
             
-            //       System.out.println(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE));
         }
 
 
@@ -392,6 +394,7 @@ public class OneLinkSupplyChainResult {
         System.out.println("beef price: " +averageBeefPrice.getMean() );
         System.out.println("food price: " +averageFoodPrice.getMean() );
         System.out.println("produced: " +averageBeefProduced.getMean() );
+        extractAndPrintSlopesOfBeefSellers(macroII);
         System.out.println();
         macroII.finish();
 
@@ -450,6 +453,8 @@ public class OneLinkSupplyChainResult {
         System.out.println("beef price: " +averageBeefPrice/1000f );
         System.out.println("food price: " +averageFoodPrice/1000f );
         System.out.println("produced: " +averageBeefProduced/1000f );
+        extractAndPrintSlopesOfBeefSellers(macroII);
+
         System.out.println();
         macroII.finish();
 
@@ -582,6 +587,8 @@ public class OneLinkSupplyChainResult {
         System.out.println("beef price: " +averageBeefPrice.getMean() );
         System.out.println("food price: " + averageFoodPrice.getMean() );
         System.out.println("produced: " + averageBeefProduced.getMean() );
+        extractAndPrintSlopesOfBeefSellers(macroII);
+
         System.out.println();
 
         ((Firm)(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getSellers().iterator().next())).getPurchaseDepartment(OneLinkSupplyChainScenario.INPUT_GOOD).
@@ -644,12 +651,61 @@ public class OneLinkSupplyChainResult {
         System.out.println("beef price: " +averageBeefPrice/1000f );
         System.out.println("food price: " +averageFoodPrice/1000f );
         System.out.println("produced: " +averageBeefProduced/1000f );
+        extractAndPrintSlopesOfBeefSellers(macroII);
+
         System.out.println();
         macroII.finish();
 
 
         return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f, macroII);
 
+    }
+
+
+    public static void extractAndPrintSlopesOfBeefSellers(MacroII model)
+    {
+        Preconditions.checkState(OneLinkSupplyChainScenario.class.isAssignableFrom(model.getScenario().getClass()));
+        //wood
+        final ObservableSet<EconomicAgent> lumberMills =
+                model.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getSellers();
+        double salesSlopes[] = new double[lumberMills.size()];
+        double hrSlopes[] = new double[lumberMills.size()];
+        int i=0;
+        for(EconomicAgent e : lumberMills){
+            Firm f = (Firm)e;
+            final double hrSlope = f.getHRs().iterator().next().getLatestObservation(PurchasesDataType.PREDICTED_SUPPLY_SLOPE);
+            hrSlopes[i] = hrSlope;
+            final double saleSlope = f.getSalesDepartment(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(SalesDataType.PREDICTED_DEMAND_SLOPE);
+            salesSlopes[i] = saleSlope;
+            i++;
+        }
+        System.out.println("wood slopes");
+        System.out.println("sales: " + Arrays.toString(salesSlopes));
+        System.out.println("hr: " + Arrays.toString(hrSlopes));
+
+        //furniture
+        final ObservableSet<EconomicAgent> furniturePlants =
+                model.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getBuyers();
+        salesSlopes = new double[furniturePlants.size()];
+        hrSlopes = new double[furniturePlants.size()];
+        double pdSlopes[] = new double[furniturePlants.size()];
+
+        i=0;
+        for(EconomicAgent e : furniturePlants){
+            Firm f = (Firm)e;
+            final double hrSlope = f.getHRs().iterator().next().getLatestObservation(PurchasesDataType.PREDICTED_SUPPLY_SLOPE);
+            hrSlopes[i] = hrSlope;
+            final double saleSlope = f.getSalesDepartment(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(SalesDataType.PREDICTED_DEMAND_SLOPE);
+            salesSlopes[i] = saleSlope;
+            final double pdSlope = f.getPurchaseDepartment(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(
+                    PurchasesDataType.PREDICTED_SUPPLY_SLOPE);
+            pdSlopes[i] = pdSlope;
+            i++;
+        }
+        System.out.println("furniture slopes");
+        System.out.println("sales: " + Arrays.toString(salesSlopes));
+        System.out.println("hr: " + Arrays.toString(hrSlopes));
+        System.out.println("pd: " + Arrays.toString(pdSlopes));
     }
 
 

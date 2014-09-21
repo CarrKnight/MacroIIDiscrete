@@ -64,7 +64,7 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
     public float predictSalePriceAfterIncreasingProduction(SalesDepartment dept, int expectedProductionCost, int increaseStep) {
         double slope = base.getRegression().getGain();
         float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float) slope : 0;
-        predictor.setDecrementDelta(-toAdd);
+        predictor.setDecrementDelta(Math.max(-toAdd,0));
         return predictor.predictSalePriceAfterIncreasingProduction(dept,expectedProductionCost,1);
     }
 
@@ -80,7 +80,7 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
     public float predictSalePriceAfterDecreasingProduction(SalesDepartment dept, int expectedProductionCost, int decreaseStep) {
         double slope = base.getRegression().getGain();
         float toAdd = base.readyForPrediction() && Double.isFinite(slope) ? (float) slope : 0;
-        predictor.setDecrementDelta(-toAdd);
+        predictor.setDecrementDelta(Math.max(-toAdd,0));
         return predictor.predictSalePriceAfterDecreasingProduction(dept,expectedProductionCost,1);
     }
 

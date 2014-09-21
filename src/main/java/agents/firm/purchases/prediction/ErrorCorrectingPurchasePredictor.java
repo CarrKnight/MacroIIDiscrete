@@ -18,6 +18,7 @@ import model.utilities.stats.regression.MultipleModelRegressionWithSwitching;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
 
@@ -33,29 +34,31 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
 
         final PurchasesDataType xVariable = PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD;
         //focus on pid prices if you are hr, if you are buying other inputs, I expect you to be a price-taker
-        final PurchasesDataType yVariable = department.getGoodType().isLabor() ?  PurchasesDataType.LAST_OFFERED_PRICE : PurchasesDataType.CLOSING_PRICES;
+        final PurchasesDataType yVariable = department.getGoodType().isLabor() ?
+                PurchasesDataType.LAST_OFFERED_PRICE : PurchasesDataType.EFFECTIVE_CLOSING_PRICE;
         this.collector = new RegressionDataCollector<>(department, xVariable,
                 yVariable,PurchasesDataType.DEMAND_GAP);
         collector.setDataValidator(collector.getDataValidator().and(Department::hasTradedAtLeastOnce));
-        collector.setxValidator(collector.getxValidator().and(x -> x >= 0));
-        collector.setyValidator(collector.getyValidator().and(y -> y>0));
+        collector.setxValidator(collector.getxValidator().and(x -> x > 0));
+        collector.setyValidator(collector.getyValidator().and(y -> y>=0));
         final MultipleModelRegressionWithSwitching switching = new MultipleModelRegressionWithSwitching(
                 new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(.96f), new Integer[]{0}),
                 new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(.98f), new Integer[]{0}),
                 new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(1), new Integer[]{0})
         );
+
         switching.setHowManyObservationsBeforeModelSelection(300);
         switching.setExcludeLinearFallback(false);
         switching.setRoundError(true);
         base = new SISOPredictorBase<>(model,collector, switching,null);
 
-/*
+
         try{
             if(!department.getGoodType().isLabor())
-             base.setDebugWriter(Paths.get("tmp"+ model.random.nextInt(1000) +".csv"));
+             base.setDebugWriter(Paths.get("tmp.csv"));
         }
         catch (Exception e){};
-*/
+
         predictor = new FixedIncreasePurchasesPredictor();
 
     }

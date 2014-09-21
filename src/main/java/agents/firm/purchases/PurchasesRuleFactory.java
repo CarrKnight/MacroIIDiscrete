@@ -56,7 +56,7 @@ public class PurchasesRuleFactory {
     //static clause to fill the set names
     static {
         bidPricingRules = new ArrayList<>(); //read all the bidPricingRules
-        bidPricingRules.add(CheaterPricing.class);
+        bidPricingRules.add(PriceTaker.class);
         bidPricingRules.add(SurveyMaxPricing .class);
         bidPricingRules.add(UrgentPriceFollowerStrategy .class);
         bidPricingRules.add(ZeroIntelligenceBidPricing .class);

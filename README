@@ -1,16 +1,17 @@
 This is my personal project that will slowly coalesce into my dissertation.
-I am a graduate student, my academic profile is here:
-http://www.css.gmu.edu/?q=node/127
+I am a graduate student, my homepage is here:
+carrknight.github.io
 
-This code is licensed with Academic Free License 3, which you can read in the LICENSE file
+This code is licensed on MIT open-source license. Mostly because it is the only one I had the patience to read.
+You can find it in the LICENSE file.
 
 
-This particular project involves setting a simple, general purpose agent based economic model somehow reminiscent of "Business Dynamics" by Steedman.
-The basic approach of it I describe here:
-https://dl.dropbox.com/u/9133731/zeroKnowledge.pdf
+Basically what I do is cybernetics. I take PID controllers who were doing fine without economics, thank you very much,
+and place them in simple markets, solving problems Marshall already solved centuries ago
+A peer-reviewed summary of what I do is here:
+http://jasss.soc.surrey.ac.uk/17/3/4.html
 
-I am going to present that paper and preliminary results at the Eastern Economic Association Meeting in the coming (2013) May.
 
-I use an open-source license for JProfiler, which you can get here:
+I used an open-source license for JProfiler, which you can get here:
  http://www.ej-technologies.com/products/jprofiler/overview.html
 

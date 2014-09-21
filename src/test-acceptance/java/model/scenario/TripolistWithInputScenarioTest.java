@@ -11,7 +11,7 @@ import agents.firm.purchases.FactoryProducedPurchaseDepartment;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.inventoryControl.FixedInventoryControl;
 import agents.firm.purchases.prediction.FixedIncreasePurchasesPredictor;
-import agents.firm.purchases.pricing.CheaterPricing;
+import agents.firm.purchases.pricing.PriceTaker;
 import agents.firm.sales.SalesDepartmentAllAtOnce;
 import agents.firm.sales.SalesDepartmentOneAtATime;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
@@ -179,10 +179,10 @@ public class TripolistWithInputScenarioTest {
             TripolistWithInputScenario scenario1 = new TripolistWithInputScenario(macroII){
 
                 protected void addPurchaseDepartmentToFirms(){
-                    FactoryProducedPurchaseDepartment<FixedInventoryControl,CheaterPricing,BuyerSearchAlgorithm,SellerSearchAlgorithm>
+                    FactoryProducedPurchaseDepartment<FixedInventoryControl,PriceTaker,BuyerSearchAlgorithm,SellerSearchAlgorithm>
                             factoryProducedPurchaseDepartment =
                             PurchasesDepartment.getPurchasesDepartment(Integer.MAX_VALUE, monopolist, getMarkets().get(TripolistWithInputScenario.INPUT), FixedInventoryControl.class,
-                                    CheaterPricing.class, null, null);
+                                    PriceTaker.class, null, null);
 
                     factoryProducedPurchaseDepartment.getInventoryControl().setInventoryTarget(100);
                     factoryProducedPurchaseDepartment.getInventoryControl().setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(1.1f);

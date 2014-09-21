@@ -14,6 +14,7 @@ import agents.firm.purchases.inventoryControl.Level;
 import agents.firm.purchases.prediction.ErrorCorrectingPurchasePredictor;
 import agents.firm.purchases.prediction.PurchasesPredictor;
 import agents.firm.purchases.pricing.BidPricingStrategy;
+import agents.firm.purchases.pricing.PriceTaker;
 import agents.firm.purchases.pricing.decorators.MaximumBidPriceDecorator;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
@@ -1306,6 +1307,10 @@ public class PurchasesDepartment implements Deactivatable, Department<PurchasesD
     public boolean hasTradedAtLeastOnce() {
         return getLastClosingPrice() >=0;
 
+    }
+
+    public boolean isPriceTaker(){
+        return getPricingStrategy().getClass().equals(PriceTaker.class);
     }
 
 

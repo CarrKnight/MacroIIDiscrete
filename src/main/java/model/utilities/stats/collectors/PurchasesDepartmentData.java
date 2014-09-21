@@ -92,6 +92,9 @@ public class PurchasesDepartmentData extends DataStorage<PurchasesDataType> {
         data.get(PurchasesDataType.OUTFLOW).add((double) departmentToFollow.getTodayOutflow());
         final int lastClosingPrice = departmentToFollow.getLastClosingPrice();
         data.get(PurchasesDataType.CLOSING_PRICES).add((double) lastClosingPrice);
+
+        final int effectiveClosePrice = inflow == 0 ? 0 : lastClosingPrice;
+        data.get(PurchasesDataType.EFFECTIVE_CLOSING_PRICE).add((double) effectiveClosePrice);
         data.get(PurchasesDataType.INVENTORY).add((double) departmentToFollow.getCurrentInventory());
         data.get(PurchasesDataType.FAILURES_TO_CONSUME).add((double) departmentToFollow.getTodayFailuresToConsume());
         data.get(PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD).add((double) departmentToFollow.getNumberOfWorkersWhoConsumeWhatWePurchase());

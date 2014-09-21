@@ -43,7 +43,7 @@ import static org.mockito.Mockito.*;
  * @version 2013-06-10
  * @see
  */
-public class CheaterPricingTest {
+public class PriceTakerTest {
 
 
     //this isn't true anymore!
@@ -52,7 +52,7 @@ public class CheaterPricingTest {
         Market market = mock(Market.class); when(market.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
         PurchasesDepartment department = mock(PurchasesDepartment.class); when(department.getMarket()).thenReturn(market);  when(department.getRandom()).thenReturn(new MersenneTwisterFast());
         when(department.getModel()).thenReturn(mock(MacroII.class));
-        CheaterPricing pricing = new CheaterPricing(department);
+        PriceTaker pricing = new PriceTaker(department);
 
         //make the market visible and the best ask wanting 100$
         when(market.isBestSalePriceVisible()).thenReturn(true);
@@ -70,7 +70,7 @@ public class CheaterPricingTest {
         Market market = mock(Market.class); when(market.getGoodType()).thenReturn(UndifferentiatedGoodType.GENERIC);
         PurchasesDepartment department = mock(PurchasesDepartment.class); when(department.getMarket()).thenReturn(market);   when(department.getRandom()).thenReturn(new MersenneTwisterFast());
         when(department.getModel()).thenReturn(mock(MacroII.class));
-        CheaterPricing pricing = new CheaterPricing(department);
+        PriceTaker pricing = new PriceTaker(department);
         //set the default offer to 999
         pricing.setDefaultOffer(999);;
 
@@ -90,7 +90,7 @@ public class CheaterPricingTest {
         PurchasesDepartment department = mock(PurchasesDepartment.class); when(department.getMarket()).thenReturn(market);
         when(department.getRandom()).thenReturn(new MersenneTwisterFast()); when(department.getModel()).thenReturn(mock(MacroII.class));
 
-        CheaterPricing pricing = new CheaterPricing(department);
+        PriceTaker pricing = new PriceTaker(department);
         //set the default offer to 999
         pricing.setDefaultOffer(999);
 
@@ -118,10 +118,10 @@ public class CheaterPricingTest {
             final OrderBookMarket market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
             market.setOrderHandler(new ImmediateOrderHandler(),model);
             Firm firm = new Firm(model); firm.receiveMany(UndifferentiatedGoodType.MONEY,1000000);
-            FactoryProducedPurchaseDepartment<FixedInventoryControl,CheaterPricing,
+            FactoryProducedPurchaseDepartment<FixedInventoryControl,PriceTaker,
                     BuyerSearchAlgorithm,SellerSearchAlgorithm> factoryMade
                     =
-                    PurchasesDepartment.getPurchasesDepartment(999999,firm,market, FixedInventoryControl.class,CheaterPricing.class,null,null);
+                    PurchasesDepartment.getPurchasesDepartment(999999,firm,market, FixedInventoryControl.class,PriceTaker.class,null,null);
             //set target 2, very strict!
             factoryMade.getInventoryControl().setInventoryTarget(2);
             factoryMade.getInventoryControl().setHowManyTimesOverInventoryHasToBeOverTargetToBeTooMuch(1f);

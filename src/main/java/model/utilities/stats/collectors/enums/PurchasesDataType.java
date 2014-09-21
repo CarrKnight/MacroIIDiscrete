@@ -31,6 +31,11 @@ public enum PurchasesDataType {
 
     CLOSING_PRICES,
 
+    /**
+     * closing price if there was any trade or 0 otherwise
+     */
+    EFFECTIVE_CLOSING_PRICE,
+
     LAST_OFFERED_PRICE,
 
     INVENTORY,
@@ -40,6 +45,7 @@ public enum PurchasesDataType {
     PREDICTED_SUPPLY_SLOPE,
 
     WORKERS_CONSUMING_THIS_GOOD,
+
     AVERAGE_CLOSING_PRICES, /**
      * this is 0 for the purchase department, it is only valid for HR
      */

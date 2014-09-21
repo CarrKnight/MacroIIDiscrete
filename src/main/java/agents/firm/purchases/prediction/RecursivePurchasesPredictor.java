@@ -8,7 +8,7 @@ package agents.firm.purchases.prediction;
 
 import agents.firm.personell.HumanResources;
 import agents.firm.purchases.PurchasesDepartment;
-import agents.firm.purchases.pricing.CheaterPricing;
+import agents.firm.purchases.pricing.PriceTaker;
 import agents.firm.sales.prediction.AbstractRecursivePredictor;
 import model.MacroII;
 import model.utilities.stats.collectors.DataStorage;
@@ -95,7 +95,7 @@ public class RecursivePurchasesPredictor extends AbstractRecursivePredictor impl
 
     @Override
     public Enum getYVariableType() {
-        if(department.getPricingStrategyClass().equals(CheaterPricing.class))
+        if(department.getPricingStrategyClass().equals(PriceTaker.class))
             return PurchasesDataType.CLOSING_PRICES;
         else
             return PurchasesDataType.CLOSING_PRICES;

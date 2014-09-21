@@ -11,7 +11,7 @@ import agents.firm.production.Blueprint;
 import agents.firm.purchases.FactoryProducedPurchaseDepartment;
 import agents.firm.purchases.PurchasesDepartment;
 import agents.firm.purchases.inventoryControl.FixedInventoryControl;
-import agents.firm.purchases.pricing.CheaterPricing;
+import agents.firm.purchases.pricing.PriceTaker;
 import agents.firm.sales.exploration.BuyerSearchAlgorithm;
 import agents.firm.sales.exploration.SellerSearchAlgorithm;
 import goods.GoodType;
@@ -45,10 +45,10 @@ public class OneLinkSupplyChainScenarioWithCheatingBuyingPrice extends OneLinkSu
 
         PurchasesDepartment department = null;
         for(GoodType input : blueprint.getInputs().keySet()){
-            FactoryProducedPurchaseDepartment<FixedInventoryControl,CheaterPricing,BuyerSearchAlgorithm,SellerSearchAlgorithm>
+            FactoryProducedPurchaseDepartment<FixedInventoryControl,PriceTaker,BuyerSearchAlgorithm,SellerSearchAlgorithm>
                     factoryProducedPurchaseDepartment =
                     PurchasesDepartment.getPurchasesDepartment(Integer.MAX_VALUE, firm, getMarkets().get(input), FixedInventoryControl.class,
-                            CheaterPricing.class, null, null);
+                            PriceTaker.class, null, null);
 
             /*
              FactoryProducedPurchaseDepartment<PurchasesFixedPID,PurchasesFixedPID,BuyerSearchAlgorithm,SellerSearchAlgorithm>

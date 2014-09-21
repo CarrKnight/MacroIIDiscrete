@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgressBar;
 
 /**
  * <h4>Description</h4>
@@ -134,7 +133,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
     }
 
     private boolean checkCompetitiveResult(OneLinkSupplyChainResult result) {
-        return (Math.abs(result.getQuantity()-34)<3 &&
+        return (Math.abs(result.getQuantity()-34)<5 &&
                 Math.abs(result.getBeefPrice()-34)<5 &&
                 Math.abs(result.getFoodPrice()-68)<5
                 );
@@ -303,7 +302,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
             //run the test, add it as a future so I can check the results!
 
                     testResults.add(OneLinkSupplyChainResult.
-                            beefMonopolistOneRun(0, 50, 0, false, true, null, null,
+                            beefMonopolistOneRun(random.nextInt(), 50, 0, false, true, null, null,
                                     null));
 
 
@@ -467,7 +466,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             
-                    testResults.add(OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextInt(), 1, 10, null));
+                    testResults.add(OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextInt(), 1, 50, null));
 
             
 
@@ -542,7 +541,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
             //run the test, add it as a future so I can check the results!
             
                     testResults.add(OneLinkSupplyChainResult.everybodyLearningCompetitiveStickyPIDRun(random.nextInt(), 1f,
-                            100));
+                            50));
 
             
 
@@ -703,7 +702,6 @@ public class OneLinkSupplyChainScenarioRegressionTest
         while(macroII.schedule.getTime()<9000)
         {
             macroII.schedule.step(macroII);
-            printProgressBar(10001,(int)macroII.schedule.getSteps(),100);
         }
 
 
@@ -905,7 +903,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         ArrayList<OneLinkSupplyChainResult> testResults = new ArrayList<>(5);
 
         //run the test 5 times!
-        for(int i=0; i <5; i++)
+        for(int i=0; i <1; i++)
         {
             //run the test, add it as a future so I can check the results!
             
@@ -946,7 +944,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             
-                    testResults.add(OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(), 1, 100,
+                    testResults.add(OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(), 1, 0,
                             false, false,null, null ));
 
             

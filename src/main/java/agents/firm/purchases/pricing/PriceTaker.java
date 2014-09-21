@@ -30,7 +30,7 @@ import sim.engine.Steppable;
  * @version 2013-06-07
  * @see
  */
-public class CheaterPricing implements BidPricingStrategy {
+public class PriceTaker implements BidPricingStrategy {
 
     /**
      * how much to offer for a good when the price is not visible.
@@ -44,7 +44,7 @@ public class CheaterPricing implements BidPricingStrategy {
      * creates the pricing strategy that looks at the market
      * @param department reference needed because it sets the priority of its action as "low" (trying to act after the sales departments)
      */
-    public CheaterPricing(final PurchasesDepartment department) {
+    public PriceTaker(final PurchasesDepartment department) {
         department.setTradePriority(Priority.AFTER_STANDARD);
 
         department.getModel().scheduleSoon(ActionOrder.DAWN,new Steppable() {

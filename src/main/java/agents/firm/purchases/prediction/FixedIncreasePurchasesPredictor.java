@@ -66,7 +66,7 @@ public class FixedIncreasePurchasesPredictor implements PurchasesPredictor {
 
     @Override
     public float predictPurchasePriceWhenDecreasingProduction(PurchasesDepartment dept) {
-        return Math.max(0,(delegate.predictPurchasePriceWhenIncreasingProduction(dept)-incrementDelta));
+        return Math.max(0,(delegate.predictPurchasePriceWhenDecreasingProduction(dept)-incrementDelta));
 
 
     }
