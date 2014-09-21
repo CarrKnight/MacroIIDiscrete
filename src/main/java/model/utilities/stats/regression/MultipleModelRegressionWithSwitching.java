@@ -56,7 +56,7 @@ public class MultipleModelRegressionWithSwitching implements SISORegression {
      * basically builds a FOPDT regression if I tell you this is my guessed delay
      */
     public final  static Function<Integer,SISORegression> DEFAULT_REGRESSION_FROM_GUESS_BUILDER = integer ->
-            new NonDynamicRegression(new KalmanRecursiveRegression(2),integer);
+            new ErrorCorrectingRegressionOneStep(ErrorCorrectingRegressionOneStep.DEFAULT_FORGETTING_FACTOR,integer);
 
     /**
      * if this is set to true, the linear fallback is always ignored
