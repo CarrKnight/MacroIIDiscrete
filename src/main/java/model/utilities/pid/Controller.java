@@ -49,6 +49,9 @@ public interface Controller {
     public float getCurrentMV();
 
 
+
+
+
     /**
      * Set the "zero" of the controller
      * @param initialPrice the "zero" of the controller

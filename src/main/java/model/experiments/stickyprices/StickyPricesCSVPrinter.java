@@ -81,6 +81,8 @@ public class StickyPricesCSVPrinter {
         //create directory
         Files.createDirectories(Paths.get("runs", "rawdata"));
 
+        /*
+
 
 
 
@@ -138,9 +140,9 @@ public class StickyPricesCSVPrinter {
         oneHundredAllLearningFoodRuns(Paths.get("runs","rawdata", "learningInventoryFoodChain100.csv").toFile());
 
 
-
+*/
         System.out.println("figure 23");
-        badlyOptimizedNoInventorySupplyChain(0,0f,0.2f,0,Paths.get("runs","rawdata","tuningTrial.csv").toFile(), true);
+        badlyOptimizedNoInventorySupplyChain(1,0f,0.02f,0,Paths.get("runs","rawdata","tuningTrial.csv").toFile(), true);
 
 
     }
@@ -616,6 +618,7 @@ public class StickyPricesCSVPrinter {
 
 
 
+
         //create the run
         MacroII macroII = new MacroII(seed);
         TripolistScenario scenario = new TripolistScenario(macroII);
@@ -772,7 +775,7 @@ public class StickyPricesCSVPrinter {
                         askPricingStrategy.decorateController(pidController -> {
                             final PIDStickinessSalesTuner pidStickinessSalesTuner = new PIDStickinessSalesTuner(pidController,
                                     department,department.getModel());
-                            pidStickinessSalesTuner.setObservationsBeforeTuning(500);
+                            pidStickinessSalesTuner.setObservationsBeforeTuning(5000);
                             pidStickinessSalesTuner.setLogToWrite(Paths.get("runs","rawdata","stickLog.csv"));
                             return pidStickinessSalesTuner;
                         });
@@ -831,6 +834,7 @@ public class StickyPricesCSVPrinter {
         {
             macroII.schedule.step(macroII);
             printProgressBar(14001,(int)macroII.schedule.getSteps(),100);
+            System.out.println(macroII.getMarket(OneLinkSupplyChainScenario.OUTPUT_GOOD).getLatestObservation(MarketDataType.VOLUME_PRODUCED));
         }
 
 
@@ -1318,7 +1322,8 @@ public class StickyPricesCSVPrinter {
     //sweep over the period of maximization to see what happens if the frequency is too high or too low.
     private static void woodMonopolistSupplyChainSweep() throws IOException {
 
-        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs","rawdata","woodMonopolistStickinessesSweep.csv").toFile()));
+        CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs","rawdata",
+                "woodMonopolistStickinessesSweep.csv").toFile()));
         final String[] header = {"decisionSpeed", "stickiness", "distance", "finaldistance"};
         System.out.println(Arrays.toString(header));
         writer.writeNext(header);

@@ -18,7 +18,8 @@ import model.utilities.pid.ControllerInput;
 import model.utilities.pid.PIDController;
 import model.utilities.stats.collectors.enums.SalesDataType;
 import model.utilities.stats.processes.StickinessDescent;
-import model.utilities.stats.regression.ErrorCorrectingRegressionOneStep;
+import model.utilities.stats.regression.AutoRegressiveWithInputRegression;
+import model.utilities.stats.regression.MultipleModelRegressionWithSwitching;
 import model.utilities.stats.regression.SISORegression;
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -68,7 +69,12 @@ public class PIDStickinessSalesTuner extends ControllerDecorator implements Step
         collector.setxValidator(x -> Double.isFinite(x) && x >= 0);
         collector.setyValidator(y -> Double.isFinite(y) && y >= 0);
 
-        regression = new SISOPredictorBase<>(model,collector,new ErrorCorrectingRegressionOneStep());
+        final MultipleModelRegressionWithSwitching switching = new MultipleModelRegressionWithSwitching(
+                (size) -> new AutoRegressiveWithInputRegression(size, size, .99f), 1, 2, 3, 4, 5, 6, 7, 8);
+        switching.setExcludeLinearFallback(false);
+        switching.setRoundError(true);
+        regression = new SISOPredictorBase<>(model,collector,switching);
+
         model.registerDeactivable(this); //turn off when the model does
 
         model.scheduleSoon(ActionOrder.ADJUST_PRICES,this);

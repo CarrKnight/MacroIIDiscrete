@@ -117,6 +117,8 @@ public class PIGradientDescent
         double pDecreasedITAE = computeITAE(pDecreasedPID,systemRegression.generateDynamicProcessImpliedByRegression(),
                 (float) desiredTarget,howManyStepsToSimulate, covariants);
         double pDerivative = (pIncreasedITAE-pDecreasedITAE)/(2*derivativeStepSize);
+        if(!Double.isFinite(pDerivative))
+            pDerivative = 0;
         /***
          *     .----------------.
          *    | .--------------. |
@@ -137,6 +139,8 @@ public class PIGradientDescent
         double iDecreasedITAE = computeITAE(iDecreasedPID,systemRegression.generateDynamicProcessImpliedByRegression(),
                 (float) desiredTarget,howManyStepsToSimulate, covariants);
         double iDerivative = (iIncreasedITAE-iDecreasedITAE)/(2*derivativeStepSize);
+        if(!Double.isFinite(iDerivative))
+            iDerivative = 0;
 
 
 
