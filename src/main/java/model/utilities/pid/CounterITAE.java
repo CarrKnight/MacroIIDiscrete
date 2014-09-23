@@ -1,6 +1,5 @@
 package model.utilities.pid;
 
-import model.utilities.ActionOrder;
 import model.utilities.stats.collectors.DataStorage;
 
 import java.util.function.Predicate;
@@ -24,8 +23,6 @@ public class CounterITAE<DATA extends Enum<DATA>>{
      */
     public final static double PENALTY_FOR_SKIP = 100;
 
-
-    public final static ActionOrder WHEN_TO_COUNT = ActionOrder.DAWN;
 
     private double itae = 0;
 

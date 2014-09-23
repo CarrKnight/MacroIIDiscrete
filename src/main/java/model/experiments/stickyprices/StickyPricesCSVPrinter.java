@@ -37,6 +37,7 @@ import model.utilities.logs.LogLevel;
 import model.utilities.logs.LogToFile;
 import model.utilities.pid.Controller;
 import model.utilities.pid.PIDController;
+import model.utilities.pid.decorator.PIDStickinessHillClimberTuner;
 import model.utilities.pid.decorator.PIDStickinessSalesTuner;
 import model.utilities.stats.collectors.DailyStatCollector;
 import model.utilities.stats.collectors.enums.MarketDataType;
@@ -81,7 +82,7 @@ public class StickyPricesCSVPrinter {
         //create directory
         Files.createDirectories(Paths.get("runs", "rawdata"));
 
-        /*
+
 
 
 
@@ -140,9 +141,9 @@ public class StickyPricesCSVPrinter {
         oneHundredAllLearningFoodRuns(Paths.get("runs","rawdata", "learningInventoryFoodChain100.csv").toFile());
 
 
-*/
+
         System.out.println("figure 23");
-        badlyOptimizedNoInventorySupplyChain(1,0f,0.02f,0,Paths.get("runs","rawdata","tuningTrial.csv").toFile(), true);
+        badlyOptimizedNoInventorySupplyChain(1,0f,0.2f,0,Paths.get("runs","rawdata","tuningTrial.csv").toFile(), true);
 
 
     }
@@ -404,7 +405,7 @@ public class StickyPricesCSVPrinter {
                     final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
                     final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, currentP.floatValue(),
                             currentI.floatValue(), 0f, 0, salesDepartment.getMarket(), salesDepartment.getRandom().nextInt(100), salesDepartment.getFirm().getModel());
-                  //  strategy.setInitialPrice(102);
+                    //  strategy.setInitialPrice(102);
                     //start them all at the same price, otherwise you advantage the slow by being so slow initially that they end up being right later
 
                     salesDepartment.setAskPricingStrategy(strategy);
@@ -773,10 +774,12 @@ public class StickyPricesCSVPrinter {
                     askPricingStrategy.setSpeed(speed);
                     if(tuning)
                         askPricingStrategy.decorateController(pidController -> {
-                            final PIDStickinessSalesTuner pidStickinessSalesTuner = new PIDStickinessSalesTuner(pidController,
-                                    department,department.getModel());
-                            pidStickinessSalesTuner.setObservationsBeforeTuning(5000);
-                            pidStickinessSalesTuner.setLogToWrite(Paths.get("runs","rawdata","stickLog.csv"));
+                            final PIDStickinessHillClimberTuner pidStickinessSalesTuner = new PIDStickinessHillClimberTuner(
+                                    department.getModel(),pidController,department,1000);
+                            pidStickinessSalesTuner.setStepSize(5);
+                            pidStickinessSalesTuner.attachWriter(Paths.get("runs","rawdata","stickLog.csv"));
+                            //                   pidStickinessSalesTuner.setObservationsBeforeTuning(5000);
+                            //                    pidStickinessSalesTuner.setLogToWrite();
                             return pidStickinessSalesTuner;
                         });
                     department.setAskPricingStrategy(askPricingStrategy);

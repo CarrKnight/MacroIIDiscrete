@@ -48,4 +48,26 @@ public class ITAEHillClimberTest
 
 
     }
+
+
+    @Test
+    public void minimumFromAbove() throws Exception {
+
+
+        double[] currentParameter = new double[]{0};
+        CounterITAE counter = mock(CounterITAE.class);
+        doAnswer(invocation -> Math.pow(currentParameter[0]-10,2)).when(counter).getITAE();
+
+        ITAEHillClimber climber = new ITAEHillClimber(counter,1, 20);
+        for(int i=0; i<100; i++)
+            currentParameter[0] = climber.maximizeStep();
+
+        double finalStep = climber.maximizeStep();
+
+        Assert.assertEquals(10,finalStep,1); //delta=1 because it keeps moving up and down.
+
+
+
+
+    }
 }
