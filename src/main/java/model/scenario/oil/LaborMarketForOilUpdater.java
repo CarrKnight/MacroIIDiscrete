@@ -83,7 +83,7 @@ public class LaborMarketForOilUpdater implements InvalidationListener, Deactivat
     @Override
     public void invalidated(Observable ignored) {
 
-        if(locked == false)
+        if(!locked)
         {
             locked = true;
             model.scheduleSoon(ActionOrder.DAWN, state -> {

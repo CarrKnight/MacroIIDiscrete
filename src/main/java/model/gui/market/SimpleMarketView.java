@@ -22,10 +22,6 @@ import model.utilities.Deactivatable;
 public class SimpleMarketView extends TabPane implements Deactivatable
 {
 
-    private final LineChart<Number,Number> priceChart;
-
-    private final LineChart<Number,Number> volumeChart;
-
     /**
      * where the data is stored
      */
@@ -44,7 +40,7 @@ public class SimpleMarketView extends TabPane implements Deactivatable
 
         xAxis.setLabel("Day");
         yAxis.setLabel("Price");
-        priceChart = new LineChart<>(xAxis,yAxis);
+        LineChart<Number, Number> priceChart = new LineChart<>(xAxis, yAxis);
         priceChart.setCreateSymbols(false);
         priceChart.setCache(true);
         priceChart.setCacheHint(CacheHint.SPEED);
@@ -57,7 +53,7 @@ public class SimpleMarketView extends TabPane implements Deactivatable
         yAxis = new NumberAxis();
         xAxis.setLabel("Day");
         yAxis.setLabel("Volume");
-        volumeChart = new LineChart<>(xAxis,yAxis);
+        LineChart<Number, Number> volumeChart = new LineChart<>(xAxis, yAxis);
         volumeChart.setCreateSymbols(false);
         volumeChart.setCache(true);
         volumeChart.setCacheHint(CacheHint.SPEED);

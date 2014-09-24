@@ -51,8 +51,6 @@ public class SalesControlWithFixedInventoryAndPID extends BaseAskPricingStrategy
 
     private int roundedPrice;
 
-    private float slavePIDOriginalError = 0;
-
     public static final int defaultTargetInventory =  100;
 
     /**
@@ -183,7 +181,6 @@ public class SalesControlWithFixedInventoryAndPID extends BaseAskPricingStrategy
         //first PID tries to deal with difference in inventory
         //second PID is fed in AS INPUT the difference in flows, the first PID is only a P so when the inventory is of the right size
         //the first PID feeds in to the second the target 0, which means that inflows and outflows have to equalize
-        slavePIDOriginalError = input.getFlowTarget()-input.getFlowInput();
         controller.adjust(input,
                 department.getFirm().isActive(), macroII, this, ActionOrder.ADJUST_PRICES);
         roundedPrice = Math.round(controller.getCurrentMV());

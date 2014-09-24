@@ -24,7 +24,6 @@ import java.util.concurrent.Semaphore;
 public class PlayButton extends Button implements EventHandler<ActionEvent>{
 
     private final Semaphore playPauseSemaphore;
-    private final Thread modelThread;
 
 
     public PlayButton(MacroII modelToRun) {
@@ -36,19 +35,21 @@ public class PlayButton extends Button implements EventHandler<ActionEvent>{
         playPauseSemaphore = new Semaphore(0);
 
         //create the thread running the simulation
-        modelThread = new Thread(() -> {
+        Thread modelThread = new Thread(() -> {
             try {
                 //this trick I found by asking on :
                 // http://stackoverflow.com/questions/23017888/boolean-semaphore-in-java/23018659?noredirect=1#23018659
                 playPauseSemaphore.acquire();   // Block if paused
                 playPauseSemaphore.release();
-                while(true) {
+                while (true) {
                     //step the model
                     modelToRun.schedule.step(modelToRun);
                     playPauseSemaphore.acquire();   // Block if paused
                     playPauseSemaphore.release();
                 }
-            } catch (InterruptedException ignored) {System.err.println("interrupted");}
+            } catch (InterruptedException ignored) {
+                System.err.println("interrupted");
+            }
         });
         modelThread.setName("Simulation Thread");
         modelThread.setDaemon(true); //close with the simulation

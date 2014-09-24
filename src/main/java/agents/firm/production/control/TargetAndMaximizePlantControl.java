@@ -176,7 +176,7 @@ public class TargetAndMaximizePlantControl extends AbstractPlantControl {
 
         } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             throw new IllegalArgumentException("targeter and maximizer classes failed to instantiate either due to conditions being wrong or me being an idiot  " +'\n'
-                    + targeterClass + ", " + algorithmType + "---" + ((InvocationTargetException) e).getCause().toString());
+                    + targeterClass + ", " + algorithmType + "---" + e.getCause().toString());
         }
 
     }

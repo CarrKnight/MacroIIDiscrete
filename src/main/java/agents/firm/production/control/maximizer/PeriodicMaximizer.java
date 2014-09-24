@@ -56,11 +56,6 @@ public class PeriodicMaximizer<ALG extends WorkerMaximizationAlgorithm> extends 
     private final Firm owner;
 
     /**
-     * the object we are controlling, really.
-     */
-    private final HumanResources hr;
-
-    /**
      * from here we know how many workers we are hiring today!
      */
     private final Plant plant;
@@ -116,7 +111,9 @@ public class PeriodicMaximizer<ALG extends WorkerMaximizationAlgorithm> extends 
     public PeriodicMaximizer(MacroII model, Firm owner, HumanResources hr, Plant plant, PlantControl control, ALG workerMaximizationAlgorithm) {
         this.model = model;
         this.owner = owner;
-        this.hr = hr;
+        /*
+      the object we are controlling, really.
+     */
         this.plant = plant;
 
 

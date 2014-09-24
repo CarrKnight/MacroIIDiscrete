@@ -452,12 +452,7 @@ public class PIDController implements Controller {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("PIDController{");
-        sb.append("proportionalGain=").append(proportionalGain);
-        sb.append(", integralGain=").append(integralGain);
-        sb.append(", derivativeGain=").append(derivativeGain);
-        sb.append('}');
-        return sb.toString();
+        return "PIDController{" + "proportionalGain=" + proportionalGain + ", integralGain=" + integralGain + ", derivativeGain=" + derivativeGain + '}';
     }
 
     public boolean isInvertSign() {

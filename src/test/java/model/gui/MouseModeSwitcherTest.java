@@ -27,8 +27,6 @@ public class MouseModeSwitcherTest extends GuiTest{
 
     AddAgentsToMapTitledPane underTest;
 
-    private GeographicalMarketPresentation geographicalMarketPresentation;
-
     private Pane geographicalPane;
 
     private ControllableGeographicalScenario scenario;
@@ -36,7 +34,7 @@ public class MouseModeSwitcherTest extends GuiTest{
     @Override
     protected BorderPane getRootNode() {
 
-        geographicalMarketPresentation = mock(GeographicalMarketPresentation.class);
+        GeographicalMarketPresentation geographicalMarketPresentation = mock(GeographicalMarketPresentation.class);
         geographicalPane = new Pane();
         when(geographicalMarketPresentation.getGeographicalMap()).thenReturn(geographicalPane);
         scenario = mock(ControllableGeographicalScenario.class);

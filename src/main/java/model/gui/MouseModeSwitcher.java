@@ -87,7 +87,7 @@ public class MouseModeSwitcher implements Deactivatable, EventHandler<MouseEvent
             double x = geographicalMarketPresentation.convertXPixelCoordinateToXModelCoordinate(mouseEvent.getX());
             double y = geographicalMarketPresentation.convertYPixelCoordinateToYModelCoordinate(mouseEvent.getY());
             if(currentMode.equals(MouseMode.ADD_FIRM))
-                scenario.createNewProducer(new Location(x,y),geographicalMarketPresentation.getMarket(),"UserCreated"+id);
+                scenario.createNewProducer(new Location(x,y),geographicalMarketPresentation.getMarket(),"UserCreated"+(id++));
             else
             {
                 assert currentMode.equals(MouseMode.ADD_CONSUMER);

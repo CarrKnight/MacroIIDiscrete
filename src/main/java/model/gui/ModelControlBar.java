@@ -21,9 +21,6 @@ import model.MacroII;
 public class ModelControlBar extends TitledPane
 {
 
-    private final MacroII modelToRun;
-
-    private final PlayButton play;
     private final HBox contentBox;
 
 
@@ -33,13 +30,13 @@ public class ModelControlBar extends TitledPane
      */
     public ModelControlBar(MacroII modelToRun)
     {
-        this.modelToRun = modelToRun;
+        MacroII modelToRun1 = modelToRun;
         this.setText("Model Control");
         //create an hbox within the titledPane
         contentBox = new HBox();
         contentBox.setPadding(new Insets(15, 12, 15, 12));
         contentBox.setSpacing(10);
-        play = new PlayButton(modelToRun);
+        PlayButton play = new PlayButton(modelToRun);
         contentBox.getChildren().add(play);
 
         this.setContent(contentBox);

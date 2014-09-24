@@ -49,7 +49,7 @@ public class MaximumBidPriceDecorator extends BidPricingDecorator {
      * @return the maximum price I am willing to pay for this good
      */
     public int maxPrice(GoodType type) {
-        return (int) Math.min(toDecorate.maxPrice(type), reservationPrice);
+        return Math.min(toDecorate.maxPrice(type), reservationPrice);
     }
 
     /**
@@ -58,7 +58,7 @@ public class MaximumBidPriceDecorator extends BidPricingDecorator {
      * @return the maximum price I am willing to pay for this good
      */
     public int maxPrice(Good good) {
-        return (int) Math.min(toDecorate.maxPrice(good), reservationPrice);
+        return Math.min(toDecorate.maxPrice(good), reservationPrice);
     }
 
 

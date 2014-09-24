@@ -65,7 +65,7 @@ public class MacroII extends SimState{
     /**
      * How many weeks of data do sales departments store?
      */
-    private int salesMemoryLength = 5;
+    private static final int SALES_MEMORY_LENGTH = 5;
 
     /**
      *  The simple buyer search  default sample size
@@ -73,24 +73,19 @@ public class MacroII extends SimState{
     private int simpleBuyerSearchSize = 5;
 
     /**
-     *  The simple seller search  default sample size
-     */
-    private int simpleSellerSearchSize = 5;
-
-    /**
      * The default sample size of an economic agent search for its opponents
      */
-    private int opponentSearchSize = 5;
+    private static final int OPPONENT_SEARCH_SIZE = 5;
 
     /**
      * How much do undercutters lower the best price they find?
      */
-    private float undercutReduction = 0.01f;
+    private static final float UNDERCUT_REDUCTION = 0.01f;
 
     /**
      * How much do undercutters wait between one search and the next?
      */
-    private float undercutSpeed = 20f;
+    private static final  float UNDERCUT_SPEED = 20f;
 
     /**
      * When I have NO IDEA what the price should be, the price is just the cost + (1+cluelessDefaultMarkup).
@@ -105,7 +100,7 @@ public class MacroII extends SimState{
     /**
      * What's the target success rate in EverythingMustGoAdaptive?
      */
-    private float minSuccessRate = .95f;
+    private static final  float MIN_SUCCESS_RATE = .95f;
 
     /**
      * The speed of peddling
@@ -143,17 +138,17 @@ public class MacroII extends SimState{
     /********************
      * Parameters of ProfitCheckPlantControl
      *******************/
-    private float plantControlInitialCapacityRatioTargetedMean = .20f;
+    private static final float PLANT_CONTROL_INITIAL_CAPACITY_RATIO_TARGETED_MEAN = .20f;
 
-    private float plantControlInitialCapacityRatioTargetedDeviation = .05f;
+    private static final float PLANT_CONTROL_INITIAL_CAPACITY_RATIO_TARGETED_DEVIATION = .05f;
 
-    private float plantControlInitialMarginalRatioChangeMean = .05f;
+    private static final float PLANT_CONTROL_INITIAL_MARGINAL_RATIO_CHANGE_MEAN = .05f;
 
-    private float plantControlInitialMarginalRatioChangeDeviation = .01f;
+    private static final float PLANT_CONTROL_INITIAL_MARGINAL_RATIO_CHANGE_DEVIATION = .01f;
 
-    private float plantControlSpeedMean = 20f;
+    private static final float PLANT_CONTROL_SPEED_MEAN = 20f;
 
-    private float plantControlSpeedDeviation = 5f;
+    private static final float PLANT_CONTROL_SPEED_DEVIATION = 5f;
 
     private HashMap<GoodType,Market> markets;
 
@@ -192,10 +187,10 @@ public class MacroII extends SimState{
     }
 
     /**
-     * @return the value for the field salesMemoryLength.
+     * @return the value for the field SALES_MEMORY_LENGTH.
      */
     public int getSalesMemoryLength() {
-        return salesMemoryLength;
+        return SALES_MEMORY_LENGTH;
     }
 
 
@@ -294,7 +289,7 @@ public class MacroII extends SimState{
      */
     public int drawNewOpponentSearchSize(EconomicAgent a, Market market)
     {
-        return opponentSearchSize;
+        return OPPONENT_SEARCH_SIZE;
     }
 
     /**
@@ -302,7 +297,7 @@ public class MacroII extends SimState{
      */
     public float drawNewUndercutReduction(EconomicAgent a, Market market)
     {
-        return undercutReduction;
+        return UNDERCUT_REDUCTION;
     }
 
     /**
@@ -310,7 +305,7 @@ public class MacroII extends SimState{
      */
     public float drawNewUndercutSpeed(EconomicAgent a, Market market)
     {
-        return undercutSpeed;
+        return UNDERCUT_SPEED;
     }
 
 
@@ -398,10 +393,10 @@ public class MacroII extends SimState{
         }, 7);
     }
     /**
-     * @return the value for the field minSuccessRate.
+     * @return the value for the field MIN_SUCCESS_RATE.
      */
     public float getMinSuccessRate() {
-        return minSuccessRate;
+        return MIN_SUCCESS_RATE;
     }
 
     /**
@@ -436,12 +431,12 @@ public class MacroII extends SimState{
 
     public float drawPlantControlInitialMarginalRatioChange(){
 
-        return (float) (plantControlInitialMarginalRatioChangeMean + random.nextGaussian()*plantControlInitialMarginalRatioChangeDeviation);
+        return (float) (PLANT_CONTROL_INITIAL_MARGINAL_RATIO_CHANGE_MEAN + random.nextGaussian()* PLANT_CONTROL_INITIAL_MARGINAL_RATIO_CHANGE_DEVIATION);
     }
 
     public float drawplantControlInitialCapacityRatioTargeted(){
 
-        return (float) (plantControlInitialCapacityRatioTargetedMean + random.nextGaussian()*plantControlInitialCapacityRatioTargetedDeviation);
+        return (float) (PLANT_CONTROL_INITIAL_CAPACITY_RATIO_TARGETED_MEAN + random.nextGaussian()* PLANT_CONTROL_INITIAL_CAPACITY_RATIO_TARGETED_DEVIATION);
     }
 
     public int drawplantControlSpeed(){
@@ -602,7 +597,6 @@ public class MacroII extends SimState{
 
 
     public void setSimpleSellerSearchSize(int simpleSellerSearchSize) {
-        this.simpleSellerSearchSize = simpleSellerSearchSize;
     }
 
     public void setSimpleBuyerSearchSize(int simpleBuyerSearchSize) {

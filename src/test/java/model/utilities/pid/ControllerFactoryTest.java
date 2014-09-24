@@ -47,9 +47,9 @@ public class ControllerFactoryTest {
 
         assertTrue(pid instanceof PIDController);
         assertEquals(pid.getClass(),PIDController.class);
-        assertEquals(((PIDController) pid).getProportionalGain(),100f,.00001f);
-        assertEquals(((PIDController) pid).getIntegralGain(),1f,.00001f);
-        assertEquals(((PIDController) pid).getDerivativeGain(),3f,.00001f);
+        assertEquals(pid.getProportionalGain(),100f,.00001f);
+        assertEquals(pid.getIntegralGain(),1f,.00001f);
+        assertEquals(pid.getDerivativeGain(),3f,.00001f);
 
 
 

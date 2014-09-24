@@ -59,9 +59,8 @@ public class AutotunerTest {
                 new PIDAutotuner(new PIDController(proportionalParameter,integrativeParameter,0));
         controller.setAfterHowManyDaysShouldTune(1001);
         int target = 10;
-        DynamicProcess process = systemDynamic ;
         if(noiseMaker != null)
-            process.setRandomNoise(noiseMaker);
+            systemDynamic.setRandomNoise(noiseMaker);
 
         //create the regression too
 
@@ -85,7 +84,7 @@ public class AutotunerTest {
             float input = controller.getCurrentMV();
             assert !Float.isNaN(input);
             assert !Float.isInfinite(input);
-            output = (float) process.newStep(input);
+            output = (float) systemDynamic.newStep(input);
 
 
 
@@ -113,7 +112,7 @@ public class AutotunerTest {
         System.out.println("final error: " + finalError.getMean());
         System.out.println("regression: " + controller.getRegression());
 
-        RegressionStatics.tracksAcceptably(controller.getRegression(), process,
+        RegressionStatics.tracksAcceptably(controller.getRegression(), systemDynamic,
                 RegressionStatics.MAXIMUM_ABS_ERROR, 100,
                 Math.max(controller.getCurrentMV(), RegressionStatics.FIXED_INPUT));
         Assert.assertTrue(errorAfterTuning.getMean() < errorBeforeTuning.getMean());

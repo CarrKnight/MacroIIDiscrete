@@ -111,9 +111,9 @@ public class CascadePToPIDController implements Controller {
      /**
      * The adjust is the main part of the a controller. It checks the new error and set the MV (which is the price, really)
      *
-     * @param firstTarget the stock target
-     * @param firstInput the stock input
-     * @param secondInput the flow input
+     * @param stockTarget the stock target
+     * @param stockInput the stock input
+     * @param flowInput the flow input
      * @param isActive true if the pid is not turned off
      * @param state   the simstate link to schedule the user
      * @param user     the user who calls the PID (it needs to be steppable since the PID doesn't adjust itself)     * @param firstTarget
@@ -307,13 +307,7 @@ public class CascadePToPIDController implements Controller {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("CascadePIDController{");
-        sb.append("targetForSlavePID=").append(targetForSlavePID);
-        sb.append("\n pid1=").append(pid1);
-        sb.append("\n pid2Root=").append(pid2Root);
-        sb.append("\n pid2=").append(pid2);
-        sb.append('}');
-        return sb.toString();
+        return "CascadePIDController{" + "targetForSlavePID=" + targetForSlavePID + "\n pid1=" + pid1 + "\n pid2Root=" + pid2Root + "\n pid2=" + pid2 + '}';
     }
 
 

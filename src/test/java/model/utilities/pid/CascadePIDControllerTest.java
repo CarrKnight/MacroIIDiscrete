@@ -43,8 +43,7 @@ public class CascadePIDControllerTest {
         {
             float secondTarget = cascade.getTargetForSlavePID();
             int firstTarget = 100; //y*
-            int firstInput = i; //y
-            cascade.adjust(firstTarget,firstInput,0,true,null,null,null);
+            cascade.adjust(firstTarget, i,0,true,null,null,null);
             assertTrue(cascade.getTargetForSlavePID() > secondTarget); //the 2nd target should have increased
 
 
@@ -56,9 +55,8 @@ public class CascadePIDControllerTest {
         for(int i=50; i<100; i++)
         {
             float secondTarget = cascade.getTargetForSlavePID();
-            int firstTarget = i; //y*
             int firstInput = 10; //y
-            cascade.adjust(firstTarget,firstInput,0,true,null,null,null);
+            cascade.adjust(i,firstInput,0,true,null,null,null);
             assertTrue(cascade.getTargetForSlavePID() > secondTarget); //the  2nd target should have increased
 
 
@@ -81,8 +79,7 @@ public class CascadePIDControllerTest {
         for(int i=0; i<50; i++)
         {
             int firstTarget = 100; //y*
-            int firstInput = i; //y
-            cascade.adjust(firstTarget,firstInput,0,true,null,null,null);
+            cascade.adjust(firstTarget, i,0,true,null,null,null);
         }
 
 
@@ -92,8 +89,7 @@ public class CascadePIDControllerTest {
         {
             float secondTarget = cascade.getTargetForSlavePID();
             int firstTarget = 100; //y*
-            int firstInput = i; //y
-            cascade.adjust(firstTarget,firstInput,0,true,null,null,null);
+            cascade.adjust(firstTarget, i,0,true,null,null,null);
             assertTrue(cascade.getTargetForSlavePID() < secondTarget); //the 2nd target should have decreased
 
 
@@ -104,8 +100,7 @@ public class CascadePIDControllerTest {
         for(int i=0; i<50; i++)
         {
             int firstTarget = 100; //y*
-            int firstInput = i; //y
-            cascade.adjust(firstTarget,firstInput,0,true,null,null,null);
+            cascade.adjust(firstTarget, i,0,true,null,null,null);
         }
 
         //same thing, but move target and keep input fixed
@@ -113,9 +108,8 @@ public class CascadePIDControllerTest {
         for(int i=90; i<100; i++)
         {
             float secondTarget = cascade.getTargetForSlavePID();
-            int firstTarget = i; //y*
             int firstInput = 200; //y
-            cascade.adjust(firstTarget,firstInput,0,true,null,null,null);
+            cascade.adjust(i,firstInput,0,true,null,null,null);
             assertTrue(cascade.getTargetForSlavePID() < secondTarget); //the  2nd target should have decreased
 
 
@@ -138,9 +132,7 @@ public class CascadePIDControllerTest {
         for(int i=200; i<250; i++)
         {
             float secondTarget = cascade.getTargetForSlavePID();
-            int firstTarget = i; //y*
-            int firstInput = i; //y
-            cascade.adjust(firstTarget,firstInput,0,true,null,null,null);
+            cascade.adjust(i, i,0,true,null,null,null);
             assertTrue(cascade.getTargetForSlavePID() == secondTarget); //the 2nd target should have decreased
 
 
@@ -167,9 +159,7 @@ public class CascadePIDControllerTest {
         for(int i=200; i<250; i++)
         {
             float oldMV = cascade.getCurrentMV();
-            int firstTarget = i; //y*
-            int firstInput = i; //y
-            cascade.adjust(firstTarget,firstInput,-1,true,null,null,null);
+            cascade.adjust(i, i,-1,true,null,null,null);
             assert (cascade.getTargetForSlavePID() == 0); //target should stay stuck at 0!
             assertTrue(cascade.getCurrentMV() > oldMV); //the MV should be going upward!
 

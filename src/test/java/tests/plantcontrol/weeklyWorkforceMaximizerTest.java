@@ -138,8 +138,7 @@ public class weeklyWorkforceMaximizerTest {
 
         //model
         MacroII model = new MacroII(1);
-        Schedule schedule = mock(Schedule.class);
-        model.schedule =  schedule;
+        model.schedule = mock(Schedule.class);
 
 
         HumanResources hr = mock(HumanResources.class);
@@ -220,8 +219,7 @@ public class weeklyWorkforceMaximizerTest {
 
         //model
         MacroII model = new MacroII(1);
-        Schedule schedule = mock(Schedule.class);
-        model.schedule =  schedule;
+        model.schedule = mock(Schedule.class);
 
 
         HumanResources hr = mock(HumanResources.class);

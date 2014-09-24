@@ -258,8 +258,7 @@ public class LinearRegression implements UnivariateRegression
             //add intercept to regressors
             double[][] newRegressors =new double[regressors.length+1][];
             newRegressors[0]=intercept;
-            for(int i=0; i< regressors.length; i++)
-                newRegressors[i+1]=regressors[i];
+            System.arraycopy(regressors, 0, newRegressors, 1, regressors.length);
             regressors=newRegressors;
         }
 

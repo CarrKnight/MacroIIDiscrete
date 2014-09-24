@@ -275,10 +275,7 @@ public class salesControlWithSmoothedinventoryAndPID implements AskPricingStrate
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("SmoothedDailyInventoryPricingStrategy{");
-        sb.append("controllerUsedByDelegate=").append(controllerUsedByDelegate);
-        sb.append('}');
-        return sb.toString();
+        return "SmoothedDailyInventoryPricingStrategy{" + "controllerUsedByDelegate=" + controllerUsedByDelegate + '}';
     }
 
     public int getHowManyTimesTheDailyInflowShouldTheInventoryBe() {

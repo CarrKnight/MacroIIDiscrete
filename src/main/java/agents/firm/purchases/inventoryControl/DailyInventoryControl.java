@@ -105,7 +105,7 @@ public class DailyInventoryControl extends AbstractInventoryControl implements P
 
         }
 
-        dailyTarget =howManyDaysOfInventoryToHold * ((float)weeklyNeeds) /7f;
+        dailyTarget =howManyDaysOfInventoryToHold * weeklyNeeds /7f;
 
         //if this is an update whereas we moved from targeting 0 to targeting something else, buy
         if(oldNeeds ==0 && dailyTarget > 0 && canBuy())

@@ -72,7 +72,7 @@ public class PriceTakerTest {
         when(department.getModel()).thenReturn(mock(MacroII.class));
         PriceTaker pricing = new PriceTaker(department);
         //set the default offer to 999
-        pricing.setDefaultOffer(999);;
+        pricing.setDefaultOffer(999);
 
         //best sale is not visible!
         when(market.isBestSalePriceVisible()).thenReturn(false);

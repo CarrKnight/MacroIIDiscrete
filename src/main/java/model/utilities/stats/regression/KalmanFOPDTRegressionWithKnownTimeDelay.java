@@ -138,17 +138,11 @@ public class KalmanFOPDTRegressionWithKnownTimeDelay implements SISORegression {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("reg{");
-        sb.append("gain=").append(getGain());
-        sb.append(" TimeConstant=").append(getTimeConstant());
-        sb.append(" Delay=").append(getDelay());
-        sb.append('}');
-        return sb.toString();
+        return "reg{" + "gain=" + getGain() + " TimeConstant=" + getTimeConstant() + " Delay=" + getDelay() + '}';
     }
 
     /**
      * Retrieves all that is currently in queue.
-     * @param arrayClass
      */
     public Double[] peekInputQueue() {
         return delayedInput.peekAll(Double.class);

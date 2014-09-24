@@ -62,8 +62,8 @@ public class MatchBestControlDecoratorTest {
         {
             //notify the decorator
             decorator.setCurrentWage(i);
-            verify(control,times((int)i+1)).setCurrentWage(100);
-            verify(control,times((int)i+1)).setCanBuy(false);
+            verify(control,times(i +1)).setCurrentWage(100);
+            verify(control,times(i +1)).setCanBuy(false);
 
         }
         for(int i=100; i < 200; i++)
@@ -71,7 +71,7 @@ public class MatchBestControlDecoratorTest {
             //notify the decorator
             decorator.setCurrentWage(i);
             verify(control,times(i==100 ? 101 : 1)).setCurrentWage(i);
-            verify(control,times((int)i+1 -100)).setCanBuy(true);
+            verify(control,times(i +1 -100)).setCanBuy(true);
         }
 
 

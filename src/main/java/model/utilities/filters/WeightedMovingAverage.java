@@ -31,7 +31,7 @@ public class WeightedMovingAverage<O extends Number,W extends Number>
     /**
      * Where we keep all the observations
      */
-    LinkedList<PairOfNumbers<O,W>> lastElements = new LinkedList<>();
+    LinkedList<PairOfNumbers> lastElements = new LinkedList<>();
 
     /**
      * The size of the queue
@@ -46,7 +46,7 @@ public class WeightedMovingAverage<O extends Number,W extends Number>
     public void addObservation(O observation, W weight)
     {
         Preconditions.checkArgument(weight.doubleValue()>=0, " can't deal with negative weights!");
-        lastElements.addLast(new PairOfNumbers<O, W>(observation,weight));
+        lastElements.addLast(new PairOfNumbers(observation,weight));
         if(lastElements.size() > movingAverageSize)
             lastElements.removeFirst();
 
@@ -79,7 +79,7 @@ public class WeightedMovingAverage<O extends Number,W extends Number>
         return numerator/denumerator;
     }
 
-    private class PairOfNumbers<O extends Number, W extends  Number>
+    private class PairOfNumbers
     {
 
         private final O observation;

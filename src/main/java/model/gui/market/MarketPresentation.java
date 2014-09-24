@@ -66,7 +66,7 @@ public class MarketPresentation implements Steppable, Deactivatable {
     /**
      * Schedule an updater, links to the market
      * @param model the model to schedule to
-     * @param market the market to observe
+     * @param marketData the data of market to observe
      */
     public void start(MacroII model, MarketData marketData)
     {
@@ -115,7 +115,6 @@ public class MarketPresentation implements Steppable, Deactivatable {
                 Tooltip.install(consumedDatum.getNode(),tooltip);
 
             }
-;
             closingPriceSeries.getData().add(priceDatum);
             volumeTraded.getData().add(tradedDatum);
             volumeProduced.getData().add(producedDatum);

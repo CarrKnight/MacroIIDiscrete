@@ -146,7 +146,7 @@ public class CustomerWithDelayTest
         market.setOrderHandler(new ImmediateOrderHandler(),mock(MacroII.class));
         market.setPricePolicy(new ShopSetPricePolicy());
         CustomerWithDelay delay = new CustomerWithDelay(mock(MacroII.class),100,5,market);
-        delay.receiveMany(UndifferentiatedGoodType.MONEY, 101);;
+        delay.receiveMany(UndifferentiatedGoodType.MONEY, 101);
 
 
         assertEquals(delay.getMaxPrice(), -1);

@@ -70,12 +70,10 @@ public class AutoRegressiveWithInputRegression implements SISORegression {
 
 
     private void pushLagsDown(double todayInput, double output) {
-        for(int i=inputLags.length-1; i>0;i--)
-            inputLags[i]=inputLags[i-1];
+        System.arraycopy(inputLags, 0, inputLags, 1, inputLags.length - 1);
         inputLags[0] = todayInput;
 
-        for(int i=inputLags.length-1; i>0;i--)
-            outputLags[i]=outputLags[i-1];
+        System.arraycopy(outputLags, 0, outputLags, 1, inputLags.length - 1);
         outputLags[0] = output;
     }
 
@@ -128,9 +126,7 @@ public class AutoRegressiveWithInputRegression implements SISORegression {
         double[] yCoefficients = new double[outputLags.length];
         final double[] beta = getBeta();
 
-        for(int i=0; i<xCoefficients.length; i++) {
-            xCoefficients[i]= beta[i+1];
-        }
+        System.arraycopy(beta, 1, xCoefficients, 0, xCoefficients.length);
 
         for(int i=0; i<yCoefficients.length; i++) {
             yCoefficients[i]= beta[i+1 + xCoefficients.length];

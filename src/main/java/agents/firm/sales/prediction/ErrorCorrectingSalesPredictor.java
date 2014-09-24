@@ -22,19 +22,17 @@ import java.nio.file.Path;
  */
 public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
 
-    private final RegressionDataCollector<SalesDataType> collector;
-
     private final SISOPredictorBase<SalesDataType,MultipleModelRegressionWithSwitching> base;
 
     private final FixedDecreaseSalesPredictor predictor;
 
     public ErrorCorrectingSalesPredictor(MacroII model,
                                          SalesDepartment department) {
-        this.collector = new RegressionDataCollector<>(department,SalesDataType.WORKERS_PRODUCING_THIS_GOOD,
-                SalesDataType.LAST_ASKED_PRICE,SalesDataType.SUPPLY_GAP);
-        collector.setDataValidator(collector.getDataValidator().and((dept)->dept.hasTradedAtLeastOnce()));
-        collector.setxValidator(collector.getxValidator().and(x -> x >=0));
-        collector.setyValidator(collector.getyValidator().and(y -> y >0));
+        RegressionDataCollector<SalesDataType> collector = new RegressionDataCollector<>(department, SalesDataType.WORKERS_PRODUCING_THIS_GOOD,
+                SalesDataType.LAST_ASKED_PRICE, SalesDataType.SUPPLY_GAP);
+        collector.setDataValidator(collector.getDataValidator().and((dept) -> dept.hasTradedAtLeastOnce()));
+        collector.setxValidator(collector.getxValidator().and(x -> x >= 0));
+        collector.setyValidator(collector.getyValidator().and(y -> y > 0));
         final MultipleModelRegressionWithSwitching switching = new MultipleModelRegressionWithSwitching(
                 new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(.98f), new Integer[]{0}),
                 new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(.99f), new Integer[]{0}),
@@ -43,7 +41,7 @@ public class ErrorCorrectingSalesPredictor extends BaseSalesPredictor {
         switching.setHowManyObservationsBeforeModelSelection(300);
         switching.setExcludeLinearFallback(false);
         switching.setRoundError(true);
-        base = new SISOPredictorBase<>(model,collector,switching,null);
+        base = new SISOPredictorBase<>(model, collector,switching,null);
         base.setBurnOut(300);
 
         predictor = new FixedDecreaseSalesPredictor();

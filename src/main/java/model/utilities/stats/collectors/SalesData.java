@@ -90,7 +90,7 @@ public class SalesData extends DataStorage<SalesDataType> {
         Double closingPrices = (double) departmentToFollow.getLastClosingPrice();
         Double howManyToSell = (double) departmentToFollow.getHowManyToSell();
         Double workersProducing = (double) departmentToFollow.getTotalWorkersWhoProduceThisGood();
-        Double averageClosingPrice = (double) departmentToFollow.getAveragedPrice();
+        Double averageClosingPrice = departmentToFollow.getAveragedPrice();
         Double lastAskedPrice = (double) departmentToFollow.getLastAskedPrice();
         Double supplyGap = (double) departmentToFollow.estimateSupplyGap();
         Double predictedSlope = (double) (departmentToFollow.predictSalePriceAfterIncreasingProduction(0, 1) - departmentToFollow.predictSalePriceWhenNotChangingPoduction());

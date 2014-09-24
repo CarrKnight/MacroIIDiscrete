@@ -129,7 +129,7 @@ public class ParticleMaximizer extends  HillClimberMaximizer {
   //          if(Math.round(currentVelocity) == 0) //if you round to 0, only round to 0 if it's really close, otherwise keep exploring
  //               return !random.nextBoolean(Math.abs(currentVelocity)) ? 0 : (int) Math.signum(currentVelocity);
 
-            return (int)Math.round(currentVelocity);
+            return Math.round(currentVelocity);
 
         }
         else

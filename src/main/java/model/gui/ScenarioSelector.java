@@ -25,19 +25,11 @@ public class ScenarioSelector extends Pane
 {
 
 
-    /**
-     * we probably don't need a full property, but whatever
-     */
-    private SimpleObjectProperty<Class<? extends Scenario>> selectedScenario;
-
-    private final ChangeListener<Class<? extends Scenario>> scenarioChangeListener;
-    private final ListView<Class<? extends Scenario>> scenarioListView;
-
     public ScenarioSelector(final MacroII model)
     {
 
         //create the combo-box
-        scenarioListView = new ListView<>();
+        ListView<Class<? extends Scenario>> scenarioListView = new ListView<>();
         scenarioListView.setEditable(false);
         scenarioListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
@@ -54,13 +46,16 @@ public class ScenarioSelector extends Pane
         scenarioListView.getSelectionModel().select(model.getScenario().getClass());
 
         //create and bind the property
-        selectedScenario = new SimpleObjectProperty<>();
+        /*
+      we probably don't need a full property, but whatever
+     */
+        SimpleObjectProperty<Class<? extends Scenario>> selectedScenario = new SimpleObjectProperty<>();
         selectedScenario.bind(scenarioListView.getSelectionModel().selectedItemProperty());
         //if the binding works, it should now be very simply tied to the initial scenario.
         assert selectedScenario.getValue().equals(model.getScenario().getClass());
 
         //the listener that changes the scenario whenever it is needed.
-        scenarioChangeListener = (observableValue, aClass, aClass2) -> {
+        ChangeListener<Class<? extends Scenario>> scenarioChangeListener = (observableValue, aClass, aClass2) -> {
             try {
                 Scenario newScenario = observableValue.getValue().newInstance();
                 model.setScenario(newScenario);

@@ -83,10 +83,7 @@ public abstract class ControllerDecorator implements Controller
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("ControllerDecorator{");
-        sb.append("decorated=").append(toDecorate);
-        sb.append('}');
-        return sb.toString();
+        return "ControllerDecorator{" + "decorated=" + toDecorate + '}';
     }
 
     @Override

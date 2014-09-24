@@ -30,7 +30,7 @@ public class EdgeworthBoxScenarioTest {
     @Test
     public void simpleEdgeworthBox() throws Exception {
         //immediate order handler, shop set price
-        MacroII model = new MacroII(System.currentTimeMillis());;
+        MacroII model = new MacroII(System.currentTimeMillis());
         EdgeworthBoxScenario scenario1 = new EdgeworthBoxScenario(model);
         model.setScenario(scenario1);
 
@@ -42,7 +42,7 @@ public class EdgeworthBoxScenarioTest {
 
     @Test
     public void worksRegardlessOfOrderHandler() throws Exception {
-        MacroII model = new MacroII(System.currentTimeMillis());;
+        MacroII model = new MacroII(System.currentTimeMillis());
         EdgeworthBoxScenario scenario = new EdgeworthBoxScenario(model);
         model.setScenario(scenario);
         scenario.setOrderHandler(new ImmediateOrderHandler());
@@ -50,7 +50,7 @@ public class EdgeworthBoxScenarioTest {
         runEdgeworthBox(model, scenario, 5, 5, 5, 5);
 
 
-        model = new MacroII(System.currentTimeMillis());;
+        model = new MacroII(System.currentTimeMillis());
         scenario = new EdgeworthBoxScenario(model);
         model.setScenario(scenario);
         scenario.setOrderHandler(new EndOfPhaseOrderHandler());
@@ -63,7 +63,7 @@ public class EdgeworthBoxScenarioTest {
 
     @Test
     public void pricePolicyDeterminesSplit() throws Exception {
-        MacroII model = new MacroII(System.currentTimeMillis());;
+        MacroII model = new MacroII(System.currentTimeMillis());
         EdgeworthBoxScenario scenario = new EdgeworthBoxScenario(model);
         model.setScenario(scenario);
         scenario.setPricePolicy(new ShopSetPricePolicy());
@@ -79,7 +79,7 @@ public class EdgeworthBoxScenarioTest {
         runEdgeworthBox(model, scenario, 7, 6, 3, 4);
 
         //the advantage is all to the seller now
-        model = new MacroII(System.currentTimeMillis());;
+        model = new MacroII(System.currentTimeMillis());
         scenario = new EdgeworthBoxScenario(model);
         model.setScenario(scenario);
         scenario.setPricePolicy(new BuyerSetPricePolicy());

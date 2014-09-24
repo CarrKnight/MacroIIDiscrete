@@ -1272,9 +1272,7 @@ public class PurchasesDepartment implements Deactivatable, Department<PurchasesD
             return -1;
 
 
-        final float smoothedObservation = priceAverager.getAveragedPrice(this);
-
-        return smoothedObservation;
+        return priceAverager.getAveragedPrice(this);
 
 
 

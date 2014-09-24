@@ -92,7 +92,7 @@ public class UrgentPriceFollowerStrategy implements BidPricingStrategy {
                 multiplier = 1.2f;
                 break;
         }
-        return (int) Math.round(lastPrice * multiplier);
+        return Math.round(lastPrice * multiplier);
 
 
 

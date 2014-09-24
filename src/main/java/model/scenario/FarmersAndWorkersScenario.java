@@ -77,7 +77,8 @@ public class FarmersAndWorkersScenario extends Scenario {
      * a list of all agents!
      */
     private final List<Firm> producers;
-    private final int firmBudget = 5000000;
+
+    private final static int FIRM_BUDGET = 5000000;
 
     /**
      * total number of agents in the model
@@ -198,7 +199,7 @@ public class FarmersAndWorkersScenario extends Scenario {
     private Firm createFirm(MacroII model, OrderBookMarket laborMarket, OrderBookMarket goodMarket)
     {
         Firm firm = new Firm(model);
-        firm.receiveMany(AGRICULTURE, firmBudget);
+        firm.receiveMany(AGRICULTURE, FIRM_BUDGET);
 
         //sales department
         SalesDepartment salesDepartment = SalesDepartmentFactory.incompleteSalesDepartment(firm, goodMarket,

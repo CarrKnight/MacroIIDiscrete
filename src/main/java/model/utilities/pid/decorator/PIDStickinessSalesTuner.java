@@ -38,34 +38,28 @@ import java.nio.file.Path;
 public class PIDStickinessSalesTuner extends ControllerDecorator implements Steppable, Deactivatable {
 
 
-
-    private final RegressionDataCollector<SalesDataType> collector;
-
     private final SalesDepartment department;
 
     private final SISOPredictorBase<SalesDataType,SISORegression> regression;
 
     private int observationsBeforeTuning = 500;
 
-    private int maximizationFrequency = 1;
+    private final static int MAXIMIZATION_FREQUENCY = 1;
 
     private float currentTarget = 0;
 
     private final PIDController controller;
-
-    private final MacroII model;
 
     private BufferedWriter log;
 
 
     public PIDStickinessSalesTuner(PIDController toDecorate, SalesDepartment department, MacroII model) {
         super(toDecorate);
-        this.model = model;
         this.controller = toDecorate;
         this.department = department;
-        collector = new RegressionDataCollector<>(department,SalesDataType.LAST_ASKED_PRICE,
-                SalesDataType.OUTFLOW,SalesDataType.SUPPLY_GAP);
-        collector.setDataValidator(dept->dept.hasTradedAtLeastOnce());
+        RegressionDataCollector<SalesDataType> collector = new RegressionDataCollector<>(department, SalesDataType.LAST_ASKED_PRICE,
+                SalesDataType.OUTFLOW, SalesDataType.SUPPLY_GAP);
+        collector.setDataValidator(dept -> dept.hasTradedAtLeastOnce());
         collector.setxValidator(x -> Double.isFinite(x) && x >= 0);
         collector.setyValidator(y -> Double.isFinite(y) && y >= 0);
 
@@ -73,7 +67,7 @@ public class PIDStickinessSalesTuner extends ControllerDecorator implements Step
                 (size) -> new AutoRegressiveWithInputRegression(size, size, .99f), 1, 2, 3, 4, 5, 6, 7, 8);
         switching.setExcludeLinearFallback(false);
         switching.setRoundError(true);
-        regression = new SISOPredictorBase<>(model,collector,switching);
+        regression = new SISOPredictorBase<>(model, collector,switching);
 
         model.registerDeactivable(this); //turn off when the model does
 
@@ -140,7 +134,7 @@ public class PIDStickinessSalesTuner extends ControllerDecorator implements Step
         }
 
         if(numberOfObservations >= observationsBeforeTuning &&
-                (numberOfObservations - observationsBeforeTuning) % maximizationFrequency == 0 )
+                (numberOfObservations - observationsBeforeTuning) % MAXIMIZATION_FREQUENCY == 0 )
             tune();
 
         ((MacroII)state).scheduleTomorrow(ActionOrder.ADJUST_PRICES, this);

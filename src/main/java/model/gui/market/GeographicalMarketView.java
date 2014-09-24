@@ -48,10 +48,6 @@ public class GeographicalMarketView extends GroupOfInformationTabs implements De
      * the tab holding the geographical map!
      */
     private final InformationTab mapTab;
-    /**
-     * the tab holding on to the price
-     */
-    private final InformationTab priceTab;
 
     private final ArrayList<InformationTab> tabsCreated;
     private final BooleanBinding turnedOff;
@@ -124,7 +120,10 @@ public class GeographicalMarketView extends GroupOfInformationTabs implements De
         //
         Tab prices = new Tab("Prices");
         prices.setContent(new FirmChartPresentation(colors,market.getGoodType(), SalesDataType.LAST_ASKED_PRICE));
-        priceTab = new InformationTab(new LinkedList<>(),prices);
+        /*
+      the tab holding on to the price
+     */
+        InformationTab priceTab = new InformationTab(new LinkedList<>(), prices);
         tabsCreated.add(priceTab);
 
 

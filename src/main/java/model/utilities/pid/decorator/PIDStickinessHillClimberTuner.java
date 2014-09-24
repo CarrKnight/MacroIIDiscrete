@@ -43,14 +43,14 @@ public class PIDStickinessHillClimberTuner extends ControllerDecorator implement
     private final ITAEHillClimber climber;
 
     public PIDStickinessHillClimberTuner(MacroII model, PIDController toTune, SalesDepartment department, int burnOut) {
-      this(model,toTune,new CounterITAE<>(department.getData(), DEFAULT_OUTPUT_TYPE),burnOut);
+        this(model,toTune,new CounterITAE<>(department.getData(), DEFAULT_OUTPUT_TYPE),burnOut);
 
     }
 
 
     public PIDStickinessHillClimberTuner(MacroII model, PIDController controller,
                                          CounterITAE<SalesDataType> counter,int burnOut) {
-       this(model, controller, counter, burnOut, DEFAULT_MAXIMIZATION_PHASE);
+        this(model, controller, counter, burnOut, DEFAULT_MAXIMIZATION_PHASE);
     }
 
 
@@ -99,13 +99,14 @@ public class PIDStickinessHillClimberTuner extends ControllerDecorator implement
             final int speed = (int) Math.round(step);
             toTune.setSpeed(speed);
             System.out.println("new speed: " + speed);
-            try {
-                debugWriter.write(((int)model.getMainScheduleTime()) + " , " + speed );
-                debugWriter.newLine();
-                debugWriter.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            if(debugWriter!= null)
+                try {
+                    debugWriter.write(((int)model.getMainScheduleTime()) + " , " + speed );
+                    debugWriter.newLine();
+                    debugWriter.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
         }
 
 

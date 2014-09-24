@@ -218,8 +218,8 @@ public class OneGoodBuyingAndSellingStrategy implements PersonalTradingStrategy,
                 }
             }
             //if we reach here we may have placed some quotes, the rest is up to react methods
-            assert  !(preparedSaleQuote!=null) || saleQuote != null : "sale quote: " + saleQuote + ", prepared sale quote: " + preparedSaleQuote;
-            assert  !(preparedBidQuote!=null) || buyQuote != null : "bid quote: " + buyQuote + ", prepared bid quote: " + preparedBidQuote;
+            assert preparedSaleQuote == null || saleQuote != null : "sale quote: " + saleQuote + ", prepared sale quote: " + preparedSaleQuote;
+            assert preparedBidQuote == null || buyQuote != null : "bid quote: " + buyQuote + ", prepared bid quote: " + preparedBidQuote;
             break;
         }
         while(true);

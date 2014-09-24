@@ -44,8 +44,6 @@ public class MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment implements 
      */
     private TargetAndMaximizePlantControl control;
 
-    private final PIDTargeterWithQuickFiring targeter;
-
     private final MarginalMaximizerWithUnitPIDCascadeEfficency maximizer;
 
 
@@ -56,7 +54,7 @@ public class MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment implements 
     public MarginalPlantControlWithPAIDUnitAndEfficiencyAdjustment( HumanResources hr)
     {
         control = TargetAndMaximizePlantControl.emptyTargetAndMaximizePlantControl(hr);
-        targeter = new PIDTargeterWithQuickFiring(hr,control);
+        PIDTargeterWithQuickFiring targeter = new PIDTargeterWithQuickFiring(hr, control);
         control.setTargeter(targeter);
         maximizer = new MarginalMaximizerWithUnitPIDCascadeEfficency(hr,control,hr.getPlant(),hr.getFirm(),
                 hr.getRandom(),hr.getPlant().getNumberOfWorkers());

@@ -93,7 +93,7 @@ public class InputCostStrategy implements PlantCostStrategy, PlantListener{
      */
     @Override
     public int weeklyFixedCosts() {
-        return (int) (Math.round((float) plant.getBuildingCosts() / (float) plant.getUsefulLife()) + plant.getHr().getWagesPaid());
+        return Math.round((float) plant.getBuildingCosts() / (float) plant.getUsefulLife()) + plant.getHr().getWagesPaid();
 
     }
 

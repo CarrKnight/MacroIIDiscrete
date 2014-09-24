@@ -53,11 +53,10 @@ public class ExponentialForgettingRegressionDecoratorTest {
 
                 double[][] toCopy = (double[][]) invocation.getArguments()[0];
                 for(int i=0; i<3; i++)
-                    for(int j=0;j<3; j++)
-                        result[i][j] = toCopy[i][j];
+                    System.arraycopy(toCopy[i], 0, result[i], 0, 3);
                 return null;
             }
-        }).when(regression).setPCovariance((double[][]) any());
+        }).when(regression).setPCovariance(any());
 
         ExponentialForgettingRegressionDecorator forgetter = new ExponentialForgettingRegressionDecorator(regression);
         forgetter.setLambda(.99);

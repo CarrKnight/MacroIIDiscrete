@@ -175,16 +175,14 @@ public class LinearRegressionTest {
         Matrix oldResults;
         Matrix newResults;
 
-        double[][] xs = new double[2][];
-        xs[0]=x1.clone();
-        xs[1]=x2.clone();
 
-        long oldDelay = 0;
+
+        long oldDelay;
         long startTime = System.nanoTime();
         oldResults=LinearRegression.regressOld(y.clone(),weights.clone(),x1.clone(),x2.clone());
         oldDelay =  System.nanoTime() - startTime;
 
-        long newDelay = 0;
+        long newDelay;
         startTime = System.nanoTime();
         newResults=LinearRegression.regress(y.clone(),weights.clone(),x1.clone(),x2.clone());
         newDelay =  System.nanoTime() - startTime;

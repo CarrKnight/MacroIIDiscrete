@@ -95,4 +95,8 @@ public class FirstOrderPlusDeadTime implements DynamicProcess {
     public void setRandomNoise(Supplier<Double> randomNoise) {
         this.randomNoise = randomNoise;
     }
+
+    public int getDeadTime() {
+        return deadTime;
+    }
 }

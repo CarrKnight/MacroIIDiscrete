@@ -58,9 +58,7 @@ public class ProducingOilFirmsScenarioStrategy implements OilFirmsScenarioStrate
 
     private final static Function<SalesDepartment,? extends AskPricingStrategy> DEFAULT_ASK_PRICING_STRATEGY =
             (t) ->{
-                final InventoryBufferSalesControl toReturn =
-                        new InventoryBufferSalesControl(t, 10,20);
-                return toReturn;
+                return new InventoryBufferSalesControl(t, 10,20);
 
             };
 

@@ -24,9 +24,6 @@ import java.nio.file.Path;
 public class SISOGuessingPurchasesPredictor implements PurchasesPredictor  {
 
 
-
-    private final RegressionDataCollector<PurchasesDataType> collector;
-
     /**
      * the sales department to use
      */
@@ -42,11 +39,11 @@ public class SISOGuessingPurchasesPredictor implements PurchasesPredictor  {
         this.toFollow = toFollow;
         //guesstimate
         PurchasesDataType xType = PurchasesDataType.WORKERS_CONSUMING_THIS_GOOD;
-        collector = new RegressionDataCollector<>(toFollow,xType,PurchasesDataType.CLOSING_PRICES,
+        RegressionDataCollector<PurchasesDataType> collector = new RegressionDataCollector<>(toFollow, xType, PurchasesDataType.CLOSING_PRICES,
                 PurchasesDataType.DEMAND_GAP);
         collector.setDataValidator(collector.getDataValidator().and(Department::hasTradedAtLeastOnce));
-        collector.setyValidator(price-> Double.isFinite(price) && price > 0); // we don't want -1 prices
-        regression = SISOPredictorBase.buildDefaultSISOGuessingRegression(model,collector);
+        collector.setyValidator(price -> Double.isFinite(price) && price > 0); // we don't want -1 prices
+        regression = SISOPredictorBase.buildDefaultSISOGuessingRegression(model, collector);
 
     }
 

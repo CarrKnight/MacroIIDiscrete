@@ -112,7 +112,7 @@ public abstract class Machinery extends Good {
     {
         Preconditions.checkArgument(getPlant().getBlueprint().getInputs().containsKey(inputType), "the type provided is not even an input!");
         //this is easy: just number of production runs times the amount of input burned each run.
-        return (int) (getPlant().getBlueprint().getInputs().get(inputType) * Math.round(hypotheticalWeeklyProductionRuns(workerSize)));
+        return getPlant().getBlueprint().getInputs().get(inputType) * Math.round(hypotheticalWeeklyProductionRuns(workerSize));
 
     }
 

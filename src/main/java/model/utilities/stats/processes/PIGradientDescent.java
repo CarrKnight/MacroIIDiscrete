@@ -43,7 +43,7 @@ public class PIGradientDescent
 
     private final double maximizationStepSize;
 
-    private final double stepSizeLimit = .05;
+    private final static double STEP_SIZE_LIMIT = .05;
 
     private final double covariants[];
 
@@ -146,8 +146,8 @@ public class PIGradientDescent
 
         //return x + alpha * nablaX
         boolean tuneP = Math.abs(pDerivative) >= Math.abs(iDerivative);
-        final double pStep = tuneP ?  Math.signum(pDerivative) * Math.min(Math.abs(maximizationStepSize * pDerivative),stepSizeLimit) : 0;
-        final double iStep = tuneP ? 0 : Math.signum(iDerivative) * Math.min(Math.abs(maximizationStepSize * iDerivative),stepSizeLimit);
+        final double pStep = tuneP ?  Math.signum(pDerivative) * Math.min(Math.abs(maximizationStepSize * pDerivative), STEP_SIZE_LIMIT) : 0;
+        final double iStep = tuneP ? 0 : Math.signum(iDerivative) * Math.min(Math.abs(maximizationStepSize * iDerivative), STEP_SIZE_LIMIT);
         return new PIDGains( (float)(originalController.getProportionalGain() - pStep),
                 (float) (originalController.getIntegralGain() - iStep),
                 originalController.getDerivativeGain());

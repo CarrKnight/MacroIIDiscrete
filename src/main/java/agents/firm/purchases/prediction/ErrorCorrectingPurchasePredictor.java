@@ -23,9 +23,6 @@ import java.nio.file.Paths;
 public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
 
 
-
-    private final RegressionDataCollector<PurchasesDataType> collector;
-
     private final SISOPredictorBase<PurchasesDataType,MultipleModelRegressionWithSwitching> base;
 
     private final FixedIncreasePurchasesPredictor predictor;
@@ -36,11 +33,11 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
         //focus on pid prices if you are hr, if you are buying other inputs, I expect you to be a price-taker
         final PurchasesDataType yVariable = department.getGoodType().isLabor() ?
                 PurchasesDataType.LAST_OFFERED_PRICE : PurchasesDataType.EFFECTIVE_CLOSING_PRICE;
-        this.collector = new RegressionDataCollector<>(department, xVariable,
-                yVariable,PurchasesDataType.DEMAND_GAP);
+        RegressionDataCollector<PurchasesDataType> collector = new RegressionDataCollector<>(department, xVariable,
+                yVariable, PurchasesDataType.DEMAND_GAP);
         collector.setDataValidator(collector.getDataValidator().and(Department::hasTradedAtLeastOnce));
         collector.setxValidator(collector.getxValidator().and(x -> x > 0));
-        collector.setyValidator(collector.getyValidator().and(y -> y>=0));
+        collector.setyValidator(collector.getyValidator().and(y -> y >= 0));
         final MultipleModelRegressionWithSwitching switching = new MultipleModelRegressionWithSwitching(
                 new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(.96f), new Integer[]{0}),
                 new Pair<>((integer) -> new ErrorCorrectingRegressionOneStep(.98f), new Integer[]{0}),
@@ -50,7 +47,7 @@ public class ErrorCorrectingPurchasePredictor implements PurchasesPredictor {
         switching.setHowManyObservationsBeforeModelSelection(300);
         switching.setExcludeLinearFallback(false);
         switching.setRoundError(true);
-        base = new SISOPredictorBase<>(model,collector, switching,null);
+        base = new SISOPredictorBase<>(model, collector, switching,null);
 
 
         try{

@@ -35,7 +35,6 @@ public class OrderBookMarketTest {
 
     @Before
     public void setUp() throws Exception {
-        ;
         market = new OrderBookMarket(UndifferentiatedGoodType.GENERIC);
         model = new MacroII(1);
         buyer = new Person(model){

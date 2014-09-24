@@ -49,7 +49,7 @@ public interface PriceAverager {
         COUNT_AS_0,
 
         //use the last closing price.
-        COUNT_AS_LAST_CLOSING_PRICE;
+        COUNT_AS_LAST_CLOSING_PRICE
 
     }
 

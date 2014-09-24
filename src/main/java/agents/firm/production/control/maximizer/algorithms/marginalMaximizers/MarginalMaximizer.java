@@ -56,7 +56,7 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
      */
     final private PlantControl plantControl;
 
-    private final int minimumStepsBeforeClosingDown = 5;
+    private final static int MINIMUM_STEPS_BEFORE_CLOSING_DOWN = 5;
 
     /**
      * What to do if some predictions don't exist?
@@ -149,7 +149,7 @@ public class MarginalMaximizer implements WorkerMaximizationAlgorithm
 
 
                     newTarget = Math.max(currentWorkerTarget - 1, 0);
-                    if (newTarget == 0 && currentWorkerTarget > 0 && steps < minimumStepsBeforeClosingDown)
+                    if (newTarget == 0 && currentWorkerTarget > 0 && steps < MINIMUM_STEPS_BEFORE_CLOSING_DOWN)
                         return currentWorkerTarget; //don't quit just yet
                     return newTarget;
 

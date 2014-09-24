@@ -22,20 +22,12 @@ import java.util.LinkedList;
 public class AgentLogView extends InformationTab implements Deactivatable {
 
 
-    private final MacroII model;
-
     private final LogPresentationBuffering presentation;
-
-    private final EconomicAgent agent;
-
-
 
 
     public AgentLogView(MacroII model, EconomicAgent agent) {
         super(new LinkedList<>(),new Tab());
         //create the presentation
-        this.model = model;
-        this.agent = agent;
         presentation = new LogPresentationBuffering(model,agent);
 
 

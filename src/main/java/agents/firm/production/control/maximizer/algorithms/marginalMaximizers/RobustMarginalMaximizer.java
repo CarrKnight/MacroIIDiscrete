@@ -95,8 +95,6 @@ public class RobustMarginalMaximizer implements WorkerMaximizationAlgorithm {
         HumanResources hr = maximizer.getHr();
 
 
-;
-
         if(futureTarget == currentWorkerNumber)
         {
 

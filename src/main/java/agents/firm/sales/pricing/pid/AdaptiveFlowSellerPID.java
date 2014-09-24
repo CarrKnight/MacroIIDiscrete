@@ -31,7 +31,7 @@ public class AdaptiveFlowSellerPID extends SimpleFlowSellerPID{
 
     public AdaptiveFlowSellerPID(SalesDepartment sales, float proportionalGain, float integralGain, float derivativeGain,
                                  int speed, Market market, int initialPrice, MacroII model) {
-        super(sales, proportionalGain, integralGain, derivativeGain, speed, market, initialPrice, model);
+        super(sales, (float) 1, integralGain, derivativeGain, speed, market, initialPrice, model);
         decorateController( pid -> new PIDAutotuner(pid,integer -> new AutoRegressiveWithInputRegression(integer, integer),getSales()));
 
     }

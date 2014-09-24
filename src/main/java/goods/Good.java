@@ -35,12 +35,6 @@ public class Good implements Comparable<Good>{
      */
     private int lastValidPrice;
 
-    /**
-     * The price of the good before it was sold last time
-     */
-    private int secondLastValidPrice;
-
-
 
     protected Good(GoodType type, int costOfProduction) {
         this.type = type;
@@ -64,7 +58,6 @@ public class Good implements Comparable<Good>{
     }
 
     public void setLastValidPrice(int lastValidPrice) {
-        secondLastValidPrice = this.lastValidPrice;
         this.lastValidPrice =lastValidPrice;
     }
 

@@ -20,8 +20,6 @@ import model.utilities.stats.regression.MultipleModelRegressionWithSwitching;
 public class SISOGuessingSalesPredictor extends BaseSalesPredictor implements Deactivatable {
 
 
-    private final RegressionDataCollector<SalesDataType> collector;
-
     /**
      * the sales department to use
      */
@@ -35,11 +33,11 @@ public class SISOGuessingSalesPredictor extends BaseSalesPredictor implements De
 
     public SISOGuessingSalesPredictor(MacroII model, SalesDepartment toFollow) {
         this.toFollow = toFollow;
-        collector = new RegressionDataCollector<>(toFollow,SalesDataType.WORKERS_PRODUCING_THIS_GOOD,
-                SalesDataType.CLOSING_PRICES,SalesDataType.SUPPLY_GAP);
+        RegressionDataCollector<SalesDataType> collector = new RegressionDataCollector<>(toFollow, SalesDataType.WORKERS_PRODUCING_THIS_GOOD,
+                SalesDataType.CLOSING_PRICES, SalesDataType.SUPPLY_GAP);
         collector.setDataValidator(collector.getDataValidator().and(Department::hasTradedAtLeastOnce));
-        collector.setyValidator(price-> Double.isFinite(price) && price > 0); // we don't want -1 prices
-        basePredictor =  SISOPredictorBase.buildDefaultSISOGuessingRegression(model,collector);
+        collector.setyValidator(price -> Double.isFinite(price) && price > 0); // we don't want -1 prices
+        basePredictor =  SISOPredictorBase.buildDefaultSISOGuessingRegression(model, collector);
 
     }
 

@@ -365,13 +365,11 @@ public class LearningDecreaseWithTimeSeriesSalesPredictor
   //      assert laggedIndependentVariable[0] == independentVariable[0]; //same starting point
 
         //now create price by lopping off the first element
-        double[] todayPrice = new double[independentVariable.length-1];
         double[] price = department.getObservationsRecordedTheseDays(SalesDataType.CLOSING_PRICES, days);
         double[] laggedPrice = new double[independentVariable.length- lag];
         double[] deltaPrice = new double[independentVariable.length- lag];
         for(int i= lag; i<laggedPrice.length+ lag; i++)
         {
-            todayPrice[i-1]=price[i];
             deltaPrice[i- lag] = price[i] - price[i- lag];
             laggedPrice[i- lag] = price[i- lag];
 

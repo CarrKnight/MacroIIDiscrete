@@ -68,12 +68,10 @@ public class AutoRegressiveWithInputProcess  implements DynamicProcess{
     }
 
     private void pushLagsDown(double todayInput, double output) {
-        for(int i=inputLags.length-1; i>0;i--)
-            inputLags[i]=inputLags[i-1];
+        System.arraycopy(inputLags, 0, inputLags, 1, inputLags.length - 1);
         inputLags[0] = todayInput;
 
-        for(int i=inputLags.length-1; i>0;i--)
-            outputLags[i]=outputLags[i-1];
+        System.arraycopy(outputLags, 0, outputLags, 1, inputLags.length - 1);
         outputLags[0] = output;
     }
 

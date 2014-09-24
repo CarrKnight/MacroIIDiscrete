@@ -26,9 +26,6 @@ public class Bankruptcy extends RuntimeException {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Bankruptcy{");
-        sb.append("cause=").append(cause);
-        sb.append('}');
-        return sb.toString();
+        return "Bankruptcy{" + "cause=" + cause + '}';
     }
 }
