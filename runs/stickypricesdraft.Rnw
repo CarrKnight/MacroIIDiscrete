@@ -1,0 +1,1168 @@
+
+\documentclass[]{article}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[utf8]{inputenc}
+\usepackage{svg}
+\usepackage[section]{placeins}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+
+\usepackage[american]{babel}
+\usepackage[backend=biber,style=apa,doi=false,isbn=false,url=false,eprint=false]{biblatex}
+\DeclareLanguageMapping{american}{american-apa}
+\addbibresource{sticky.bib}
+\providecommand{\keywords}[1]{\textbf{\textit{Index terms---}} #1}
+
+%opening
+\title{Sticky Prices Microfoundations in a Supply Chain Agent Based Model}
+\author{Ernesto Carrella}
+
+<<preamble,echo=FALSE,cache=FALSE,results=FALSE,message=FALSE>>=
+library(ggplot2)
+library(reshape2)
+library(gridExtra)
+
+opts_chunk$set(dev="png",echo=FALSE,cache=FALSE,comment=NA, out.width='.8\\linewidth',fig.width=8,fig.height=6,dpi=100,message=FALSE,warning=FALSE)
+
+@
+
+
+
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+I build a simple supply chain model with minimal rationality agents and show how sticky prices are necessary to achieve equilibrium. Stickiness is necessary because prices take time to affect agents throughout the economy and changing prices too frequently leads to noise and disequilibrium. I then extend the model to deal with monopolies and learning.
+
+\end{abstract}
+\keywords{Agent-based computational economics; Agent-based models; Nominal rigidities; Supply chains}
+
+\section{Introduction}
+As economists we see price flexibility as efficient and stickiness as an inferior compromise imposed by adjustment costs.
+I build a simple model with no adjustment costs where price stickiness is not only superior but necessary to achieve equilibrium.
+The model runs on two assumptions: delays to adapt to price changes and bounded rationality.
+
+Consider an economy in disequilibrium where some goods are overproduced and others overconsumed.
+Prices have to change to signal agents to reallocate resources. 
+What I focus on is how much time passes between the price changing and the agents reacting to it.
+
+The delay between a price changing and it having effect only matters when agents are boundedly rational.
+All-knowing agents predict any disequilibrium and  adapt preemptively.
+Agents in this paper are trial and error price-makers.
+
+When placed in a one-sector economy with immediately reacting demand, agents quickly find  equilibrium price and quantity.
+When placed in a two-sector supply chain, prices spiral out of control.
+This is because firms downstream need time to adapt to a change in price upstream. 
+This delay feeds into the trial and error of the upstream firms and fools them into thinking that prices are inelastic.
+To counter this inelasticity, upstream firms try ever larger price changes eventually overshooting and undershooting out of control.
+
+Sticky prices restore equilibrium by giving the time to agents to see their actions' full effect.
+The main advantage of this model is the ability to explain price stickiness without the need of adjustments and menu costs or kinks in demand. 
+Price-stickiness here is not a poor substitute of total flexibility, it is necessary for agents to deal with a slowly adapting world. 
+
+I introduce trial-and-error traders in section~\ref{sec:traders} and provide examples of how delays break their pricing and how stickiness can solve it. The delay in this section is exogenous and arbitrary but after introducing production in section~\ref{sec:production} I endogenize delays by building a two sectors supply-chain model in section~\ref{sec:supplychainz}.
+This zero-knowledge framework is described more completely in \textcite{carrella_zero-knowledge_2014} but I expand it here to deal with learning in section~\ref{sec:learning} and adaptive tuning in section~\ref{sec:tuning}.
+
+The source code is available\footnote{\href{https://github.com/CarrKnight/MacroIIDiscrete}{https://github.com/CarrKnight/MacroIIDiscrete}} on an open-source MIT license.
+The simulation is coded in Java and uses the MASON toolkit \parencite{luke_mason:_2003}.
+
+
+\section{Literature Review} 
+
+The ideas here are thoroughly unoriginal.
+I apply the principle that "in a world of price makers,rather than auctioneers and price takers, it takes time and resources to change prices", \textcite*{okun_prices_1981} description of Hicksian fixprice, on agents that are "goal-oriented feedback mechanisms with learning" which is \textcite*{pickering_cyborg_1995} definition of cybernetics.
+
+There are some similarities with the Beer-Distribution game\parencite{sterman_beer_1995}. Both deal with supply-chains, both have agents that act by feedback and both result in noise and disequilibrium. But the similiarities end there.
+In the beer distribution game noise is exogenous due to the experimenter changing customer demand; here demand is fixed and noise endogenous.
+In the beer distribution game, agents control only their inflow; here agents are price-makers and uses prices to control outflow (there are no prices in the beer game).
+In the real-life version of the beer distribution game, disequilibrium is attributed to anchoring, adjustment heuristics and wrongful mental simulation \parencite{sterman_modeling_1989}; here agents are too simple to make those mistakes.
+In the beer distribution game, there are delays between placing an order and receiving it; here orders are cleared immediately, the delay is wholly in coordinating.
+
+
+
+
+The most extensive empirical review on sticky prices is \textcite{klenow_microeconomic_2010}.
+The firm interviews by \textcite{blinder_asking_1998} and \textcite{fabiani_silvia_what_2006} are both literature survey on price stickiness’ microfoundations and empirical tests of which theory firms find more credible. Both highlight the importance of returning customers' goodwill \parencite{okun_prices_1981}, coordination between firms \parencite{clower_keynesian_1965} and long term contracts.
+
+My paper is most similar to \textcite{blanchard_price_1982}. In both papers price inertia is due to the desynchronization between firms in a supply-chain. 
+The results are similar but the causality is reversed.
+There production adapts instantaneously but prices are set slowly and asynchronously which generates inertia within the supply chain. 
+Here there is production inertia in the supply chain so that while prices can be set quickly it is counterproductive to do so.
+
+
+In sticky-information models \parencite{mankiw_sticky_2002} the lack of knowledge alone can cause price-stickiness as information about shocks is expensive.
+Here information gathering is not a separate costly activity, it is a by-product of acting.
+Firms never know what the profit-maximizing prices and quantities are, they can only experiment.
+Sticky prices become necessary when there is a large delay between running the experiment (setting a price) and seeing its result (changes in behavior along the supply-line).
+
+
+
+
+\section{Zero Knowledge Traders and Delays}
+\label{sec:traders}
+\subsection{Trial and error pricing is effective when customers react immediately}
+\label{sec:zkagents}
+Zero knowledge traders price their goods in a feedback loop. 
+Every day a trader receives $y^*$ goods to sell. 
+In the morning, she sets sale price $p$ and during the day she attracts $y$ paying customers. 
+If at the end of the day there are fewer customers than goods to sell, the trader will lower tomorrow's price.  
+Defining the daily error as
+\begin{subequations}
+\label{eq:PIDErrors}
+\begin{align}
+e_t &= y^* - y_t \label{PIDError} \\
+e_t &= \text{Inflow} - \text{Outflow} \label{eq:netflowis0}\\
+e_t &= \text{Netflow}
+\end{align}
+\end{subequations}
+The trader adjusts tomorrow prices through a PID(Proportional Integrative Derivative) controller rule:
+\begin{equation} \label{eq:pid}
+p_{t+1} = a e_t + b \sum_{i=1}^t e_i + c (e_t - e_{t-1}) 
+\end{equation}
+When $c=0$, as will be in this paper, strictly speaking we have a PI controller.
+
+Take a single price-maker agent using this feedback rule, give it the same number of goods to sell every day against the same daily demand curve and the correct price emerges quickly, as figure~\ref{fig:NoDelay} shows.
+
+
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble">>=
+file<- "./rawdata/simpleSeller.csv"
+seller1<-read.csv(file)
+breaks_y<-c(seq.int(from=0,to=50,by=5),51,seq.int(from=55,to=100,by=5)) #add 51 as a break, since that's important
+seller1_plot<-ggplot()+
+  geom_rect(aes(xmin=-Inf,xmax=Inf,ymin=50.5,ymax=51.5,fill=factor(1)),alpha=0.3) +
+  geom_line(data=seller1,aes(x=1:length(Test.good_price),y=Test.good_price),lwd=2) +
+  ylab("Price") + xlab("Days") +  labs(title="Seller sample run 1") + 
+  theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) + #   scale_y_continuous(breaks=breaks_y,minor_breaks=1:70) +
+  scale_fill_manual(values="blue",labels="Eq. Prices",name="Area Color") +
+    theme(aspect.ratio=.75) +
+  coord_cartesian(xlim=c(0,500))
+print(seller1_plot)  
+@
+\caption{A sample run of a trader iteratively finding the correct prices when having 50 units of goods to sell and facing the daily linear demand $q = 101- p$. This trader is using a PID controller with parameters $a=b=.1$ and $c=0$.}
+\label{fig:NoDelay}
+\end{figure}
+
+\subsection{Trial and error pricing fails if there is a long delay between setting a new price and it having effect}
+PID controllers simulate na\"{\i}ve  trial and error pricing.
+As with all experimentation, PIDs work better when trial results are informative and unambiguous.
+A simple way to mislead the agents is to add a time delay $\delta$ between a price $p$ being set and the quantity demanded $q$ adjusting to it. 
+Mathematically the trader faces the demand:
+\[ q_t = f( p_{t-\delta}) \]
+Delays mean that even when the trader guesses the right price it takes $\delta$ days to yield the right quantity. 
+This fools the trader into thinking the correct price wrong and changing it.
+Depending on $\delta$, the delay can slow down the approach to real prices (as in figure~\ref{fig:15DaysDelay}) or prevent it entirely (as in figure~\ref{fig:30DaysDelay}).
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble">>=
+file<- "./rawdata/simpleSeller_withDelays10.csv"
+seller2<-read.csv(file)
+breaks_y<-c(seq.int(from=0,to=50,by=5),51,seq.int(from=55,to=100,by=5)) #add 51 as a break, since that's important
+seller2_plot<-ggplot()+
+  geom_rect(aes(xmin=-Inf,xmax=Inf,ymin=50.5,ymax=51.5,fill=factor(1)),alpha=0.3) +
+  geom_line(data=seller2,aes(x=1:length(LAST_ASKED_PRICE),y=LAST_ASKED_PRICE),lwd=2) +
+  ylab("Price") + xlab("Days") +  labs(title="Seller, 10 days delay") + 
+theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) +
+  scale_fill_manual(values="blue",labels="Eq. Prices",name="Area Color") +
+      theme(aspect.ratio=.75) +
+  coord_cartesian(xlim=c(0,500))
+print(seller2_plot) 
+@
+\caption{The same trader of Figure~\ref{fig:NoDelay} now faces demand $q_t = 101-p_{t-10}$. The trader takes longer to find the right price.}
+\label{fig:15DaysDelay}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble">>=
+file<- "./rawdata/simpleSeller_withDelays20.csv"
+seller3<-read.csv(file)
+breaks_y<-c(seq.int(from=0,to=50,by=5),51,seq.int(from=55,to=100,by=5)) #add 51 as a break, since that's important
+seller3_plot<-ggplot()+
+  geom_rect(aes(xmin=-Inf,xmax=Inf,ymin=50.5,ymax=51.5,fill=factor(1)),alpha=0.3) +
+  geom_line(data=seller3,aes(x=1:length(LAST_ASKED_PRICE),y=LAST_ASKED_PRICE),lwd=2) +
+  ylab("Price") + xlab("Days") +  labs(title="Seller, 20 days delay") + 
+theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) +  scale_fill_manual(values="blue",labels="Eq. Prices",name="Area Color") +
+  coord_cartesian(xlim=c(0,500)) +
+    theme(aspect.ratio=.75)
+print(seller3_plot) 
+@
+\caption{The same trader of figure~\ref{fig:NoDelay} now faces demand $q_t = 101-p_{t-20}$. The trader never finds the right price.}
+\label{fig:30DaysDelay}
+\end{figure}
+
+\subsection{Sticky prices are a solution to the price delay}
+\label{sec:dealingDelays}
+
+The simplest way to deal with delays is to slow down trial and error loop accordingly.
+If it takes a week for prices to have an effect, the trader can change prices every week rather than every day. Effectively, sticky prices.
+As shown in figure~\ref{fig:lame} this adjustment is enough to get back to equilibrium. 
+Alternatively the trader can keep changing prices every day by  small amounts so that the demand has time to catch up. This would mean using the PID equation~\ref{eq:pid} with small $a$ and $b$. 
+This also works as shown in figure~\ref{fig:timid}
+
+
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble">>=
+file<- "./rawdata/simpleSeller_demandDelay20speed20slowness1.0.csv"
+seller4<-read.csv(file)
+breaks_y<-c(seq.int(from=0,to=50,by=5),51,seq.int(from=55,to=100,by=5)) #add 51 as a break, since that's important
+seller4_plot<-ggplot()+
+  geom_rect(aes(xmin=-Inf,xmax=Inf,ymin=50.5,ymax=51.5,fill=factor(1)),alpha=0.3) +
+  geom_line(data=seller4,aes(x=1:length(LAST_ASKED_PRICE),y=LAST_ASKED_PRICE),lwd=2) +
+  ylab("Price") + xlab("Days") +  labs(title="Sticky Pricing with 20 Days Delay") + 
+theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) +  scale_fill_manual(values="blue",labels="Eq. Prices",name="Area Color") +
+  coord_cartesian(xlim=c(0,2000)) +
+    theme(aspect.ratio=.75)
+print(seller4_plot) 
+@
+\caption{The same setting of figure~\ref{fig:30DaysDelay} but this time the trader adjusts her prices only every 20 days. The result is the same approach as figure~\ref{fig:NoDelay} but in a longer time frame }
+\label{fig:lame}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble">>=
+file<- "./rawdata/simpleSeller_demandDelay20speed0slowness10.0.csv"
+seller5<-read.csv(file)
+breaks_y<-c(seq.int(from=0,to=50,by=5),51,seq.int(from=55,to=100,by=5)) #add 51 as a break, since that's important
+seller5_plot<-ggplot()+
+  geom_rect(aes(xmin=-Inf,xmax=Inf,ymin=50.5,ymax=51.5,fill=factor(1)),alpha=0.3) +
+  geom_line(data=seller5,aes(x=1:length(LAST_ASKED_PRICE),y=LAST_ASKED_PRICE),lwd=2) +
+  ylab("Price") + xlab("Days") +  labs(title="Timid Pricing with 20 Days Delay") + 
+theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) +  scale_fill_manual(values="blue",labels="Eq. Prices",name="Area Color") +
+  coord_cartesian(xlim=c(0,2000)) +
+    theme(aspect.ratio=.75)
+print(seller5_plot) 
+@
+\caption{The same setting of Figure~\ref{fig:30DaysDelay} but the PID controller has $a=b=.01$, 10 times smaller than the original. }
+\label{fig:timid}
+\end{figure}
+
+Define stickiness as the number of days the PI controller waits before adjusting prices.
+Define timidity as the number dividing the baseline PI parameters (so a timidity of 10 with a baseline of .1 means that the PI parameters $a=b=\frac{.1}{10}=.01$).
+Fix the demand delay $\delta$ to 50.
+Figure~\ref{fig:sellerSweep1} shows which combinations of timidity and stickiness achieve correct prices over 5 experimental runs.
+Define the daily distance from the correct price as:
+\[ \sum_{t=1}^T \left(p_t - 51 \right)^2 \]
+Figure~\ref{fig:sellerSweep2} shows for which combination the distance is minimized. That is which combination of timidity and stickiness achieves the fastest convergence to correct prices.
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble">>=
+delaySweep <- read.csv("./rawdata/delaySweep.csv")
+ggplot(data=delaySweep) + 
+  geom_tile(aes(x=delaySweep$speed,y=delaySweep$divider,fill=delaySweep$success)) + 
+  xlab("Stickiness") + ylab("Timidity") +   scale_fill_gradient(name="Runs that ended\nwith correct prices") +
+  labs(title="Timidy and Stickiness sweep") +  
+  theme_bw(20) 
+@
+\caption{Run the model 5 times for 15000 market days with fixed PID parameters and speed but different initial prices. Controllers that are too fast or too slow fail in at least some cases. Demand delay is 50 days  }
+\label{fig:sellerSweep1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble">>=
+delaySweep <- read.csv("./rawdata/delaySweep.csv")
+delaySweep<-subset(delaySweep, success==5)
+ggplot(data=delaySweep) + 
+  geom_tile(aes(x=delaySweep$speed,y=delaySweep$divider,fill=delaySweep$distance)) + 
+  xlab("Stickiness") + ylab("Timidity") +   scale_fill_gradient(low="red", high="grey",name="Sum squared distance\n from correct price\n during the simulation") +
+  labs(title="Which combination is optimal?") +
+  theme_bw(20) 
+@
+\caption{Average sum squared distance over 5 simulations run. The minimum distance is achieved by stickiness of 16 and timidity of 1. Only the successful combinations from figure~\ref{fig:sellerSweep1} are considered. Demand delay is 50 days }
+\label{fig:sellerSweep2}
+\end{figure}
+
+
+Agents working by trial and error benefit from acting slowly and timidly whenever price changes take time to have an effect.
+Since there are no menu costs, the agents are indifferent between adjusting the price often but timidly or seldom but aggressively.
+The weakness of this section is that the delay is arbitrary and unrealistic.
+The delay will become endogenous as supply chains are introduced. 
+
+\subsection{We can reduce knowledge further with a minimum inventory buffer}
+
+One weakness of the error in equation~\ref{eq:PIDErrors} is that it assumes netflow can go negative.
+If the seller manages to sell all its stock, she must estimate how many more goods she would have been able to sell at that price.
+This might be hard.
+The solution is to hold a minimum inventory to count excess customers.
+
+Given a minimum buffer inventory target $i^*$, the PID controller targets 0 sales as long as actual inventory is below $i^*$ and targets zero netflow otherwise.
+Excluding the initial days of stocking up the dynamics of this controller are exactly the same as those shown above.
+Traders will use inventory buffers for the rest of the paper.
+
+\section{Firms, Production and Supply Chains}
+\label{sec:zkfirms}
+\subsection{Independent PID controls coupled with simple marginal analysis can simulate one-sector competitive and monopolist markets}
+\label{sec:production}
+
+Agents in this section, zero-knowledge firms, produce their own sale goods.
+In parallel these agents have to hire workers, buy inputs, and price their output.
+They are price-makers when selling or setting wages and price-takers when buying other inputs.
+Each price is set by an independent PID controller as in section~\ref{sec:zkagents}.
+
+
+Production is linear with respect to workers hired $L_t$:
+\[ F(L_t) = L_t \]
+The firm has to decide how many workers to hire.
+The simplest way to do so is to raise production as long as:
+\[ \text{MB}>\text{MC} \]
+A firm producing one type of good priced $p_t$ and consuming labor as only input with unit wage $w_t$ should increase production as long as:
+\begin{equation}
+ p_t + \mu^p > w_t + \mu^w
+ \label{eq:MCMB}
+\end{equation}
+Here $p_t$ and $w_t$ are the prices set by the PID controls at time $t$.
+$\mu^p$ is the price impact: the change in sale price from increasing production; $\mu^w$ is the wage impact.
+
+As shown in section~\ref{sec:zkagents} it takes some time for PID controls to find the correct prices.
+Because marginal benefits and costs are computed with PID prices, production decisions should be taken infrequently to give the controllers time to be correct.
+Define $T$ as the decision period: how often, in days, the firm checks whether to change production. It is set to 20 for all simulations.
+
+The firm must also know what the price impacts are. I will deal with their endogenous discovery in section~\ref{sec:learning}. Until then I'll simply assume they are known.
+To a competitive firm, price impacts are always 0 . To a monopolist, price impacts equal the demand and supply slopes.
+
+Take a firm facing the daily demand function: $q=101-p$, with daily production function $q=f(L) = L$ and wage curve $w= 14+L$. A firm acting as a monopolist would maximize profits by producing 22 units a day and selling them at \$79.
+Figure~\ref{fig:sampleMonopolist} shows a sample run of a zero-knowledge monopolist firm.
+
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble">>=
+monopolist<-read.csv("./rawdata/sampleMonopolist.csv")
+plot_price<-
+  ggplot()+
+  geom_rect(aes(xmin=-Inf,xmax=Inf,ymin=78.5,ymax=79.5,fill=factor(1)),alpha=0.3) +
+  geom_line(data=monopolist,aes(x=1:length(LAST_ASKED_PRICE),y=LAST_ASKED_PRICE)) +
+  ylab("Price") + xlab("Days") + 
+  theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) + #   scale_y_continuous(breaks=breaks_y,minor_breaks=1:70) +
+  scale_fill_manual(values="blue",labels="Correct P",name="") +
+  theme(axis.text.y = element_text(size=20)) +   theme(axis.text.x = element_text(size=20)) +  
+  coord_cartesian(xlim=c(0,1000),ylim=c(0,105)) 
+#print(plot_price)
+
+plot_quantity<-
+  ggplot()+
+  geom_rect(aes(xmin=-Inf,xmax=Inf,ymin=21.5,ymax=22.5,fill=factor(1)),alpha=0.3) +
+  geom_line(data=monopolist,aes(x=1:length(INFLOW),
+                                y=INFLOW)) +
+  ylab("Production") + xlab("Days") + 
+  theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) + #   scale_y_continuous(breaks=breaks_y,minor_breaks=1:70) +
+  scale_fill_manual(values="blue",labels="Correct Q",name=" ") +
+  theme(axis.text.y = element_text(size=20)) +   theme(axis.text.x = element_text(size=20)) +  
+  scale_y_continuous(breaks=c(seq.int(from=0,to=25,by=5),22)) +
+  coord_cartesian(xlim=c(0,1000))
+#print(plot_quantity)
+arranged2Plots<-function(plot1,plot2,main=NULL)
+{
+  gA <- ggplotGrob(plot1)
+  gB <- ggplotGrob(plot2)
+  maxWidth = grid::unit.pmax(gA$widths[2:5], gB$widths[2:5])
+  gA$widths[2:5] <- as.list(maxWidth)
+  gB$widths[2:5] <- as.list(maxWidth)
+  return(grid.arrange(gA, gB, ncol=1,main=textGrob(main,gp=gpar(fontsize=30))))
+}
+arranged2Plots(plot_price,plot_quantity,main="Monopolist Sample Run")
+
+@
+\caption{A sample run with a monopolist firm. It reaches the correct price and quantity}
+\label{fig:sampleMonopolist}
+\end{figure}
+
+In perfect competition, equilibrium is a daily total production of $44$ units sold at \$58.
+Figure~\ref{fig:sampleCompetitive} shows a sample run with 5 competitors. 
+Multiple agents create noisy results due to coordination failure. While each firm might see an increase in production as profitable, the demand is not enough when all firms increase production at the same time.
+%this is exarcerbated when decision period is very small. might want to add a picture here
+
+Notice that the number of firms competing is not important for the correct result. If I run the model with a single firm with zero price impacts I will get a noiseless perfect competitive solution.
+Perfect competition is a state of mind.
+At least until section~\ref{sec:learning}.
+
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble",message=FALSE>>=
+competitive<-read.csv("./rawdata/sampleCompetitive.csv")
+plot_price<-
+  ggplot()+
+  geom_rect(aes(xmin=-Inf,xmax=Inf,ymin=78.5,ymax=79.5,fill=factor(1)),alpha=0.3) +
+  geom_rect(aes(xmin=-Inf,xmax=Inf,ymin=57.5,ymax=58.5,fill=factor(2)),alpha=0.3) +
+  geom_line(data=competitive,aes(x=1:length(AVERAGE_CLOSING_PRICE),y=AVERAGE_CLOSING_PRICE),lwd=1) +
+  ylab("Price") + xlab("Days") + 
+  theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) + #   scale_y_continuous(breaks=breaks_y,minor_breaks=1:70) +
+  scale_fill_manual(values=c("blue","red"),labels=c("Monopolist P","Competitive P"),name=" ") +
+  theme(axis.text.y = element_text(size=20)) +   theme(axis.text.x = element_text(size=20)) + 
+  scale_y_continuous(breaks=c(seq.int(from=0,to=100,by=25),58)) +  
+  coord_cartesian(xlim=c(0,4000),ylim=c(0,105)) 
+#print(plot_price)
+
+plot_quantity<-
+  ggplot()+
+  geom_rect(aes(xmin=-Inf,xmax=Inf,ymin=21.5,ymax=22.5,fill=factor(1)),alpha=0.3) +
+  geom_rect(aes(xmin=-Inf,xmax=Inf,ymin=43.5,ymax=44.5,fill=factor(2)),alpha=0.3) +    
+  geom_line(data=competitive,aes(x=1:length(VOLUME_TRADED),
+                                y=VOLUME_TRADED),lwd=1) +
+  ylab("Workers") + xlab("Days") + 
+  theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) + #   scale_y_continuous(breaks=breaks_y,minor_breaks=1:70) +
+  scale_fill_manual(values=c("blue","red"),labels=c("Monopolist Q","Competitive Q"),name=" ") +
+  theme(axis.text.y = element_text(size=20)) +   theme(axis.text.x = element_text(size=20)) +  
+  scale_y_continuous(breaks=c(seq.int(from=0,to=60,by=20),44)) +
+  coord_cartesian(xlim=c(0,4000))
+#print(plot_quantity)
+library(gridExtra)
+arranged2Plots<-function(plot1,plot2,main=NULL)
+{
+  gA <- ggplotGrob(plot1)
+  gB <- ggplotGrob(plot2)
+  maxWidth = grid::unit.pmax(gA$widths[2:5], gB$widths[2:5])
+  gA$widths[2:5] <- as.list(maxWidth)
+  gB$widths[2:5] <- as.list(maxWidth)
+  return(grid.arrange(gA, gB, ncol=1,main=textGrob(main,gp=gpar(fontsize=30))))
+}
+
+arranged2Plots(plot_price,plot_quantity,main="Competitive Sample Run")
+
+@
+\caption{A sample run with a 5 competitive firm. There is noise but centered around the correct price and quantity.}
+\label{fig:sampleCompetitive}
+\end{figure}
+
+While the aggregate quantity and prices are correct, the micro-structure of the competitive market is perplexing.
+Each firm produces only a part of the total output but buyers only buy from the daily price-leader.
+This means that every day only one firm is actually trading.
+The PID controller of the firm that is trading will raise the price for selling too much while competitors will lower theirs.
+The daily competitive market is made by an ever changing price-leader that holds the daily monopoly by charging the most competitive price.
+
+\subsection{Zero-knowledge firms in a supply chain create endogenous delays that break the model}
+\label{sec:supplychainz}  
+Take a supply chain made of two sectors: wood and furniture.
+There is a final daily demand for furniture which is exogenous and fixed at:
+\[ q_F = 102 - p_F \]
+Daily production of one unit of furniture requires one worker and consumes one unit of wood:
+\[ q_F = \min(L_F,q_W) \]
+Daily production of one unit of wood requires one worker.
+\[ q_W = L_W \]
+Each sector has its own independent linear labor supply:
+\begin{align*}
+w_W &= L_W  \\
+w_F &= L_F
+\end{align*}
+Helpfully, there are infinite trees waiting to be cut.
+
+In this section further assume that the wood sector is monopolized while the furniture market is competitive.
+I go through all the market-structure permutations in section~\ref{sec:monopolies}.
+Solving for the market equilibrium yields the following:
+\begin{subequations}
+\label{eq:monowoodSolution}
+\begin{align}
+q_F = q_W &= 17 \\
+w_W = w_F &= 17 \\
+p_W &= 68 \\
+p_F &= 85
+\end{align}
+\end{subequations}
+The theoretical demand for wood from the furniture sector is
+\begin{equation}
+ p_W = 102 - 2 q_F 
+ \label{eq:demand}
+\end{equation}
+
+Figure~\ref{fig:monoSweep} shows the parameter sweep for the optimal PI controller of a monopolist facing the undelayed demand function~\ref{eq:demand}; the best parameters are $a=0$ and $b=2$.
+The only difference in running the full model is that the demand faced by the monopolist is made up of other zero-knowledge firms.
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble">>=
+monoSweep <- read.csv("./rawdata/monoSweep.csv")
+ggplot(data=monoSweep) + 
+  geom_tile(aes(x=P,y=I,fill=distance)) + 
+  xlab("Proportional Parameter a") + ylab("Integrative Parameter b") +   
+  scale_fill_gradient(low="yellow",high="blue",name="Sum squared\ndistance from\ncorrect price\nover time",
+                      na.value="blue") +
+  labs(title="Optimal Monopolist Parameters") +
+  theme_bw(20) 
+
+#monoSweep<-subset(monoSweep,success==5)
+#monoSweep[which.min(monoSweep$distance),2]
+@
+\caption{The average squared distance from correct prices when a monopolist faces demand $p=102 - 2 q$ and labor supply $w=L$. Each cell represent a pair of parameters used by the monopolist's sales PID control. The optimal parameter pair is predictably $a=0,b=2$ reflecting the underlying demand.}
+\label{fig:monoSweep}
+\end{figure}
+
+I run the full supply chain model in figure~\ref{fig:badlyOptimizedRun} where the monopolist uses the "optimal" parameter $b=2$ and  I run it again with less aggressive $b=.2$ in figure~\ref{fig:timidOptimizedRun}.
+In both cases supply-chain neither achieves equilibrium nor orbits around it. Wood prices are especially out of equilibrium.
+While the parameters chosen were optimal when facing an instantaneously reacting demand they fail when facing the same demand implemented by other zero-knowledge firms.
+
+The issue is delay. It takes time for furniture manufacturers to notice new wood prices and change their production. By the time they adjust, the supplier has changed sale price again.
+The consumer delay feeds into the producer trial and error loop. The wood price swings from 0 to over 100 because the wood monopolist's netflow reacts slowly to changes in prices.
+
+<<supplyChainDrawing,cache=TRUE,dependson="preamble">>=
+drawSupplyChain<-function(file,beefPriceTarget=68,foodPriceTarget=85,productionTarget=17,xlimit=15000)
+{
+  library(ggplot2)
+  library(reshape2)
+supplychain <- read.csv(file)
+
+
+#find max production for y to make sense
+max_production<- max(c(supplychain$wood_production,supplychain$CATTLE_production, supplychain$furniture_production))
+
+#Create a data frame holding only what you need
+production<-data.frame( 
+  day = 1:length(supplychain$wood_production),
+  beef = supplychain$wood_production/7,
+  food = supplychain$furniture_production/7
+)
+
+#use melt in reshape to get the long form
+production<-melt(production,id="day")
+
+
+#cattle summary plot
+beef_market<-data.frame(
+  day = 1:length(supplychain$wood_production),
+  #volumeTraded = supplychain$wood_volume,
+  consumed = supplychain$wood_consumption,
+  produced = supplychain$wood_production,  
+  price = supplychain$wood_price,
+  target = beefPriceTarget
+)
+beef_market<-melt(beef_market,id="day")
+
+colorsToUse<-c(rgb(0,.45,.7),rgb(0,0,0),rgb(.9,.6,0))
+#quantity plot
+plot1<- 
+  ggplot(data=subset(beef_market,variable != "price" & variable != "target")) 
+
+
+plot1<- plot1 +   
+    geom_abline(intercept=productionTarget,slope=0,aes(colour=factor("target")),size=1,alpha=0.5)+
+  geom_line(aes(x=day,y=value,color = variable),alpha=.65)+
+  scale_color_manual("Line Color",breaks = c("target","produced","consumed"),
+                     values =colorsToUse,labels=c("Equilibrium","Produced","Consumed")) + 
+  labs(title = "Daily Wood Market")+ ylab("units of wood") +
+    coord_cartesian(xlim=c(0,xlimit))+  
+  theme_grey(20)+guides(colour = guide_legend(override.aes = list(size=3))) + scale_y_continuous(labels = function(x) format(x, width = 10),
+                                    breaks=c(seq.int(from=0,to=60,by=30),productionTarget))
+
+#price plot
+plot3<-  
+  ggplot(data=beef_market) 
+
+
+plot3<- 
+  plot3 +  
+    geom_abline(intercept=beefPriceTarget,slope=0,aes(colour=factor("target")),size=1,alpha=0.5)+
+  geom_line(data= subset(beef_market,variable=="price") , aes(x=day,y=value,colour=factor("actual")))+
+    scale_color_manual("Line Color",breaks = c("target","actual"),
+                     values =colorsToUse[1:2],labels=c("Equilibrium","Actual")) + 
+  labs(title = "Wood Price")+ ylab("prices") +  coord_cartesian(xlim=c(0,xlimit),ylim=c(0,100))+  
+  theme_grey(20)+guides(colour = guide_legend(override.aes = list(size=3))) + scale_y_continuous(labels = function(x) format(x, width = 10),breaks=
+                                      c(seq.int(from=0,to=100,by=50),beefPriceTarget)) 
+
+
+#price plot
+food_market<-data.frame(
+  day = 1:length(supplychain$furniture_production),
+  volumeTraded = supplychain$furniture_volume,
+  produced = supplychain$furniture_production,
+  consumed = supplychain$furniture_consumption,
+  price = supplychain$furniture_price,
+  target = foodPriceTarget
+)
+food_market<-melt(food_market,id="day")
+plot4<-  
+  ggplot(data=beef_market) 
+
+
+
+plot4<- plot4 +  
+    geom_abline(intercept=foodPriceTarget,slope=0,aes(colour=factor("target")),size=1,alpha=0.5)+
+  geom_line(data= subset(food_market,variable=="price"), aes(x=day,y=value,color=factor("actual")))+
+  labs(title = "Furniture Price")+ ylab("prices") +  coord_cartesian(xlim=c(0,xlimit),ylim=c(0,100))+  
+  theme_grey(20)+guides(colour = guide_legend(override.aes = list(size=3))) + scale_y_continuous(labels = function(x) format(x, width = 10),
+                                    breaks=c(seq.int(from=0,to=100,by=50),foodPriceTarget))+
+    scale_color_manual("Line Color",breaks = c("target","actual"),
+                     values =colorsToUse[1:2],labels=c("Equilibrium","Actual")) 
+
+
+library(gridExtra)
+sidebysideplot <- grid.arrange(plot1,plot3, plot4, ncol=1)
+return(sidebysideplot)
+}
+@
+\begin{figure}[H]
+\centering
+<<dependson="supplyChainDrawing",echo=FALSE,out.width='\\linewidth',results='hide',message=FALSE>>=
+drawSupplyChain("./rawdata/badlyOptimized.csv",
+                beefPriceTarget=68,foodPriceTarget=85,productionTarget=17)
+@
+\caption{A sample run of the supply chain model using the PID parameters that were optimal when the demand was immediately reacting}
+\label{fig:badlyOptimizedRun}
+\end{figure}
+\begin{figure}[H]
+\centering
+<<dependson="supplyChainDrawing",echo=FALSE,out.width='\\linewidth',results='hide',message=FALSE>>=
+drawSupplyChain("./rawdata/timidBadlyOptimized.csv",
+                beefPriceTarget=68,foodPriceTarget=85,productionTarget=17)
+@
+\caption{A sample run of the supply chain model using the PID parameters that are 10 times more timid than the optimal}
+\label{fig:timidOptimizedRun}
+\end{figure}
+
+
+\subsection{Adding price-stickiness to the upstream firm restores equilibrium}
+Force the wood monopolist to change its prices only every 50 days, keeping $b=.2$.
+As figure~\ref{fig:stickyBadlyOptimizedRun} shows, stickiness solves all supply chain problems: production and prices in both sectors are the correct ones and remain in equilibrium.
+This is because sticky prices give time to downstream firms to adapt to changes in upstream prices.
+
+
+\begin{figure}[H]
+\centering
+<<dependson="supplyChainDrawing",,out.width='\\linewidth',results='hide',message=FALSE>>=
+print(
+drawSupplyChain("./rawdata/stickyBadlyOptimized.csv",
+                beefPriceTarget=68,foodPriceTarget=85,productionTarget=17)
+)
+@
+\caption{A sample run of the supply chain model where the wood producer uses sticky prices. }
+\label{fig:stickyBadlyOptimizedRun}
+\end{figure}
+
+There are two endogenous sources of delays in the supply chain. 
+The first delay is the time it takes between a firm making the decision to change its production quota and the controllers adapting to it by finding new wages and prices.
+The second delay source is the decision period $T$ of the furniture producers which delays their response to change in prices of the wood supplier. 
+The larger $T$ the more the wood supplier prices need to be sticky to balance. 
+Figure~\ref{fig:stickySweep} shows the relationship between the stickiness and $T$.
+
+
+\begin{figure}[H]
+\centering
+<<dependson="supplyChainDrawing",results='hide',message=FALSE>>=
+woodMonopolistStickinessesSweep <- read.csv("./rawdata/woodMonopolistStickinessesSweep.csv")
+ggplot(data=woodMonopolistStickinessesSweep) + geom_tile(aes(x=stickiness,y=decisionSpeed,fill=distance)) +
+  scale_fill_continuous(trans="log10",high="red", low="cyan",name="Distance\nfrom equilibrium\nprice") + 
+  theme_bw(20) + ggtitle("Decision period relates to Price Stickiness") +
+  theme(axis.text.y = element_text(size=20)) +   theme(axis.text.x = element_text(size=20)) +    
+  xlab("Price Stickiness") + xlim(0,50) + ylab("Decision Period")
+@
+\caption{The decision period $T$ of firms is an important source of delays in the system; the higher $T$ the higher the price stickiness needs to be in order to balance it. Each tile represents a 5-runs average squared distance from the correct price over the whole run.}
+\label{fig:stickySweep}
+\end{figure}
+
+\section{Market Structure}
+\label{sec:monopolies}
+
+In equations~\ref{eq:monowoodSolution} I expressed the solution where the wood sector is a monopolist while the furniture sector is competitive.
+If the wood sector is competitive while the furniture is monopolistic the equilibrium is:
+\begin{subequations}
+\label{eq:monoFurnitureSolution}
+\begin{align}
+q_F = q_W &= 17 \\
+w_W = w_F &= 17 \\
+p_W &= 17 \\
+p_F &= 85
+\end{align}
+\end{subequations}
+If both sectors are competitive the no-profit equilibrium should be:
+\begin{subequations}
+\label{eq:competitiveSolution}
+\begin{align}
+q_F = q_W &= 34 \\
+w_W = w_F &= 34 \\
+p_W &= 34 \\
+p_F &= 68
+\end{align}
+\end{subequations}
+
+I run 100 simulations for each market structure (competitive means 5 firms in the same sector). Each simulation runs for 15000 market days. All producers have minimum inventory of 100, regardless of market structure. All input producers use sticky prices (50 days each price change), regardless of market structure.
+
+In general the model behaves as predicted by theory. Figure~\ref{fig:learnedWoodPrices} shows the distribution of input prices at the end of the simulation; figure~\ref{fig:learnedFurniturePrices} shows the output prices; figure~\ref{fig:learnedFurnitureProduction} shows the quantity produced.
+
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble",out.width='\\linewidth'>>=
+breaks<-seq(from=-0.5,to=200,by=1)
+file<-"./rawdata/learnedInventoryChain100.csv"
+beefMono<-read.csv(file)
+file2<-"./rawdata/learnedInventoryFoodChain100.csv"
+foodMono<-read.csv(file2)
+file3<-"./rawdata/learnedCompetitiveInventoryChain100.csv"
+compe<-read.csv(file3)
+ggplot()   +
+  geom_histogram(data=beefMono,aes(y = ..density..,x=beefPrice,fill=factor(1)),alpha=.5,binwidth = 1,color="white",breaks=breaks) +
+  geom_vline(xintercept=68,col="red",lty=2) +    
+  geom_histogram(data=foodMono,aes(y = ..density..,
+                                    x=beefPrice,fill=factor(2)),binwidth = 1,alpha=.5,color="white",breaks=breaks) +
+  geom_vline(xintercept=17,col="green",lty=2) +  
+  geom_histogram(data=compe,aes(y = ..density..,
+                                   x=beefPrice,fill=factor(3)),binwidth = 1,alpha=.5,color="white",breaks=breaks) +
+  geom_vline(xintercept=34,col="blue",lty=2) +    
+  theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) +    
+  coord_cartesian(xlim=c(10,90)) +
+  labs(title="Wood P Histogram, 100 Runs") + xlab("Wood Price") +
+  scale_x_continuous(breaks=c(10,25,50,75,90,17,68,34)) +
+  scale_fill_manual(values=c("red","green","blue"),labels=c("Wood\nMonopolist",
+                                                           "Furniture\nMonopolist","Competitive"),name="Market Structure")
+@
+\caption{The price of wood (first sector) for 300 simulated runs, 100 for each market structure. The vertical dashed lines represent the theoretical equilibrium. Each datum in the histogram is the average price of the last 500 days of simulation.}
+\label{fig:learnedWoodPrices}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble",out.width='\\linewidth'>>=
+breaks<-seq(from=-0.5,to=200,by=1)
+file<-"./rawdata/learnedInventoryChain100.csv"
+beefMono<-read.csv(file)
+file2<-"./rawdata/learnedInventoryFoodChain100.csv"
+foodMono<-read.csv(file2)
+file3<-"./rawdata/learnedCompetitiveInventoryChain100.csv"
+compe<-read.csv(file3)
+ggplot()   +
+  geom_histogram(data=beefMono,aes(y = ..density..,x=foodPrice,fill=factor(1)),alpha=.5,binwidth = 1,color="white",breaks=breaks) +
+  geom_vline(xintercept=85,col="red",lty=3) +    
+  geom_histogram(data=foodMono,aes(y = ..density..,
+                                   x=foodPrice,fill=factor(2)),binwidth = 1,alpha=.5,color="white",breaks=breaks) +
+  geom_vline(xintercept=85,col="green",lty=2) +  
+  geom_histogram(data=compe,aes(y = ..density..,
+                                x=foodPrice,fill=factor(3)),binwidth = 1,alpha=.5,color="white",breaks=breaks) +
+  geom_vline(xintercept=68,col="blue",lty=2) +    
+  theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) +    
+  coord_cartesian(xlim=c(10,90)) +
+  labs(title="Furniture P Histogram, 100 Runs") + xlab("Furniture Price") +
+  scale_x_continuous(breaks=c(10,25,50,75,90,68,85)) +
+  scale_fill_manual(values=c("red","green","blue"),labels=c("Wood\nMonopolist",
+                                                            "Furniture\nMonopolist","Competitive"),name="Market Structure")
+
+@
+\caption{The price of furniture (second sector) for 300 simulated runs, 100 for each market structure. The vertical dashed lines represent the theoretical equilibrium. Each datum in the histogram is the average price of the last 500 days of simulation.}
+\label{fig:learnedFurniturePrices}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble",out.width='\\linewidth'>>=
+breaks<-seq(from=-0.5,to=200,by=1)
+file<-"./rawdata/learnedInventoryChain100.csv"
+beefMono<-read.csv(file)
+file2<-"./rawdata/learnedInventoryFoodChain100.csv"
+foodMono<-read.csv(file2)
+file3<-"./rawdata/learnedCompetitiveInventoryChain100.csv"
+compe<-read.csv(file3)
+ggplot()   +
+  geom_histogram(data=beefMono,aes(y = ..density..,x=production,fill=factor(1)),alpha=.5,binwidth = 1,color="white",breaks=breaks) +
+  geom_vline(xintercept=17,col="red",lty=3) +    
+  geom_histogram(data=foodMono,aes(y = ..density..,
+                                   x=production,fill=factor(2)),binwidth = 1,alpha=.5,color="white",breaks=breaks) +
+  geom_vline(xintercept=17,col="green",lty=2) +  
+  geom_histogram(data=compe,aes(y = ..density..,
+                                x=production,fill=factor(3)),binwidth = 1,alpha=.5,color="white",breaks=breaks) +
+  geom_vline(xintercept=34,col="blue",lty=2) +    
+  theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) +    
+  coord_cartesian(xlim=c(10,90)) +
+  labs(title="Furniture Q Histogram, 100 Runs") + xlab("Furniture Production") +
+  scale_x_continuous(breaks=c(10,25,50,75,90,17,34)) +
+  scale_fill_manual(values=c("red","green","blue"),labels=c("Wood\nMonopolist",
+                                                            "Furniture\nMonopolist","Competitive"),name="Market Structure")
+
+
+@
+\caption{The units of furniture produced daily at the end of 300 simulated runs, 100 for each market structure. The vertical dashed lines represent the theoretical equilibrium. Each datum in the histogram is the average daily production over the last 500 days of simulation.}
+\label{fig:learnedFurnitureProduction}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Competitive is a state of mind!
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Learning Price Impacts}
+\label{sec:learning}
+
+\subsection{Regressing workers on price works well in a one-sector economy}
+A zero-knowledge firm should be able to learn its own market power.
+In previous sections the price impacts were given, now firms discover them.
+
+The firm takes the price generated by its PID controls and regresses it against number of workers.
+The regression identifies how much increasing production changes prices.
+Zero Knowledge firms use two regressions side by side.
+First, they fit one-step error correction regression model \parencite{banerjee_co-integration_1993}:
+\begin{equation}
+\Delta p_t = \beta_0 + \beta_1 \Delta L_t + \beta_2 p_{t-1} + \beta_3 L_{t-1} + \epsilon \label{eq:ECModel}
+\end{equation}
+Where $p$ is price and $L$ are workers hired.
+The firm identifies the long run relationship between the two variables and use it as approximate price impact:
+\[ \mu^p = - \frac{\beta_3}{\beta_2}  \]
+
+
+The second regression is the linear model
+\begin{equation}
+p_t = \gamma_0 + \gamma_1 L + \epsilon \label{eq:ECModel}
+\end{equation}
+Where the price impact discovered is:
+\[ \mu^p = \gamma_1  \]
+
+The zero-knowledge firms chooses daily which regression to use according to which one predicts the next day's price better. 
+This is done separately for each market. 
+For the input markets where the firm is a price-taker, the paid price is used in lieu of the PID one.
+
+
+Because the PID controls generate one observation each day in each market it makes sense to implement the regressions by a Recursive Least Squares filter\parencite{welch_introduction_1995}.
+Take as example  
+Equation~\ref{eq:ECModel}. It has four parameters: $\vec{\beta} = \left( \beta_0, \beta_1, \beta_2, \beta_3 \right)$.
+Each day the firm observes the price offered, the labor hired and their lags $y_t=\Delta p_t$,$\vec{x}_t = \left(1, \Delta L_t, p_{t-1}, L_{t-1} \right)$.
+The current estimation of $\vec{\beta}$ is $\hat{\vec{\beta}}_{t-1} = \left( \hat{\beta_0}_{t-1}, \hat{\beta_1}_{t-1}, \hat{\beta_2}_{t-1}, \hat{\beta_3}_{t-1} \right)$.  Update it with the new observation in four steps:
+\begin{subequations}
+\begin{align}
+\vec{k} &= \mathbf{P}_{t-1} \vec{x}^T \left( \vec{x} {P}_{t-1} \vec{x}^T + 1 \right)^{-1} &\text{Constructing the Kalman gain}\\
+\epsilon_t &= y_t -  x\hat{\vec{\beta}}_{t-1} &\text{Finding the prediction error}\\
+\hat{\vec{\beta}}_{t} &= \hat{\vec{\beta}}_{t-1}  + \vec{k}  \epsilon_t &\text{Updating predictor given error} \\
+\mathbf{P}_{t} &= (I - \vec{k} \vec{x}_t)\mathbf{P}_{t-1} &\text{Updating covariance matrix} 
+\end{align}
+\end{subequations}
+Where $\mathbf{P}_{t}$ is the $ 4 \times 4$ covariance matrix. Functionally $\mathbf{P}_{0}$ is a Bayesian prior which I set at $10^4 I$ for all simulations.
+
+
+Figure~\ref{fig:100prices} and figure~\ref{fig:100quantity} show the results of running 100 simulations with a learning monopolist and 100 simulations with 5 learning competitors. 
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%learning is completely passive/reactive
+%Causation runs both ways
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble">>=
+monoSweep<-read.csv("./rawdata/100Monopolists.csv")
+compSweep<-read.csv("./rawdata/100Competitive.csv")
+
+breaks<-seq(from=-0.5,to=200,by=1)
+ggplot()   +
+  geom_histogram(data=monoSweep,aes(y = ..density..,x=round(price),fill=factor(1)),binwidth = 1,color="white",breaks=breaks) +
+  geom_vline(xintercept=79,col="blue",lty=2) +
+  geom_histogram(data=compSweep,aes(y = ..density..,
+                                    x=round(price),fill=factor(2)),binwidth = 1,color="white",breaks=breaks) +
+  theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) +
+  geom_vline(xintercept=58,col="red",lty=2) +  
+  coord_cartesian(xlim=c(50,90)) +
+  labs(title="One-Sector Prices Histogram, 100 Runs") +  
+  scale_x_continuous(breaks=c(50,70,90,79,58)) +
+  scale_fill_manual(values=c("blue","red"),labels=c("Monopolist","Competitive"),name="Prices")
+@
+\caption{The histogram of prices from running 100 monopolist and 100 competitive (5 firms) scenarios. All firms need to learn the price and wages impact. All firms target inventory (100 units of output). Each observation in the histogram is the average of the last 500 days' prices of that particular simulation.}
+\label{fig:100prices}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble">>=
+monoSweep<-read.csv("./rawdata/100Monopolists.csv")
+compSweep<-read.csv("./rawdata/100Competitive.csv")
+
+breaks<-seq(from=-0.5,to=200,by=1)
+ggplot()   +
+  geom_histogram(data=monoSweep,aes(y = ..density..,x=round(production),fill=factor(1)),binwidth = 1,color="white",breaks=breaks) +
+  geom_vline(xintercept=22,col="blue",lty=2) +
+  geom_histogram(data=compSweep,aes(y = ..density..,
+                                      x=round(production),fill=factor(2)),binwidth = 1,color="white",breaks=breaks) +
+  theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) +
+  geom_vline(xintercept=44,col="red",lty=2) +  
+  coord_cartesian(xlim=c(10,50)) +
+  labs(title="One-Sector Quantity Histogram, 100 Runs") +
+  scale_x_continuous(breaks=c(10,22,30,44,50)) +
+  scale_fill_manual(values=c("blue","red"),labels=c("Monopolist","Competitive"),name="Production") 
+@
+\caption{The histogram production from running 100 monopolist and 100 competitive (5 firms) scenarios. All firms need to learn the price and wages impact. All firms have a buffer inventory (100 units of output). Each observation in the histogram is the average of the last 500 days' production of that particular simulation}
+\label{fig:100quantity}
+\end{figure}
+
+
+
+\subsection{Learning in a supply-chain is harder and less effective}
+\label{sec:learningsupply}
+
+Learning is far more problematic in a supply-chain.
+Firstly, if there is a delay $\delta$ between setting a price $p_t$ and it affecting quantity traded, the zero-knowledge firm should regress  $p_{t-\delta}$ over $L_t$. But this is impossible as the delay is unknown.
+Secondly, because of stickiness, the firm often sets prices $p_t$ that are not the market clearing ones. Because learning works by regressing observed pairs $p_t,L_t$, the results are often useless.
+Figures~\ref{fig:learningWoodPrices}~\ref{fig:learningFurniturePrices}~\ref{fig:learningFurnitureProduction} show the results of 100 simulations for each market structure. All are using buffer inventory and sticky prices. The results are far more dispersed, usually because one of the recursive least squares filters failed to learn the correct slope.
+
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble",out.width='\\linewidth'>>=
+breaks<-seq(from=-0.5,to=200,by=1)
+file<-"./rawdata/learningInventoryChain100.csv"
+beefMono<-read.csv(file)
+file2<-"./rawdata/learningInventoryFoodChain100.csv"
+foodMono<-read.csv(file2)
+file3<-"./rawdata/learningCompetitiveInventoryChain100.csv"
+compe<-read.csv(file3)
+ggplot()   +
+  geom_histogram(data=beefMono,aes(y = ..density..,x=beefPrice,fill=factor(1)),alpha=.5,binwidth = 1,color="white",breaks=breaks) +
+  geom_vline(xintercept=68,col="red",lty=2) +    
+  geom_histogram(data=foodMono,aes(y = ..density..,
+                                    x=beefPrice,fill=factor(2)),binwidth = 1,alpha=.5,color="white",breaks=breaks) +
+  geom_vline(xintercept=17,col="green",lty=2) +  
+  geom_histogram(data=compe,aes(y = ..density..,
+                                   x=beefPrice,fill=factor(3)),binwidth = 1,alpha=.5,color="white",breaks=breaks) +
+  geom_vline(xintercept=34,col="blue",lty=2) +    
+  theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) +    
+  coord_cartesian(xlim=c(10,90)) +
+  labs(title="Wood P Histogram, 100 Learning Runs") + xlab("Wood Price") +
+  scale_x_continuous(breaks=c(10,25,50,75,90,17,68,34)) +
+  scale_fill_manual(values=c("red","green","blue"),labels=c("Wood\nMonopolist",
+                                                           "Furniture\nMonopolist","Competitive"),name="Market Structure")
+@
+\caption{The price of wood (first sector) for 300 simulated runs, 100 for each market structure. The dashed vertical lines  represent the theoretical equilibrium. Each datum in the histogram is the average price of the last 500 days of simulation.}
+\label{fig:learningWoodPrices}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble",out.width='\\linewidth'>>=
+breaks<-seq(from=-0.5,to=200,by=1)
+file<-"./rawdata/learningInventoryChain100.csv"
+beefMono<-read.csv(file)
+file2<-"./rawdata/learningInventoryFoodChain100.csv"
+foodMono<-read.csv(file2)
+file3<-"./rawdata/learningCompetitiveInventoryChain100.csv"
+compe<-read.csv(file3)
+ggplot()   +
+  geom_histogram(data=beefMono,aes(y = ..density..,x=foodPrice,fill=factor(1)),alpha=.5,binwidth = 1,color="white",breaks=breaks) +
+  geom_vline(xintercept=85,col="red",lty=3) +    
+  geom_histogram(data=foodMono,aes(y = ..density..,
+                                   x=foodPrice,fill=factor(2)),binwidth = 1,alpha=.5,color="white",breaks=breaks) +
+  geom_vline(xintercept=85,col="green",lty=2) +  
+  geom_histogram(data=compe,aes(y = ..density..,
+                                x=foodPrice,fill=factor(3)),binwidth = 1,alpha=.5,color="white",breaks=breaks) +
+  geom_vline(xintercept=68,col="blue",lty=2) +    
+  theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) +    
+  coord_cartesian(xlim=c(10,90)) +
+  labs(title="Furniture P Histogram,100 Learning Runs") + xlab("Furniture Price") +
+  scale_x_continuous(breaks=c(10,25,50,75,90,68,85)) +
+  scale_fill_manual(values=c("red","green","blue"),labels=c("Wood\nMonopolist",
+                                                            "Furniture\nMonopolist","Competitive"),name="Market Structure")
+
+@
+\caption{The price of furniture (second sector) for 300 simulated runs, 100 for each market structure. The dashed vertical lines represent the theoretical equilibrium. Each datum in the histogram is the average price of the last 500 days of simulation.}
+\label{fig:learningFurniturePrices}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble",out.width='\\linewidth'>>=
+breaks<-seq(from=-0.5,to=200,by=1)
+file<-"./rawdata/learningInventoryChain100.csv"
+beefMono<-read.csv(file)
+file2<-"./rawdata/learningInventoryFoodChain100.csv"
+foodMono<-read.csv(file2)
+file3<-"./rawdata/learningCompetitiveInventoryChain100.csv"
+compe<-read.csv(file3)
+ggplot()   +
+  geom_histogram(data=beefMono,aes(y = ..density..,x=production,fill=factor(1)),alpha=.5,binwidth = 1,color="white",breaks=breaks) +
+  geom_vline(xintercept=17,col="red",lty=3) +    
+  geom_histogram(data=foodMono,aes(y = ..density..,
+                                   x=production,fill=factor(2)),binwidth = 1,alpha=.5,color="white",breaks=breaks) +
+  geom_vline(xintercept=17,col="green",lty=2) +  
+  geom_histogram(data=compe,aes(y = ..density..,
+                                x=production,fill=factor(3)),binwidth = 1,alpha=.5,color="white",breaks=breaks) +
+  geom_vline(xintercept=34,col="blue",lty=2) +    
+  theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) +    
+  coord_cartesian(xlim=c(10,90)) +
+  labs(title="Furniture Q Histogram, 100 Learning Runs") + xlab("Furniture Production") +
+  scale_x_continuous(breaks=c(10,25,50,75,90,17,34)) +
+  scale_fill_manual(values=c("red","green","blue"),labels=c("Wood\nMonopolist",
+                                                            "Furniture\nMonopolist","Competitive"),name="Market Structure")
+
+
+@
+\caption{The units of furniture produced daily at the end of 300 simulated runs, 100 for each market structure. The dashed vertical lines represent the theoretical equilibrium. Each datum in the histogram is the average daily production over the last 500 days of simulation.}
+\label{fig:learningFurnitureProduction}
+\end{figure}
+
+\subsection{Circular causality and passivity are the main learning weaknesses}
+
+The error-correcting model assumes that labor determines prices. 
+That is true as the PID control reacts to increased production by lowering prices.
+But production also responds to prices as firms fire workers when sale prices fall.
+Circular causality is exarcerbated by the regression itself since the slope found determines the profit maximization decisions that links the two variables.
+
+
+The root cause of this confusion is that agents are passive learners when it comes to price impacts.
+Zero Knowledge firms observe long time series of prices and production and try to make sense of them.
+What these firms never do is wilfully experiment with wrong prices.
+Firms never try to double prices to see the effect on demand or increase production beyond the optimal level to test their estimated labor supply slope.
+Agents are, in meta-heuristics term, greedy. 
+They always exploit current knowledge and never explore.
+This I believe is in line with how learning is usually modeled in economics but it is probably an assumption that should be dropped in future papers.
+
+\section{Learning stickiness}
+\label{sec:tuning}
+
+Throughout the paper price stickiness has been exogenous.
+I turned it on and off to show differences in outcome.
+In this section firms set price stickiness on their own.
+
+The firm needs to change the stickiness parameter of its PID controller while  it is in use. This is the domain of adaptive control \parencite{landau_adaptive_2011}.
+In this case too, zero-knowledge firms act by trial and error.
+
+The first step involves defining a performance metric to judge controllers and their parameters.
+Here I use the integral time absolute error (ITAE) performance index \parencite{shinners_modern_1998}:
+\begin{equation} \sum_{i=1}^{M} i \left|\hat e_{t+i} \right| \end{equation}
+The lower the better. $M$ is the time horizon and the error $e_t$ is the PID  error as defined in equation~\ref{eq:PIDErrors}.
+The performance index simply states that PIDs are better parametrized if the system is on target and being on target in the long run matters more than in the short run.
+
+In this paper I only focus on the stickiness parameter, how many days pass between each adjustment by the PID controller.
+I modify this parameter by simple hill-climbing \parencite{luke_essentials_2009}.
+Zero Knowledge firms set a stickiness and test it for $M=100$ days. 
+If it has better performance we keep it otherwise we revert back to the previous stickiness.
+This process loops forever.
+
+A sample run where the firm tunes its stickiness is in figure~\ref{fig:tuning}.
+The firm starts tuning its stickiness after 1000 days, it changes stickiness in steps of 5.
+In this run there is a first abortive attempt at sticky prices at around day 2000. The experiments fail because prices get sticky while out of equilibrium which cause poor performance.
+After reaching equilibrium stickiness stops mattering which results in the stickiness parameter bouncing between 20 and 25 days.
+
+
+
+
+
+
+
+\begin{figure}[H]
+\centering
+<<dependson="preamble">>=
+  library(ggplot2)
+  library(reshape2)
+  supplychain <- read.csv("./rawdata/tuningTrial.csv")
+  tuning<-read.csv("./rawdata/stickLog.csv")
+  names(tuning)<-c("time","speed")
+
+  beefPriceTarget=68
+  foodPriceTarget=85
+  productionTarget=17
+  xlimit=15000
+  
+  #find max production for y to make sense
+  max_production<- max(c(supplychain$wood_production,supplychain$CATTLE_production, supplychain$furniture_production))
+  
+  #Create a data frame holding only what you need
+  production<-data.frame( 
+    day = 1:length(supplychain$wood_production),
+    beef = supplychain$wood_production/7,
+    food = supplychain$furniture_production/7
+  )
+  
+  #use melt in reshape to get the long form
+  production<-melt(production,id="day")
+  
+  
+  #cattle summary plot
+  beef_market<-data.frame(
+    day = 1:length(supplychain$wood_production),
+    #volumeTraded = supplychain$wood_volume,
+    consumed = supplychain$furniture_production,
+    produced = supplychain$wood_production,  
+    price = supplychain$wood_price,
+    target = beefPriceTarget
+  )
+  beef_market<-melt(beef_market,id="day")
+  
+  colorsToUse<-c(rgb(0,.45,.7),rgb(0,0,0),rgb(.9,.6,0))
+  #quantity plot
+  plot1<- 
+    ggplot(data=subset(beef_market,variable != "price" & variable != "target")) 
+  
+  
+  plot1<- plot1 +   
+    geom_abline(intercept=productionTarget,slope=0,aes(colour=factor("target")),size=1,alpha=0.5)+
+    geom_line(aes(x=day,y=value,color = variable),alpha=.65)+
+    scale_color_manual("Line Color",breaks = c("target","produced","consumed"),
+                       values =colorsToUse,labels=c("Equilibrium","Produced","Consumed")) + 
+    labs(title = "Daily Wood Market")+ ylab("units of wood") +
+    coord_cartesian(xlim=c(0,xlimit))+  
+    theme_grey(20)+guides(colour = guide_legend(override.aes = list(size=3))) + scale_y_continuous(labels = function(x) format(x, width = 10),
+                                                                                                   breaks=c(seq.int(from=0,to=60,by=30),productionTarget))
+  
+  plot4<-  
+    ggplot(data=tuning) 
+  plot4<- plot4 +  
+    geom_step(aes(x=time,y=speed,color=factor(1)))+
+    labs(title = "Learned Stickiness")+ ylab("Stickiness") +  
+    coord_cartesian(xlim=c(0,xlimit))+  
+    theme_grey(20)+guides(colour = guide_legend(override.aes = list(size=3))) + 
+    scale_color_manual("Line Color",labels = c("firm stickiness"),values=colorsToUse[2], guide = TRUE) +
+    scale_y_continuous(labels = function(x) format(x, width = 10)) 
+  
+  arranged2Plots<-function(plot1,plot2)
+  {
+    gA <- ggplotGrob(plot1)
+    gB <- ggplotGrob(plot2)
+    maxWidth = grid::unit.pmax(gA$widths[2:5], gB$widths[2:5])
+    gA$widths[2:5] <- as.list(maxWidth)
+    gB$widths[2:5] <- as.list(maxWidth)
+    return(grid.arrange(gA, gB, ncol=1))
+  }
+  
+  
+  
+  library(gridExtra)
+  sidebysideplot <- arranged2Plots(plot1,plot4)
+
+@
+\caption{A sample run where the firm starts selling with a non-sticky PI controller $b=.2$. We start tuning after 1000 days. Time horizon $M$ is 100 days. }
+\label{fig:tuning}
+\end{figure}
+
+The tuning process could be improved by making it forward-looking.
+This is generally called indirect adaptive control.
+The idea is to fit process data to a stastical model and then compute performance as if the statistical model was the real one by simulation.
+The issue is usually to find the right stastistical model.
+Hill-climbing bypasses that by experimenting directly over the real system. 
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%
+% Seasonality with inventories and sticky prices
+%%%%%%%%%%%%%%%%%%%%
+
+
+
+\section{Conclusion}
+
+I believe this paper represent an example of how focusing on interactions and agent-based models can provide new answers and hypotheses to old questions.
+It is a methodology that allows for expressing and examining time and mechanisms' minutiae easily.
+
+I see two paths this model can take.
+The first is intensive.
+Improve the learning, the tuning and the control methods. Make them more responsive, more precise or tune them to experimental data.
+Add knowledge, awarness and interactions to the firms making them more realistic and more capable
+The second direction is extensive.
+Zero-Knowledge agents would fit better in search models or oligopolistic markets where many equilibria can emerge and feedback can determine which one does.
+
+
+
+
+\printbibliography
+
+
+\end{document}
