@@ -1,0 +1,117 @@
+---
+title: "Zero Knowledge Traders"
+author: "Ernesto Carrella"
+date: "11/07/2014"
+output: beamer_presentation
+---
+
+
+## Zero Knowledge Traders
+
+- Simple firms:
+    - Price-Makers
+    - No knowledge of output demand
+    - No knowledge of labor supply
+    - No knowledge of competition
+    - Only know own daily sales
+    
+- Price by trial and error
+    - Find price so that production = sales
+    - Use PID controller to adjust  
+
+- Set production quota by trial and error
+    - Look for MB=MC
+    - Use Kalman Filter to learn elasticities over time
+
+## 1 Monopolist
+
+```{r, echo=FALSE,message=FALSE,warning=FALSE}
+library(ggplot2)
+library(reshape2)
+library(gridExtra)
+monopolist<-read.csv("./rawdata/monopolist.csv")
+plot_price<-
+  ggplot()+
+  geom_rect(aes(xmin=-Inf,xmax=Inf,ymin=78.5,ymax=79.5,fill=factor(1)),alpha=0.3) +
+  geom_line(data=monopolist,aes(x=1:length(CLOSING_PRICE),y=CLOSING_PRICE)) +
+  ylab("Price") + xlab("Days") + 
+  theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) + #   scale_y_continuous(breaks=breaks_y,minor_breaks=1:70) +
+  scale_fill_manual(values="blue",labels="Correct P",name="") +
+  theme(axis.text.y = element_text(size=20)) +   theme(axis.text.x = element_text(size=20)) +
+    scale_y_continuous(breaks=c(0,25,50,79,100)) +
+  coord_cartesian(xlim=c(0,5000),ylim=c(0,105)) 
+#print(plot_price)
+
+plot_quantity<-
+  ggplot()+
+  geom_rect(aes(xmin=-Inf,xmax=Inf,ymin=21.5,ymax=22.5,fill=factor(1)),alpha=0.3) +
+  geom_line(data=monopolist,aes(x=1:length(VOLUME_PRODUCED),
+                                y=VOLUME_PRODUCED)) +
+  ylab("Production") + xlab("Days") + 
+  theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) + #   scale_y_continuous(breaks=breaks_y,minor_breaks=1:70) +
+  scale_fill_manual(values="blue",labels="Correct Q",name=" ") +
+  theme(axis.text.y = element_text(size=20)) +   theme(axis.text.x = element_text(size=20)) +  
+  scale_y_continuous(breaks=c(0,5,10,15,22,25)) +
+  coord_cartesian(xlim=c(0,5000))
+#print(plot_quantity)
+arranged2Plots<-function(plot1,plot2,main=NULL)
+{
+  gA <- ggplotGrob(plot1)
+  gB <- ggplotGrob(plot2)
+  maxWidth = grid::unit.pmax(gA$widths[2:5], gB$widths[2:5])
+  gA$widths[2:5] <- as.list(maxWidth)
+  gB$widths[2:5] <- as.list(maxWidth)
+  return(grid.arrange(gA, gB, ncol=1,main=textGrob(main,gp=gpar(fontsize=30))))
+}
+arranged2Plots(plot_price,plot_quantity,main="Monopolist Sample Run")
+```
+
+- 2 markets: output and labor. Firm is monopolist in both.
+
+## 5 competitors
+
+```{r, echo=FALSE,message=FALSE,warning=FALSE}
+library(ggplot2)
+library(reshape2)
+library(gridExtra)
+competitive<-read.csv("./rawdata/competitive.csv")
+plot_price<-
+  ggplot()+
+  geom_rect(aes(xmin=-Inf,xmax=Inf,ymin=78.5,ymax=79.5,fill=factor(1)),alpha=0.3) +
+  geom_rect(aes(xmin=-Inf,xmax=Inf,ymin=57.5,ymax=58.5,fill=factor(2)),alpha=0.3) +
+  geom_line(data=competitive,aes(x=1:length(CLOSING_PRICE),y=CLOSING_PRICE),lwd=1) +
+  ylab("Price") + xlab("Days") + 
+  theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) + #   scale_y_continuous(breaks=breaks_y,minor_breaks=1:70) +
+  scale_fill_manual(values=c("blue","red"),labels=c("Monopolist P","Competitive P"),name=" ") +
+  theme(axis.text.y = element_text(size=20)) +   theme(axis.text.x = element_text(size=20)) + 
+  scale_y_continuous(breaks=c(seq.int(from=0,to=100,by=25),58)) +  
+  coord_cartesian(xlim=c(0,4000),ylim=c(0,105)) 
+#print(plot_price)
+
+plot_quantity<-
+  ggplot()+
+  geom_rect(aes(xmin=-Inf,xmax=Inf,ymin=21.5,ymax=22.5,fill=factor(1)),alpha=0.3) +
+  geom_rect(aes(xmin=-Inf,xmax=Inf,ymin=43.5,ymax=44.5,fill=factor(2)),alpha=0.3) +    
+  geom_line(data=competitive,aes(x=1:length(VOLUME_TRADED),
+                                y=VOLUME_TRADED),lwd=1) +
+  ylab("Production") + xlab("Days") + 
+  theme_gray(20)+guides(colour = guide_legend(override.aes = list(size=3))) + #   scale_y_continuous(breaks=breaks_y,minor_breaks=1:70) +
+  scale_fill_manual(values=c("blue","red"),labels=c("Monopolist Q","Competitive Q"),name=" ") +
+  theme(axis.text.y = element_text(size=20)) +   theme(axis.text.x = element_text(size=20)) +  
+  scale_y_continuous(breaks=c(seq.int(from=0,to=60,by=20),44)) +
+  coord_cartesian(xlim=c(0,4000))
+#print(plot_quantity)
+library(gridExtra)
+arranged2Plots<-function(plot1,plot2,main=NULL)
+{
+  gA <- ggplotGrob(plot1)
+  gB <- ggplotGrob(plot2)
+  maxWidth = grid::unit.pmax(gA$widths[2:5], gB$widths[2:5])
+  gA$widths[2:5] <- as.list(maxWidth)
+  gB$widths[2:5] <- as.list(maxWidth)
+  return(grid.arrange(gA, gB, ncol=1,main=textGrob(main,gp=gpar(fontsize=30))))
+}
+
+arranged2Plots(plot_price,plot_quantity,main="Competitive Sample Run")
+```
+- Same setup, now with 5 firms.They aren't "told" they have competitors. They learn it.
