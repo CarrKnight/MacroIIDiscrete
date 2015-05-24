@@ -37,6 +37,8 @@ import model.utilities.logs.LogLevel;
 import model.utilities.logs.LogToFile;
 import model.utilities.pid.Controller;
 import model.utilities.pid.PIDController;
+import model.utilities.pid.decorator.MovingAverageFilterInputDecorator;
+import model.utilities.pid.decorator.MovingAverageFilterOutputDecorator;
 import model.utilities.pid.decorator.PIDStickinessHillClimberTuner;
 import model.utilities.pid.decorator.PIDStickinessSalesTuner;
 import model.utilities.stats.collectors.DailyStatCollector;
@@ -75,11 +77,12 @@ import static model.experiments.tuningRuns.MarginalMaximizerPIDTuning.printProgr
 public class StickyPricesCSVPrinter {
 
 
-    private static final int DEFAULT_STICKINESS =50;
+    public static final int DEFAULT_STICKINESS =50;
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         //set defaults
         //create directory
+
         Files.createDirectories(Paths.get("runs", "rawdata"));
 
 
@@ -95,11 +98,11 @@ public class StickyPricesCSVPrinter {
 
         System.out.println("ONE SECTOR");
         System.out.println("figure 8");
-        sampleMonopolistRunLearned(0,101,1,1,14,.1f,.1f,"sampleMonopolist.csv");
+        sampleMonopolistRunLearned(0,102,1,1,14,.1f,.1f,"sampleMonopolist.csv");
         System.out.println("figure 9");
 
 
-        sampleCompetitiveRunLearned(0, 101, 1, 1, 14, .1f, .1f, "sampleCompetitive.csv");
+        sampleCompetitiveRunLearned(0, 102, 1, 1, 14, .1f, .1f, "sampleCompetitive.csv");
 
 
         System.out.println("figure 10");
@@ -116,16 +119,18 @@ public class StickyPricesCSVPrinter {
         System.out.println("figure 13");
         badlyOptimizedNoInventorySupplyChain(0,0f,.2f, 100, Paths.get("runs","rawdata","stickyBadlyOptimized.csv").toFile(),false);
 
+
+
         System.out.println("figure 14");
         woodMonopolistSupplyChainSweep();
 
 
         System.out.println("Market Structure");
-      System.out.println("figure 15-16-17");
+        System.out.println("figure 15-16-17");
 
 
         oneHundredAllLearnedRuns(Paths.get("runs","rawdata", "learnedInventoryChain100.csv").toFile(),null
-        , null);
+                , null);
         oneHundredAllLearnedCompetitiveRuns(Paths.get("runs","rawdata", "learnedCompetitiveInventoryChain100.csv").toFile());
         oneHundredAllLearnedFoodRuns(Paths.get("runs","rawdata", "learnedInventoryFoodChain100.csv").toFile());
 
@@ -136,14 +141,29 @@ public class StickyPricesCSVPrinter {
 
         System.out.println("figure 20-21-22");
         oneHundredAllLearningRuns(Paths.get("runs","rawdata", "learningInventoryChain100.csv").toFile(),
-                null, null);
+                                  null, null);
         oneHundredAllLearningCompetitiveRuns(Paths.get("runs","rawdata", "learningCompetitiveInventoryChain100.csv").toFile());
         oneHundredAllLearningFoodRuns(Paths.get("runs","rawdata", "learningInventoryFoodChain100.csv").toFile());
 
 
-
-        System.out.println("figure 23");
+          System.out.println("figure 23");
         badlyOptimizedNoInventorySupplyChain(1,0f,0.2f,0,Paths.get("runs","rawdata","tuningTrial.csv").toFile(), true);
+
+
+
+        //added after first revision:
+        //show that MAs don't really solve much
+        //input MA
+        runWithDelay(20, 0, 1, true, false, 100, 20, 0, "inputMADelay.csv");
+        System.out.println("done");
+        //output MA
+        runWithDelay(20, 0, 1, true, false, 100, 0, 20, "outputMADelay.csv");
+        System.out.println("done");
+        //no MA
+        runWithDelay(20, 0, 1, true, false, 100, 0, 0, "noMADelay.csv");
+        System.out.println("done");
+
+
 
 
     }
@@ -158,16 +178,18 @@ public class StickyPricesCSVPrinter {
         runWithoutDelay();
         System.out.println("done");
         //figure 2
-        runWithDelay(10,0,1, true, false, 100);
+        runWithDelay(10,0,1, true, false, 100, 0, 0, "simpleSeller_withDelays" + 10 + ".csv");
         System.out.println("done");
         //figure 3
-        runWithDelay(20,0,1, true, false, 100);
+        runWithDelay(20,0,1, true, false, 100, 0, 0, "simpleSeller_withDelays" + 20 + ".csv");
         System.out.println("done");
         //figure 4
-        runWithDelay(20,20,1, true, false, 100);
+        runWithDelay(20,20,1, true, false, 100, 0, 0,
+                     "simpleSeller_demandDelay" + 20 + "speed" + 20 + "slowness" + 1 + ".csv");
         System.out.println("done");
         //figure 5
-        runWithDelay(20,0,10, true, false, 100);
+        runWithDelay(20,0,10, true, false, 100, 0, 0,
+                     "simpleSeller_demandDelay" + 20 + "speed" + 0 + "slowness" + 10 + ".csv");
 
 
 
@@ -196,7 +218,7 @@ public class StickyPricesCSVPrinter {
         DailyStatCollector.addDailyStatCollectorToModel(Paths.get("runs","rawdata", "simpleSeller.csv").toFile(), macroII);
         macroII.start();
         final SimpleFlowSellerPID askPricingStrategy = new SimpleFlowSellerPID(scenario.getDepartments().get(0),
-                .1f, .1f, 0f, 0, scenario.getDepartments().get(0).getMarket(), scenario.getDepartments().get(0).getRandom().nextInt(100), scenario.getDepartments().get(0).getFirm().getModel());
+                                                                               .1f, .1f, 0f, 0, scenario.getDepartments().get(0).getMarket(), scenario.getDepartments().get(0).getRandom().nextInt(100), scenario.getDepartments().get(0).getFirm().getModel());
         askPricingStrategy.setFlowTargeting(false);
         scenario.getDepartments().get(0).setAskPricingStrategy(askPricingStrategy);
         askPricingStrategy.setInitialPrice(80); //so the run is the same for all possible runs
@@ -210,7 +232,14 @@ public class StickyPricesCSVPrinter {
 
 
     //simple seller with delay
-    private static SimpleSellerScenario runWithDelay(int buyerDelay, int pidSpeed, float dividePIParametersByThis, boolean writeToFile, boolean randomize, int seed) {
+    public static SimpleSellerScenario runWithDelay(
+            int buyerDelay, int pidSpeed,
+            float dividePIParametersByThis,
+            boolean writeToFile, boolean randomize,
+            int seed,
+            int inputMovingAverage,
+            int outputMovingAverage,
+            final String filename) {
         Preconditions.checkArgument(pidSpeed >= 0);
         Preconditions.checkArgument(dividePIParametersByThis > 0);
 
@@ -227,16 +256,33 @@ public class StickyPricesCSVPrinter {
         scenario.setDestroyUnsoldInventoryEachDay(true);
         scenario.setNumberOfSellers(1);
         scenario.setInflowPerSeller(50);
-        scenario.setBuyerDelay(buyerDelay);
+        if(buyerDelay > 0)
+            scenario.setBuyerDelay(buyerDelay);
 
         macroII.start();
 
         //the explicit cast has to be true because we set the strategy to be so earlier
         //change the PI values if needed!
         float proportionalAndIntegralGain = .1f / dividePIParametersByThis;
-        final SimpleFlowSellerPID askPricingStrategy = new SimpleFlowSellerPID(scenario.getDepartments().get(0),
-                proportionalAndIntegralGain, proportionalAndIntegralGain, 0f, pidSpeed, scenario.getDepartments().get(0).getMarket(), scenario.getDepartments().get(0).getRandom().nextInt(100), scenario.getDepartments().get(0).getFirm().getModel());
+        final SimpleFlowSellerPID askPricingStrategy =
+                new SimpleFlowSellerPID(scenario.getDepartments().get(0),
+                                        proportionalAndIntegralGain,
+                                        proportionalAndIntegralGain, 0f,
+                                        pidSpeed, scenario.getDepartments().get(0).getMarket(),
+                                        scenario.getDepartments().get(0).getRandom().nextInt(100),
+                                        scenario.getDepartments().get(0).getFirm().getModel());
         askPricingStrategy.setFlowTargeting(false);
+        //add filters if needed
+        if(inputMovingAverage > 0)
+            askPricingStrategy.decorateController(
+                    pidController -> new MovingAverageFilterInputDecorator(pidController,inputMovingAverage));
+        if(outputMovingAverage > 0)
+            askPricingStrategy.decorateController(
+                    pidController -> new MovingAverageFilterOutputDecorator(pidController,outputMovingAverage));
+
+
+        //MovingAverageFilterOutputDecorator
+
 
         if(!randomize)
             askPricingStrategy.setInitialPrice(80); //so the run is the same for all possible runs
@@ -259,7 +305,6 @@ public class StickyPricesCSVPrinter {
         if(writeToFile)
         {
             //i use the sales department data as it shows the "offered" price rather than just the closing one
-            final String filename = pidSpeed == 0 && dividePIParametersByThis == 1 ? "simpleSeller_withDelays" + buyerDelay + ".csv" : "simpleSeller_demandDelay" + buyerDelay + "speed" + pidSpeed + "slowness" + dividePIParametersByThis + ".csv";
             scenario.getDepartments().get(0).getData().writeToCSVFile(Paths.get("runs","rawdata", filename).toFile());
         }
 
@@ -323,7 +368,9 @@ public class StickyPricesCSVPrinter {
 
 
                     //runNumber!
-                    final SimpleSellerScenario run = runWithDelay(demandDelay, speed, divider, false, true, runNumber);
+                    final SimpleSellerScenario run = runWithDelay(demandDelay, speed, divider, false, true, runNumber,
+                                                                  0, 0, speed == 0 && divider == 1 ?
+                                                                          "simpleSeller_withDelays" + demandDelay + ".csv" : "simpleSeller_demandDelay" + demandDelay + "speed" + speed + "slowness" + divider + ".csv");
 
                     final double[] pricesInRun = run.getDepartments().get(0).getData().
                             getObservationsRecordedTheseDays(SalesDataType.LAST_ASKED_PRICE, 0, 14999);
@@ -404,7 +451,10 @@ public class StickyPricesCSVPrinter {
                     //now set the right parameters
                     final SalesDepartment salesDepartment = scenario.getMonopolist().getSalesDepartment(UndifferentiatedGoodType.GENERIC);
                     final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, currentP.floatValue(),
-                            currentI.floatValue(), 0f, 0, salesDepartment.getMarket(), salesDepartment.getRandom().nextInt(100), salesDepartment.getFirm().getModel());
+                                                                                 currentI.floatValue(), 0f, 0,
+                                                                                 salesDepartment.getMarket(),
+                                                                                 salesDepartment.getRandom().nextInt(100),
+                                                                                 salesDepartment.getFirm().getModel());
                     //  strategy.setInitialPrice(102);
                     //start them all at the same price, otherwise you advantage the slow by being so slow initially that they end up being right later
 
@@ -553,7 +603,7 @@ public class StickyPricesCSVPrinter {
         for(final Firm firm : scenario.getCompetitors()){
             final SalesDepartment salesDepartment = firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
             final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, proportionalGain + (float)macroII.random.nextGaussian()/100f,
-                    integralGain + (float)macroII.random.nextGaussian()/100f, 0f, 0, salesDepartment.getMarket(), salesDepartment.getRandom().nextInt(100), salesDepartment.getFirm().getModel()); //added a bit of noise
+                                                                         integralGain + (float)macroII.random.nextGaussian()/100f, 0f, 0, salesDepartment.getMarket(), salesDepartment.getRandom().nextInt(100), salesDepartment.getFirm().getModel()); //added a bit of noise
             salesDepartment.setAskPricingStrategy(strategy);
 
             //all impacts are 0 because it's perfect competitive
@@ -641,7 +691,7 @@ public class StickyPricesCSVPrinter {
         for(final Firm firm : scenario.getCompetitors()){
             final SalesDepartment salesDepartment = firm.getSalesDepartment(UndifferentiatedGoodType.GENERIC);
             final SimpleFlowSellerPID strategy = new SimpleFlowSellerPID(salesDepartment, proportionalGain + (float)macroII.random.nextGaussian()/100f,
-                    integralGain + (float)macroII.random.nextGaussian()/100f, 0f, 0, salesDepartment.getMarket(), salesDepartment.getRandom().nextInt(100), salesDepartment.getFirm().getModel()); //added a bit of noise
+                                                                         integralGain + (float)macroII.random.nextGaussian()/100f, 0f, 0, salesDepartment.getMarket(), salesDepartment.getRandom().nextInt(100), salesDepartment.getFirm().getModel()); //added a bit of noise
             salesDepartment.setAskPricingStrategy(strategy);
 
             //all impacts are 0 because it's perfect competitive
@@ -721,21 +771,21 @@ public class StickyPricesCSVPrinter {
             public AskPricingStrategy apply(SalesDepartment department) {
                 if(departmentLog != null)
                     department.addLogEventListener(new LogToFile(departmentLog,
-                            LogLevel.TRACE,department.getModel()));
+                                                                 LogLevel.TRACE,department.getModel()));
                 SimpleFlowSellerPID pricer = new SimpleFlowSellerPID(department,
-                        proportionalGain,integralGain,0,0, department.getMarket(), department.getRandom().nextInt(100), department.getFirm().getModel());
+                                                                     proportionalGain,integralGain,0,0, department.getMarket(), department.getRandom().nextInt(100), department.getFirm().getModel());
                 pricer.decorateController(new Function<PIDController, Controller>() {
                     @Override
                     public Controller apply(PIDController pidController) {
                         final PIDStickinessSalesTuner pidStickinessSalesTuner = new PIDStickinessSalesTuner(pidController,
-                                department,department.getModel());
+                                                                                                            department,department.getModel());
                         pidStickinessSalesTuner.setObservationsBeforeTuning(100);
                         return pidStickinessSalesTuner;
                     }
                 });
                 return pricer;
             }
-        },null,csvFileToWrite,null,null);
+        },null,csvFileToWrite,null,null, 1000);
     }
 
     private static void badlyOptimizedNoInventorySupplyChain(int seed, final float proportionalGain,
@@ -884,7 +934,8 @@ public class StickyPricesCSVPrinter {
         for(long i=0; i <100; i++)
         {
             OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(i, 1, DEFAULT_STICKINESS, true,
-                    true, woodPricingFactory, furniturePricingFactory,null, null, null);
+                                                                                            true, woodPricingFactory, furniturePricingFactory,null,
+                                                                                            null, null, 1);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());
@@ -918,8 +969,8 @@ public class StickyPricesCSVPrinter {
         {
 
             OneLinkSupplyChainResult result = OneLinkSupplyChainResult.beefMonopolistOneRun(i, 1, DEFAULT_STICKINESS, false, false,
-                    woodPricingFactory,furniturePricingFactory,
-                    null, null, null);
+                                                                                            woodPricingFactory,furniturePricingFactory,
+                                                                                            null, null, null, 1);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());
@@ -951,7 +1002,8 @@ public class StickyPricesCSVPrinter {
         //run the test 5 times!
         for(long i=0; i <100; i++)
         {
-            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(i,1, DEFAULT_STICKINESS,null);
+            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(i,1, DEFAULT_STICKINESS,null,
+                                                                                                         1);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());
@@ -981,7 +1033,8 @@ public class StickyPricesCSVPrinter {
         //run the test 5 times!
         for(long i=0; i <100; i++)
         {
-            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.everybodyLearningCompetitiveStickyPIDRun(i, 1f, DEFAULT_STICKINESS);
+            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.everybodyLearningCompetitiveStickyPIDRun(i, 1f, DEFAULT_STICKINESS,
+                                                                                                                1);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());
@@ -1010,7 +1063,8 @@ public class StickyPricesCSVPrinter {
         //run the test 5 times!
         for(long i=0; i <100; i++)
         {
-            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.foodMonopolistOneRun(i,1, DEFAULT_STICKINESS,true,true,null, null);
+            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.foodMonopolistOneRun(i,1, DEFAULT_STICKINESS,true,true,null, null,
+                                                                                            1);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());
@@ -1038,7 +1092,8 @@ public class StickyPricesCSVPrinter {
         //run the test 5 times!
         for(long i=0; i <100; i++)
         {
-            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.foodMonopolistOneRun(i,1, DEFAULT_STICKINESS,false,false,null, null);
+            OneLinkSupplyChainResult result = OneLinkSupplyChainResult.foodMonopolistOneRun(i,1, DEFAULT_STICKINESS,false,false,null, null,
+                                                                                            1);
             String[] resultString = new String[3];
             resultString[0]= String.valueOf(result.getQuantity());
             resultString[1]= String.valueOf(result.getBeefPrice());
@@ -1075,6 +1130,10 @@ public class StickyPricesCSVPrinter {
             MonopolistScenario scenario = new MonopolistScenario(macroII);
             macroII.setScenario(scenario);
             //set the demand
+            scenario.setDemandIntercept(102);
+            scenario.setDemandSlope(1);
+            scenario.setDailyWageIntercept(14);
+            scenario.setDailyWageSlope(1);
 
             scenario.setAskPricingStrategy(InventoryBufferSalesControl.class);
             scenario.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
@@ -1139,6 +1198,11 @@ public class StickyPricesCSVPrinter {
             macroII.setScenario(scenario);
             scenario.setAdditionalCompetitors(4);
             //set the demand
+            //set the demand
+            scenario.setDemandIntercept(102);
+            scenario.setDemandSlope(1);
+            scenario.setDailyWageIntercept(14);
+            scenario.setDailyWageSlope(1);
             scenario.setAskPricingStrategy(InventoryBufferSalesControl.class);
             scenario.setControlType(MonopolistScenario.MonopolistScenarioIntegratedControlEnum.MARGINAL_PLANT_CONTROL);
 
@@ -1195,9 +1259,10 @@ public class StickyPricesCSVPrinter {
 
 
 
-    public static double[] beefMonopolistOneRun(long seed, float divideMonopolistGainsByThis, int monopolistSpeed,
-                                                final boolean beefLearned, final boolean foodLearned,  int maximizationSpeed,
-                                                File csvFileToWrite) {
+    public static double[] beefMonopolistOneRun(
+            long seed, float divideMonopolistGainsByThis, int monopolistSpeed,
+            final boolean beefLearned, final boolean foodLearned, int maximizationSpeed,
+            File csvFileToWrite, final int timeForAveraging) {
         SummaryStatistics distance = new SummaryStatistics();
         SummaryStatistics last1000Distance = new SummaryStatistics();
 
@@ -1298,7 +1363,7 @@ public class StickyPricesCSVPrinter {
         SummaryStatistics averageFoodPrice = new SummaryStatistics();
         SummaryStatistics averageBeefProduced = new SummaryStatistics();
         SummaryStatistics averageBeefPrice= new SummaryStatistics();
-        for(int j=0; j< 1000; j++)
+        for(int j=0; j< timeForAveraging; j++)
         {
             //make the model run one more day:
             macroII.schedule.step(macroII);
@@ -1326,7 +1391,7 @@ public class StickyPricesCSVPrinter {
     private static void woodMonopolistSupplyChainSweep() throws IOException {
 
         CSVWriter writer = new CSVWriter(new FileWriter(Paths.get("runs","rawdata",
-                "woodMonopolistStickinessesSweep.csv").toFile()));
+                                                                  "woodMonopolistStickinessesSweep.csv").toFile()));
         final String[] header = {"decisionSpeed", "stickiness", "distance", "finaldistance"};
         System.out.println(Arrays.toString(header));
         writer.writeNext(header);
@@ -1340,7 +1405,7 @@ public class StickyPricesCSVPrinter {
                 for(int seed =0; seed < 5; seed++)
                 {
 
-                    final double[] result = beefMonopolistOneRun(seed,1,stickiness,true,true,speed,null);
+                    final double[] result = beefMonopolistOneRun(seed,1,stickiness,true,true,speed,null, 1);
                     distance.addValue(result[0]);
                     finalDistance.addValue(result[1]);
 

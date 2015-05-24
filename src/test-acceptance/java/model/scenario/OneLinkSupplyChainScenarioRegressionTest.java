@@ -433,7 +433,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             
-                    testResults.add(OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextInt(), 10, 0, null));
+                    testResults.add(OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextInt(), 10, 0, null,
+                                                                                               1000));
 
             
 
@@ -465,7 +466,8 @@ public class OneLinkSupplyChainScenarioRegressionTest
         {
             //run the test, add it as a future so I can check the results!
             
-                    testResults.add(OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextInt(), 1, 50, null));
+                    testResults.add(OneLinkSupplyChainResult.everybodyLearnedCompetitivePIDRun(random.nextInt(), 1, 50, null,
+                                                                                               1000));
 
             
 
@@ -540,7 +542,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
             //run the test, add it as a future so I can check the results!
             
                     testResults.add(OneLinkSupplyChainResult.everybodyLearningCompetitiveStickyPIDRun(random.nextInt(), 1f,
-                            50));
+                            50, 1000));
 
             
 
@@ -837,7 +839,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
             
                     testResults.add(
                         OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(),10,
-                                    0,true,true,null, null)
+                                    0,true,true,null, null, 1000)
 
                     );
 
@@ -869,7 +871,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
             //run the test, add it as a future so I can check the results!
             
                     testResults.add(OneLinkSupplyChainResult.foodMonopolistOneRun(
-                            random.nextInt(), 1, 10, true, true, null, null));
+                            random.nextInt(), 1, 10, true, true, null, null, 1000));
 
 
 
@@ -907,7 +909,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
             //run the test, add it as a future so I can check the results!
             
                     testResults.add(OneLinkSupplyChainResult.foodMonopolistOneRun(
-                            random.nextInt(), 10, 0, false, false, null, null));
+                            random.nextInt(), 10, 0, false, false, null, null, 1000));
 
             
 
@@ -944,7 +946,7 @@ public class OneLinkSupplyChainScenarioRegressionTest
             //run the test, add it as a future so I can check the results!
             
                     testResults.add(OneLinkSupplyChainResult.foodMonopolistOneRun(random.nextInt(), 1, 0,
-                            false, false,null, null ));
+                            false, false,null, null, 1000));
 
             
 

@@ -79,14 +79,17 @@ public class OneLinkSupplyChainResult {
         return beefMonopolistOneRun(random, divideMonopolistGainsByThis, monopolistSpeed, beefLearned, foodLearned,null,null,null);
     }
 
-    public static OneLinkSupplyChainResult beefMonopolistOneRun(long random, float divideMonopolistGainsByThis, int monopolistSpeed,
-                                                                final boolean beefLearned, final boolean foodLearned,
-                                                                Function<SalesDepartment, AskPricingStrategy> woodPricingFactory,
-                                                                Function<SalesDepartment, AskPricingStrategy> furniturePricingFactory,
-                                                                File csvFileToWrite, File logFileToWrite, Path regressionLogToWrite)
+    public static OneLinkSupplyChainResult beefMonopolistOneRun(
+            long random, float divideMonopolistGainsByThis, int monopolistSpeed,
+            final boolean beefLearned, final boolean foodLearned,
+            Function<SalesDepartment, AskPricingStrategy> woodPricingFactory,
+            Function<SalesDepartment, AskPricingStrategy> furniturePricingFactory,
+            File csvFileToWrite, File logFileToWrite, Path regressionLogToWrite,
+            final int averagingTime)
     {
         final MacroII macroII = new MacroII(random);
-        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
+        final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 =
+                new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
 
             @Override
             protected void buildBeefSalesPredictor(SalesDepartment dept) {
@@ -194,7 +197,7 @@ public class OneLinkSupplyChainResult {
         SummaryStatistics averageSalesSlope= new SummaryStatistics();
         SummaryStatistics averageHrSlope= new SummaryStatistics();
         final Firm monopolist = (Firm) scenario1.getMarkets().get(OneLinkSupplyChainScenario.INPUT_GOOD).getSellers().iterator().next();
-        for(int j=0; j< 1000; j++)
+        for(int j=0; j< averagingTime; j++)
         {
             //make the model run one more day:
             macroII.schedule.step(macroII);
@@ -227,7 +230,7 @@ public class OneLinkSupplyChainResult {
                                                                 File csvFileToWrite, File logFileToWrite, Path regressionLogToWrite) {
 
         return beefMonopolistOneRun(random, divideMonopolistGainsByThis, monopolistSpeed, beefLearned, foodLearned,null,null,
-                csvFileToWrite,logFileToWrite,regressionLogToWrite);
+                csvFileToWrite,logFileToWrite,regressionLogToWrite, 1000);
     }
 
     public static OneLinkSupplyChainResult beefMonopolistFixedProductionsOneRun(long seed,
@@ -307,8 +310,9 @@ public class OneLinkSupplyChainResult {
                 averageFoodPrice.getMean(),averageBeefTraded.getMean(), macroII);
     }
 
-    public static OneLinkSupplyChainResult everybodyLearnedCompetitivePIDRun(long random, final float dividePIByThis, final int beefPricingSpeed,
-                                                                             File csvFileToWrite) {
+    public static OneLinkSupplyChainResult everybodyLearnedCompetitivePIDRun(
+            long random, final float dividePIByThis, final int beefPricingSpeed,
+            File csvFileToWrite, final int averagingTime) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
 
@@ -382,7 +386,7 @@ public class OneLinkSupplyChainResult {
         SummaryStatistics averageFoodPrice = new SummaryStatistics();
         SummaryStatistics averageBeefProduced = new SummaryStatistics();
         SummaryStatistics averageBeefPrice = new SummaryStatistics();
-        for(int j=0; j< 1000; j++)
+        for(int j=0; j< averagingTime; j++)
         {
             //make the model run one more day:
             macroII.schedule.step(macroII);
@@ -466,9 +470,10 @@ public class OneLinkSupplyChainResult {
 
 
 
-    public static OneLinkSupplyChainResult foodMonopolistOneRun(long random, float divideMonopolistGainsByThis, int beefSpeed,
-                                                                final boolean beefLearned, final boolean foodLearned,
-                                                                File csvFileToWrite, Path regressionCSV) {
+    public static OneLinkSupplyChainResult foodMonopolistOneRun(
+            long random, float divideMonopolistGainsByThis, int beefSpeed,
+            final boolean beefLearned, final boolean foodLearned,
+            File csvFileToWrite, Path regressionCSV, final int averagingTime) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII){
 
@@ -571,7 +576,7 @@ public class OneLinkSupplyChainResult {
         SummaryStatistics averageFoodPrice = new SummaryStatistics();
         SummaryStatistics averageBeefProduced = new SummaryStatistics();
         SummaryStatistics averageBeefPrice= new SummaryStatistics();
-        for(int j=0; j< 1000; j++)
+        for(int j=0; j< averagingTime; j++)
         {
             //make the model run one more day:
             macroII.schedule.step(macroII);
@@ -603,7 +608,8 @@ public class OneLinkSupplyChainResult {
 
     }
 
-    public static OneLinkSupplyChainResult everybodyLearningCompetitiveStickyPIDRun(long random, float timidity, int stickiness) {
+    public static OneLinkSupplyChainResult everybodyLearningCompetitiveStickyPIDRun(
+            long random, float timidity, int stickiness, final int timeAveraging) {
         final MacroII macroII = new MacroII(random);
         final OneLinkSupplyChainScenarioWithCheatingBuyingPrice scenario1 = new OneLinkSupplyChainScenarioWithCheatingBuyingPrice(macroII);
 
@@ -639,7 +645,7 @@ public class OneLinkSupplyChainResult {
         float averageFoodPrice = 0;
         float averageBeefProduced = 0;
         float averageBeefPrice=0;
-        for(int j=0; j< 1000; j++)
+        for(int j=0; j< timeAveraging; j++)
         {
             //make the model run one more day:
             macroII.schedule.step(macroII);

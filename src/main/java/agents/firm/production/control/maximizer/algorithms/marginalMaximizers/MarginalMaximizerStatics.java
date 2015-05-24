@@ -172,7 +172,7 @@ public final class MarginalMaximizerStatics {
         {
             futureWage=hr.predictPurchasePriceWhenDecreasingProduction();
         }
-        futureWage = futureWage < 0 ? policy.replaceUnknownPrediction(hr.getMarket(), hr.getRandom()) : futureWage;
+            futureWage = futureWage < 0 ? policy.replaceUnknownPrediction(hr.getMarket(), hr.getRandom()) : futureWage;
         //todo I don't know about this
         //long oldWage = currentWorkers == 0 ? 0 : control.getCurrentWage();
         float oldWage = currentWorkers == 0 ? 0 : hr.predictPurchasePriceWhenNoChangeInProduction();

@@ -68,6 +68,7 @@ dependencies {
     compile files('mason/mason.16.jar')
     compile "net.sf.opencsv:opencsv:2.3"
     compile 'org.uncommons.watchmaker:watchmaker-framework:0.7.1'
+    compile 'com.intellij:forms_rt:7.0.3'
     testCompile "junit:junit:4.11"
     testCompile "org.loadui:testFx:3.1.2"
     testCompile "org.powermock:powermock-core:1.5"
@@ -129,6 +130,25 @@ task acceptanceTest(type: Test) {
     reports.html.destination = "$buildDir/reports/acceptance"
 
 }
+
+
+task monopolist(type: JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'model.gui.paper2.MonopolistGUI'
+}
+task upstreamMonopolist(type: JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'model.gui.paper2.UpstreamMonopolistGUI'
+}
+task downstreamMonopolist(type: JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'model.gui.paper2.DownstreamMonopolistGUI'
+}
+task competitiveChain(type: JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'model.gui.paper2.CompetitiveChainGUI'
+}
+
 
 
 test {

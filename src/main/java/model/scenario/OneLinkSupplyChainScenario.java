@@ -201,7 +201,7 @@ public class OneLinkSupplyChainScenario extends Scenario implements Deactivatabl
         populateMarkets();
 
         //create consumers
-        buildFoodDemand(0,101,1,getMarkets().get(OUTPUT_GOOD));
+        buildFoodDemand(0, 101,1,getMarkets().get(OUTPUT_GOOD));
 
         //create workers
         buildLaborSupplies();

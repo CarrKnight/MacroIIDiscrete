@@ -534,6 +534,7 @@ public class MacroII extends SimState{
 
         phaseScheduler.clear();
 
+
         //turn off when needed
         for(Deactivatable d :toTurnOffAtFinish)
             d.turnOff();
@@ -542,6 +543,7 @@ public class MacroII extends SimState{
         goodTypeMasterList.turnOff();
 
         scenario = null;
+        hasStarted = false;
 
 
     }

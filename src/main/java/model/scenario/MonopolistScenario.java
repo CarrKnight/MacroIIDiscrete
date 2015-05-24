@@ -531,7 +531,7 @@ public class MonopolistScenario extends Scenario {
             int totalWages =  (dailyWageIntercept + dailyWageSlope * i) * i;
 
             int profits =  totalRevenues - totalWages;
-            if(profits>profitsMax)
+            if(profits>=profitsMax)
             {
                 profitsMax = profits;
                 workerMax = i ;
