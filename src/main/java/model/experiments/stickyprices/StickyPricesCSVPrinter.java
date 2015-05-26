@@ -83,6 +83,7 @@ public class StickyPricesCSVPrinter {
         //set defaults
         //create directory
 
+
         Files.createDirectories(Paths.get("runs", "rawdata"));
 
 
@@ -137,12 +138,14 @@ public class StickyPricesCSVPrinter {
 
         System.out.println("figure 18-19");
         oneHundredLearningMonopolist(Paths.get("runs","rawdata", "100Monopolists.csv").toFile());
-        oneHundredLearningCompetitive(Paths.get("runs","rawdata", "100Competitive.csv").toFile());
+        oneHundredLearningCompetitive(Paths.get("runs","rawdata", "100Competitive.csv").toFile(), 1);
 
         System.out.println("figure 20-21-22");
         oneHundredAllLearningRuns(Paths.get("runs","rawdata", "learningInventoryChain100.csv").toFile(),
                                   null, null);
+
         oneHundredAllLearningCompetitiveRuns(Paths.get("runs","rawdata", "learningCompetitiveInventoryChain100.csv").toFile());
+
         oneHundredAllLearningFoodRuns(Paths.get("runs","rawdata", "learningInventoryFoodChain100.csv").toFile());
 
 
@@ -1178,7 +1181,7 @@ public class StickyPricesCSVPrinter {
 
 
 
-    private static void oneHundredLearningCompetitive(File file) throws IOException {
+    private static void oneHundredLearningCompetitive(File file, final int timeAveraging) throws IOException {
 
         CSVWriter writer = new CSVWriter(new FileWriter(file));
         writer.writeNext(new String[]{"production","price"});
@@ -1230,7 +1233,7 @@ public class StickyPricesCSVPrinter {
             //average over the last 500 steps
             SummaryStatistics prices = new SummaryStatistics();
             SummaryStatistics quantities = new SummaryStatistics();
-            for(int j=0; j<500; j++)
+            for(int j=0; j< timeAveraging; j++)
             {
                 macroII.schedule.step(macroII);
                 assert !Float.isNaN(macroII.getMarket(UndifferentiatedGoodType.GENERIC).getTodayAveragePrice());

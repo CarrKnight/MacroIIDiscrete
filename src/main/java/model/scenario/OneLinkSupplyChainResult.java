@@ -654,16 +654,16 @@ public class OneLinkSupplyChainResult {
             averageBeefPrice+= macroII.getMarket(OneLinkSupplyChainScenario.INPUT_GOOD).getLatestObservation(MarketDataType.AVERAGE_CLOSING_PRICE);
         }
 
-        System.out.println("beef price: " +averageBeefPrice/1000f );
-        System.out.println("food price: " +averageFoodPrice/1000f );
-        System.out.println("produced: " +averageBeefProduced/1000f );
+        System.out.println("beef price: " +averageBeefPrice/timeAveraging );
+        System.out.println("food price: " +averageFoodPrice/timeAveraging );
+        System.out.println("produced: " +averageBeefProduced/timeAveraging );
         extractAndPrintSlopesOfBeefSellers(macroII);
 
         System.out.println();
         macroII.finish();
 
 
-        return new OneLinkSupplyChainResult(averageBeefPrice/1000f,averageFoodPrice/1000f,averageBeefProduced/1000f, macroII);
+        return new OneLinkSupplyChainResult(averageBeefPrice/timeAveraging,averageFoodPrice/timeAveraging,averageBeefProduced/timeAveraging, macroII);
 
     }
 
